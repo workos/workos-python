@@ -9,23 +9,25 @@ blocks:
       secrets:
         - name: codecov-workos-python
       jobs:
-        - name: pytest
-          matrix:
-            - env_var: PYTHON_VERSION
-              values: ["2.7", "3.4", "3.5", "3.6", "3.7", "3.8"]
+        - name: python
           commands:
-            - sem-version python $PYTHON_VERSION
             - checkout
             - python -m pip install --upgrade pip
-            - pip install flake8
+            - pip install flake8 pytest
             - flake8 . --count --select=E9,F7,F82 --show-source --statistics
             - flake8 . --count --exit-zero --max-complexity=10 --statistics
-            - pip install pytest
+            - pytest
+        - name: python3
+          commands:
+            - checkout
+            - python3 -m pip3 install --upgrade pip
+            - pip3 install flake8 pytest
+            - flake8 . --count --select=E9,F7,F82 --show-source --statistics
+            - flake8 . --count --exit-zero --max-complexity=10 --statistics
             - pytest
         - name: codecov
           commands:
-            - sem-version python 3.8
             - checkout
-            - python -m pip install --upgrade pip
-            - pip install codecov
+            - python3 -m pip3 install --upgrade pip
+            - pip3 install codecov
             - codecov

@@ -11,14 +11,13 @@ blocks:
         - name: pytest
           matrix:
             - env_var: PYTHON_VERSION
-              values: ["2.7", "3.5", "3.6", "3.7"]
+              values: ["2.7", "3.4", "3.5", "3.6", "3.7", "3.8"]
           commands:
             - sem-version python $PYTHON_VERSION
             - checkout
             - python -m pip install --upgrade pip
-            - pip install -r requirements.txt
             - pip install flake8
-            - flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-            - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+            - flake8 . --count --select=E9,F7,F82 --show-source --statistics
+            - flake8 . --count --exit-zero --max-complexity=10 --statistics
             - pip install pytest
             - pytest

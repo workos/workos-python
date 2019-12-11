@@ -11,6 +11,7 @@ blocks:
       prologue:
         commands:
           - checkout
+          - sem-version python 2.7
           - python -m pip install --upgrade pip
           - pip install codecov flake8 pytest
       jobs:

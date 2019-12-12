@@ -13,10 +13,10 @@ blocks:
           - checkout
           - sem-version python 2.7
           - python -m pip install --upgrade pip
-          - pip install codecov flake8 pytest
+          - pip install flake8 pytest
           - sem-version python 3.7
           - python -m pip install --upgrade pip
-          - pip install codecov flake8 pytest
+          - pip install flake8 pytest pytest-cov
       jobs:
         - name: python
           commands:
@@ -29,7 +29,8 @@ blocks:
             - sem-version python 3.7
             - flake8 . --count --select=E9,F7,F82 --show-source --statistics
             - flake8 . --count --exit-zero --max-complexity=10 --statistics
-            - pytest
+            # Python version doesnt affect coverage, so only use cov option here
+            - pytest --cov-report term --cov=workos > codecov_report
         - name: codecov
           commands:
-            - codecov
+            - bash <(curl -s https://codecov.io/bash) -f codecov_report

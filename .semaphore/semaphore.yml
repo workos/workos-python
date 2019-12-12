@@ -30,5 +30,5 @@ blocks:
             - sem-version python 3.7
             - flake8 . --count --select=E9,F7,F82 --show-source --statistics
             - flake8 . --count --exit-zero --max-complexity=10 --statistics
-            - pytest --cov-report xml --cov=workos > codecov_report
-            - bash <(curl -s https://codecov.io/bash) -f codecov_report
+            - pytest --cov-report xml --cov=workos
+            - bash <(curl -s https://codecov.io/bash)

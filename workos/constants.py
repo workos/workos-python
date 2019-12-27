@@ -1,0 +1,1 @@
+RESPONSE_TYPE_CODE = 'code'

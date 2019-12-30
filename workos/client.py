@@ -1,4 +1,4 @@
-from .sso import SSO
+from workos.sso import SSO
 
 class Client(object):
     @property

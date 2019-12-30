@@ -2,6 +2,7 @@ from requests import Request
 
 import workos
 from workos.constants import RESPONSE_TYPE_CODE
+from workos.resources.sso import SSOProfile
 from workos.utils.requests import RequestHelper, REQUEST_METHOD_POST
 
 AUTHORIZATION_PATH = 'sso/authorize'
@@ -44,4 +45,4 @@ class SSO(object):
         }
 
         response = self.request_helper.request(TOKEN_PATH, method=REQUEST_METHOD_POST, params=params)
-        return response['profile']
+        return SSOProfile.construct_from_response(response)

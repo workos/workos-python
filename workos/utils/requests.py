@@ -21,4 +21,5 @@ class RequestHelper(object):
         url = self.generate_api_url(path)
         response = getattr(requests, method)(url, params=params)
 
+        # TODO Handle exceptions
         return response.json()

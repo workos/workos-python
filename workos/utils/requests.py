@@ -1,15 +1,13 @@
 import requests
 
-from .settings import get_setting, BASE_API_URL_SETTING_KEY
-
-BASE_API_URL = 'https://api.workos.com/'
+import workos
 
 REQUEST_METHOD_GET = 'get'
 REQUEST_METHOD_POST = 'post'
 
 class RequestHelper(object):
     def __init__(self):
-        self.set_base_api_url(get_setting(BASE_API_URL_SETTING_KEY, default=BASE_API_URL))
+        self.set_base_api_url(workos.base_api_url)
 
     def set_base_api_url(self, base_api_url):
         self.base_api_url = '{}{{}}'.format(base_api_url)
@@ -22,5 +20,3 @@ class RequestHelper(object):
         response = getattr(requests, method)(url, params=params)
 
         return response.json()
-
-request_helper = RequestHelper()

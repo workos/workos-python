@@ -1,6 +1,7 @@
 from requests import Request
 
 import workos
+from workos.exceptions import ConfigurationException
 from workos.resources.sso import SSOProfile
 from workos.utils.requests import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_POST
 
@@ -10,6 +11,19 @@ TOKEN_PATH = 'sso/token'
 OAUTH_GRANT_TYPE = 'authorization_code'
 
 class SSO(object):
+    def __init__(self):
+        required_settings = ['api_key', 'project_id', ]
+
+        missing_settings = []
+        for setting in required_settings:
+            if not getattr(workos, setting, None):
+                missing_settings.append(setting)
+
+        if missing_settings:
+            raise ConfigurationException(
+                'The following settings are missing for SSO: {}'.format(', '.join(missing_settings))
+            )
+
     @property
     def request_helper(self):
         if not getattr(self, '_request_helper', None):

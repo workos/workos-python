@@ -1,9 +1,8 @@
 from requests import Request
 
 import workos
-from workos.constants import RESPONSE_TYPE_CODE
 from workos.resources.sso import SSOProfile
-from workos.utils.requests import RequestHelper, REQUEST_METHOD_POST
+from workos.utils.requests import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_POST
 
 AUTHORIZATION_PATH = 'sso/authorize'
 TOKEN_PATH = 'sso/token'

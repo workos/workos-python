@@ -2,6 +2,8 @@ import requests
 
 import workos
 
+RESPONSE_TYPE_CODE = 'code'
+
 REQUEST_METHOD_GET = 'get'
 REQUEST_METHOD_POST = 'post'
 

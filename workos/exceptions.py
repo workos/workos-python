@@ -1,10 +1,29 @@
 class ConfigurationException(Exception): pass
 
 # Request related exceptions
-class AuthorizationException(Exception): pass
+class BaseRequestException(Exception):
+    def __init__(self, response, message=None):
+        self.extract_and_set_response_related_data(response)
 
-class AuthenticationException(Exception): pass
+        if message is not None:
+            self.message = message
 
-class BadRequestException(Exception): pass
+    def extract_and_set_response_related_data(self, response):
+        self.response = response
 
-class ServerException(Exception): pass
+        try:
+            response_json = response.json()
+            self.message = response_json.get('message')
+        except ValueError:
+            self.message = None
+
+        headers = response.headers
+        self.request_id = headers.get('X-Request-ID')
+
+class AuthorizationException(BaseRequestException): pass
+
+class AuthenticationException(BaseRequestException): pass
+
+class BadRequestException(BaseRequestException): pass
+
+class ServerException(BaseRequestException): pass

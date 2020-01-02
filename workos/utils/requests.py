@@ -1,6 +1,10 @@
 import requests
 
 import workos
+from workos.exceptions import (
+    AuthorizationException, AuthenticationException, BadRequestException,
+    ServerException,
+)
 
 RESPONSE_TYPE_CODE = 'code'
 
@@ -21,5 +25,15 @@ class RequestHelper(object):
         url = self.generate_api_url(path)
         response = getattr(requests, method)(url, params=params)
 
-        # TODO Handle exceptions
+        status_code = request.status_code
+        if status_code >= 400 and status_code < 500:
+            if status_code == 401:
+                raise AuthorizationException()
+            elif status_code == 403:
+                raise AuthenticationException()
+            raise BadRequestException()
+        elif status_code >= 500 and status_code < 600:
+            raise ServerException()
+
+        
         return response.json()

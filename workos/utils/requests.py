@@ -6,6 +6,10 @@ from workos.exceptions import (
     ServerException,
 )
 
+BASE_HEADERS = {
+    'User-Agent': 'WorkOS/{}'.format(workos.__version__),
+}
+
 RESPONSE_TYPE_CODE = 'code'
 
 REQUEST_METHOD_GET = 'get'
@@ -23,7 +27,7 @@ class RequestHelper(object):
 
     def request(self, path, method=REQUEST_METHOD_GET, params=None):
         url = self.generate_api_url(path)
-        response = getattr(requests, method)(url, params=params)
+        response = getattr(requests, method)(url, headers=BASE_HEADERS, params=params)
 
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:

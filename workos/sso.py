@@ -48,12 +48,11 @@ class SSO(object):
 
         return prepared_request.url
 
-    def get_profile(self, code, redirect_uri):
+    def get_profile(self, code):
         params = {
             'client_id': workos.project_id,
             'client_secret': workos.api_key,
             'code': code,
-            'redirect_uri': redirect_uri,
             'grant_type': OAUTH_GRANT_TYPE
         }
 

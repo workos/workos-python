@@ -1,15 +1,22 @@
+import os
 from setuptools import setup, find_packages
 
+base_dir = os.path.dirname(__file__)
+
+about = {}
+with open(os.path.join(base_dir, "workos", "__about__.py")) as f:
+    exec(f.read(), about)
+
 setup(
-    name='workos',
-    version='0.0.0a1',
-    author='WorkOS',
-    author_email='team@workos.com',
-    url='https://github.com/workos-inc/workos-python',
-    description='WorkOS Python Client',
+    name=about['__package_name__'],
+    version=about['__version__'],
+    author=about['__author__'],
+    author_email=about['__author_email__'],
+    url=about['__package_url__'],
+    description=about['__description__'],
     packages=find_packages(),
     zip_safe=False,
-    license='MIT',
+    license=about['__license__'],
     install_requires=[],
     classifiers=[
         'Development Status :: 1 - Planning',

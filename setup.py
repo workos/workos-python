@@ -17,7 +17,7 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     license=about['__license__'],
-    install_requires=[],
+    install_requires=["requests>=2.22.0"],
     classifiers=[
         'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',

@@ -32,9 +32,9 @@ class RequestHelper(object):
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:
             if status_code == 401:
-                raise AuthorizationException(response)
-            elif status_code == 403:
                 raise AuthenticationException(response)
+            elif status_code == 403:
+                raise AuthorizationException(response)
             raise BadRequestException(response)
         elif status_code >= 500 and status_code < 600:
             raise ServerException(response)

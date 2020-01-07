@@ -33,7 +33,7 @@ class SSO(object):
         return self._request_helper
 
     def get_authorization_url(self, domain, redirect_uri, state=None):
-        '''Generate an OAuth authorization URL.
+        '''Generate an OAuth 2.0 authorization URL.
 
         The URL generated will redirect a User to the Identity Provider configured through
         WorkOS.

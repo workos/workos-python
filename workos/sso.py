@@ -2,7 +2,7 @@ from requests import Request
 
 import workos
 from workos.exceptions import ConfigurationException
-from workos.resources.sso import SSOProfile
+from workos.resources.sso import WorkOSProfile
 from workos.utils.requests import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_POST
 
 AUTHORIZATION_PATH = 'sso/authorize'
@@ -11,6 +11,8 @@ TOKEN_PATH = 'sso/token'
 OAUTH_GRANT_TYPE = 'authorization_code'
 
 class SSO(object):
+    '''Offers methods to assist in authenticating through the WorkOS SSO service.'''
+
     def __init__(self):
         required_settings = ['api_key', 'project_id', ]
 
@@ -31,6 +33,20 @@ class SSO(object):
         return self._request_helper
 
     def get_authorization_url(self, domain, redirect_uri, state=None):
+        '''Generate an OAuth authorization URL.
+
+        The URL generated will redirect a User to the Identity Provider configured through
+        WorkOS.
+
+        Args:
+            domain (str) - The domain a user is associated with, as configured on WorkOS
+            redirect_uri (str) - A valid redirect URI, as specified on WorkOS
+            state (dict) - A dict passed to WorkOS, that'd be preserved through the authentication workflow, passed
+            back as a query parameter
+
+        Returns:
+            str: URL to redirect a User to to begin the OAuth workflow with WorkOS
+        '''
         params = {
             'domain': domain,
             'client_id': workos.project_id,
@@ -49,6 +65,15 @@ class SSO(object):
         return prepared_request.url
 
     def get_profile(self, code):
+        '''Get the profile of an authenticated User
+
+        Once authenticated, using the code returned having followed the authorization URL,
+        get the WorkOS profile of the User.
+
+        Args:
+
+        Returns:
+        '''
         params = {
             'client_id': workos.project_id,
             'client_secret': workos.api_key,
@@ -57,4 +82,5 @@ class SSO(object):
         }
 
         response = self.request_helper.request(TOKEN_PATH, method=REQUEST_METHOD_POST, params=params)
-        return SSOProfile.construct_from_response(response)
+
+        return WorkOSProfile.construct_from_response(response)

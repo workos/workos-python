@@ -1,9 +1,10 @@
 from workos.sso import SSO
 
 class Client(object):
+    '''Client for a convenient way to access the WorkOS feature set.'''
+
     @property
     def sso(self):
-        # Exception if not setup
         if not getattr(self, '_sso', None):
             self._sso = SSO()
         return self._sso

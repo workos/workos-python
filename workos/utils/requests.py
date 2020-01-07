@@ -20,12 +20,29 @@ class RequestHelper(object):
         self.set_base_api_url(workos.base_api_url)
 
     def set_base_api_url(self, base_api_url):
+        '''Creates an accessible template for constructing the URL for an API request.
+
+        Args:
+            base_api_url (str): Base URL for api requests (Should end with a /)
+        '''
         self.base_api_url = '{}{{}}'.format(base_api_url)
 
     def generate_api_url(self, path):
         return self.base_api_url.format(path)
 
     def request(self, path, method=REQUEST_METHOD_GET, params=None):
+        '''Executes a request against the WorkOS API.
+
+        Args:
+            path (str): Path for the api request that'd be appended to the base API URL
+
+        Kwargs:
+            method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
+            params (dict): Query params to be added to the request
+
+        Returns:
+            dict: Response from WorkOS
+        '''
         url = self.generate_api_url(path)
         response = getattr(requests, method)(url, headers=BASE_HEADERS, params=params)
 

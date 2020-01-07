@@ -71,8 +71,10 @@ class SSO(object):
         get the WorkOS profile of the User.
 
         Args:
+            code (str): Code returned by WorkOS on completion of OAuth 2.0 workflow
 
         Returns:
+            WorkOSProfile - WorkOSProfile object representing the User
         '''
         params = {
             'client_id': workos.project_id,

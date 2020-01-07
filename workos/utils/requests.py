@@ -7,7 +7,7 @@ from workos.exceptions import (
 )
 
 BASE_HEADERS = {
-    'User-Agent': 'WorkOS/{}'.format(workos.__version__),
+    'User-Agent': 'WorkOS Python/{}'.format(workos.__version__),
 }
 
 RESPONSE_TYPE_CODE = 'code'

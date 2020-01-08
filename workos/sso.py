@@ -1,3 +1,5 @@
+import json
+
 from requests import Request
 
 import workos
@@ -54,7 +56,7 @@ class SSO(object):
             'response_type': RESPONSE_TYPE_CODE,
         }
         if state is not None:
-            params['state'] = state
+            params['state'] = json.dumps(state)
 
         prepared_request = Request(
             'GET',

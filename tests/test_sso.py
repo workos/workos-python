@@ -2,19 +2,10 @@ import json
 from urllib.parse import parse_qsl, urlparse
 
 import pytest
-import requests
 
 import workos
 from workos.sso import SSO
 from workos.utils.requests import RESPONSE_TYPE_CODE
-
-class MockResponse(object):
-    def __init__(self, response_dict, status_code):
-        self.response_dict = response_dict
-        self.status_code = status_code
-
-    def json(self):
-        return self.response_dict
 
 class TestSSO(object):
     @pytest.fixture(autouse=True)
@@ -36,24 +27,6 @@ class TestSSO(object):
             'idp_id': '00u1klkowm8EGah2H357'
         }
 
-    @pytest.fixture
-    def mock_request_post_profile(self, monkeypatch, mock_profile):
-        def mock_post(*args, **kwargs):
-            return MockResponse({
-                'profile': {
-                    'object': 'profile',
-                    'id': mock_profile['id'],
-                    'email': mock_profile['email'],
-                    'first_name': mock_profile['first_name'],
-                    'connection_type': mock_profile['connection_type'],
-                    'last_name': mock_profile['last_name'],
-                    'idp_id': mock_profile['idp_id'],
-                },
-                'access_token': '01DY34ACQTM3B1CSX1YSZ8Z00D',
-            }, 200)
-
-        monkeypatch.setattr(requests, 'post', mock_post)
-
     def test_authorization_url_has_expected_query_params(self):
         authorization_url = self.sso.get_authorization_url(
             self.customer_domain,
@@ -73,8 +46,23 @@ class TestSSO(object):
 
 
     def test_get_profile_returns_expected_workosprofile_object(
-        self, mock_request_post_profile, mock_profile
+        self, mock_profile, mock_request_method
     ):
+        response_dict = {
+            'profile': {
+                'object': 'profile',
+                'id': mock_profile['id'],
+                'email': mock_profile['email'],
+                'first_name': mock_profile['first_name'],
+                'connection_type': mock_profile['connection_type'],
+                'last_name': mock_profile['last_name'],
+                'idp_id': mock_profile['idp_id'],
+            },
+            'access_token': '01DY34ACQTM3B1CSX1YSZ8Z00D',
+        }
+
+        mock_request_method('post', response_dict, 200)
+        
         profile = self.sso.get_profile(123)
 
         assert profile.to_dict() == mock_profile

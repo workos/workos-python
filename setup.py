@@ -14,7 +14,7 @@ setup(
     author_email=about['__author_email__'],
     url=about['__package_url__'],
     description=about['__description__'],
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests*', ]),
     zip_safe=False,
     license=about['__license__'],
     install_requires=["requests>=2.22.0"],

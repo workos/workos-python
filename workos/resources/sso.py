@@ -9,8 +9,8 @@ class WorkOSProfile(object):
         'id',
         'email',
         'first_name',
-        'connection_type',
         'last_name',
+        'connection_type',
         'idp_id',
     ]
     

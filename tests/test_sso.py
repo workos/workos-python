@@ -1,11 +1,11 @@
 import json
-from urllib.parse import parse_qsl, urlparse
+from six.moves.urllib.parse import parse_qsl, urlparse
 
 import pytest
 
 import workos
 from workos.sso import SSO
-from workos.utils.requests import RESPONSE_TYPE_CODE
+from workos.utils.request import RESPONSE_TYPE_CODE
 
 class TestSSO(object):
     @pytest.fixture(autouse=True)
@@ -62,7 +62,7 @@ class TestSSO(object):
         }
 
         mock_request_method('post', response_dict, 200)
-        
+
         profile = self.sso.get_profile(123)
 
         assert profile.to_dict() == mock_profile

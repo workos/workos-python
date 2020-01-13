@@ -44,6 +44,7 @@ class RequestHelper(object):
             dict: Response from WorkOS
         '''
         url = self.generate_api_url(path)
+        
         response = getattr(requests, method)(url, headers=BASE_HEADERS, params=params)
 
         status_code = response.status_code

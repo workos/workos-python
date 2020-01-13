@@ -1,2 +1,7 @@
-pytest==5.3.2
+# Install package deps
+-e .
+
+# Test deps
+pytest==4.6.9
 pytest-cov==2.8.1
+six==1.13.0

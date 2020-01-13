@@ -4,9 +4,10 @@ import requests
 import workos
 
 class MockResponse(object):
-    def __init__(self, response_dict, status_code):
+    def __init__(self, response_dict, status_code, headers=None):
         self.response_dict = response_dict
         self.status_code = status_code
+        self.headers = {} if headers is None else headers
 
     def json(self):
         return self.response_dict
@@ -25,10 +26,26 @@ def set_api_key_and_project_id(set_api_key, set_project_id):
 
 @pytest.fixture
 def mock_request_method(monkeypatch):
-    def _mock_request_method(method, response_dict, status_code):
-        def mock_response(*args, **kwargs):
-            return MockResponse(response_dict, status_code)
+    def inner(method, response_dict, status_code, headers=None):
+        def mock(*args, **kwargs):
+            return MockResponse(response_dict, status_code, headers=headers)
 
-        monkeypatch.setattr(requests, method, mock_response)
+        monkeypatch.setattr(requests, method, mock)
 
-    return _mock_request_method
+    return inner
+
+@pytest.fixture
+def capture_and_mock_requests(monkeypatch):
+    def inner():
+        captured_requests = []
+
+        def capture(*args, **kwargs):
+            captured_requests.append((args, kwargs))
+            return MockResponse({}, 200)
+
+        monkeypatch.setattr(requests, 'get', capture)
+        monkeypatch.setattr(requests, 'post', capture)
+
+        return captured_requests
+
+    return inner

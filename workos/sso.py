@@ -5,7 +5,7 @@ from requests import Request
 import workos
 from workos.exceptions import ConfigurationException
 from workos.resources.sso import WorkOSProfile
-from workos.utils.requests import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_POST
+from workos.utils.request import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_POST
 
 AUTHORIZATION_PATH = 'sso/authorize'
 TOKEN_PATH = 'sso/token'

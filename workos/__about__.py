@@ -7,7 +7,7 @@ __package_name__ = 'workos'
 
 __package_url__ = 'https://github.com/workos-inc/workos-python'
 
-__version__ = '0.0.0a1'
+__version__ = '0.0.1'
 
 __author__ = 'WorkOS'
 

@@ -1,4 +1,6 @@
-class ConfigurationException(Exception): pass
+class ConfigurationException(Exception):
+    pass
+
 
 # Request related exceptions
 class BaseRequestException(Exception):
@@ -13,17 +15,25 @@ class BaseRequestException(Exception):
 
         try:
             response_json = response.json()
-            self.message = response_json.get('message')
+            self.message = response_json.get("message")
         except ValueError:
             self.message = None
 
         headers = response.headers
-        self.request_id = headers.get('X-Request-ID')
+        self.request_id = headers.get("X-Request-ID")
 
-class AuthorizationException(BaseRequestException): pass
 
-class AuthenticationException(BaseRequestException): pass
+class AuthorizationException(BaseRequestException):
+    pass
 
-class BadRequestException(BaseRequestException): pass
 
-class ServerException(BaseRequestException): pass
+class AuthenticationException(BaseRequestException):
+    pass
+
+
+class BadRequestException(BaseRequestException):
+    pass
+
+
+class ServerException(BaseRequestException):
+    pass

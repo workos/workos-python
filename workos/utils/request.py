@@ -2,36 +2,39 @@ import requests
 
 import workos
 from workos.exceptions import (
-    AuthorizationException, AuthenticationException, BadRequestException,
+    AuthorizationException,
+    AuthenticationException,
+    BadRequestException,
     ServerException,
 )
 
 BASE_HEADERS = {
-    'User-Agent': 'WorkOS Python/{}'.format(workos.__version__),
+    "User-Agent": "WorkOS Python/{}".format(workos.__version__),
 }
 
-RESPONSE_TYPE_CODE = 'code'
+RESPONSE_TYPE_CODE = "code"
 
-REQUEST_METHOD_GET = 'get'
-REQUEST_METHOD_POST = 'post'
+REQUEST_METHOD_GET = "get"
+REQUEST_METHOD_POST = "post"
+
 
 class RequestHelper(object):
     def __init__(self):
         self.set_base_api_url(workos.base_api_url)
 
     def set_base_api_url(self, base_api_url):
-        '''Creates an accessible template for constructing the URL for an API request.
+        """Creates an accessible template for constructing the URL for an API request.
 
         Args:
             base_api_url (str): Base URL for api requests (Should end with a /)
-        '''
-        self.base_api_url = '{}{{}}'.format(base_api_url)
+        """
+        self.base_api_url = "{}{{}}".format(base_api_url)
 
     def generate_api_url(self, path):
         return self.base_api_url.format(path)
 
     def request(self, path, method=REQUEST_METHOD_GET, params=None):
-        '''Executes a request against the WorkOS API.
+        """Executes a request against the WorkOS API.
 
         Args:
             path (str): Path for the api request that'd be appended to the base API URL
@@ -42,9 +45,9 @@ class RequestHelper(object):
 
         Returns:
             dict: Response from WorkOS
-        '''
+        """
         url = self.generate_api_url(path)
-        
+
         response = getattr(requests, method)(url, headers=BASE_HEADERS, params=params)
 
         status_code = response.status_code

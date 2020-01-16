@@ -16,10 +16,12 @@ dev_requirements = [
     'pytest==4.6.9',
     'pytest-cov==2.8.1',
     'six==1.13.0',
-    'twine==3.1.1',
 ]
 if sys.version_info.major == 3:
-    dev_requirements.append('black==19.10b0')
+    dev_requirements.extend([
+        'black==19.10b0',
+        'twine==3.1.1',
+    ])
 
 setup(
     name=about['__package_name__'],

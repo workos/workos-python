@@ -1,4 +1,5 @@
 import os
+import sys
 from setuptools import setup, find_packages
 
 base_dir = os.path.dirname(__file__)
@@ -9,6 +10,16 @@ with open('README.md', 'r') as f:
 about = {}
 with open(os.path.join(base_dir, 'workos', '__about__.py')) as f:
     exec(f.read(), about)
+
+dev_requirements = [
+    'flake8',
+    'pytest==4.6.9',
+    'pytest-cov==2.8.1',
+    'six==1.13.0',
+    'twine==3.1.1',
+]
+if sys.version_info.major == 3:
+    dev_requirements.append('black==19.10b0')
 
 setup(
     name=about['__package_name__'],
@@ -22,7 +33,10 @@ setup(
     packages=find_packages(exclude=['tests*', ]),
     zip_safe=False,
     license=about['__license__'],
-    install_requires=["requests>=2.22.0"],
+    install_requires=['requests>=2.22.0'],
+    extras_require={
+        'dev': dev_requirements,
+    },
     classifiers=[
         'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',

@@ -31,5 +31,5 @@ blocks:
             - flake8 . --count --select=E9,F7,F82 --show-source --statistics
             - flake8 . --count --exit-zero --max-complexity=10 --statistics
             - pytest --cov-report xml --cov=workos
-            - black .
+            - black --check .
             - bash <(curl -s https://codecov.io/bash)

@@ -1,27 +1,14 @@
 import workos
 from workos.exceptions import ConfigurationException
 from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
+from workos.utils.validation import validate_api_key_and_project_id
 
 class AuditLog(object):
     """Offers methods through the WorkOS Audit Log service."""
 
+    @validate_api_key_and_project_id("Audit Log")
     def __init__(self):
-        required_settings = [
-            "api_key",
-            "project_id",
-        ]
-
-        missing_settings = []
-        for setting in required_settings:
-            if not getattr(workos, setting, None):
-                missing_settings.append(setting)
-
-        if missing_settings:
-            raise ConfigurationException(
-                "The following settings are missing for Audit Log: {}".format(
-                    ", ".join(missing_settings)
-                )
-            )
+        pass
 
     @property
     def request_helper(self):

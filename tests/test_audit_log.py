@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+from requests import Response
 
 import pytest
 
@@ -12,7 +13,7 @@ class TestSSO(object):
     def setup(self, set_api_key_and_project_id):
         self.audit_log = AuditLog()
 
-    def test_create_audit_log_event_succeeds(self):
+    def test_create_audit_log_event_succeeds(self, mock_request_method):
         event = {
             "group": "Terrace House",
             "location": "1.1.1.1",
@@ -27,8 +28,11 @@ class TestSSO(object):
                 "a": "b"
             }
         }
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_request_method("post", mock_response, 200)
         response = self.audit_log.create_event(event)
-        assert response.status_code == 200
+        assert mock_response.status_code == 200
     
     def test_create_audit_log_event_fails_with_long_metadata(self):
         with pytest.raises(Exception, match=r"Number of metadata keys exceeds .*"):

@@ -3,4 +3,4 @@ from workos.client import client
 
 api_key = None
 project_id = None
-base_api_url = "https://api.workos.com/"
+base_api_url = "https://api.workos-test.com/"

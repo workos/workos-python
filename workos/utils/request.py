@@ -33,7 +33,7 @@ class RequestHelper(object):
     def generate_api_url(self, path):
         return self.base_api_url.format(path)
 
-    def request(self, path, method=REQUEST_METHOD_GET, params=None):
+    def request(self, path, method=REQUEST_METHOD_GET, params=None, headers=None):
         """Executes a request against the WorkOS API.
 
         Args:
@@ -46,9 +46,16 @@ class RequestHelper(object):
         Returns:
             dict: Response from WorkOS
         """
+        if headers is None:
+            headers = {}
+        headers.update(BASE_HEADERS)
         url = self.generate_api_url(path)
 
-        response = getattr(requests, method)(url, headers=BASE_HEADERS, params=params)
+        request_fn = getattr(requests, method)
+        if method == REQUEST_METHOD_GET:
+            response = request_fn(url, headers=headers, params=params)
+        else:
+            response = request_fn(url, headers=headers, data=params)
 
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:

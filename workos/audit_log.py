@@ -6,6 +6,7 @@ from workos.utils.validation import validate_api_key_and_project_id
 EVENTS_PATH = "events"
 METADATA_LIMIT = 50
 
+
 class AuditLog(object):
     """Offers methods through the WorkOS Audit Log service."""
 

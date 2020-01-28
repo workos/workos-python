@@ -3,6 +3,8 @@ from workos.exceptions import ConfigurationException
 from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
 from workos.utils.validation import validate_api_key_and_project_id
 
+EVENTS_PATH = "events"
+METADATA_LIMIT = 50
 
 class AuditLog(object):
     """Offers methods through the WorkOS Audit Log service."""
@@ -47,16 +49,14 @@ class AuditLog(object):
         Returns:
             dict: Response from WorkOS
         """
-        metadata_limit = 50
-        if len(event.get("metadata", {})) > metadata_limit:
-            raise Exception("Number of metadata keys exceeds %d." % metadata_limit)
+        if len(event.get("metadata", {})) > METADATA_LIMIT:
+            raise Exception("Number of metadata keys exceeds %d." % METADATA_LIMIT)
 
-        events_path = "events"
         headers = {
             "Authorization": "Bearer %s" % workos.api_key,
             "idempotency_key": idempotency_key,
         }
 
         return self.request_helper.request(
-            events_path, method=REQUEST_METHOD_POST, params=event, headers=headers
+            EVENTS_PATH, method=REQUEST_METHOD_POST, params=event, headers=headers
         )

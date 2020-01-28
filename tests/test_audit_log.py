@@ -30,7 +30,7 @@ class TestSSO(object):
         mock_response.status_code = 200
         mock_request_method("post", mock_response, 200)
         response = self.audit_log.create_event(event)
-        assert mock_response.status_code == 200
+        assert response.status_code == 200
 
     def test_create_audit_log_event_fails_with_long_metadata(self):
         with pytest.raises(Exception, match=r"Number of metadata keys exceeds .*"):

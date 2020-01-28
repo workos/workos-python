@@ -12,7 +12,7 @@ class TestClient(object):
 
     def test_initialize_sso(self, set_api_key_and_project_id):
         assert bool(client.sso)
-    
+
     def test_initialize_audit_log(self, set_api_key_and_project_id):
         assert bool(client.audit_log)
 
@@ -67,4 +67,3 @@ class TestClient(object):
         message = str(ex)
 
         assert all(setting in message for setting in ("api_key", "project_id",))
-

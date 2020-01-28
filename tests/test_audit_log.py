@@ -24,19 +24,17 @@ class TestSSO(object):
             "target_name": "Ryota Yamasato",
             "target_id": "user_67890",
             "occurred_at": datetime.utcnow().isoformat(),
-            "metadata": {
-                "a": "b"
-            }
+            "metadata": {"a": "b"},
         }
         mock_response = Response()
         mock_response.status_code = 200
         mock_request_method("post", mock_response, 200)
         response = self.audit_log.create_event(event)
         assert mock_response.status_code == 200
-    
+
     def test_create_audit_log_event_fails_with_long_metadata(self):
         with pytest.raises(Exception, match=r"Number of metadata keys exceeds .*"):
-            metadata = { str(num): num for num in range(51) }
+            metadata = {str(num): num for num in range(51)}
             event = {
                 "group": "Terrace House",
                 "location": "1.1.1.1",
@@ -47,6 +45,6 @@ class TestSSO(object):
                 "target_name": "Ryota Yamasato",
                 "target_id": "user_67890",
                 "occurred_at": datetime.utcnow().isoformat(),
-                "metadata": metadata
-            } 
+                "metadata": metadata,
+            }
             self.audit_log.create_event(event)

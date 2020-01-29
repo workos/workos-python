@@ -27,7 +27,9 @@ class SSO(object):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def get_authorization_url(self, domain, redirect_uri, state=None):
+    def get_authorization_url(
+        self, domain=None, redirect_uri=None, state=None, provider=None
+    ):
         """Generate an OAuth 2.0 authorization URL.
 
         The URL generated will redirect a User to the Identity Provider configured through
@@ -43,11 +45,20 @@ class SSO(object):
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
         params = {
-            "domain": domain,
             "client_id": workos.project_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
+
+        if domain is None and provider is None:
+            raise Exception(
+                "Incomplete arguments. Need to specify either a 'domain' or 'provider'."
+            )
+        elif domain is None:
+            params["provider"] = provider
+        else:
+            params["domain"] = domain
+
         if state is not None:
             params["state"] = json.dumps(state)
 

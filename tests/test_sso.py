@@ -32,7 +32,7 @@ class TestSSO(object):
         }
 
     def test_authorization_url_throws_exception_with_missing_domain_and_provider(self):
-        with pytest.raises(Exception, match=r"Incomplete arguments.*"):
+        with pytest.raises(ValueError, match=r"Incomplete arguments.*"):
             self.sso.get_authorization_url(
                 redirect_uri=self.redirect_uri, state=self.state
             )

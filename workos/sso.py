@@ -51,7 +51,7 @@ class SSO(object):
         }
 
         if domain is None and provider is None:
-            raise Exception(
+            raise ValueError(
                 "Incomplete arguments. Need to specify either a 'domain' or 'provider'."
             )
         elif domain is None:

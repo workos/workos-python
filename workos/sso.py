@@ -5,6 +5,7 @@ from requests import Request
 import workos
 from workos.exceptions import ConfigurationException
 from workos.resources.sso import WorkOSProfile
+from workos.utils.connection_types import ConnectionType
 from workos.utils.request import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_POST
 from workos.utils.validation import validate_api_key_and_project_id
 
@@ -52,10 +53,12 @@ class SSO(object):
 
         if domain is None and provider is None:
             raise ValueError(
-                "Incomplete arguments. Need to specify either a 'domain' or 'provider'."
+                "Incomplete arguments. Need to specify either a 'domain' or 'provider'"
             )
-        elif domain is None:
-            params["provider"] = provider
+        elif provider is not None:
+            if not isinstance(provider, ConnectionType):
+                raise ValueError("'provider' must be of type ConnectionType")
+            params["provider"] = str(provider)
         else:
             params["domain"] = domain
 

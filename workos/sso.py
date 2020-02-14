@@ -55,11 +55,11 @@ class SSO(object):
             raise ValueError(
                 "Incomplete arguments. Need to specify either a 'domain' or 'provider'"
             )
-        elif provider is not None:
+        if provider is not None:
             if not isinstance(provider, ConnectionType):
                 raise ValueError("'provider' must be of type ConnectionType")
             params["provider"] = str(provider)
-        else:
+        if domain is not None:
             params["domain"] = domain
 
         if state is not None:

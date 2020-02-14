@@ -80,6 +80,25 @@ class TestSSO(object):
             "state": json.dumps(self.state),
         }
 
+    def test_authorization_url_has_expected_query_params_with_domain_and_provider(self):
+        authorization_url = self.sso.get_authorization_url(
+            domain=self.customer_domain,
+            provider=self.provider,
+            redirect_uri=self.redirect_uri,
+            state=self.state,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "domain": self.customer_domain,
+            "provider": str(self.provider),
+            "client_id": workos.project_id,
+            "redirect_uri": self.redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+            "state": json.dumps(self.state),
+        }
+
     def test_get_profile_returns_expected_workosprofile_object(
         self, mock_profile, mock_request_method
     ):

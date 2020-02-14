@@ -36,11 +36,12 @@ class SSO(object):
         The URL generated will redirect a User to the Identity Provider configured through
         WorkOS.
 
-        Args:
+        Kwargs:
             domain (str) - The domain a user is associated with, as configured on WorkOS
             redirect_uri (str) - A valid redirect URI, as specified on WorkOS
             state (dict) - A dict passed to WorkOS, that'd be preserved through the authentication workflow, passed
             back as a query parameter
+            provider (str) - Authentication service provider descriptor
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS

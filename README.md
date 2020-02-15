@@ -30,8 +30,8 @@ from workos import client
 
 # URL to redirect a User to to initiate the WorkOS OAuth 2.0 workflow
 client.sso.get_authorization_url(
-    'customer-domain.com',
-    'my-domain.com/auth/callback',
+    domain='customer-domain.com',
+    redirect_uri='my-domain.com/auth/callback',
     state={
         'stuff': 'from_the_original_request',
         'more_things': 'ill_get_it_all_back_when_oauth_is_complete',

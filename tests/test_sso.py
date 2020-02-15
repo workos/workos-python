@@ -5,12 +5,14 @@ import pytest
 
 import workos
 from workos.sso import SSO
+from workos.utils.connection_types import ConnectionType
 from workos.utils.request import RESPONSE_TYPE_CODE
 
 
 class TestSSO(object):
     @pytest.fixture(autouse=True)
     def setup(self, set_api_key_and_project_id):
+        self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
         self.state = {
@@ -30,15 +32,67 @@ class TestSSO(object):
             "idp_id": "00u1klkowm8EGah2H357",
         }
 
-    def test_authorization_url_has_expected_query_params(self):
+    def test_authorization_url_throws_value_error_with_missing_domain_and_provider(
+        self,
+    ):
+        with pytest.raises(ValueError, match=r"Incomplete arguments.*"):
+            self.sso.get_authorization_url(
+                redirect_uri=self.redirect_uri, state=self.state
+            )
+
+    def test_authorization_url_throws_value_error_with_incorrect_provider_type(self):
+        with pytest.raises(
+            ValueError, match="'provider' must be of type ConnectionType"
+        ):
+            self.sso.get_authorization_url(
+                provider="foo", redirect_uri=self.redirect_uri, state=self.state
+            )
+
+    def test_authorization_url_has_expected_query_params_with_provider(self):
         authorization_url = self.sso.get_authorization_url(
-            self.customer_domain, self.redirect_uri, state=self.state
+            provider=self.provider, redirect_uri=self.redirect_uri, state=self.state
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "provider": str(self.provider),
+            "client_id": workos.project_id,
+            "redirect_uri": self.redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+            "state": json.dumps(self.state),
+        }
+
+    def test_authorization_url_has_expected_query_params_with_domain(self):
+        authorization_url = self.sso.get_authorization_url(
+            domain=self.customer_domain,
+            redirect_uri=self.redirect_uri,
+            state=self.state,
         )
 
         parsed_url = urlparse(authorization_url)
 
         assert dict(parse_qsl(parsed_url.query)) == {
             "domain": self.customer_domain,
+            "client_id": workos.project_id,
+            "redirect_uri": self.redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+            "state": json.dumps(self.state),
+        }
+
+    def test_authorization_url_has_expected_query_params_with_domain_and_provider(self):
+        authorization_url = self.sso.get_authorization_url(
+            domain=self.customer_domain,
+            provider=self.provider,
+            redirect_uri=self.redirect_uri,
+            state=self.state,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "domain": self.customer_domain,
+            "provider": str(self.provider),
             "client_id": workos.project_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,

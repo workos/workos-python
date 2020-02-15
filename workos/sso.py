@@ -5,6 +5,7 @@ from requests import Request
 import workos
 from workos.exceptions import ConfigurationException
 from workos.resources.sso import WorkOSProfile
+from workos.utils.connection_types import ConnectionType
 from workos.utils.request import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_POST
 from workos.utils.validation import validate_api_key_and_project_id
 
@@ -27,27 +28,41 @@ class SSO(object):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def get_authorization_url(self, domain, redirect_uri, state=None):
+    def get_authorization_url(
+        self, domain=None, redirect_uri=None, state=None, provider=None
+    ):
         """Generate an OAuth 2.0 authorization URL.
 
         The URL generated will redirect a User to the Identity Provider configured through
         WorkOS.
 
-        Args:
+        Kwargs:
             domain (str) - The domain a user is associated with, as configured on WorkOS
             redirect_uri (str) - A valid redirect URI, as specified on WorkOS
             state (dict) - A dict passed to WorkOS, that'd be preserved through the authentication workflow, passed
             back as a query parameter
+            provider (str) - Authentication service provider descriptor
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
         params = {
-            "domain": domain,
             "client_id": workos.project_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
+
+        if domain is None and provider is None:
+            raise ValueError(
+                "Incomplete arguments. Need to specify either a 'domain' or 'provider'"
+            )
+        if provider is not None:
+            if not isinstance(provider, ConnectionType):
+                raise ValueError("'provider' must be of type ConnectionType")
+            params["provider"] = str(provider)
+        if domain is not None:
+            params["domain"] = domain
+
         if state is not None:
             params["state"] = json.dumps(state)
 

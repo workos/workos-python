@@ -10,6 +10,7 @@ from workos.utils.request import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METH
 from workos.utils.validation import SSO_MODULE, validate_settings
 
 AUTHORIZATION_PATH = "sso/authorize"
+PROMOTE_DRAFT_CONNECTION_PATH = "draft_connections/convert"
 TOKEN_PATH = "sso/token"
 
 OAUTH_GRANT_TYPE = "authorization_code"
@@ -84,7 +85,7 @@ class SSO(object):
             code (str): Code returned by WorkOS on completion of OAuth 2.0 workflow
 
         Returns:
-            WorkOSProfile - WorkOSProfile object representing the User
+            WorkOSProfile: WorkOSProfile object representing the User
         """
         params = {
             "client_id": workos.project_id,
@@ -99,7 +100,7 @@ class SSO(object):
 
         return WorkOSProfile.construct_from_response(response)
 
-    def promote_draft_connection(self):
+    def promote_draft_connection(self, token):
         """Promote a Draft Connection
 
         Promotes a Draft Connection created through the IdP Link embed. A Draft Connection that has
@@ -108,5 +109,19 @@ class SSO(object):
         Args:
             token (str): The token supplied via the response when a draft connection is created via 
             the Idp Link embed
+
+        Returns:
+            bool: True if a Draft Connection has been successfully promoted
         """
-        pass
+        params = {
+            "id": token,
+        }
+
+        self.request_helper.request(
+            PROMOTE_DRAFT_CONNECTION_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return True

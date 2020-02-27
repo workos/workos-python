@@ -51,13 +51,18 @@ class AuditLog(object):
             dict: Response from WorkOS
         """
         if len(event.get("metadata", {})) > METADATA_LIMIT:
-            raise Exception("Number of metadata keys exceeds %d." % METADATA_LIMIT)
+            raise Exception(
+                "Number of metadata keys exceeds {}.".format(METADATA_LIMIT)
+            )
 
         headers = {
-            "Authorization": "Bearer %s" % workos.api_key,
             "idempotency_key": idempotency_key,
         }
 
         return self.request_helper.request(
-            EVENTS_PATH, method=REQUEST_METHOD_POST, params=event, headers=headers
+            EVENTS_PATH,
+            method=REQUEST_METHOD_POST,
+            params=event,
+            headers=headers,
+            token=workos.api_key,
         )

@@ -33,7 +33,9 @@ class RequestHelper(object):
     def generate_api_url(self, path):
         return self.base_api_url.format(path)
 
-    def request(self, path, method=REQUEST_METHOD_GET, params=None, headers=None):
+    def request(
+        self, path, method=REQUEST_METHOD_GET, params=None, headers=None, token=None
+    ):
         """Executes a request against the WorkOS API.
 
         Args:
@@ -42,12 +44,17 @@ class RequestHelper(object):
         Kwargs:
             method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
             params (dict): Query params to be added to the request
+            token (str): Bearer token
 
         Returns:
             dict: Response from WorkOS
         """
         if headers is None:
             headers = {}
+
+        if token:
+            headers["Authorization"] = "Bearer {}".format(token)
+
         headers.update(BASE_HEADERS)
         url = self.generate_api_url(path)
 

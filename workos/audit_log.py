@@ -1,7 +1,7 @@
 import workos
 from workos.exceptions import ConfigurationException
 from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
-from workos.utils.validation import validate_api_key_and_project_id
+from workos.utils.validation import AUDIT_LOG_MODULE, validate_settings
 
 EVENTS_PATH = "events"
 METADATA_LIMIT = 50
@@ -10,7 +10,7 @@ METADATA_LIMIT = 50
 class AuditLog(object):
     """Offers methods through the WorkOS Audit Log service."""
 
-    @validate_api_key_and_project_id("Audit Log")
+    @validate_settings(AUDIT_LOG_MODULE)
     def __init__(self):
         pass
 

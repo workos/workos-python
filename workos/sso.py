@@ -7,7 +7,7 @@ from workos.exceptions import ConfigurationException
 from workos.resources.sso import WorkOSProfile
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_POST
-from workos.utils.validation import validate_api_key_and_project_id
+from workos.utils.validation import SSO_MODULE, validate_settings
 
 AUTHORIZATION_PATH = "sso/authorize"
 TOKEN_PATH = "sso/token"
@@ -18,7 +18,7 @@ OAUTH_GRANT_TYPE = "authorization_code"
 class SSO(object):
     """Offers methods to assist in authenticating through the WorkOS SSO service."""
 
-    @validate_api_key_and_project_id("SSO")
+    @validate_settings(SSO_MODULE)
     def __init__(self):
         pass
 

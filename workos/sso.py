@@ -98,3 +98,15 @@ class SSO(object):
         )
 
         return WorkOSProfile.construct_from_response(response)
+
+    def promote_draft_connection(self):
+        """Promote a Draft Connection
+
+        Promotes a Draft Connection created through the IdP Link embed. A Draft Connection that has
+        been promoted will enable Enterprise users of the domain to begin signing in via SSO.
+
+        Args:
+            token (str): The token supplied via the response when a draft connection is created via 
+            the Idp Link embed
+        """
+        pass

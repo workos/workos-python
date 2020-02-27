@@ -3,18 +3,21 @@ from functools import wraps
 import workos
 from workos.exceptions import ConfigurationException
 
+AUDIT_LOG_MODULE = "AuditLog"
+SSO_MODULE = "SSO"
 
-def validate_api_key_and_project_id(module_name):
+REQUIRED_SETTINGS_FOR_MODULE = {
+    AUDIT_LOG_MODULE: ["api_key",],
+    SSO_MODULE: ["api_key", "project_id",],
+}
+
+
+def validate_settings(module_name):
     def decorator(fn):
         @wraps(fn)
         def wrapper(*args, **kwargs):
-            required_settings = [
-                "api_key",
-                "project_id",
-            ]
-
             missing_settings = []
-            for setting in required_settings:
+            for setting in REQUIRED_SETTINGS_FOR_MODULE[module_name]:
                 if not getattr(workos, setting, None):
                     missing_settings.append(setting)
 

@@ -10,7 +10,7 @@ from workos.utils.request import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METH
 from workos.utils.validation import SSO_MODULE, validate_settings
 
 AUTHORIZATION_PATH = "sso/authorize"
-PROMOTE_DRAFT_CONNECTION_PATH = "draft_connections/convert"
+PROMOTE_DRAFT_CONNECTION_PATH = "draft_connections/%s/activate"
 TOKEN_PATH = "sso/token"
 
 OAUTH_GRANT_TYPE = "authorization_code"
@@ -113,14 +113,9 @@ class SSO(object):
         Returns:
             bool: True if a Draft Connection has been successfully promoted
         """
-        params = {
-            "id": token,
-        }
-
         self.request_helper.request(
-            PROMOTE_DRAFT_CONNECTION_PATH,
+            PROMOTE_DRAFT_CONNECTION_PATH % token,
             method=REQUEST_METHOD_POST,
-            params=params,
             token=workos.api_key,
         )
 

@@ -5,15 +5,15 @@ from requests import Response
 import pytest
 
 import workos
-from workos.audit_log import AuditLog
+from workos.audit_trail import AuditTrail
 
 
 class TestSSO(object):
     @pytest.fixture(autouse=True)
     def setup(self, set_api_key_and_project_id):
-        self.audit_log = AuditLog()
+        self.audit_trail = AuditTrail()
 
-    def test_create_audit_log_event_succeeds(self, mock_request_method):
+    def test_create_audit_trail_event_succeeds(self, mock_request_method):
         event = {
             "group": "Terrace House",
             "location": "1.1.1.1",
@@ -29,10 +29,10 @@ class TestSSO(object):
         mock_response = Response()
         mock_response.status_code = 200
         mock_request_method("post", mock_response, 200)
-        response = self.audit_log.create_event(event)
+        response = self.audit_trail.create_event(event)
         assert response.status_code == 200
 
-    def test_create_audit_log_event_fails_with_long_metadata(self):
+    def test_create_audit_trail_event_fails_with_long_metadata(self):
         with pytest.raises(Exception, match=r"Number of metadata keys exceeds .*"):
             metadata = {str(num): num for num in range(51)}
             event = {
@@ -47,4 +47,4 @@ class TestSSO(object):
                 "occurred_at": datetime.utcnow().isoformat(),
                 "metadata": metadata,
             }
-            self.audit_log.create_event(event)
+            self.audit_trail.create_event(event)

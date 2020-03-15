@@ -1,16 +1,16 @@
 import workos
 from workos.exceptions import ConfigurationException
 from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
-from workos.utils.validation import AUDIT_LOG_MODULE, validate_settings
+from workos.utils.validation import AUDIT_TRAIL_MODULE, validate_settings
 
 EVENTS_PATH = "events"
 METADATA_LIMIT = 50
 
 
-class AuditLog(object):
-    """Offers methods through the WorkOS Audit Log service."""
+class AuditTrail(object):
+    """Offers methods through the WorkOS Audit Trail service."""
 
-    @validate_settings(AUDIT_LOG_MODULE)
+    @validate_settings(AUDIT_TRAIL_MODULE)
     def __init__(self):
         pass
 
@@ -21,7 +21,7 @@ class AuditLog(object):
         return self._request_helper
 
     def create_event(self, event, idempotency_key=None):
-        """Create an Audit Log event.
+        """Create an Audit Trail event.
 
         Args:
             event (dict) - An event object

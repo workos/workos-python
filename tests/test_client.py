@@ -8,13 +8,13 @@ class TestClient(object):
     @pytest.fixture(autouse=True)
     def setup(self):
         client._sso = None
-        client._audit_log = None
+        client._audit_trail = None
 
     def test_initialize_sso(self, set_api_key_and_project_id):
         assert bool(client.sso)
 
     def test_initialize_audit_log(self, set_api_key_and_project_id):
-        assert bool(client.audit_log)
+        assert bool(client.audit_trail)
 
     def test_initialize_sso_missing_api_key(self, set_project_id):
         with pytest.raises(ConfigurationException) as ex:
@@ -42,9 +42,9 @@ class TestClient(object):
 
         assert all(setting in message for setting in ("api_key", "project_id",))
 
-    def test_initialize_audit_log_missing_api_key(self):
+    def test_initialize_audit_trail_missing_api_key(self):
         with pytest.raises(ConfigurationException) as ex:
-            client.audit_log
+            client.audit_trail
 
         message = str(ex)
 

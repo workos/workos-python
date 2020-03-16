@@ -3,11 +3,11 @@ from functools import wraps
 import workos
 from workos.exceptions import ConfigurationException
 
-AUDIT_LOG_MODULE = "AuditLog"
+AUDIT_TRAIL_MODULE = "AuditTrail"
 SSO_MODULE = "SSO"
 
 REQUIRED_SETTINGS_FOR_MODULE = {
-    AUDIT_LOG_MODULE: ["api_key",],
+    AUDIT_TRAIL_MODULE: ["api_key",],
     SSO_MODULE: ["api_key", "project_id",],
 }
 

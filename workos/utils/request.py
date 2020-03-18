@@ -59,7 +59,7 @@ class RequestHelper(object):
         url = self.generate_api_url(path)
 
         request_fn = getattr(requests, method)
-        if method == REQUEST_METHOD_GET or method === REQUEST_METHOD_OAUTH_PROFILE:
+        if method == REQUEST_METHOD_GET or method == REQUEST_METHOD_OAUTH_PROFILE:
             response = request_fn(url, headers=headers, params=params)
         else:
             response = request_fn(url, headers=headers, data=params)

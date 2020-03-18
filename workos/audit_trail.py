@@ -62,7 +62,7 @@ class AuditTrail(object):
         return self.request_helper.request(
             EVENTS_PATH,
             method=REQUEST_METHOD_POST,
-            data=event,
+            params=event,
             headers=headers,
             token=workos.api_key,
         )

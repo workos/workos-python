@@ -95,7 +95,7 @@ class SSO(object):
         }
 
         response = self.request_helper.request(
-            TOKEN_PATH, method=REQUEST_METHOD_POST, params=params
+            TOKEN_PATH, method=REQUEST_METHOD_OAUTH_PROFILE, params=params
         )
 
         return WorkOSProfile.construct_from_response(response)

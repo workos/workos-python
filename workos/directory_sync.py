@@ -21,16 +21,16 @@ class DirectorySync(object):
     def get_directory_users(
         self, directory_endpoint_id, limit=RESPONSE_LIMIT, before=None, after=None
     ):
-        """Gets a list of provisioned users for a directory endpoint.
+        """Gets a list of provisioned Users for a Directory Endpoint.
 
         Args:
             directory_endpoint_id (str): Directory Endpoint unique identifier.
             limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided directory endpoint id.
-            after (str): Pagination cursor to receive records after a provided directory endpoint id.
+            before (str): Pagination cursor to receive records before a provided Directory Endpoint ID.
+            after (str): Pagination cursor to receive records after a provided Directory Endpoint ID.
 
         Returns:
-            dict: Directory users response from WorkOS.
+            dict: Directory Users response from WorkOS.
         """
         params = {"limit": limit, "before": before, "after": after}
         return self.request_helper.request(
@@ -45,16 +45,16 @@ class DirectorySync(object):
     def get_directory_groups(
         self, directory_endpoint_id, limit=RESPONSE_LIMIT, before=None, after=None
     ):
-        """Gets a list of provisioned groups for a directory endpoint.
+        """Gets a list of provisioned Groups for a Directory Endpoint.
 
         Args:
             directory_endpoint_id (str): Directory Endpoint unique identifier.
             limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided directory endpoint id.
-            after (str): Pagination cursor to receive records after a provided directory endpoint id.
+            before (str): Pagination cursor to receive records before a provided Directory Endpoint ID.
+            after (str): Pagination cursor to receive records after a provided Directory Endpoint ID.
 
         Returns:
-            dict: Directory groups response from WorkOS.
+            dict: Directory Groups response from WorkOS.
         """
         params = {"limit": limit, "before": before, "after": after}
         return self.request_helper.request(
@@ -71,7 +71,7 @@ class DirectorySync(object):
 
         Args:
             directory_endpoint_id (str): Directory Endpoint unique identifier.
-            directory_user_id(str): Directory User unique identifier.
+            directory_user_id (str): Directory User unique identifier.
 
         Returns:
             dict: Directory user response from WorkOS.
@@ -90,10 +90,10 @@ class DirectorySync(object):
 
         Args:
             directory_endpoint_id (str): Directory Endpoint unique identifier.
-            directory_user_id(str): Directory User unique identifier.
+            directory_user_id (str): Directory User unique identifier.
 
         Returns:
-            dict: Directory user's groups response from WorkOS.
+            dict: Directory User's Groups response from WorkOS.
         """
         return self.request_helper.request(
             "directories/{directory_endpoint_id}/users/{directory_user_id}/groups".format(

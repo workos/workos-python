@@ -8,7 +8,7 @@ import workos
 from workos.audit_trail import AuditTrail
 
 
-class TestSSO(object):
+class TestAuditTrail(object):
     @pytest.fixture(autouse=True)
     def setup(self, set_api_key_and_project_id):
         self.audit_trail = AuditTrail()

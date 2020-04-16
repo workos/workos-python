@@ -67,7 +67,7 @@ class DirectorySync(object):
         )
 
     def get_directory_user(self, directory_endpoint_id, directory_user_id):
-        """Gets details for a single provisioned directory user.
+        """Gets details for a single provisioned Directory User.
 
         Args:
             directory_endpoint_id (str): Directory Endpoint unique identifier.
@@ -86,7 +86,7 @@ class DirectorySync(object):
         )
 
     def get_directory_user_groups(self, directory_endpoint_id, directory_user_id):
-        """Gets details for a directory user's provisioned groups.
+        """Gets details for a Directory User's provisioned Groups.
 
         Args:
             directory_endpoint_id (str): Directory Endpoint unique identifier.
@@ -101,5 +101,34 @@ class DirectorySync(object):
                 directory_user_id=directory_user_id,
             ),
             method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+    def get_directories(
+        self, domain=None, search=None, limit=RESPONSE_LIMIT, before=None, after=None
+    ):
+        """Gets details for existing Directories.
+
+        Args:
+            domain (str): Domain of a Directory Endpoint. (Optional)
+            search (str): Searchable text for a Directory Endpoint. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Directory Endpoint ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Directory Endpoint ID. (Optional)
+
+        Returns:
+            dict: Directories response from WorkOS.
+        """
+        params = {
+            "domain": domain,
+            "search": search,
+            "limit": limit,
+            "before": before,
+            "after": after,
+        }
+        return self.request_helper.request(
+            "directories",
+            method=REQUEST_METHOD_GET,
+            params=params,
             token=workos.api_key,
         )

@@ -86,6 +86,24 @@ class TestSSO(object):
             "id": "directory_usr_id",
         }
 
+    @pytest.fixture
+    def mock_directories(self):
+        return {
+            "data": [
+                {
+                    "id": "directory_edp_id",
+                    "external_key": "fried-chicken",
+                    "state": "linked",
+                    "type": "gsuite directory",
+                    "name": "Ri Jeong Hyeok",
+                    "bearer_token": None,
+                    "project_id": "project_id",
+                    "domain": "crashlandingonyou.com",
+                }
+            ],
+            "listMetadata": {"before": None, "after": None},
+        }
+
     def test_get_directory_users(self, mock_directory_users, mock_request_method):
         mock_response = Response()
         mock_response.status_code = 200
@@ -133,3 +151,12 @@ class TestSSO(object):
         )
         assert response.status_code == 200
         assert response.response_dict == mock_directory_groups
+
+    def test_get_directories(self, mock_directories, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.response_dict = mock_directories
+        mock_request_method("get", mock_response, 200)
+        response = self.directory_sync.get_directories()
+        assert response.status_code == 200
+        assert response.response_dict == mock_directories

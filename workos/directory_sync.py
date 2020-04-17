@@ -18,7 +18,7 @@ class DirectorySync(object):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def get_directory_users(
+    def list_directory_users(
         self, directory_endpoint_id, limit=RESPONSE_LIMIT, before=None, after=None
     ):
         """Gets a list of provisioned Users for a Directory Endpoint.
@@ -42,7 +42,7 @@ class DirectorySync(object):
             token=workos.api_key,
         )
 
-    def get_directory_groups(
+    def list_directory_groups(
         self, directory_endpoint_id, limit=RESPONSE_LIMIT, before=None, after=None
     ):
         """Gets a list of provisioned Groups for a Directory Endpoint.
@@ -85,7 +85,7 @@ class DirectorySync(object):
             token=workos.api_key,
         )
 
-    def get_directory_user_groups(self, directory_endpoint_id, directory_user_id):
+    def list_directory_user_groups(self, directory_endpoint_id, directory_user_id):
         """Gets details for a Directory User's provisioned Groups.
 
         Args:
@@ -104,7 +104,7 @@ class DirectorySync(object):
             token=workos.api_key,
         )
 
-    def get_directories(
+    def list_directories(
         self, domain=None, search=None, limit=RESPONSE_LIMIT, before=None, after=None
     ):
         """Gets details for existing Directories.

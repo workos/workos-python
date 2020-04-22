@@ -62,7 +62,7 @@ class RequestHelper(object):
         if method == REQUEST_METHOD_GET:
             response = request_fn(url, headers=headers, params=params)
         else:
-            response = request_fn(url, headers=headers, data=params)
+            response = request_fn(url, headers=headers, json=params)
 
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:

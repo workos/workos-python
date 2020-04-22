@@ -19,86 +19,76 @@ class DirectorySync(object):
         return self._request_helper
 
     def list_users(
-        self, directory_endpoint_id, limit=RESPONSE_LIMIT, before=None, after=None
+        self, directory=None, group=None, limit=RESPONSE_LIMIT, before=None, after=None
     ):
-        """Gets a list of provisioned Users for a Directory Endpoint.
+        """Gets a list of provisioned Users for a Directory.
+
+        Note, either 'directory' or 'group' must be provided.
 
         Args:
-            directory_endpoint_id (str): Directory Endpoint unique identifier.
+            directory (str): Directory unique identifier.
+            group (str): Directory Group unique identifier.
             limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided Directory Endpoint ID.
-            after (str): Pagination cursor to receive records after a provided Directory Endpoint ID.
+            before (str): Pagination cursor to receive records before a provided Directory ID.
+            after (str): Pagination cursor to receive records after a provided Directory ID.
 
         Returns:
             dict: Directory Users response from WorkOS.
         """
         params = {"limit": limit, "before": before, "after": after}
+        if group is not None:
+            params["group"] = group
+        if directory is not None:
+            params["directory"] = directory
         return self.request_helper.request(
-            "directories/{directory_endpoint_id}/users".format(
-                directory_endpoint_id=directory_endpoint_id
-            ),
+            "directory_users",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
 
     def list_groups(
-        self, directory_endpoint_id, limit=RESPONSE_LIMIT, before=None, after=None
+        self, directory=None, user=None, limit=RESPONSE_LIMIT, before=None, after=None
     ):
-        """Gets a list of provisioned Groups for a Directory Endpoint.
+        """Gets a list of provisioned Groups for a Directory .
+
+        Note, either 'directory' or 'user' must be provided.
 
         Args:
-            directory_endpoint_id (str): Directory Endpoint unique identifier.
+            directory (str): Directory unique identifier.
+            user (str): Directory User unique identifier.
             limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided Directory Endpoint ID.
-            after (str): Pagination cursor to receive records after a provided Directory Endpoint ID.
+            before (str): Pagination cursor to receive records before a provided Directory ID.
+            after (str): Pagination cursor to receive records after a provided Directory ID.
 
         Returns:
             dict: Directory Groups response from WorkOS.
         """
         params = {"limit": limit, "before": before, "after": after}
+        if user is not None:
+            params["user"] = user
+        if directory is not None:
+            params["directory"] = directory
         return self.request_helper.request(
-            "directories/{directory_endpoint_id}/groups".format(
-                directory_endpoint_id=directory_endpoint_id
-            ),
+            "directory_groups",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
 
-    def get_user(self, directory_endpoint_id, directory_user_id):
+    def get_user(self, directory, directory_user):
         """Gets details for a single provisioned Directory User.
 
         Args:
-            directory_endpoint_id (str): Directory Endpoint unique identifier.
-            directory_user_id (str): Directory User unique identifier.
+            directory (str): Directory unique identifier.
+            directory_user (str): Directory User unique identifier.
 
         Returns:
             dict: Directory user response from WorkOS.
         """
         return self.request_helper.request(
-            "directories/{directory_endpoint_id}/users/{directory_user_id}".format(
-                directory_endpoint_id=directory_endpoint_id,
-                directory_user_id=directory_user_id,
-            ),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
-
-    def list_user_groups(self, directory_endpoint_id, directory_user_id):
-        """Gets details for a Directory User's provisioned Groups.
-
-        Args:
-            directory_endpoint_id (str): Directory Endpoint unique identifier.
-            directory_user_id (str): Directory User unique identifier.
-
-        Returns:
-            dict: Directory User's Groups response from WorkOS.
-        """
-        return self.request_helper.request(
-            "directories/{directory_endpoint_id}/users/{directory_user_id}/groups".format(
-                directory_endpoint_id=directory_endpoint_id,
-                directory_user_id=directory_user_id,
+            "directories/{directory}/users/{directory_user}".format(
+                directory=directory, directory_user=directory_user,
             ),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
@@ -110,11 +100,11 @@ class DirectorySync(object):
         """Gets details for existing Directories.
 
         Args:
-            domain (str): Domain of a Directory Endpoint. (Optional)
-            search (str): Searchable text for a Directory Endpoint. (Optional)
+            domain (str): Domain of a Directory. (Optional)
+            search (str): Searchable text for a Directory. (Optional)
             limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided Directory Endpoint ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided Directory Endpoint ID. (Optional)
+            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
 
         Returns:
             dict: Directories response from WorkOS.

@@ -26,7 +26,7 @@ def validate_settings(module_name):
             if missing_settings:
                 raise ConfigurationException(
                     "The following settings are missing for {}: {}".format(
-                        ", ".join(missing_settings), module_name
+                        module_name, ", ".join(missing_settings)
                     )
                 )
             return fn(*args, **kwargs)

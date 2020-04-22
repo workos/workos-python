@@ -95,7 +95,7 @@ class TestSSO(object):
         return {
             "data": [
                 {
-                    "id": "directory_edp_id",
+                    "id": "directory_id",
                     "external_key": "fried-chicken",
                     "state": "linked",
                     "type": "gsuite directory",
@@ -108,25 +108,39 @@ class TestSSO(object):
             "listMetadata": {"before": None, "after": None},
         }
 
-    def test_list_users(self, mock_users, mock_request_method):
+    def test_list_users_with_directory(self, mock_users, mock_request_method):
         mock_response = Response()
         mock_response.status_code = 200
         mock_response.response_dict = mock_users
         mock_request_method("get", mock_response, 200)
-        response = self.directory_sync.list_users(
-            directory_endpoint_id="directory_edp_id"
-        )
+        response = self.directory_sync.list_users(directory="directory_id")
         assert response.status_code == 200
         assert response.response_dict == mock_users
 
-    def test_list_groups(self, mock_groups, mock_request_method):
+    def test_list_users_with_group(self, mock_users, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.response_dict = mock_users
+        mock_request_method("get", mock_response, 200)
+        response = self.directory_sync.list_users(group="directory_grp_id")
+        assert response.status_code == 200
+        assert response.response_dict == mock_users
+
+    def test_list_groups_with_directory(self, mock_groups, mock_request_method):
         mock_response = Response()
         mock_response.status_code = 200
         mock_response.response_dict = mock_groups
         mock_request_method("get", mock_response, 200)
-        response = self.directory_sync.list_groups(
-            directory_endpoint_id="directory_edp_id"
-        )
+        response = self.directory_sync.list_groups(directory="directory_id")
+        assert response.status_code == 200
+        assert response.response_dict == mock_groups
+
+    def test_list_groups_with_user(self, mock_groups, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.response_dict = mock_groups
+        mock_request_method("get", mock_response, 200)
+        response = self.directory_sync.list_groups(user="directory_usr_id")
         assert response.status_code == 200
         assert response.response_dict == mock_groups
 
@@ -136,23 +150,10 @@ class TestSSO(object):
         mock_response.response_dict = mock_user
         mock_request_method("get", mock_response, 200)
         response = self.directory_sync.get_user(
-            directory_endpoint_id="directory_edp_id",
-            directory_user_id="directory_usr_id",
+            directory="directory_id", directory_user="directory_usr_id",
         )
         assert response.status_code == 200
         assert response.response_dict == mock_user
-
-    def test_list_user_groups(self, mock_user_groups, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_user_groups
-        mock_request_method("get", mock_response, 200)
-        response = self.directory_sync.list_user_groups(
-            directory_endpoint_id="directory_edp_id",
-            directory_user_id="directory_usr_id",
-        )
-        assert response.status_code == 200
-        assert response.response_dict == mock_user_groups
 
     def test_list_directories(self, mock_directories, mock_request_method):
         mock_response = Response()

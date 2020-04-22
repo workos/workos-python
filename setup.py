@@ -34,7 +34,7 @@ setup(
     packages=find_packages(exclude=["tests*",]),
     zip_safe=False,
     license=about["__license__"],
-    install_requires=["requests>=2.22.0"],
+    install_requires=["enum34>=1.1.10", "requests>=2.22.0"],
     extras_require={"dev": dev_requirements,},
     classifiers=[
         "Development Status :: 1 - Planning",

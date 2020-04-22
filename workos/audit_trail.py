@@ -56,7 +56,7 @@ class AuditTrail(object):
             )
 
         headers = {
-            "idempotency_key": idempotency_key,
+            "idempotency-key": idempotency_key,
         }
 
         return self.request_helper.request(

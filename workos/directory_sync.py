@@ -76,19 +76,33 @@ class DirectorySync(object):
             token=workos.api_key,
         )
 
-    def get_user(self, directory, directory_user):
+    def get_user(self, directory_user):
         """Gets details for a single provisioned Directory User.
 
         Args:
-            directory (str): Directory unique identifier.
             directory_user (str): Directory User unique identifier.
 
         Returns:
-            dict: Directory user response from WorkOS.
+            dict: Directory User response from WorkOS.
         """
         return self.request_helper.request(
-            "directories/{directory}/users/{directory_user}".format(
-                directory=directory, directory_user=directory_user,
+            "directory_users/{directory_user}".format(directory_user=directory_user),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+    def get_group(self, directory_group):
+        """Gets details for a single provisioned Directory Group.
+
+        Args:
+            directory_group (str): Directory User unique identifier.
+
+        Returns:
+            dict: Directory Group response from WorkOS.
+        """
+        return self.request_helper.request(
+            "directory_groups/{directory_group}".format(
+                directory_group=directory_group
             ),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,

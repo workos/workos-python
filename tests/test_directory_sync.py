@@ -87,6 +87,10 @@ class TestSSO(object):
         }
 
     @pytest.fixture
+    def mock_group(self):
+        return {"name": "Developers", "id": "directory_grp_id"}
+
+    @pytest.fixture
     def mock_user_groups(self):
         return [{"name": "Developers", "id": "directory_grp_id"}]
 
@@ -149,11 +153,18 @@ class TestSSO(object):
         mock_response.status_code = 200
         mock_response.response_dict = mock_user
         mock_request_method("get", mock_response, 200)
-        response = self.directory_sync.get_user(
-            directory="directory_id", directory_user="directory_usr_id",
-        )
+        response = self.directory_sync.get_user(directory_user="directory_usr_id")
         assert response.status_code == 200
         assert response.response_dict == mock_user
+
+    def test_get_group(self, mock_group, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.response_dict = mock_group
+        mock_request_method("get", mock_response, 200)
+        response = self.directory_sync.get_group(directory_group="directory_grp_id")
+        assert response.status_code == 200
+        assert response.response_dict == mock_group
 
     def test_list_directories(self, mock_directories, mock_request_method):
         mock_response = Response()

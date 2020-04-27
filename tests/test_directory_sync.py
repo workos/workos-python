@@ -153,7 +153,7 @@ class TestSSO(object):
         mock_response.status_code = 200
         mock_response.response_dict = mock_user
         mock_request_method("get", mock_response, 200)
-        response = self.directory_sync.get_user(directory_user="directory_usr_id")
+        response = self.directory_sync.get_user(user="directory_usr_id")
         assert response.status_code == 200
         assert response.response_dict == mock_user
 
@@ -162,7 +162,7 @@ class TestSSO(object):
         mock_response.status_code = 200
         mock_response.response_dict = mock_group
         mock_request_method("get", mock_response, 200)
-        response = self.directory_sync.get_group(directory_group="directory_grp_id")
+        response = self.directory_sync.get_group(group="directory_grp_id")
         assert response.status_code == 200
         assert response.response_dict == mock_group
 

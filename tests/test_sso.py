@@ -32,6 +32,30 @@ class TestSSO(object):
             "idp_id": "00u1klkowm8EGah2H357",
         }
 
+    @pytest.fixture
+    def mock_connection(self):
+        return {
+            "object": "connection",
+            "id": "conn_id",
+            "status": "linked",
+            "name": "Google OAuth 2.0",
+            "connection_type": "GoogleOAuth",
+            "oauth_uid": "oauth-uid.apps.googleusercontent.com",
+            "oauth_secret": "oauth-secret",
+            "oauth_redirect_uri": "https://auth.workos.com/sso/oauth/google/chicken/callback",
+            "saml_entity_id": None,
+            "saml_idp_url": None,
+            "saml_relying_party_trust_cert": None,
+            "saml_x509_certs": None,
+            "domains": [
+                {
+                    "object": "connection_domain",
+                    "id": "domain_id",
+                    "domain": "terrace-house.com",
+                },
+            ],
+        }
+
     def test_authorization_url_throws_value_error_with_missing_domain_and_provider(
         self,
     ):
@@ -120,3 +144,26 @@ class TestSSO(object):
         profile = self.sso.get_profile(123)
 
         assert profile.to_dict() == mock_profile
+
+    def test_create_connection(self, mock_request_method, mock_connection):
+        response_dict = {
+            "object": "connection",
+            "id": mock_connection["id"],
+            "name": mock_connection["name"],
+            "status": mock_connection["status"],
+            "connection_type": mock_connection["connection_type"],
+            "oauth_uid": mock_connection["oauth_uid"],
+            "oauth_secret": mock_connection["oauth_secret"],
+            "oauth_redirect_uri": mock_connection["oauth_redirect_uri"],
+            "saml_entity_id": mock_connection["saml_entity_id"],
+            "saml_idp_url": mock_connection["saml_idp_url"],
+            "saml_relying_party_trust_cert": mock_connection[
+                "saml_relying_party_trust_cert"
+            ],
+            "saml_x509_certs": mock_connection["saml_x509_certs"],
+            "domains": mock_connection["domains"],
+        }
+        mock_request_method("post", mock_connection, 201)
+
+        connection = self.sso.create_connection("draft_conn_id")
+        assert connection == response_dict

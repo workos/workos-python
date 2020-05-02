@@ -1,6 +1,7 @@
 import json
 
 from requests import Request
+from warnings import warn
 
 import workos
 from workos.exceptions import ConfigurationException
@@ -10,6 +11,7 @@ from workos.utils.request import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METH
 from workos.utils.validation import SSO_MODULE, validate_settings
 
 AUTHORIZATION_PATH = "sso/authorize"
+CREATE_CONNECTION_PATH = "connections"
 PROMOTE_DRAFT_CONNECTION_PATH = "draft_connections/%s/activate"
 TOKEN_PATH = "sso/token"
 
@@ -113,6 +115,10 @@ class SSO(object):
         Returns:
             bool: True if a Draft Connection has been successfully promoted
         """
+        warn(
+            "'promote_draft_connection' is deprecated. Use 'create_connection' instead.",
+            DeprecationWarning,
+        )
         self.request_helper.request(
             PROMOTE_DRAFT_CONNECTION_PATH % token,
             method=REQUEST_METHOD_POST,
@@ -120,3 +126,20 @@ class SSO(object):
         )
 
         return True
+
+    def create_connection(self, source):
+        """Activates a Draft Connection created through the WorkOS.js widget.
+
+        Args:
+            source (str): Draft Connection identifier.
+
+        Returns:
+            dict: Created Connection response from WorkOS.
+        """
+        params = {"source": source}
+        return self.request_helper.request(
+            CREATE_CONNECTION_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
+        )

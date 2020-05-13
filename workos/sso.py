@@ -44,7 +44,7 @@ class SSO(object):
             redirect_uri (str) - A valid redirect URI, as specified on WorkOS
             state (dict) - A dict passed to WorkOS, that'd be preserved through the authentication workflow, passed
             back as a query parameter
-            provider (str) - Authentication service provider descriptor
+            provider (ConnectionType) - Authentication service provider descriptor
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
@@ -62,7 +62,7 @@ class SSO(object):
         if provider is not None:
             if not isinstance(provider, ConnectionType):
                 raise ValueError("'provider' must be of type ConnectionType")
-            params["provider"] = str(provider)
+            params["provider"] = str(provider.value)
         if domain is not None:
             params["domain"] = domain
 

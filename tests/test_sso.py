@@ -80,7 +80,7 @@ class TestSSO(object):
         parsed_url = urlparse(authorization_url)
 
         assert dict(parse_qsl(parsed_url.query)) == {
-            "provider": str(self.provider),
+            "provider": str(self.provider.value),
             "client_id": workos.project_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
@@ -116,7 +116,7 @@ class TestSSO(object):
 
         assert dict(parse_qsl(parsed_url.query)) == {
             "domain": self.customer_domain,
-            "provider": str(self.provider),
+            "provider": str(self.provider.value),
             "client_id": workos.project_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,

@@ -15,9 +15,7 @@ class TestSSO(object):
         self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
-        self.state = {
-            "things": "with_stuff",
-        }
+        self.state = json.dumps({"things": "with_stuff",})
 
         self.sso = SSO()
 
@@ -84,7 +82,7 @@ class TestSSO(object):
             "client_id": workos.project_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
-            "state": json.dumps(self.state),
+            "state": self.state,
         }
 
     def test_authorization_url_has_expected_query_params_with_domain(self):
@@ -101,7 +99,7 @@ class TestSSO(object):
             "client_id": workos.project_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
-            "state": json.dumps(self.state),
+            "state": self.state,
         }
 
     def test_authorization_url_has_expected_query_params_with_domain_and_provider(self):
@@ -120,7 +118,7 @@ class TestSSO(object):
             "client_id": workos.project_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
-            "state": json.dumps(self.state),
+            "state": self.state,
         }
 
     def test_get_profile_returns_expected_workosprofile_object(

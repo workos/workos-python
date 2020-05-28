@@ -42,7 +42,7 @@ class SSO(object):
         Kwargs:
             domain (str) - The domain a user is associated with, as configured on WorkOS
             redirect_uri (str) - A valid redirect URI, as specified on WorkOS
-            state (dict) - A dict passed to WorkOS, that'd be preserved through the authentication workflow, passed
+            state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
             back as a query parameter
             provider (ConnectionType) - Authentication service provider descriptor
 
@@ -67,7 +67,7 @@ class SSO(object):
             params["domain"] = domain
 
         if state is not None:
-            params["state"] = json.dumps(state)
+            params["state"] = state
 
         prepared_request = Request(
             "GET",

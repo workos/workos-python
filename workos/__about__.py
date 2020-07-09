@@ -12,7 +12,7 @@ __package_name__ = "workos"
 
 __package_url__ = "https://github.com/workos-inc/workos-python"
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 __author__ = "WorkOS"
 

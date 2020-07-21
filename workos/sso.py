@@ -100,7 +100,7 @@ class SSO(object):
             TOKEN_PATH, method=REQUEST_METHOD_POST, params=params
         )
 
-        return WorkOSProfile.construct_from_response(response)
+        return WorkOSProfile.construct_from_response(response["profile"])
 
     def promote_draft_connection(self, token):
         """Promote a Draft Connection

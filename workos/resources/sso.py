@@ -1,5 +1,6 @@
 from workos.resources.base import WorkOSBaseResource
 
+
 class WorkOSProfile(WorkOSBaseResource):
     """Representation of a User Profile as returned by WorkOS through the SSO feature.
     

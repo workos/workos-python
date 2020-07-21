@@ -1,10 +1,12 @@
 import workos
 from workos.exceptions import ConfigurationException
-from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
+from workos.resources.event import WorkOSEvent
+from workos.utils.request import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST
 from workos.utils.validation import AUDIT_TRAIL_MODULE, validate_settings
 
 EVENTS_PATH = "events"
 METADATA_LIMIT = 50
+DEFAULT_EVENT_LIMIT = 10
 
 
 class AuditTrail(object):
@@ -51,7 +53,7 @@ class AuditTrail(object):
             dict: Response from WorkOS
         """
         if len(event.get("metadata", {})) > METADATA_LIMIT:
-            raise Exception(
+            raise ValueError(
                 "Number of metadata keys exceeds {}.".format(METADATA_LIMIT)
             )
 
@@ -66,3 +68,80 @@ class AuditTrail(object):
             headers=headers,
             token=workos.api_key,
         )
+
+    def get_events(
+        self,
+        before=None,
+        after=None,
+        limit=DEFAULT_EVENT_LIMIT,
+        group=None,
+        action=None,
+        action_type=None,
+        actor_name=None,
+        actor_id=None,
+        target_name=None,
+        target_id=None,
+        occurred_at=None,
+        occurred_at_gt=None,
+        occurred_at_gte=None,
+        occurred_at_lt=None,
+        occurred_at_lte=None,
+        search=None,
+    ):
+        if before and after:
+            raise ValueError("Specify either before or after")
+
+        params = {
+            "before": before,
+            "after": after,
+            "limit": limit,
+        }
+
+        if group:
+            params["group"] = list(group)
+
+        if action:
+            params["action"] = list(action)
+
+        if action_type:
+            params["action_type"] = list(action_type)
+
+        if actor_name:
+            params["actor_name"] = list(actor_name)
+
+        if actor_id:
+            params["actor_id"] = list(actor_id)
+
+        if target_name:
+            params["target_name"] = list(target_name)
+
+        if target_id:
+            params["target_id"] = list(target_id)
+
+        if occurred_at:
+            params["occurred_at"] = occurred_at
+        else:
+            if occurred_at_gte:
+                params["occurred_at_gte"] = occurred_at_gte
+            elif occurred_at_gt:
+                params["occurred_at_gt"] = occurred_at_gt
+
+            if occurred_at_lte:
+                params["occurred_at_lte"] = occurred_at_lte
+            elif occurred_at_lt:
+                params["occurred_at_lt"] = occurred_at_lt
+
+        if search:
+            params["search"] = search
+
+        response = self.request_helper.request(
+            EVENTS_PATH, method=REQUEST_METHOD_GET, params=params, token=workos.api_key,
+        )
+
+        events = [
+            WorkOSEvent.construct_from_response(data) for data in response["data"]
+        ]
+        before = response["listMetadata"]["before"]
+        after = response["listMetadata"]["after"]
+
+        return (events, before, after)

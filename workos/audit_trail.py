@@ -50,7 +50,7 @@ class AuditTrail(object):
             idempotency_key (str) - An idempotency key
 
         Returns:
-            dict: Response from WorkOS
+            boolean: Returns True
         """
         if len(event.get("metadata", {})) > METADATA_LIMIT:
             raise ValueError(
@@ -61,13 +61,15 @@ class AuditTrail(object):
             "idempotency-key": idempotency_key,
         }
 
-        return self.request_helper.request(
+        self.request_helper.request(
             EVENTS_PATH,
             method=REQUEST_METHOD_POST,
             params=event,
             headers=headers,
             token=workos.api_key,
         )
+
+        return True
 
     def get_events(
         self,
@@ -123,41 +125,41 @@ class AuditTrail(object):
             "limit": limit,
         }
 
-        if group:
+        if group is not None:
             params["group"] = list(group)
 
-        if action:
+        if action is not None:
             params["action"] = list(action)
 
-        if action_type:
+        if action_type is not None:
             params["action_type"] = list(action_type)
 
-        if actor_name:
+        if actor_name is not None:
             params["actor_name"] = list(actor_name)
 
-        if actor_id:
+        if actor_id is not None:
             params["actor_id"] = list(actor_id)
 
-        if target_name:
+        if target_name is not None:
             params["target_name"] = list(target_name)
 
-        if target_id:
+        if target_id is not None:
             params["target_id"] = list(target_id)
 
-        if occurred_at:
+        if occurred_at is not None:
             params["occurred_at"] = occurred_at
         else:
-            if occurred_at_gte:
+            if occurred_at_gte is not None:
                 params["occurred_at_gte"] = occurred_at_gte
-            elif occurred_at_gt:
+            elif occurred_at_gt is not None:
                 params["occurred_at_gt"] = occurred_at_gt
 
-            if occurred_at_lte:
+            if occurred_at_lte is not None:
                 params["occurred_at_lte"] = occurred_at_lte
-            elif occurred_at_lt:
+            elif occurred_at_lt is not None:
                 params["occurred_at_lt"] = occurred_at_lt
 
-        if search:
+        if search is not None:
             params["search"] = search
 
         response = self.request_helper.request(

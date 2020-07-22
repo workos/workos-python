@@ -41,17 +41,19 @@ def mock_request_method(monkeypatch):
 
 
 @pytest.fixture
-def capture_and_mock_requests(monkeypatch):
-    def inner():
-        captured_requests = []
+def capture_and_mock_request(monkeypatch):
+    def inner(method, response_dict, status_code):
+        request_args = []
+        request_kwargs = {}
 
-        def capture(*args, **kwargs):
-            captured_requests.append((args, kwargs))
-            return MockResponse({}, 200)
+        def capture_and_mock(*args, **kwargs):
+            request_args.extend(args)
+            request_kwargs.update(kwargs)
 
-        monkeypatch.setattr(requests, "get", capture)
-        monkeypatch.setattr(requests, "post", capture)
+            return MockResponse(response_dict, status_code)
 
-        return captured_requests
+        monkeypatch.setattr(requests, method, capture_and_mock)
+
+        return (request_args, request_kwargs)
 
     return inner

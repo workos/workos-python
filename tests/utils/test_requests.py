@@ -74,14 +74,12 @@ class TestRequestHelper(object):
             # This'll fail for sure here but... just using the nice error that'd come up
             assert ex.__class__ == ServerException
 
-    def test_request_includes_base_headers(self, capture_and_mock_requests):
-        requests = capture_and_mock_requests()
+    def test_request_includes_base_headers(self, capture_and_mock_request):
+        request_args, request_kwargs = capture_and_mock_request("get", {}, 200)
 
         RequestHelper().request("ok_place")
 
-        assert len(requests) == 1
-
         base_headers = set(BASE_HEADERS.items())
-        headers = set(requests[0][1]["headers"].items())
+        headers = set(request_kwargs["headers"].items())
 
         assert base_headers.issubset(headers)

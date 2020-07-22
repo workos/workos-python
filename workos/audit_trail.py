@@ -88,6 +88,32 @@ class AuditTrail(object):
         occurred_at_lte=None,
         search=None,
     ):
+        """Filter for Audit Trail Events.
+
+        Kwargs:
+            before (str) - Event ID to look before
+            after (str) - Event ID to look after
+            limit (int) - Number of Events to return
+            group (str|list) - Group or groups to filter for
+            action (str|list) - Action or actions to filter for
+            action_type (str|list) - Action type or types to filter for
+            actor_name (str|list) - Actor name or name to filter for
+            actor_id (str|list) - Actor ID or IDs to filter for
+            target_name (str|list) - Target name or names to filter for
+            target_id (str|list) - Target ID or IDs to filter for
+            occurred_at (str) - ISO-8601 datetime of when an event occurred
+            occurred_at_gt (str) - ISO-8601 datetime of when an event occurred after
+            occurred_at_gte (str) - ISO-8601 datetime of when an event occurred at or after
+            occurred_at_lt (str) - ISO-8601 datetime of when an event occurred before
+            occurred_at_lte (str) - ISO-8601 datetime of when an event occured at or before
+            search (str) - Keyword search
+
+        Returns:
+            tuple
+                list - List of WorkOSEvent objects
+                string - Event ID to use as before cursor
+                string - Event ID to use as after cursor
+        """
         if before and after:
             raise ValueError("Specify either before or after")
 

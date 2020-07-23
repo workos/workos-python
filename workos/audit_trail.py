@@ -126,25 +126,25 @@ class AuditTrail(object):
         }
 
         if group is not None:
-            params["group"] = group
+            params["group[]"] = group
 
         if action is not None:
-            params["action"] = action
+            params["action[]"] = action
 
         if action_type is not None:
-            params["action_type"] = action_type
+            params["action_type[]"] = action_type
 
         if actor_name is not None:
-            params["actor_name"] = actor_name
+            params["actor_name[]"] = actor_name
 
         if actor_id is not None:
-            params["actor_id"] = actor_id
+            params["actor_id[]"] = actor_id
 
         if target_name is not None:
-            params["target_name"] = target_name
+            params["target_name[]"] = target_name
 
         if target_id is not None:
-            params["target_id"] = target_id
+            params["target_id[]"] = target_id
 
         if occurred_at is not None:
             params["occurred_at"] = occurred_at

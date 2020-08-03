@@ -116,9 +116,6 @@ class AuditTrail(object):
                 string - Event ID to use as before cursor
                 string - Event ID to use as after cursor
         """
-        if before and after:
-            raise ValueError("Specify either before or after")
-
         params = {
             "before": before,
             "after": after,

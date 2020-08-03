@@ -80,10 +80,6 @@ class TestAuditTrail(object):
         events, before, after = self.audit_trail.get_events()
         assert events[0].to_dict() == event
 
-    def test_get_events_raises_valueerror_when_before_and_after_provided(self):
-        with pytest.raises(ValueError):
-            self.audit_trail.get_events(before="evt_123", after="evt_456")
-
     def test_get_events_correctly_includes_occured_at_filter(
         self, capture_and_mock_request
     ):

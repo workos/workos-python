@@ -1,5 +1,6 @@
 from workos.audit_trail import AuditTrail
 from workos.directory_sync import DirectorySync
+from workos.portal import Portal
 from workos.sso import SSO
 
 
@@ -23,6 +24,12 @@ class Client(object):
         if not getattr(self, "_directory_sync", None):
             self._directory_sync = DirectorySync()
         return self._directory_sync
+
+    @property
+    def portal(self):
+        if not getattr(self, "_portal", None):
+            self._portal = Portal()
+        return self._portal
 
 
 client = Client()

@@ -9,6 +9,7 @@ class TestClient(object):
     def setup(self):
         client._audit_trail = None
         client._directory_sync = None
+        client._portal = None
         client._sso = None
 
     def test_initialize_sso(self, set_api_key_and_project_id):
@@ -19,6 +20,9 @@ class TestClient(object):
 
     def test_initialize_directory_sync(self, set_api_key):
         assert bool(client.directory_sync)
+
+    def test_initialize_portal(self, set_api_key):
+        assert bool(client.portal)
 
     def test_initialize_sso_missing_api_key(self, set_project_id):
         with pytest.raises(ConfigurationException) as ex:
@@ -57,6 +61,14 @@ class TestClient(object):
     def test_initialize_directory_sync_missing_api_key(self):
         with pytest.raises(ConfigurationException) as ex:
             client.directory_sync
+
+        message = str(ex)
+
+        assert "api_key" in message
+
+    def test_initialize_portal_missing_api_key(self):
+        with pytest.raises(ConfigurationException) as ex:
+            client.portal
 
         message = str(ex)
 

@@ -8,7 +8,7 @@ from workos.directory_sync import DirectorySync
 from workos.utils.request import RESPONSE_TYPE_CODE
 
 
-class TestSSO(object):
+class TestDirectorySync(object):
     @pytest.fixture(autouse=True)
     def setup(self, set_api_key):
         self.directory_sync = DirectorySync()

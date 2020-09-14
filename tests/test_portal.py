@@ -13,6 +13,10 @@ class TestPortal(object):
         self.portal = Portal()
 
     @pytest.fixture
+    def mock_portal_link(self):
+        return {"link": "https://id.workos.com/portal/launch?secret=secret"}
+
+    @pytest.fixture
     def mock_organization(self):
         return {
             "name": "Test Organization",
@@ -72,6 +76,17 @@ class TestPortal(object):
 
         assert subject["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert subject["name"] == "Test Organization"
+
+    def test_generate_link(self, mock_portal_link, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 201
+        mock_response.response_dict = mock_portal_link
+        mock_request_method("post", mock_response, 201)
+
+        result = self.portal.generate_link("sso", "org_01EHQMYV6MBK39QC5PZXHY59C3")
+        subject = result.response_dict
+
+        assert subject["link"] == "https://id.workos.com/portal/launch?secret=secret"
 
     def test_list_organizations(self, mock_organizations, mock_request_method):
         mock_response = Response()

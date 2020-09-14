@@ -13,6 +13,21 @@ class TestPortal(object):
         self.portal = Portal()
 
     @pytest.fixture
+    def mock_organization(self):
+        return {
+            "name": "Test Organization",
+            "object": "organization",
+            "id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            "domains": [
+                {
+                    "domain": "example.com",
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
+                }
+            ],
+        }
+
+    @pytest.fixture
     def mock_organizations(self):
         return {
             "object": "list",
@@ -44,6 +59,19 @@ class TestPortal(object):
             ],
             "listMetadata": {"before": "before-id", "after": None},
         }
+
+    def test_create_organization(self, mock_organization, mock_request_method):
+        organization = {"domains": ["example.com"], "name": "Test Organization"}
+        mock_response = Response()
+        mock_response.status_code = 201
+        mock_response.response_dict = mock_organization
+        mock_request_method("post", mock_response, 201)
+
+        result = self.portal.create_organization(organization)
+        subject = result.response_dict
+
+        assert subject["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        assert subject["name"] == "Test Organization"
 
     def test_list_organizations(self, mock_organizations, mock_request_method):
         mock_response = Response()

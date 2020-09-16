@@ -19,10 +19,12 @@ class TestPasswordless(object):
             "email": "demo@workos-okta.com",
             "expires_at": "2020-08-13T05:50:00.000Z",
             "link": "https://auth.workos.com/passwordless/4TeRexuejWCKs9rrFOIuLRYEr/confirm",
-            "object": "passwordless_session"
+            "object": "passwordless_session",
         }
 
-    def test_create_session_succeeds(self, mock_passwordless_session, mock_request_method):
+    def test_create_session_succeeds(
+        self, mock_passwordless_session, mock_request_method
+    ):
         mock_response = Response()
         mock_response.status_code = 201
         mock_response.response_dict = mock_passwordless_session
@@ -38,7 +40,6 @@ class TestPasswordless(object):
         assert response.response_dict == mock_passwordless_session
 
     def test_get_send_session_succeeds(self, mock_request_method):
-
         response = {
             "success": True,
         }

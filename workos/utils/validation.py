@@ -5,12 +5,14 @@ from workos.exceptions import ConfigurationException
 
 AUDIT_TRAIL_MODULE = "AuditTrail"
 DIRECTORY_SYNC_MODULE = "DirectorySync"
+PASSWORDLESS_MODULE = "Passwordless"
 PORTAL_MODULE = "Portal"
 SSO_MODULE = "SSO"
 
 REQUIRED_SETTINGS_FOR_MODULE = {
     AUDIT_TRAIL_MODULE: ["api_key",],
     DIRECTORY_SYNC_MODULE: ["api_key",],
+    PASSWORDLESS_MODULE: ["api_key",],
     PORTAL_MODULE: ["api_key",],
     SSO_MODULE: ["api_key", "project_id",],
 }

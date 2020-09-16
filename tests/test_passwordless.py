@@ -15,11 +15,11 @@ class TestPasswordless(object):
     @pytest.fixture
     def mock_passwordless_session(self):
         return {
-          "id": "passwordless_session_01EHDAK2BFGWCSZXP9HGZ3VK8C",
-          "email": "demo@workos-okta.com",
-          "expires_at": "2020-08-13T05:50:00.000Z",
-          "link": "https://auth.workos.com/passwordless/4TeRexuejWCKs9rrFOIuLRYEr/confirm",
-          "object": "passwordless_session"
+            "id": "passwordless_session_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+            "email": "demo@workos-okta.com",
+            "expires_at": "2020-08-13T05:50:00.000Z",
+            "link": "https://auth.workos.com/passwordless/4TeRexuejWCKs9rrFOIuLRYEr/confirm",
+            "object": "passwordless_session"
         }
 
     def test_create_session_succeeds(self, mock_passwordless_session, mock_request_method):
@@ -45,6 +45,6 @@ class TestPasswordless(object):
         mock_request_method("post", response, 200)
 
         response = self.passwordless.send_session(
-          "passwordless_session_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+            "passwordless_session_01EHDAK2BFGWCSZXP9HGZ3VK8C"
         )
         assert response["success"] == True

@@ -43,8 +43,6 @@ class Passwordless(object):
     def send_session(self, session_id):
         """Send a Passwordless Session via email.
 
-        Note, either 'directory' or 'user' must be provided.
-
         Args:
             session_id (str): The unique identifier of the Passwordless
       				Session to send an email for.
@@ -52,8 +50,10 @@ class Passwordless(object):
         Returns:
             dict: {"success": true} if successful
         """
-        return self.request_helper.request(
+        self.request_helper.request(
             "passwordless/sessions/{session_id}/send".format(session_id=session_id),
             method=REQUEST_METHOD_POST,
             token=workos.api_key,
         )
+
+        return True

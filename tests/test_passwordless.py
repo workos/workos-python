@@ -48,4 +48,4 @@ class TestPasswordless(object):
         response = self.passwordless.send_session(
             "passwordless_session_01EHDAK2BFGWCSZXP9HGZ3VK8C"
         )
-        assert response["success"] == True
+        assert response == True

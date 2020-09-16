@@ -17,7 +17,7 @@ class Passwordless(object):
         return self._request_helper
 
     def create_session(self, session_options):
-        """Create an Passwordless Session.
+        """Create a Passwordless Session.
 
         Args:
             session_options (dict) - An session options object

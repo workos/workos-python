@@ -48,7 +48,7 @@ class Passwordless(object):
       				Session to send an email for.
 
         Returns:
-            dict: {"success": true} if successful
+            boolean: Returns True
         """
         self.request_helper.request(
             "passwordless/sessions/{session_id}/send".format(session_id=session_id),

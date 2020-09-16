@@ -32,7 +32,7 @@ class TestPasswordless(object):
 
         session_options = {
             "email": "demo@workos-okta.com",
-            "session_type": "MagicLink",
+            "type": "MagicLink",
         }
         response = self.passwordless.create_session(session_options)
 

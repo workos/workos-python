@@ -53,7 +53,7 @@ class Passwordless(object):
             dict: {"success": true} if successful
         """
         return self.request_helper.request(
-            "passwordless/sessions/{session_id}/send",
+            "passwordless/sessions/{session_id}/send".format(session_id=session_id),
             method=REQUEST_METHOD_POST,
             token=workos.api_key,
         )

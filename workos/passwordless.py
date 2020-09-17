@@ -45,7 +45,7 @@ class Passwordless(object):
 
         Args:
             session_id (str): The unique identifier of the Passwordless
-      				Session to send an email for.
+                Session to send an email for.
 
         Returns:
             boolean: Returns True

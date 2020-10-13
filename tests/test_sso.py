@@ -26,6 +26,7 @@ class TestSSO(object):
             "email": "demo@workos-okta.com",
             "first_name": "WorkOS",
             "last_name": "Demo",
+            "connection_id": "conn_01EMH8WAK20T42N2NBMNBCYHAG"
             "connection_type": "OktaSAML",
             "idp_id": "00u1klkowm8EGah2H357",
             "raw_attributes": {
@@ -135,6 +136,7 @@ class TestSSO(object):
                 "id": mock_profile["id"],
                 "email": mock_profile["email"],
                 "first_name": mock_profile["first_name"],
+                "connection_id": mock_profile["connection_id"],
                 "connection_type": mock_profile["connection_type"],
                 "last_name": mock_profile["last_name"],
                 "idp_id": mock_profile["idp_id"],

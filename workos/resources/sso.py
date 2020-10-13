@@ -13,6 +13,7 @@ class WorkOSProfile(WorkOSBaseResource):
         "email",
         "first_name",
         "last_name",
+        "connection_id",
         "connection_type",
         "idp_id",
         "raw_attributes",

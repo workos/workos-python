@@ -26,7 +26,7 @@ class TestSSO(object):
             "email": "demo@workos-okta.com",
             "first_name": "WorkOS",
             "last_name": "Demo",
-            "connection_id": "conn_01EMH8WAK20T42N2NBMNBCYHAG"
+            "connection_id": "conn_01EMH8WAK20T42N2NBMNBCYHAG",
             "connection_type": "OktaSAML",
             "idp_id": "00u1klkowm8EGah2H357",
             "raw_attributes": {

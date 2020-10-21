@@ -22,6 +22,10 @@ class Passwordless(object):
         Args:
             session_options (dict) - An session options object
                 session_options[email] (str): The email of the user to authenticate.
+                session_options[redirect_uri] (str): Optional parameter to
+                    specify the redirect endpoint which will handle the callback
+                    from WorkOS. Defaults to the default Redirect URI in the
+                    WorkOS dashboard.
                 session_options[state] (str): Optional parameter that the redirect
                     URI received from WorkOS will contain. The state parameter
                     can be used to encode arbitrary information to help

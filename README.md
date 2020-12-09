@@ -1,6 +1,6 @@
 # workos-python
 
-Pyhon SDK to conveniently access the [WorkOS API](https://workos.com).
+Python SDK to conveniently access the [WorkOS API](https://workos.com).
 
 ## Installation
 

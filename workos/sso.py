@@ -50,7 +50,8 @@ class SSO(object):
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
         params = {
-            "client_id": workos.project_id,
+            "client_id": workos.client_id,
+            "project_id": workos.project_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
@@ -90,7 +91,8 @@ class SSO(object):
             WorkOSProfile: WorkOSProfile object representing the User
         """
         params = {
-            "client_id": workos.project_id,
+            "client_id": workos.client_id,
+            "project_id": workos.project_id,
             "client_secret": workos.api_key,
             "code": code,
             "grant_type": OAUTH_GRANT_TYPE,

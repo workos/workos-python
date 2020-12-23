@@ -16,12 +16,12 @@ python setup.py install
 
 ## Getting Started
 
-The package will need to be configured with your [api key](https://dashboard.workos.com/api-keys) at a minimum and [project id](https://dashboard.workos.com/sso/configuration) if you plan on utilizing SSO:
+The package will need to be configured with your [api key](https://dashboard.workos.com/api-keys) at a minimum and [client id](https://dashboard.workos.com/sso/configuration) if you plan on utilizing SSO:
 ```python
 import workos
 
 workos.api_key = sk_abdsomecharactersm284
-workos.project_id = project_b27needthisforssotemxo
+workos.client_id = client_b27needthisforssotemxo
 ```
 
 For your convenience, a client is available as an entry point for accessing the WorkOS feature set:

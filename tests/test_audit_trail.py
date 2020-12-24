@@ -10,7 +10,7 @@ from workos.audit_trail import AuditTrail
 
 class TestAuditTrail(object):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key_and_project_id):
+    def setup(self, set_api_key_and_environment_id):
         self.audit_trail = AuditTrail()
 
     def test_create_audit_trail_event_succeeds(self, mock_request_method):
@@ -60,7 +60,7 @@ class TestAuditTrail(object):
             "action": {
                 "id": "evt_action_123",
                 "name": "house.created",
-                "project_id": "project_123",
+                "environment_id": "environment_123",
             },
             "type": "C",
             "actor_name": "Daiki Miyagi",
@@ -92,7 +92,7 @@ class TestAuditTrail(object):
             "action": {
                 "id": "evt_action_123",
                 "name": "house.created",
-                "project_id": "project_123",
+                "environment_id": "environment_123",
             },
             "type": "C",
             "actor_name": "Daiki Miyagi",
@@ -136,7 +136,7 @@ class TestAuditTrail(object):
             "action": {
                 "id": "evt_action_123",
                 "name": "house.created",
-                "project_id": "project_123",
+                "environment_id": "environment_123",
             },
             "type": "C",
             "actor_name": "Daiki Miyagi",
@@ -173,7 +173,7 @@ class TestAuditTrail(object):
             "action": {
                 "id": "evt_action_123",
                 "name": "house.created",
-                "project_id": "project_123",
+                "environment_id": "environment_123",
             },
             "type": "C",
             "actor_name": "Daiki Miyagi",

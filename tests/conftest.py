@@ -20,12 +20,12 @@ def set_api_key(monkeypatch):
 
 
 @pytest.fixture
-def set_project_id(monkeypatch):
-    monkeypatch.setattr(workos, "project_id", "project_b27needthisforssotemxo")
+def set_environment_id(monkeypatch):
+    monkeypatch.setattr(workos, "project_id", "environment_b27needthisforssotemxo")
 
 
 @pytest.fixture
-def set_api_key_and_project_id(set_api_key, set_project_id):
+def set_api_key_and_project_id(set_api_key, set_environment_id):
     pass
 
 

@@ -16,7 +16,7 @@ class TestClient(object):
     def test_initialize_sso(self, set_api_key_and_client_id):
         assert bool(client.sso)
 
-    def test_initialize_audit_log(self, set_api_key_and_environment_id):
+    def test_initialize_audit_log(self, set_api_key):
         assert bool(client.audit_trail)
 
     def test_initialize_directory_sync(self, set_api_key):

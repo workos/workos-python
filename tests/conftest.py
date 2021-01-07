@@ -20,11 +20,6 @@ def set_api_key(monkeypatch):
 
 
 @pytest.fixture
-def set_environment_id(monkeypatch):
-    monkeypatch.setattr(workos, "environment_id", "environment_b27needthisforssotemxo")
-
-
-@pytest.fixture
 def set_client_id(monkeypatch):
     monkeypatch.setattr(workos, "client_id", "client_b27needthisforssotemxo")
 
@@ -41,11 +36,6 @@ def set_api_key_and_client_id(set_api_key, set_client_id):
 
 @pytest.fixture
 def set_api_key_and_project_id(set_api_key, set_project_id):
-    pass
-
-
-@pytest.fixture
-def set_api_key_and_environment_id(set_api_key, set_environment_id):
     pass
 
 

@@ -10,7 +10,7 @@ from workos.audit_trail import AuditTrail
 
 class TestAuditTrail(object):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key_and_environment_id):
+    def setup(self, set_api_key):
         self.audit_trail = AuditTrail()
 
     def test_create_audit_trail_event_succeeds(self, mock_request_method):

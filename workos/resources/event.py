@@ -4,7 +4,7 @@ from workos.resources.event_action import WorkOSEventAction
 
 class WorkOSEvent(WorkOSBaseResource):
     """Representation of an Event as returned by WorkOS through the Audit Trail feature.
-    
+
     Attributes:
         OBJECT_FIELDS (list): List of fields a WorkOSEvent is comprised of.
     """

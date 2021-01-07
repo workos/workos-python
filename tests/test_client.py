@@ -52,7 +52,13 @@ class TestClient(object):
 
         message = str(ex)
 
-        assert all(setting in message for setting in ("api_key", "client_id",))
+        assert all(
+            setting in message
+            for setting in (
+                "api_key",
+                "client_id",
+            )
+        )
 
     def test_initialize_audit_trail_missing_api_key(self):
         with pytest.raises(ConfigurationException) as ex:

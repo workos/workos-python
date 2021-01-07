@@ -28,13 +28,13 @@ class AuditTrail(object):
         Args:
             event (dict) - An event object
                 event[action] (str) - Specific activity performed by the actor.
-                event[action_type] (str) - Corresponding CRUD category of the 
+                event[action_type] (str) - Corresponding CRUD category of the
                     event. Can be one of C, R, U, or D.
                 event[actor_name] (str) - Display name of the entity performing the action
                 event[actor_id] (str) - Unique identifier of the entity performing the action
                 event[group] (str) - A single organization containing related .
                     members. This will normally be the customer of a vendor's application
-                event[location] (str) - Identifier for where the event 
+                event[location] (str) - Identifier for where the event
                     originated. This will be an IP address (IPv4 or IPv6),
                     hostname, or device ID.
                 event[occurred_at] (str) - ISO-8601 datetime at which the event
@@ -160,7 +160,10 @@ class AuditTrail(object):
             params["search"] = search
 
         response = self.request_helper.request(
-            EVENTS_PATH, method=REQUEST_METHOD_GET, params=params, token=workos.api_key,
+            EVENTS_PATH,
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
         )
 
         events = [

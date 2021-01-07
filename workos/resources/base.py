@@ -1,6 +1,6 @@
 class WorkOSBaseResource(object):
     """Representation of a WorkOS Resource as returned through the API.
-    
+
     Attributes:
         OBJECT_FIELDS (list): List of fields a Resource is comprised of.
     """
@@ -25,7 +25,7 @@ class WorkOSBaseResource(object):
 
     def to_dict(self):
         """Returns a dict representation of the WorkOSBaseResource.
-            
+
         Returns:
             dict: A dict representation of the WorkOSBaseResource
         """

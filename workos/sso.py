@@ -111,7 +111,7 @@ class SSO(object):
         been promoted will enable Enterprise users of the domain to begin signing in via SSO.
 
         Args:
-            token (str): The token supplied via the response when a draft connection is created via 
+            token (str): The token supplied via the response when a draft connection is created via
             the WorkOS.js embed
 
         Returns:

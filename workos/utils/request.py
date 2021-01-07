@@ -34,7 +34,12 @@ class RequestHelper(object):
         return self.base_api_url.format(path)
 
     def request(
-        self, path, method=REQUEST_METHOD_GET, params=None, headers=None, token=None,
+        self,
+        path,
+        method=REQUEST_METHOD_GET,
+        params=None,
+        headers=None,
+        token=None,
     ):
         """Executes a request against the WorkOS API.
 

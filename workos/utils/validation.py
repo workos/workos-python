@@ -14,7 +14,7 @@ REQUIRED_SETTINGS_FOR_MODULE = {
     DIRECTORY_SYNC_MODULE: ["api_key",],
     PASSWORDLESS_MODULE: ["api_key",],
     PORTAL_MODULE: ["api_key",],
-    SSO_MODULE: ["api_key", "project_id",],
+    SSO_MODULE: ["api_key", "client_id",],
 }
 
 

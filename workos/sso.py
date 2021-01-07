@@ -51,7 +51,6 @@ class SSO(object):
         """
         params = {
             "client_id": workos.client_id,
-            "project_id": workos.project_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
@@ -70,7 +69,7 @@ class SSO(object):
         if state is not None:
             params["state"] = state
 
-        if params["project_id"] is not None:
+        if workos.project_id is not None:
             warn(
                 "'project_id' is deprecated. Use 'client_id' instead.",
                 DeprecationWarning,
@@ -98,13 +97,12 @@ class SSO(object):
         """
         params = {
             "client_id": workos.client_id,
-            "project_id": workos.project_id,
             "client_secret": workos.api_key,
             "code": code,
             "grant_type": OAUTH_GRANT_TYPE,
         }
 
-        if params["project_id"] is not None:
+        if workos.project_id is not None:
             warn(
                 "'project_id' is deprecated. Use 'client_id' instead.",
                 DeprecationWarning,

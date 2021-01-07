@@ -19,10 +19,7 @@ dev_requirements = [
 ]
 if sys.version_info.major == 3:
     dev_requirements.extend(
-        [
-            "black==19.10b0",
-            "twine==3.1.1",
-        ]
+        ["black==19.10b0", "twine==3.1.1",]
     )
 
 setup(
@@ -34,18 +31,11 @@ setup(
     description=about["__description__"],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=find_packages(
-        exclude=[
-            "tests*",
-        ]
-    ),
+    packages=find_packages(exclude=["tests*",]),
     zip_safe=False,
     license=about["__license__"],
     install_requires=["requests>=2.22.0"],
-    extras_require={
-        "dev": dev_requirements,
-        ":python_version<'3.4'": ["enum34"],
-    },
+    extras_require={"dev": dev_requirements, ":python_version<'3.4'": ["enum34"],},
     classifiers=[
         "Development Status :: 1 - Planning",
         "Intended Audience :: Developers",

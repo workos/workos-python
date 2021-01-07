@@ -42,9 +42,7 @@ class TestRequestHelper(object):
         for status_code, exception in STATUS_CODE_TO_EXCEPTION_MAPPING.items():
             mock_request_method(
                 "get",
-                {
-                    "message": response_message,
-                },
+                {"message": response_message,},
                 status_code,
                 headers={"X-Request-ID": request_id},
             )

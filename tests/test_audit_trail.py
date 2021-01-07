@@ -72,13 +72,8 @@ class TestAuditTrail(object):
         }
 
         response = {
-            "data": [
-                event,
-            ],
-            "listMetadata": {
-                "before": None,
-                "after": None,
-            },
+            "data": [event,],
+            "listMetadata": {"before": None, "after": None,},
         }
         mock_request_method("get", response, 200)
 
@@ -109,13 +104,8 @@ class TestAuditTrail(object):
         }
 
         response = {
-            "data": [
-                event,
-            ],
-            "listMetadata": {
-                "before": None,
-                "after": None,
-            },
+            "data": [event,],
+            "listMetadata": {"before": None, "after": None,},
         }
         request_args, request_kwargs = capture_and_mock_request("get", response, 200)
 
@@ -158,19 +148,13 @@ class TestAuditTrail(object):
         }
 
         response = {
-            "data": [
-                event,
-            ],
-            "listMetadata": {
-                "before": None,
-                "after": None,
-            },
+            "data": [event,],
+            "listMetadata": {"before": None, "after": None,},
         }
         request_args, request_kwargs = capture_and_mock_request("get", response, 200)
 
         self.audit_trail.get_events(
-            occurred_at_gte=datetime.now(),
-            occurred_at_gt=datetime.now(),
+            occurred_at_gte=datetime.now(), occurred_at_gt=datetime.now(),
         )
 
         request_params = request_kwargs["params"]
@@ -201,13 +185,8 @@ class TestAuditTrail(object):
         }
 
         response = {
-            "data": [
-                event,
-            ],
-            "listMetadata": {
-                "before": None,
-                "after": None,
-            },
+            "data": [event,],
+            "listMetadata": {"before": None, "after": None,},
         }
         request_args, request_kwargs = capture_and_mock_request("get", response, 200)
 

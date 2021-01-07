@@ -160,10 +160,7 @@ class AuditTrail(object):
             params["search"] = search
 
         response = self.request_helper.request(
-            EVENTS_PATH,
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
+            EVENTS_PATH, method=REQUEST_METHOD_GET, params=params, token=workos.api_key,
         )
 
         events = [

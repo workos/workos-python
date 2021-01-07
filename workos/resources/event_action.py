@@ -12,4 +12,5 @@ class WorkOSEventAction(WorkOSBaseResource):
         "id",
         "name",
         "project_id",
+        "environment_id",
     ]

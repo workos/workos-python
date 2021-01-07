@@ -11,4 +11,5 @@ class WorkOSEventAction(WorkOSBaseResource):
     OBJECT_FIELDS = [
         "id",
         "name",
+        "environment_id"
     ]

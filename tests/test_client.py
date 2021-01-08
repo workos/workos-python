@@ -16,7 +16,7 @@ class TestClient(object):
     def test_initialize_sso(self, set_api_key_and_project_id):
         assert bool(client.sso)
 
-    def test_initialize_audit_log(self, set_api_key_and_project_id):
+    def test_initialize_audit_log(self, set_api_key):
         assert bool(client.audit_trail)
 
     def test_initialize_directory_sync(self, set_api_key):
@@ -37,7 +37,7 @@ class TestClient(object):
         assert "api_key" in message
         assert "project_id" not in message
 
-    def test_initialize_sso_missing_project_id(self, set_api_key):
+    def test_initialize_sso_missing_client_id(self, set_api_key):
         with pytest.raises(ConfigurationException) as ex:
             client.sso
 

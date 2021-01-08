@@ -50,7 +50,7 @@ class SSO(object):
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
         params = {
-            "client_id": workos.project_id,
+            "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
@@ -68,6 +68,13 @@ class SSO(object):
 
         if state is not None:
             params["state"] = state
+
+        if workos.project_id is not None:
+            params["client_id"] = workos.project_id
+            warn(
+                "'project_id' is deprecated. Use 'client_id' instead.",
+                DeprecationWarning,
+            )
 
         prepared_request = Request(
             "GET",
@@ -90,11 +97,18 @@ class SSO(object):
             WorkOSProfile: WorkOSProfile object representing the User
         """
         params = {
-            "client_id": workos.project_id,
+            "client_id": workos.client_id,
             "client_secret": workos.api_key,
             "code": code,
             "grant_type": OAUTH_GRANT_TYPE,
         }
+
+        if workos.project_id is not None:
+            params["client_id"] = workos.project_id
+            warn(
+                "'project_id' is deprecated. Use 'client_id' instead.",
+                DeprecationWarning,
+            )
 
         response = self.request_helper.request(
             TOKEN_PATH, method=REQUEST_METHOD_POST, params=params
@@ -109,7 +123,7 @@ class SSO(object):
         been promoted will enable Enterprise users of the domain to begin signing in via SSO.
 
         Args:
-            token (str): The token supplied via the response when a draft connection is created via 
+            token (str): The token supplied via the response when a draft connection is created via
             the WorkOS.js embed
 
         Returns:

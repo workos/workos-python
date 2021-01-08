@@ -11,7 +11,7 @@ from workos.utils.request import RESPONSE_TYPE_CODE
 
 class TestSSO(object):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key_and_client_id):
+    def setup(self, set_api_key_and_project_id):
         self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
@@ -85,7 +85,7 @@ class TestSSO(object):
 
         assert dict(parse_qsl(parsed_url.query)) == {
             "provider": str(self.provider.value),
-            "client_id": workos.client_id,
+            "client_id": workos.project_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.state,
@@ -102,7 +102,7 @@ class TestSSO(object):
 
         assert dict(parse_qsl(parsed_url.query)) == {
             "domain": self.customer_domain,
-            "client_id": workos.client_id,
+            "client_id": workos.project_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.state,
@@ -121,7 +121,7 @@ class TestSSO(object):
         assert dict(parse_qsl(parsed_url.query)) == {
             "domain": self.customer_domain,
             "provider": str(self.provider.value),
-            "client_id": workos.client_id,
+            "client_id": workos.project_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.state,

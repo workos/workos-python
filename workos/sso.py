@@ -70,6 +70,7 @@ class SSO(object):
             params["state"] = state
 
         if workos.project_id is not None:
+            params["client_id"] = workos.project_id
             warn(
                 "'project_id' is deprecated. Use 'client_id' instead.",
                 DeprecationWarning,
@@ -103,6 +104,7 @@ class SSO(object):
         }
 
         if workos.project_id is not None:
+            params["client_id"] = workos.project_id
             warn(
                 "'project_id' is deprecated. Use 'client_id' instead.",
                 DeprecationWarning,

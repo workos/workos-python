@@ -196,7 +196,7 @@ class TestSSO(object):
 
         connection = self.sso.create_connection("draft_conn_id")
         assert connection == response_dict
-    
+
     def test_list_connections(self, mock_connections, mock_request_method):
         mock_response = Response()
         mock_response.status_code = 200

@@ -1,4 +1,5 @@
 import json
+from requests import Response
 from six.moves.urllib.parse import parse_qsl, urlparse
 
 import pytest
@@ -58,6 +59,24 @@ class TestSSO(object):
                     "domain": "terrace-house.com",
                 },
             ],
+        }
+
+    @pytest.fixture
+    def mock_connections(self):
+        return {
+            "data": [
+                {
+                    "id": "connection_id",
+                    "external_key": "key",
+                    "state": "linked",
+                    "type": "gsuite directory",
+                    "name": "Foo Corp",
+                    "bearer_token": None,
+                    "project_id": "project_id",
+                    "domain": "example.com",
+                }
+            ],
+            "listMetadata": {"before": None, "after": None},
         }
 
     def test_authorization_url_throws_value_error_with_missing_domain_and_provider(
@@ -177,3 +196,12 @@ class TestSSO(object):
 
         connection = self.sso.create_connection("draft_conn_id")
         assert connection == response_dict
+    
+    def test_list_connections(self, mock_connections, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.response_dict = mock_connections
+        mock_request_method("get", mock_response, 200)
+        response = self.sso.list_connections()
+        assert response.status_code == 200
+        assert response.response_dict == mock_connections

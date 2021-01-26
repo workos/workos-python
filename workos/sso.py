@@ -7,7 +7,7 @@ import workos
 from workos.exceptions import ConfigurationException
 from workos.resources.sso import WorkOSProfile
 from workos.utils.connection_types import ConnectionType
-from workos.utils.request import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_POST
+from workos.utils.request import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_GET, REQUEST_METHOD_POST
 from workos.utils.validation import SSO_MODULE, validate_settings
 
 AUTHORIZATION_PATH = "sso/authorize"
@@ -16,6 +16,8 @@ PROMOTE_DRAFT_CONNECTION_PATH = "draft_connections/%s/activate"
 TOKEN_PATH = "sso/token"
 
 OAUTH_GRANT_TYPE = "authorization_code"
+
+RESPONSE_LIMIT = 10
 
 
 class SSO(object):
@@ -154,6 +156,35 @@ class SSO(object):
         return self.request_helper.request(
             CREATE_CONNECTION_PATH,
             method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
+        )
+
+    def list_connections(
+        self, connection_type=None, domain=None, limit=RESPONSE_LIMIT, before=None, after=None
+    ):
+        """Gets details for existing Connections.
+
+        Args:
+            connection_type (ConnectionType): Authentication service provider descriptor. (Optional)
+            domain (str): Domain of a Directory. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
+
+        Returns:
+            dict: Connections response from WorkOS.
+        """
+        params = {
+            "connetion_type": connection_type,
+            "domain": domain,
+            "limit": limit,
+            "before": before,
+            "after": after,
+        }
+        return self.request_helper.request(
+            "connections",
+            method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )

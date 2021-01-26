@@ -177,10 +177,10 @@ class SSO(object):
 
         Args:
             connection_type (ConnectionType): Authentication service provider descriptor. (Optional)
-            domain (str): Domain of a Directory. (Optional)
+            domain (str): Domain of a Connection. (Optional)
             limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
+            before (str): Pagination cursor to receive records before a provided Connection ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Connection ID. (Optional)
 
         Returns:
             dict: Connections response from WorkOS.

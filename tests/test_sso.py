@@ -66,14 +66,25 @@ class TestSSO(object):
         return {
             "data": [
                 {
-                    "id": "connection_id",
-                    "external_key": "key",
-                    "state": "linked",
-                    "type": "gsuite directory",
-                    "name": "Foo Corp",
-                    "bearer_token": None,
-                    "project_id": "project_id",
-                    "domain": "example.com",
+                    "object": "connection",
+                    "id": "conn_id",
+                    "status": "linked",
+                    "name": "Google OAuth 2.0",
+                    "connection_type": "GoogleOAuth",
+                    "oauth_uid": "oauth-uid.apps.googleusercontent.com",
+                    "oauth_secret": "oauth-secret",
+                    "oauth_redirect_uri": "https://auth.workos.com/sso/oauth/google/chicken/callback",
+                    "saml_entity_id": None,
+                    "saml_idp_url": None,
+                    "saml_relying_party_trust_cert": None,
+                    "saml_x509_certs": None,
+                    "domains": [
+                        {
+                            "object": "connection_domain",
+                            "id": "domain_id",
+                            "domain": "terrace-house.com",
+                        },
+                    ],
                 }
             ],
             "listMetadata": {"before": None, "after": None},

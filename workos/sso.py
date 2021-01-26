@@ -7,7 +7,12 @@ import workos
 from workos.exceptions import ConfigurationException
 from workos.resources.sso import WorkOSProfile
 from workos.utils.connection_types import ConnectionType
-from workos.utils.request import RequestHelper, RESPONSE_TYPE_CODE, REQUEST_METHOD_GET, REQUEST_METHOD_POST
+from workos.utils.request import (
+    RequestHelper,
+    RESPONSE_TYPE_CODE,
+    REQUEST_METHOD_GET,
+    REQUEST_METHOD_POST,
+)
 from workos.utils.validation import SSO_MODULE, validate_settings
 
 AUTHORIZATION_PATH = "sso/authorize"
@@ -161,7 +166,12 @@ class SSO(object):
         )
 
     def list_connections(
-        self, connection_type=None, domain=None, limit=RESPONSE_LIMIT, before=None, after=None
+        self,
+        connection_type=None,
+        domain=None,
+        limit=RESPONSE_LIMIT,
+        before=None,
+        after=None,
     ):
         """Gets details for existing Connections.
 

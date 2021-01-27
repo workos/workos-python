@@ -217,7 +217,6 @@ class TestSSO(object):
         assert response.status_code == 200
         assert response.response_dict == mock_connection
 
-
     def test_list_connections(self, mock_connections, mock_request_method):
         mock_response = Response()
         mock_response.status_code = 200

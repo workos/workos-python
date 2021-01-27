@@ -1,4 +1,5 @@
 import json
+from requests import Response
 from six.moves.urllib.parse import parse_qsl, urlparse
 
 import pytest
@@ -58,6 +59,35 @@ class TestSSO(object):
                     "domain": "terrace-house.com",
                 },
             ],
+        }
+
+    @pytest.fixture
+    def mock_connections(self):
+        return {
+            "data": [
+                {
+                    "object": "connection",
+                    "id": "conn_id",
+                    "status": "linked",
+                    "name": "Google OAuth 2.0",
+                    "connection_type": "GoogleOAuth",
+                    "oauth_uid": "oauth-uid.apps.googleusercontent.com",
+                    "oauth_secret": "oauth-secret",
+                    "oauth_redirect_uri": "https://auth.workos.com/sso/oauth/google/chicken/callback",
+                    "saml_entity_id": None,
+                    "saml_idp_url": None,
+                    "saml_relying_party_trust_cert": None,
+                    "saml_x509_certs": None,
+                    "domains": [
+                        {
+                            "object": "connection_domain",
+                            "id": "domain_id",
+                            "domain": "terrace-house.com",
+                        },
+                    ],
+                }
+            ],
+            "listMetadata": {"before": None, "after": None},
         }
 
     def test_authorization_url_throws_value_error_with_missing_domain_and_provider(
@@ -177,3 +207,12 @@ class TestSSO(object):
 
         connection = self.sso.create_connection("draft_conn_id")
         assert connection == response_dict
+
+    def test_list_connections(self, mock_connections, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.response_dict = mock_connections
+        mock_request_method("get", mock_response, 200)
+        response = self.sso.list_connections()
+        assert response.status_code == 200
+        assert response.response_dict == mock_connections

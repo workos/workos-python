@@ -165,6 +165,21 @@ class SSO(object):
             token=workos.api_key,
         )
 
+    def get_connection(self, connection):
+        """Gets details for a single Connection
+
+        Args:
+            connection (str): Connection unique identifier
+
+        Returns:
+            dict: Connection response from WorkOS.
+        """
+        return self.request_helper.request(
+            "connections/{connection}".format(connection=connection),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
     def list_connections(
         self,
         connection_type=None,
@@ -186,7 +201,7 @@ class SSO(object):
             dict: Connections response from WorkOS.
         """
         params = {
-            "connetion_type": connection_type,
+            "connection_type": connection_type,
             "domain": domain,
             "limit": limit,
             "before": before,

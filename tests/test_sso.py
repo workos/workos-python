@@ -208,6 +208,16 @@ class TestSSO(object):
         connection = self.sso.create_connection("draft_conn_id")
         assert connection == response_dict
 
+    def test_get_connection(self, mock_connection, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.response_dict = mock_connection
+        mock_request_method("get", mock_response, 200)
+        response = self.sso.get_connection(connection="connection_id")
+        assert response.status_code == 200
+        assert response.response_dict == mock_connection
+
+
     def test_list_connections(self, mock_connections, mock_request_method):
         mock_response = Response()
         mock_response.status_code = 200

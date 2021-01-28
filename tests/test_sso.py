@@ -225,3 +225,10 @@ class TestSSO(object):
         response = self.sso.list_connections()
         assert response.status_code == 200
         assert response.response_dict == mock_connections
+    
+    def test_delete_connection(self, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_request_method("delete", mock_response, 200)
+        response = self.sso.delete_connection(connection="connection_id")
+        assert response.status_code == 200

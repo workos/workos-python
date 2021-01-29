@@ -10,6 +10,7 @@ from workos.utils.connection_types import ConnectionType
 from workos.utils.request import (
     RequestHelper,
     RESPONSE_TYPE_CODE,
+    REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_POST,
 )
@@ -211,5 +212,17 @@ class SSO(object):
             "connections",
             method=REQUEST_METHOD_GET,
             params=params,
+            token=workos.api_key,
+        )
+
+    def delete_connection(self, connection):
+        """Deletes a single Connection
+
+        Args:
+            connection (str): Connection unique identifier
+        """
+        return self.request_helper.request(
+            "connections/{connection}".format(connection=connection),
+            method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

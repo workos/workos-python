@@ -185,6 +185,7 @@ class SSO(object):
         self,
         connection_type=None,
         domain=None,
+        organization_id=None,
         limit=RESPONSE_LIMIT,
         before=None,
         after=None,
@@ -204,6 +205,7 @@ class SSO(object):
         params = {
             "connection_type": connection_type,
             "domain": domain,
+            "organization_id": organization_id,
             "limit": limit,
             "before": before,
             "after": after,

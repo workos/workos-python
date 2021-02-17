@@ -16,11 +16,7 @@ class TestSSO(object):
         self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps(
-            {
-                "things": "with_stuff",
-            }
-        )
+        self.state = json.dumps({"things": "with_stuff",})
 
         self.sso = SSO()
 
@@ -29,11 +25,7 @@ class TestSSO(object):
         self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps(
-            {
-                "things": "with_stuff",
-            }
-        )
+        self.state = json.dumps({"things": "with_stuff",})
 
         self.sso = SSO()
 

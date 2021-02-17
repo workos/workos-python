@@ -10,11 +10,22 @@ PORTAL_MODULE = "Portal"
 SSO_MODULE = "SSO"
 
 REQUIRED_SETTINGS_FOR_MODULE = {
-    AUDIT_TRAIL_MODULE: ["api_key",],
-    DIRECTORY_SYNC_MODULE: ["api_key",],
-    PASSWORDLESS_MODULE: ["api_key",],
-    PORTAL_MODULE: ["api_key",],
-    SSO_MODULE: ["api_key", "client_id",],
+    AUDIT_TRAIL_MODULE: [
+        "api_key",
+    ],
+    DIRECTORY_SYNC_MODULE: [
+        "api_key",
+    ],
+    PASSWORDLESS_MODULE: [
+        "api_key",
+    ],
+    PORTAL_MODULE: [
+        "api_key",
+    ],
+    SSO_MODULE: [
+        "api_key",
+        "client_id",
+    ],
 }
 
 
@@ -29,7 +40,9 @@ def validate_settings(module_name):
             if module_name == SSO_MODULE:
                 if not getattr(workos, "api_key", None):
                     missing_settings.append("api_key")
-                if not getattr(workos, "client_id", None) and not getattr(workos, "project_id", None):
+                if not getattr(workos, "client_id", None) and not getattr(
+                    workos, "project_id", None
+                ):
                     missing_settings.append("client_id")
             else:
                 for setting in REQUIRED_SETTINGS_FOR_MODULE[module_name]:

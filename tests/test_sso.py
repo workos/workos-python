@@ -16,7 +16,11 @@ class TestSSO(object):
         self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps({"things": "with_stuff",})
+        self.state = json.dumps(
+            {
+                "things": "with_stuff",
+            }
+        )
 
         self.sso = SSO()
 
@@ -25,7 +29,11 @@ class TestSSO(object):
         self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps({"things": "with_stuff",})
+        self.state = json.dumps(
+            {
+                "things": "with_stuff",
+            }
+        )
 
         self.sso = SSO()
 
@@ -107,7 +115,9 @@ class TestSSO(object):
                 redirect_uri=self.redirect_uri, state=self.state
             )
 
-    def test_authorization_url_throws_value_error_with_incorrect_provider_type(self, setup_with_client_id):
+    def test_authorization_url_throws_value_error_with_incorrect_provider_type(
+        self, setup_with_client_id
+    ):
         with pytest.raises(
             ValueError, match="'provider' must be of type ConnectionType"
         ):
@@ -115,7 +125,9 @@ class TestSSO(object):
                 provider="foo", redirect_uri=self.redirect_uri, state=self.state
             )
 
-    def test_authorization_url_has_expected_query_params_with_provider(self, setup_with_client_id):
+    def test_authorization_url_has_expected_query_params_with_provider(
+        self, setup_with_client_id
+    ):
         authorization_url = self.sso.get_authorization_url(
             provider=self.provider, redirect_uri=self.redirect_uri, state=self.state
         )
@@ -130,7 +142,9 @@ class TestSSO(object):
             "state": self.state,
         }
 
-    def test_authorization_url_has_expected_query_params_with_domain(self, setup_with_client_id):
+    def test_authorization_url_has_expected_query_params_with_domain(
+        self, setup_with_client_id
+    ):
         authorization_url = self.sso.get_authorization_url(
             domain=self.customer_domain,
             redirect_uri=self.redirect_uri,
@@ -147,7 +161,9 @@ class TestSSO(object):
             "state": self.state,
         }
 
-    def test_authorization_url_has_expected_query_params_with_domain_and_provider(self, setup_with_client_id):
+    def test_authorization_url_has_expected_query_params_with_domain_and_provider(
+        self, setup_with_client_id
+    ):
         authorization_url = self.sso.get_authorization_url(
             domain=self.customer_domain,
             provider=self.provider,
@@ -166,7 +182,9 @@ class TestSSO(object):
             "state": self.state,
         }
 
-    def test_authorization_url_supports_project_id_with_deprecation_warning(self, setup_with_project_id):
+    def test_authorization_url_supports_project_id_with_deprecation_warning(
+        self, setup_with_project_id
+    ):
         with pytest.deprecated_call():
             authorization_url = self.sso.get_authorization_url(
                 domain=self.customer_domain,
@@ -214,7 +232,9 @@ class TestSSO(object):
 
         assert profile.to_dict() == mock_profile
 
-    def test_create_connection(self, setup_with_client_id, mock_request_method, mock_connection):
+    def test_create_connection(
+        self, setup_with_client_id, mock_request_method, mock_connection
+    ):
         response_dict = {
             "object": "connection",
             "id": mock_connection["id"],
@@ -237,7 +257,9 @@ class TestSSO(object):
         connection = self.sso.create_connection("draft_conn_id")
         assert connection == response_dict
 
-    def test_get_connection(self, setup_with_client_id, mock_connection, mock_request_method):
+    def test_get_connection(
+        self, setup_with_client_id, mock_connection, mock_request_method
+    ):
         mock_response = Response()
         mock_response.status_code = 200
         mock_response.response_dict = mock_connection
@@ -246,7 +268,9 @@ class TestSSO(object):
         assert response.status_code == 200
         assert response.response_dict == mock_connection
 
-    def test_list_connections(self, setup_with_client_id, mock_connections, mock_request_method):
+    def test_list_connections(
+        self, setup_with_client_id, mock_connections, mock_request_method
+    ):
         mock_response = Response()
         mock_response.status_code = 200
         mock_response.response_dict = mock_connections

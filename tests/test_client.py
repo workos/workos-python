@@ -43,7 +43,7 @@ class TestClient(object):
 
         message = str(ex)
 
-        assert "project_id" in message
+        assert "client_id" in message
         assert "api_key" not in message
 
     def test_initialize_sso_missing_api_key_and_project_id(self):
@@ -52,7 +52,7 @@ class TestClient(object):
 
         message = str(ex)
 
-        assert all(setting in message for setting in ("api_key", "project_id",))
+        assert all(setting in message for setting in ("api_key", "client_id",))
 
     def test_initialize_audit_trail_missing_api_key(self):
         with pytest.raises(ConfigurationException) as ex:

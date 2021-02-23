@@ -65,17 +65,21 @@ class RequestHelper(object):
         else:
             response = request_fn(url, headers=headers, json=params)
 
+        response_json = None
+        try:
+            response_json = response.json()
+        except ValueError:
+            raise ServerException(response)
+
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:
             if status_code == 401:
                 raise AuthenticationException(response)
             elif status_code == 403:
                 raise AuthorizationException(response)
-            raise BadRequestException(response)
+            error = response_json.get("error")
+            raise BadRequestException(response, error=error)
         elif status_code >= 500 and status_code < 600:
             raise ServerException(response)
 
-        try:
-            return response.json()
-        except ValueError:
-            raise ServerException(response)
+        return response_json

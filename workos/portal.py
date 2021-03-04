@@ -40,7 +40,7 @@ class Portal(object):
         """Generate a link to grant access to an organization's Admin Portal
 
         Args:
-            intent (str): The access scope for the generated Admin Portal link. Valid values are: ["sso"]
+            intent (str): The access scope for the generated Admin Portal link. Valid values are: ["sso", "dsync"]
             organization (string): The ID of the organization the Admin Portal link will be generated for
 
         Kwargs:

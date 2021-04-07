@@ -16,7 +16,8 @@ class TestSSO(object):
         self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps({"things": "with_stuff",})
+        self.state = json.dumps({"things": "with_stuff"})
+        self.connection = "connection_123"
 
         self.sso = SSO()
 
@@ -25,7 +26,7 @@ class TestSSO(object):
         self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps({"things": "with_stuff",})
+        self.state = json.dumps({"things": "with_stuff"})
 
         self.sso = SSO()
 
@@ -99,7 +100,7 @@ class TestSSO(object):
             "listMetadata": {"before": None, "after": None},
         }
 
-    def test_authorization_url_throws_value_error_with_missing_domain_and_provider(
+    def test_authorization_url_throws_value_error_with_missing_connection_domain_and_provider(
         self, setup_with_client_id
     ):
         with pytest.raises(ValueError, match=r"Incomplete arguments.*"):
@@ -147,6 +148,25 @@ class TestSSO(object):
 
         assert dict(parse_qsl(parsed_url.query)) == {
             "domain": self.customer_domain,
+            "client_id": workos.client_id,
+            "redirect_uri": self.redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+            "state": self.state,
+        }
+
+    def test_authorization_url_has_expected_query_params_with_connection(
+        self, setup_with_client_id
+    ):
+        authorization_url = self.sso.get_authorization_url(
+            connection=self.connection,
+            redirect_uri=self.redirect_uri,
+            state=self.state,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "connection": self.connection,
             "client_id": workos.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,

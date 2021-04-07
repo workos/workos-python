@@ -40,7 +40,7 @@ class SSO(object):
         return self._request_helper
 
     def get_authorization_url(
-        self, domain=None, redirect_uri=None, state=None, provider=None
+        self, domain=None, redirect_uri=None, state=None, provider=None, connection=None
     ):
         """Generate an OAuth 2.0 authorization URL.
 
@@ -53,6 +53,7 @@ class SSO(object):
             state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
             back as a query parameter
             provider (ConnectionType) - Authentication service provider descriptor
+            connection (string) - Unique identifier for a WorkOS Connection
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
@@ -63,9 +64,9 @@ class SSO(object):
             "response_type": RESPONSE_TYPE_CODE,
         }
 
-        if domain is None and provider is None:
+        if domain is None and provider is None and connection is None:
             raise ValueError(
-                "Incomplete arguments. Need to specify either a 'domain' or 'provider'"
+                "Incomplete arguments. Need to specify either a 'connection', 'domain' or 'provider'"
             )
         if provider is not None:
             if not isinstance(provider, ConnectionType):
@@ -73,6 +74,8 @@ class SSO(object):
             params["provider"] = str(provider.value)
         if domain is not None:
             params["domain"] = domain
+        if connection is not None:
+            params["connection"] = connection
 
         if state is not None:
             params["state"] = state

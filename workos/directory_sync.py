@@ -1,5 +1,7 @@
 import workos
-from workos.utils.request import RequestHelper, REQUEST_METHOD_DELETE, REQUEST_METHOD_GET
+from workos.utils.request import (
+    RequestHelper, REQUEST_METHOD_DELETE, REQUEST_METHOD_GET
+)
 from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
 
 RESPONSE_LIMIT = 10

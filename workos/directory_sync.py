@@ -2,7 +2,7 @@ import workos
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_DELETE,
-    REQUEST_METHOD_GET
+    REQUEST_METHOD_GET,
 )
 from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
 
@@ -138,7 +138,6 @@ class DirectorySync(object):
             params=params,
             token=workos.api_key,
         )
-
 
     def delete_directory(self, directory):
         """Delete one existing Directory.

@@ -174,3 +174,10 @@ class TestDirectorySync(object):
         response = self.directory_sync.list_directories()
         assert response.status_code == 200
         assert response.response_dict == mock_directories
+
+    def test_delete_directory(self, mock_directories, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_request_method("delete", mock_response, 200)
+        response = self.sso.delete_directory(directory="directory_id")
+        assert response.status_code == 200

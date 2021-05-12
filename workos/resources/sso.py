@@ -19,6 +19,7 @@ class WorkOSProfile(WorkOSBaseResource):
         "raw_attributes",
     ]
 
+
 class WorkOSProfileAndToken(WorkOSBaseResource):
     """Representation of a User Profile and Access Token as returned by WorkOS through the SSO feature.
 
@@ -32,9 +33,13 @@ class WorkOSProfileAndToken(WorkOSBaseResource):
 
     @classmethod
     def construct_from_response(cls, response):
-        profile_and_token = super(WorkOSProfileAndToken, cls).construct_from_response(response)
+        profile_and_token = super(WorkOSProfileAndToken, cls).construct_from_response(
+            response
+        )
 
-        profile_and_token.profile = WorkOSProfile.construct_from_response(response["profile"])
+        profile_and_token.profile = WorkOSProfile.construct_from_response(
+            response["profile"]
+        )
 
         return profile_and_token
 

@@ -22,15 +22,6 @@ class TestSSO(object):
         self.sso = SSO()
 
     @pytest.fixture
-    def setup_with_client_id(self, set_api_key_and_client_id):
-        self.provider = ConnectionType.GoogleOAuth
-        self.customer_domain = "workos.com"
-        self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps({"things": "with_stuff"})
-
-        self.sso = SSO()
-
-    @pytest.fixture
     def mock_profile(self):
         return {
             "id": "prof_01DWAS7ZQWM70PV93BFV1V78QV",

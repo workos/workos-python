@@ -5,7 +5,7 @@ from warnings import warn
 
 import workos
 from workos.exceptions import ConfigurationException
-from workos.resources.sso import WorkOSProfile
+from workos.resources.sso import WorkOSProfileAndToken
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import (
     RequestHelper,

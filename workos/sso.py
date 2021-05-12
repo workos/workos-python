@@ -88,7 +88,7 @@ class SSO(object):
 
         return prepared_request.url
 
-    def get_profile(self, code):
+    def get_profile_and_token(self, code):
         """Get the profile of an authenticated User
 
         Once authenticated, using the code returned having followed the authorization URL,

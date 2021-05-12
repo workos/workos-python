@@ -5,6 +5,7 @@ from workos.exceptions import ConfigurationException
 
 AUDIT_TRAIL_MODULE = "AuditTrail"
 DIRECTORY_SYNC_MODULE = "DirectorySync"
+ORGANIZATIONS_MODULE = "Organizations"
 PASSWORDLESS_MODULE = "Passwordless"
 PORTAL_MODULE = "Portal"
 SSO_MODULE = "SSO"
@@ -12,6 +13,7 @@ SSO_MODULE = "SSO"
 REQUIRED_SETTINGS_FOR_MODULE = {
     AUDIT_TRAIL_MODULE: ["api_key",],
     DIRECTORY_SYNC_MODULE: ["api_key",],
+    ORGANIZATIONS_MODULE: ["api_key"],
     PASSWORDLESS_MODULE: ["api_key",],
     PORTAL_MODULE: ["api_key",],
     SSO_MODULE: ["api_key", "client_id",],

@@ -13,7 +13,7 @@ class TestClient(object):
         client._portal = None
         client._sso = None
 
-    def test_initialize_sso(self, set_api_key_and_project_id):
+    def test_initialize_sso(self, set_api_key_and_client_id):
         assert bool(client.sso)
 
     def test_initialize_audit_log(self, set_api_key):
@@ -28,14 +28,14 @@ class TestClient(object):
     def test_initialize_portal(self, set_api_key):
         assert bool(client.portal)
 
-    def test_initialize_sso_missing_api_key(self, set_project_id):
+    def test_initialize_sso_missing_api_key(self, set_client_id):
         with pytest.raises(ConfigurationException) as ex:
             client.sso
 
         message = str(ex)
 
         assert "api_key" in message
-        assert "project_id" not in message
+        assert "client_id" not in message
 
     def test_initialize_sso_missing_client_id(self, set_api_key):
         with pytest.raises(ConfigurationException) as ex:
@@ -46,7 +46,7 @@ class TestClient(object):
         assert "client_id" in message
         assert "api_key" not in message
 
-    def test_initialize_sso_missing_api_key_and_project_id(self):
+    def test_initialize_sso_missing_api_key_and_client_id(self):
         with pytest.raises(ConfigurationException) as ex:
             client.sso
 

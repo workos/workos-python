@@ -214,31 +214,6 @@ class TestSSO(object):
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.to_dict() == mock_profile
 
-    def test_create_connection(
-        self, setup_with_client_id, mock_request_method, mock_connection
-    ):
-        response_dict = {
-            "object": "connection",
-            "id": mock_connection["id"],
-            "name": mock_connection["name"],
-            "status": mock_connection["status"],
-            "connection_type": mock_connection["connection_type"],
-            "oauth_uid": mock_connection["oauth_uid"],
-            "oauth_secret": mock_connection["oauth_secret"],
-            "oauth_redirect_uri": mock_connection["oauth_redirect_uri"],
-            "saml_entity_id": mock_connection["saml_entity_id"],
-            "saml_idp_url": mock_connection["saml_idp_url"],
-            "saml_relying_party_trust_cert": mock_connection[
-                "saml_relying_party_trust_cert"
-            ],
-            "saml_x509_certs": mock_connection["saml_x509_certs"],
-            "domains": mock_connection["domains"],
-        }
-        mock_request_method("post", mock_connection, 201)
-
-        connection = self.sso.create_connection("draft_conn_id")
-        assert connection == response_dict
-
     def test_get_connection(
         self, setup_with_client_id, mock_connection, mock_request_method
     ):

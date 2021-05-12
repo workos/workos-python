@@ -80,13 +80,6 @@ class SSO(object):
         if state is not None:
             params["state"] = state
 
-        if workos.project_id is not None:
-            params["client_id"] = workos.project_id
-            warn(
-                "'project_id' is deprecated. Use 'client_id' instead.",
-                DeprecationWarning,
-            )
-
         prepared_request = Request(
             "GET",
             self.request_helper.generate_api_url(AUTHORIZATION_PATH),
@@ -113,13 +106,6 @@ class SSO(object):
             "code": code,
             "grant_type": OAUTH_GRANT_TYPE,
         }
-
-        if workos.project_id is not None:
-            params["client_id"] = workos.project_id
-            warn(
-                "'project_id' is deprecated. Use 'client_id' instead.",
-                DeprecationWarning,
-            )
 
         response = self.request_helper.request(
             TOKEN_PATH, method=REQUEST_METHOD_POST, params=params

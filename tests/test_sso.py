@@ -22,15 +22,6 @@ class TestSSO(object):
         self.sso = SSO()
 
     @pytest.fixture
-    def setup_with_project_id(self, set_api_key_and_project_id):
-        self.provider = ConnectionType.GoogleOAuth
-        self.customer_domain = "workos.com"
-        self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps({"things": "with_stuff"})
-
-        self.sso = SSO()
-
-    @pytest.fixture
     def mock_profile(self):
         return {
             "id": "prof_01DWAS7ZQWM70PV93BFV1V78QV",
@@ -193,28 +184,6 @@ class TestSSO(object):
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.state,
         }
-
-    def test_authorization_url_supports_project_id_with_deprecation_warning(
-        self, setup_with_project_id
-    ):
-        with pytest.deprecated_call():
-            authorization_url = self.sso.get_authorization_url(
-                domain=self.customer_domain,
-                provider=self.provider,
-                redirect_uri=self.redirect_uri,
-                state=self.state,
-            )
-
-            parsed_url = urlparse(authorization_url)
-
-            assert dict(parse_qsl(parsed_url.query)) == {
-                "domain": self.customer_domain,
-                "provider": str(self.provider.value),
-                "client_id": workos.project_id,
-                "redirect_uri": self.redirect_uri,
-                "response_type": RESPONSE_TYPE_CODE,
-                "state": self.state,
-            }
 
     def test_get_profile_returns_expected_workosprofile_object(
         self, setup_with_client_id, mock_profile, mock_request_method

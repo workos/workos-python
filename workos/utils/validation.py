@@ -24,19 +24,9 @@ def validate_settings(module_name):
         def wrapper(*args, **kwargs):
             missing_settings = []
 
-            # Adding this to accept both client_id and project_id
-            # can remove once project_id is deprecated
-            if module_name == SSO_MODULE:
-                if not getattr(workos, "api_key", None):
-                    missing_settings.append("api_key")
-                if not getattr(workos, "client_id", None) and not getattr(
-                    workos, "project_id", None
-                ):
-                    missing_settings.append("client_id")
-            else:
-                for setting in REQUIRED_SETTINGS_FOR_MODULE[module_name]:
-                    if not getattr(workos, setting, None):
-                        missing_settings.append(setting)
+            for setting in REQUIRED_SETTINGS_FOR_MODULE[module_name]:
+                if not getattr(workos, setting, None):
+                    missing_settings.append(setting)
 
             if missing_settings:
                 raise ConfigurationException(

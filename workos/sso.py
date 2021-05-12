@@ -5,7 +5,7 @@ from warnings import warn
 
 import workos
 from workos.exceptions import ConfigurationException
-from workos.resources.sso import WorkOSProfile
+from workos.resources.sso import WorkOSProfileAndToken
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import (
     RequestHelper,
@@ -88,7 +88,7 @@ class SSO(object):
 
         return prepared_request.url
 
-    def get_profile(self, code):
+    def get_profile_and_token(self, code):
         """Get the profile of an authenticated User
 
         Once authenticated, using the code returned having followed the authorization URL,
@@ -98,7 +98,7 @@ class SSO(object):
             code (str): Code returned by WorkOS on completion of OAuth 2.0 workflow
 
         Returns:
-            WorkOSProfile: WorkOSProfile object representing the User
+            WorkOSProfileAndToken: WorkOSProfileAndToken object representing the User
         """
         params = {
             "client_id": workos.client_id,
@@ -111,7 +111,7 @@ class SSO(object):
             TOKEN_PATH, method=REQUEST_METHOD_POST, params=params
         )
 
-        return WorkOSProfile.construct_from_response(response["profile"])
+        return WorkOSProfileAndToken.construct_from_response(response)
 
     def promote_draft_connection(self, token):
         """Promote a Draft Connection

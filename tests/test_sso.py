@@ -293,7 +293,7 @@ class TestSSO(object):
 
     def test_delete_connection(self, setup_with_client_id, mock_request_method):
         mock_response = Response()
-        mock_response.status_code = 202
-        mock_request_method("delete", mock_response, 202)
+        mock_response.status_code = 204
+        mock_request_method("delete", mock_response, 204)
         response = self.sso.delete_connection(connection="connection_id")
-        assert response.status_code == 202
+        assert response.status_code == 204

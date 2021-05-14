@@ -32,6 +32,10 @@ class Passwordless(object):
                     restore application state between redirects.
                 session_options[type] (str): The type of Passwordless Session to
                     create. Currently, the only supported value is 'MagicLink'.
+                session_options[connection] (str): Optional parameter for the ID of a
+                    specific connection. Can be used to create a Passwordless Session
+                    for a specific connection rather than using the domain from the email
+                    to determine the Organization and Connection.
 
         Returns:
             dict: Passwordless Session

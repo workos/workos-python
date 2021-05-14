@@ -9,7 +9,7 @@ from workos.passwordless import Passwordless
 
 class TestPasswordless(object):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key_and_project_id):
+    def setup(self, set_api_key_and_client_id):
         self.passwordless = Passwordless()
 
     @pytest.fixture

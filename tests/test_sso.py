@@ -22,15 +22,6 @@ class TestSSO(object):
         self.sso = SSO()
 
     @pytest.fixture
-    def setup_with_project_id(self, set_api_key_and_project_id):
-        self.provider = ConnectionType.GoogleOAuth
-        self.customer_domain = "workos.com"
-        self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps({"things": "with_stuff"})
-
-        self.sso = SSO()
-
-    @pytest.fixture
     def mock_profile(self):
         return {
             "id": "prof_01DWAS7ZQWM70PV93BFV1V78QV",
@@ -194,29 +185,7 @@ class TestSSO(object):
             "state": self.state,
         }
 
-    def test_authorization_url_supports_project_id_with_deprecation_warning(
-        self, setup_with_project_id
-    ):
-        with pytest.deprecated_call():
-            authorization_url = self.sso.get_authorization_url(
-                domain=self.customer_domain,
-                provider=self.provider,
-                redirect_uri=self.redirect_uri,
-                state=self.state,
-            )
-
-            parsed_url = urlparse(authorization_url)
-
-            assert dict(parse_qsl(parsed_url.query)) == {
-                "domain": self.customer_domain,
-                "provider": str(self.provider.value),
-                "client_id": workos.project_id,
-                "redirect_uri": self.redirect_uri,
-                "response_type": RESPONSE_TYPE_CODE,
-                "state": self.state,
-            }
-
-    def test_get_profile_returns_expected_workosprofile_object(
+    def test_get_profile_and_token_returns_expected_workosprofile_object(
         self, setup_with_client_id, mock_profile, mock_request_method
     ):
         response_dict = {
@@ -240,34 +209,10 @@ class TestSSO(object):
 
         mock_request_method("post", response_dict, 200)
 
-        profile = self.sso.get_profile(123)
+        profile_and_token = self.sso.get_profile_and_token(123)
 
-        assert profile.to_dict() == mock_profile
-
-    def test_create_connection(
-        self, setup_with_client_id, mock_request_method, mock_connection
-    ):
-        response_dict = {
-            "object": "connection",
-            "id": mock_connection["id"],
-            "name": mock_connection["name"],
-            "status": mock_connection["status"],
-            "connection_type": mock_connection["connection_type"],
-            "oauth_uid": mock_connection["oauth_uid"],
-            "oauth_secret": mock_connection["oauth_secret"],
-            "oauth_redirect_uri": mock_connection["oauth_redirect_uri"],
-            "saml_entity_id": mock_connection["saml_entity_id"],
-            "saml_idp_url": mock_connection["saml_idp_url"],
-            "saml_relying_party_trust_cert": mock_connection[
-                "saml_relying_party_trust_cert"
-            ],
-            "saml_x509_certs": mock_connection["saml_x509_certs"],
-            "domains": mock_connection["domains"],
-        }
-        mock_request_method("post", mock_connection, 201)
-
-        connection = self.sso.create_connection("draft_conn_id")
-        assert connection == response_dict
+        assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
+        assert profile_and_token.profile.to_dict() == mock_profile
 
     def test_get_connection(
         self, setup_with_client_id, mock_connection, mock_request_method

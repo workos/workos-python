@@ -1,5 +1,9 @@
 import workos
-from workos.utils.request import RequestHelper, REQUEST_METHOD_GET
+from workos.utils.request import (
+    RequestHelper,
+    REQUEST_METHOD_DELETE,
+    REQUEST_METHOD_GET,
+)
 from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
 
 RESPONSE_LIMIT = 10
@@ -132,5 +136,20 @@ class DirectorySync(object):
             "directories",
             method=REQUEST_METHOD_GET,
             params=params,
+            token=workos.api_key,
+        )
+
+    def delete_directory(self, directory):
+        """Delete one existing Directory.
+
+        Args:
+            directory (str): The ID of the directory to be deleted. (Required)
+
+        Returns:
+            dict: Directories response from WorkOS.
+        """
+        return self.request_helper.request(
+            "directories/{directory}".format(directory=directory),
+            method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

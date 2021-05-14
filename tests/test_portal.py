@@ -45,4 +45,4 @@ class TestPortal(object):
         mock_request_method("get", mock_response, 200)
         response = self.portal.get_organization(organization="organization_id")
         assert response.status_code == 200
-        assert response.response_dict == mock_connection
+        assert response.response_dict == mock_organization

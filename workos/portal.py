@@ -1,5 +1,9 @@
 import workos
-from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
+from workos.utils.request import (
+    RequestHelper,
+    REQUEST_METHOD_GET,
+    REQUEST_METHOD_POST,
+)
 from workos.utils.validation import PORTAL_MODULE, validate_settings
 
 PORTAL_GENERATE_PATH = "portal/generate_link"

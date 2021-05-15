@@ -9,6 +9,7 @@ class TestClient(object):
     def setup(self):
         client._audit_trail = None
         client._directory_sync = None
+        client._organizations = None
         client._passwordless = None
         client._portal = None
         client._sso = None

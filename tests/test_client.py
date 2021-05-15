@@ -22,6 +22,9 @@ class TestClient(object):
     def test_initialize_directory_sync(self, set_api_key):
         assert bool(client.directory_sync)
 
+    def test_initialize_organizations(self, set_api_key):
+        assert bool(client.organizations)
+
     def test_initialize_passwordless(self, set_api_key):
         assert bool(client.passwordless)
 
@@ -65,6 +68,14 @@ class TestClient(object):
     def test_initialize_directory_sync_missing_api_key(self):
         with pytest.raises(ConfigurationException) as ex:
             client.directory_sync
+
+        message = str(ex)
+
+        assert "api_key" in message
+
+    def test_initialize_organizations_missing_api_key(self):
+        with pytest.raises(ConfigurationException) as ex:
+            client.organizations
 
         message = str(ex)
 

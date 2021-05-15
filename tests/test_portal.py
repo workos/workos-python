@@ -37,12 +37,3 @@ class TestPortal(object):
         subject = result.response_dict
 
         assert subject["link"] == "https://id.workos.com/portal/launch?secret=secret"
-
-    def test_get_connection(self, mock_organization, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_organization
-        mock_request_method("get", mock_response, 200)
-        response = self.portal.get_organization(organization="organization_id")
-        assert response.status_code == 200
-        assert response.response_dict == mock_organization

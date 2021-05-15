@@ -69,6 +69,15 @@ class TestOrganizations(object):
         assert response.status_code == 200
         assert len(response.response_dict["data"]) == 2
 
+    def test_get_organization(self, mock_organization, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.response_dict = mock_organization
+        mock_request_method("get", mock_response, 200)
+        response = self.organizations.get_organization(organization="organization_id")
+        assert response.status_code == 200
+        assert response.response_dict == mock_organization
+
     def test_create_organization(self, mock_organization, mock_request_method):
         organization = {"domains": ["example.com"], "name": "Test Organization"}
         mock_response = Response()

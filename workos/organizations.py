@@ -44,6 +44,19 @@ class Organizations(object):
             token=workos.api_key,
         )
 
+    def get_organization(self, organization):
+        """Gets details for a single Organization
+        Args:
+            organization (str): Organization's unique identifier
+        Returns:
+            dict: Organization response from WorkOS
+        """
+        return self.request_helper.request(
+            "organizations/{organization}".format(organization=organization),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
     def create_organization(self, organization):
         """Create an organization
 

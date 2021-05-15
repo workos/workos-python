@@ -37,7 +37,7 @@ setup(
     install_requires=["requests>=2.22.0"],
     extras_require={"dev": dev_requirements, ":python_version<'3.4'": ["enum34"],},
     classifiers=[
-        "Development Status :: 1 - Planning",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",

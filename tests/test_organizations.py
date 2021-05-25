@@ -28,6 +28,21 @@ class TestOrganizations(object):
         }
 
     @pytest.fixture
+    def mock_organization_updated(self):
+        return {
+            "name": "Example Organization",
+            "object": "organization",
+            "id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            "domains": [
+                {
+                    "domain": "example.io",
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
+                }
+            ],
+        }
+
+    @pytest.fixture
     def mock_organizations(self):
         return {
             "object": "list",
@@ -90,3 +105,26 @@ class TestOrganizations(object):
 
         assert subject["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert subject["name"] == "Test Organization"
+
+    def test_update_organization(self, mock_organization_updated, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 201
+        mock_response.response_dict = mock_organization_updated
+        mock_request_method("put", mock_response, 201)
+
+        result = self.organizations.update_organization(
+            organization="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            name="Example Organization",
+            domains=["example.io"],
+        )
+        subject = result.response_dict
+
+        assert subject["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        assert subject["name"] == "Example Organization"
+        assert subject["domains"] == [
+            {
+                "domain": "example.io",
+                "object": "organization_domain",
+                "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
+            }
+        ]

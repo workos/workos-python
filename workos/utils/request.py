@@ -17,6 +17,7 @@ RESPONSE_TYPE_CODE = "code"
 REQUEST_METHOD_DELETE = "delete"
 REQUEST_METHOD_GET = "get"
 REQUEST_METHOD_POST = "post"
+REQUEST_METHOD_PUT = "put"
 
 
 class RequestHelper(object):

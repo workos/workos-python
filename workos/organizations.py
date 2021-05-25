@@ -1,5 +1,10 @@
 import workos
-from workos.utils.request import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST
+from workos.utils.request import (
+    RequestHelper,
+    REQUEST_METHOD_GET,
+    REQUEST_METHOD_POST,
+    REQUEST_METHOD_PUT,
+)
 from workos.utils.validation import ORGANIZATIONS_MODULE, validate_settings
 
 ORGANIZATIONS_PATH = "organizations"
@@ -72,5 +77,27 @@ class Organizations(object):
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_POST,
             params=organization,
+            token=workos.api_key,
+        )
+
+    def update_organization(self, organization, name, domains=None):
+        """Update an organization
+
+        Args:
+            organization(str) - Organization's unique identifier.
+            name (str) - A unique, descriptive name for the organization.
+            domains (list) - List of domains that belong to the organization. (Optional)
+
+        Returns:
+            dict: Updated Organization response from WorkOS.
+        """
+        params = {
+            "domains": domains,
+            "name": name,
+        }
+        return self.request_helper.request(
+            "organizations/{organization}".format(organization=organization),
+            method=REQUEST_METHOD_PUT,
+            params=params,
             token=workos.api_key,
         )

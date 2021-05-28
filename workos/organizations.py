@@ -1,6 +1,7 @@
 import workos
 from workos.utils.request import (
     RequestHelper,
+    REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_POST,
     REQUEST_METHOD_PUT,
@@ -99,5 +100,17 @@ class Organizations(object):
             "organizations/{organization}".format(organization=organization),
             method=REQUEST_METHOD_PUT,
             params=params,
+            token=workos.api_key,
+        )
+
+    def delete_organization(self, organization):
+        """Deletes a single Organization
+
+        Args:
+            organization (str): Organization unique identifier
+        """
+        return self.request_helper.request(
+            "organizations/{organization}".format(organization=organization),
+            method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

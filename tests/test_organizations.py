@@ -128,3 +128,10 @@ class TestOrganizations(object):
                 "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
             }
         ]
+
+    def test_delete_organization(self, setup, mock_request_method):
+        mock_response = Response()
+        mock_response.status_code = 204
+        mock_request_method("delete", mock_response, 204)
+        response = self.organizations.delete_organization(organization="connection_id")
+        assert response.status_code == 204

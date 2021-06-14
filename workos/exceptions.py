@@ -4,7 +4,7 @@ class ConfigurationException(Exception):
 
 # Request related exceptions
 class BaseRequestException(Exception):
-    def __init__(self, response, message=None, error=None):
+    def __init__(self, response, message=None, error=None, error_description=None):
         super(BaseRequestException, self).__init__(message)
 
         self.error = error
@@ -34,6 +34,9 @@ class BaseRequestException(Exception):
 
         if self.error is not None:
             exception += ", error=%s" % self.error
+
+        if self.error_description is not None:
+            exception += ", error_description=%s" % self.error_description
 
         return exception + ")"
 

@@ -228,6 +228,7 @@ class TestSSO(object):
         assert response == mock_connections
 
     def test_delete_connection(self, setup_with_client_id, mock_request_method):
-        mock_request_method("delete", "{}", 204)
+        # The connection delete endpoint returns nothing and doesn't define a content-type
+        mock_request_method("delete", "", 204, headers={"content-type": ""})
         response = self.sso.delete_connection(connection="connection_id")
-        assert response == {}
+        assert response is None

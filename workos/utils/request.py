@@ -67,10 +67,11 @@ class RequestHelper(object):
             response = request_fn(url, headers=headers, json=params)
 
         response_json = None
-        try:
-            response_json = response.json()
-        except ValueError:
-            raise ServerException(response)
+        if response.headers.get("content-type", "").startswith("application/json"):
+            try:
+                response_json = response.json()
+            except ValueError:
+                raise ServerException(response)
 
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:

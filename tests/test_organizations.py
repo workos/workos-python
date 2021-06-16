@@ -114,6 +114,12 @@ class TestOrganizations(object):
         ]
 
     def test_delete_organization(self, setup, mock_request_method):
-        mock_request_method("delete", "{}", 204)
+        # The organization delete endpoint returns 'Accepted' and a Content-Type of text/plain
+        mock_request_method(
+            "delete",
+            "Accepted",
+            204,
+            headers={"content-type": "text/plain; charset=utf-8"},
+        )
         response = self.organizations.delete_organization(organization="connection_id")
-        assert response == {}
+        assert response is None

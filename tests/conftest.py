@@ -1,3 +1,4 @@
+import json
 import pytest
 import requests
 
@@ -5,13 +6,18 @@ import workos
 
 
 class MockResponse(object):
-    def __init__(self, response_dict, status_code, headers=None):
-        self.response_dict = response_dict
+    def __init__(self, content, status_code, headers=None):
+        self.content = content
         self.status_code = status_code
         self.headers = {} if headers is None else headers
 
+        # most of the apis return json so set the default content type to
+        # application/json
+        if 'content-type' not in self.headers:
+            self.headers['content-type'] = 'application/json'
+
     def json(self):
-        return self.response_dict
+        return json.loads(self.content)
 
 
 @pytest.fixture
@@ -31,9 +37,9 @@ def set_api_key_and_client_id(set_api_key, set_client_id):
 
 @pytest.fixture
 def mock_request_method(monkeypatch):
-    def inner(method, response_dict, status_code, headers=None):
+    def inner(method, content, status_code, headers=None):
         def mock(*args, **kwargs):
-            return MockResponse(response_dict, status_code, headers=headers)
+            return MockResponse(content, status_code, headers=headers)
 
         monkeypatch.setattr(requests, method, mock)
 
@@ -42,7 +48,7 @@ def mock_request_method(monkeypatch):
 
 @pytest.fixture
 def capture_and_mock_request(monkeypatch):
-    def inner(method, response_dict, status_code):
+    def inner(method, content, status_code):
         request_args = []
         request_kwargs = {}
 
@@ -50,7 +56,7 @@ def capture_and_mock_request(monkeypatch):
             request_args.extend(args)
             request_kwargs.update(kwargs)
 
-            return MockResponse(response_dict, status_code)
+            return MockResponse(content, status_code)
 
         monkeypatch.setattr(requests, method, capture_and_mock)
 

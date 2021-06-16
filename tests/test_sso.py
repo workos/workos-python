@@ -1,5 +1,4 @@
 import json
-from requests import Response
 from six.moves.urllib.parse import parse_qsl, urlparse
 
 import pytest
@@ -207,7 +206,7 @@ class TestSSO(object):
             "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
         }
 
-        mock_request_method("post", response_dict, 200)
+        mock_request_method("post", json.dumps(response_dict), 200)
 
         profile_and_token = self.sso.get_profile_and_token(123)
 
@@ -217,28 +216,18 @@ class TestSSO(object):
     def test_get_connection(
         self, setup_with_client_id, mock_connection, mock_request_method
     ):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_connection
-        mock_request_method("get", mock_response, 200)
+        mock_request_method("get", json.dumps(mock_connection), 200)
         response = self.sso.get_connection(connection="connection_id")
-        assert response.status_code == 200
-        assert response.response_dict == mock_connection
+        assert response == mock_connection
 
     def test_list_connections(
         self, setup_with_client_id, mock_connections, mock_request_method
     ):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_connections
-        mock_request_method("get", mock_response, 200)
+        mock_request_method("get", json.dumps(mock_connections), 200)
         response = self.sso.list_connections()
-        assert response.status_code == 200
-        assert response.response_dict == mock_connections
+        assert response == mock_connections
 
     def test_delete_connection(self, setup_with_client_id, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 204
-        mock_request_method("delete", mock_response, 204)
+        mock_request_method("delete", "{}", 204)
         response = self.sso.delete_connection(connection="connection_id")
-        assert response.status_code == 204
+        assert response == {}

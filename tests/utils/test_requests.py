@@ -1,3 +1,4 @@
+import json
 import pytest
 
 from workos.exceptions import (
@@ -26,7 +27,7 @@ class TestRequestHelper(object):
         request_helper = RequestHelper()
 
         for status_code, exception in STATUS_CODE_TO_EXCEPTION_MAPPING.items():
-            mock_request_method("get", {}, status_code)
+            mock_request_method("get", "{}", status_code)
 
             with pytest.raises(exception):
                 request_helper.request("bad_place")
@@ -42,7 +43,7 @@ class TestRequestHelper(object):
         for status_code, exception in STATUS_CODE_TO_EXCEPTION_MAPPING.items():
             mock_request_method(
                 "get",
-                {"message": response_message,},
+                json.dumps({"message": response_message,}),
                 status_code,
                 headers={"X-Request-ID": request_id},
             )
@@ -75,7 +76,8 @@ class TestRequestHelper(object):
             assert ex.__class__ == ServerException
 
     def test_request_includes_base_headers(self, capture_and_mock_request):
-        request_args, request_kwargs = capture_and_mock_request("get", {}, 200)
+        request_args, request_kwargs = capture_and_mock_request(
+            "get", "{}", 200)
 
         RequestHelper().request("ok_place")
 

@@ -1,11 +1,8 @@
 import json
-from requests import Response
 
 import pytest
 
-import workos
 from workos.directory_sync import DirectorySync
-from workos.utils.request import RESPONSE_TYPE_CODE
 
 
 class TestDirectorySync(object):
@@ -112,71 +109,41 @@ class TestDirectorySync(object):
         }
 
     def test_list_users_with_directory(self, mock_users, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_users
-        mock_request_method("get", mock_response, 200)
+        mock_request_method("get", json.dumps(mock_users), 200)
         response = self.directory_sync.list_users(directory="directory_id")
-        assert response.status_code == 200
-        assert response.response_dict == mock_users
+        assert response == mock_users
 
     def test_list_users_with_group(self, mock_users, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_users
-        mock_request_method("get", mock_response, 200)
+        mock_request_method("get", json.dumps(mock_users), 200)
         response = self.directory_sync.list_users(group="directory_grp_id")
-        assert response.status_code == 200
-        assert response.response_dict == mock_users
+        assert response == mock_users
 
     def test_list_groups_with_directory(self, mock_groups, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_groups
-        mock_request_method("get", mock_response, 200)
+        mock_request_method("get", json.dumps(mock_groups), 200)
         response = self.directory_sync.list_groups(directory="directory_id")
-        assert response.status_code == 200
-        assert response.response_dict == mock_groups
+        assert response == mock_groups
 
     def test_list_groups_with_user(self, mock_groups, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_groups
-        mock_request_method("get", mock_response, 200)
+        mock_request_method("get", json.dumps(mock_groups), 200)
         response = self.directory_sync.list_groups(user="directory_usr_id")
-        assert response.status_code == 200
-        assert response.response_dict == mock_groups
+        assert response == mock_groups
 
     def test_get_user(self, mock_user, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_user
-        mock_request_method("get", mock_response, 200)
+        mock_request_method("get", json.dumps(mock_user), 200)
         response = self.directory_sync.get_user(user="directory_usr_id")
-        assert response.status_code == 200
-        assert response.response_dict == mock_user
+        assert response == mock_user
 
     def test_get_group(self, mock_group, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_group
-        mock_request_method("get", mock_response, 200)
+        mock_request_method("get", json.dumps(mock_group), 200)
         response = self.directory_sync.get_group(group="directory_grp_id")
-        assert response.status_code == 200
-        assert response.response_dict == mock_group
+        assert response == mock_group
 
     def test_list_directories(self, mock_directories, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_directories
-        mock_request_method("get", mock_response, 200)
+        mock_request_method("get", json.dumps(mock_directories), 200)
         response = self.directory_sync.list_directories()
-        assert response.status_code == 200
-        assert response.response_dict == mock_directories
+        assert response == mock_directories
 
     def test_delete_directory(self, mock_directories, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 202
-        mock_request_method("delete", mock_response, 202)
+        mock_request_method("delete", "{}", 202)
         response = self.directory_sync.delete_directory(directory="directory_id")
-        assert response.status_code == 202
+        assert response == {}

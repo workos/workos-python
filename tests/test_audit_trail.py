@@ -1,10 +1,8 @@
 from datetime import datetime
 import json
-from requests import Response
 
 import pytest
 
-import workos
 from workos.audit_trail import AuditTrail
 
 
@@ -26,9 +24,7 @@ class TestAuditTrail(object):
             "occurred_at": datetime.now().isoformat(),
             "metadata": {"a": "b"},
         }
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_request_method("post", mock_response, 200)
+        mock_request_method("post", "{}", 200)
 
         result = self.audit_trail.create_event(event)
         assert result == True
@@ -75,7 +71,7 @@ class TestAuditTrail(object):
             "data": [event,],
             "listMetadata": {"before": None, "after": None,},
         }
-        mock_request_method("get", response, 200)
+        mock_request_method("get", json.dumps(response), 200)
 
         events, before, after = self.audit_trail.get_events()
         assert events[0].to_dict() == event
@@ -107,7 +103,8 @@ class TestAuditTrail(object):
             "data": [event,],
             "listMetadata": {"before": None, "after": None,},
         }
-        request_args, request_kwargs = capture_and_mock_request("get", response, 200)
+        request_args, request_kwargs = capture_and_mock_request(
+            "get", json.dumps(response), 200)
 
         self.audit_trail.get_events(
             occurred_at=datetime.now(),
@@ -151,7 +148,8 @@ class TestAuditTrail(object):
             "data": [event,],
             "listMetadata": {"before": None, "after": None,},
         }
-        request_args, request_kwargs = capture_and_mock_request("get", response, 200)
+        request_args, request_kwargs = capture_and_mock_request(
+            "get", json.dumps(response), 200)
 
         self.audit_trail.get_events(
             occurred_at_gte=datetime.now(), occurred_at_gt=datetime.now(),
@@ -188,7 +186,8 @@ class TestAuditTrail(object):
             "data": [event,],
             "listMetadata": {"before": None, "after": None,},
         }
-        request_args, request_kwargs = capture_and_mock_request("get", response, 200)
+        request_args, request_kwargs = capture_and_mock_request(
+            "get", json.dumps(response), 200)
 
         self.audit_trail.get_events(
             occurred_at_lte=datetime.now, occurred_at_lt=datetime.now()

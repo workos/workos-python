@@ -79,7 +79,10 @@ class RequestHelper(object):
             elif status_code == 403:
                 raise AuthorizationException(response)
             error = response_json.get("error")
-            raise BadRequestException(response, error=error)
+            error_description = response_json.get("error_description")
+            raise BadRequestException(
+                response, error=error, error_description=error_description
+            )
         elif status_code >= 500 and status_code < 600:
             raise ServerException(response)
 

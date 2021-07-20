@@ -25,19 +25,15 @@ class TestPasswordless(object):
     def test_create_session_succeeds(
         self, mock_passwordless_session, mock_request_method
     ):
-        mock_response = Response()
-        mock_response.status_code = 201
-        mock_response.response_dict = mock_passwordless_session
-        mock_request_method("post", mock_response, 201)
+        mock_request_method("post", mock_passwordless_session, 201)
 
         session_options = {
             "email": "demo@workos-okta.com",
             "type": "MagicLink",
         }
-        response = self.passwordless.create_session(session_options)
+        passwordless_session = self.passwordless.create_session(session_options)
 
-        assert response.status_code == 201
-        assert response.response_dict == mock_passwordless_session
+        assert passwordless_session == mock_passwordless_session
 
     def test_get_send_session_succeeds(self, mock_request_method):
         response = {
@@ -48,4 +44,5 @@ class TestPasswordless(object):
         response = self.passwordless.send_session(
             "passwordless_session_01EHDAK2BFGWCSZXP9HGZ3VK8C"
         )
+
         assert response == True

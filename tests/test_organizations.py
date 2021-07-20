@@ -85,7 +85,9 @@ class TestOrganizations(object):
     def test_get_organization(self, mock_organization, mock_request_method):
         mock_request_method("get", mock_organization, 200)
 
-        organization = self.organizations.get_organization(organization="organization_id")
+        organization = self.organizations.get_organization(
+            organization="organization_id"
+        )
 
         assert organization == mock_organization
 

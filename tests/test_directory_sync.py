@@ -114,40 +114,56 @@ class TestDirectorySync(object):
 
     def test_list_users_with_directory(self, mock_users, mock_request_method):
         mock_request_method("get", mock_users, 200)
+
         users = self.directory_sync.list_users(directory="directory_id")
+
         assert users == mock_users
 
     def test_list_users_with_group(self, mock_users, mock_request_method):
         mock_request_method("get", mock_users, 200)
+
         users = self.directory_sync.list_users(group="directory_grp_id")
+
         assert users == mock_users
 
     def test_list_groups_with_directory(self, mock_groups, mock_request_method):
         mock_request_method("get", mock_groups, 200)
+
         groups = self.directory_sync.list_groups(directory="directory_id")
+
         assert groups == mock_groups
 
     def test_list_groups_with_user(self, mock_groups, mock_request_method):
         mock_request_method("get", mock_groups, 200)
+
         groups = self.directory_sync.list_groups(user="directory_usr_id")
+
         assert groups == mock_groups
 
     def test_get_user(self, mock_user, mock_request_method):
         mock_request_method("get", mock_user, 200)
+
         user = self.directory_sync.get_user(user="directory_usr_id")
+
         assert user == mock_user
 
     def test_get_group(self, mock_group, mock_request_method):
         mock_request_method("get", mock_group, 200)
+
         group = self.directory_sync.get_group(group="directory_grp_id")
+
         assert group == mock_group
 
     def test_list_directories(self, mock_directories, mock_request_method):
         mock_request_method("get", mock_directories, 200)
+
         directories = self.directory_sync.list_directories()
+
         assert directories == mock_directories
 
     def test_delete_directory(self, mock_directories, mock_request_method):
         mock_request_method("delete", None, 202)
+
         response = self.directory_sync.delete_directory(directory="directory_id")
+
         assert response is None

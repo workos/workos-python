@@ -217,28 +217,24 @@ class TestSSO(object):
     def test_get_connection(
         self, setup_with_client_id, mock_connection, mock_request_method
     ):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_connection
-        mock_request_method("get", mock_response, 200)
-        response = self.sso.get_connection(connection="connection_id")
-        assert response.status_code == 200
-        assert response.response_dict == mock_connection
+        mock_request_method("get", mock_connection, 200)
+
+        connection = self.sso.get_connection(connection="connection_id")
+
+        assert connection == mock_connection
 
     def test_list_connections(
         self, setup_with_client_id, mock_connections, mock_request_method
     ):
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_response.response_dict = mock_connections
-        mock_request_method("get", mock_response, 200)
-        response = self.sso.list_connections()
-        assert response.status_code == 200
-        assert response.response_dict == mock_connections
+        mock_request_method("get", mock_connections, 200)
+
+        connections_response = self.sso.list_connections()
+
+        assert connections_response["data"] == mock_connections["data"]
 
     def test_delete_connection(self, setup_with_client_id, mock_request_method):
-        mock_response = Response()
-        mock_response.status_code = 204
-        mock_request_method("delete", mock_response, 204)
+        mock_request_method("delete", None, 204)
+
         response = self.sso.delete_connection(connection="connection_id")
-        assert response.status_code == 204
+
+        assert response is None

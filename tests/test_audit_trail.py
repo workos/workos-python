@@ -26,12 +26,10 @@ class TestAuditTrail(object):
             "occurred_at": datetime.now().isoformat(),
             "metadata": {"a": "b"},
         }
-        mock_response = Response()
-        mock_response.status_code = 200
-        mock_request_method("post", mock_response, 200)
+        mock_request_method("post", {"success": True}, 200)
 
-        result = self.audit_trail.create_event(event)
-        assert result == True
+        response = self.audit_trail.create_event(event)
+        assert response == True
 
     def test_create_audit_trail_event_fails_with_long_metadata(self):
         with pytest.raises(ValueError, match=r"Number of metadata keys exceeds .*"):

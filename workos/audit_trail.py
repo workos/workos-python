@@ -61,7 +61,7 @@ class AuditTrail(object):
             "idempotency-key": idempotency_key,
         }
 
-        self.request_helper.request(
+        response = self.request_helper.request(
             EVENTS_PATH,
             method=REQUEST_METHOD_POST,
             params=event,
@@ -69,7 +69,7 @@ class AuditTrail(object):
             token=workos.api_key,
         )
 
-        return True
+        return response["success"]
 
     def get_events(
         self,

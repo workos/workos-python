@@ -90,24 +90,22 @@ class SSO(object):
     def get_profile(self, accessToken):
         """
         Verify that SSO has been completed successfully and retrieve the identity of the user.
-        
+
         Args:
             accessToken (str): the token used to authenticate the API call
-        
+
         Returns:
             WorkOSProfile
         """
 
-        params = {
-            "access_token": accessToken
-        }
+        params = {"access_token": accessToken}
 
         response = self.request_helper.request(
             PROFILE_PATH, method=REQUEST_METHOD_POST, params=params
         )
 
         return WorkOSProfile.construct_from_response(response)
-        
+
     def get_profile_and_token(self, code):
         """Get the profile of an authenticated User
 
@@ -147,7 +145,7 @@ class SSO(object):
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
-    
+
     def list_connections(
         self,
         connection_type=None,

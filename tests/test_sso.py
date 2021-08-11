@@ -184,7 +184,7 @@ class TestSSO(object):
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.state,
         }
-    
+
     def test_get_profile_and_token_returns_expected_workosprofile_object(
         self, setup_with_client_id, mock_profile, mock_request_method
     ):
@@ -214,9 +214,7 @@ class TestSSO(object):
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.to_dict() == mock_profile
 
-    def test_get_profile(
-        self, setup_with_client_id, mock_profile, mock_request_method
-    ):
+    def test_get_profile(self, setup_with_client_id, mock_profile, mock_request_method):
         mock_request_method("post", mock_profile, 200)
 
         profile = self.sso.get_profile(123)

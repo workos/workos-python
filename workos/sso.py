@@ -5,7 +5,7 @@ from warnings import warn
 
 import workos
 from workos.exceptions import ConfigurationException
-from workos.resources.sso import WorkOSProfileAndToken
+from workos.resources.sso import WorkOSProfile, WorkOSProfileAndToken
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import (
     RequestHelper,
@@ -18,6 +18,7 @@ from workos.utils.validation import SSO_MODULE, validate_settings
 
 AUTHORIZATION_PATH = "sso/authorize"
 TOKEN_PATH = "sso/token"
+PROFILE_PATH = "sso/profile"
 
 OAUTH_GRANT_TYPE = "authorization_code"
 
@@ -86,6 +87,27 @@ class SSO(object):
 
         return prepared_request.url
 
+    def get_profile(self, accessToken):
+        """
+        Verify that SSO has been completed successfully and retrieve the identity of the user.
+        
+        Args:
+            accessToken (str): the token used to authenticate the API call
+        
+        Returns:
+            WorkOSProfile
+        """
+
+        params = {
+            "access_token": accessToken
+        }
+
+        response = self.request_helper.request(
+            PROFILE_PATH, method=REQUEST_METHOD_POST, params=params
+        )
+
+        return WorkOSProfile.construct_from_response(response)
+        
     def get_profile_and_token(self, code):
         """Get the profile of an authenticated User
 
@@ -125,7 +147,7 @@ class SSO(object):
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
-
+    
     def list_connections(
         self,
         connection_type=None,

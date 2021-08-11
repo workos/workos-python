@@ -217,25 +217,7 @@ class TestSSO(object):
     def test_get_profile(
         self, setup_with_client_id, mock_profile, mock_request_method
     ):
-        response_dict = {
-            "profile": {
-                "object": "profile",
-                "id": mock_profile["id"],
-                "email": mock_profile["email"],
-                "first_name": mock_profile["first_name"],
-                "connection_id": mock_profile["connection_id"],
-                "connection_type": mock_profile["connection_type"],
-                "last_name": mock_profile["last_name"],
-                "idp_id": mock_profile["idp_id"],
-                "raw_attributes": {
-                    "email": mock_profile["raw_attributes"]["email"],
-                    "first_name": mock_profile["raw_attributes"]["first_name"],
-                    "last_name": mock_profile["raw_attributes"]["last_name"],
-                },
-            }
-        }
-
-        mock_request_method("post", response_dict, 200)
+        mock_request_method("post", mock_profile, 200)
 
         profile = self.sso.get_profile(123)
 

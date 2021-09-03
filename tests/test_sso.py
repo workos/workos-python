@@ -215,7 +215,7 @@ class TestSSO(object):
         assert profile_and_token.profile.to_dict() == mock_profile
 
     def test_get_profile(self, setup_with_client_id, mock_profile, mock_request_method):
-        mock_request_method("post", mock_profile, 200)
+        mock_request_method("get", mock_profile, 200)
 
         profile = self.sso.get_profile(123)
 

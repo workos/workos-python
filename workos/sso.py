@@ -98,10 +98,10 @@ class SSO(object):
             WorkOSProfile
         """
 
-        params = {"access_token": accessToken}
+        token = {"access_token": accessToken}
 
         response = self.request_helper.request(
-            PROFILE_PATH, method=REQUEST_METHOD_POST, params=params
+            PROFILE_PATH, method=REQUEST_METHOD_GET, token=token
         )
 
         return WorkOSProfile.construct_from_response(response)

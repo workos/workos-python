@@ -10,8 +10,18 @@ class MockResponse(object):
         self.status_code = status_code
         self.headers = {} if headers is None else headers
 
+        if "content-type" not in self.headers:
+            self.headers["content-type"] = "application/json"
+
     def json(self):
         return self.response_dict
+
+
+class MockRawResponse(object):
+    def __init__(self, content, status_code, headers=None):
+        self.content = content
+        self.status_code = status_code
+        self.headers = {} if headers is None else headers
 
 
 @pytest.fixture
@@ -34,6 +44,17 @@ def mock_request_method(monkeypatch):
     def inner(method, response_dict, status_code, headers=None):
         def mock(*args, **kwargs):
             return MockResponse(response_dict, status_code, headers=headers)
+
+        monkeypatch.setattr(requests, method, mock)
+
+    return inner
+
+
+@pytest.fixture
+def mock_raw_request_method(monkeypatch):
+    def inner(method, content, status_code, headers=None):
+        def mock(*args, **kwargs):
+            return MockRawResponse(content, status_code, headers=headers)
 
         monkeypatch.setattr(requests, method, mock)
 

@@ -232,8 +232,13 @@ class TestSSO(object):
 
         assert connections_response["data"] == mock_connections["data"]
 
-    def test_delete_connection(self, setup_with_client_id, mock_request_method):
-        mock_request_method("delete", None, 204)
+    def test_delete_connection(self, setup_with_client_id, mock_raw_request_method):
+        mock_raw_request_method(
+            "delete",
+            "No Content",
+            204,
+            headers={"content-type": "text/plain; charset=utf-8"},
+        )
 
         response = self.sso.delete_connection(connection="connection_id")
 

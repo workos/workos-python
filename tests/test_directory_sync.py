@@ -161,8 +161,13 @@ class TestDirectorySync(object):
 
         assert directories == mock_directories
 
-    def test_delete_directory(self, mock_directories, mock_request_method):
-        mock_request_method("delete", None, 202)
+    def test_delete_directory(self, mock_directories, mock_raw_request_method):
+        mock_raw_request_method(
+            "delete",
+            "Accepted",
+            202,
+            headers={"content-type": "text/plain; charset=utf-8"},
+        )
 
         response = self.directory_sync.delete_directory(directory="directory_id")
 

@@ -9,6 +9,7 @@ class ConnectionType(Enum):
     GoogleOAuth = "GoogleOAuth"
     GoogleSAML = "GoogleSAML"
     MagicLink = "MagicLink"
+    MicrosoftOAuth = "MicrosoftOAuth"
     OktaSAML = "OktaSAML"
     OneLoginSAML = "OneLoginSAML"
     PingFederateSAML = "PingFederateSAML"

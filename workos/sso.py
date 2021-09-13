@@ -98,7 +98,7 @@ class SSO(object):
             WorkOSProfile
         """
 
-        token = {"access_token": accessToken}
+        token = accessToken
 
         response = self.request_helper.request(
             PROFILE_PATH, method=REQUEST_METHOD_GET, token=token

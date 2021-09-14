@@ -119,8 +119,13 @@ class TestOrganizations(object):
             }
         ]
 
-    def test_delete_organization(self, setup, mock_request_method):
-        mock_request_method("delete", None, 202)
+    def test_delete_organization(self, setup, mock_raw_request_method):
+        mock_raw_request_method(
+            "delete",
+            "Accepted",
+            202,
+            headers={"content-type": "text/plain; charset=utf-8"},
+        )
 
         response = self.organizations.delete_organization(organization="connection_id")
 

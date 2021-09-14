@@ -214,6 +214,13 @@ class TestSSO(object):
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.to_dict() == mock_profile
 
+    def test_get_profile(self, setup_with_client_id, mock_profile, mock_request_method):
+        mock_request_method("get", mock_profile, 200)
+
+        profile = self.sso.get_profile(123)
+
+        assert profile.to_dict() == mock_profile
+
     def test_get_connection(
         self, setup_with_client_id, mock_connection, mock_request_method
     ):
@@ -232,8 +239,13 @@ class TestSSO(object):
 
         assert connections_response["data"] == mock_connections["data"]
 
-    def test_delete_connection(self, setup_with_client_id, mock_request_method):
-        mock_request_method("delete", None, 204)
+    def test_delete_connection(self, setup_with_client_id, mock_raw_request_method):
+        mock_raw_request_method(
+            "delete",
+            "No Content",
+            204,
+            headers={"content-type": "text/plain; charset=utf-8"},
+        )
 
         response = self.sso.delete_connection(connection="connection_id")
 

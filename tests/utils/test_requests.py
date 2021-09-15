@@ -109,3 +109,20 @@ class TestRequestHelper(object):
         headers = set(request_kwargs["headers"].items())
 
         assert base_headers.issubset(headers)
+
+    def test_request_parses_json_when_content_type_present(self, mock_request_method):
+        mock_request_method(
+            "get", {"foo": "bar"}, 200, headers={"content-type": "application/json"}
+        )
+
+        assert RequestHelper().request("ok_place") == {"foo": "bar"}
+
+    def test_request_parses_json_when_encoding_in_content_type(self, mock_request_method):
+        mock_request_method(
+            "get",
+            {"foo": "bar"},
+            200,
+            headers={"content-type": "application/json; charset=utf8"}
+        )
+
+        assert RequestHelper().request("ok_place") == {"foo": "bar"}

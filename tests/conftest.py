@@ -11,7 +11,7 @@ class MockResponse(object):
         self.headers = {} if headers is None else headers
 
         if "content-type" not in self.headers:
-            self.headers["content-type"] = "application/json; charset=utf-8"
+            self.headers["content-type"] = "application/json"
 
     def json(self):
         return self.response_dict

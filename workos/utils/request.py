@@ -72,7 +72,7 @@ class RequestHelper(object):
             if response.headers is not None
             else None
         )
-        if content_type == "application/json":
+        if content_type is not None and "application/json" in content_type:
             try:
                 response_json = response.json()
             except ValueError:

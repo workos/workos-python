@@ -25,9 +25,9 @@ class Webhooks(object):
     ):
 
         if payload == None:
-            raise ValueError("Payload missing and is a required parameter")
+            raise ValueError("Payload body is missing and is a required parameter")
         elif sig_header == None: 
-            raise ValueError("Signature missing and is a required parameter")
+            raise ValueError("Payload signature missing and is a required parameter")
         elif secret == None: 
             raise ValueError("Secret is missing and is a required parameter")
 
@@ -87,15 +87,12 @@ class WebhookSignature(object):
         WebhookSignature.check_timstamp_range(seconds_since_issued, max_seconds_since_issued)
 
         #Set expected signature value based on env var secret
-        unhashed_string = f'{issued_timestamp}.{event_body}'
+        unhashed_string = f"{issued_timestamp}.{event_body}"
         expected_signature = hmac.new(
             secret.encode('utf-8'),
             unhashed_string.encode('utf-8'),
             digestmod=hashlib.sha256
         ).hexdigest()
         
-        # Use constant time comparison function to ensure the signature hash matches the expected signature value
-        #check time comparison with sig hash from the webhook against the expected sig
+        # Use constant time comparison function to ensure the sig hash matches the expected sig value
         WebhookSignature.constant_time_compare(signature_hash, expected_signature)
-
-

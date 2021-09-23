@@ -68,8 +68,11 @@ class Organizations(object):
 
         Args:
             organization (dict) - An organization object
-                organization[domains] (list) - List of domains that belong to the organization
                 organization[name] (str) - A unique, descriptive name for the organization
+                organization[allow_profiles_outside_organization] (boolean) - Whether Connections
+                    within the Organization allow profiles that are outside of the Organization's
+                    configured User Email Domains. (Optional)
+                organization[domains] (list) - List of domains that belong to the organization
 
         Returns:
             dict: Created Organization response from WorkOS.
@@ -87,6 +90,9 @@ class Organizations(object):
         Args:
             organization(str) - Organization's unique identifier.
             name (str) - A unique, descriptive name for the organization.
+            organization[allow_profiles_outside_organization] (boolean) - Whether Connections
+                    within the Organization allow profiles that are outside of the Organization's
+                    configured User Email Domains. (Optional)
             domains (list) - List of domains that belong to the organization. (Optional)
 
         Returns:

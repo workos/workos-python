@@ -1,9 +1,9 @@
 import json
-from workos.webhooks import Webhooks
+from os import error
+from workos.webhooks import Webhooks, WebhookSignature
 from requests import Response
-
+import time
 import pytest
-
 import workos
 from workos.webhooks import Webhooks
 from workos.utils.request import RESPONSE_TYPE_CODE
@@ -15,24 +15,57 @@ class TestWebhooks(object):
 
     @pytest.fixture
     def mock_event_body(self):
-        return '{"data":{"id":"directory_user_01FAEAJCR3ZBZ30D8BD1924TVG","state":"active","emails":[{"type":"work","value":"blair@foo-corp.com","primary":true}],"idp_id":"00u1e8mutl6wlH3lL4x7","object":"directory_user","username":"blair@foo-corp.com","last_name":"Lunceford","first_name":"Blair","directory_id":"directory_01F9M7F68PZP8QXP8G7X5QRHS7","raw_attributes":{"name":{"givenName":"Blair","familyName":"Lunceford","middleName":"Elizabeth","honorificPrefix":"Ms."},"title":"Developer Success Engineer","active":true,"emails":[{"type":"work","value":"blair@foo-corp.com","primary":true}],"groups":[],"locale":"en-US","schemas":["urn:ietf:params:scim:schemas:core:2.0:User","urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"],"userName":"blair@foo-corp.com","addresses":[{"region":"CO","primary":true,"locality":"Steamboat Springs","postalCode":"80487"}],"externalId":"00u1e8mutl6wlH3lL4x7","displayName":"Blair Lunceford","urn:ietf:params:scim:schemas:extension:enterprise:2.0:User":{"manager":{"value":"2","displayName":"Kathleen Chung"},"division":"Engineering","department":"Customer Success"}}},"event":"dsync.user.created"}'
-    
+        return '{"id":"wh_01FG9JXJ9C9S052FX59JVG4EG1","data":{"id":"conn_01EHWNC0FCBHZ3BJ7EGKYXK0E6","name":"Foo Corp\'s Connection","state":"active","object":"connection","domains":[{"id":"conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB","domain":"foo-corp.com","object":"connection_domain"}],"connection_type":"OktaSAML","organization_id":"org_01EHWNCE74X7JSDV0X3SZ3KJNY"},"event":"connection.activated"}'
+
+    @pytest.fixture
     def mock_header(self):
-        return None
+        return "t=1632409405772, v1=67612f0e74f008b436a13b00266f90ef5c13f9cbcf6262206f5f4a539ff61702"
+
+    @pytest.fixture
+    def mock_secret(self):
+        return "1lyKDzhJjuCkIscIWqkSe4YsQ"
+
+    @pytest.fixture
+    def mock_header_no_timestamp(self):
+        return "v1=67612f0e74f008b436a13b00266f90ef5c13f9cbcf6262206f5f4a539ff61702"
+
+    @pytest.fixture
+    def mock_sig_hash(self):
+        return "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea259"
+
+
+    def test_missing_body(self, mock_header, mock_secret):
+        with pytest.raises(ValueError) as err:
+            self.webhooks.verify_event(None, mock_header, mock_secret)
+        assert "Payload missing and is a required parameter" in str(err.value)
+
+    def test_missing_header(self, mock_event_body, mock_secret):
+        with pytest.raises(ValueError) as err:
+            self.webhooks.verify_event(mock_event_body, None, mock_secret)
+        assert "Signature missing and is a required parameter" in str(err.value)
     
-    
-    def test_print_method_name(self, mock_request_method):
-        # mock_request_method("get", mock_method_name, 200)
+    def test_missing_secret(self, mock_event_body, mock_header):
+        with pytest.raises(ValueError) as err:
+            self.webhooks.verify_event(mock_event_body, mock_header, None)
+        assert "Secret is missing and is a required parameter" in str(err.value)
 
-        result = self.webhooks.verify_event(TestWebhooks.mock_event_body, None)
+    def test_unable_to_extract_timestamp(self, mock_event_body, mock_header_no_timestamp, mock_secret):
+        with pytest.raises(ValueError) as err:
+            self.webhooks.verify_event(mock_event_body, mock_header_no_timestamp, mock_secret, 180)
+        assert "Unable to extract timestamp and signature hash from header" in str(err.value)
 
-        assert result == "Unable to extract timestamp and signature hash from header"
+    def test_timestamp_outside_threshold(self, mock_event_body, mock_header, mock_secret):
+        with pytest.raises(ValueError) as err:
+            self.webhooks.verify_event(mock_event_body, mock_header, mock_secret, 0)
+        assert "Timestamp outside the tolerance zone" in str(err.value)
 
+    def test_sig_hash_matches_expected_sig(self, mock_sig_hash):
+        with pytest.raises(ValueError) as err:
+            WebhookSignature.constant_time_compare(mock_sig_hash, "q234q23r23423")
+        assert "Signature hash does not match the expected signature hash for payload" in str(err.value)
 
-    # "Unable to extract timestamp and signature hash from header"
-
-
-    # "Timestamp outside the tolerance zone"
-
-
-    # "Signature hash does not match the expected signature hash for payload"
+    def test_passed_expected_event_validation(self, mock_event_body, mock_header, mock_secret):    
+        try:
+            self.webhooks.verify_event(mock_event_body, mock_header, mock_secret, 99999999999999)
+        except:
+            pytest.fail("There was an error in validating the webhook with the expected values")

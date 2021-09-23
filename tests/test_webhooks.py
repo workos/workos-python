@@ -37,12 +37,12 @@ class TestWebhooks(object):
     def test_missing_body(self, mock_header, mock_secret):
         with pytest.raises(ValueError) as err:
             self.webhooks.verify_event(None, mock_header, mock_secret)
-        assert "Payload missing and is a required parameter" in str(err.value)
+        assert "Payload body is missing and is a required parameter" in str(err.value)
 
     def test_missing_header(self, mock_event_body, mock_secret):
         with pytest.raises(ValueError) as err:
             self.webhooks.verify_event(mock_event_body, None, mock_secret)
-        assert "Signature missing and is a required parameter" in str(err.value)
+        assert "Payload signature missing and is a required parameter" in str(err.value)
     
     def test_missing_secret(self, mock_event_body, mock_header):
         with pytest.raises(ValueError) as err:

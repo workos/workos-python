@@ -1,6 +1,6 @@
 import json
 from os import error
-from workos.webhooks import Webhooks, WebhookSignature
+from workos.webhooks import Webhooks
 from requests import Response
 import time
 import pytest
@@ -69,7 +69,7 @@ class TestWebhooks(object):
 
     def test_sig_hash_matches_expected_sig(self, mock_sig_hash):
         with pytest.raises(ValueError) as err:
-            WebhookSignature.constant_time_compare(mock_sig_hash, "q234q23r23423")
+            Webhooks.constant_time_compare(mock_sig_hash, "q234q23r23423")
         assert (
             "Signature hash does not match the expected signature hash for payload"
             in str(err.value)

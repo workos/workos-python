@@ -74,12 +74,30 @@ class TestRequestHelper(object):
 
         try:
             request_helper.request("bad_place")
-        except ServerException as ex:
-            assert ex.request_id == request_id
-            assert ex.error == error
-            assert ex.error_description == error_description
+        except BadRequestException as ex:
+            assert (
+                str(ex)
+                == "(message=No message, request_id=request-123, error=example_error, error_description=Example error description)"
+            )
         except Exception as ex:
-            # This'll fail for sure here but... just using the nice error that'd come up
+            assert ex.__class__ == BadRequestException
+
+    def test_bad_request_exceptions_exclude_expected_request_data(
+        self, mock_request_method
+    ):
+        request_helper = RequestHelper()
+
+        request_id = "request-123"
+
+        mock_request_method(
+            "get", {"foo": "bar"}, 400, headers={"X-Request-ID": request_id},
+        )
+
+        try:
+            request_helper.request("bad_place")
+        except BadRequestException as ex:
+            assert str(ex) == "(message=No message, request_id=request-123)"
+        except Exception as ex:
             assert ex.__class__ == BadRequestException
 
     def test_request_bad_body_raises_expected_exception_with_request_data(

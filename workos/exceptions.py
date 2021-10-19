@@ -7,11 +7,10 @@ class BaseRequestException(Exception):
     def __init__(self, response, message=None, error=None, error_description=None):
         super(BaseRequestException, self).__init__(message)
 
+        self.message = message
         self.error = error
+        self.error_description = error_description
         self.extract_and_set_response_related_data(response)
-
-        if message is not None:
-            self.message = message
 
     def extract_and_set_response_related_data(self, response):
         self.response = response

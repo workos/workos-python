@@ -31,11 +31,11 @@ class Webhooks(object):
         if secret is None:
             raise ValueError("Secret is missing and is a required parameter")
 
-        Webhooks.verify_header(payload, sig_header, secret, tolerance)
+        Webhooks.verify_header(self, payload, sig_header, secret, tolerance)
         event = json.loads(payload, object_pairs_hook=OrderedDict)
         return event
 
-    def verify_header(event_body, event_signature, secret, tolerance=None):
+    def verify_header(self, event_body, event_signature, secret, tolerance=None):
         try:
             # Verify and define variables parsed from the event body
             issued_timestamp, signature_hash = event_signature.split(", ")
@@ -54,7 +54,7 @@ class Webhooks(object):
 
         # Check that the webhook timestamp is within the acceptable range
         Webhooks.check_timestamp_range(
-            seconds_since_issued, max_seconds_since_issued
+            self, seconds_since_issued, max_seconds_since_issued
         )
 
         # Set expected signature value based on env var secret
@@ -67,7 +67,7 @@ class Webhooks(object):
 
         # Use constant time comparison function to ensure the sig hash matches
         # the expected sig value
-        Webhooks.constant_time_compare(signature_hash, expected_signature)
+        Webhooks.constant_time_compare(self, signature_hash, expected_signature)
 
     def constant_time_compare(val1, val2):
         if len(val1) != len(val2):
@@ -80,6 +80,6 @@ class Webhooks(object):
             result |= ord(x) ^ ord(y)
         return result == 0
 
-    def check_timestamp_range(time, max_range):
+    def check_timestamp_range(self, time, max_range):
         if time > max_range:
             raise ValueError("Timestamp outside the tolerance zone")

@@ -69,7 +69,7 @@ class TestWebhooks(object):
 
     def test_sig_hash_matches_expected_sig(self, mock_sig_hash):
         with pytest.raises(ValueError) as err:
-            Webhooks.constant_time_compare(mock_sig_hash, "q234q23r23423")
+            self.webhooks.constant_time_compare(mock_sig_hash, "q234q23r23423")
         assert (
             "Signature hash does not match the expected signature hash for payload"
             in str(err.value)

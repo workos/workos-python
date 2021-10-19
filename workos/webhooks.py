@@ -69,7 +69,7 @@ class Webhooks(object):
         # the expected sig value
         Webhooks.constant_time_compare(self, signature_hash, expected_signature)
 
-    def constant_time_compare(val1, val2):
+    def constant_time_compare(self, val1, val2):
         if len(val1) != len(val2):
             raise ValueError(
                 "Signature hash does not match the expected signature hash for payload"

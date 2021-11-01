@@ -4,6 +4,7 @@ from workos.organizations import Organizations
 from workos.passwordless import Passwordless
 from workos.portal import Portal
 from workos.sso import SSO
+from workos.webhooks import Webhooks
 
 
 class Client(object):
@@ -44,6 +45,12 @@ class Client(object):
         if not getattr(self, "_portal", None):
             self._portal = Portal()
         return self._portal
+
+    @property
+    def webhooks(self):
+        if not getattr(self, "webhooks", None):
+            self._webhooks = Webhooks()
+        return self._webhooks
 
 
 client = Client()

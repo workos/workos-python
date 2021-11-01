@@ -18,7 +18,7 @@ REQUIRED_SETTINGS_FOR_MODULE = {
     PASSWORDLESS_MODULE: ["api_key",],
     PORTAL_MODULE: ["api_key",],
     SSO_MODULE: ["api_key", "client_id",],
-    WEBHOOKS_MODULE: ["api_key", "client_id"],
+    WEBHOOKS_MODULE: ["api_key"],
 }
 
 

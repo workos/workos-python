@@ -11,7 +11,7 @@ from workos.utils.request import RESPONSE_TYPE_CODE
 
 class TestWebhooks(object):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key_and_client_id):
+    def setup(self, set_api_key):
         self.webhooks = Webhooks()
 
     @pytest.fixture

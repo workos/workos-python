@@ -48,7 +48,7 @@ class Client(object):
 
     @property
     def webhooks(self):
-        if not getattr(self, "webhooks", None):
+        if not getattr(self, "_webhooks", None):
             self._webhooks = Webhooks()
         return self._webhooks
 

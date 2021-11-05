@@ -139,6 +139,21 @@ class DirectorySync(object):
             token=workos.api_key,
         )
 
+    def get_directory(self, directory_id):
+        """Gets details for a single Directory.
+
+        Args:
+            directory_id (str): Directory unique identifier.
+
+        Returns:
+            dict: Directory response from WorkOS.
+        """
+        return self.request_helper.request(
+            "directories/{directory_id}".format(directory_id=directory_id),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
     def delete_directory(self, directory):
         """Delete one existing Directory.
 

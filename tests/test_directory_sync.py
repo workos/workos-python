@@ -112,6 +112,21 @@ class TestDirectorySync(object):
             "listMetadata": {"before": None, "after": None},
         }
 
+    @pytest.fixture
+    def mock_directory(self):
+        return {
+            "object": "directory",
+            "id": "directory_id",
+            "organization_id": "org_id",
+            "name": "Azure Test D-Sync",
+            "external_key": "external_key",
+            "type": "azure scim v2.0",
+            "state": "linked",
+            "created_at": "2021-09-13T20:04:27.836Z",
+            "updated_at": "2021-10-27T15:50:21.415Z",
+            "domain": "sso-test-app.herokuapp.com",
+        }
+
     def test_list_users_with_directory(self, mock_users, mock_request_method):
         mock_request_method("get", mock_users, 200)
 
@@ -160,6 +175,13 @@ class TestDirectorySync(object):
         directories = self.directory_sync.list_directories()
 
         assert directories == mock_directories
+
+    def test_get_directory(self, mock_directory, mock_request_method):
+        mock_request_method("get", mock_directory, 200)
+
+        directory = self.directory_sync.get_directory(directory_id="directory_id")
+
+        assert directory == mock_directory
 
     def test_delete_directory(self, mock_directories, mock_raw_request_method):
         mock_raw_request_method(

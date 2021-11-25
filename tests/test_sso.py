@@ -40,6 +40,20 @@ class TestSSO(object):
         }
 
     @pytest.fixture
+    def mock_magic_link_profile(self):
+        return {
+            "id": "prof_01DWAS7ZQWM70PV93BFV1V78QV",
+            "email": "demo@workos-magic-link.com",
+            "organization_id": None,
+            "connection_id": "conn_01EMH8WAK20T42N2NBMNBCYHAG",
+            "connection_type": "MagicLink",
+            "idp_id": "",
+            "first_name": None,
+            "last_name": None,
+            "raw_attributes": {},
+        }
+
+    @pytest.fixture
     def mock_connection(self):
         return {
             "object": "connection",
@@ -215,6 +229,30 @@ class TestSSO(object):
 
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.to_dict() == mock_profile
+
+    def test_get_profile_and_token_without_first_name_or_last_name_returns_expected_workosprofile_object(
+        self, setup_with_client_id, mock_magic_link_profile, mock_request_method
+    ):
+        response_dict = {
+            "profile": {
+                "object": "profile",
+                "id": mock_magic_link_profile["id"],
+                "email": mock_magic_link_profile["email"],
+                "organization_id": mock_magic_link_profile["organization_id"],
+                "connection_id": mock_magic_link_profile["connection_id"],
+                "connection_type": mock_magic_link_profile["connection_type"],
+                "idp_id": "",
+                "raw_attributes": {},
+            },
+            "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
+        }
+
+        mock_request_method("post", response_dict, 200)
+
+        profile_and_token = self.sso.get_profile_and_token(123)
+
+        assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
+        assert profile_and_token.profile.to_dict() == mock_magic_link_profile
 
     def test_get_profile(self, setup_with_client_id, mock_profile, mock_request_method):
         mock_request_method("get", mock_profile, 200)

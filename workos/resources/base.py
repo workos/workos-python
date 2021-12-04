@@ -19,7 +19,7 @@ class WorkOSBaseResource(object):
         """
         obj = cls()
         for field in cls.OBJECT_FIELDS:
-            setattr(obj, field, response[field])
+            setattr(obj, field, response.get(field))
 
         return obj
 

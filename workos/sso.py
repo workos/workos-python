@@ -39,7 +39,13 @@ class SSO(object):
         return self._request_helper
 
     def get_authorization_url(
-        self, domain=None, redirect_uri=None, state=None, provider=None, connection=None
+        self,
+        domain=None,
+        redirect_uri=None,
+        state=None,
+        provider=None,
+        connection=None,
+        organization=None,
     ):
         """Generate an OAuth 2.0 authorization URL.
 
@@ -53,6 +59,7 @@ class SSO(object):
             back as a query parameter
             provider (ConnectionType) - Authentication service provider descriptor
             connection (string) - Unique identifier for a WorkOS Connection
+            organization (string) - Unique identifier for a WorkOS Organization
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
@@ -63,18 +70,29 @@ class SSO(object):
             "response_type": RESPONSE_TYPE_CODE,
         }
 
-        if domain is None and provider is None and connection is None:
+        if (
+            domain is None
+            and provider is None
+            and connection is None
+            and organization is None
+        ):
             raise ValueError(
-                "Incomplete arguments. Need to specify either a 'connection', 'domain' or 'provider'"
+                "Incomplete arguments. Need to specify either a 'connection', 'organization', 'domain', or 'provider'"
             )
         if provider is not None:
             if not isinstance(provider, ConnectionType):
                 raise ValueError("'provider' must be of type ConnectionType")
             params["provider"] = str(provider.value)
         if domain is not None:
+            warn(
+                "The 'domain' parameter for 'get_authorization_url' is deprecated. Please use 'organization' instead.",
+                DeprecationWarning,
+            )
             params["domain"] = domain
         if connection is not None:
             params["connection"] = connection
+        if organization is not None:
+            params["organization"] = organization
 
         if state is not None:
             params["state"] = state

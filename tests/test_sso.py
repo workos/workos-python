@@ -15,6 +15,7 @@ class TestSSO(object):
     def setup_with_client_id(self, set_api_key_and_client_id):
         self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
+        self.login_hint = "foo@workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
         self.state = json.dumps({"things": "with_stuff"})
         self.connection = "connection_123"
@@ -157,6 +158,48 @@ class TestSSO(object):
             "domain": self.customer_domain,
             "client_id": workos.client_id,
             "redirect_uri": self.redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+            "state": self.state,
+        }
+
+    def test_authorization_url_has_expected_query_params_with_domain_hint(
+        self, setup_with_client_id
+    ):
+        authorization_url = self.sso.get_authorization_url(
+            connection=self.connection,
+            domain_hint=self.customer_domain,
+            redirect_uri=self.redirect_uri,
+            state=self.state,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "domain_hint": self.customer_domain,
+            "client_id": workos.client_id,
+            "redirect_uri": self.redirect_uri,
+            "connection": self.connection,
+            "response_type": RESPONSE_TYPE_CODE,
+            "state": self.state,
+        }
+
+    def test_authorization_url_has_expected_query_params_with_login_hint(
+        self, setup_with_client_id
+    ):
+        authorization_url = self.sso.get_authorization_url(
+            connection=self.connection,
+            login_hint=self.login_hint,
+            redirect_uri=self.redirect_uri,
+            state=self.state,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "login_hint": self.login_hint,
+            "client_id": workos.client_id,
+            "redirect_uri": self.redirect_uri,
+            "connection": self.connection,
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.state,
         }

@@ -41,6 +41,8 @@ class SSO(object):
     def get_authorization_url(
         self,
         domain=None,
+        domain_hint=None,
+        login_hint=None,
         redirect_uri=None,
         state=None,
         provider=None,
@@ -89,6 +91,10 @@ class SSO(object):
                 DeprecationWarning,
             )
             params["domain"] = domain
+        if domain_hint is not None:
+            params["domain_hint"] = domain_hint
+        if login_hint is not None:
+            params["login_hint"] = login_hint
         if connection is not None:
             params["connection"] = connection
         if organization is not None:

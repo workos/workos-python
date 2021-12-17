@@ -102,12 +102,10 @@ class SSO(object):
 
         if state is not None:
             params["state"] = state
-        
+
         if redirect_uri is None:
-            raise ValueError(
-               "Incomplete arguments. Need to specify a Redirect URI"
-            )
-            
+            raise ValueError("Incomplete arguments. Need to specify a Redirect URI")
+
         prepared_request = Request(
             "GET",
             self.request_helper.generate_api_url(AUTHORIZATION_PATH),

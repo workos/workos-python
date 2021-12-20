@@ -1,0 +1,25 @@
+version: v1.0
+
+name: PyPI Publishing
+
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+blocks:
+  - name: Publish
+    task:
+      secrets:
+        - name: python-pypi
+      prologue:
+        commands:
+          - checkout
+          - sem-version python 3.7
+          - python -m pip install --upgrade pip
+          - pip install -e .[dev]
+      jobs:
+        - name: twine upload
+          commands:
+            - python3 setup.py sdist bdist_wheel
+            - twine upload dist/* --skip-existing

@@ -105,7 +105,7 @@ class TestSSO(object):
                     ],
                 }
             ],
-            "listMetadata": {"before": None, "after": None},
+            "list_metadata": {"before": None, "after": None},
         }
 
     def test_authorization_url_throws_value_error_with_missing_connection_domain_and_provider(

@@ -71,7 +71,7 @@ class TestAuditTrail(object):
 
         response = {
             "data": [event,],
-            "listMetadata": {"before": None, "after": None,},
+            "list_metadata": {"before": None, "after": None,},
         }
         mock_request_method("get", response, 200)
 
@@ -103,7 +103,7 @@ class TestAuditTrail(object):
 
         response = {
             "data": [event,],
-            "listMetadata": {"before": None, "after": None,},
+            "list_metadata": {"before": None, "after": None,},
         }
         request_args, request_kwargs = capture_and_mock_request("get", response, 200)
 
@@ -147,7 +147,7 @@ class TestAuditTrail(object):
 
         response = {
             "data": [event,],
-            "listMetadata": {"before": None, "after": None,},
+            "list_metadata": {"before": None, "after": None,},
         }
         request_args, request_kwargs = capture_and_mock_request("get", response, 200)
 
@@ -184,7 +184,7 @@ class TestAuditTrail(object):
 
         response = {
             "data": [event,],
-            "listMetadata": {"before": None, "after": None,},
+            "list_metadata": {"before": None, "after": None,},
         }
         request_args, request_kwargs = capture_and_mock_request("get", response, 200)
 

@@ -126,6 +126,18 @@ class TestSSO(object):
                 provider="foo", redirect_uri=self.redirect_uri, state=self.state
             )
 
+    def test_authorization_url_throws_value_error_wihout_redirect_uri(
+        self, setup_with_client_id
+    ):
+        with pytest.raises(
+            ValueError, match="Incomplete arguments. Need to specify a 'redirect_uri'."
+        ):
+            self.sso.get_authorization_url(
+                connection=self.connection,
+                login_hint=self.login_hint,
+                state=self.state,
+            )
+
     def test_authorization_url_has_expected_query_params_with_provider(
         self, setup_with_client_id
     ):

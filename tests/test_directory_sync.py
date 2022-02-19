@@ -16,7 +16,7 @@ class TestDirectorySync(object):
     @pytest.fixture
     def mock_users(self):
         return {
-            "listMetadata": {"before": None, "after": None},
+            "list_metadata": {"before": None, "after": None},
             "data": [
                 {
                     "username": "yoon@seri.com",
@@ -53,7 +53,7 @@ class TestDirectorySync(object):
     def mock_groups(self):
         return {
             "data": [{"name": "Developers", "id": "directory_grp_id"}],
-            "listMetadata": {
+            "list_metadata": {
                 "before": "directory_grp_id",
                 "after": "directory_grp_id",
             },
@@ -109,7 +109,7 @@ class TestDirectorySync(object):
                     "domain": "crashlandingonyou.com",
                 }
             ],
-            "listMetadata": {"before": None, "after": None},
+            "list_metadata": {"before": None, "after": None},
         }
 
     @pytest.fixture

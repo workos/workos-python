@@ -166,7 +166,7 @@ class AuditTrail(object):
         events = [
             WorkOSEvent.construct_from_response(data) for data in response["data"]
         ]
-        before = response["listMetadata"]["before"]
-        after = response["listMetadata"]["after"]
+        before = response["list_metadata"]["before"]
+        after = response["list_metadata"]["after"]
 
         return (events, before, after)

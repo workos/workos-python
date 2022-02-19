@@ -72,7 +72,7 @@ class TestOrganizations(object):
                     ],
                 },
             ],
-            "listMetadata": {"before": "before-id", "after": None},
+            "list_metadata": {"before": "before-id", "after": None},
         }
 
     def test_list_organizations(self, mock_organizations, mock_request_method):

@@ -33,3 +33,7 @@ blocks:
             - pytest --cov-report xml --cov=workos
             - black --check .
             - bash <(curl -s https://codecov.io/bash)
+
+promotions:
+  - name: "Publish to PyPI"
+    pipeline_file: publish.yml

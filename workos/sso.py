@@ -197,6 +197,9 @@ class SSO(object):
 
         # This method used to accept `connection_type` as a string, so we try
         # to convert strings to a `ConnectionType` to support existing callers.
+        #
+        # TODO: Remove support for string values of `ConnectionType` in the next
+        #       major version.
         if connection_type is not None and isinstance(connection_type, str):
             try:
                 connection_type = ConnectionType[connection_type]

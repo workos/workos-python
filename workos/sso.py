@@ -203,7 +203,7 @@ class SSO(object):
             "after": after,
         }
 
-         if connection_type is not None:
+        if connection_type is not None:
             if isinstance(connection_type, ConnectionType):
                 raise ValueError("'connection_type' must be of type string")
             params["connection_type"] = connection_type

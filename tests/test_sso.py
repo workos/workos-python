@@ -354,6 +354,42 @@ class TestSSO(object):
 
         assert connections_response["data"] == mock_connections["data"]
 
+    def test_list_connections_with_connection_type_as_invalid_string(
+        self, setup_with_client_id, mock_connections, mock_request_method
+    ):
+        mock_request_method("get", mock_connections, 200)
+
+        try:
+            self.sso.list_connections(connection_type="UnknownSAML")
+        except Exception as ex:
+            assert str(ex) == "'connection_type' must be a member of ConnectionType"
+
+    def test_list_connections_with_connection_type_as_string(
+        self, setup_with_client_id, mock_connections, capture_and_mock_request
+    ):
+        request_args, request_kwargs = capture_and_mock_request(
+            "get", mock_connections, 200
+        )
+
+        connections_response = self.sso.list_connections(connection_type="GenericSAML")
+
+        request_params = request_kwargs["params"]
+        assert request_params["connection_type"] == "GenericSAML"
+
+    def test_list_connections_with_connection_type_as_enum(
+        self, setup_with_client_id, mock_connections, capture_and_mock_request
+    ):
+        request_args, request_kwargs = capture_and_mock_request(
+            "get", mock_connections, 200
+        )
+
+        connections_response = self.sso.list_connections(
+            connection_type=ConnectionType.OktaSAML
+        )
+
+        request_params = request_kwargs["params"]
+        assert request_params["connection_type"] == "OktaSAML"
+
     def test_delete_connection(self, setup_with_client_id, mock_raw_request_method):
         mock_raw_request_method(
             "delete",

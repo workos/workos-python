@@ -204,8 +204,10 @@ class SSO(object):
         }
 
          if connection_type is not None:
-            if isinstance(connection_type, ConnectionType):
+             if isinstance(connection_type, ConnectionType):
                 raise ValueError("'connection_type' must be of type string")
+            else: 
+                raise ValueError("'connection_type' is not a valid connection type")
             params["connection_type"] = connection_type
 
         return self.request_helper.request(

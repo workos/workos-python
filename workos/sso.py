@@ -194,8 +194,27 @@ class SSO(object):
         Returns:
             dict: Connections response from WorkOS.
         """
+
+        # This method used to accept `connection_type` as a string, so we try
+        # to convert strings to a `ConnectionType` to support existing callers.
+        #
+        # TODO: Remove support for string values of `ConnectionType` in the next
+        #       major version.
+        if connection_type is not None and isinstance(connection_type, str):
+            try:
+                connection_type = ConnectionType[connection_type]
+
+                warn(
+                    "Passing a string value as the 'connection_type' parameter for 'list_connections' is deprecated and will be removed in the next major version. Please pass a 'ConnectionType' instead.",
+                    DeprecationWarning,
+                )
+            except KeyError:
+                raise ValueError("'connection_type' must be a member of ConnectionType")
+
         params = {
-            "connection_type": connection_type,
+            "connection_type": (
+                connection_type.value if connection_type is not None else None
+            ),
             "domain": domain,
             "organization_id": organization_id,
             "limit": limit,

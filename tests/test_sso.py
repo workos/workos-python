@@ -359,10 +359,10 @@ class TestSSO(object):
     ):
         mock_request_method("get", mock_connections, 200)
 
-        try:
+        with pytest.raises(
+            ValueError, match="'connection_type' must be a member of ConnectionType"
+        ):
             self.sso.list_connections(connection_type="UnknownSAML")
-        except Exception as ex:
-            assert str(ex) == "'connection_type' must be a member of ConnectionType"
 
     def test_list_connections_with_connection_type_as_string(
         self, setup_with_client_id, mock_connections, capture_and_mock_request

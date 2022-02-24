@@ -203,6 +203,11 @@ class SSO(object):
         if connection_type is not None and isinstance(connection_type, str):
             try:
                 connection_type = ConnectionType[connection_type]
+
+                warn(
+                    "Passing a string value as the 'connection_type' parameter for 'list_connections' is deprecated and will be removed in the next major version. Please pass a 'ConnectionType' instead.",
+                    DeprecationWarning,
+                )
             except KeyError:
                 raise ValueError("'connection_type' must be a member of ConnectionType")
 

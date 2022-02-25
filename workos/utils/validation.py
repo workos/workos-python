@@ -10,6 +10,7 @@ PASSWORDLESS_MODULE = "Passwordless"
 PORTAL_MODULE = "Portal"
 SSO_MODULE = "SSO"
 WEBHOOKS_MODULE = "Webhooks"
+MFA_MODULE = "MFA"
 
 REQUIRED_SETTINGS_FOR_MODULE = {
     AUDIT_TRAIL_MODULE: ["api_key",],
@@ -19,6 +20,7 @@ REQUIRED_SETTINGS_FOR_MODULE = {
     PORTAL_MODULE: ["api_key",],
     SSO_MODULE: ["api_key", "client_id",],
     WEBHOOKS_MODULE: ["api_key"],
+    MFA_MODULE: ["api_key"],
 }
 
 

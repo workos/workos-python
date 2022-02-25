@@ -5,6 +5,7 @@ from workos.passwordless import Passwordless
 from workos.portal import Portal
 from workos.sso import SSO
 from workos.webhooks import Webhooks
+from workos.mfa import MFA
 
 
 class Client(object):
@@ -52,5 +53,10 @@ class Client(object):
             self._webhooks = Webhooks()
         return self._webhooks
 
+    @property
+    def mfa(self):
+        if not getattr(self, "_mfa", None):
+            self._mfa = MFA()
+        return self._mfa
 
 client = Client()

@@ -112,7 +112,7 @@ class DirectorySync(object):
 
     def list_directories(
         self,
-        domain=None,        
+        domain=None,
         search=None,
         limit=RESPONSE_LIMIT,
         before=None,
@@ -122,7 +122,7 @@ class DirectorySync(object):
         """Gets details for existing Directories.
 
         Args:
-            domain (str): Domain of a Directory. (Optional)            
+            domain (str): Domain of a Directory. (Optional)
             search (str): Searchable text for a Directory. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)

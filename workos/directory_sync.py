@@ -123,22 +123,22 @@ class DirectorySync(object):
 
         Args:
             domain (str): Domain of a Directory. (Optional)
+            organization: ID of an Organization (Optional)
             search (str): Searchable text for a Directory. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
-            organization: ID of an Organization (Optional)
 
         Returns:
             dict: Directories response from WorkOS.
         """
         params = {
             "domain": domain,
+            "organization_id": organization,
             "search": search,
             "limit": limit,
             "before": before,
             "after": after,
-            "organization_id": organization,
         }
         return self.request_helper.request(
             "directories",

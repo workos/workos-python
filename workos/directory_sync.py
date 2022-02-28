@@ -111,7 +111,13 @@ class DirectorySync(object):
         )
 
     def list_directories(
-        self, domain=None, organization=None, search=None, limit=RESPONSE_LIMIT, before=None, after=None
+        self,
+        domain=None,
+        organization=None,
+        search=None,
+        limit=RESPONSE_LIMIT,
+        before=None,
+        after=None,
     ):
         """Gets details for existing Directories.
 

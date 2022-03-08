@@ -24,11 +24,7 @@ class MFA(object):
         return self._request_helper
 
     def enroll_factor(
-        self,
-        type=None,
-        totp_issuer=None,
-        totp_user=None,
-        phone_number=None,      
+        self, type=None, totp_issuer=None, totp_user=None, phone_number=None,
     ):
         """
         Defines the type of MFA authorization factor to be used. Possible values are sms or totp. 
@@ -49,31 +45,24 @@ class MFA(object):
             "phone_number": phone_number,
         }
 
-        if (
-            type is None
-        ):
-            raise ValueError(
-                "Incomplete arguments. Need to specify a type of factor"
-            )
-        
-        if (
-            type is not "sms" and type is not "totp"
-        ):
-            raise ValueError(
-                "Type parameter must be either 'sms' or 'totp'"
-            )
+        if type is None:
+            raise ValueError("Incomplete arguments. Need to specify a type of factor")
+
+        if type is not "sms" and type is not "totp":
+            raise ValueError("Type parameter must be either 'sms' or 'totp'")
 
         if (
-            type is "totp" and totp_issuer is None or type is "totp" and totp_user is None
+            type is "totp"
+            and totp_issuer is None
+            or type is "totp"
+            and totp_user is None
         ):
-            raise ValueError (
+            raise ValueError(
                 "Incomplete arguments. Need to specify both totp_issuer and totp_user when type is totp"
             )
 
-        if (
-            type is "sms" and phone_number is None
-        ):
-            raise ValueError (
+        if type is "sms" and phone_number is None:
+            raise ValueError(
                 "Incomplete arguments. Need to specify phone_number when type is sms"
             )
 
@@ -84,12 +73,9 @@ class MFA(object):
             token=workos.api_key,
         )
 
-
     def challenge_factor(
-            self,
-            authentication_factor_id=None,
-            sms_template=None,  
-        ):
+        self, authentication_factor_id=None, sms_template=None,
+    ):
 
         """
         Initiates the authentication process for the newly created MFA authorization factor, referred to as a challenge. 
@@ -103,29 +89,24 @@ class MFA(object):
 
         params = {
             "authentication_factor_id": authentication_factor_id,
-            "sms_template": sms_template,  
+            "sms_template": sms_template,
         }
 
-        if (
-            authentication_factor_id is None
-        ):
+        if authentication_factor_id is None:
             raise ValueError(
                 "Incomplete arguments: 'authentication_factor_id' is a required parameter"
             )
 
         return self.request_helper.request(
-                CHALLENGE_PATH,
-                method=REQUEST_METHOD_POST,
-                params=params,
-                token=workos.api_key,
+            CHALLENGE_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
         )
 
-
     def verify_factor(
-            self,
-            authentication_challenge_id=None,
-            code=None,
-        ):
+        self, authentication_challenge_id=None, code=None,
+    ):
 
         """
         Verifies the one time password provided by the end-user.
@@ -139,19 +120,17 @@ class MFA(object):
 
         params = {
             "authentication_challenge_id": authentication_challenge_id,
-            "code": code
+            "code": code,
         }
 
-        if (
-            authentication_challenge_id is None or code is None
-        ):
+        if authentication_challenge_id is None or code is None:
             raise ValueError(
                 "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
             )
 
         return self.request_helper.request(
-                VERIFY_PATH,
-                method=REQUEST_METHOD_POST,
-                params=params,
-                token=workos.api_key,
+            VERIFY_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
         )

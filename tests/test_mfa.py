@@ -1,11 +1,11 @@
-from workos.mfa import MFA
+from workos.mfa import Mfa
 import pytest
 
 
 class TestMfa(object):
     @pytest.fixture(autouse=True)
     def setup(self, set_api_key):
-        self.mfa = MFA()
+        self.mfa = Mfa()
 
     @pytest.fixture
     def mock_enroll_factor_no_type(self):

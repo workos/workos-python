@@ -24,18 +24,22 @@ class Mfa(object):
         return self._request_helper
 
     def enroll_factor(
-        self, type=None, totp_issuer=None, totp_user=None, phone_number=None,
+        self,
+        type=None,
+        totp_issuer=None,
+        totp_user=None,
+        phone_number=None,
     ):
         """
-        Defines the type of MFA authorization factor to be used. Possible values are sms or totp. 
+        Defines the type of MFA authorization factor to be used. Possible values are sms or totp.
 
         Kwargs:
             type (str) - The type of factor to be enrolled (sms or totp)
-            totp_issuer (str) - Name of the Organization 
+            totp_issuer (str) - Name of the Organization
             totp_user (str) - email of user
             phone_number (str) - phone number of the user
-            
-        Returns: Dict containing the authentication factor information.                         
+
+        Returns: Dict containing the authentication factor information.
         """
 
         params = {
@@ -74,17 +78,19 @@ class Mfa(object):
         )
 
     def challenge_factor(
-        self, authentication_factor_id=None, sms_template=None,
+        self,
+        authentication_factor_id=None,
+        sms_template=None,
     ):
 
         """
-        Initiates the authentication process for the newly created MFA authorization factor, referred to as a challenge. 
+        Initiates the authentication process for the newly created MFA authorization factor, referred to as a challenge.
 
         Kwargs:
-            authentication_factor_id (str) - ID of the authorization factor 
-            sms_template (str) - Optional parameter to customize the message for sms type factors. Must include "{{code}}" if used. 
-            
-        Returns: Dict containing the authentication challenge factor details.                         
+            authentication_factor_id (str) - ID of the authorization factor
+            sms_template (str) - Optional parameter to customize the message for sms type factors. Must include "{{code}}" if used.
+
+        Returns: Dict containing the authentication challenge factor details.
         """
 
         params = {
@@ -105,16 +111,18 @@ class Mfa(object):
         )
 
     def verify_factor(
-        self, authentication_challenge_id=None, code=None,
+        self,
+        authentication_challenge_id=None,
+        code=None,
     ):
 
         """
         Verifies the one time password provided by the end-user.
 
         Kwargs:
-            authentication_challenge_id (str) - The ID of the authentication challenge that provided the user the verification code. 
+            authentication_challenge_id (str) - The ID of the authentication challenge that provided the user the verification code.
             code (str) - The verification code sent to and provided by the end user.
-            
+
         Returns: Dict containing the  challenge factor details.
         """
 

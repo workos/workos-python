@@ -2,7 +2,7 @@ from workos.mfa import MFA
 import pytest
 
 
-class TestWebhooks(object):
+class TestMfa(object):
     @pytest.fixture(autouse=True)
     def setup(self, set_api_key):
         self.mfa = MFA()

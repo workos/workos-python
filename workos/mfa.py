@@ -10,7 +10,7 @@ CHALLENGE_PATH = "auth/factors/challenge"
 VERIFY_PATH = "auth/factors/verify"
 
 
-class MFA(object):
+class Mfa(object):
     """Methods to assist in creating, challenging, and verifying Authentication Factors through the WorkOS MFA service."""
 
     @validate_settings(MFA_MODULE)

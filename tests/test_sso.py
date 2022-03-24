@@ -1,9 +1,6 @@
 import json
-from requests import Response
 from six.moves.urllib.parse import parse_qsl, urlparse
-
 import pytest
-
 import workos
 from workos.sso import SSO
 from workos.utils.connection_types import ConnectionType

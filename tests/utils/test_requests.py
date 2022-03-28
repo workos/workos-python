@@ -90,7 +90,10 @@ class TestRequestHelper(object):
         request_id = "request-123"
 
         mock_request_method(
-            "get", {"foo": "bar"}, 400, headers={"X-Request-ID": request_id},
+            "get",
+            {"foo": "bar"},
+            400,
+            headers={"X-Request-ID": request_id},
         )
 
         try:

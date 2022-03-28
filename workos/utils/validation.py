@@ -13,12 +13,25 @@ WEBHOOKS_MODULE = "Webhooks"
 MFA_MODULE = "MFA"
 
 REQUIRED_SETTINGS_FOR_MODULE = {
-    AUDIT_TRAIL_MODULE: ["api_key",],
-    DIRECTORY_SYNC_MODULE: ["api_key",],
-    ORGANIZATIONS_MODULE: ["api_key",],
-    PASSWORDLESS_MODULE: ["api_key",],
-    PORTAL_MODULE: ["api_key",],
-    SSO_MODULE: ["api_key", "client_id",],
+    AUDIT_TRAIL_MODULE: [
+        "api_key",
+    ],
+    DIRECTORY_SYNC_MODULE: [
+        "api_key",
+    ],
+    ORGANIZATIONS_MODULE: [
+        "api_key",
+    ],
+    PASSWORDLESS_MODULE: [
+        "api_key",
+    ],
+    PORTAL_MODULE: [
+        "api_key",
+    ],
+    SSO_MODULE: [
+        "api_key",
+        "client_id",
+    ],
     WEBHOOKS_MODULE: ["api_key"],
     MFA_MODULE: ["api_key"],
 }

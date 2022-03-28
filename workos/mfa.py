@@ -24,7 +24,11 @@ class Mfa(object):
         return self._request_helper
 
     def enroll_factor(
-        self, type=None, totp_issuer=None, totp_user=None, phone_number=None,
+        self,
+        type=None,
+        totp_issuer=None,
+        totp_user=None,
+        phone_number=None,
     ):
         """
         Defines the type of MFA authorization factor to be used. Possible values are sms or totp.
@@ -74,7 +78,9 @@ class Mfa(object):
         )
 
     def challenge_factor(
-        self, authentication_factor_id=None, sms_template=None,
+        self,
+        authentication_factor_id=None,
+        sms_template=None,
     ):
 
         """
@@ -105,7 +111,9 @@ class Mfa(object):
         )
 
     def verify_factor(
-        self, authentication_challenge_id=None, code=None,
+        self,
+        authentication_challenge_id=None,
+        code=None,
     ):
 
         """

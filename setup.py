@@ -20,7 +20,7 @@ dev_requirements = [
 if sys.version_info.major == 3:
     dev_requirements.extend(
         [
-            "black==22.1.0",
+            "black==22.3.0",
             "twine==3.1.1",
         ]
     )

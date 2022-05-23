@@ -58,7 +58,6 @@ class TestAuditTrail(object):
             "action": {
                 "id": "evt_action_123",
                 "name": "house.created",
-                "environment_id": "environment_123",
             },
             "type": "C",
             "actor_name": "Daiki Miyagi",
@@ -95,7 +94,6 @@ class TestAuditTrail(object):
             "action": {
                 "id": "evt_action_123",
                 "name": "house.created",
-                "environment_id": "environment_123",
             },
             "type": "C",
             "actor_name": "Daiki Miyagi",
@@ -144,7 +142,6 @@ class TestAuditTrail(object):
             "action": {
                 "id": "evt_action_123",
                 "name": "house.created",
-                "environment_id": "environment_123",
             },
             "type": "C",
             "actor_name": "Daiki Miyagi",
@@ -187,7 +184,6 @@ class TestAuditTrail(object):
             "action": {
                 "id": "evt_action_123",
                 "name": "house.created",
-                "environment_id": "environment_123",
             },
             "type": "C",
             "actor_name": "Daiki Miyagi",

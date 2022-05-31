@@ -24,6 +24,7 @@ OAUTH_GRANT_TYPE = "authorization_code"
 
 RESPONSE_LIMIT = 10
 
+
 class SSO(object):
     """Offers methods to assist in authenticating through the WorkOS SSO service."""
 

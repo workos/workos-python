@@ -1,5 +1,4 @@
 import workos
-from workos.directory_sync import ORDER_DEFAULT
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_DELETE,

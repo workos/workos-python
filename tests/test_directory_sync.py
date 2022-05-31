@@ -104,7 +104,6 @@ class TestDirectorySync(object):
                     "state": "linked",
                     "type": "gsuite directory",
                     "name": "Ri Jeong Hyeok",
-                    "environment_id": "environment_id",
                     "organization_id": "organization_id",
                     "domain": "crashlandingonyou.com",
                 }

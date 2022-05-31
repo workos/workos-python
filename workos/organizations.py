@@ -1,4 +1,5 @@
 import workos
+from workos.utils.pagiantion_order import Order
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_DELETE,
@@ -38,7 +39,7 @@ class Organizations(object):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Organization ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Organization ID. (Optional)
-            order (str): Sort records in either ascending or descending order by created_at timestamp.
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
 
         Returns:
             dict: Organizations response from WorkOS.
@@ -50,6 +51,10 @@ class Organizations(object):
             "before": before,
             "after": after,
         }
+        if order is not None:
+            if not isinstance(order, Order):
+                raise ValueError("'order' must be of asc or desc order")
+            params["order"] = str(order.value)
         return self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,

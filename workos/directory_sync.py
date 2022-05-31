@@ -1,4 +1,5 @@
 import workos
+from workos.utils.pagiantion_order import Order
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_DELETE,
@@ -41,7 +42,7 @@ class DirectorySync(object):
             limit (int): Maximum number of records to return.
             before (str): Pagination cursor to receive records before a provided Directory ID.
             after (str): Pagination cursor to receive records after a provided Directory ID.
-            order (str): Sort records in either ascending or descending order by created_at timestamp.
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
 
         Returns:
             dict: Directory Users response from WorkOS.
@@ -57,7 +58,9 @@ class DirectorySync(object):
         if directory is not None:
             params["directory"] = directory
         if order is not None:
-            params["order"] = order
+            if not isinstance(order, Order):
+                raise ValueError("'order' must be of asc or desc order")
+            params["order"] = str(order.value)
         return self.request_helper.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
@@ -84,7 +87,7 @@ class DirectorySync(object):
             limit (int): Maximum number of records to return.
             before (str): Pagination cursor to receive records before a provided Directory ID.
             after (str): Pagination cursor to receive records after a provided Directory ID.
-            order (str): Sort records in either ascending or descending order by created_at timestamp.
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
 
         Returns:
             dict: Directory Groups response from WorkOS.
@@ -95,7 +98,9 @@ class DirectorySync(object):
         if directory is not None:
             params["directory"] = directory
         if order is not None:
-            params["order"] = order
+            if not isinstance(order, Order):
+                raise ValueError("'order' must be of asc or desc order")
+            params["order"] = str(order.value)
         return self.request_helper.request(
             "directory_groups",
             method=REQUEST_METHOD_GET,
@@ -152,7 +157,7 @@ class DirectorySync(object):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
-            order (str): Sort records in either ascending or descending order by created_at timestamp.
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
 
         Returns:
             dict: Directories response from WorkOS.

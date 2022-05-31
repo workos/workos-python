@@ -24,6 +24,8 @@ OAUTH_GRANT_TYPE = "authorization_code"
 
 RESPONSE_LIMIT = 10
 
+ORDER_DEFAULT = "normal"
+
 
 class SSO(object):
     """Offers methods to assist in authenticating through the WorkOS SSO service."""
@@ -179,6 +181,7 @@ class SSO(object):
         domain=None,
         organization_id=None,
         limit=RESPONSE_LIMIT,
+        order=ORDER_DEFAULT,
         before=None,
         after=None,
     ):
@@ -190,6 +193,7 @@ class SSO(object):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Connection ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Connection ID. (Optional)
+            order (str): Sort records in either ascending or descending order by created_at timestamp.
 
         Returns:
             dict: Connections response from WorkOS.
@@ -218,6 +222,7 @@ class SSO(object):
             "domain": domain,
             "organization_id": organization_id,
             "limit": limit,
+            "order": order,
             "before": before,
             "after": after,
         }

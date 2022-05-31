@@ -25,7 +25,12 @@ class Organizations(object):
         return self._request_helper
 
     def list_organizations(
-        self, domains=None, limit=RESPONSE_LIMIT, order=ORDER_DEFAULT, before=None, after=None
+        self,
+        domains=None,
+        limit=RESPONSE_LIMIT,
+        order=ORDER_DEFAULT,
+        before=None,
+        after=None,
     ):
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 

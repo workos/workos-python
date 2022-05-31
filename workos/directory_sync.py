@@ -24,7 +24,13 @@ class DirectorySync(object):
         return self._request_helper
 
     def list_users(
-        self, directory=None, group=None, limit=RESPONSE_LIMIT, order=ORDER_DEFAULT, before=None, after=None
+        self,
+        directory=None,
+        group=None,
+        limit=RESPONSE_LIMIT,
+        order=ORDER_DEFAULT,
+        before=None,
+        after=None,
     ):
         """Gets a list of provisioned Users for a Directory.
 
@@ -41,7 +47,12 @@ class DirectorySync(object):
         Returns:
             dict: Directory Users response from WorkOS.
         """
-        params = {"limit": limit, "order": order, "before": before, "after": after, }
+        params = {
+            "limit": limit,
+            "order": order,
+            "before": before,
+            "after": after,
+        }
         if group is not None:
             params["group"] = group
         if directory is not None:
@@ -56,7 +67,13 @@ class DirectorySync(object):
         )
 
     def list_groups(
-        self, directory=None, user=None, limit=RESPONSE_LIMIT, order=ORDER_DEFAULT, before=None, after=None
+        self,
+        directory=None,
+        user=None,
+        limit=RESPONSE_LIMIT,
+        order=ORDER_DEFAULT,
+        before=None,
+        after=None,
     ):
         """Gets a list of provisioned Groups for a Directory .
 

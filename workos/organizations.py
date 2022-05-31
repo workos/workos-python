@@ -28,7 +28,7 @@ class Organizations(object):
         self,
         domains=None,
         limit=RESPONSE_LIMIT,
-        order=ORDER_DEFAULT,
+        order=None,
         before=None,
         after=None,
     ):

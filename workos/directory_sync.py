@@ -7,7 +7,6 @@ from workos.utils.request import (
 from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
 
 RESPONSE_LIMIT = 10
-ORDER_DEFAULT = "normal"
 
 
 class DirectorySync(object):
@@ -28,7 +27,7 @@ class DirectorySync(object):
         directory=None,
         group=None,
         limit=RESPONSE_LIMIT,
-        order=ORDER_DEFAULT,
+        order=None,
         before=None,
         after=None,
     ):
@@ -71,7 +70,7 @@ class DirectorySync(object):
         directory=None,
         user=None,
         limit=RESPONSE_LIMIT,
-        order=ORDER_DEFAULT,
+        order=None,
         before=None,
         after=None,
     ):
@@ -139,7 +138,7 @@ class DirectorySync(object):
         domain=None,
         search=None,
         limit=RESPONSE_LIMIT,
-        order=ORDER_DEFAULT,
+        order=None,
         before=None,
         after=None,
         organization=None,

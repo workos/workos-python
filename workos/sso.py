@@ -24,9 +24,6 @@ OAUTH_GRANT_TYPE = "authorization_code"
 
 RESPONSE_LIMIT = 10
 
-ORDER_DEFAULT = "normal"
-
-
 class SSO(object):
     """Offers methods to assist in authenticating through the WorkOS SSO service."""
 
@@ -181,7 +178,7 @@ class SSO(object):
         domain=None,
         organization_id=None,
         limit=RESPONSE_LIMIT,
-        order=ORDER_DEFAULT,
+        order=None,
         before=None,
         after=None,
     ):

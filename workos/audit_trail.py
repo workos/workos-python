@@ -77,7 +77,6 @@ class AuditTrail(object):
         before=None,
         after=None,
         limit=DEFAULT_EVENT_LIMIT,
-        order=None,
         group=None,
         action=None,
         action_type=None,
@@ -91,6 +90,7 @@ class AuditTrail(object):
         occurred_at_lt=None,
         occurred_at_lte=None,
         search=None,
+        order=None,
     ):
         """Filter for Audit Trail Events.
 

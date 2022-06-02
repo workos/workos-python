@@ -28,9 +28,9 @@ class DirectorySync(object):
         directory=None,
         group=None,
         limit=RESPONSE_LIMIT,
-        order=None,
         before=None,
         after=None,
+        order=None,
     ):
         """Gets a list of provisioned Users for a Directory.
 
@@ -92,7 +92,7 @@ class DirectorySync(object):
         Returns:
             dict: Directory Groups response from WorkOS.
         """
-        params = {"limit": limit, "order": order, "before": before, "after": after}
+        params = {"limit": limit,"before": before, "after": after, "order": order }
         if user is not None:
             params["user"] = user
         if directory is not None:

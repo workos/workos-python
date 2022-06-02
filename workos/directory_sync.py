@@ -92,7 +92,7 @@ class DirectorySync(object):
         Returns:
             dict: Directory Groups response from WorkOS.
         """
-        params = {"limit": limit,"before": before, "after": after, "order": order }
+        params = {"limit": limit, "before": before, "after": after, "order": order}
         if user is not None:
             params["user"] = user
         if directory is not None:

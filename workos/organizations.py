@@ -28,9 +28,9 @@ class Organizations(object):
         self,
         domains=None,
         limit=RESPONSE_LIMIT,
-        order=None,
         before=None,
         after=None,
+        order=None,
     ):
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
@@ -47,9 +47,9 @@ class Organizations(object):
         params = {
             "domains": domains,
             "limit": limit,
-            "order": order,
             "before": before,
             "after": after,
+            "order": order,
         }
         if order is not None:
             if not isinstance(order, Order):

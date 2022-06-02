@@ -180,9 +180,9 @@ class SSO(object):
         domain=None,
         organization_id=None,
         limit=RESPONSE_LIMIT,
-        order=None,
         before=None,
         after=None,
+        order=None,
     ):
         """Gets details for existing Connections.
 
@@ -221,9 +221,9 @@ class SSO(object):
             "domain": domain,
             "organization_id": organization_id,
             "limit": limit,
-            "order": order,
             "before": before,
             "after": after,
+            "order": order,
         }
         if order is not None:
             if not isinstance(order, Order):

@@ -49,9 +49,9 @@ class DirectorySync(object):
         """
         params = {
             "limit": limit,
-            "order": order,
             "before": before,
             "after": after,
+            "order": order,
         }
         if group is not None:
             params["group"] = group
@@ -73,9 +73,9 @@ class DirectorySync(object):
         directory=None,
         user=None,
         limit=RESPONSE_LIMIT,
-        order=None,
         before=None,
         after=None,
+        order=None,
     ):
         """Gets a list of provisioned Groups for a Directory .
 
@@ -143,10 +143,10 @@ class DirectorySync(object):
         domain=None,
         search=None,
         limit=RESPONSE_LIMIT,
-        order=None,
         before=None,
         after=None,
         organization=None,
+        order=None,
     ):
         """Gets details for existing Directories.
 
@@ -167,9 +167,9 @@ class DirectorySync(object):
             "organization_id": organization,
             "search": search,
             "limit": limit,
-            "order": order,
             "before": before,
             "after": after,
+            "order": order,
         }
         return self.request_helper.request(
             "directories",

@@ -1,4 +1,5 @@
 import workos
+from workos.utils.pagiantion_order import Order
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_DELETE,
@@ -23,7 +24,13 @@ class DirectorySync(object):
         return self._request_helper
 
     def list_users(
-        self, directory=None, group=None, limit=RESPONSE_LIMIT, before=None, after=None
+        self,
+        directory=None,
+        group=None,
+        limit=RESPONSE_LIMIT,
+        before=None,
+        after=None,
+        order=None,
     ):
         """Gets a list of provisioned Users for a Directory.
 
@@ -35,15 +42,25 @@ class DirectorySync(object):
             limit (int): Maximum number of records to return.
             before (str): Pagination cursor to receive records before a provided Directory ID.
             after (str): Pagination cursor to receive records after a provided Directory ID.
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
 
         Returns:
             dict: Directory Users response from WorkOS.
         """
-        params = {"limit": limit, "before": before, "after": after}
+        params = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
         if group is not None:
             params["group"] = group
         if directory is not None:
             params["directory"] = directory
+        if order is not None:
+            if not isinstance(order, Order):
+                raise ValueError("'order' must be of asc or desc order")
+            params["order"] = str(order.value)
         return self.request_helper.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
@@ -52,7 +69,13 @@ class DirectorySync(object):
         )
 
     def list_groups(
-        self, directory=None, user=None, limit=RESPONSE_LIMIT, before=None, after=None
+        self,
+        directory=None,
+        user=None,
+        limit=RESPONSE_LIMIT,
+        before=None,
+        after=None,
+        order=None,
     ):
         """Gets a list of provisioned Groups for a Directory .
 
@@ -64,15 +87,20 @@ class DirectorySync(object):
             limit (int): Maximum number of records to return.
             before (str): Pagination cursor to receive records before a provided Directory ID.
             after (str): Pagination cursor to receive records after a provided Directory ID.
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
 
         Returns:
             dict: Directory Groups response from WorkOS.
         """
-        params = {"limit": limit, "before": before, "after": after}
+        params = {"limit": limit, "before": before, "after": after, "order": order}
         if user is not None:
             params["user"] = user
         if directory is not None:
             params["directory"] = directory
+        if order is not None:
+            if not isinstance(order, Order):
+                raise ValueError("'order' must be of asc or desc order")
+            params["order"] = str(order.value)
         return self.request_helper.request(
             "directory_groups",
             method=REQUEST_METHOD_GET,
@@ -118,6 +146,7 @@ class DirectorySync(object):
         before=None,
         after=None,
         organization=None,
+        order=None,
     ):
         """Gets details for existing Directories.
 
@@ -128,6 +157,7 @@ class DirectorySync(object):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
 
         Returns:
             dict: Directories response from WorkOS.
@@ -139,6 +169,7 @@ class DirectorySync(object):
             "limit": limit,
             "before": before,
             "after": after,
+            "order": order,
         }
         return self.request_helper.request(
             "directories",

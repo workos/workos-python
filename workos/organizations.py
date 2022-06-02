@@ -1,4 +1,5 @@
 import workos
+from workos.utils.pagiantion_order import Order
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_DELETE,
@@ -24,7 +25,12 @@ class Organizations(object):
         return self._request_helper
 
     def list_organizations(
-        self, domains=None, limit=RESPONSE_LIMIT, before=None, after=None
+        self,
+        domains=None,
+        limit=RESPONSE_LIMIT,
+        before=None,
+        after=None,
+        order=None,
     ):
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
@@ -33,6 +39,7 @@ class Organizations(object):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Organization ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Organization ID. (Optional)
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
 
         Returns:
             dict: Organizations response from WorkOS.
@@ -42,7 +49,12 @@ class Organizations(object):
             "limit": limit,
             "before": before,
             "after": after,
+            "order": order,
         }
+        if order is not None:
+            if not isinstance(order, Order):
+                raise ValueError("'order' must be of asc or desc order")
+            params["order"] = str(order.value)
         return self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,

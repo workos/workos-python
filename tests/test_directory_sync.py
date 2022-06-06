@@ -41,7 +41,8 @@ class TestDirectorySync(object):
                             "lastModified": "2020-02-21T00:36:44.638Z",
                         },
                         "emails": [
-                            {"value": "yoon@seri.com", "type": "work", "primary": True}
+                            {"value": "yoon@seri.com",
+                                "type": "work", "primary": True}
                         ],
                     },
                     "id": "directory_usr_id",
@@ -88,7 +89,15 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_group(self):
-        return {"name": "Developers", "id": "directory_grp_id"}
+        return {
+            "id": "directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE",
+            "idp_id": "Sales",
+            "directory_id": "directory_01FHGRXQEXDXXXXXXXCM2290ZR",
+            "name": "Sales",
+            "created_at": "2021-10-08T20:19:13.381Z",
+            "updated_at": "2021-10-15T07:49:43.448Z",
+            "raw_attributes": {},
+        }
 
     @pytest.fixture
     def mock_user_groups(self):
@@ -178,7 +187,8 @@ class TestDirectorySync(object):
     def test_get_directory(self, mock_directory, mock_request_method):
         mock_request_method("get", mock_directory, 200)
 
-        directory = self.directory_sync.get_directory(directory_id="directory_id")
+        directory = self.directory_sync.get_directory(
+            directory_id="directory_id")
 
         assert directory == mock_directory
 
@@ -190,6 +200,7 @@ class TestDirectorySync(object):
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
-        response = self.directory_sync.delete_directory(directory="directory_id")
+        response = self.directory_sync.delete_directory(
+            directory="directory_id")
 
         assert response is None

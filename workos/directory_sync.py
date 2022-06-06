@@ -6,7 +6,7 @@ from workos.utils.request import (
     REQUEST_METHOD_GET,
 )
 from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
-from workos.resources.sso import WorkOSDirectoryGroup
+from workos.resources.directory_sync import WorkOSDirectoryGroup
 
 RESPONSE_LIMIT = 10
 
@@ -93,7 +93,8 @@ class DirectorySync(object):
         Returns:
             dict: Directory Groups response from WorkOS.
         """
-        params = {"limit": limit, "before": before, "after": after, "order": order}
+        params = {"limit": limit, "before": before,
+                  "after": after, "order": order}
         if user is not None:
             params["user"] = user
         if directory is not None:
@@ -139,7 +140,7 @@ class DirectorySync(object):
             token=workos.api_key,
         )
 
-        return WorkOSDirectoryGroup.construct_from_response(response)
+        return WorkOSDirectoryGroup.construct_from_response(response).to_dict()
 
     def list_directories(
         self,

@@ -41,8 +41,7 @@ class TestDirectorySync(object):
                             "lastModified": "2020-02-21T00:36:44.638Z",
                         },
                         "emails": [
-                            {"value": "yoon@seri.com",
-                                "type": "work", "primary": True}
+                            {"value": "yoon@seri.com", "type": "work", "primary": True}
                         ],
                     },
                     "id": "directory_usr_id",
@@ -187,8 +186,7 @@ class TestDirectorySync(object):
     def test_get_directory(self, mock_directory, mock_request_method):
         mock_request_method("get", mock_directory, 200)
 
-        directory = self.directory_sync.get_directory(
-            directory_id="directory_id")
+        directory = self.directory_sync.get_directory(directory_id="directory_id")
 
         assert directory == mock_directory
 
@@ -200,7 +198,6 @@ class TestDirectorySync(object):
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
-        response = self.directory_sync.delete_directory(
-            directory="directory_id")
+        response = self.directory_sync.delete_directory(directory="directory_id")
 
         assert response is None

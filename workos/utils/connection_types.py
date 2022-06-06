@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class ConnectionType(Enum):
-    ADFSSAML = ("ADFSSAML",)
+    ADFSSAML = "ADFSSAML"
     AdpOidc = "AdpOidc"
     Auth0SAML = "Auth0SAML"
     AzureSAML = "AzureSAML"

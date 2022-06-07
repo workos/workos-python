@@ -4,6 +4,7 @@ from workos.utils.request import (
     REQUEST_METHOD_POST,
 )
 from workos.utils.validation import MFA_MODULE, validate_settings
+from workos.resources.mfa import WorkOSChallenge
 
 ENROLL_PATH = "auth/factors/enroll"
 CHALLENGE_PATH = "auth/factors/challenge"
@@ -82,7 +83,6 @@ class Mfa(object):
         authentication_factor_id=None,
         sms_template=None,
     ):
-
         """
         Initiates the authentication process for the newly created MFA authorization factor, referred to as a challenge.
 
@@ -103,19 +103,20 @@ class Mfa(object):
                 "Incomplete arguments: 'authentication_factor_id' is a required parameter"
             )
 
-        return self.request_helper.request(
+        response = self.request_helper.request(
             CHALLENGE_PATH,
             method=REQUEST_METHOD_POST,
             params=params,
             token=workos.api_key,
         )
 
+        return WorkOSChallenge.construct_from_response(response).to_dict()
+
     def verify_factor(
         self,
         authentication_challenge_id=None,
         code=None,
     ):
-
         """
         Verifies the one time password provided by the end-user.
 

@@ -68,6 +68,8 @@ class TestMfa(object):
             "id": "auth_challenge_01FXNX3BTZPPJVKF65NNWGRHZJ",
             "created_at": "2022-03-08T23:16:18.532Z",
             "updated_at": "2022-03-08T23:16:18.532Z",
+            "expires_at": "2022-03-08T23:16:18.532Z",
+            "code": "XXX123XXX",
             "authentication_factor_id": "auth_factor_01FXNWW32G7F3MG8MYK5D1HJJM",
         }
 

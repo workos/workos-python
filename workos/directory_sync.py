@@ -6,6 +6,7 @@ from workos.utils.request import (
     REQUEST_METHOD_GET,
 )
 from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
+from workos.resources.directory_sync import WorkOSDirectoryGroup
 
 RESPONSE_LIMIT = 10
 
@@ -132,11 +133,13 @@ class DirectorySync(object):
         Returns:
             dict: Directory Group response from WorkOS.
         """
-        return self.request_helper.request(
+        response = self.request_helper.request(
             "directory_groups/{group}".format(group=group),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
+
+        return WorkOSDirectoryGroup.construct_from_response(response).to_dict()
 
     def list_directories(
         self,

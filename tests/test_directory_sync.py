@@ -88,7 +88,15 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_group(self):
-        return {"name": "Developers", "id": "directory_grp_id"}
+        return {
+            "id": "directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE",
+            "idp_id": "Sales",
+            "directory_id": "directory_01FHGRXQEXDXXXXXXXCM2290ZR",
+            "name": "Sales",
+            "created_at": "2021-10-08T20:19:13.381Z",
+            "updated_at": "2021-10-15T07:49:43.448Z",
+            "raw_attributes": {},
+        }
 
     @pytest.fixture
     def mock_user_groups(self):

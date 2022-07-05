@@ -32,12 +32,8 @@ class TestMfa(object):
         return ["Your code is {{code}}"]
 
     @pytest.fixture
-    def mock_verify_factor_payload(self):
-        return ["auth_challenge_01FWRY5H0XXXX0JGGVTY6QFX7X", "626592"]
-
-    @pytest.fixture
     def mock_verify_challenge_payload(self):
-        return ["626592"]
+        return ["auth_challenge_01FWRY5H0XXXX0JGGVTY6QFX7X", "626592"]
 
     @pytest.fixture
     def mock_enroll_factor_response_sms(self):
@@ -174,27 +170,27 @@ class TestMfa(object):
         )
         assert challenge_factor == mock_challenge_factor_response
 
-    def test_legacy_verify_factor_no_id(self, mock_verify_factor_payload):
+    def test_verify_factor_no_id(self, mock_verify_challenge_payload):
         with pytest.raises(ValueError) as err:
             self.mfa.verify_factor(
-                authentication_challenge_id=None, code=mock_verify_factor_payload[1]
+                authentication_challenge_id=None, code=mock_verify_challenge_payload[1]
             )
         assert (
             "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
             in str(err.value)
         )
 
-    def test_legacy_verify_factor_no_code(self, mock_verify_factor_payload):
+    def test_verify_factor_no_code(self, mock_verify_challenge_payload):
         with pytest.raises(ValueError) as err:
             self.mfa.verify_factor(
-                authentication_challenge_id=mock_verify_factor_payload[0], code=None
+                authentication_challenge_id=mock_verify_challenge_payload[0], code=None
             )
         assert (
             "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
             in str(err.value)
         )
 
-    def test_legacy_verify_success(
+    def test_verify_factor_success(
         self, mock_verify_factor_response, mock_request_method
     ):
         mock_request_method("post", mock_verify_factor_response, 200)
@@ -203,9 +199,9 @@ class TestMfa(object):
         )
         assert verify_factor == mock_verify_factor_response
 
-    def test_verify_factor_no_id(self, mock_verify_challenge_payload):
+    def test_verify_challenge_no_id(self, mock_verify_challenge_payload):
         with pytest.raises(ValueError) as err:
-            self.mfa.verify_factor(
+            self.mfa.verify_challenge(
                 authentication_challenge_id=None, code=mock_verify_challenge_payload[1]
             )
             assert (
@@ -213,9 +209,9 @@ class TestMfa(object):
                 in str(err.value)
             )
 
-    def test_verify_factor_no_code(self, mock_verify_challenge_payload):
+    def test_verify_challenge_no_code(self, mock_verify_challenge_payload):
         with pytest.raises(ValueError) as err:
-            self.mfa.verify_factor(
+            self.mfa.verify_challenge(
                 authentication_challenge_id=mock_verify_challenge_payload[0], code=None
             )
             assert (
@@ -225,7 +221,7 @@ class TestMfa(object):
 
     def test_verify_success(self, mock_verify_challenge_response, mock_request_method):
         mock_request_method("post", mock_verify_challenge_response, 200)
-        verify_factor = self.mfa.verify_factor(
+        verify_challenge = self.mfa.verify_challenge(
             "auth_challenge_01FXNXH8Y2K3YVWJ10P139A6DT", "093647"
         )
-        assert verify_factor == mock_verify_challenge_response
+        assert verify_challenge == mock_verify_challenge_response

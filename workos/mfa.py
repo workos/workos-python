@@ -53,20 +53,20 @@ class Mfa(object):
         if type is None:
             raise ValueError("Incomplete arguments. Need to specify a type of factor")
 
-        if type is not "sms" and type is not "totp":
+        if type not in ["sms", "totp"]:
             raise ValueError("Type parameter must be either 'sms' or 'totp'")
 
         if (
-            type is "totp"
+            type == "totp"
             and totp_issuer is None
-            or type is "totp"
+            or type == "totp"
             and totp_user is None
         ):
             raise ValueError(
                 "Incomplete arguments. Need to specify both totp_issuer and totp_user when type is totp"
             )
 
-        if type is "sms" and phone_number is None:
+        if type == "sms" and phone_number is None:
             raise ValueError(
                 "Incomplete arguments. Need to specify phone_number when type is sms"
             )

@@ -1,3 +1,5 @@
+from warnings import warn
+
 import workos
 from workos.utils.request import (
     RequestHelper,
@@ -5,10 +7,6 @@ from workos.utils.request import (
 )
 from workos.utils.validation import MFA_MODULE, validate_settings
 from workos.resources.mfa import WorkOSChallenge
-
-ENROLL_PATH = "auth/factors/enroll"
-CHALLENGE_PATH = "auth/factors/challenge"
-VERIFY_PATH = "auth/factors/verify"
 
 
 class Mfa(object):
@@ -72,7 +70,7 @@ class Mfa(object):
             )
 
         return self.request_helper.request(
-            ENROLL_PATH,
+            "auth/factors/enroll",
             method=REQUEST_METHOD_POST,
             params=params,
             token=workos.api_key,
@@ -94,7 +92,6 @@ class Mfa(object):
         """
 
         params = {
-            "authentication_factor_id": authentication_factor_id,
             "sms_template": sms_template,
         }
 
@@ -104,7 +101,9 @@ class Mfa(object):
             )
 
         response = self.request_helper.request(
-            CHALLENGE_PATH,
+            "auth/factors/{factor_id}/challenge".format(
+                factor_id=authentication_factor_id
+            ),
             method=REQUEST_METHOD_POST,
             params=params,
             token=workos.api_key,
@@ -127,6 +126,11 @@ class Mfa(object):
         Returns: Dict containing the  challenge factor details.
         """
 
+        warn(
+            "'verify_factor' is deprecated. Please use 'verify_challenge' instead.",
+            DeprecationWarning,
+        )
+
         params = {
             "authentication_challenge_id": authentication_challenge_id,
             "code": code,
@@ -138,7 +142,40 @@ class Mfa(object):
             )
 
         return self.request_helper.request(
-            VERIFY_PATH,
+            "auth/factors/verify",
+            method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
+        )
+
+    def verify_challenge(
+        self,
+        authentication_challenge_id=None,
+        code=None,
+    ):
+        """
+        Verifies the one time password provided by the end-user.
+
+        Kwargs:
+            authentication_challenge_id (str) - The ID of the authentication challenge that provided the user the verification code.
+            code (str) - The verification code sent to and provided by the end user.
+
+        Returns: Dict containing the  challenge factor details.
+        """
+
+        params = {
+            "code": code,
+        }
+
+        if authentication_challenge_id is None or code is None:
+            raise ValueError(
+                "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
+            )
+
+        return self.request_helper.request(
+            "auth/challenges/{challenge_id}/verify".format(
+                challenge_id=authentication_challenge_id
+            ),
             method=REQUEST_METHOD_POST,
             params=params,
             token=workos.api_key,

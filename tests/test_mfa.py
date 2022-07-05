@@ -29,7 +29,7 @@ class TestMfa(object):
 
     @pytest.fixture
     def mock_challenge_factor_payload(self):
-        return ["Your code is {{code}}"]
+        return ["auth_factor_01FWRSPQ2XXXQKBCY5AAW5T59W", "Your code is {{code}}"]
 
     @pytest.fixture
     def mock_verify_challenge_payload(self):
@@ -191,13 +191,13 @@ class TestMfa(object):
         )
 
     def test_verify_factor_success(
-        self, mock_verify_factor_response, mock_request_method
+        self, mock_verify_challenge_response, mock_request_method
     ):
-        mock_request_method("post", mock_verify_factor_response, 200)
+        mock_request_method("post", mock_verify_challenge_response, 200)
         verify_factor = self.mfa.verify_factor(
             "auth_challenge_01FXNXH8Y2K3YVWJ10P139A6DT", "093647"
         )
-        assert verify_factor == mock_verify_factor_response
+        assert verify_factor == mock_verify_challenge_response
 
     def test_verify_challenge_no_id(self, mock_verify_challenge_payload):
         with pytest.raises(ValueError) as err:

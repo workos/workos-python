@@ -96,23 +96,26 @@ class Organizations(object):
             token=workos.api_key,
         )
 
-    def update_organization(self, organization, name, domains=None):
+    def update_organization(
+        self, organization, name, allow_profiles_outside_organization=None, domains=None
+    ):
         """Update an organization
 
         Args:
             organization(str) - Organization's unique identifier.
             name (str) - A unique, descriptive name for the organization.
-            organization[allow_profiles_outside_organization] (boolean) - Whether Connections
-                    within the Organization allow profiles that are outside of the Organization's
-                    configured User Email Domains. (Optional)
+            allow_profiles_outside_organization (boolean) - Whether Connections
+                within the Organization allow profiles that are outside of the Organization's
+                configured User Email Domains. (Optional)
             domains (list) - List of domains that belong to the organization. (Optional)
 
         Returns:
             dict: Updated Organization response from WorkOS.
         """
         params = {
-            "domains": domains,
             "name": name,
+            "domains": domains,
+            "allow_profiles_outside_organization": allow_profiles_outside_organization,
         }
         return self.request_helper.request(
             "organizations/{organization}".format(organization=organization),

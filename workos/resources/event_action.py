@@ -8,4 +8,4 @@ class WorkOSEventAction(WorkOSBaseResource):
         OBJECT_FIELDS (list): List of fields a WorkOSEventAction is comprised of.
     """
 
-    OBJECT_FIELDS = ["id", "name", "environment_id"]
+    OBJECT_FIELDS = ["id", "name"]

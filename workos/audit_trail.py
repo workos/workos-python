@@ -1,4 +1,5 @@
 import workos
+from workos.utils.pagiantion_order import Order
 from workos.exceptions import ConfigurationException
 from workos.resources.event import WorkOSEvent
 from workos.utils.request import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST
@@ -89,6 +90,7 @@ class AuditTrail(object):
         occurred_at_lt=None,
         occurred_at_lte=None,
         search=None,
+        order=None,
     ):
         """Filter for Audit Trail Events.
 
@@ -96,6 +98,7 @@ class AuditTrail(object):
             before (str) - Event ID to look before
             after (str) - Event ID to look after
             limit (int) - Number of Events to return
+            order (Order) - Order to paginate records
             group (str|list) - Group or groups to filter for
             action (str|list) - Action or actions to filter for
             action_type (str|list) - Action type or types to filter for
@@ -120,6 +123,7 @@ class AuditTrail(object):
             "before": before,
             "after": after,
             "limit": limit,
+            "order": order,
         }
 
         if group is not None:

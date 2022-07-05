@@ -4,6 +4,7 @@ from requests import Request
 from warnings import warn
 
 import workos
+from workos.utils.pagiantion_order import Order
 from workos.exceptions import ConfigurationException
 from workos.resources.sso import WorkOSProfile, WorkOSProfileAndToken
 from workos.utils.connection_types import ConnectionType
@@ -181,6 +182,7 @@ class SSO(object):
         limit=RESPONSE_LIMIT,
         before=None,
         after=None,
+        order=None,
     ):
         """Gets details for existing Connections.
 
@@ -190,6 +192,7 @@ class SSO(object):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Connection ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Connection ID. (Optional)
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
 
         Returns:
             dict: Connections response from WorkOS.
@@ -220,7 +223,12 @@ class SSO(object):
             "limit": limit,
             "before": before,
             "after": after,
+            "order": order,
         }
+        if order is not None:
+            if not isinstance(order, Order):
+                raise ValueError("'order' must be of asc or desc order")
+            params["order"] = str(order.value)
         return self.request_helper.request(
             "connections",
             method=REQUEST_METHOD_GET,

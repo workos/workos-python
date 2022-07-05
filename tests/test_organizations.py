@@ -33,6 +33,7 @@ class TestOrganizations(object):
             "name": "Example Organization",
             "object": "organization",
             "id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            "allow_profiles_outside_organization": True,
             "domains": [
                 {
                     "domain": "example.io",
@@ -107,6 +108,7 @@ class TestOrganizations(object):
             organization="org_01EHT88Z8J8795GZNQ4ZP1J81T",
             name="Example Organization",
             domains=["example.io"],
+            allow_profiles_outside_organization=True,
         )
 
         assert updated_organization["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
@@ -118,6 +120,7 @@ class TestOrganizations(object):
                 "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
             }
         ]
+        assert updated_organization["allow_profiles_outside_organization"]
 
     def test_delete_organization(self, setup, mock_raw_request_method):
         mock_raw_request_method(

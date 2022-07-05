@@ -1,7 +1,7 @@
 # WorkOS Python Library
 
 ![PyPI](https://img.shields.io/pypi/v/workos)
-[![Build Status](https://workos.semaphoreci.com/badges/workos-python/branches/master.svg?style=shields&key=9e4cb5bb-86a4-4938-9ec2-fc9f9fc512be)](https://workos.semaphoreci.com/projects/workos-python)
+[![Build Status](https://workos.semaphoreci.com/badges/workos-python/branches/main.svg?style=shields&key=9e4cb5bb-86a4-4938-9ec2-fc9f9fc512be)](https://workos.semaphoreci.com/projects/workos-python)
 
 The WorkOS library for Python provides convenient access to the WorkOS API from applications written in Python, [hosted on PyPi](https://pypi.org/project/workos/)
 

@@ -131,22 +131,7 @@ class Mfa(object):
             DeprecationWarning,
         )
 
-        params = {
-            "authentication_challenge_id": authentication_challenge_id,
-            "code": code,
-        }
-
-        if authentication_challenge_id is None or code is None:
-            raise ValueError(
-                "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
-            )
-
-        return self.request_helper.request(
-            "auth/factors/verify",
-            method=REQUEST_METHOD_POST,
-            params=params,
-            token=workos.api_key,
-        )
+        return self.verify_challenge(authentication_challenge_id, code)
 
     def verify_challenge(
         self,

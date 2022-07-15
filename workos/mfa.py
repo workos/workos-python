@@ -119,6 +119,8 @@ class Mfa(object):
         """
         Verifies the one time password provided by the end-user.
 
+        Deprecated: Please use `verify_challenge` instead.
+
         Kwargs:
             authentication_challenge_id (str) - The ID of the authentication challenge that provided the user the verification code.
             code (str) - The verification code sent to and provided by the end user.

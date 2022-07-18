@@ -6,7 +6,11 @@ from workos.utils.request import (
     REQUEST_METHOD_POST,
 )
 from workos.utils.validation import MFA_MODULE, validate_settings
-from workos.resources.mfa import WorkOSChallenge
+from workos.resources.mfa import (
+    WorkOSAuthenticationFactor,
+    WorkOSChallenge,
+    WorkOSChallengeVerification,
+)
 
 
 class Mfa(object):
@@ -69,12 +73,14 @@ class Mfa(object):
                 "Incomplete arguments. Need to specify phone_number when type is sms"
             )
 
-        return self.request_helper.request(
+        response = self.request_helper.request(
             "auth/factors/enroll",
             method=REQUEST_METHOD_POST,
             params=params,
             token=workos.api_key,
         )
+
+        return WorkOSAuthenticationFactor.construct_from_response(response).to_dict()
 
     def challenge_factor(
         self,
@@ -159,7 +165,7 @@ class Mfa(object):
                 "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
             )
 
-        return self.request_helper.request(
+        response = self.request_helper.request(
             "auth/challenges/{challenge_id}/verify".format(
                 challenge_id=authentication_challenge_id
             ),
@@ -167,3 +173,5 @@ class Mfa(object):
             params=params,
             token=workos.api_key,
         )
+
+        return WorkOSChallengeVerification.construct_from_response(response).to_dict()

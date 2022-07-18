@@ -56,23 +56,19 @@ class TestSSO(object):
     def mock_connection(self):
         return {
             "object": "connection",
-            "id": "conn_id",
-            "status": "linked",
-            "name": "Google OAuth 2.0",
+            "id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "connection_type": "GoogleOAuth",
-            "oauth_uid": "oauth-uid.apps.googleusercontent.com",
-            "oauth_secret": "oauth-secret",
-            "oauth_redirect_uri": "https://auth.workos.com/sso/oauth/google/chicken/callback",
-            "saml_entity_id": None,
-            "saml_idp_url": None,
-            "saml_relying_party_trust_cert": None,
-            "saml_x509_certs": None,
+            "name": "Foo Corp",
+            "state": "active",
+            "created_at": "2021-06-25T19:07:33.155Z",
+            "updated_at": "2021-06-25T19:07:33.155Z",
             "domains": [
                 {
+                    "id": "conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB",
                     "object": "connection_domain",
-                    "id": "domain_id",
-                    "domain": "terrace-house.com",
-                },
+                    "domain": "foo-corp.com",
+                }
             ],
         }
 

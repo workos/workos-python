@@ -7,7 +7,8 @@ from workos.utils.request import (
 )
 from workos.utils.validation import MFA_MODULE, validate_settings
 from workos.resources.mfa import (
-    WorkOSAuthenticationFactor,
+    WorkOSAuthenticationFactorSms,
+    WorkOSAuthenticationFactorTotp,
     WorkOSChallenge,
     WorkOSChallengeVerification,
 )
@@ -80,7 +81,12 @@ class Mfa(object):
             token=workos.api_key,
         )
 
-        return WorkOSAuthenticationFactor.construct_from_response(response).to_dict()
+        if type == "totp":
+            return WorkOSAuthenticationFactorTotp.construct_from_response(
+                response
+            ).to_dict()
+
+        return WorkOSAuthenticationFactorSms.construct_from_response(response).to_dict()
 
     def challenge_factor(
         self,

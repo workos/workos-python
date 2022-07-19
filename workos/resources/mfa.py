@@ -1,7 +1,7 @@
 from workos.resources.base import WorkOSBaseResource
 
 
-class WorkOSAuthenticationFactor(WorkOSBaseResource):
+class WorkOSAuthenticationFactorTotp(WorkOSBaseResource):
     """Representation of a MFA Authentication Factor Response as returned by WorkOS through the MFA feature.
 
     Attributes:
@@ -20,13 +20,43 @@ class WorkOSAuthenticationFactor(WorkOSBaseResource):
     @classmethod
     def construct_from_response(cls, response):
         enroll_factor_response = super(
-            WorkOSAuthenticationFactor, cls
+            WorkOSAuthenticationFactorTotp, cls
         ).construct_from_response(response)
 
         return enroll_factor_response
 
     def to_dict(self):
-        challenge_response_dict = super(WorkOSAuthenticationFactor, self).to_dict()
+        challenge_response_dict = super(WorkOSAuthenticationFactorTotp, self).to_dict()
+
+        return challenge_response_dict
+
+
+class WorkOSAuthenticationFactorSms(WorkOSBaseResource):
+    """Representation of a MFA Authentication Factor Response as returned by WorkOS through the MFA feature.
+
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSAuthenticationFactor is comprised of.
+    """
+
+    OBJECT_FIELDS = [
+        "object",
+        "id",
+        "created_at",
+        "updated_at",
+        "type",
+        "sms",
+    ]
+
+    @classmethod
+    def construct_from_response(cls, response):
+        enroll_factor_response = super(
+            WorkOSAuthenticationFactorSms, cls
+        ).construct_from_response(response)
+
+        return enroll_factor_response
+
+    def to_dict(self):
+        challenge_response_dict = super(WorkOSAuthenticationFactorSms, self).to_dict()
 
         return challenge_response_dict
 
@@ -44,7 +74,6 @@ class WorkOSChallenge(WorkOSBaseResource):
         "created_at",
         "updated_at",
         "expires_at",
-        "code",
         "authentication_factor_id",
     ]
 
@@ -70,13 +99,8 @@ class WorkOSChallengeVerification(WorkOSBaseResource):
     """
 
     OBJECT_FIELDS = [
-        "object",
-        "id",
-        "created_at",
-        "updated_at",
-        "expires_at",
-        "code",
-        "authentication_factor_id",
+        "challenge",
+        "valid",
     ]
 
     @classmethod

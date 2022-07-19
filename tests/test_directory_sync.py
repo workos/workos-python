@@ -78,7 +78,7 @@ class TestDirectorySync(object):
                     "name": "Engineering",
                     "created_at": "2021-06-25T19:07:33.155Z",
                     "updated_at": "2021-06-25T19:07:33.155Z",
-                    "raw_attributes": {...},
+                    "raw_attributes": {"work_email": "124@gmail.com"},
                 }
             ],
             "state": "active",

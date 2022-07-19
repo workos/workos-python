@@ -5,8 +5,13 @@ from workos.utils.request import (
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
 )
+
 from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
-from workos.resources.directory_sync import WorkOSDirectoryGroup
+from workos.resources.directory_sync import (
+    WorkOSDirectoryGroup,
+    WorkOSDirectory,
+    WorkOSDirectoryUser,
+)
 
 RESPONSE_LIMIT = 10
 
@@ -118,11 +123,13 @@ class DirectorySync(object):
         Returns:
             dict: Directory User response from WorkOS.
         """
-        return self.request_helper.request(
+        response = self.request_helper.request(
             "directory_users/{user}".format(user=user),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
+
+        return WorkOSDirectoryUser.construct_from_response(response).to_dict()
 
     def get_group(self, group):
         """Gets details for a single provisioned Directory Group.
@@ -140,6 +147,25 @@ class DirectorySync(object):
         )
 
         return WorkOSDirectoryGroup.construct_from_response(response).to_dict()
+
+    def get_directory(self, directory):
+        """Gets details for a single Directory
+
+        Args:
+            directory (str): Directory unique identifier.
+
+        Returns:
+            dict: Directory response from WorkOS
+
+        """
+
+        response = self.request_helper.request(
+            "directories/{directory}".format(directory=directory),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        return WorkOSDirectory.construct_from_response(response).to_dict()
 
     def list_directories(
         self,
@@ -181,20 +207,24 @@ class DirectorySync(object):
             token=workos.api_key,
         )
 
-    def get_directory(self, directory_id):
-        """Gets details for a single Directory.
+    def get_directory(self, directory):
+        """Gets details for a single Directory
 
         Args:
-            directory_id (str): Directory unique identifier.
+            directory (str): Directory unique identifier.
 
         Returns:
-            dict: Directory response from WorkOS.
+            dict: Directory response from WorkOS
+
         """
-        return self.request_helper.request(
-            "directories/{directory_id}".format(directory_id=directory_id),
+
+        response = self.request_helper.request(
+            "directories/{directory}".format(directory=directory),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
+
+        return WorkOSDirectory.construct_from_response(response).to_dict()
 
     def delete_directory(self, directory):
         """Delete one existing Directory.

@@ -51,3 +51,36 @@ class WorkOSProfileAndToken(WorkOSBaseResource):
         profile_and_token_dict["profile"] = profile_dict
 
         return profile_and_token_dict
+
+
+class WorkOSConnection(WorkOSBaseResource):
+    """Representation of a Connection Response as returned by WorkOS through the SSO feature.
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSConnection is comprised of.
+    """
+
+    OBJECT_FIELDS = [
+        "object",
+        "id",
+        "organization_id",
+        "connection_type",
+        "name",
+        "state",
+        "created_at",
+        "updated_at",
+        "status",
+        "domains",
+    ]
+
+    @classmethod
+    def construct_from_response(cls, response):
+        connection_response = super(WorkOSConnection, cls).construct_from_response(
+            response
+        )
+
+        return connection_response
+
+    def to_dict(self):
+        connection_response_dict = super(WorkOSConnection, self).to_dict()
+
+        return connection_response_dict

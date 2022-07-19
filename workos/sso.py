@@ -6,7 +6,7 @@ from warnings import warn
 import workos
 from workos.utils.pagiantion_order import Order
 from workos.exceptions import ConfigurationException
-from workos.resources.sso import WorkOSProfile, WorkOSProfileAndToken
+from workos.resources.sso import WorkOSProfile, WorkOSProfileAndToken, WorkOSConnection
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import (
     RequestHelper,
@@ -168,11 +168,13 @@ class SSO(object):
         Returns:
             dict: Connection response from WorkOS.
         """
-        return self.request_helper.request(
+        response = self.request_helper.request(
             "connections/{connection}".format(connection=connection),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
+
+        return WorkOSConnection.construct_from_response(response).to_dict()
 
     def list_connections(
         self,

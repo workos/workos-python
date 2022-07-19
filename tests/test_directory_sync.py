@@ -62,10 +62,29 @@ class TestDirectorySync(object):
     @pytest.fixture
     def mock_user(self):
         return {
-            "username": "yoon@seri.com",
-            "last_name": "Seri",
-            "first_name": "Yoon",
-            "emails": [{"primary": True, "type": "work", "value": "yoon@seri.com"}],
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "idp_id": "2836",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "emails": [
+                {"primary": "true", "type": "work", "value": "marcelina@foo-corp.com"}
+            ],
+            "username": "marcelina@foo-corp.com",
+            "groups": [
+                {
+                    "id": "directory_group_01E64QTDNS0EGJ0FMCVY9BWGZT",
+                    "name": "Engineering",
+                    "created_at": "2021-06-25T19:07:33.155Z",
+                    "updated_at": "2021-06-25T19:07:33.155Z",
+                    "raw_attributes": {"work_email": "124@gmail.com"},
+                }
+            ],
+            "state": "active",
+            "created_at": "2021-06-25T19:07:33.155Z",
+            "updated_at": "2021-06-25T19:07:33.155Z",
+            "custom_attributes": {"department": "Engineering"},
             "raw_attributes": {
                 "schemas": ["urn:scim:schemas:core:1.0"],
                 "name": {"familyName": "Seri", "givenName": "Yoon"},
@@ -83,7 +102,6 @@ class TestDirectorySync(object):
                 },
                 "emails": [{"value": "yoon@seri.com", "type": "work", "primary": True}],
             },
-            "id": "directory_usr_id",
         }
 
     @pytest.fixture
@@ -123,15 +141,14 @@ class TestDirectorySync(object):
     def mock_directory(self):
         return {
             "object": "directory",
-            "id": "directory_id",
-            "organization_id": "org_id",
-            "name": "Azure Test D-Sync",
-            "external_key": "external_key",
-            "type": "azure scim v2.0",
-            "state": "linked",
-            "created_at": "2021-09-13T20:04:27.836Z",
-            "updated_at": "2021-10-27T15:50:21.415Z",
-            "domain": "sso-test-app.herokuapp.com",
+            "id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "domain": "foo-corp.com",
+            "name": "Foo Corp",
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+            "state": "unlinked",
+            "type": "gsuite directory",
+            "created_at": "2021-06-25T19:07:33.155Z",
+            "updated_at": "2021-06-25T19:07:33.155Z",
         }
 
     def test_list_users_with_directory(self, mock_users, mock_request_method):
@@ -186,7 +203,7 @@ class TestDirectorySync(object):
     def test_get_directory(self, mock_directory, mock_request_method):
         mock_request_method("get", mock_directory, 200)
 
-        directory = self.directory_sync.get_directory(directory_id="directory_id")
+        directory = self.directory_sync.get_directory(directory="directory_id")
 
         assert directory == mock_directory
 

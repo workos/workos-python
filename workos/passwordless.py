@@ -1,6 +1,7 @@
 import workos
 from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
 from workos.utils.validation import PASSWORDLESS_MODULE, validate_settings
+from workos.resources.passwordless import WorkOSPasswordlessSession
 
 
 class Passwordless(object):
@@ -41,12 +42,14 @@ class Passwordless(object):
             dict: Passwordless Session
         """
 
-        return self.request_helper.request(
+        response = self.request_helper.request(
             "passwordless/sessions",
             method=REQUEST_METHOD_POST,
             params=session_options,
             token=workos.api_key,
         )
+
+        return WorkOSPasswordlessSession.construct_from_response(response).to_dict()
 
     def send_session(self, session_id):
         """Send a Passwordless Session via email.

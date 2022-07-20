@@ -8,6 +8,7 @@ from workos.utils.request import (
     REQUEST_METHOD_PUT,
 )
 from workos.utils.validation import ORGANIZATIONS_MODULE, validate_settings
+from workos.resources.organizations import WorkOSOrganization
 
 ORGANIZATIONS_PATH = "organizations"
 RESPONSE_LIMIT = 10
@@ -69,11 +70,13 @@ class Organizations(object):
         Returns:
             dict: Organization response from WorkOS
         """
-        return self.request_helper.request(
+        response = self.request_helper.request(
             "organizations/{organization}".format(organization=organization),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
+
+        return WorkOSOrganization.construct_from_response(response).to_dict()
 
     def create_organization(self, organization):
         """Create an organization
@@ -89,12 +92,14 @@ class Organizations(object):
         Returns:
             dict: Created Organization response from WorkOS.
         """
-        return self.request_helper.request(
+        response = self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_POST,
             params=organization,
             token=workos.api_key,
         )
+
+        return WorkOSOrganization.construct_from_response(response).to_dict()
 
     def update_organization(
         self, organization, name, allow_profiles_outside_organization=None, domains=None
@@ -117,12 +122,14 @@ class Organizations(object):
             "domains": domains,
             "allow_profiles_outside_organization": allow_profiles_outside_organization,
         }
-        return self.request_helper.request(
+        response = self.request_helper.request(
             "organizations/{organization}".format(organization=organization),
             method=REQUEST_METHOD_PUT,
             params=params,
             token=workos.api_key,
         )
+
+        return WorkOSOrganization.construct_from_response(response).to_dict()
 
     def delete_organization(self, organization):
         """Deletes a single Organization

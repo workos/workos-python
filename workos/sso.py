@@ -83,9 +83,9 @@ class SSO(object):
                 "Incomplete arguments. Need to specify either a 'connection', 'organization', 'domain', or 'provider'"
             )
         if provider is not None:
-            if not isinstance(provider, ConnectionType):
+            if not ConnectionType.has_value(provider):
                 raise ValueError("'provider' must be of type ConnectionType")
-            params["provider"] = str(provider.value)
+            params["provider"] = provider
         if domain is not None:
             warn(
                 "The 'domain' parameter for 'get_authorization_url' is deprecated. Please use 'organization' instead.",

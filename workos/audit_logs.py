@@ -30,7 +30,7 @@ class AuditLogs(object):
             organization (str) - Organization's unique identifier
             event (dict) - An event object
                 event[action] (string) - The event action
-                event[version] (int) - The version of event
+                event[version] (int) - The schema version of the event
                 event[occurred_at] (datetime) - ISO-8601 datetime of when an event occurred
                 event[actor] (dict) - Describes the entity that generated the event
                     event[actor][id] (str)

@@ -64,3 +64,37 @@ class AuditLogs(object):
         )
 
         return response["success"]
+
+    def create_export(self, organization_id, range_start, range_end, actions=None, actors=None, targets=None):
+        """Create an export of logs."""
+
+        payload = {
+            "organization_id": organization_id,
+            "range_start": range_start,
+            "range_end": range_end,
+        }
+
+        if actions:
+            payload["actions"] = actions
+
+        if actors:
+            payload["actors"] = actors
+
+        if actors:
+            payload["targets"] = targets
+
+        return self.request_helper.request(
+            EVENTS_PATH,
+            method=REQUEST_METHOD_POST,
+            params=payload,
+            token=workos.api_key,
+        )
+
+    def get_export(self, export_id):
+        """Retrieve an created export."""
+
+        return self.request_helper.request(
+            "{0}/{1}".format(EVENTS_PATH, export_id),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )

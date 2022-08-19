@@ -36,20 +36,17 @@ class AuditLogs(object):
                     event[actor][name] (str)
                     event[actor][type] (str)
                     event[actor][metadata] (dict)
-                event[targets] (list[dict])
-                event[context] (dict)
+                event[targets] (list[dict]) - List of event targets
+                event[context] (dict) - Attributes of event context
                     event[context][location] (str)
                     event[context][user_agent] (str)
-                event[metadata] (dict)
-            idempotency_key (str) - An idempotency key
+                event[metadata] (dict) - Extra metadata
+            idempotency_key (str) - Optional idempotency key
 
         Returns:
             boolean: Returns True
         """
-        payload = {
-            "organization_id": organization_id,
-            "event": event
-        }
+        payload = {"organization_id": organization_id, "event": event}
 
         headers = {}
         if idempotency_key:
@@ -65,8 +62,28 @@ class AuditLogs(object):
 
         return response["success"]
 
-    def create_export(self, organization_id, range_start, range_end, actions=None, actors=None, targets=None):
-        """Create an export of logs."""
+    def create_export(
+        self,
+        organization_id,
+        range_start,
+        range_end,
+        actions=None,
+        actors=None,
+        targets=None,
+    ):
+        """Trigger the creation of an export of audit logs.
+        
+        Args:
+            organization_id (str) - Organization's unique identifier
+            range_start (str) - Start date of the range filter
+            range_end (str) - End date of the range filter
+            actions (list) - Optional list of actions to filter
+            actors (list) - Optional list of actors to filter
+            targets (list) - Optional list of targets to filter
+
+        Returns:
+            dict: Object that describes the exported audit logs job 
+        """
 
         payload = {
             "organization_id": organization_id,
@@ -91,7 +108,11 @@ class AuditLogs(object):
         )
 
     def get_export(self, export_id):
-        """Retrieve an created export."""
+        """Retrieve an created export.
+        
+        Returns:
+            dict: Object that describes the exported event
+        """
 
         return self.request_helper.request(
             "{0}/{1}".format(EVENTS_PATH, export_id),

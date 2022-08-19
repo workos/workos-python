@@ -7,6 +7,7 @@ import pytest
 import workos
 from workos.audit_logs import AuditLogs
 from workos.exceptions import AuthenticationException, BadRequestException
+from workos.resources.audit_logs_export import WorkOSAuditLogsExport
 
 
 class _TestSetup:
@@ -150,7 +151,12 @@ class TestAuditLogs:
                 organization_id, range_start, range_end
             )
 
-            assert response == expected_payload
+            assert (
+                response.to_dict()
+                == WorkOSAuditLogsExport.construct_from_response(
+                    expected_payload
+                ).to_dict()
+            )
 
         def test_succeeds_with_additional_filters(self, mock_request_method):
             organization_id = "org_123456789"
@@ -174,13 +180,18 @@ class TestAuditLogs:
             response = self.audit_logs.create_export(
                 actions=actions,
                 actors=actors,
-                organization_id=organization_id,
+                organization=organization_id,
                 range_end=range_end,
                 range_start=range_start,
                 targets=targets,
             )
 
-            assert response == expected_payload
+            assert (
+                response.to_dict()
+                == WorkOSAuditLogsExport.construct_from_response(
+                    expected_payload
+                ).to_dict()
+            )
 
         def test_throws_unauthorized_excpetion(self, mock_request_method):
             organization_id = "org_123456789"
@@ -217,7 +228,12 @@ class TestAuditLogs:
                 expected_payload["id"],
             )
 
-            assert response == expected_payload
+            assert (
+                response.to_dict()
+                == WorkOSAuditLogsExport.construct_from_response(
+                    expected_payload
+                ).to_dict()
+            )
 
         def test_throws_unauthorized_excpetion(self, mock_request_method):
             mock_request_method(

@@ -83,7 +83,7 @@ class AuditLogs(object):
             targets (list) - Optional list of targets to filter
 
         Returns:
-            dict: Object that describes the exported audit logs job
+            dict: Object that describes the audit log export
         """
 
         payload = {

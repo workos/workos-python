@@ -1,6 +1,5 @@
 from datetime import datetime
 import json
-from unittest.mock import Mock
 from requests import Response
 
 import pytest

@@ -63,7 +63,7 @@ def mock_raw_request_method(monkeypatch):
 
 @pytest.fixture
 def capture_and_mock_request(monkeypatch):
-    def inner(method, response_dict, status_code):
+    def inner(method, response_dict, status_code, headers=None):
         request_args = []
         request_kwargs = {}
 
@@ -71,7 +71,7 @@ def capture_and_mock_request(monkeypatch):
             request_args.extend(args)
             request_kwargs.update(kwargs)
 
-            return MockResponse(response_dict, status_code)
+            return MockResponse(response_dict, status_code, headers=headers)
 
         monkeypatch.setattr(requests, method, capture_and_mock)
 

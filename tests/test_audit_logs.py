@@ -21,7 +21,7 @@ class TestAuditLogs:
             organization_id = "org_123456789"
 
             event = {
-                "action": 'document.updated',
+                "action": "document.updated",
                 "occurred_at": datetime.now().isoformat(),
                 "actor": {
                     "id": "user_1",
@@ -30,8 +30,8 @@ class TestAuditLogs:
                 },
                 "targets": [
                     {
-                        "id": 'document_39127',
-                        "type": 'document',
+                        "id": "document_39127",
+                        "type": "document",
                     },
                 ],
                 "context": {
@@ -40,17 +40,19 @@ class TestAuditLogs:
                 },
                 "metadata": {
                     "successful": True,
-                }
+                },
             }
 
-            _, request_kwargs = capture_and_mock_request(
-                "post", {"success": True}, 200)
+            _, request_kwargs = capture_and_mock_request("post", {"success": True}, 200)
 
             response = self.audit_logs.create_event(
-                organization_id, event, "test_123456")
+                organization_id, event, "test_123456"
+            )
 
             assert request_kwargs["json"] == {
-                "organization_id": organization_id, "event": event}
+                "organization_id": organization_id,
+                "event": event,
+            }
             assert response == True
 
         def test_sends_idempotency_key(self, capture_and_mock_request):
@@ -59,7 +61,7 @@ class TestAuditLogs:
             organization_id = "org_123456789"
 
             event = {
-                "action": 'document.updated',
+                "action": "document.updated",
                 "occurred_at": datetime.now().isoformat(),
                 "actor": {
                     "id": "user_1",
@@ -68,8 +70,8 @@ class TestAuditLogs:
                 },
                 "targets": [
                     {
-                        "id": 'document_39127',
-                        "type": 'document',
+                        "id": "document_39127",
+                        "type": "document",
                     },
                 ],
                 "context": {
@@ -78,53 +80,54 @@ class TestAuditLogs:
                 },
                 "metadata": {
                     "successful": True,
-                }
+                },
             }
 
-            _, request_kwargs = capture_and_mock_request(
-                "post",
-                {"success": True},
-                200
-            )
+            _, request_kwargs = capture_and_mock_request("post", {"success": True}, 200)
 
             response = self.audit_logs.create_event(
-                organization_id, event, idempotency_key)
+                organization_id, event, idempotency_key
+            )
 
             assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
             assert response == True
 
         def test_throws_unauthorized_excpetion(self, mock_request_method):
             organization_id = "org_123456789"
-            event = {
-                "any_event": "event"
-            }
+            event = {"any_event": "event"}
 
             mock_request_method(
                 "post",
                 {"message": "Unauthorized"},
                 401,
-                {"X-Request-ID": "a-request-id"}
+                {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.create_event(
-                    organization_id, event)
-            assert '(message=Unauthorized, request_id=a-request-id)' == str(excinfo.value)
+                self.audit_logs.create_event(organization_id, event)
+            assert "(message=Unauthorized, request_id=a-request-id)" == str(
+                excinfo.value
+            )
 
         def test_throws_badrequest_excpetion(self, mock_request_method):
             organization_id = "org_123456789"
-            event = {
-                "any_event": "any_event"
-            }
+            event = {"any_event": "any_event"}
 
-            mock_request_method("post", {"message": "Audit Log could not be processed due to missing or incorrect data.",
-                                         "code": "invalid_audit_log"}, 400)
+            mock_request_method(
+                "post",
+                {
+                    "message": "Audit Log could not be processed due to missing or incorrect data.",
+                    "code": "invalid_audit_log",
+                },
+                400,
+            )
 
             with pytest.raises(BadRequestException) as excinfo:
-                self.audit_logs.create_event(
-                    organization_id, event)
-            assert '(message=Audit Log could not be processed due to missing or incorrect data.)' == str(
-                excinfo.value)
+                self.audit_logs.create_event(organization_id, event)
+            assert (
+                "(message=Audit Log could not be processed due to missing or incorrect data.)"
+                == str(excinfo.value)
+            )
 
     class TestCreateExport(_TestSetup):
         def test_succeeds(self, mock_request_method):
@@ -133,24 +136,18 @@ class TestAuditLogs:
             range_end = datetime.now().isoformat
 
             expected_payload = {
-                "object": 'audit_log_export',
-                "id": 'audit_log_export_1234',
-                "state": 'pending',
+                "object": "audit_log_export",
+                "id": "audit_log_export_1234",
+                "state": "pending",
                 "url": None,
                 "created_at": datetime.now().isoformat,
                 "updated_at": datetime.now().isoformat,
             }
 
-            mock_request_method(
-                "post",
-                expected_payload,
-                201
-            )
+            mock_request_method("post", expected_payload, 201)
 
             response = self.audit_logs.create_export(
-                organization_id,
-                range_start,
-                range_end
+                organization_id, range_start, range_end
             )
 
             assert response == expected_payload
@@ -159,24 +156,20 @@ class TestAuditLogs:
             organization_id = "org_123456789"
             range_start = datetime.now().isoformat
             range_end = datetime.now().isoformat
-            actions = ['foo', 'bar']
-            actors = ['Jon', 'Smith']
-            targets = ['user', 'team']
+            actions = ["foo", "bar"]
+            actors = ["Jon", "Smith"]
+            targets = ["user", "team"]
 
             expected_payload = {
-                "object": 'audit_log_export',
-                "id": 'audit_log_export_1234',
-                "state": 'pending',
+                "object": "audit_log_export",
+                "id": "audit_log_export_1234",
+                "state": "pending",
                 "url": None,
                 "created_at": datetime.now().isoformat,
                 "updated_at": datetime.now().isoformat,
             }
 
-            mock_request_method(
-                "post",
-                expected_payload,
-                201
-            )
+            mock_request_method("post", expected_payload, 201)
 
             response = self.audit_logs.create_export(
                 actions=actions,
@@ -184,7 +177,7 @@ class TestAuditLogs:
                 organization_id=organization_id,
                 range_end=range_end,
                 range_start=range_start,
-                targets=targets
+                targets=targets,
             )
 
             assert response == expected_payload
@@ -198,33 +191,27 @@ class TestAuditLogs:
                 "post",
                 {"message": "Unauthorized"},
                 401,
-                {"X-Request-ID": "a-request-id"}
+                {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.create_export(
-                    organization_id,
-                    range_start,
-                    range_end
-                )
-            assert '(message=Unauthorized, request_id=a-request-id)' == str(excinfo.value)
+                self.audit_logs.create_export(organization_id, range_start, range_end)
+            assert "(message=Unauthorized, request_id=a-request-id)" == str(
+                excinfo.value
+            )
 
     class TestGetExport(_TestSetup):
         def test_succeeds(self, mock_request_method):
             expected_payload = {
-                "object": 'audit_log_export',
-                "id": 'audit_log_export_1234',
-                "state": 'pending',
+                "object": "audit_log_export",
+                "id": "audit_log_export_1234",
+                "state": "pending",
                 "url": None,
                 "created_at": datetime.now().isoformat,
                 "updated_at": datetime.now().isoformat,
             }
 
-            mock_request_method(
-                "get",
-                expected_payload,
-                200
-            )
+            mock_request_method("get", expected_payload, 200)
 
             response = self.audit_logs.get_export(
                 expected_payload["id"],
@@ -237,10 +224,12 @@ class TestAuditLogs:
                 "get",
                 {"message": "Unauthorized"},
                 401,
-                {"X-Request-ID": "a-request-id"}
+                {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.get_export('audit_log_export_1234')
+                self.audit_logs.get_export("audit_log_export_1234")
 
-            assert '(message=Unauthorized, request_id=a-request-id)' == str(excinfo.value)
+            assert "(message=Unauthorized, request_id=a-request-id)" == str(
+                excinfo.value
+            )

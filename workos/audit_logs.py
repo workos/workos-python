@@ -1,4 +1,5 @@
 import workos
+from workos.resources.audit_logs_export import WorkOSAuditLogsExport
 from workos.utils.pagiantion_order import Order
 from workos.exceptions import ConfigurationException
 from workos.resources.event import WorkOSEvent
@@ -22,11 +23,11 @@ class AuditLogs(object):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def create_event(self, organization_id, event, idempotency_key=None):
+    def create_event(self, organization, event, idempotency_key=None):
         """Create an Audit Logs event.
 
         Args:
-            organization_id (str) - Organization's unique identifier
+            organization (str) - Organization's unique identifier
             event (dict) - An event object
                 event[action] (string) - The event action
                 event[version] (int) - The version of event
@@ -46,7 +47,7 @@ class AuditLogs(object):
         Returns:
             boolean: Returns True
         """
-        payload = {"organization_id": organization_id, "event": event}
+        payload = {"organization_id": organization, "event": event}
 
         headers = {}
         if idempotency_key:
@@ -64,7 +65,7 @@ class AuditLogs(object):
 
     def create_export(
         self,
-        organization_id,
+        organization,
         range_start,
         range_end,
         actions=None,
@@ -74,7 +75,7 @@ class AuditLogs(object):
         """Trigger the creation of an export of audit logs.
 
         Args:
-            organization_id (str) - Organization's unique identifier
+            organization (str) - Organization's unique identifier
             range_start (str) - Start date of the range filter
             range_end (str) - End date of the range filter
             actions (list) - Optional list of actions to filter
@@ -86,7 +87,7 @@ class AuditLogs(object):
         """
 
         payload = {
-            "organization_id": organization_id,
+            "organization_id": organization,
             "range_start": range_start,
             "range_end": range_end,
         }
@@ -100,12 +101,14 @@ class AuditLogs(object):
         if actors:
             payload["targets"] = targets
 
-        return self.request_helper.request(
+        response = self.request_helper.request(
             EVENTS_PATH,
             method=REQUEST_METHOD_POST,
             params=payload,
             token=workos.api_key,
         )
+
+        return WorkOSAuditLogsExport.construct_from_response(response)
 
     def get_export(self, export_id):
         """Retrieve an created export.
@@ -114,8 +117,10 @@ class AuditLogs(object):
             dict: Object that describes the exported event
         """
 
-        return self.request_helper.request(
+        response = self.request_helper.request(
             "{0}/{1}".format(EVENTS_PATH, export_id),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
+
+        return WorkOSAuditLogsExport.construct_from_response(response)

@@ -72,7 +72,7 @@ class AuditLogs(object):
         targets=None,
     ):
         """Trigger the creation of an export of audit logs.
-        
+
         Args:
             organization_id (str) - Organization's unique identifier
             range_start (str) - Start date of the range filter
@@ -82,7 +82,7 @@ class AuditLogs(object):
             targets (list) - Optional list of targets to filter
 
         Returns:
-            dict: Object that describes the exported audit logs job 
+            dict: Object that describes the exported audit logs job
         """
 
         payload = {
@@ -109,7 +109,7 @@ class AuditLogs(object):
 
     def get_export(self, export_id):
         """Retrieve an created export.
-        
+
         Returns:
             dict: Object that describes the exported event
         """

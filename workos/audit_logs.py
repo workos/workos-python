@@ -74,8 +74,8 @@ class AuditLogs(object):
 
         Args:
             organization (str) - Organization's unique identifier
-            range_start (str) - Start date of the range filter
-            range_end (str) - End date of the range filter
+            range_start (str) - Start date of the date range filter
+            range_end (str) - End date of the date range filter
             actions (list) - Optional list of actions to filter
             actors (list) - Optional list of actors to filter
             targets (list) - Optional list of targets to filter

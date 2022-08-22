@@ -55,7 +55,7 @@ class RequestHelper(object):
 
         Kwargs:
             method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
-            params (dict): Query params to be added to the request
+            params (dict): Query params or body payload to be added to the request
             token (str): Bearer token
 
         Returns:

@@ -7,7 +7,7 @@ import pytest
 import workos
 from workos.audit_logs import AuditLogs
 from workos.exceptions import AuthenticationException, BadRequestException
-from workos.resources.audit_logs_export import WorkOSAuditLogsExport
+from workos.resources.audit_logs_export import WorkOSAuditLogExport
 
 
 class _TestSetup:
@@ -153,7 +153,7 @@ class TestAuditLogs:
 
             assert (
                 response.to_dict()
-                == WorkOSAuditLogsExport.construct_from_response(
+                == WorkOSAuditLogExport.construct_from_response(
                     expected_payload
                 ).to_dict()
             )
@@ -188,7 +188,7 @@ class TestAuditLogs:
 
             assert (
                 response.to_dict()
-                == WorkOSAuditLogsExport.construct_from_response(
+                == WorkOSAuditLogExport.construct_from_response(
                     expected_payload
                 ).to_dict()
             )
@@ -230,7 +230,7 @@ class TestAuditLogs:
 
             assert (
                 response.to_dict()
-                == WorkOSAuditLogsExport.construct_from_response(
+                == WorkOSAuditLogExport.construct_from_response(
                     expected_payload
                 ).to_dict()
             )

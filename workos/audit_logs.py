@@ -45,7 +45,7 @@ class AuditLogs(object):
             idempotency_key (str) - Optional idempotency key
 
         Returns:
-            boolean: Returns True
+            None
         """
         payload = {"organization_id": organization, "event": event}
 
@@ -53,15 +53,13 @@ class AuditLogs(object):
         if idempotency_key:
             headers["idempotency-key"] = idempotency_key
 
-        response = self.request_helper.request(
+        self.request_helper.request(
             EVENTS_PATH,
             method=REQUEST_METHOD_POST,
             params=payload,
             headers=headers,
             token=workos.api_key,
         )
-
-        return response["success"]
 
     def create_export(
         self,

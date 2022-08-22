@@ -61,8 +61,6 @@ class AuditLogs(object):
             token=workos.api_key,
         )
 
-        return response["success"]
-
     def create_export(
         self,
         organization,

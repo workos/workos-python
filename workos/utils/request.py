@@ -12,7 +12,8 @@ from workos.exceptions import (
 
 BASE_HEADERS = {
     "User-Agent": "Python/{} WorkOS Python SDK/{}".format(
-        platform.python_version(), workos.__version__,
+        platform.python_version(),
+        workos.__version__,
     ),
 }
 

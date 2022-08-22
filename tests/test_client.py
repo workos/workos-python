@@ -7,6 +7,7 @@ from workos.exceptions import ConfigurationException
 class TestClient(object):
     @pytest.fixture(autouse=True)
     def setup(self):
+        client._audit_logs = None
         client._audit_trail = None
         client._directory_sync = None
         client._organizations = None
@@ -17,8 +18,11 @@ class TestClient(object):
     def test_initialize_sso(self, set_api_key_and_client_id):
         assert bool(client.sso)
 
-    def test_initialize_audit_log(self, set_api_key):
+    def test_initialize_audit_trail(self, set_api_key):
         assert bool(client.audit_trail)
+
+    def test_initialize_audit_logs(self, set_api_key):
+        assert bool(client.audit_logs)
 
     def test_initialize_directory_sync(self, set_api_key):
         assert bool(client.directory_sync)

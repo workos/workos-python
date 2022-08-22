@@ -54,7 +54,7 @@ class TestAuditLogs:
                 "organization_id": organization_id,
                 "event": event,
             }
-            assert response == True
+            assert response is None
 
         def test_sends_idempotency_key(self, capture_and_mock_request):
             idempotency_key = "test_123456789"
@@ -91,7 +91,7 @@ class TestAuditLogs:
             )
 
             assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
-            assert response == True
+            assert response is None
 
         def test_throws_unauthorized_excpetion(self, mock_request_method):
             organization_id = "org_123456789"
@@ -119,16 +119,19 @@ class TestAuditLogs:
                 {
                     "message": "Audit Log could not be processed due to missing or incorrect data.",
                     "code": "invalid_audit_log",
+                    "errors": ["error in a field"],
                 },
                 400,
             )
 
             with pytest.raises(BadRequestException) as excinfo:
                 self.audit_logs.create_event(organization_id, event)
-            assert (
-                "(message=Audit Log could not be processed due to missing or incorrect data.)"
-                == str(excinfo.value)
-            )
+                assert excinfo.code == "invalid_audit_log"
+                assert excinfo.errors == ["error in a field"]
+                assert (
+                    excinfo.message
+                    == "Audit Log could not be processed due to missing or incorrect data."
+                )
 
     class TestCreateExport(_TestSetup):
         def test_succeeds(self, mock_request_method):

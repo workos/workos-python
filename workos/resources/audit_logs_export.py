@@ -2,7 +2,7 @@ from workos.resources.base import WorkOSBaseResource
 from workos.resources.event_action import WorkOSEventAction
 
 
-class WorkOSAuditLogsExport(WorkOSBaseResource):
+class WorkOSAuditLogExport(WorkOSBaseResource):
     """Representation of an export as returned by WorkOS through the Audit Logs Create/Get Export feature.
 
     Attributes:
@@ -20,9 +20,9 @@ class WorkOSAuditLogsExport(WorkOSBaseResource):
 
     @classmethod
     def construct_from_response(cls, response):
-        export = super(WorkOSAuditLogsExport, cls).construct_from_response(response)
+        export = super(WorkOSAuditLogExport, cls).construct_from_response(response)
         return export
 
     def to_dict(self):
-        export_dict = super(WorkOSAuditLogsExport, self).to_dict()
+        export_dict = super(WorkOSAuditLogExport, self).to_dict()
         return export_dict

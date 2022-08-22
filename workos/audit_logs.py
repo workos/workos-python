@@ -1,5 +1,5 @@
 import workos
-from workos.resources.audit_logs_export import WorkOSAuditLogsExport
+from workos.resources.audit_logs_export import WorkOSAuditLogExport
 from workos.utils.pagiantion_order import Order
 from workos.exceptions import ConfigurationException
 from workos.resources.event import WorkOSEvent
@@ -108,13 +108,13 @@ class AuditLogs(object):
             token=workos.api_key,
         )
 
-        return WorkOSAuditLogsExport.construct_from_response(response)
+        return WorkOSAuditLogExport.construct_from_response(response)
 
     def get_export(self, export_id):
         """Retrieve an created export.
 
         Returns:
-            dict: Object that describes the exported event
+            dict: Object that describes the audit log export
         """
 
         response = self.request_helper.request(
@@ -123,4 +123,4 @@ class AuditLogs(object):
             token=workos.api_key,
         )
 
-        return WorkOSAuditLogsExport.construct_from_response(response)
+        return WorkOSAuditLogExport.construct_from_response(response)

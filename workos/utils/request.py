@@ -1,3 +1,5 @@
+import platform
+
 import requests
 
 import workos
@@ -9,7 +11,9 @@ from workos.exceptions import (
 )
 
 BASE_HEADERS = {
-    "User-Agent": "WorkOS Python/{}".format(workos.__version__),
+    "User-Agent": "WorkOS Python SDK/{} Python/{}".format(
+        workos.__version__, platform.python_version()
+    ),
 }
 
 RESPONSE_TYPE_CODE = "code"

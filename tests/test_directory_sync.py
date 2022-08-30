@@ -1,9 +1,4 @@
-import json
-from requests import Response
-
 import pytest
-
-import workos
 from workos.directory_sync import DirectorySync
 from workos.utils.request import RESPONSE_TYPE_CODE
 

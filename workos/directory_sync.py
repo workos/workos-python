@@ -145,13 +145,8 @@ class DirectorySync(object):
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
-        primary_email_array = []
-        for i in response["emails"]:
-            if i["primary"]:
-                primary_email_array.append(i["value"])
-        if len(primary_email_array) > 0:
-            return primary_email_array[0]
-        return None
+
+        return WorkOSDirectoryUser.get_primary_email(response)
 
     def get_group(self, group):
         """Gets details for a single provisioned Directory Group.

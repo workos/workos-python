@@ -1,11 +1,7 @@
-import json
-from requests import Response
-
 import pytest
-
-import workos
 from workos.directory_sync import DirectorySync
 from workos.utils.request import RESPONSE_TYPE_CODE
+from workos.resources.directory_sync import WorkOSDirectoryUser
 
 
 class TestDirectorySync(object):
@@ -60,6 +56,10 @@ class TestDirectorySync(object):
         }
 
     @pytest.fixture
+    def mock_user_primary_email(self):
+        return "marcelina@foo-corp.com"
+
+    @pytest.fixture
     def mock_user(self):
         return {
             "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
@@ -69,7 +69,17 @@ class TestDirectorySync(object):
             "first_name": "Marcelina",
             "last_name": "Davis",
             "emails": [
-                {"primary": "true", "type": "work", "value": "marcelina@foo-corp.com"}
+                {"primary": "true", "type": "work", "value": "marcelina@foo-corp.com"},
+                {
+                    "primary": "false",
+                    "type": "work",
+                    "value": "secondary_marcelina@foo-corp.com",
+                },
+                {
+                    "primary": "true",
+                    "type": "work",
+                    "value": "second_primary_marcelina@foo-corp.com",
+                },
             ],
             "username": "marcelina@foo-corp.com",
             "groups": [
@@ -102,6 +112,33 @@ class TestDirectorySync(object):
                 },
                 "emails": [{"value": "yoon@seri.com", "type": "work", "primary": True}],
             },
+        }
+
+    @pytest.fixture
+    def mock_user_no_email(self):
+        return {
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0GZZZ",
+            "idp_id": "2836",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "emails": [],
+            "username": "marcelina@foo-corp.com",
+            "groups": [
+                {
+                    "id": "directory_group_01E64QTDNS0EGJ0FMCVY9BWGZT",
+                    "name": "Engineering",
+                    "created_at": "2021-06-25T19:07:33.155Z",
+                    "updated_at": "2021-06-25T19:07:33.155Z",
+                    "raw_attributes": {"work_email": "124@gmail.com"},
+                }
+            ],
+            "state": "active",
+            "created_at": "2021-06-25T19:07:33.155Z",
+            "updated_at": "2021-06-25T19:07:33.155Z",
+            "custom_attributes": {"department": "Engineering"},
+            "raw_attributes": {},
         }
 
     @pytest.fixture
@@ -218,3 +255,18 @@ class TestDirectorySync(object):
         response = self.directory_sync.delete_directory(directory="directory_id")
 
         assert response is None
+
+    def test_primary_email(
+        self, mock_user, mock_user_primary_email, mock_request_method
+    ):
+        mock_request_method("get", mock_user, 200)
+
+        primary_email = WorkOSDirectoryUser.primary_email(None, mock_user)
+
+        assert primary_email == mock_user_primary_email
+
+    def test_primary_email_none(self, mock_user_no_email, mock_request_method):
+        mock_request_method("get", mock_user_no_email, 200)
+        primary_email = WorkOSDirectoryUser.primary_email(None, mock_user_no_email)
+
+        assert primary_email == None

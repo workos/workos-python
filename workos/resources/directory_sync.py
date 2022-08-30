@@ -98,9 +98,9 @@ class WorkOSDirectoryUser(WorkOSBaseResource):
 
         return directory_group
 
-    def get_primary_email(self):
+    def primary_email(self, user):
         primary_email_array = []
-        for i in self["emails"]:
+        for i in user["emails"]:
             if i["primary"]:
                 primary_email_array.append(i["value"])
         if len(primary_email_array) > 0:

@@ -131,23 +131,6 @@ class DirectorySync(object):
 
         return WorkOSDirectoryUser.construct_from_response(response).to_dict()
 
-    def get_primary_email(self, user):
-        """Gets primary email for a single provisioned Directory User.
-
-        Args:
-            user (str): Directory User unique identifier.
-
-        Returns:
-            str: User's primary email response from WorkOS.
-        """
-        response = self.request_helper.request(
-            "directory_users/{user}".format(user=user),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
-
-        return WorkOSDirectoryUser.get_primary_email(response)
-
     def get_group(self, group):
         """Gets details for a single provisioned Directory Group.
 

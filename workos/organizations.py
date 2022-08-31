@@ -78,7 +78,7 @@ class Organizations(object):
 
         return WorkOSOrganization.construct_from_response(response).to_dict()
 
-    def create_organization(self, organization):
+    def create_organization(self, organization, create_organization_options=None):
         """Create an organization
 
         Args:
@@ -88,14 +88,23 @@ class Organizations(object):
                     within the Organization allow profiles that are outside of the Organization's
                     configured User Email Domains. (Optional)
                 organization[domains] (list) - List of domains that belong to the organization
+            create_organization_options (dict) - Options configuration for creating an organization. (Optional)
+                idempotency_key (str) - A custom key to ensure uniqueness when creating a new organization.
 
         Returns:
             dict: Created Organization response from WorkOS.
         """
+        options = (
+            {"Idempotency-Key": create_organization_options["idempotency_key"]}
+            if create_organization_options != None
+            else None
+        )
+
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_POST,
             params=organization,
+            headers=options,
             token=workos.api_key,
         )
 

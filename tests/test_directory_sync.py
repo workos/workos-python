@@ -260,15 +260,14 @@ class TestDirectorySync(object):
         self, mock_user, mock_user_primary_email, mock_request_method
     ):
         mock_request_method("get", mock_user, 200)
-        mock_user_instance = WorkOSDirectoryUser()
 
-        primary_email = WorkOSDirectoryUser.primary_email(mock_user_instance)
+        primary_email = WorkOSDirectoryUser.primary_email(mock_user)
 
         assert primary_email == mock_user_primary_email
 
     def test_primary_email_none(self, mock_user_no_email, mock_request_method):
         mock_request_method("get", mock_user_no_email, 200)
         mock_user_instance = WorkOSDirectoryUser()
-        primary_email = WorkOSDirectoryUser.primary_email(mock_user_instance)
+        primary_email = WorkOSDirectoryUser.primary_email(mock_user_no_email)
 
         assert primary_email == None

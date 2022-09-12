@@ -263,7 +263,9 @@ class TestDirectorySync(object):
         mock_user_instance = self.directory_sync.get_user(
             "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ"
         )
-        primary_email = WorkOSDirectoryUser.primary_email(mock_user_instance)
+        primary_email = WorkOSDirectoryUser.construct_from_response(
+            mock_user_instance
+        ).primary_email()
 
         assert primary_email == mock_user_primary_email
 
@@ -272,6 +274,7 @@ class TestDirectorySync(object):
         mock_user_instance = self.directory_sync.get_user(
             "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ"
         )
-        primary_email = WorkOSDirectoryUser.primary_email(mock_user_instance)
+        primary_email = WorkOSDirectoryUser.construct_from_response(mock_user_instance)
+        me = primary_email.primary_email()
 
-        assert primary_email == None
+        assert me == None

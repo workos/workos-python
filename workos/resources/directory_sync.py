@@ -99,4 +99,5 @@ class WorkOSDirectoryUser(WorkOSBaseResource):
         return directory_group
 
     def primary_email(self):
-        return next((email for email in self["emails"] if email["primary"]), None)
+        self_dict = self.to_dict()
+        return next((email for email in self_dict["emails"] if email["primary"]), None)

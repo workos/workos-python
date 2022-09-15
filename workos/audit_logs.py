@@ -1,10 +1,7 @@
 import workos
 from workos.resources.audit_logs_export import WorkOSAuditLogExport
-from workos.utils.pagiantion_order import Order
-from workos.exceptions import ConfigurationException
-from workos.resources.event import WorkOSEvent
 from workos.utils.request import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST
-from workos.utils.validation import AUDIT_TRAIL_MODULE, validate_settings
+from workos.utils.validation import AUDIT_LOGS_MODULE, validate_settings
 
 EVENTS_PATH = "audit_logs/events"
 EXPORTS_PATH = "audit_logs/exports"
@@ -13,7 +10,7 @@ EXPORTS_PATH = "audit_logs/exports"
 class AuditLogs(object):
     """Offers methods through the WorkOS Audit Logs service."""
 
-    @validate_settings(AUDIT_TRAIL_MODULE)
+    @validate_settings(AUDIT_LOGS_MODULE)
     def __init__(self):
         pass
 
@@ -100,7 +97,7 @@ class AuditLogs(object):
             payload["targets"] = targets
 
         response = self.request_helper.request(
-            EVENTS_PATH,
+            EXPORTS_PATH,
             method=REQUEST_METHOD_POST,
             params=payload,
             token=workos.api_key,
@@ -116,7 +113,7 @@ class AuditLogs(object):
         """
 
         response = self.request_helper.request(
-            "{0}/{1}".format(EVENTS_PATH, export_id),
+            "{0}/{1}".format(EXPORTS_PATH, export_id),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )

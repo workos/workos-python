@@ -1,3 +1,4 @@
+import workos
 from workos.resources.base import WorkOSBaseResource
 
 
@@ -92,3 +93,7 @@ class WorkOSDirectoryUser(WorkOSBaseResource):
         directory_group = super(WorkOSDirectoryUser, self).to_dict()
 
         return directory_group
+
+    def primary_email(self):
+        self_dict = self.to_dict()
+        return next((email for email in self_dict["emails"] if email["primary"]), None)

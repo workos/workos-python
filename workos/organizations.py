@@ -94,7 +94,7 @@ class Organizations(object):
         Returns:
             dict: Created Organization response from WorkOS.
         """
-        headers = {"idempotency-key": None}
+        headers = {}
         if idempotency_key:
             headers["idempotency-key"] = idempotency_key
 

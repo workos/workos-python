@@ -111,7 +111,7 @@ class TestOrganizations(object):
         _, request_kwargs = capture_and_mock_request("post", payload, 200)
 
         response = self.organizations.create_organization(
-            payload, create_organization_options={"idempotency_key": idempotency_key}
+            payload, idempotency_key=idempotency_key
         )
 
         assert request_kwargs["headers"]["Idempotency-Key"] == idempotency_key

@@ -89,7 +89,6 @@ class Organizations(object):
                     configured User Email Domains. (Optional)
                 organization[domains] (list) - List of domains that belong to the organization
             idempotency_key (str) - Idempotency key for creating an organization. (Optional)
-                idempotency_key (str) - A custom key to ensure uniqueness when creating a new organization.
 
         Returns:
             dict: Created Organization response from WorkOS.

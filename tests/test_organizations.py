@@ -1,9 +1,4 @@
-import json
-from requests import Response
-
 import pytest
-
-import workos
 from workos.organizations import Organizations
 
 
@@ -108,6 +103,19 @@ class TestOrganizations(object):
 
         assert organization["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert organization["name"] == "Foo Corporation"
+
+    def test_sends_idempotency_key(self, capture_and_mock_request):
+        idempotency_key = "test_123456789"
+        payload = {"domains": ["example.com"], "name": "Foo Corporation"}
+
+        _, request_kwargs = capture_and_mock_request("post", payload, 200)
+
+        response = self.organizations.create_organization(
+            payload, idempotency_key=idempotency_key
+        )
+
+        assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
+        assert response["name"] == "Foo Corporation"
 
     def test_update_organization(self, mock_organization_updated, mock_request_method):
         mock_request_method("put", mock_organization_updated, 201)

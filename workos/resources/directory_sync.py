@@ -1,9 +1,5 @@
 import workos
 from workos.resources.base import WorkOSBaseResource
-from workos.utils.request import (
-    RequestHelper,
-    REQUEST_METHOD_GET,
-)
 
 
 class WorkOSDirectory(WorkOSBaseResource):

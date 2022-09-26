@@ -94,9 +94,9 @@ class Organizations(object):
         Returns:
             dict: Created Organization response from WorkOS.
         """
-        headers = {"Idempotency-Key": None}
+        headers = {"idempotency-key": None}
         if idempotency_key:
-            headers["Idempotency-Key"] = idempotency_key
+            headers["idempotency-key"] = idempotency_key
 
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,

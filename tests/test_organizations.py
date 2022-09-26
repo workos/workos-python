@@ -114,7 +114,7 @@ class TestOrganizations(object):
             payload, idempotency_key=idempotency_key
         )
 
-        assert request_kwargs["headers"]["Idempotency-Key"] == idempotency_key
+        assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
         assert response["name"] == "Foo Corporation"
 
     def test_update_organization(self, mock_organization_updated, mock_request_method):

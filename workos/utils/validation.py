@@ -3,6 +3,7 @@ from functools import wraps
 import workos
 from workos.exceptions import ConfigurationException
 
+AUDIT_LOGS_MODULE = "AuditLogs"
 AUDIT_TRAIL_MODULE = "AuditTrail"
 DIRECTORY_SYNC_MODULE = "DirectorySync"
 ORGANIZATIONS_MODULE = "Organizations"
@@ -13,6 +14,9 @@ WEBHOOKS_MODULE = "Webhooks"
 MFA_MODULE = "MFA"
 
 REQUIRED_SETTINGS_FOR_MODULE = {
+    AUDIT_LOGS_MODULE: [
+        "api_key",
+    ],
     AUDIT_TRAIL_MODULE: [
         "api_key",
     ],

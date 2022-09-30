@@ -78,6 +78,10 @@ class Webhooks(object):
         result = 0
         for x, y in zip(val1, val2):
             result |= ord(x) ^ ord(y)
+            if result != 0:
+                raise ValueError(
+                    "Signature hash does not match the expected signature hash for payload"
+                )
         return result == 0
 
     def check_timestamp_range(self, time, max_range):

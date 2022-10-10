@@ -1,10 +1,10 @@
 from warnings import warn
-
 import workos
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_POST,
     REQUEST_METHOD_DELETE,
+    REQUEST_METHOD_GET,
 )
 from workos.utils.validation import MFA_MODULE, validate_settings
 from workos.resources.mfa import (
@@ -83,6 +83,35 @@ class Mfa(object):
         )
 
         if type == "totp":
+            return WorkOSAuthenticationFactorTotp.construct_from_response(
+                response
+            ).to_dict()
+
+        return WorkOSAuthenticationFactorSms.construct_from_response(response).to_dict()
+
+    def get_factor(
+        self,
+        id=None,
+    ):
+        """
+        Returns an authorization factor from it's ID.
+
+        Kwargs:
+            id (str) - The id of the factor to be obtained.
+
+        Returns: Dict containing the authentication factor information.
+        """
+
+        if id is None:
+            raise ValueError("Incomplete arguments. Need to specify a factor id")
+
+        response = self.request_helper.request(
+            "auth/factors/{id}",
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        if response["type"] == "totp":
             return WorkOSAuthenticationFactorTotp.construct_from_response(
                 response
             ).to_dict()

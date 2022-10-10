@@ -106,7 +106,7 @@ class Mfa(object):
 
         response = self.request_helper.request(
             "auth/factors/{id}",
-            method=REQUEST_METHOD_POST,
+            method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
 

@@ -97,7 +97,7 @@ class Mfa(object):
         Returns an authorization factor from its ID.
 
         Kwargs:
-            id (str) - The id of the factor to be obtained.
+            id (str) - The ID of the factor to be obtained.
 
         Returns: Dict containing the authentication factor information.
         """

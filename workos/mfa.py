@@ -103,7 +103,7 @@ class Mfa(object):
         """
 
         if id is None:
-            raise ValueError("Incomplete arguments. Need to specify a factor id")
+            raise ValueError("Incomplete arguments. Need to specify a factor ID")
 
         response = self.request_helper.request(
             "auth/factors/{id}",

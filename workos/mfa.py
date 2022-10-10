@@ -4,6 +4,7 @@ import workos
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_POST,
+    REQUEST_METHOD_DELETE,
 )
 from workos.utils.validation import MFA_MODULE, validate_settings
 from workos.resources.mfa import (
@@ -87,6 +88,30 @@ class Mfa(object):
             ).to_dict()
 
         return WorkOSAuthenticationFactorSms.construct_from_response(response).to_dict()
+
+    def delete_factor(
+        self,
+        id=None,
+    ):
+        """
+        Deletes an MFA authorization factor.
+
+        Kwargs:
+            id (str) - The id of the authorization factor to be deleted.
+
+        Returns: Does not provide a return.
+        """
+
+        if id is None:
+            raise ValueError("Incomplete arguments. Need to specify a factor id.")
+
+        response = self.request_helper.request(
+            "auth/factors/{id}",
+            method=REQUEST_METHOD_DELETE,
+            token=workos.api_key,
+        )
+
+        return response
 
     def challenge_factor(
         self,

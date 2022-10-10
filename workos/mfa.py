@@ -88,6 +88,30 @@ class Mfa(object):
 
         return WorkOSAuthenticationFactorSms.construct_from_response(response).to_dict()
 
+    def delete_factor(
+        self,
+        id=None,
+    ):
+        """
+        Deletes an MFA authorization factor.
+
+        Kwargs:
+            id (str) - The id of the authorization factor to be deleted.
+
+        Returns: Does not provide a return.
+        """
+
+        if id is None:
+            raise ValueError("Incomplete arguments. Need to specify a factor id.")
+
+        response = self.request_helper.request(
+            "auth/factors/{id}",
+            method=REQUEST_METHOD_POST,
+            token=workos.api_key,
+        )
+
+        return response
+
     def challenge_factor(
         self,
         authentication_factor_id=None,

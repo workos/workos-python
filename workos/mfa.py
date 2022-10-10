@@ -94,7 +94,7 @@ class Mfa(object):
         id=None,
     ):
         """
-        Returns an authorization factor from it's ID.
+        Returns an authorization factor from its ID.
 
         Kwargs:
             id (str) - The id of the factor to be obtained.

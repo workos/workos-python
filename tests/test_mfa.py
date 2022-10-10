@@ -155,7 +155,7 @@ class TestMfa(object):
         assert "Incomplete arguments. Need to specify a factor id." in str(err.value)
 
     def test_delete_factor_success(self, mock_request_method):
-        mock_request_method("post", None, 200)
+        mock_request_method("delete", None, 200)
         response = self.mfa.delete_factor("auth_factor_01FZ4TS14D1PHFNZ9GF6YD8M1F")
         assert response == None
 

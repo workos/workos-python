@@ -1,4 +1,3 @@
-from urllib import response
 from workos.mfa import Mfa
 import pytest
 

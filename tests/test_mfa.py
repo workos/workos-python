@@ -149,6 +149,35 @@ class TestMfa(object):
         )
         assert enroll_factor == mock_enroll_factor_response_totp
 
+    def test_get_factor_no_id(self):
+        with pytest.raises(ValueError) as err:
+            self.mfa.delete_factor(id=None)
+        assert "Incomplete arguments. Need to specify a factor id." in str(err.value)
+
+    def test_get_factor_totp_success(
+        self, mock_enroll_factor_response_totp, mock_request_method
+    ):
+        mock_request_method("get", mock_enroll_factor_response_totp, 200)
+        response = self.mfa.get_factor(mock_enroll_factor_response_totp["id"])
+        assert response == mock_enroll_factor_response_totp
+
+    def test_get_factor_sms_success(
+        self, mock_enroll_factor_response_sms, mock_request_method
+    ):
+        mock_request_method("get", mock_enroll_factor_response_sms, 200)
+        response = self.mfa.get_factor(mock_enroll_factor_response_sms["id"])
+        assert response == mock_enroll_factor_response_sms
+
+    def test_delete_factor_no_id(self):
+        with pytest.raises(ValueError) as err:
+            self.mfa.delete_factor(id=None)
+        assert "Incomplete arguments. Need to specify a factor id." in str(err.value)
+
+    def test_delete_factor_success(self, mock_request_method):
+        mock_request_method("delete", None, 200)
+        response = self.mfa.delete_factor("auth_factor_01FZ4TS14D1PHFNZ9GF6YD8M1F")
+        assert response == None
+
     def test_challenge_factor_no_id(self, mock_challenge_factor_payload):
         with pytest.raises(ValueError) as err:
             self.mfa.challenge_factor(

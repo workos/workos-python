@@ -4,6 +4,7 @@ import workos
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_POST,
+    REQUEST_METHOD_DELETE,
 )
 from workos.utils.validation import MFA_MODULE, validate_settings
 from workos.resources.mfa import (

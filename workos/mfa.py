@@ -126,7 +126,7 @@ class Mfa(object):
         Deletes an MFA authorization factor.
 
         Kwargs:
-            id (str) - The id of the authorization factor to be deleted.
+            id (str) - The ID of the authorization factor to be deleted.
 
         Returns: Does not provide a return.
         """

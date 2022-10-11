@@ -75,6 +75,7 @@ class WorkOSDirectoryUser(WorkOSBaseResource):
         "organization_id",
         "first_name",
         "last_name",
+        "job_title",
         "emails",
         "username",
         "groups",

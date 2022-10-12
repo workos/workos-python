@@ -18,6 +18,7 @@ class TestDirectorySync(object):
                     "username": "yoon@seri.com",
                     "last_name": "Seri",
                     "first_name": "Yoon",
+                    "job_title": "Software Engineer",
                     "emails": [
                         {"primary": True, "type": "work", "value": "yoon@seri.com"}
                     ],
@@ -29,6 +30,7 @@ class TestDirectorySync(object):
                         "userName": "yoon@seri.com",
                         "id": "directory_usr_id",
                         "displayName": "Yoon Seri",
+                        "title": "Software Engineer",
                         "active": True,
                         "groups": [],
                         "meta": {
@@ -68,6 +70,7 @@ class TestDirectorySync(object):
             "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
             "first_name": "Marcelina",
             "last_name": "Davis",
+            "job_title": "Software Engineer",
             "emails": [
                 {"primary": "true", "type": "work", "value": "marcelina@foo-corp.com"},
                 {
@@ -101,6 +104,7 @@ class TestDirectorySync(object):
                 "externalId": "external-id",
                 "locale": "en_US",
                 "userName": "yoon@seri.com",
+                "title": "Software Engineer",
                 "id": "directory_usr_id",
                 "displayName": "Yoon Seri",
                 "active": True,
@@ -123,6 +127,7 @@ class TestDirectorySync(object):
             "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
             "first_name": "Marcelina",
             "last_name": "Davis",
+            "job_title": "Software Engineer",
             "emails": [],
             "username": "marcelina@foo-corp.com",
             "groups": [

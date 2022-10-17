@@ -1,5 +1,5 @@
 import workos
-from workos.utils.pagiantion_order import Order
+from workos.utils.pagination_order import Order
 from workos.exceptions import ConfigurationException
 from workos.resources.event import WorkOSEvent
 from workos.utils.request import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST

@@ -91,7 +91,8 @@ class SSO(object):
                     raise ValueError(
                         "Invalid provider. Must be one of {}, got '{}'".format(list(ConnectionType.values()), provider)
                     )
-                connection = ConnectionType[provider]
+                
+                provider = ConnectionType[provider]
 
             elif not isinstance(provider, ConnectionType):
                 raise ValueError("'provider' must be of type ConnectionType")

@@ -239,6 +239,27 @@ class TestSSO(object):
             "state": self.state,
         }
 
+    def test_authorization_url_with_string_provider_has_expected_query_params_with_organization(
+        self, setup_with_client_id
+    ):
+        authorization_url = self.sso.get_authorization_url(
+            provider=self.provider.value,
+            organization=self.organization,
+            redirect_uri=self.redirect_uri,
+            state=self.state,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "organization": self.organization,
+            "provider": self.provider.value,
+            "client_id": workos.client_id,
+            "redirect_uri": self.redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+            "state": self.state,
+        }
+
     def test_authorization_url_has_expected_query_params_with_organization(
         self, setup_with_client_id
     ):

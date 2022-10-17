@@ -117,7 +117,9 @@ class TestSSO(object):
                 provider="foo", redirect_uri=self.redirect_uri, state=self.state
             )
 
-    @pytest.mark.parametrize("invalid_provider", [123, 123.45, True, False, {}, ["GoogleOAuth"]])
+    @pytest.mark.parametrize("invalid_provider", [
+        123, ConnectionType, True, False, {"provider": "GoogleOAuth"}, ["GoogleOAuth"]
+    ])
     def test_authorization_url_throws_value_error_with_incorrect_provider_type(
         self, setup_with_client_id, invalid_provider
     ):

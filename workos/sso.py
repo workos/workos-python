@@ -73,12 +73,7 @@ class SSO(object):
             "response_type": RESPONSE_TYPE_CODE,
         }
 
-        if (
-            domain is None
-            and provider is None
-            and connection is None
-            and organization is None
-        ):
+        if domain is None and provider is None and connection is None and organization is None:
             raise ValueError(
                 "Incomplete arguments. Need to specify either a 'connection', 'organization', 'domain', or 'provider'"
             )
@@ -89,7 +84,7 @@ class SSO(object):
                 # enum in the next major release of the SDK
                 if provider not in ConnectionType.values():
                     raise ValueError(
-                        "Invalid provider. Must be one of {}".format(list(ConnectionType.values()))
+                        "Invalid provider. Must be one of {}, got '{}'".format(list(ConnectionType.values()), provider)
                     )
                 connection = ConnectionType[provider]
 
@@ -139,9 +134,7 @@ class SSO(object):
 
         token = accessToken
 
-        response = self.request_helper.request(
-            PROFILE_PATH, method=REQUEST_METHOD_GET, token=token
-        )
+        response = self.request_helper.request(PROFILE_PATH, method=REQUEST_METHOD_GET, token=token)
 
         return WorkOSProfile.construct_from_response(response)
 
@@ -164,9 +157,7 @@ class SSO(object):
             "grant_type": OAUTH_GRANT_TYPE,
         }
 
-        response = self.request_helper.request(
-            TOKEN_PATH, method=REQUEST_METHOD_POST, params=params
-        )
+        response = self.request_helper.request(TOKEN_PATH, method=REQUEST_METHOD_POST, params=params)
 
         return WorkOSProfileAndToken.construct_from_response(response)
 

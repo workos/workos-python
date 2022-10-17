@@ -11,7 +11,7 @@ from workos.resources.sso import WorkOSProfile, WorkOSProfileAndToken, WorkOSCon
 class TestSSO(object):
     @pytest.fixture
     def setup_with_client_id(self, set_api_key_and_client_id):
-        self.provider = "GoogleOAuth"
+        self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.login_hint = "foo@workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
@@ -139,7 +139,7 @@ class TestSSO(object):
         parsed_url = urlparse(authorization_url)
 
         assert dict(parse_qsl(parsed_url.query)) == {
-            "provider": self.provider,
+            "provider": str(self.provider.value),
             "client_id": workos.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
@@ -259,7 +259,7 @@ class TestSSO(object):
 
         assert dict(parse_qsl(parsed_url.query)) == {
             "domain": self.customer_domain,
-            "provider": self.provider,
+            "provider": str(self.provider.value),
             "client_id": workos.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,

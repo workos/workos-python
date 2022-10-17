@@ -73,7 +73,12 @@ class SSO(object):
             "response_type": RESPONSE_TYPE_CODE,
         }
 
-        if domain is None and provider is None and connection is None and organization is None:
+        if (
+             domain is None
+             and provider is None
+             and connection is None
+             and organization is None
+         ):
             raise ValueError(
                 "Incomplete arguments. Need to specify either a 'connection', 'organization', 'domain', or 'provider'"
             )

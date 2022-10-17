@@ -35,5 +35,13 @@ class ConnectionType(Enum):
     VMwareSAML = "VMwareSAML"
 
     @classmethod
-    def has_value(cls, value):
-        return value in cls._value2member_map_
+    def values(cls):
+        """Returns a list of all connection types.
+
+        Returns:
+            generator(str): A generator with a list of all string connection types.
+        """
+        return (
+            connection_type.value
+            for connection_type in ConnectionType
+        )

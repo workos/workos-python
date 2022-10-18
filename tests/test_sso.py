@@ -110,16 +110,22 @@ class TestSSO(object):
     def test_authorization_url_throws_value_error_with_incorrect_string_provider_value(
         self, setup_with_client_id
     ):
-        with pytest.raises(
-            ValueError, match=r"Invalid provider. Must be one of *"
-        ):
+        with pytest.raises(ValueError, match=r"Invalid provider. Must be one of *"):
             self.sso.get_authorization_url(
                 provider="foo", redirect_uri=self.redirect_uri, state=self.state
             )
 
-    @pytest.mark.parametrize("invalid_provider", [
-        123, ConnectionType, True, False, {"provider": "GoogleOAuth"}, ["GoogleOAuth"]
-    ])
+    @pytest.mark.parametrize(
+        "invalid_provider",
+        [
+            123,
+            ConnectionType,
+            True,
+            False,
+            {"provider": "GoogleOAuth"},
+            ["GoogleOAuth"],
+        ],
+    )
     def test_authorization_url_throws_value_error_with_incorrect_provider_type(
         self, setup_with_client_id, invalid_provider
     ):
@@ -127,7 +133,9 @@ class TestSSO(object):
             ValueError, match="'provider' must be of type ConnectionType"
         ):
             self.sso.get_authorization_url(
-                provider=invalid_provider, redirect_uri=self.redirect_uri, state=self.state
+                provider=invalid_provider,
+                redirect_uri=self.redirect_uri,
+                state=self.state,
             )
 
     def test_authorization_url_throws_value_error_wihout_redirect_uri(

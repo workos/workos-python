@@ -4,7 +4,7 @@ from requests import Request
 from warnings import warn
 
 import workos
-from workos.utils.pagiantion_order import Order
+from workos.utils.pagination_order import Order
 from workos.exceptions import ConfigurationException
 from workos.resources.sso import WorkOSProfile, WorkOSProfileAndToken, WorkOSConnection
 from workos.utils.connection_types import ConnectionType
@@ -83,9 +83,21 @@ class SSO(object):
                 "Incomplete arguments. Need to specify either a 'connection', 'organization', 'domain', or 'provider'"
             )
         if provider is not None:
-            if not ConnectionType.has_value(provider):
+            if isinstance(provider, str):
+                # Temporary backport to support clients still using `connection_type` as a string
+                providers = ConnectionType.providers()
+                if provider not in providers:
+                    raise ValueError(
+                        "Invalid provider. Must be one of {}, got '{}'".format(
+                            list(providers), provider
+                        )
+                    )
+                provider = ConnectionType[provider]
+
+            elif not isinstance(provider, ConnectionType):
                 raise ValueError("'provider' must be of type ConnectionType")
-            params["provider"] = provider
+
+            params["provider"] = provider.value
         if domain is not None:
             warn(
                 "The 'domain' parameter for 'get_authorization_url' is deprecated. Please use 'organization' instead.",
@@ -217,9 +229,7 @@ class SSO(object):
                 raise ValueError("'connection_type' must be a member of ConnectionType")
 
         params = {
-            "connection_type": (
-                connection_type.value if connection_type is not None else None
-            ),
+            "connection_type": connection_type.value if connection_type else None,
             "domain": domain,
             "organization_id": organization_id,
             "limit": limit,
@@ -231,6 +241,7 @@ class SSO(object):
             if not isinstance(order, Order):
                 raise ValueError("'order' must be of asc or desc order")
             params["order"] = str(order.value)
+
         return self.request_helper.request(
             "connections",
             method=REQUEST_METHOD_GET,

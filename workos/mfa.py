@@ -128,7 +128,7 @@ class Mfa(object):
         Kwargs:
             id (str) - The ID of the authorization factor to be deleted.
 
-        Returns: Does not provide a return.
+        Returns: Does not provide a return unless there is an error.
         """
 
         if id is None:

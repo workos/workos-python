@@ -17,7 +17,7 @@ class Portal(object):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def generate_link(self, intent, organization, return_url=None):
+    def generate_link(self, intent, organization, return_url=None, success_url=None):
         """Generate a link to grant access to an organization's Admin Portal
 
         Args:
@@ -26,6 +26,7 @@ class Portal(object):
 
         Kwargs:
             return_url (str): The URL that the end user will be redirected to upon exiting the generated Admin Portal. If none is provided, the default redirect link set in your WorkOS Dashboard will be used. (Optional)
+            success_url (str): The URL to which WorkOS will redirect users to upon successfully setting up Single Sign On or Directory Sync. (Optional)
 
         Returns:
             str:  URL to redirect a User to to access an Admin Portal session
@@ -34,6 +35,7 @@ class Portal(object):
             "intent": intent,
             "organization": organization,
             "return_url": return_url,
+            "success_url": success_url,
         }
         return self.request_helper.request(
             PORTAL_GENERATE_PATH,

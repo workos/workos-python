@@ -78,7 +78,7 @@ class SSO(object):
             and provider is None
             and connection is None
             and organization is None
-         ):
+        ):
             raise ValueError(
                 "Incomplete arguments. Need to specify either a 'connection', 'organization', 'domain', or 'provider'"
             )
@@ -88,7 +88,9 @@ class SSO(object):
                 providers = ConnectionType.providers()
                 if provider not in providers:
                     raise ValueError(
-                        "Invalid provider. Must be one of {}, got '{}'".format(list(providers), provider)
+                        "Invalid provider. Must be one of {}, got '{}'".format(
+                            list(providers), provider
+                        )
                     )
                 provider = ConnectionType[provider]
 
@@ -223,8 +225,8 @@ class SSO(object):
                     "Passing a string value as the 'connection_type' parameter for 'list_connections' is deprecated and will be removed in the next major version. Please pass a 'ConnectionType' instead.",
                     DeprecationWarning,
                 )
-            except KeyError as key_error:
-                raise ValueError("'connection_type' must be a member of ConnectionType") from key_error
+            except KeyError:
+                raise ValueError("'connection_type' must be a member of ConnectionType")
 
         params = {
             "connection_type": connection_type.value if connection_type else None,

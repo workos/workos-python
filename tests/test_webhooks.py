@@ -68,26 +68,20 @@ class TestWebhooks(object):
         assert "Timestamp outside the tolerance zone" in str(err.value)
 
     def test_sig_hash_does_not_match_expected_sig_length(self, mock_sig_hash):
-        with pytest.raises(ValueError) as err:
-            self.webhooks.constant_time_compare(
-                mock_sig_hash,
-                "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea25",
-            )
-        assert (
-            "Signature hash does not match the expected signature hash for payload"
-            in str(err.value)
+
+        result = self.webhooks.constant_time_compare(
+            mock_sig_hash,
+            "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea25",
         )
+        assert result == False
 
     def test_sig_hash_does_not_match_expected_sig_value(self, mock_sig_hash):
-        with pytest.raises(ValueError) as err:
-            self.webhooks.constant_time_compare(
-                mock_sig_hash,
-                "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea252",
-            )
-        assert (
-            "Signature hash does not match the expected signature hash for payload"
-            in str(err.value)
+
+        result = self.webhooks.constant_time_compare(
+            mock_sig_hash,
+            "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea252",
         )
+        assert result == False
 
     def test_passed_expected_event_validation(
         self, mock_event_body, mock_header, mock_secret

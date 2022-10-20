@@ -91,22 +91,22 @@ class Mfa(object):
 
     def get_factor(
         self,
-        id=None,
+        authentication_factor_id=None,
     ):
         """
         Returns an authorization factor from its ID.
 
         Kwargs:
-            id (str) - The ID of the factor to be obtained.
+            authentication_factor_id (str) - The ID of the factor to be obtained.
 
         Returns: Dict containing the authentication factor information.
         """
 
-        if id is None:
+        if authentication_factor_id is None:
             raise ValueError("Incomplete arguments. Need to specify a factor ID")
 
         response = self.request_helper.request(
-            "auth/factors/{id}",
+            "auth/factors/{authentication_factor_id}",
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -120,27 +120,25 @@ class Mfa(object):
 
     def delete_factor(
         self,
-        id=None,
+        authentication_factor_id=None,
     ):
         """
         Deletes an MFA authorization factor.
 
         Kwargs:
-            id (str) - The ID of the authorization factor to be deleted.
+            authentication_factor_id (str) - The ID of the authorization factor to be deleted.
 
-        Returns: Does not provide a return unless there is an error.
+        Returns: Does not provide a response.
         """
 
-        if id is None:
+        if authentication_factor_id is None:
             raise ValueError("Incomplete arguments. Need to specify a factor ID.")
 
-        response = self.request_helper.request(
-            "auth/factors/{id}",
+        return self.request_helper.request(
+            "auth/factors/{authentication_factor_id}",
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
-
-        return response
 
     def challenge_factor(
         self,

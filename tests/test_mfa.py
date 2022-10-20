@@ -151,7 +151,7 @@ class TestMfa(object):
 
     def test_get_factor_no_id(self):
         with pytest.raises(ValueError) as err:
-            self.mfa.delete_factor(id=None)
+            self.mfa.delete_factor(authentication_factor_id=None)
         assert "Incomplete arguments. Need to specify a factor ID." in str(err.value)
 
     def test_get_factor_totp_success(
@@ -170,7 +170,7 @@ class TestMfa(object):
 
     def test_delete_factor_no_id(self):
         with pytest.raises(ValueError) as err:
-            self.mfa.delete_factor(id=None)
+            self.mfa.delete_factor(authentication_factor_id=None)
         assert "Incomplete arguments. Need to specify a factor ID." in str(err.value)
 
     def test_delete_factor_success(self, mock_request_method):

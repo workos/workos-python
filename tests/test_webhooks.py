@@ -27,6 +27,10 @@ class TestWebhooks(object):
         return "1lyKDzhJjuCkIscIWqkSe4YsQ"
 
     @pytest.fixture
+    def mock_bad_secret(self):
+        return "this_is_not_it_123"
+
+    @pytest.fixture
     def mock_header_no_timestamp(self):
         return "v1=67612f0e74f008b436a13b00266f90ef5c13f9cbcf6262206f5f4a539ff61702"
 
@@ -67,13 +71,21 @@ class TestWebhooks(object):
             self.webhooks.verify_event(mock_event_body, mock_header, mock_secret, 0)
         assert "Timestamp outside the tolerance zone" in str(err.value)
 
-    def test_sig_hash_matches_expected_sig(self, mock_sig_hash):
-        with pytest.raises(ValueError) as err:
-            self.webhooks.constant_time_compare(mock_sig_hash, "q234q23r23423")
-        assert (
-            "Signature hash does not match the expected signature hash for payload"
-            in str(err.value)
+    def test_sig_hash_does_not_match_expected_sig_length(self, mock_sig_hash):
+
+        result = self.webhooks.constant_time_compare(
+            mock_sig_hash,
+            "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea25",
         )
+        assert result == False
+
+    def test_sig_hash_does_not_match_expected_sig_value(self, mock_sig_hash):
+
+        result = self.webhooks.constant_time_compare(
+            mock_sig_hash,
+            "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea252",
+        )
+        assert result == False
 
     def test_passed_expected_event_validation(
         self, mock_event_body, mock_header, mock_secret
@@ -86,3 +98,15 @@ class TestWebhooks(object):
             pytest.fail(
                 "There was an error in validating the webhook with the expected values"
             )
+
+    def test_sign_hash_does_not_match_expected_sig_hash_verify_header(
+        self, mock_event_body, mock_header, mock_bad_secret
+    ):
+        with pytest.raises(ValueError) as err:
+            self.webhooks.verify_header(
+                mock_event_body, mock_header, mock_bad_secret, 99999999999999
+            )
+        assert (
+            "Signature hash does not match the expected signature hash for payload"
+            in str(err.value)
+        )

@@ -67,18 +67,24 @@ class Webhooks(object):
 
         # Use constant time comparison function to ensure the sig hash matches
         # the expected sig value
-        Webhooks.constant_time_compare(self, signature_hash, expected_signature)
-
-    def constant_time_compare(self, val1, val2):
-        if len(val1) != len(val2):
+        secure_compare = Webhooks.constant_time_compare(
+            self, signature_hash, expected_signature
+        )
+        if not secure_compare:
             raise ValueError(
                 "Signature hash does not match the expected signature hash for payload"
             )
 
+    def constant_time_compare(self, val1, val2):
+        if len(val1) != len(val2):
+            return False
         result = 0
         for x, y in zip(val1, val2):
             result |= ord(x) ^ ord(y)
-        return result == 0
+            if result != 0:
+                return False
+        if result == 0:
+            return True
 
     def check_timestamp_range(self, time, max_range):
         if time > max_range:

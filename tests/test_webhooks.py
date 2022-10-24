@@ -27,6 +27,10 @@ class TestWebhooks(object):
         return "1lyKDzhJjuCkIscIWqkSe4YsQ"
 
     @pytest.fixture
+    def mock_bad_secret(self):
+        return "this_is_not_it_123"
+
+    @pytest.fixture
     def mock_header_no_timestamp(self):
         return "v1=67612f0e74f008b436a13b00266f90ef5c13f9cbcf6262206f5f4a539ff61702"
 
@@ -94,3 +98,15 @@ class TestWebhooks(object):
             pytest.fail(
                 "There was an error in validating the webhook with the expected values"
             )
+
+    def test_sign_hash_does_not_match_expected_sig_hash_verify_header(
+        self, mock_event_body, mock_header, mock_bad_secret
+    ):
+        with pytest.raises(ValueError) as err:
+            self.webhooks.verify_header(
+                mock_event_body, mock_header, mock_bad_secret, 99999999999999
+            )
+        assert (
+            "Signature hash does not match the expected signature hash for payload"
+            in str(err.value)
+        )

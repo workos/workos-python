@@ -58,7 +58,7 @@ class Webhooks(object):
         )
 
         # Set expected signature value based on env var secret
-        unhashed_string = "{0}.{1}".format(issued_timestamp, event_body)
+        unhashed_string = "{0}.{1}".format(issued_timestamp, event_body.decode("utf-8"))
         expected_signature = hmac.new(
             secret.encode("utf-8"),
             unhashed_string.encode("utf-8"),

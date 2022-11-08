@@ -45,12 +45,16 @@ class TestWebhooks(object):
 
     def test_missing_header(self, mock_event_body, mock_secret):
         with pytest.raises(ValueError) as err:
-            self.webhooks.verify_event(mock_event_body, None, mock_secret)
+            self.webhooks.verify_event(
+                mock_event_body.encode("utf-8"), None, mock_secret
+            )
         assert "Payload signature missing and is a required parameter" in str(err.value)
 
     def test_missing_secret(self, mock_event_body, mock_header):
         with pytest.raises(ValueError) as err:
-            self.webhooks.verify_event(mock_event_body, mock_header, None)
+            self.webhooks.verify_event(
+                mock_event_body.encode("utf-8"), mock_header, None
+            )
         assert "Secret is missing and is a required parameter" in str(err.value)
 
     def test_unable_to_extract_timestamp(
@@ -58,7 +62,10 @@ class TestWebhooks(object):
     ):
         with pytest.raises(ValueError) as err:
             self.webhooks.verify_event(
-                mock_event_body, mock_header_no_timestamp, mock_secret, 180
+                mock_event_body.encode("utf-8"),
+                mock_header_no_timestamp,
+                mock_secret,
+                180,
             )
         assert "Unable to extract timestamp and signature hash from header" in str(
             err.value
@@ -68,7 +75,9 @@ class TestWebhooks(object):
         self, mock_event_body, mock_header, mock_secret
     ):
         with pytest.raises(ValueError) as err:
-            self.webhooks.verify_event(mock_event_body, mock_header, mock_secret, 0)
+            self.webhooks.verify_event(
+                mock_event_body.encode("utf-8"), mock_header, mock_secret, 0
+            )
         assert "Timestamp outside the tolerance zone" in str(err.value)
 
     def test_sig_hash_does_not_match_expected_sig_length(self, mock_sig_hash):
@@ -92,7 +101,10 @@ class TestWebhooks(object):
     ):
         try:
             self.webhooks.verify_event(
-                mock_event_body, mock_header, mock_secret, 99999999999999
+                mock_event_body.encode("utf-8"),
+                mock_header,
+                mock_secret,
+                99999999999999,
             )
         except BaseException:
             pytest.fail(
@@ -104,7 +116,10 @@ class TestWebhooks(object):
     ):
         with pytest.raises(ValueError) as err:
             self.webhooks.verify_header(
-                mock_event_body, mock_header, mock_bad_secret, 99999999999999
+                mock_event_body.encode("utf-8"),
+                mock_header,
+                mock_bad_secret,
+                99999999999999,
             )
         assert (
             "Signature hash does not match the expected signature hash for payload"

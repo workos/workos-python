@@ -21,12 +21,12 @@ class Portal(object):
         """Generate a link to grant access to an organization's Admin Portal
 
         Args:
-            intent (str): The access scope for the generated Admin Portal link. Valid values are: ["sso", "dsync", "audit_logs"]
+            intent (str): The access scope for the generated Admin Portal link. Valid values are: ["audit_logs", "dsync", "log_streams", "sso",]
             organization (string): The ID of the organization the Admin Portal link will be generated for
 
         Kwargs:
             return_url (str): The URL that the end user will be redirected to upon exiting the generated Admin Portal. If none is provided, the default redirect link set in your WorkOS Dashboard will be used. (Optional)
-            success_url (str): The URL to which WorkOS will redirect users to upon successfully setting up Single Sign On or Directory Sync. (Optional)
+            success_url (str): The URL to which WorkOS will redirect users to upon successfully viewing Audit Logs, setting up Log Streams, Single Sign On or Directory Sync. (Optional)
 
         Returns:
             str:  URL to redirect a User to to access an Admin Portal session

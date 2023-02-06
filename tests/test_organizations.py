@@ -1,5 +1,6 @@
 import pytest
 from workos.organizations import Organizations
+from workos.resources.organizations import WorkOSOrganizationList
 
 
 class TestOrganizations(object):
@@ -76,7 +77,7 @@ class TestOrganizations(object):
                     ],
                 },
             ],
-            "list_metadata": {"before": "before-id", "after": None},
+            "list_metadata": {"before": None, "after": None},
         }
 
     def test_list_organizations(self, mock_organizations, mock_request_method):
@@ -149,3 +150,15 @@ class TestOrganizations(object):
         response = self.organizations.delete_organization(organization="connection_id")
 
         assert response is None
+
+    def test_list_organizations_auto_pagination(
+        self, mock_organizations, mock_request_method
+    ):
+        mock_request_method("get", mock_organizations, 200)
+        organizations = self.organizations.list_organizations(limit=1)
+
+        all_organizations = WorkOSOrganizationList.construct_from_response(
+            organizations
+        ).auto_paging_iter()
+
+        assert len(all_organizations) == len(mock_organizations["data"])

@@ -1,11 +1,12 @@
+import workos
 from workos.resources.base import WorkOSBaseResource
 
 
 class WorkOSOrganization(WorkOSBaseResource):
-    """Representation of a User Profile and Access Token as returned by WorkOS through the SSO feature.
+    """Representation of WorkOS Organization as returned by WorkOS through the Organizations feature.
 
     Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSProfileAndToken is comprised of.
+        OBJECT_FIELDS (list): List of fields a WorkOSOrganization is comprised of.
     """
 
     OBJECT_FIELDS = [
@@ -26,3 +27,39 @@ class WorkOSOrganization(WorkOSBaseResource):
         organization = super(WorkOSOrganization, self).to_dict()
 
         return organization
+
+
+class WorkOSOrganizationList(WorkOSBaseResource):
+    """Representation of a list of WorkOS Organizations as returned by WorkOS through the Organizations feature.
+
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSOrganizationList is comprised of.
+    """
+
+    OBJECT_FIELDS = [
+        "data",
+        "list_metadata",
+    ]
+
+    @classmethod
+    def construct_from_response(cls, response):
+        return super(WorkOSOrganizationList, cls).construct_from_response(response)
+
+    def to_dict(self):
+        organizations = super(WorkOSOrganizationList, self).to_dict()
+
+        return organizations
+
+    def auto_paging_iter(self):
+        organizations = self.to_dict()["data"]
+        before = self.to_dict()["list_metadata"]["before"]
+
+        while before is not None:
+            response = workos.client.organizations.list_organizations(
+                limit=100, before=before
+            )
+            for i in response["data"]:
+                organizations.append(i)
+            before = response["list_metadata"]["before"]
+
+        return organizations

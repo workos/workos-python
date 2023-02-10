@@ -25,6 +25,7 @@ class TestDirectorySync(object):
                     "first_name": "Yoon",
                     "job_title": "Software Engineer",
                     "directory_id": "directory_xxx",
+                    "created_at": "2021-06-25T19:07:33.155Z",
                     "emails": [
                         {"primary": True, "type": "work", "value": "yoon@seri.com"}
                     ],
@@ -49,6 +50,7 @@ class TestDirectorySync(object):
                         ],
                     },
                     "id": "directory_usr_id",
+                    "object": "directory_user",
                 },
                 {
                     "username": "yoon1@seri.com",
@@ -56,6 +58,7 @@ class TestDirectorySync(object):
                     "first_name": "Yoon",
                     "job_title": "Software Engineer",
                     "directory_id": "directory_xxx",
+                    "created_at": "2021-05-25T19:07:33.155Z",
                     "emails": [
                         {"primary": True, "type": "work", "value": "yoon@seri.com"}
                     ],
@@ -80,6 +83,7 @@ class TestDirectorySync(object):
                         ],
                     },
                     "id": "directory_usr_id1",
+                    "object": "directory_user",
                 },
                 {
                     "username": "yoon2@seri.com",
@@ -87,6 +91,7 @@ class TestDirectorySync(object):
                     "first_name": "Yoon",
                     "job_title": "Software Engineer",
                     "directory_id": "directory_xxx",
+                    "created_at": "2021-04-25T19:07:33.155Z",
                     "emails": [
                         {"primary": True, "type": "work", "value": "yoon@seri.com"}
                     ],
@@ -111,6 +116,40 @@ class TestDirectorySync(object):
                         ],
                     },
                     "id": "directory_usr_id2",
+                    "object": "directory_user",
+                },
+                {
+                    "username": "yoon3@seri.com",
+                    "last_name": "Seri",
+                    "first_name": "Yoon",
+                    "job_title": "Software Engineer",
+                    "directory_id": "directory_xxx",
+                    "created_at": "2021-03-25T19:07:33.155Z",
+                    "emails": [
+                        {"primary": True, "type": "work", "value": "yoon@seri.com"}
+                    ],
+                    "raw_attributes": {
+                        "schemas": ["urn:scim:schemas:core:1.0"],
+                        "name": {"familyName": "Seri", "givenName": "Yoon"},
+                        "externalId": "external-id",
+                        "locale": "en_US",
+                        "userName": "yoon@seri.com",
+                        "id": "directory_usr_id",
+                        "displayName": "Yoon Seri",
+                        "title": "Software Engineer",
+                        "active": True,
+                        "groups": [],
+                        "meta": {
+                            "created": "2020-02-21T00:32:14.443Z",
+                            "version": "7ff066f75718e21a521c269ae7eafce474ae07c1",
+                            "lastModified": "2020-02-21T00:36:44.638Z",
+                        },
+                        "emails": [
+                            {"value": "yoon@seri.com", "type": "work", "primary": True}
+                        ],
+                    },
+                    "id": "directory_usr_id2",
+                    "object": "directory_user",
                 },
             ],
         }
@@ -123,16 +162,29 @@ class TestDirectorySync(object):
                     "name": "Developers",
                     "id": "directory_grp_id",
                     "directory_id": "directory_id_123",
+                    "object": "directory_group",
+                    "created_at": "2021-06-25T19:07:33.155Z",
                 },
                 {
                     "name": "Success",
                     "id": "directory_grp_id1",
                     "directory_id": "directory_id_123",
+                    "object": "directory_group",
+                    "created_at": "2021-05-25T19:07:33.155Z",
                 },
                 {
                     "name": "Sales",
                     "id": "directory_grp_id2",
                     "directory_id": "directory_id_123",
+                    "object": "directory_group",
+                    "created_at": "2021-04-25T19:07:33.155Z",
+                },
+                {
+                    "name": "Marketing",
+                    "id": "directory_grp_id3",
+                    "directory_id": "directory_id_123",
+                    "object": "directory_group",
+                    "created_at": "2021-03-25T19:07:33.155Z",
                 },
             ],
             "list_metadata": {"before": None, "after": None},
@@ -255,6 +307,8 @@ class TestDirectorySync(object):
                     "name": "Ri Jeong Hyeok",
                     "organization_id": "organization_id",
                     "domain": "crashlandingonyou.com",
+                    "object": "directory",
+                    "created_at": "2021-06-25T19:07:33.155Z",
                 },
                 {
                     "id": "directory_id1",
@@ -264,6 +318,8 @@ class TestDirectorySync(object):
                     "name": "Ri Leong Hyeok",
                     "organization_id": "organization_id1",
                     "domain": "crashlandingonyou.com",
+                    "object": "directory",
+                    "created_at": "2021-05-25T19:07:33.155Z",
                 },
                 {
                     "id": "directory_id2",
@@ -273,6 +329,19 @@ class TestDirectorySync(object):
                     "name": "Ri Xeong Hyeok",
                     "organization_id": "organization_id2",
                     "domain": "crashlandingonyou.com",
+                    "object": "directory",
+                    "created_at": "2021-04-25T19:07:33.155Z",
+                },
+                {
+                    "id": "directory_id3",
+                    "external_key": "fried-fish",
+                    "state": "linked",
+                    "type": "gsuite directory",
+                    "name": "Ri Xeong Hyeok",
+                    "organization_id": "organization_id2",
+                    "domain": "crashlandingonyou.com",
+                    "object": "directory",
+                    "created_at": "2021-03-25T19:07:33.155Z",
                 },
             ],
             "list_metadata": {"before": None, "after": None},
@@ -385,7 +454,7 @@ class TestDirectorySync(object):
 
     def test_directories_auto_pagination(self, mock_directories, mock_request_method):
         mock_request_method("get", mock_directories, 200)
-        directories = self.directory_sync.list_directories(limit=1)
+        directories = self.directory_sync.list_directories(limit=2)
 
         all_directories = WorkOSDirectoryList.construct_from_response(
             directories
@@ -395,7 +464,7 @@ class TestDirectorySync(object):
 
     def test_directory_users_auto_pagination(self, mock_users, mock_request_method):
         mock_request_method("get", mock_users, 200)
-        users = self.directory_sync.list_users(limit=1)
+        users = self.directory_sync.list_users(limit=2)
 
         all_users = WorkOSDirectoryUserList.construct_from_response(
             users
@@ -407,7 +476,7 @@ class TestDirectorySync(object):
         self, mock_groups, mock_request_method
     ):
         mock_request_method("get", mock_groups, 200)
-        groups = self.directory_sync.list_groups(directory="directory_grp_id", limit=1)
+        groups = self.directory_sync.list_groups(directory="directory_grp_id", limit=2)
 
         all_groups = WorkOSDirectoryGroupList.construct_from_response(
             groups

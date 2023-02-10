@@ -66,10 +66,15 @@ class DirectorySync(object):
             params["group"] = group
         if directory is not None:
             params["directory"] = directory
+
         if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            else:
+                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+        if order is None:
+            params["order"] = Order.Desc.value
+
         response = self.request_helper.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
@@ -108,10 +113,15 @@ class DirectorySync(object):
             params["user"] = user
         if directory is not None:
             params["directory"] = directory
+
         if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            else:
+                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+        if order is None:
+            params["order"] = Order.Desc.value
+
         response = self.request_helper.request(
             "directory_groups",
             method=REQUEST_METHOD_GET,
@@ -207,6 +217,15 @@ class DirectorySync(object):
             "after": after,
             "order": order,
         }
+
+        if order is not None:
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            else:
+                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+        if order is None:
+            params["order"] = Order.Desc.value
+
         response = self.request_helper.request(
             "directories",
             method=REQUEST_METHOD_GET,

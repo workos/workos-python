@@ -1,5 +1,5 @@
-import workos
 from workos.resources.base import WorkOSBaseResource
+from workos.resources.list import WorkOSListResource
 
 
 class WorkOSProfile(WorkOSBaseResource):
@@ -87,38 +87,5 @@ class WorkOSConnection(WorkOSBaseResource):
         return connection_response_dict
 
 
-class WorkOSConnectionList(WorkOSBaseResource):
-    """Representation of a List Connections Response as returned by WorkOS through the SSO feature.
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSConnectionList is comprised of.
-    """
-
-    OBJECT_FIELDS = [
-        "data",
-        "list_metadata",
-    ]
-
-    @classmethod
-    def construct_from_response(cls, response):
-        connection_response = super(WorkOSConnectionList, cls).construct_from_response(
-            response
-        )
-
-        return connection_response
-
-    def to_dict(self):
-        connection_response_dict = super(WorkOSConnectionList, self).to_dict()
-
-        return connection_response_dict
-
-    def auto_paging_iter(self):
-        connections = self.to_dict()["data"]
-        before = self.to_dict()["list_metadata"]["before"]
-
-        while before is not None:
-            response = workos.client.sso.list_connections(limit=100, before=before)
-            for i in response["data"]:
-                connections.append(i)
-            before = response["list_metadata"]["before"]
-
-        return connections
+class WorkOSConnectionList(WorkOSListResource):
+    """Representation of a List Connections Response as returned by WorkOS through the SSO feature."""

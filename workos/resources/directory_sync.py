@@ -1,5 +1,5 @@
-import workos
 from workos.resources.base import WorkOSBaseResource
+from workos.resources.list import WorkOSListResource
 
 
 class WorkOSDirectory(WorkOSBaseResource):
@@ -100,109 +100,13 @@ class WorkOSDirectoryUser(WorkOSBaseResource):
         return next((email for email in self_dict["emails"] if email["primary"]), None)
 
 
-class WorkOSDirectoryList(WorkOSBaseResource):
-    """Representation of a Directory List as returned by WorkOS through the Directory Sync feature.
-
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSDirectoryList is comprised of.
-    """
-
-    OBJECT_FIELDS = [
-        "data",
-        "list_metadata",
-    ]
-
-    @classmethod
-    def construct_from_response(cls, response):
-        return super(WorkOSDirectoryList, cls).construct_from_response(response)
-
-    def to_dict(self):
-        response = super(WorkOSDirectoryList, self).to_dict()
-        return response
-
-    def auto_paging_iter(self):
-        directories = self.to_dict()["data"]
-        before = self.to_dict()["list_metadata"]["before"]
-
-        while before is not None:
-            response = workos.client.directory_sync.list_directories(
-                limit=100, before=before
-            )
-            for i in response["data"]:
-                directories.append(i)
-            before = response["list_metadata"]["before"]
-
-        return directories
+class WorkOSDirectoryList(WorkOSListResource):
+    """Representation of a Directory List as returned by WorkOS through the Directory Sync feature."""
 
 
-class WorkOSDirectoryUserList(WorkOSBaseResource):
-    """Representation of a Directory List as returned by WorkOS through the Directory Sync feature.
-
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSDirectoryList is comprised of.
-    """
-
-    OBJECT_FIELDS = [
-        "data",
-        "list_metadata",
-    ]
-
-    @classmethod
-    def construct_from_response(cls, response):
-        return super(WorkOSDirectoryUserList, cls).construct_from_response(response)
-
-    def to_dict(self):
-        response = super(WorkOSDirectoryUserList, self).to_dict()
-        return response
-
-    def auto_paging_iter(self):
-        directory = self.to_dict()["data"][0]["directory_id"]
-        users = self.to_dict()["data"]
-        before = self.to_dict()["list_metadata"]["before"]
-
-        while before is not None:
-            response = workos.client.directory_sync.list_users(
-                directory=directory, limit=100, before=before
-            )
-            for i in response["data"]:
-                users.append(i)
-            before = response["list_metadata"]["before"]
-
-        return users
+class WorkOSDirectoryUserList(WorkOSListResource):
+    """Representation of a Directory List as returned by WorkOS through the Directory Sync feature."""
 
 
-class WorkOSDirectoryGroupList(WorkOSBaseResource):
-    """Representation of a Directory List as returned by WorkOS through the Directory Sync feature.
-
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSDirectoryList is comprised of.
-    """
-
-    OBJECT_FIELDS = [
-        "data",
-        "list_metadata",
-    ]
-
-    @classmethod
-    def construct_from_response(cls, response):
-        return super(WorkOSDirectoryGroupList, cls).construct_from_response(response)
-
-    def to_dict(self):
-        response = super(WorkOSDirectoryGroupList, self).to_dict()
-        return response
-
-    def auto_paging_iter(self):
-        print(self.to_dict())
-        directory = self.to_dict()["data"][0]["directory_id"]
-        groups = self.to_dict()["data"]
-        before = self.to_dict()["list_metadata"]["before"]
-
-        while before is not None:
-            response = workos.client.directory_sync.list_groups(
-                directory=directory, limit=100, before=before
-            )
-            for i in response["data"]:
-                groups.append(i)
-            before = response["list_metadata"]["before"]
-
-        return groups
+class WorkOSDirectoryGroupList(WorkOSListResource):
+    """Representation of a Directory List as returned by WorkOS through the Directory Sync feature."""

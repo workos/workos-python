@@ -52,10 +52,15 @@ class Organizations(object):
             "after": after,
             "order": order,
         }
+
         if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            else:
+                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+        if order is None:
+            params["order"] = Order.Desc.value
+
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,

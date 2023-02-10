@@ -8,7 +8,7 @@ from workos.utils.request import (
     REQUEST_METHOD_PUT,
 )
 from workos.utils.validation import ORGANIZATIONS_MODULE, validate_settings
-from workos.resources.organizations import WorkOSOrganization
+from workos.resources.organizations import WorkOSOrganization, WorkOSOrganizationList
 
 ORGANIZATIONS_PATH = "organizations"
 RESPONSE_LIMIT = 10
@@ -52,16 +52,23 @@ class Organizations(object):
             "after": after,
             "order": order,
         }
+
         if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
-        return self.request_helper.request(
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            else:
+                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+        if order is None:
+            params["order"] = Order.Desc.value
+
+        response = self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        return WorkOSOrganizationList.construct_from_response(response).to_dict()
 
     def get_organization(self, organization):
         """Gets details for a single Organization

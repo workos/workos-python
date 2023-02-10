@@ -1,11 +1,12 @@
 from workos.resources.base import WorkOSBaseResource
+from workos.resources.list import WorkOSListResource
 
 
 class WorkOSOrganization(WorkOSBaseResource):
-    """Representation of a User Profile and Access Token as returned by WorkOS through the SSO feature.
+    """Representation of WorkOS Organization as returned by WorkOS through the Organizations feature.
 
     Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSProfileAndToken is comprised of.
+        OBJECT_FIELDS (list): List of fields a WorkOSOrganization is comprised of.
     """
 
     OBJECT_FIELDS = [
@@ -26,3 +27,7 @@ class WorkOSOrganization(WorkOSBaseResource):
         organization = super(WorkOSOrganization, self).to_dict()
 
         return organization
+
+
+class WorkOSOrganizationList(WorkOSListResource):
+    """Representation of a list of WorkOS Organizations as returned by WorkOS through the Organizations feature."""

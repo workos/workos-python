@@ -11,6 +11,9 @@ from workos.resources.directory_sync import (
     WorkOSDirectoryGroup,
     WorkOSDirectory,
     WorkOSDirectoryUser,
+    WorkOSDirectoryList,
+    WorkOSDirectoryUserList,
+    WorkOSDirectoryGroupList,
 )
 
 RESPONSE_LIMIT = 10
@@ -63,16 +66,23 @@ class DirectorySync(object):
             params["group"] = group
         if directory is not None:
             params["directory"] = directory
+
         if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
-        return self.request_helper.request(
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            else:
+                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+        if order is None:
+            params["order"] = Order.Desc.value
+
+        response = self.request_helper.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        return WorkOSDirectoryUserList.construct_from_response(response).to_dict()
 
     def list_groups(
         self,
@@ -103,16 +113,23 @@ class DirectorySync(object):
             params["user"] = user
         if directory is not None:
             params["directory"] = directory
+
         if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
-        return self.request_helper.request(
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            else:
+                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+        if order is None:
+            params["order"] = Order.Desc.value
+
+        response = self.request_helper.request(
             "directory_groups",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        return WorkOSDirectoryGroupList.construct_from_response(response).to_dict()
 
     def get_user(self, user):
         """Gets details for a single provisioned Directory User.
@@ -200,12 +217,23 @@ class DirectorySync(object):
             "after": after,
             "order": order,
         }
-        return self.request_helper.request(
+
+        if order is not None:
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            else:
+                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+        if order is None:
+            params["order"] = Order.Desc.value
+
+        response = self.request_helper.request(
             "directories",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        return WorkOSDirectoryList.construct_from_response(response).to_dict()
 
     def get_directory(self, directory):
         """Gets details for a single Directory

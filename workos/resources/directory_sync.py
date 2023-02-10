@@ -1,5 +1,5 @@
-import workos
 from workos.resources.base import WorkOSBaseResource
+from workos.resources.list import WorkOSListResource
 
 
 class WorkOSDirectory(WorkOSBaseResource):
@@ -98,3 +98,15 @@ class WorkOSDirectoryUser(WorkOSBaseResource):
     def primary_email(self):
         self_dict = self.to_dict()
         return next((email for email in self_dict["emails"] if email["primary"]), None)
+
+
+class WorkOSDirectoryList(WorkOSListResource):
+    """Representation of a Directory List as returned by WorkOS through the Directory Sync feature."""
+
+
+class WorkOSDirectoryUserList(WorkOSListResource):
+    """Representation of a Directory List as returned by WorkOS through the Directory Sync feature."""
+
+
+class WorkOSDirectoryGroupList(WorkOSListResource):
+    """Representation of a Directory List as returned by WorkOS through the Directory Sync feature."""

@@ -1,5 +1,6 @@
 import pytest
 from workos.organizations import Organizations
+from workos.resources.organizations import WorkOSOrganizationList
 
 
 class TestOrganizations(object):
@@ -55,6 +56,7 @@ class TestOrganizations(object):
                     "object": "organization",
                     "id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
                     "name": "example.com",
+                    "created_at": "2021-06-25T19:07:33.155Z",
                     "domains": [
                         {
                             "object": "organization_domain",
@@ -67,6 +69,33 @@ class TestOrganizations(object):
                     "object": "organization",
                     "id": "org_01EHQMVDTC2GRAHFCCRNTSKH46",
                     "name": "example2.com",
+                    "created_at": "2021-05-25T19:07:33.155Z",
+                    "domains": [
+                        {
+                            "object": "organization_domain",
+                            "id": "org_domain_01EHQMVDTZVA27PK614ME4YK7V",
+                            "domain": "example2.com",
+                        }
+                    ],
+                },
+                {
+                    "object": "organization",
+                    "id": "org_01EHQMVDTC2GRAHFCCRNTSKH36",
+                    "name": "example2.com",
+                    "created_at": "2021-04-25T19:07:33.155Z",
+                    "domains": [
+                        {
+                            "object": "organization_domain",
+                            "id": "org_domain_01EHQMVDTZVA27PK614ME4YK7V",
+                            "domain": "example2.com",
+                        }
+                    ],
+                },
+                {
+                    "object": "organization",
+                    "id": "org_01EHQMVDTC2GRAHFC6RNTSKH46",
+                    "name": "example2.com",
+                    "created_at": "2021-03-25T19:07:33.155Z",
                     "domains": [
                         {
                             "object": "organization_domain",
@@ -76,7 +105,7 @@ class TestOrganizations(object):
                     ],
                 },
             ],
-            "list_metadata": {"before": "before-id", "after": None},
+            "list_metadata": {"before": None, "after": None},
         }
 
     def test_list_organizations(self, mock_organizations, mock_request_method):
@@ -149,3 +178,15 @@ class TestOrganizations(object):
         response = self.organizations.delete_organization(organization="connection_id")
 
         assert response is None
+
+    def test_list_organizations_auto_pagination(
+        self, mock_organizations, mock_request_method
+    ):
+        mock_request_method("get", mock_organizations, 200)
+        organizations = self.organizations.list_organizations(limit=2)
+
+        all_organizations = WorkOSOrganizationList.construct_from_response(
+            organizations
+        ).auto_paging_iter()
+
+        assert len(all_organizations) == len(mock_organizations["data"])

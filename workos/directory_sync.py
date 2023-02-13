@@ -11,10 +11,8 @@ from workos.resources.directory_sync import (
     WorkOSDirectoryGroup,
     WorkOSDirectory,
     WorkOSDirectoryUser,
-    WorkOSDirectoryList,
-    WorkOSDirectoryUserList,
-    WorkOSDirectoryGroupList,
 )
+from workos.resources.list import WorkOSListResource
 
 RESPONSE_LIMIT = 10
 
@@ -82,7 +80,7 @@ class DirectorySync(object):
             token=workos.api_key,
         )
 
-        return WorkOSDirectoryUserList.construct_from_response(response).to_dict()
+        return WorkOSListResource.construct_from_response(response).to_dict()
 
     def list_groups(
         self,
@@ -129,7 +127,7 @@ class DirectorySync(object):
             token=workos.api_key,
         )
 
-        return WorkOSDirectoryGroupList.construct_from_response(response).to_dict()
+        return WorkOSListResource.construct_from_response(response).to_dict()
 
     def get_user(self, user):
         """Gets details for a single provisioned Directory User.
@@ -233,7 +231,7 @@ class DirectorySync(object):
             token=workos.api_key,
         )
 
-        return WorkOSDirectoryList.construct_from_response(response).to_dict()
+        return WorkOSListResource.construct_from_response(response).to_dict()
 
     def get_directory(self, directory):
         """Gets details for a single Directory

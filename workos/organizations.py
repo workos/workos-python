@@ -8,7 +8,8 @@ from workos.utils.request import (
     REQUEST_METHOD_PUT,
 )
 from workos.utils.validation import ORGANIZATIONS_MODULE, validate_settings
-from workos.resources.organizations import WorkOSOrganization, WorkOSOrganizationList
+from workos.resources.organizations import WorkOSOrganization
+from workos.resources.list import WorkOSListResource
 
 ORGANIZATIONS_PATH = "organizations"
 RESPONSE_LIMIT = 10
@@ -68,7 +69,7 @@ class Organizations(object):
             token=workos.api_key,
         )
 
-        return WorkOSOrganizationList.construct_from_response(response).to_dict()
+        return WorkOSListResource.construct_from_response(response).to_dict()
 
     def get_organization(self, organization):
         """Gets details for a single Organization

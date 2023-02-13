@@ -27,7 +27,3 @@ class WorkOSOrganization(WorkOSBaseResource):
         organization = super(WorkOSOrganization, self).to_dict()
 
         return organization
-
-
-class WorkOSOrganizationList(WorkOSListResource):
-    """Representation of a list of WorkOS Organizations as returned by WorkOS through the Organizations feature."""

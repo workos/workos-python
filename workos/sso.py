@@ -10,8 +10,8 @@ from workos.resources.sso import (
     WorkOSProfile,
     WorkOSProfileAndToken,
     WorkOSConnection,
-    WorkOSConnectionList,
 )
+from workos.resources.list import WorkOSListResource
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import (
     RequestHelper,
@@ -258,7 +258,7 @@ class SSO(object):
             token=workos.api_key,
         )
 
-        return WorkOSConnectionList.construct_from_response(response).to_dict()
+        return WorkOSListResource.construct_from_response(response).to_dict()
 
     def delete_connection(self, connection):
         """Deletes a single Connection

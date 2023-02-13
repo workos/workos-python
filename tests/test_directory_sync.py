@@ -1,12 +1,8 @@
 import pytest
 from workos.directory_sync import DirectorySync
 from workos.utils.request import RESPONSE_TYPE_CODE
-from workos.resources.directory_sync import (
-    WorkOSDirectoryUser,
-    WorkOSDirectoryList,
-    WorkOSDirectoryUserList,
-    WorkOSDirectoryGroupList,
-)
+from workos.resources.directory_sync import WorkOSDirectoryUser
+from workos.resources.list import WorkOSListResource
 
 
 class TestDirectorySync(object):
@@ -456,7 +452,7 @@ class TestDirectorySync(object):
         mock_request_method("get", mock_directories, 200)
         directories = self.directory_sync.list_directories(limit=2)
 
-        all_directories = WorkOSDirectoryList.construct_from_response(
+        all_directories = WorkOSListResource.construct_from_response(
             directories
         ).auto_paging_iter()
 
@@ -466,9 +462,7 @@ class TestDirectorySync(object):
         mock_request_method("get", mock_users, 200)
         users = self.directory_sync.list_users(limit=2)
 
-        all_users = WorkOSDirectoryUserList.construct_from_response(
-            users
-        ).auto_paging_iter()
+        all_users = WorkOSListResource.construct_from_response(users).auto_paging_iter()
 
         assert len(all_users) == len(mock_users["data"])
 
@@ -478,7 +472,7 @@ class TestDirectorySync(object):
         mock_request_method("get", mock_groups, 200)
         groups = self.directory_sync.list_groups(directory="directory_grp_id", limit=2)
 
-        all_groups = WorkOSDirectoryGroupList.construct_from_response(
+        all_groups = WorkOSListResource.construct_from_response(
             groups
         ).auto_paging_iter()
 

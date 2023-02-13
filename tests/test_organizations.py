@@ -1,6 +1,6 @@
 import pytest
 from workos.organizations import Organizations
-from workos.resources.organizations import WorkOSOrganizationList
+from workos.resources.list import WorkOSListResource
 
 
 class TestOrganizations(object):
@@ -185,7 +185,7 @@ class TestOrganizations(object):
         mock_request_method("get", mock_organizations, 200)
         organizations = self.organizations.list_organizations(limit=2)
 
-        all_organizations = WorkOSOrganizationList.construct_from_response(
+        all_organizations = WorkOSListResource.construct_from_response(
             organizations
         ).auto_paging_iter()
 

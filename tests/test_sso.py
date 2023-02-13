@@ -5,8 +5,8 @@ import workos
 from workos.sso import SSO
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import RESPONSE_TYPE_CODE
-from workos.resources.sso import (
-    WorkOSConnectionList,
+from workos.resources.list import (
+    WorkOSListResource,
 )
 
 
@@ -494,7 +494,7 @@ class TestSSO(object):
         mock_request_method("get", mock_connections, 200)
         connections = self.sso.list_connections(limit=2)
 
-        all_connections = WorkOSConnectionList.construct_from_response(
+        all_connections = WorkOSListResource.construct_from_response(
             connections
         ).auto_paging_iter()
 

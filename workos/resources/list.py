@@ -1,5 +1,5 @@
-import workos
-from workos.utils.pagination_order import Order, timestamp_compare
+from workos.utils.pagination_order import Order
+from workos.utils.auto_pagination import auto_paginate, timestamp_compare
 
 
 class WorkOSListResource(object):
@@ -54,62 +54,26 @@ class WorkOSListResource(object):
             order = Order.Desc
 
         if list_type == "directory":
-            while after is not None:
-                response = workos.client.directory_sync.list_directories(
-                    limit=100, after=after, order=order
-                )
-                for i in response["data"]:
-                    all_items.append(i)
-                after = response["list_metadata"]["after"]
-            return all_items
+            result = auto_paginate(list_type, all_items, after, order)
+            return result
 
         elif list_type == "directory_user":
             directory = self.to_dict()["data"][0]["directory_id"]
-            while after is not None:
-                response = workos.client.directory_sync.list_users(
-                    directory=directory,
-                    limit=100,
-                    after=after,
-                    order=order,
-                )
-                for i in response["data"]:
-                    all_items.append(i)
-                after = response["list_metadata"]["after"]
-            return all_items
+            result = auto_paginate(list_type, all_items, after, order, directory)
+            return result
 
         elif list_type == "directory_group":
             directory = self.to_dict()["data"][0]["directory_id"]
-            while after is not None:
-                response = workos.client.directory_sync.list_groups(
-                    directory=directory,
-                    limit=100,
-                    after=after,
-                    order=order,
-                )
-                for i in response["data"]:
-                    all_items.append(i)
-                after = response["list_metadata"]["after"]
-            return all_items
+            result = auto_paginate(list_type, all_items, after, order, directory)
+            return result
 
         elif list_type == "organization":
-            while after is not None:
-                response = workos.client.organizations.list_organizations(
-                    limit=100, after=after, order=order
-                )
-                for i in response["data"]:
-                    all_items.append(i)
-                after = response["list_metadata"]["after"]
-            return all_items
+            result = auto_paginate(list_type, all_items, after, order)
+            return result
 
         elif list_type == "connection":
-            while after is not None:
-                response = workos.client.sso.list_connections(
-                    limit=100, after=after, order=order
-                )
-                for i in response["data"]:
-                    all_items.append(i)
-                after = response["list_metadata"]["after"]
-            return all_items
+            result = auto_paginate(list_type, all_items, after, order)
+            return result
 
         else:
             raise ValueError("Invalid list type")

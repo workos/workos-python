@@ -6,7 +6,12 @@ from warnings import warn
 import workos
 from workos.utils.pagination_order import Order
 from workos.exceptions import ConfigurationException
-from workos.resources.sso import WorkOSProfile, WorkOSProfileAndToken, WorkOSConnection
+from workos.resources.sso import (
+    WorkOSProfile,
+    WorkOSProfileAndToken,
+    WorkOSConnection,
+    WorkOSConnectionList,
+)
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import (
     RequestHelper,
@@ -237,17 +242,23 @@ class SSO(object):
             "after": after,
             "order": order,
         }
-        if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
 
-        return self.request_helper.request(
+        if order is not None:
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            else:
+                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+        if order is None:
+            params["order"] = Order.Desc.value
+
+        response = self.request_helper.request(
             "connections",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        return WorkOSConnectionList.construct_from_response(response).to_dict()
 
     def delete_connection(self, connection):
         """Deletes a single Connection

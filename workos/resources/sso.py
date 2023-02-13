@@ -1,4 +1,5 @@
 from workos.resources.base import WorkOSBaseResource
+from workos.resources.list import WorkOSListResource
 
 
 class WorkOSProfile(WorkOSBaseResource):
@@ -84,3 +85,7 @@ class WorkOSConnection(WorkOSBaseResource):
         connection_response_dict = super(WorkOSConnection, self).to_dict()
 
         return connection_response_dict
+
+
+class WorkOSConnectionList(WorkOSListResource):
+    """Representation of a List Connections Response as returned by WorkOS through the SSO feature."""

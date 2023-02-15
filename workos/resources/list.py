@@ -44,35 +44,30 @@ class WorkOSListResource(object):
 
     def auto_paging_iter(self):
         after = self.to_dict()["list_metadata"]["after"]
+        before = self.to_dict()["list_metadata"]["before"]
         list_type = self.to_dict()["data"][0]["object"]
         all_items = self.to_dict()["data"]
-        if len(all_items) > 1:
-            order = timestamp_compare(
-                all_items[0]["created_at"], all_items[1]["created_at"]
-            )
-        else:
-            order = Order.Desc
 
         if list_type == "directory":
-            result = auto_paginate(list_type, all_items, after, order)
+            result = auto_paginate(list_type, all_items, after, before)
             return result
 
         elif list_type == "directory_user":
             directory = self.to_dict()["data"][0]["directory_id"]
-            result = auto_paginate(list_type, all_items, after, order, directory)
+            result = auto_paginate(list_type, all_items, after, before, directory)
             return result
 
         elif list_type == "directory_group":
             directory = self.to_dict()["data"][0]["directory_id"]
-            result = auto_paginate(list_type, all_items, after, order, directory)
+            result = auto_paginate(list_type, all_items, after, before, directory)
             return result
 
         elif list_type == "organization":
-            result = auto_paginate(list_type, all_items, after, order)
+            result = auto_paginate(list_type, all_items, after, before)
             return result
 
         elif list_type == "connection":
-            result = auto_paginate(list_type, all_items, after, order)
+            result = auto_paginate(list_type, all_items, after, before)
             return result
 
         else:

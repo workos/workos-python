@@ -248,8 +248,6 @@ class SSO(object):
                 params["order"] = str(order.value)
             else:
                 raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
-        if order is None:
-            params["order"] = Order.Desc.value
 
         response = self.request_helper.request(
             "connections",

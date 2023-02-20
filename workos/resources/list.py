@@ -43,32 +43,16 @@ class WorkOSListResource(object):
         return obj_dict
 
     def auto_paging_iter(self):
-        after = self.to_dict()["list_metadata"]["after"]
-        before = self.to_dict()["list_metadata"]["before"]
-        list_type = self.to_dict()["data"][0]["object"]
-        all_items = self.to_dict()["data"]
+        data = self.to_dict()["data"]
+        list_metadata = self.to_dict()["list_metadata"]
+        list_type = data[0]["object"]
+        after = list_metadata["after"]
+        before = list_metadata["before"]
 
-        if list_type == "directory":
-            result = auto_paginate(list_type, all_items, after, before)
-            return result
-
-        elif list_type == "directory_user":
-            directory = self.to_dict()["data"][0]["directory_id"]
-            result = auto_paginate(list_type, all_items, after, before, directory)
-            return result
-
-        elif list_type == "directory_group":
-            directory = self.to_dict()["data"][0]["directory_id"]
-            result = auto_paginate(list_type, all_items, after, before, directory)
-            return result
-
-        elif list_type == "organization":
-            result = auto_paginate(list_type, all_items, after, before)
-            return result
-
-        elif list_type == "connection":
-            result = auto_paginate(list_type, all_items, after, before)
-            return result
-
+        if data[0].get("directory_id"):
+            directory = data[0]["directory_id"]
         else:
-            raise ValueError("Invalid list type")
+            directory = None
+
+        result = auto_paginate(list_type, data, after, before, directory)
+        return result

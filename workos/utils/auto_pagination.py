@@ -16,8 +16,11 @@ def get_response(type, after, order, directory=None):
         )
         return response
     if type == "directory_user":
-        response = workos.client.directory_sync.list_directories(
-            limit=100, after=after, order=order
+        response = workos.client.directory_sync.list_users(
+            directory=directory,
+            limit=100,
+            after=after,
+            order=order,
         )
         return response
     if type == "directory_group":
@@ -47,8 +50,8 @@ def get_legacy_order_response(type, before, directory=None):
         )
         return response
     if type == "directory_user":
-        response = workos.client.directory_sync.list_directories(
-            limit=100, before=before
+        response = workos.client.directory_sync.list_users(
+            directory=directory, limit=100, before=before
         )
         return response
     if type == "directory_group":
@@ -74,7 +77,7 @@ def auto_paginate(list_type, all_items, after=None, before=None, directory=None)
     if before is None:
         if len(all_items) > 1:
             order = timestamp_compare(
-                all_items[0]["created_at"], all_items[1]["created_at"]
+                all_items[0]["created_at"], all_items[len(all_items) - 1]["created_at"]
             )
         else:
             order = Order.Desc

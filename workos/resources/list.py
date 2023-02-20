@@ -50,9 +50,9 @@ class WorkOSListResource(object):
         before = list_metadata["before"]
 
         if data[0].get("directory_id"):
-            directory = data[0]["directory_id"]
+            parent_resource_id = data[0]["directory_id"]
         else:
-            directory = None
+            parent_resource_id = None
 
-        result = auto_paginate(list_type, data, after, before, directory)
+        result = auto_paginate(list_type, data, after, before, parent_resource_id)
         return result

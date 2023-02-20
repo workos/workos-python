@@ -43,7 +43,7 @@ def get_response(type, after, order, directory=None):
         return response
 
 
-def get_legacy_order_response(type, before, directory=None):
+def get_legacy_order_response(type, before, parent_resource_id=None):
     if type == "directory":
         response = workos.client.directory_sync.list_directories(
             limit=100, before=before
@@ -51,12 +51,12 @@ def get_legacy_order_response(type, before, directory=None):
         return response
     if type == "directory_user":
         response = workos.client.directory_sync.list_users(
-            directory=directory, limit=100, before=before
+            directory=parent_resource_id, limit=100, before=before
         )
         return response
     if type == "directory_group":
         response = workos.client.directory_sync.list_groups(
-            directory=directory, limit=100, before=before
+            directory=parent_resource_id, limit=100, before=before
         )
         return response
     if type == "organization":
@@ -69,7 +69,9 @@ def get_legacy_order_response(type, before, directory=None):
         return response
 
 
-def auto_paginate(list_type, all_items, after=None, before=None, directory=None):
+def auto_paginate(
+    list_type, all_items, after=None, before=None, parent_resource_id=None
+):
     all_items = all_items
     after = after
     before = before
@@ -85,9 +87,9 @@ def auto_paginate(list_type, all_items, after=None, before=None, directory=None)
         order = None
 
     if order is not None:
-        if directory is not None:
+        if parent_resource_id is not None:
             while after is not None:
-                response = get_response(list_type, after, order, directory)
+                response = get_response(list_type, after, order, parent_resource_id)
                 for i in response["data"]:
                     all_items.append(i)
                 after = response["list_metadata"]["after"]
@@ -100,9 +102,11 @@ def auto_paginate(list_type, all_items, after=None, before=None, directory=None)
         return all_items
 
     if order is None:
-        if directory is not None:
+        if parent_resource_id is not None:
             while before is not None:
-                response = get_legacy_order_response(list_type, before, directory)
+                response = get_legacy_order_response(
+                    list_type, before, parent_resource_id
+                )
                 for i in response["data"]:
                     all_items.append(i)
                 before = response["list_metadata"]["before"]

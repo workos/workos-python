@@ -5,6 +5,7 @@ import workos
 from workos.sso import SSO
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import RESPONSE_TYPE_CODE
+from tests.utils.fixtures.mock_connection import MockConnection
 from workos.resources.list import (
     WorkOSListResource,
 )
@@ -57,98 +58,15 @@ class TestSSO(object):
 
     @pytest.fixture
     def mock_connection(self):
-        return {
-            "object": "connection",
-            "id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "connection_type": "GoogleOAuth",
-            "name": "Foo Corp",
-            "state": "active",
-            "status": "none",
-            "created_at": "2021-06-25T19:07:33.155Z",
-            "updated_at": "2021-06-25T19:07:33.155Z",
-            "domains": [
-                {
-                    "id": "conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB",
-                    "object": "connection_domain",
-                    "domain": "foo-corp.com",
-                }
-            ],
-        }
+        return MockConnection("conn_01E4ZCR3C56J083X43JQXF3JK5").to_dict()
 
     @pytest.fixture
     def mock_connections(self):
+
+        connection_list = [MockConnection(f"id{i}").to_dict() for i in range(5000)]
+
         return {
-            "data": [
-                {
-                    "object": "connection",
-                    "id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNX",
-                    "connection_type": "GoogleOAuth",
-                    "name": "Foo Corp",
-                    "state": "active",
-                    "created_at": "2021-06-25T19:07:33.155Z",
-                    "updated_at": "2021-06-25T19:07:33.155Z",
-                    "domains": [
-                        {
-                            "id": "conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB",
-                            "object": "connection_domain",
-                            "domain": "foo-corp.com",
-                        }
-                    ],
-                },
-                {
-                    "object": "connection",
-                    "id": "conn_01E4ZCR3C56J083X43JQXF3JK6",
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_type": "GoogleOAuth",
-                    "name": "Foo Corp",
-                    "state": "active",
-                    "created_at": "2021-05-25T19:07:33.155Z",
-                    "updated_at": "2021-06-25T19:07:33.155Z",
-                    "domains": [
-                        {
-                            "id": "conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB",
-                            "object": "connection_domain",
-                            "domain": "food-corp.com",
-                        }
-                    ],
-                },
-                {
-                    "object": "connection",
-                    "id": "conn_01E4ZCR3C56J083X43JQXF3JK7",
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNZ",
-                    "connection_type": "GoogleOAuth",
-                    "name": "Foo Corp",
-                    "state": "active",
-                    "created_at": "2021-04-25T19:07:33.155Z",
-                    "updated_at": "2021-06-25T19:07:33.155Z",
-                    "domains": [
-                        {
-                            "id": "conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB",
-                            "object": "connection_domain",
-                            "domain": "foot-corp.com",
-                        }
-                    ],
-                },
-                {
-                    "object": "connection",
-                    "id": "conn_01E4ZCR3C56J083X43JSEF3JK7",
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNZ",
-                    "connection_type": "GoogleOAuth",
-                    "name": "Foo Corp",
-                    "state": "active",
-                    "created_at": "2021-03-25T19:07:33.155Z",
-                    "updated_at": "2021-06-25T19:07:33.155Z",
-                    "domains": [
-                        {
-                            "id": "conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB",
-                            "object": "connection_domain",
-                            "domain": "foot-corp.com",
-                        }
-                    ],
-                },
-            ],
+            "data": connection_list,
             "list_metadata": {"before": None, "after": None},
         }
 

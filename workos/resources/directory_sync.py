@@ -1,5 +1,4 @@
 from workos.resources.base import WorkOSBaseResource
-from workos.resources.list import WorkOSListResource
 
 
 class WorkOSDirectory(WorkOSBaseResource):
@@ -49,6 +48,7 @@ class WorkOSDirectoryGroup(WorkOSBaseResource):
         "created_at",
         "updated_at",
         "raw_attributes",
+        "object",
     ]
 
     @classmethod
@@ -84,6 +84,7 @@ class WorkOSDirectoryUser(WorkOSBaseResource):
         "updated_at",
         "custom_attributes",
         "raw_attributes",
+        "object",
     ]
 
     @classmethod

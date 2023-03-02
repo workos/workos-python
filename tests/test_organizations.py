@@ -1,6 +1,7 @@
 import pytest
 from workos.organizations import Organizations
 from workos.resources.list import WorkOSListResource
+from tests.utils.fixtures.mock_organization import MockOrganization
 
 
 class TestOrganizations(object):
@@ -10,26 +11,7 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organization(self):
-        return {
-            "id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            "object": "organization",
-            "name": "Foo Corporation",
-            "allow_profiles_outside_organization": "false",
-            "created_at": "2021-06-25T19:07:33.155Z",
-            "updated_at": "2021-06-25T19:07:33.155Z",
-            "domains": [
-                {
-                    "domain": "foo-corp.com",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "object": "organization_domain",
-                },
-                {
-                    "domain": "another-foo-corp-domain.com",
-                    "id": "org_domain_01EHZNS0H9W90A90FV79GAB6AB",
-                    "object": "organization_domain",
-                },
-            ],
-        }
+        return MockOrganization("org_01EHT88Z8J8795GZNQ4ZP1J81T").to_dict()
 
     @pytest.fixture
     def mock_organization_updated(self):
@@ -49,62 +31,11 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organizations(self):
+
+        organization_list = [MockOrganization(f"id{i}").to_dict() for i in range(5000)]
+
         return {
-            "object": "list",
-            "data": [
-                {
-                    "object": "organization",
-                    "id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
-                    "name": "example.com",
-                    "created_at": "2021-06-25T19:07:33.155Z",
-                    "domains": [
-                        {
-                            "object": "organization_domain",
-                            "id": "org_domain_01EHQMYV71XT8H31WE5HF8YK4A",
-                            "domain": "example.com",
-                        }
-                    ],
-                },
-                {
-                    "object": "organization",
-                    "id": "org_01EHQMVDTC2GRAHFCCRNTSKH46",
-                    "name": "example2.com",
-                    "created_at": "2021-05-25T19:07:33.155Z",
-                    "domains": [
-                        {
-                            "object": "organization_domain",
-                            "id": "org_domain_01EHQMVDTZVA27PK614ME4YK7V",
-                            "domain": "example2.com",
-                        }
-                    ],
-                },
-                {
-                    "object": "organization",
-                    "id": "org_01EHQMVDTC2GRAHFCCRNTSKH36",
-                    "name": "example2.com",
-                    "created_at": "2021-04-25T19:07:33.155Z",
-                    "domains": [
-                        {
-                            "object": "organization_domain",
-                            "id": "org_domain_01EHQMVDTZVA27PK614ME4YK7V",
-                            "domain": "example2.com",
-                        }
-                    ],
-                },
-                {
-                    "object": "organization",
-                    "id": "org_01EHQMVDTC2GRAHFC6RNTSKH46",
-                    "name": "example2.com",
-                    "created_at": "2021-03-25T19:07:33.155Z",
-                    "domains": [
-                        {
-                            "object": "organization_domain",
-                            "id": "org_domain_01EHQMVDTZVA27PK614ME4YK7V",
-                            "domain": "example2.com",
-                        }
-                    ],
-                },
-            ],
+            "data": organization_list,
             "list_metadata": {"before": None, "after": None},
         }
 

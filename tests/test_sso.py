@@ -9,6 +9,7 @@ from tests.utils.fixtures.mock_connection import MockConnection
 from workos.resources.list import (
     WorkOSListResource,
 )
+from workos.utils.pagination_order import Type
 
 
 class TestSSO(object):
@@ -414,6 +415,6 @@ class TestSSO(object):
 
         all_connections = WorkOSListResource.construct_from_response(
             connections
-        ).auto_paging_iter()
+        ).auto_paginate(Type.Connections)
 
         assert len(all_connections) == len(mock_connections["data"])

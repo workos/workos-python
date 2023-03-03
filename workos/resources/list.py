@@ -1,5 +1,8 @@
-from workos.utils.pagination_order import Order
-from workos.utils.auto_pagination import auto_paginate, timestamp_compare
+from workos.utils.pagination_order import Order, Type
+from workos.utils.auto_pagination import (
+    get_response,
+    timestamp_compare,
+)
 
 
 class WorkOSListResource(object):
@@ -42,17 +45,34 @@ class WorkOSListResource(object):
 
         return obj_dict
 
-    def auto_paging_iter(self):
+    def auto_paginate(self, type=Type, parent_resource_id=None):
         data = self.to_dict()["data"]
-        list_metadata = self.to_dict()["list_metadata"]
-        list_type = data[0]["object"]
-        after = list_metadata["after"]
-        before = list_metadata["before"]
+        after = self.to_dict()["list_metadata"]["after"]
+        before = self.to_dict()["list_metadata"]["before"]
 
-        if data[0].get("directory_id"):
-            parent_resource_id = data[0]["directory_id"]
+        if before is None:
+            if len(data) > 1:
+                order = timestamp_compare(
+                    data[0]["created_at"], data[len(data) - 1]["created_at"]
+                )
+                next_page_marker = after
+                string_direction = "after"
+            else:
+                order = Order.Desc
+                next_page_marker = after
+                string_direction = "after"
         else:
-            parent_resource_id = None
+            order = None
+            next_page_marker = before
+            string_direction = "before"
 
-        result = auto_paginate(list_type, data, after, before, parent_resource_id)
-        return result
+        params = {"type": type, "after": after, "before": before, "order": order}
+
+        if parent_resource_id:
+            params["parent_resource_id"] = parent_resource_id
+        while next_page_marker is not None:
+            response = get_response(**params)
+            for i in response["data"]:
+                data.append(i)
+            next_page_marker = response["list_metadata"][string_direction]
+        return data

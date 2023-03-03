@@ -2,6 +2,7 @@ import pytest
 from workos.organizations import Organizations
 from workos.resources.list import WorkOSListResource
 from tests.utils.fixtures.mock_organization import MockOrganization
+from workos.utils.pagination_order import Type
 
 
 class TestOrganizations(object):
@@ -118,6 +119,6 @@ class TestOrganizations(object):
 
         all_organizations = WorkOSListResource.construct_from_response(
             organizations
-        ).auto_paging_iter()
+        ).auto_paginate(Type.Organizations)
 
         assert len(all_organizations) == len(mock_organizations["data"])

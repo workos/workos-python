@@ -6,6 +6,7 @@ from workos.resources.list import WorkOSListResource
 from tests.utils.fixtures.mock_directory import MockDirectory
 from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
 from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
+from workos.utils.pagination_order import Type
 
 
 class TestDirectorySync(object):
@@ -192,7 +193,7 @@ class TestDirectorySync(object):
 
         all_directories = WorkOSListResource.construct_from_response(
             directories
-        ).auto_paging_iter()
+        ).auto_paginate(Type.Directories)
 
         assert len(all_directories) == len(mock_directories["data"])
 
@@ -200,7 +201,9 @@ class TestDirectorySync(object):
         mock_request_method("get", mock_users, 200)
         users = self.directory_sync.list_users()
 
-        all_users = WorkOSListResource.construct_from_response(users).auto_paging_iter()
+        all_users = WorkOSListResource.construct_from_response(users).auto_paginate(
+            Type.DirectoryUsers
+        )
 
         assert len(all_users) == len(mock_users["data"])
 
@@ -210,8 +213,8 @@ class TestDirectorySync(object):
         mock_request_method("get", mock_groups, 200)
         groups = self.directory_sync.list_groups(directory="directory_grp_id")
 
-        all_groups = WorkOSListResource.construct_from_response(
-            groups
-        ).auto_paging_iter()
+        all_groups = WorkOSListResource.construct_from_response(groups).auto_paginate(
+            Type.DirectoryGroups
+        )
 
         assert len(all_groups) == len(mock_groups["data"])

@@ -33,7 +33,7 @@ class TestOrganizations(object):
     @pytest.fixture
     def mock_organizations(self):
 
-        organization_list = [MockOrganization(f"id{i}").to_dict() for i in range(5000)]
+        organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(5000)]
 
         return {
             "data": organization_list,

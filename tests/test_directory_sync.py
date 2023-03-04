@@ -17,7 +17,7 @@ class TestDirectorySync(object):
     @pytest.fixture
     def mock_users(self):
 
-        user_list = [MockDirectoryUser(f"id{i}").to_dict() for i in range(5000)]
+        user_list = [MockDirectoryUser(id=str(i)).to_dict() for i in range(5000)]
 
         return {
             "data": user_list,
@@ -27,7 +27,7 @@ class TestDirectorySync(object):
     @pytest.fixture
     def mock_groups(self):
 
-        group_list = [MockDirectoryGroup(f"id{i}").to_dict() for i in range(5000)]
+        group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(5000)]
 
         return {
             "data": group_list,
@@ -83,7 +83,7 @@ class TestDirectorySync(object):
     @pytest.fixture
     def mock_directories(self):
 
-        directory_list = [MockDirectory(f"id{i}").to_dict() for i in range(5000)]
+        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(5000)]
 
         return {
             "data": directory_list,

@@ -64,7 +64,7 @@ class TestSSO(object):
     @pytest.fixture
     def mock_connections(self):
 
-        connection_list = [MockConnection(f"id{i}").to_dict() for i in range(5000)]
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(5000)]
 
         return {
             "data": connection_list,

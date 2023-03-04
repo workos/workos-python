@@ -73,7 +73,7 @@ class TestDirectorySync(object):
     @pytest.fixture
     def mock_group(self):
         return MockDirectoryGroup(
-            f"directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE"
+            "directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE"
         ).to_dict()
 
     @pytest.fixture

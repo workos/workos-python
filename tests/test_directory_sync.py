@@ -3,9 +3,9 @@ from workos.directory_sync import DirectorySync
 from workos.utils.request import RESPONSE_TYPE_CODE
 from workos.resources.directory_sync import WorkOSDirectoryUser
 from workos.resources.list import WorkOSListResource
-from tests.utils.fixtures.mock_directory import MockDirectory
-from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
-from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
+from ..tests.utils.fixtures.mock_directory import MockDirectory
+from ..tests.utils.fixtures.mock_directory_user import MockDirectoryUser
+from ..tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
 from workos.utils.pagination_order import Type
 
 

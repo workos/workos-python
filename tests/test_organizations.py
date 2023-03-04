@@ -1,7 +1,7 @@
 import pytest
 from workos.organizations import Organizations
 from workos.resources.list import WorkOSListResource
-from tests.utils.fixtures.mock_organization import MockOrganization
+from ..tests.utils.fixtures.mock_organization import MockOrganization
 from workos.utils.pagination_order import Type
 
 

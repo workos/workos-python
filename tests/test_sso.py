@@ -5,7 +5,7 @@ import workos
 from workos.sso import SSO
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import RESPONSE_TYPE_CODE
-from tests.utils.fixtures.mock_connection import MockConnection
+from ..tests.utils.fixtures.mock_connection import MockConnection
 from workos.resources.list import (
     WorkOSListResource,
 )

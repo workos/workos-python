@@ -50,8 +50,23 @@ class WorkOSListResource(object):
         self,
         type=Type,
         parent_resource_id=None,
-        parent_resource_type: ParentResourceType = None,
+        parent_resource_type=None,
     ):
+        """
+        This function returns the entire list of items when there are more than 100. The parent_resource_id and parent_resource_type are optional, however if one is included they must both be included.
+
+        It takes the following parameters:
+
+        type = Enum Type describing the type of List
+        parent_resource_id = String ID of the parent resource, e.g. the organization ID
+        parent_resource_type = Enum ParentResourceType describing the type of parent resource being included.
+        """
+
+        if not isinstance(parent_resource_type, ParentResourceType):
+            if parent_resource_type is not None:
+                raise TypeError(
+                    "Parameter parent_resource_type must be of type ParentResourceType"
+                )
 
         data = self.to_dict()["data"]
         after = self.to_dict()["list_metadata"]["after"]

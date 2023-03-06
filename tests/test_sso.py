@@ -5,7 +5,11 @@ import workos
 from workos.sso import SSO
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import RESPONSE_TYPE_CODE
-from workos.resources.sso import WorkOSProfile, WorkOSProfileAndToken, WorkOSConnection
+from tests.utils.fixtures.mock_connection import MockConnection
+from workos.resources.list import (
+    WorkOSListResource,
+)
+from workos.utils.list_types import Type
 
 
 class TestSSO(object):
@@ -55,47 +59,15 @@ class TestSSO(object):
 
     @pytest.fixture
     def mock_connection(self):
-        return {
-            "object": "connection",
-            "id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "connection_type": "GoogleOAuth",
-            "name": "Foo Corp",
-            "state": "active",
-            "status": "none",
-            "created_at": "2021-06-25T19:07:33.155Z",
-            "updated_at": "2021-06-25T19:07:33.155Z",
-            "domains": [
-                {
-                    "id": "conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB",
-                    "object": "connection_domain",
-                    "domain": "foo-corp.com",
-                }
-            ],
-        }
+        return MockConnection("conn_01E4ZCR3C56J083X43JQXF3JK5").to_dict()
 
     @pytest.fixture
     def mock_connections(self):
+
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(5000)]
+
         return {
-            "data": [
-                {
-                    "object": "connection",
-                    "id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_type": "GoogleOAuth",
-                    "name": "Foo Corp",
-                    "state": "active",
-                    "created_at": "2021-06-25T19:07:33.155Z",
-                    "updated_at": "2021-06-25T19:07:33.155Z",
-                    "domains": [
-                        {
-                            "id": "conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB",
-                            "object": "connection_domain",
-                            "domain": "foo-corp.com",
-                        }
-                    ],
-                }
-            ],
+            "data": connection_list,
             "list_metadata": {"before": None, "after": None},
         }
 
@@ -434,3 +406,15 @@ class TestSSO(object):
         response = self.sso.delete_connection(connection="connection_id")
 
         assert response is None
+
+    def test_list_connections_auto_pagination(
+        self, mock_connections, mock_request_method, setup_with_client_id
+    ):
+        mock_request_method("get", mock_connections, 200)
+        connections = self.sso.list_connections(limit=2)
+
+        all_connections = WorkOSListResource.construct_from_response(
+            connections
+        ).auto_paginate(Type.Connections)
+
+        assert len(all_connections) == len(mock_connections["data"])

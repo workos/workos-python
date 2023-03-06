@@ -115,7 +115,7 @@ class TestOrganizations(object):
         self, mock_organizations, mock_request_method
     ):
         mock_request_method("get", mock_organizations, 200)
-        organizations = self.organizations.list_organizations(limit=2)
+        organizations = self.organizations.list_organizations()
 
         all_organizations = WorkOSListResource.construct_from_response(
             organizations

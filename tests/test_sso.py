@@ -411,7 +411,7 @@ class TestSSO(object):
         self, mock_connections, mock_request_method, setup_with_client_id
     ):
         mock_request_method("get", mock_connections, 200)
-        connections = self.sso.list_connections(limit=2)
+        connections = self.sso.list_connections()
 
         all_connections = WorkOSListResource.construct_from_response(
             connections

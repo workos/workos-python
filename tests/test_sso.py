@@ -9,7 +9,7 @@ from tests.utils.fixtures.mock_connection import MockConnection
 from workos.resources.list import (
     WorkOSListResource,
 )
-from workos.utils.pagination_order import Type
+from workos.utils.list_types import Type
 
 
 class TestSSO(object):

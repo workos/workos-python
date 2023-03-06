@@ -1,4 +1,5 @@
-from workos.utils.pagination_order import Order, Type
+from workos.utils.pagination_order import Order
+from workos.utils.list_types import Type, ParentResourceType
 from workos.utils.auto_pagination import (
     get_response,
     timestamp_compare,
@@ -45,7 +46,13 @@ class WorkOSListResource(object):
 
         return obj_dict
 
-    def auto_paginate(self, type=Type, parent_resource_id=None):
+    def auto_paginate(
+        self,
+        type=Type,
+        parent_resource_id=None,
+        parent_resource_type: ParentResourceType = None,
+    ):
+
         data = self.to_dict()["data"]
         after = self.to_dict()["list_metadata"]["after"]
         before = self.to_dict()["list_metadata"]["before"]
@@ -68,8 +75,18 @@ class WorkOSListResource(object):
 
         params = {"type": type, "after": after, "before": before, "order": order}
 
-        if parent_resource_id:
+        if parent_resource_id is not None and parent_resource_type is None:
+            raise ValueError(
+                "The parent_resource_type parameter must be included when parent_resource_id is included."
+            )
+        elif parent_resource_type is not None and parent_resource_id is None:
+            raise ValueError(
+                "The parent_resource_id parameter must be included when parent_resource_type is included."
+            )
+
+        if parent_resource_id is not None:
             params["parent_resource_id"] = parent_resource_id
+            params["parent_resource_type"] = parent_resource_type.value
         while next_page_marker is not None:
             response = get_response(**params)
             for i in response["data"]:

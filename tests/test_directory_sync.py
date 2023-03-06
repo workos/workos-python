@@ -6,7 +6,7 @@ from workos.resources.list import WorkOSListResource
 from tests.utils.fixtures.mock_directory import MockDirectory
 from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
 from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
-from workos.utils.pagination_order import Type
+from workos.utils.list_types import Type
 
 
 class TestDirectorySync(object):

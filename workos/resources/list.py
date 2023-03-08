@@ -62,6 +62,11 @@ class WorkOSListResource(object):
         parent_resource_type = Enum ParentResourceType describing the type of parent resource being included.
         """
 
+        if type == Type:
+            raise TypeError(
+                "Parameter type is required and must be set to a Type enum constant"
+            )
+
         if not isinstance(parent_resource_type, ParentResourceType):
             if parent_resource_type is not None:
                 raise TypeError(

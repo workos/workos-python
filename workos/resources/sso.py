@@ -14,6 +14,7 @@ class WorkOSProfile(WorkOSBaseResource):
         "email",
         "first_name",
         "last_name",
+        "groups",
         "organization_id",
         "connection_id",
         "connection_type",

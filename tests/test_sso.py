@@ -28,6 +28,7 @@ class TestSSO(object):
             "email": "demo@workos-okta.com",
             "first_name": "WorkOS",
             "last_name": "Demo",
+            "groups": ["Admins", "Developers"],
             "organization_id": "org_01FG53X8636WSNW2WEKB2C31ZB",
             "connection_id": "conn_01EMH8WAK20T42N2NBMNBCYHAG",
             "connection_type": "OktaSAML",
@@ -36,6 +37,7 @@ class TestSSO(object):
                 "email": "demo@workos-okta.com",
                 "first_name": "WorkOS",
                 "last_name": "Demo",
+                "groups": ["Admins", "Developers"],
             },
         }
 
@@ -50,6 +52,7 @@ class TestSSO(object):
             "idp_id": "",
             "first_name": None,
             "last_name": None,
+            "groups": None,
             "raw_attributes": {},
         }
 
@@ -285,6 +288,7 @@ class TestSSO(object):
                 "id": mock_profile["id"],
                 "email": mock_profile["email"],
                 "first_name": mock_profile["first_name"],
+                "groups": mock_profile["groups"],
                 "organization_id": mock_profile["organization_id"],
                 "connection_id": mock_profile["connection_id"],
                 "connection_type": mock_profile["connection_type"],
@@ -294,6 +298,7 @@ class TestSSO(object):
                     "email": mock_profile["raw_attributes"]["email"],
                     "first_name": mock_profile["raw_attributes"]["first_name"],
                     "last_name": mock_profile["raw_attributes"]["last_name"],
+                    "groups": mock_profile["raw_attributes"]["groups"],
                 },
             },
             "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",

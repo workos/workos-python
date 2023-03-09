@@ -12,11 +12,12 @@ from workos.resources.directory_sync import (
     WorkOSDirectory,
     WorkOSDirectoryUser,
 )
+from workos.resources.list import WorkOSListResource
 
 RESPONSE_LIMIT = 10
 
 
-class DirectorySync(object):
+class DirectorySync(WorkOSListResource):
     """Offers methods through the WorkOS Directory Sync service."""
 
     @validate_settings(DIRECTORY_SYNC_MODULE)
@@ -59,20 +60,33 @@ class DirectorySync(object):
             "after": after,
             "order": order,
         }
+
         if group is not None:
             params["group"] = group
         if directory is not None:
             params["directory"] = directory
+
         if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
-        return self.request_helper.request(
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            elif order == "asc" or order == "desc":
+                params["order"] = order
+            else:
+                raise ValueError("Parameter order must be of enum type Order")
+        # params = {k: v for k, v in params.items() if v is not None}
+        response = self.request_helper.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        response["metadata"] = {
+            "params": params,
+            "method": DirectorySync.list_users,
+        }
+
+        return response
 
     def list_groups(
         self,
@@ -103,16 +117,28 @@ class DirectorySync(object):
             params["user"] = user
         if directory is not None:
             params["directory"] = directory
-        if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
-        return self.request_helper.request(
+
+            if order is not None:
+                if isinstance(order, Order):
+                    params["order"] = str(order.value)
+                elif order == "asc" or order == "desc":
+                    params["order"] = order
+                else:
+                    raise ValueError("Parameter order must be of enum type Order")
+        # params = {k: v for k, v in params.items() if v is not None}
+        response = self.request_helper.request(
             "directory_groups",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        response["metadata"] = {
+            "params": params,
+            "method": DirectorySync.list_groups,
+        }
+
+        return response
 
     def get_user(self, user):
         """Gets details for a single provisioned Directory User.
@@ -191,6 +217,7 @@ class DirectorySync(object):
         Returns:
             dict: Directories response from WorkOS.
         """
+
         params = {
             "domain": domain,
             "organization_id": organization,
@@ -200,12 +227,31 @@ class DirectorySync(object):
             "after": after,
             "order": order,
         }
-        return self.request_helper.request(
+
+        if order is not None:
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+
+            elif order == "asc" or order == "desc":
+                params["order"] = order
+            else:
+                raise ValueError("Parameter order must be of enum type Order")
+
+        # params = {k: v for k, v in params.items() if v is not None}
+
+        response = self.request_helper.request(
             "directories",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        response["metadata"] = {
+            "params": params,
+            "method": DirectorySync.list_directories,
+        }
+
+        return response
 
     def get_directory(self, directory):
         """Gets details for a single Directory

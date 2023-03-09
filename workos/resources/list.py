@@ -1,22 +1,14 @@
-from workos.utils.pagination_order import Order
-from workos.utils.list_types import Type, ParentResourceType
-from workos.utils.auto_pagination import (
-    get_response,
-    timestamp_compare,
-)
+from workos.resources.base import WorkOSBaseResource
 
 
-class WorkOSListResource(object):
+class WorkOSListResource(WorkOSBaseResource):
     """Representation of a WorkOS List Resource as returned through the API.
 
     Attributes:
         OBJECT_FIELDS (list): List of fields a WorkOSListResource is comprised of.
     """
 
-    OBJECT_FIELDS = [
-        "data",
-        "list_metadata",
-    ]
+    OBJECT_FIELDS = ["data", "list_metadata", "metadata"]
 
     @classmethod
     def construct_from_response(cls, response):
@@ -46,69 +38,37 @@ class WorkOSListResource(object):
 
         return obj_dict
 
-    def auto_paginate(
-        self,
-        type=Type,
-        parent_resource_id=None,
-        parent_resource_type=None,
-    ):
+    def auto_paginate(self):
         """
-        This function returns the entire list of items when there are more than 100. The parent_resource_id and parent_resource_type are optional, however if one is included they must both be included.
-
-        It takes the following parameters:
-
-        type = Enum Type describing the type of List
-        parent_resource_id = String ID of the parent resource, e.g. the organization ID
-        parent_resource_type = Enum ParentResourceType describing the type of parent resource being included.
+        This function returns the entire list of items when there are more than 100.
         """
-
-        if type == Type:
-            raise TypeError(
-                "Parameter type is required and must be set to a Type enum constant"
-            )
-
-        if not isinstance(parent_resource_type, ParentResourceType):
-            if parent_resource_type is not None:
-                raise TypeError(
-                    "Parameter parent_resource_type must be of type ParentResourceType"
-                )
-
         data = self.to_dict()["data"]
         after = self.to_dict()["list_metadata"]["after"]
         before = self.to_dict()["list_metadata"]["before"]
+        method = self.to_dict()["metadata"]["method"]
+        order = self.to_dict()["metadata"]["params"]["order"]
+
+        keys_to_remove = ["after", "before", "limit"]
+        resource_specific_params = {
+            k: v
+            for k, v in self.to_dict()["metadata"]["params"].items()
+            if k not in keys_to_remove
+        }
 
         if before is None:
-            if len(data) > 1:
-                order = timestamp_compare(
-                    data[0]["created_at"], data[len(data) - 1]["created_at"]
-                )
-                next_page_marker = after
-                string_direction = "after"
-            else:
-                order = Order.Desc
-                next_page_marker = after
-                string_direction = "after"
+            next_page_marker = after
+            string_direction = "after"
         else:
             order = None
             next_page_marker = before
             string_direction = "before"
 
-        params = {"type": type, "after": after, "before": before, "order": order}
+        params = {"after": after, "before": before, "order": order, "limit": 100}
+        params.update(resource_specific_params)
+        params = {k: v for k, v in params.items() if v is not None}
 
-        if parent_resource_id is not None and parent_resource_type is None:
-            raise ValueError(
-                "The parent_resource_type parameter must be included when parent_resource_id is included."
-            )
-        elif parent_resource_type is not None and parent_resource_id is None:
-            raise ValueError(
-                "The parent_resource_id parameter must be included when parent_resource_type is included."
-            )
-
-        if parent_resource_id is not None:
-            params["parent_resource_id"] = parent_resource_id
-            params["parent_resource_type"] = parent_resource_type.value
         while next_page_marker is not None:
-            response = get_response(**params)
+            response = method(self, **params)
             for i in response["data"]:
                 data.append(i)
             next_page_marker = response["list_metadata"][string_direction]

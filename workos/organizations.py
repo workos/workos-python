@@ -15,7 +15,7 @@ ORGANIZATIONS_PATH = "organizations"
 RESPONSE_LIMIT = 10
 
 
-class Organizations(object):
+class Organizations(WorkOSListResource):
     @validate_settings(ORGANIZATIONS_MODULE)
     def __init__(self):
         pass
@@ -57,8 +57,11 @@ class Organizations(object):
         if order is not None:
             if isinstance(order, Order):
                 params["order"] = str(order.value)
+
+            elif order == "asc" or order == "desc":
+                params["order"] = order
             else:
-                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+                raise ValueError("Parameter order must be of enum type Order")
 
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
@@ -67,7 +70,12 @@ class Organizations(object):
             token=workos.api_key,
         )
 
-        return WorkOSListResource.construct_from_response(response).to_dict()
+        response["metadata"] = {
+            "params": params,
+            "method": Organizations.list_organizations,
+        }
+
+        return response
 
     def get_organization(self, organization):
         """Gets details for a single Organization

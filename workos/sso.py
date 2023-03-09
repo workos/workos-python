@@ -1,17 +1,12 @@
-import json
-
 from requests import Request
 from warnings import warn
-
 import workos
 from workos.utils.pagination_order import Order
-from workos.exceptions import ConfigurationException
 from workos.resources.sso import (
     WorkOSProfile,
     WorkOSProfileAndToken,
     WorkOSConnection,
 )
-from workos.resources.list import WorkOSListResource
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import (
     RequestHelper,
@@ -21,6 +16,7 @@ from workos.utils.request import (
     REQUEST_METHOD_POST,
 )
 from workos.utils.validation import SSO_MODULE, validate_settings
+from workos.resources.list import WorkOSListResource
 
 AUTHORIZATION_PATH = "sso/authorize"
 TOKEN_PATH = "sso/token"
@@ -31,7 +27,7 @@ OAUTH_GRANT_TYPE = "authorization_code"
 RESPONSE_LIMIT = 10
 
 
-class SSO(object):
+class SSO(WorkOSListResource):
     """Offers methods to assist in authenticating through the WorkOS SSO service."""
 
     @validate_settings(SSO_MODULE)
@@ -246,8 +242,11 @@ class SSO(object):
         if order is not None:
             if isinstance(order, Order):
                 params["order"] = str(order.value)
+
+            elif order == "asc" or order == "desc":
+                params["order"] = order
             else:
-                raise ValueError("Order value must be enum 'Order.Asc' or 'Order.Desc'")
+                raise ValueError("Parameter order must be of enum type Order")
 
         response = self.request_helper.request(
             "connections",
@@ -256,7 +255,12 @@ class SSO(object):
             token=workos.api_key,
         )
 
-        return WorkOSListResource.construct_from_response(response).to_dict()
+        response["metadata"] = {
+            "params": params,
+            "method": SSO.list_connections,
+        }
+
+        return response
 
     def delete_connection(self, connection):
         """Deletes a single Connection

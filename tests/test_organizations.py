@@ -1,8 +1,6 @@
 import pytest
 from workos.organizations import Organizations
-from workos.resources.list import WorkOSListResource
 from tests.utils.fixtures.mock_organization import MockOrganization
-from workos.utils.list_types import Type
 
 
 class TestOrganizations(object):
@@ -117,8 +115,8 @@ class TestOrganizations(object):
         mock_request_method("get", mock_organizations, 200)
         organizations = self.organizations.list_organizations()
 
-        all_organizations = WorkOSListResource.construct_from_response(
+        all_organizations = Organizations.construct_from_response(
             organizations
-        ).auto_paginate(Type.Organizations)
+        ).auto_paginate()
 
         assert len(all_organizations) == len(mock_organizations["data"])

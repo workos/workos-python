@@ -9,12 +9,13 @@ from workos.utils.request import (
 )
 from workos.utils.validation import ORGANIZATIONS_MODULE, validate_settings
 from workos.resources.organizations import WorkOSOrganization
+from workos.resources.list import WorkOSListResource
 
 ORGANIZATIONS_PATH = "organizations"
 RESPONSE_LIMIT = 10
 
 
-class Organizations(object):
+class Organizations(WorkOSListResource):
     @validate_settings(ORGANIZATIONS_MODULE)
     def __init__(self):
         pass
@@ -52,16 +53,29 @@ class Organizations(object):
             "after": after,
             "order": order,
         }
+
         if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
-        return self.request_helper.request(
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+
+            elif order == "asc" or order == "desc":
+                params["order"] = order
+            else:
+                raise ValueError("Parameter order must be of enum type Order")
+
+        response = self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        response["metadata"] = {
+            "params": params,
+            "method": Organizations.list_organizations,
+        }
+
+        return response
 
     def get_organization(self, organization):
         """Gets details for a single Organization

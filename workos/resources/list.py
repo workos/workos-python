@@ -40,7 +40,7 @@ class WorkOSListResource(WorkOSBaseResource):
 
     def auto_paginate(self):
         """
-        This function returns the entire list of items when there are more than 100.
+        This function returns the entire list of items when there are more than 100 unless a limit has been specified.
         """
         data = self.to_dict()["data"]
         after = self.to_dict()["list_metadata"]["after"]
@@ -48,12 +48,19 @@ class WorkOSListResource(WorkOSBaseResource):
         method = self.to_dict()["metadata"]["method"]
         order = self.to_dict()["metadata"]["params"]["order"]
 
-        keys_to_remove = ["after", "before", "limit"]
+        keys_to_remove = ["after", "before"]
         resource_specific_params = {
             k: v
             for k, v in self.to_dict()["metadata"]["params"].items()
             if k not in keys_to_remove
         }
+
+        if "default_limit" not in resource_specific_params:
+            if len(data) == resource_specific_params["limit"]:
+                yield data
+                return
+
+        del resource_specific_params["default_limit"]
 
         if before is None:
             next_page_marker = after
@@ -63,8 +70,14 @@ class WorkOSListResource(WorkOSBaseResource):
             next_page_marker = before
             string_direction = "before"
 
-        params = {"after": after, "before": before, "order": order, "limit": 100}
+        params = {
+            "after": after,
+            "before": before,
+            "order": order,
+            "limit": resource_specific_params["limit"],
+        }
         params.update(resource_specific_params)
+
         params = {k: v for k, v in params.items() if v is not None}
 
         while next_page_marker is not None:
@@ -72,4 +85,4 @@ class WorkOSListResource(WorkOSBaseResource):
             for i in response["data"]:
                 data.append(i)
             next_page_marker = response["list_metadata"][string_direction]
-        return data
+            yield data

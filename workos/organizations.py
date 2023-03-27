@@ -29,7 +29,7 @@ class Organizations(WorkOSListResource):
     def list_organizations(
         self,
         domains=None,
-        limit=RESPONSE_LIMIT,
+        limit=None,
         before=None,
         after=None,
         order=None,
@@ -46,6 +46,11 @@ class Organizations(WorkOSListResource):
         Returns:
             dict: Organizations response from WorkOS.
         """
+
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
         params = {
             "domains": domains,
             "limit": limit,
@@ -74,6 +79,9 @@ class Organizations(WorkOSListResource):
             "params": params,
             "method": Organizations.list_organizations,
         }
+
+        if "default_limit" in locals():
+            response["metadata"]["params"]["default_limit"] = default_limit
 
         return response
 

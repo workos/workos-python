@@ -68,6 +68,85 @@ class TestSSO(object):
         return {
             "data": connection_list,
             "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "domains": None,
+                    "limit": 4,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": SSO.list_connections,
+            },
+        }
+
+    @pytest.fixture
+    def mock_connections_with_limit(self):
+
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(4)]
+
+        return {
+            "data": connection_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "connection_type": None,
+                    "domain": None,
+                    "organization_id": None,
+                    "limit": 4,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                },
+                "method": SSO.list_connections,
+            },
+        }
+
+    @pytest.fixture
+    def mock_connections_with_default_limit(self):
+
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(10)]
+
+        return {
+            "data": connection_list,
+            "list_metadata": {"before": None, "after": "conn_xxx"},
+            "metadata": {
+                "params": {
+                    "connection_type": None,
+                    "domain": None,
+                    "organization_id": None,
+                    "limit": 4,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": SSO.list_connections,
+            },
+        }
+
+    @pytest.fixture
+    def mock_connections_pagination_response(self):
+
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(4990)]
+
+        return {
+            "data": connection_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "connection_type": None,
+                    "domain": None,
+                    "organization_id": None,
+                    "limit": None,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": SSO.list_connections,
+            },
         }
 
     def test_authorization_url_throws_value_error_with_missing_connection_domain_and_provider(
@@ -409,11 +488,41 @@ class TestSSO(object):
         assert response is None
 
     def test_list_connections_auto_pagination(
-        self, mock_connections, mock_request_method, setup_with_client_id
+        self,
+        mock_connections_with_default_limit,
+        mock_connections_pagination_response,
+        mock_connections,
+        mock_request_method,
+        setup_with_client_id,
     ):
-        mock_request_method("get", mock_connections, 200)
-        connections = self.sso.list_connections()
+        mock_request_method("get", mock_connections_pagination_response, 200)
+        connections = mock_connections_with_default_limit
 
         all_connections = SSO.construct_from_response(connections).auto_paginate()
 
-        assert len(all_connections) == len(mock_connections["data"])
+        assert len(*list(all_connections)) == len(mock_connections["data"])
+
+    def test_list_connections_honors_limit(
+        self,
+        mock_connections_with_limit,
+        mock_connections_pagination_response,
+        mock_request_method,
+        setup_with_client_id,
+    ):
+        mock_request_method("get", mock_connections_pagination_response, 200)
+        connections = mock_connections_with_limit
+
+        all_connections = SSO.construct_from_response(connections).auto_paginate()
+
+        assert len(*list(all_connections)) == len(mock_connections_with_limit["data"])
+
+    def test_list_connections_returns_metadata(
+        self,
+        mock_connections,
+        mock_request_method,
+        setup_with_client_id,
+    ):
+        mock_request_method("get", mock_connections, 200)
+        connections = self.sso.list_connections(domain="planet-express.com")
+
+        assert connections["metadata"]["params"]["domain"] == "planet-express.com"

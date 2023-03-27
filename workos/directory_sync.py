@@ -34,7 +34,7 @@ class DirectorySync(WorkOSListResource):
         self,
         directory=None,
         group=None,
-        limit=RESPONSE_LIMIT,
+        limit=None,
         before=None,
         after=None,
         order=None,
@@ -54,6 +54,11 @@ class DirectorySync(WorkOSListResource):
         Returns:
             dict: Directory Users response from WorkOS.
         """
+
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
         params = {
             "limit": limit,
             "before": before,
@@ -73,13 +78,16 @@ class DirectorySync(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        # params = {k: v for k, v in params.items() if v is not None}
+
         response = self.request_helper.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        if "default_limit" in locals():
+            response["metadata"]["params"]["default_limit"] = default_limit
 
         response["metadata"] = {
             "params": params,
@@ -92,7 +100,7 @@ class DirectorySync(WorkOSListResource):
         self,
         directory=None,
         user=None,
-        limit=RESPONSE_LIMIT,
+        limit=None,
         before=None,
         after=None,
         order=None,
@@ -112,6 +120,10 @@ class DirectorySync(WorkOSListResource):
         Returns:
             dict: Directory Groups response from WorkOS.
         """
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
         params = {"limit": limit, "before": before, "after": after, "order": order}
         if user is not None:
             params["user"] = user
@@ -125,13 +137,16 @@ class DirectorySync(WorkOSListResource):
                     params["order"] = order
                 else:
                     raise ValueError("Parameter order must be of enum type Order")
-        # params = {k: v for k, v in params.items() if v is not None}
+
         response = self.request_helper.request(
             "directory_groups",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        if "default_limit" in locals():
+            response["metadata"]["params"]["default_limit"] = default_limit
 
         response["metadata"] = {
             "params": params,
@@ -197,7 +212,7 @@ class DirectorySync(WorkOSListResource):
         self,
         domain=None,
         search=None,
-        limit=RESPONSE_LIMIT,
+        limit=None,
         before=None,
         after=None,
         organization=None,
@@ -218,6 +233,10 @@ class DirectorySync(WorkOSListResource):
             dict: Directories response from WorkOS.
         """
 
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
         params = {
             "domain": domain,
             "organization_id": organization,
@@ -237,8 +256,6 @@ class DirectorySync(WorkOSListResource):
             else:
                 raise ValueError("Parameter order must be of enum type Order")
 
-        # params = {k: v for k, v in params.items() if v is not None}
-
         response = self.request_helper.request(
             "directories",
             method=REQUEST_METHOD_GET,
@@ -250,6 +267,9 @@ class DirectorySync(WorkOSListResource):
             "params": params,
             "method": DirectorySync.list_directories,
         }
+
+        if "default_limit" in locals():
+            response["metadata"]["params"]["default_limit"] = default_limit
 
         return response
 

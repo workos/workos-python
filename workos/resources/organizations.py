@@ -1,5 +1,4 @@
 from workos.resources.base import WorkOSBaseResource
-from workos.resources.list import WorkOSListResource
 
 
 class WorkOSOrganization(WorkOSBaseResource):

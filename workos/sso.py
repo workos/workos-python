@@ -194,7 +194,7 @@ class SSO(WorkOSListResource):
         connection_type=None,
         domain=None,
         organization_id=None,
-        limit=RESPONSE_LIMIT,
+        limit=None,
         before=None,
         after=None,
         order=None,
@@ -229,6 +229,10 @@ class SSO(WorkOSListResource):
             except KeyError:
                 raise ValueError("'connection_type' must be a member of ConnectionType")
 
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
         params = {
             "connection_type": connection_type.value if connection_type else None,
             "domain": domain,
@@ -259,6 +263,9 @@ class SSO(WorkOSListResource):
             "params": params,
             "method": SSO.list_connections,
         }
+
+        if "default_limit" in locals():
+            response["metadata"]["params"]["default_limit"] = default_limit
 
         return response
 

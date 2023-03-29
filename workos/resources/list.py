@@ -58,7 +58,7 @@ class WorkOSListResource(WorkOSBaseResource):
 
         if "default_limit" not in resource_specific_params:
             if len(data) == resource_specific_params["limit"]:
-                yield from data
+                yield data
                 return
         else:
             del resource_specific_params["default_limit"]
@@ -85,5 +85,5 @@ class WorkOSListResource(WorkOSBaseResource):
                 for i in response["data"]:
                     data.append(i)
                 next_page_marker = response["list_metadata"][string_direction]
-                yield from data
+                yield data
                 data = []

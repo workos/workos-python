@@ -500,7 +500,7 @@ class TestSSO(object):
 
         all_connections = SSO.construct_from_response(connections).auto_paginate()
 
-        assert len(list(all_connections)) == len(mock_connections["data"])
+        assert len(*list(all_connections)) == len(mock_connections["data"])
 
     def test_list_connections_honors_limit(
         self,
@@ -514,7 +514,7 @@ class TestSSO(object):
 
         all_connections = SSO.construct_from_response(connections).auto_paginate()
 
-        assert len(list(all_connections)) == len(mock_connections_with_limit["data"])
+        assert len(*list(all_connections)) == len(mock_connections_with_limit["data"])
 
     def test_list_connections_returns_metadata(
         self,

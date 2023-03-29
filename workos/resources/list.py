@@ -42,11 +42,12 @@ class WorkOSListResource(WorkOSBaseResource):
         """
         This function returns the entire list of items when there are more than 100 unless a limit has been specified.
         """
-        data = self.to_dict()["data"]
-        after = self.to_dict()["list_metadata"]["after"]
-        before = self.to_dict()["list_metadata"]["before"]
-        method = self.to_dict()["metadata"]["method"]
-        order = self.to_dict()["metadata"]["params"]["order"]
+        data_dict = self.to_dict()
+        data = data_dict["data"]
+        after = data_dict["list_metadata"]["after"]
+        before = data_dict["list_metadata"]["before"]
+        method = data_dict["metadata"]["method"]
+        order = data_dict["metadata"]["params"]["order"]
 
         keys_to_remove = ["after", "before"]
         resource_specific_params = {
@@ -57,32 +58,32 @@ class WorkOSListResource(WorkOSBaseResource):
 
         if "default_limit" not in resource_specific_params:
             if len(data) == resource_specific_params["limit"]:
-                yield data
+                yield from data
                 return
-
-        del resource_specific_params["default_limit"]
-
-        if before is None:
-            next_page_marker = after
-            string_direction = "after"
         else:
-            order = None
-            next_page_marker = before
-            string_direction = "before"
+            del resource_specific_params["default_limit"]
 
-        params = {
-            "after": after,
-            "before": before,
-            "order": order,
-            "limit": resource_specific_params["limit"],
-        }
-        params.update(resource_specific_params)
+            if before is None:
+                next_page_marker = after
+                string_direction = "after"
+            else:
+                order = None
+                next_page_marker = before
+                string_direction = "before"
 
-        params = {k: v for k, v in params.items() if v is not None}
+            params = {
+                "after": after,
+                "before": before,
+                "order": order,
+            }
+            params.update(resource_specific_params)
 
-        while next_page_marker is not None:
-            response = method(self, **params)
-            for i in response["data"]:
-                data.append(i)
-            next_page_marker = response["list_metadata"][string_direction]
-            yield data
+            params = {k: v for k, v in params.items() if v is not None}
+
+            while next_page_marker is not None:
+                response = method(self, **params)
+                for i in response["data"]:
+                    data.append(i)
+                next_page_marker = response["list_metadata"][string_direction]
+                yield from data
+                data = []

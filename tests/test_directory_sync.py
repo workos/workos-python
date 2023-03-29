@@ -394,7 +394,7 @@ class TestDirectorySync(object):
             directories
         ).auto_paginate()
 
-        assert len(*list(all_directories)) == len(mock_directories["data"])
+        assert len(list(all_directories)) == len(mock_directories["data"])
 
     def test_directory_users_auto_pagination(
         self,
@@ -408,7 +408,7 @@ class TestDirectorySync(object):
 
         all_users = DirectorySync.construct_from_response(users).auto_paginate()
 
-        assert len(*list(all_users)) == len(mock_users["data"])
+        assert len(list(all_users)) == len(mock_users["data"])
 
     def test_directory_user_groups_auto_pagination(
         self,
@@ -422,7 +422,7 @@ class TestDirectorySync(object):
         groups = mock_default_limit_groups
         all_groups = DirectorySync.construct_from_response(groups).auto_paginate()
 
-        assert len(*list(all_groups)) == len(mock_groups["data"])
+        assert len(list(all_groups)) == len(mock_groups["data"])
 
     def test_auto_pagination_honors_limit(
         self,
@@ -438,7 +438,7 @@ class TestDirectorySync(object):
             directories
         ).auto_paginate()
 
-        assert len(*list(all_directories)) == len(mock_directories_with_limit["data"])
+        assert len(list(all_directories)) == len(mock_directories_with_limit["data"])
 
     def test_list_directories_returns_metadata(
         self,

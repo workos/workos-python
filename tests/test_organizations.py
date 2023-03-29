@@ -197,7 +197,7 @@ class TestOrganizations(object):
             organizations
         ).auto_paginate()
 
-        assert len(*list(all_organizations)) == len(mock_organizations["data"])
+        assert len(list(all_organizations)) == len(mock_organizations["data"])
 
     def test_list_organizations_honors_limit(
         self,
@@ -213,7 +213,7 @@ class TestOrganizations(object):
             organizations
         ).auto_paginate()
 
-        assert len(*list(all_organizations)) == len(
+        assert len(list(all_organizations)) == len(
             mock_organizations_with_limit["data"]
         )
 

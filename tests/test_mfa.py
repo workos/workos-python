@@ -87,7 +87,6 @@ class TestMfa(object):
         }
 
     def test_enroll_factor_no_type(self, mock_enroll_factor_no_type):
-        print(mock_enroll_factor_no_type)
         with pytest.raises(ValueError) as err:
             self.mfa.enroll_factor(type=mock_enroll_factor_no_type)
         assert "Incomplete arguments. Need to specify a type of factor" in str(

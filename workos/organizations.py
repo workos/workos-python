@@ -1,3 +1,4 @@
+from warnings import warn
 import workos
 from workos.utils.pagination_order import Order
 from workos.utils.request import (
@@ -46,7 +47,10 @@ class Organizations(WorkOSListResource):
         Returns:
             dict: Organizations response from WorkOS.
         """
-
+        warn(
+            "The 'list_organizations' method is deprecated. Please use 'list_organizations_v2' instead.",
+            DeprecationWarning,
+        )
         if limit is None:
             limit = RESPONSE_LIMIT
             default_limit = True
@@ -84,6 +88,67 @@ class Organizations(WorkOSListResource):
             response["metadata"]["params"]["default_limit"] = default_limit
 
         return response
+
+    def list_organizations_v2(
+        self,
+        domains=None,
+        limit=None,
+        before=None,
+        after=None,
+        order=None,
+    ):
+        """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
+
+        Kwargs:
+            domains (list): Filter organizations to only return those that are associated with the provided domains. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Organization ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Organization ID. (Optional)
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
+
+        Returns:
+            dict: Organizations response from WorkOS.
+        """
+
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
+        params = {
+            "domains": domains,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        if order is not None:
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+
+            elif order == "asc" or order == "desc":
+                params["order"] = order
+            else:
+                raise ValueError("Parameter order must be of enum type Order")
+
+        response = self.request_helper.request(
+            ORGANIZATIONS_PATH,
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
+        )
+
+        dict_response = response.to_dict()
+
+        dict_response["metadata"] = {
+            "params": params,
+            "method": Organizations.list_organizations_v2,
+        }
+
+        if "default_limit" in locals():
+            dict_response["metadata"]["params"]["default_limit"] = default_limit
+
+        return self.construct_from_response(dict_response)
 
     def get_organization(self, organization):
         """Gets details for a single Organization

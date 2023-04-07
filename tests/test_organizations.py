@@ -50,6 +50,28 @@ class TestOrganizations(object):
         }
 
     @pytest.fixture
+    def mock_organizations_v2(self):
+
+        organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(5000)]
+
+        dict_response = {
+            "data": organization_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "domains": None,
+                    "limit": None,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": Organizations.list_organizations_v2,
+            },
+        }
+        return self.organizations.construct_from_response(dict_response)
+
+    @pytest.fixture
     def mock_organizations_with_limit(self):
 
         organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(4)]
@@ -68,6 +90,27 @@ class TestOrganizations(object):
                 "method": Organizations.list_organizations,
             },
         }
+
+    @pytest.fixture
+    def mock_organizations_with_limit_v2(self):
+
+        organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(4)]
+
+        dict_response = {
+            "data": organization_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "domains": None,
+                    "limit": 4,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                },
+                "method": Organizations.list_organizations,
+            },
+        }
+        return self.organizations.construct_from_response(dict_response)
 
     @pytest.fixture
     def mock_organizations_with_default_limit(self):
@@ -89,6 +132,28 @@ class TestOrganizations(object):
                 "method": Organizations.list_organizations,
             },
         }
+
+    @pytest.fixture
+    def mock_organizations_with_default_limit_v2(self):
+
+        organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(10)]
+
+        dict_response = {
+            "data": organization_list,
+            "list_metadata": {"before": None, "after": "org_id_xxx"},
+            "metadata": {
+                "params": {
+                    "domains": None,
+                    "limit": None,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": Organizations.list_organizations,
+            },
+        }
+        return self.organizations.construct_from_response(dict_response)
 
     @pytest.fixture
     def mock_organizations_pagination_response(self):
@@ -195,7 +260,22 @@ class TestOrganizations(object):
 
         all_organizations = Organizations.construct_from_response(
             organizations
-        ).auto_paginate()
+        ).auto_paging_iter()
+
+        assert len(*list(all_organizations)) == len(mock_organizations["data"])
+
+    def test_list_organizations_auto_pagination_v2(
+        self,
+        mock_organizations_with_default_limit_v2,
+        mock_organizations_pagination_response,
+        mock_organizations,
+        mock_request_method,
+    ):
+        mock_request_method("get", mock_organizations_pagination_response, 200)
+
+        organizations = mock_organizations_with_default_limit_v2
+
+        all_organizations = organizations.auto_paging_iter()
 
         assert len(*list(all_organizations)) == len(mock_organizations["data"])
 
@@ -211,11 +291,26 @@ class TestOrganizations(object):
 
         all_organizations = Organizations.construct_from_response(
             organizations
-        ).auto_paginate()
+        ).auto_paging_iter()
 
         assert len(*list(all_organizations)) == len(
             mock_organizations_with_limit["data"]
         )
+
+    def test_list_organizations_honors_limit_v2(
+        self,
+        mock_organizations_with_limit_v2,
+        mock_organizations_pagination_response,
+        mock_request_method,
+    ):
+        mock_request_method("get", mock_organizations_pagination_response, 200)
+
+        organizations = mock_organizations_with_limit_v2
+
+        all_organizations = organizations.auto_paging_iter()
+        dict_response = organizations.to_dict()
+
+        assert len(*list(all_organizations)) == len(dict_response["data"])
 
     def test_list_organizations_returns_metadata(
         self,
@@ -229,3 +324,20 @@ class TestOrganizations(object):
         )
 
         assert organizations["metadata"]["params"]["domains"] == ["planet-express.com"]
+
+    def test_list_organizations_returns_metadata_v2(
+        self,
+        mock_organizations_v2,
+        mock_request_method,
+    ):
+        mock_request_method("get", mock_organizations_v2, 200)
+
+        organizations = self.organizations.list_organizations_v2(
+            domains=["planet-express.com"]
+        )
+
+        dict_organizations = organizations.to_dict()
+
+        assert dict_organizations["metadata"]["params"]["domains"] == [
+            "planet-express.com"
+        ]

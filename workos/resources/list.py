@@ -1,4 +1,5 @@
 from workos.resources.base import WorkOSBaseResource
+from warnings import warn
 
 
 class WorkOSListResource(WorkOSBaseResource):
@@ -38,7 +39,7 @@ class WorkOSListResource(WorkOSBaseResource):
 
         return obj_dict
 
-    def auto_paginate(self):
+    def auto_paging_iter(self):
         """
         This function returns the entire list of items when there are more than 100 unless a limit has been specified.
         """
@@ -82,6 +83,8 @@ class WorkOSListResource(WorkOSBaseResource):
 
             while next_page_marker is not None:
                 response = method(self, **params)
+                if type(response) != dict:
+                    response = response.to_dict()
                 for i in response["data"]:
                     data.append(i)
                 next_page_marker = response["list_metadata"][string_direction]

@@ -5,12 +5,13 @@ import workos
 from workos.sso import SSO
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import RESPONSE_TYPE_CODE
-from workos.resources.sso import WorkOSProfile, WorkOSProfileAndToken, WorkOSConnection
+from tests.utils.fixtures.mock_connection import MockConnection
 
 
 class TestSSO(object):
     @pytest.fixture
     def setup_with_client_id(self, set_api_key_and_client_id):
+        self.sso = SSO()
         self.provider = ConnectionType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.login_hint = "foo@workos.com"
@@ -18,8 +19,7 @@ class TestSSO(object):
         self.state = json.dumps({"things": "with_stuff"})
         self.connection = "connection_123"
         self.organization = "organization_123"
-
-        self.sso = SSO()
+        self.setup_completed = True
 
     @pytest.fixture
     def mock_profile(self):
@@ -58,48 +58,142 @@ class TestSSO(object):
 
     @pytest.fixture
     def mock_connection(self):
-        return {
-            "object": "connection",
-            "id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "connection_type": "GoogleOAuth",
-            "name": "Foo Corp",
-            "state": "active",
-            "status": "none",
-            "created_at": "2021-06-25T19:07:33.155Z",
-            "updated_at": "2021-06-25T19:07:33.155Z",
-            "domains": [
-                {
-                    "id": "conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB",
-                    "object": "connection_domain",
-                    "domain": "foo-corp.com",
-                }
-            ],
-        }
+        return MockConnection("conn_01E4ZCR3C56J083X43JQXF3JK5").to_dict()
 
     @pytest.fixture
     def mock_connections(self):
+
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(5000)]
+
         return {
-            "data": [
-                {
-                    "object": "connection",
-                    "id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_type": "GoogleOAuth",
-                    "name": "Foo Corp",
-                    "state": "active",
-                    "created_at": "2021-06-25T19:07:33.155Z",
-                    "updated_at": "2021-06-25T19:07:33.155Z",
-                    "domains": [
-                        {
-                            "id": "conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB",
-                            "object": "connection_domain",
-                            "domain": "foo-corp.com",
-                        }
-                    ],
-                }
-            ],
+            "data": connection_list,
             "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "domains": None,
+                    "limit": 4,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": SSO.list_connections,
+            },
+        }
+
+    @pytest.fixture
+    def mock_connections_with_limit(self):
+
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(4)]
+
+        return {
+            "data": connection_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "connection_type": None,
+                    "domain": None,
+                    "organization_id": None,
+                    "limit": 4,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                },
+                "method": SSO.list_connections,
+            },
+        }
+
+    @pytest.fixture
+    def mock_connections_with_limit_v2(self, set_api_key_and_client_id):
+
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(4)]
+
+        dict_response = {
+            "data": connection_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "connection_type": None,
+                    "domain": None,
+                    "organization_id": None,
+                    "limit": 4,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                },
+                "method": SSO.list_connections_v2,
+            },
+        }
+        return SSO.construct_from_response(dict_response)
+
+    @pytest.fixture
+    def mock_connections_with_default_limit(self):
+
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(10)]
+
+        return {
+            "data": connection_list,
+            "list_metadata": {"before": None, "after": "conn_xxx"},
+            "metadata": {
+                "params": {
+                    "connection_type": None,
+                    "domain": None,
+                    "organization_id": None,
+                    "limit": 4,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": SSO.list_connections,
+            },
+        }
+
+    @pytest.fixture
+    def mock_connections_with_default_limit_v2(self, setup_with_client_id):
+
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(10)]
+
+        dict_response = {
+            "data": connection_list,
+            "list_metadata": {"before": None, "after": "conn_xxx"},
+            "metadata": {
+                "params": {
+                    "connection_type": None,
+                    "domain": None,
+                    "organization_id": None,
+                    "limit": 4,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": SSO.list_connections_v2,
+            },
+        }
+        return self.sso.construct_from_response(dict_response)
+
+    @pytest.fixture
+    def mock_connections_pagination_response(self):
+
+        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(4990)]
+
+        return {
+            "data": connection_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "connection_type": None,
+                    "domain": None,
+                    "organization_id": None,
+                    "limit": None,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": SSO.list_connections,
+            },
         }
 
     def test_authorization_url_throws_value_error_with_missing_connection_domain_and_provider(
@@ -439,3 +533,89 @@ class TestSSO(object):
         response = self.sso.delete_connection(connection="connection_id")
 
         assert response is None
+
+    def test_list_connections_auto_pagination(
+        self,
+        mock_connections_with_default_limit,
+        mock_connections_pagination_response,
+        mock_connections,
+        mock_request_method,
+        setup_with_client_id,
+    ):
+        mock_request_method("get", mock_connections_pagination_response, 200)
+        connections = mock_connections_with_default_limit
+
+        all_connections = SSO.construct_from_response(connections).auto_paging_iter()
+
+        assert len(*list(all_connections)) == len(mock_connections["data"])
+
+    def test_list_connections_auto_pagination_v2(
+        self,
+        mock_connections_with_default_limit_v2,
+        mock_connections_pagination_response,
+        mock_connections,
+        mock_request_method,
+        setup_with_client_id,
+    ):
+        connections = mock_connections_with_default_limit_v2
+
+        mock_request_method("get", mock_connections_pagination_response, 200)
+        all_connections = connections.auto_paging_iter()
+
+        number_of_connections = len(*list(all_connections))
+        assert number_of_connections == len(mock_connections["data"])
+
+    def test_list_connections_honors_limit(
+        self,
+        mock_connections_with_limit,
+        mock_connections_pagination_response,
+        mock_request_method,
+        setup_with_client_id,
+    ):
+
+        connections = mock_connections_with_limit
+        mock_request_method("get", mock_connections_pagination_response, 200)
+        all_connections = SSO.construct_from_response(connections).auto_paging_iter()
+
+        assert len(*list(all_connections)) == len(mock_connections_with_limit["data"])
+
+    def test_list_connections_honors_limit_v2(
+        self,
+        mock_connections_with_limit_v2,
+        mock_connections_pagination_response,
+        mock_request_method,
+        setup_with_client_id,
+    ):
+
+        connections = mock_connections_with_limit_v2
+        mock_request_method("get", mock_connections_pagination_response, 200)
+        all_connections = connections.auto_paging_iter()
+        dict_mock_connections_with_limit = mock_connections_with_limit_v2.to_dict()
+
+        assert len(*list(all_connections)) == len(
+            dict_mock_connections_with_limit["data"]
+        )
+
+    def test_list_connections_returns_metadata(
+        self,
+        mock_connections,
+        mock_request_method,
+        setup_with_client_id,
+    ):
+        mock_request_method("get", mock_connections, 200)
+        connections = self.sso.list_connections(domain="planet-express.com")
+
+        assert connections["metadata"]["params"]["domain"] == "planet-express.com"
+
+    def test_list_connections_returns_metadata_v2(
+        self,
+        mock_connections,
+        mock_request_method,
+        setup_with_client_id,
+    ):
+        mock_request_method("get", mock_connections, 200)
+
+        connections = self.sso.list_connections_v2(domain="planet-express.com")
+        dict_connections = connections.to_dict()
+
+        assert dict_connections["metadata"]["params"]["domain"] == "planet-express.com"

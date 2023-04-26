@@ -1,12 +1,12 @@
-import json
-
 from requests import Request
 from warnings import warn
-
 import workos
 from workos.utils.pagination_order import Order
-from workos.exceptions import ConfigurationException
-from workos.resources.sso import WorkOSProfile, WorkOSProfileAndToken, WorkOSConnection
+from workos.resources.sso import (
+    WorkOSProfile,
+    WorkOSProfileAndToken,
+    WorkOSConnection,
+)
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import (
     RequestHelper,
@@ -16,6 +16,7 @@ from workos.utils.request import (
     REQUEST_METHOD_POST,
 )
 from workos.utils.validation import SSO_MODULE, validate_settings
+from workos.resources.list import WorkOSListResource
 
 AUTHORIZATION_PATH = "sso/authorize"
 TOKEN_PATH = "sso/token"
@@ -26,7 +27,7 @@ OAUTH_GRANT_TYPE = "authorization_code"
 RESPONSE_LIMIT = 10
 
 
-class SSO(object):
+class SSO(WorkOSListResource):
     """Offers methods to assist in authenticating through the WorkOS SSO service."""
 
     @validate_settings(SSO_MODULE)
@@ -193,7 +194,91 @@ class SSO(object):
         connection_type=None,
         domain=None,
         organization_id=None,
-        limit=RESPONSE_LIMIT,
+        limit=None,
+        before=None,
+        after=None,
+        order=None,
+    ):
+        """Gets details for existing Connections.
+
+        Args:
+            connection_type (ConnectionType): Authentication service provider descriptor. (Optional)
+            domain (str): Domain of a Connection. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Connection ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Connection ID. (Optional)
+            order (Order): Sort records in either ascending or descending order by created_at timestamp.
+
+        Returns:
+            dict: Connections response from WorkOS.
+        """
+        warn(
+            "The 'list_connections' method is deprecated. Please use 'list_connections_v2' instead.",
+            DeprecationWarning,
+        )
+
+        # This method used to accept `connection_type` as a string, so we try
+        # to convert strings to a `ConnectionType` to support existing callers.
+        #
+        # TODO: Remove support for string values of `ConnectionType` in the next
+        #       major version.
+        if connection_type is not None and isinstance(connection_type, str):
+            try:
+                connection_type = ConnectionType[connection_type]
+
+                warn(
+                    "Passing a string value as the 'connection_type' parameter for 'list_connections' is deprecated and will be removed in the next major version. Please pass a 'ConnectionType' instead.",
+                    DeprecationWarning,
+                )
+            except KeyError:
+                raise ValueError("'connection_type' must be a member of ConnectionType")
+
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
+        params = {
+            "connection_type": connection_type.value if connection_type else None,
+            "domain": domain,
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        if order is not None:
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+
+            elif order == "asc" or order == "desc":
+                params["order"] = order
+            else:
+                raise ValueError("Parameter order must be of enum type Order")
+
+        response = self.request_helper.request(
+            "connections",
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
+        )
+
+        response["metadata"] = {
+            "params": params,
+            "method": SSO.list_connections,
+        }
+
+        if "default_limit" in locals():
+            response["metadata"]["params"]["default_limit"] = default_limit
+
+        return response
+
+    def list_connections_v2(
+        self,
+        connection_type=None,
+        domain=None,
+        organization_id=None,
+        limit=None,
         before=None,
         after=None,
         order=None,
@@ -228,6 +313,10 @@ class SSO(object):
             except KeyError:
                 raise ValueError("'connection_type' must be a member of ConnectionType")
 
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
         params = {
             "connection_type": connection_type.value if connection_type else None,
             "domain": domain,
@@ -237,17 +326,32 @@ class SSO(object):
             "after": after,
             "order": order,
         }
-        if order is not None:
-            if not isinstance(order, Order):
-                raise ValueError("'order' must be of asc or desc order")
-            params["order"] = str(order.value)
 
-        return self.request_helper.request(
+        if order is not None:
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+
+            elif order == "asc" or order == "desc":
+                params["order"] = order
+            else:
+                raise ValueError("Parameter order must be of enum type Order")
+
+        response = self.request_helper.request(
             "connections",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,
         )
+
+        response["metadata"] = {
+            "params": params,
+            "method": SSO.list_connections_v2,
+        }
+
+        if "default_limit" in locals():
+            response["metadata"]["params"]["default_limit"] = default_limit
+
+        return self.construct_from_response(response)
 
     def delete_connection(self, connection):
         """Deletes a single Connection

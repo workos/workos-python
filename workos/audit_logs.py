@@ -1,3 +1,4 @@
+from warnings import warn
 import workos
 from workos.resources.audit_logs_export import WorkOSAuditLogExport
 from workos.utils.request import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST
@@ -66,6 +67,8 @@ class AuditLogs(object):
         actions=None,
         actors=None,
         targets=None,
+        actor_names=None,
+        actor_ids=None
     ):
         """Trigger the creation of an export of audit logs.
 
@@ -92,8 +95,18 @@ class AuditLogs(object):
 
         if actors:
             payload["actors"] = actors
+            warn(
+              "The 'actors' parameter is deprecated. Please use 'actor_names' instead.",
+            DeprecationWarning,
+        )
 
-        if actors:
+        if actor_names:
+            payload["actor_names"] = actor_names
+
+        if actor_ids:
+            payload["actor_ids"] = actor_ids
+
+        if targets:
             payload["targets"] = targets
 
         response = self.request_helper.request(

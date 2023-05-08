@@ -93,7 +93,10 @@ class DirectorySync(WorkOSListResource):
         )
 
         if "default_limit" in locals():
-            response["metadata"]["params"]["default_limit"] = default_limit
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
+            else:
+                response["metadata"] = {"params": {"default_limit": default_limit}}
 
         response["metadata"] = {
             "params": params,
@@ -159,7 +162,10 @@ class DirectorySync(WorkOSListResource):
         )
 
         if "default_limit" in locals():
-            response["metadata"]["params"]["default_limit"] = default_limit
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
+            else:
+                response["metadata"] = {"params": {"default_limit": default_limit}}
 
         response["metadata"] = {
             "params": params,
@@ -222,7 +228,10 @@ class DirectorySync(WorkOSListResource):
         )
 
         if "default_limit" in locals():
-            response["metadata"]["params"]["default_limit"] = default_limit
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
+            else:
+                response["metadata"] = {"params": {"default_limit": default_limit}}
 
         response["metadata"] = {
             "params": params,
@@ -281,7 +290,10 @@ class DirectorySync(WorkOSListResource):
         )
 
         if "default_limit" in locals():
-            response["metadata"]["params"]["default_limit"] = default_limit
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
+            else:
+                response["metadata"] = {"params": {"default_limit": default_limit}}
 
         response["metadata"] = {
             "params": params,
@@ -408,7 +420,10 @@ class DirectorySync(WorkOSListResource):
         }
 
         if "default_limit" in locals():
-            response["metadata"]["params"]["default_limit"] = default_limit
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
+            else:
+                response["metadata"] = {"params": {"default_limit": default_limit}}
 
         return response
 
@@ -473,7 +488,10 @@ class DirectorySync(WorkOSListResource):
         }
 
         if "default_limit" in locals():
-            response["metadata"]["params"]["default_limit"] = default_limit
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
+            else:
+                response["metadata"] = {"params": {"default_limit": default_limit}}
 
         return self.construct_from_response(response)
 

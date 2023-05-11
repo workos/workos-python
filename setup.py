@@ -23,8 +23,7 @@ if sys.version_info.major == 3:
             "black==22.3.0",
             "twine==3.1.1",
             "requests==2.29.0",
-            "requests-toolbelt==0.9.0"
-            "urllib3==2.0.2",
+            "requests-toolbelt==0.9.0",            
         ]
     )
 

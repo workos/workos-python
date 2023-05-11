@@ -23,7 +23,7 @@ if sys.version_info.major == 3:
             "black==22.3.0",
             "twine==4.0.2",
             "requests==2.30.0",
-            "urllib3==2.0.2",            
+            "urllib3==2.0.2",
         ]
     )
 

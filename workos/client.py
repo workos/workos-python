@@ -40,7 +40,7 @@ class Client(object):
     @property
     def events(self):
         if not getattr(self, "_events", None):
-            self.events = Events()
+            self._events = Events()
         return self._events
 
     @property

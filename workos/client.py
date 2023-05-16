@@ -40,8 +40,8 @@ class Client(object):
     @property
     def events(self):
         if not getattr(self, "_events", None):
-            self._directory_sync = Events()
-        return self._directory_sync
+            self.events = Events()
+        return self._events
 
     @property
     def organizations(self):

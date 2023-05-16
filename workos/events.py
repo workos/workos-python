@@ -34,7 +34,7 @@ class Events(WorkOSListResource):
     ):
         """Gets a list of Events .
         Args:
-            events (str): Event type.
+            events (list): Filter to only return events of particular types.
             limit (int): Maximum number of records to return.
             after (str): Pagination cursor to receive records after a provided Event ID.
             rangeStart (str): Date range start for stream of events.
@@ -44,7 +44,6 @@ class Events(WorkOSListResource):
         Returns:
             dict: Events response from WorkOS.
         """
-
         if limit is None:
             limit = RESPONSE_LIMIT
             default_limit = True

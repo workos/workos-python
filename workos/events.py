@@ -44,6 +44,7 @@ class Events(WorkOSListResource):
         Returns:
             dict: Events response from WorkOS.
         """
+
         if limit is None:
             limit = RESPONSE_LIMIT
             default_limit = True

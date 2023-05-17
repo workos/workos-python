@@ -58,7 +58,7 @@ class Events(WorkOSListResource):
         }
 
         response = self.request_helper.request(
-            "canonical_events",
+            "events",
             method=REQUEST_METHOD_GET,
             params=params,
             token=workos.api_key,

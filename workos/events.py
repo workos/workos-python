@@ -33,12 +33,12 @@ class Events(WorkOSListResource):
         rangeEnd=None,
     ):
         """Gets a list of Events .
-        Args:
-            events (list): Filter to only return events of particular types.
-            limit (int): Maximum number of records to return.
-            after (str): Pagination cursor to receive records after a provided Event ID.
-            rangeStart (str): Date range start for stream of events.
-            rangeEnd (str): Date range end for stream of events.
+        Kwargs:
+            events (list): Filter to only return events of particular types. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            after (str): Pagination cursor to receive records after a provided Event ID. (Optional)
+            rangeStart (str): Date range start for stream of events. (Optional)
+            rangeEnd (str): Date range end for stream of events. (Optional)
 
 
         Returns:

@@ -7,6 +7,7 @@ from workos.portal import Portal
 from workos.sso import SSO
 from workos.webhooks import Webhooks
 from workos.mfa import Mfa
+from workos.events import Events
 
 
 class Client(object):
@@ -35,6 +36,12 @@ class Client(object):
         if not getattr(self, "_directory_sync", None):
             self._directory_sync = DirectorySync()
         return self._directory_sync
+
+    @property
+    def events(self):
+        if not getattr(self, "_events", None):
+            self._events = Events()
+        return self._events
 
     @property
     def organizations(self):

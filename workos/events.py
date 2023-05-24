@@ -7,6 +7,7 @@ from workos.utils.request import (
 
 from workos.utils.validation import EVENTS_MODULE, validate_settings
 from workos.resources.list import WorkOSListResource
+import time
 
 RESPONSE_LIMIT = 10
 
@@ -16,6 +17,8 @@ class Events(WorkOSListResource):
 
     @validate_settings(EVENTS_MODULE)
     def __init__(self):
+        self.handler = None
+        self.events = None
         pass
 
     @property
@@ -24,9 +27,18 @@ class Events(WorkOSListResource):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def get_events(
+    def subscribe(
         self,
-        events=None,
+        handler=None,
+        events=None
+    ):
+       """ Subscribe handler for events
+       """
+       self.handler = handler
+       self.events = events 
+
+    def start(
+        self,
         limit=None,
         after=None,
         rangeStart=None,
@@ -47,32 +59,26 @@ class Events(WorkOSListResource):
 
         if limit is None:
             limit = RESPONSE_LIMIT
-            default_limit = True
 
         params = {
-            "events": events,
+            "events": self.events,
             "limit": limit,
             "after": after,
             "rangeStart": rangeStart,
             "rangeEnd": rangeEnd,
         }
 
-        response = self.request_helper.request(
-            "events",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
+        while True: 
+            response = self.request_helper.request(
+                "events",
+                method=REQUEST_METHOD_GET,
+                params=params,
+                token=workos.api_key,
+            )
 
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
+            if self.handler:
+                self.handler(response)
 
-        response["metadata"] = {
-            "params": params,
-            "method": Events.get_events,
-        }
+            params["after"] = response["list_metadata"]["after"]
 
-        return response
+            time.sleep(5)

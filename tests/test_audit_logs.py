@@ -167,6 +167,8 @@ class TestAuditLogs:
             range_end = datetime.now().isoformat
             actions = ["foo", "bar"]
             actors = ["Jon", "Smith"]
+            actor_names = ["Jon", "Smith"]
+            actor_ids = ["user_foo", "user_bar"]
             targets = ["user", "team"]
 
             expected_payload = {
@@ -187,6 +189,8 @@ class TestAuditLogs:
                 range_end=range_end,
                 range_start=range_start,
                 targets=targets,
+                actor_names=actor_names,
+                actor_ids=actor_ids,
             )
 
             assert (

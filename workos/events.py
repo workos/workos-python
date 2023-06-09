@@ -24,7 +24,7 @@ class Events(WorkOSListResource):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def get_events(
+    def list_events(
         self,
         events=None,
         limit=None,
@@ -72,7 +72,7 @@ class Events(WorkOSListResource):
 
         response["metadata"] = {
             "params": params,
-            "method": Events.get_events,
+            "method": Events.list_events,
         }
 
         return response

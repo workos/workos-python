@@ -29,16 +29,16 @@ class Events(WorkOSListResource):
         events=None,
         limit=None,
         after=None,
-        rangeStart=None,
-        rangeEnd=None,
+        range_start=None,
+        range_end=None,
     ):
         """Gets a list of Events .
         Kwargs:
             events (list): Filter to only return events of particular types. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             after (str): Pagination cursor to receive records after a provided Event ID. (Optional)
-            rangeStart (str): Date range start for stream of events. (Optional)
-            rangeEnd (str): Date range end for stream of events. (Optional)
+            range_start (str): Date range start for stream of events. (Optional)
+            range_end (str): Date range end for stream of events. (Optional)
 
 
         Returns:
@@ -53,8 +53,8 @@ class Events(WorkOSListResource):
             "events": events,
             "limit": limit,
             "after": after,
-            "rangeStart": rangeStart,
-            "rangeEnd": rangeEnd,
+            "range_start": range_start,
+            "range_end": range_end,
         }
 
         response = self.request_helper.request(

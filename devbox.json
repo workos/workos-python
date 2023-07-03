@@ -7,7 +7,7 @@
   ],
   "shell": {
     "init_hook": [
-      ". $VENV_DIR/bin/activate.fish",
+      "[ -z \"$FISH_VERSION\" ] && . \"$VENV_DIR/bin/activate\" || . \"$VENV_DIR/bin/activate.fish\"",
       "pip install -e .[dev]"
     ],
     "scripts": {

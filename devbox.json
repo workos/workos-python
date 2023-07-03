@@ -1,11 +1,13 @@
 {
   "packages": [
     "python@3.7",
-    "python37Packages.pip@latest"
+    "python37Packages.pip@latest",
+    "python37Packages.setuptools@latest",
+    "python37Packages.wheel@latest"
   ],
   "shell": {
     "init_hook": [
-      "echo 'Welcome to devbox!' > /dev/null"
+      "pip install -e .[dev]"
     ],
     "scripts": {
       "test": [

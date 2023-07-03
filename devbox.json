@@ -7,11 +7,12 @@
   ],
   "shell": {
     "init_hook": [
+      ". $VENV_DIR/bin/activate.fish",
       "pip install -e .[dev]"
     ],
     "scripts": {
       "test": [
-        "echo \"Error: no test specified\" && exit 1"
+        "python -m pytest"
       ]
     }
   }

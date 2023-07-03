@@ -1,6 +1,12 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "python37Packages.pip@latest": {
+      "last_modified": "2021-02-27T19:03:02Z",
+      "plugin_version": "0.0.1",
+      "resolved": "github:NixOS/nixpkgs/5df05c902cde398e056eb6271d5fe13e418db4c6#python37Packages.pip",
+      "version": "20.3"
+    },
     "python@3.7": {
       "last_modified": "2023-01-02T04:31:48Z",
       "plugin_version": "0.0.1",

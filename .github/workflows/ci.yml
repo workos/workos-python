@@ -14,9 +14,6 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v4
 
-      - name: Run the Magic Nix Cache
-        uses: DeterminateSystems/magic-nix-cache-action@v1
-
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.4.0
 

@@ -16,6 +16,8 @@ jobs:
 
       - name: Install Devbox
         uses: jetpack-io/devbox-install-action@v0.4.0
+        with:
+          enable-cache: true
 
       - name: Check formatting
         run: devbox run -- black --check .

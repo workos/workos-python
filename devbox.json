@@ -11,9 +11,7 @@
       "pip install -e .[dev]"
     ],
     "scripts": {
-      "test": [
-        "python -m pytest"
-      ]
+      "test": "python -m pytest"
     }
   }
 }

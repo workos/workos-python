@@ -24,3 +24,23 @@ jobs:
 
       - name: Test
         run: devbox run test
+
+  test_python_version:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version: ["3_8", "3_9"]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v4
+
+      - name: Install Devbox
+        uses: jetpack-io/devbox-install-action@v0.4.0
+        with:
+          enable-cache: true
+          project-path: "ci/python-${{ matrix.python_version }}"
+
+      - name: Test
+        run: devbox --config ci/python-${{ matrix.python_version }} run test

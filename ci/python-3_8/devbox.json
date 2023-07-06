@@ -1,0 +1,18 @@
+{
+  "packages": [
+    "python@3.8",
+    "python38Packages.pip@latest",
+    "python38Packages.setuptools@latest",
+    "python38Packages.wheel@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "cd ../..",
+      "[ -z \"$FISH_VERSION\" ] && . \"$VENV_DIR/bin/activate\" || . \"$VENV_DIR/bin/activate.fish\"",
+      "pip install -e .[dev]"
+    ],
+    "scripts": {
+      "test": "python -m pytest"
+    }
+  }
+}

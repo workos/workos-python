@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v4
+
+      - name: Install Devbox
+        uses: jetpack-io/devbox-install-action@v0.4.0
+        with:
+          enable-cache: true
+
+      - name: Check formatting
+        run: devbox run -- black --check .
+
+      - name: Test
+        run: devbox run test
+
+  test_python_version:
+    name: "Test (Python ${{ matrix.python_version.number }})"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version:
+          - number: "3.8"
+            config: "python-3_8"
+          - number: "3.9"
+            config: "python-3_9"
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v4
+
+      - name: Install Devbox
+        uses: jetpack-io/devbox-install-action@v0.4.0
+        with:
+          enable-cache: true
+          project-path: "ci/${{ matrix.python_version.config }}"
+
+      - name: Test
+        run: devbox --config ci/${{ matrix.python_version.config }} run test

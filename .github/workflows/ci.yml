@@ -26,10 +26,12 @@ jobs:
         run: devbox run test
 
   test_python_version:
+    name: "Test (${{ matrix.python_version }})"
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python_version: ["3_8", "3_9"]
+        python_version: ["3.8", "3.9"]
+        devbox_config: ["python-3_8", "python-3_9"]
     steps:
       - uses: actions/checkout@v3
 
@@ -40,7 +42,7 @@ jobs:
         uses: jetpack-io/devbox-install-action@v0.4.0
         with:
           enable-cache: true
-          project-path: "ci/python-${{ matrix.python_version }}"
+          project-path: "ci/${{ matrix.devbox_config }}"
 
       - name: Test
-        run: devbox --config ci/python-${{ matrix.python_version }} run test
+        run: devbox --config ci/${{ matrix.devbox_config }} run test

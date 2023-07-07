@@ -11,6 +11,7 @@
       "pip install -e .[dev]"
     ],
     "scripts": {
+      "format": "black .",
       "lint": [
         "flake8 . --extend-exclude .devbox --count --select=E9,F7,F82 --show-source --statistics",
         "flake8 . --extend-exclude .devbox --count --exit-zero --max-complexity=10 --statistics"

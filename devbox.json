@@ -11,6 +11,7 @@
       "pip install -e .[dev]"
     ],
     "scripts": {
+      "format": "black .",
       "test": "python -m pytest"
     }
   }

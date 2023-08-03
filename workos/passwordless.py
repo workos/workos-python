@@ -33,7 +33,8 @@ class Passwordless(object):
                     restore application state between redirects.
                 session_options[type] (str): The type of Passwordless Session to
                     create. Currently, the only supported value is 'MagicLink'.
-                session_options[expires_at] (int): The ISO-8601 datetime at which the session expires.
+                session_options[expires_in] (int): The number of seconds the Passwordless Session should live before expiring.
+                    This value must be between 900 (15 minutes) and 86400 (24 hours), inclusive.
 
         Returns:
             dict: Passwordless Session

@@ -8,6 +8,7 @@ from workos.sso import SSO
 from workos.webhooks import Webhooks
 from workos.mfa import Mfa
 from workos.events import Events
+from workos.users import Users
 
 
 class Client(object):
@@ -72,6 +73,12 @@ class Client(object):
         if not getattr(self, "_mfa", None):
             self._mfa = Mfa()
         return self._mfa
+
+    @property
+    def users(self):
+        if not getattr(self, "_users", None):
+            self._users = Users()
+        return self._users
 
 
 client = Client()

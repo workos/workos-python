@@ -15,7 +15,7 @@ RESPONSE_LIMIT = 10
 
 
 class Users(WorkOSListResource):
-    """Offers methods to assist in authenticating through the WorkOS SSO service."""
+    """Offers methods for using the WorkOS User Management API."""
 
     @validate_settings(USERS_MODULE)
     def __init__(self):

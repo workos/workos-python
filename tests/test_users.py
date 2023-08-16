@@ -5,7 +5,6 @@ from workos.users import Users
 
 
 class TestUsers(object):
-
     @pytest.fixture(autouse=True)
     def setup(self, set_api_key, set_client_id):
         self.users = Users()

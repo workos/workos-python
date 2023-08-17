@@ -90,7 +90,7 @@ class Users(WorkOSListResource):
 
 
         Kwargs:
-            type (str): Filter Users by their type: "unmanged" or "managed" (Optional)
+            type (str): Filter Users by their type: "unmanaged" or "managed" (Optional)
             email (str): Filter Users by their email. (Optional)
             organization (list): Filter Users by the organization they are members of. (Optional)
             limit (int): Maximum number of records to return. (Optional)

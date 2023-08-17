@@ -6,6 +6,7 @@ from workos.resources.users import (
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_POST,
+    REQUEST_METHOD_GET,
 )
 from workos.utils.validation import validate_settings, USERS_MODULE
 
@@ -47,6 +48,25 @@ class Users(WorkOSListResource):
             USER_PATH,
             method=REQUEST_METHOD_POST,
             params=user,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSUser.construct_from_response(response).to_dict()
+
+    def get_user(self, user):
+        """Get the details of an existing user.
+
+        Args:
+            user (str) - User unique identifier
+        Returns:
+            dict: User response from WorkOS.
+        """
+        headers = {}
+
+        response = self.request_helper.request(
+            f"{USER_PATH}/{user}",
+            method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
         )

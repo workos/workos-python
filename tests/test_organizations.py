@@ -107,7 +107,7 @@ class TestOrganizations(object):
                     "after": None,
                     "order": None,
                 },
-                "method": Organizations.list_organizations,
+                "method": Organizations.list_organizations_v2,
             },
         }
         return self.organizations.construct_from_response(dict_response)
@@ -150,7 +150,7 @@ class TestOrganizations(object):
                     "order": None,
                     "default_limit": True,
                 },
-                "method": Organizations.list_organizations,
+                "method": Organizations.list_organizations_v2,
             },
         }
         return self.organizations.construct_from_response(dict_response)

@@ -101,6 +101,8 @@ class Users(WorkOSListResource):
             dict: Users response from WorkOS.
         """
 
+        default_limit = None
+
         if limit is None:
             limit = RESPONSE_LIMIT
             default_limit = True
@@ -136,17 +138,15 @@ class Users(WorkOSListResource):
             token=workos.api_key,
         )
 
-        dict_response = response.to_dict()
-
-        dict_response["metadata"] = {
+        response["metadata"] = {
             "params": params,
-            "method": Organizations.list_organizations_v2,
+            "method": Users.list_users,
         }
 
         if "default_limit" in locals():
-            if "metadata" in dict_response and "params" in dict_response["metadata"]:
-                dict_response["metadata"]["params"]["default_limit"] = default_limit
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
             else:
-                dict_response["metadata"] = {"params": {"default_limit": default_limit}}
+                response["metadata"] = {"params": {"default_limit": default_limit}}
 
-        return self.construct_from_response(dict_response)
+        return self.construct_from_response(response)

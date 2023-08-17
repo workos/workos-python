@@ -141,7 +141,7 @@ class Organizations(WorkOSListResource):
             token=workos.api_key,
         )
 
-        dict_response = response.to_dict()
+        dict_response = response
 
         dict_response["metadata"] = {
             "params": params,

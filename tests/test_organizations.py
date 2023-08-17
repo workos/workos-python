@@ -30,7 +30,6 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organizations(self):
-
         organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(5000)]
 
         return {
@@ -51,7 +50,6 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organizations_v2(self):
-
         organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(5000)]
 
         dict_response = {
@@ -69,11 +67,10 @@ class TestOrganizations(object):
                 "method": Organizations.list_organizations_v2,
             },
         }
-        return self.organizations.construct_from_response(dict_response)
+        return dict_response
 
     @pytest.fixture
     def mock_organizations_with_limit(self):
-
         organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(4)]
 
         return {
@@ -93,7 +90,6 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organizations_with_limit_v2(self):
-
         organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(4)]
 
         dict_response = {
@@ -107,14 +103,13 @@ class TestOrganizations(object):
                     "after": None,
                     "order": None,
                 },
-                "method": Organizations.list_organizations,
+                "method": Organizations.list_organizations_v2,
             },
         }
         return self.organizations.construct_from_response(dict_response)
 
     @pytest.fixture
     def mock_organizations_with_default_limit(self):
-
         organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(10)]
 
         return {
@@ -135,7 +130,6 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organizations_with_default_limit_v2(self):
-
         organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(10)]
 
         dict_response = {
@@ -150,14 +144,13 @@ class TestOrganizations(object):
                     "order": None,
                     "default_limit": True,
                 },
-                "method": Organizations.list_organizations,
+                "method": Organizations.list_organizations_v2,
             },
         }
         return self.organizations.construct_from_response(dict_response)
 
     @pytest.fixture
     def mock_organizations_pagination_response(self):
-
         organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(4990)]
 
         return {

@@ -26,3 +26,11 @@ class TestUsers(object):
         user = self.users.create_user(payload)
 
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+
+    def test_get_user(self, mock_user, capture_and_mock_request):
+        url, request_kwargs = capture_and_mock_request("get", mock_user, 201)
+
+        user = self.users.get_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+
+        assert url[0].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"

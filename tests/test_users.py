@@ -226,7 +226,6 @@ class TestUsers(object):
     def test_authenticate_with_password(
         self, capture_and_mock_request, mock_auth_response
     ):
-        code = "test_auth"
         email = "marcelina@foo-corp.com"
         password = "test123"
         expires_in = 3600
@@ -236,7 +235,6 @@ class TestUsers(object):
         url, request = capture_and_mock_request("post", mock_auth_response, 200)
 
         response = self.users.authenticate_with_password(
-            code=code,
             email=email,
             password=password,
             expires_in=expires_in,
@@ -247,7 +245,6 @@ class TestUsers(object):
         assert url[0].endswith("users/session/token")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["session"]["id"] == "session_01E4ZCR3C56J083X43JQXF3JK5"
-        assert request["json"]["code"] == code
         assert request["json"]["email"] == email
         assert request["json"]["password"] == password
         assert request["json"]["user_agent"] == user_agent

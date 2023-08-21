@@ -242,6 +242,8 @@ class Users(WorkOSListResource):
     def authenticate_with_password(
         self,
         code,
+        email,
+        password,
         expires_in=None,
         ip_address=None,
         user_agent=None,
@@ -266,7 +268,9 @@ class Users(WorkOSListResource):
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
             "code": code,
-            "grant_type": "authorization_code",
+            "email": email,
+            "password": password,
+            "grant_type": "password",
         }
 
         if expires_in:

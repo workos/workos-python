@@ -22,7 +22,6 @@ class TestUsers(object):
             "list_metadata": {"before": None, "after": None},
             "metadata": {
                 "params": {
-                    "type": None,
                     "organization": None,
                     "email": None,
                     "limit": None,
@@ -154,12 +153,10 @@ class TestUsers(object):
         mock_request_method("get", mock_users, 200)
 
         users = self.users.list_users(
-            type="unmanaged",
             email="marcelina@foo-corp.com",
             organization="foo-corp.com",
         )
 
         dict_users = users.to_dict()
-        assert dict_users["metadata"]["params"]["type"] == "unmanaged"
         assert dict_users["metadata"]["params"]["email"] == "marcelina@foo-corp.com"
         assert dict_users["metadata"]["params"]["organization"] == "foo-corp.com"

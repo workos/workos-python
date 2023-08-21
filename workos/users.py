@@ -9,7 +9,6 @@ from workos.utils.request import (
     REQUEST_METHOD_POST,
     REQUEST_METHOD_GET,
 )
-from workos.utils.user_types import UserType
 from workos.utils.validation import validate_settings, USERS_MODULE
 
 USER_PATH = "users"
@@ -77,7 +76,6 @@ class Users(WorkOSListResource):
 
     def list_users(
         self,
-        type=None,
         email=None,
         organization=None,
         limit=None,
@@ -90,7 +88,6 @@ class Users(WorkOSListResource):
 
 
         Kwargs:
-            type (str): Filter Users by their type: "unmanaged" or "managed" (Optional)
             email (str): Filter Users by their email. (Optional)
             organization (list): Filter Users by the organization they are members of. (Optional)
             limit (int): Maximum number of records to return. (Optional)
@@ -115,16 +112,6 @@ class Users(WorkOSListResource):
             "before": before,
             "after": after,
         }
-
-        if type is not None:
-            if isinstance(type, UserType):
-                params["type"] = str(type.value)
-            elif type == "unmanaged" or type == "managed":
-                params["type"] = type
-            else:
-                raise ValueError(
-                    "Parameter type must be either 'unmanaged' or 'managed'"
-                )
 
         if order is not None:
             if isinstance(order, Order):

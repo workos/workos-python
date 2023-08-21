@@ -160,3 +160,19 @@ class TestUsers(object):
         dict_users = users.to_dict()
         assert dict_users["metadata"]["params"]["email"] == "marcelina@foo-corp.com"
         assert dict_users["metadata"]["params"]["organization"] == "foo-corp.com"
+
+    def test_add_user_to_organization(self, capture_and_mock_request, mock_user):
+        url, _ = capture_and_mock_request("post", mock_user, 200)
+
+        user = self.users.add_user_to_organization("user_123", "org_123")
+
+        assert url[0].endswith("users/user_123/organization/org_123")
+        assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+
+    def test_remove_user_from_organization(self, capture_and_mock_request, mock_user):
+        url, _ = capture_and_mock_request("delete", mock_user, 200)
+
+        user = self.users.remove_user_from_organization("user_123", "org_123")
+
+        assert url[0].endswith("users/user_123/organization/org_123")
+        assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"

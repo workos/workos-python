@@ -253,3 +253,29 @@ class TestUsers(object):
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
         assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
         assert request["json"]["grant_type"] == "password"
+
+    def test_authenticate_with_code(self, capture_and_mock_request, mock_auth_response):
+        code = "test_code"
+        expires_in = 3600
+        user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+        ip_address = "192.0.0.1"
+
+        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+
+        response = self.users.authenticate_with_token(
+            code=code,
+            expires_in=expires_in,
+            user_agent=user_agent,
+            ip_address=ip_address,
+        )
+
+        assert url[0].endswith("users/session/token")
+        assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response["session"]["id"] == "session_01E4ZCR3C56J083X43JQXF3JK5"
+        assert request["json"]["code"] == code
+        assert request["json"]["user_agent"] == user_agent
+        assert request["json"]["expires_in"] == expires_in
+        assert request["json"]["ip_address"] == ip_address
+        assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
+        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert request["json"]["grant_type"] == "authorization_code"

@@ -8,10 +8,13 @@ from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_POST,
     REQUEST_METHOD_GET,
+    REQUEST_METHOD_DELETE,
 )
 from workos.utils.validation import validate_settings, USERS_MODULE
 
 USER_PATH = "users"
+USER_DETAIL_PATH = "users/{0}"
+USER_ORGANIZATION_PATH = "users/{0}/organization/{1}"
 
 RESPONSE_LIMIT = 10
 
@@ -66,7 +69,7 @@ class Users(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            "{0}/{1}".format(USER_PATH, user),
+            USER_DETAIL_PATH.format(user),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
@@ -84,8 +87,6 @@ class Users(WorkOSListResource):
         order=None,
     ):
         """Get a list of all of your existing users matching the criteria specified.
-
-
 
         Kwargs:
             email (str): Filter Users by their email. (Optional)
@@ -140,3 +141,47 @@ class Users(WorkOSListResource):
                 response["metadata"] = {"params": {"default_limit": default_limit}}
 
         return self.construct_from_response(response)
+
+    def add_user_to_organization(self, user, organization):
+        """Adds a User as a member of the given Organization.
+
+        Kwargs:
+            user (str): The unique ID of the User.
+            organization (str): Unique ID of the Organization.
+
+        Returns:
+            dict: User response from WorkOS.
+        """
+
+        headers = {}
+
+        response = self.request_helper.request(
+            USER_ORGANIZATION_PATH.format(user, organization),
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSUser.construct_from_response(response).to_dict()
+
+    def remove_user_from_organization(self, user, organization):
+        """Removes a User from the given Organization.
+
+        Kwargs:
+            user (str): The unique ID of the User.
+            organization (str): Unique ID of the Organization.
+
+        Returns:
+            dict: User response from WorkOS.
+        """
+
+        headers = {}
+
+        response = self.request_helper.request(
+            USER_ORGANIZATION_PATH.format(user, organization),
+            method=REQUEST_METHOD_DELETE,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSUser.construct_from_response(response).to_dict()

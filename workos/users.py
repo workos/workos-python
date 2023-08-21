@@ -241,7 +241,6 @@ class Users(WorkOSListResource):
 
     def authenticate_with_password(
         self,
-        code,
         email,
         password,
         expires_in=None,
@@ -251,10 +250,11 @@ class Users(WorkOSListResource):
         """Authenticates a user with email and password and optionally creates a session.
 
         Kwargs:
-            code (str):
-            expires_in (int) (Optional)
-            ip_address (str) (Optional)
-            user_agent (str) (Optional)
+            email (str): The email address of the user.
+            password (str): The password of the user.
+            expires_in (int): The length of the session in minutes. Defaults to 1 day, 1440. (Optional)
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
 
         Returns:
             (dict): Authentication response from WorkOS.
@@ -267,7 +267,6 @@ class Users(WorkOSListResource):
         payload = {
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
-            "code": code,
             "email": email,
             "password": password,
             "grant_type": "password",

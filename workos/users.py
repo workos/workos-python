@@ -1,4 +1,5 @@
 import workos
+from workos.resources.authentication_response import WorkOSAuthenticationResponse
 from workos.resources.list import WorkOSListResource
 from workos.resources.users import (
     WorkOSUser,
@@ -15,6 +16,7 @@ from workos.utils.validation import validate_settings, USERS_MODULE
 USER_PATH = "users"
 USER_DETAIL_PATH = "users/{0}"
 USER_ORGANIZATION_PATH = "users/{0}/organization/{1}"
+USER_SESSION_TOKEN = "users/session/token"
 
 RESPONSE_LIMIT = 10
 
@@ -78,13 +80,13 @@ class Users(WorkOSListResource):
         return WorkOSUser.construct_from_response(response).to_dict()
 
     def list_users(
-        self,
-        email=None,
-        organization=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
+            self,
+            email=None,
+            organization=None,
+            limit=None,
+            before=None,
+            after=None,
+            order=None,
     ):
         """Get a list of all of your existing users matching the criteria specified.
 
@@ -185,3 +187,48 @@ class Users(WorkOSListResource):
         )
 
         return WorkOSUser.construct_from_response(response).to_dict()
+
+    def authenticate_with_magic_auth(self, code, magic_auth_challenge_id, expires_in=None, ip_address=None,
+                                     user_agent=None):
+        """Authenticates a user by verifying a one-time code sent to the user's email address by the Magic Auth Send Code endpoint.
+
+        Kwargs:
+            code (str):
+            magic_auth_challenge_id (str)
+            expires_in (int) (Optional)
+            ip_address (str) (Optional)
+            user_agent (str) (Optional)
+
+        Returns:
+            (dict): Authentication response from WorkOS.
+                [user] (dict): User response from WorkOS
+                [session] (dict): Session response from WorkOS
+        """
+
+        headers = {}
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "code": code,
+            "magic_auth_challenge_id": magic_auth_challenge_id,
+            "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
+        }
+
+        if expires_in:
+            payload["expires_in"] = expires_in
+
+        if ip_address:
+            payload["ip_address"] = ip_address
+
+        if user_agent:
+            payload["user_agent"] = user_agent
+
+        response = self.request_helper.request(
+            USER_SESSION_TOKEN,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+        )
+
+        return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()

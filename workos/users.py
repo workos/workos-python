@@ -199,11 +199,11 @@ class Users(WorkOSListResource):
         """Authenticates a user by verifying a one-time code sent to the user's email address by the Magic Auth Send Code endpoint.
 
         Kwargs:
-            code (str):
-            magic_auth_challenge_id (str)
-            expires_in (int) (Optional)
-            ip_address (str) (Optional)
-            user_agent (str) (Optional)
+            code (str): The one-time code that was emailed to the user.
+            magic_auth_challenge_id (str): The challenge ID returned from when the one-time code was sent to the user.
+            expires_in (int): The length of the session in minutes. Defaults to 1 day, 1440. (Optional)
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
 
         Returns:
             (dict): Authentication response from WorkOS.

@@ -290,7 +290,7 @@ class Users(WorkOSListResource):
 
         return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
 
-    def authenticate_with_token(
+    def authenticate_with_code(
         self,
         code,
         expires_in=None,

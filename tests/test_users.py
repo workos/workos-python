@@ -254,9 +254,7 @@ class TestUsers(object):
         assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
         assert request["json"]["grant_type"] == "password"
 
-    def test_authenticate_with_token(
-        self, capture_and_mock_request, mock_auth_response
-    ):
+    def test_authenticate_with_code(self, capture_and_mock_request, mock_auth_response):
         code = "test_code"
         expires_in = 3600
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"

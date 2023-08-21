@@ -67,7 +67,7 @@ class Users(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            "%/%".format(USER_PATH, user),
+            "{0}/{1}".format(USER_PATH, user),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,

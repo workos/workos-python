@@ -262,7 +262,7 @@ class TestUsers(object):
 
         url, request = capture_and_mock_request("post", mock_auth_response, 200)
 
-        response = self.users.authenticate_with_token(
+        response = self.users.authenticate_with_code(
             code=code,
             expires_in=expires_in,
             user_agent=user_agent,

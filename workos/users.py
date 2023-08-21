@@ -3,6 +3,7 @@ from workos.resources.list import WorkOSListResource
 from workos.resources.users import (
     WorkOSUser,
 )
+from workos.utils.pagination_order import Order
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_POST,
@@ -65,10 +66,77 @@ class Users(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            f"{USER_PATH}/{user}",
+            "{0}/{1}".format(USER_PATH, user),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
         )
 
         return WorkOSUser.construct_from_response(response).to_dict()
+
+    def list_users(
+        self,
+        email=None,
+        organization=None,
+        limit=None,
+        before=None,
+        after=None,
+        order=None,
+    ):
+        """Get a list of all of your existing users matching the criteria specified.
+
+
+
+        Kwargs:
+            email (str): Filter Users by their email. (Optional)
+            organization (list): Filter Users by the organization they are members of. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided User ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided User ID. (Optional)
+            order (Order): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
+
+        Returns:
+            dict: Users response from WorkOS.
+        """
+
+        default_limit = None
+
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
+        params = {
+            "email": email,
+            "organization": organization,
+            "limit": limit,
+            "before": before,
+            "after": after,
+        }
+
+        if order is not None:
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            elif order == "asc" or order == "desc":
+                params["order"] = order
+            else:
+                raise ValueError("Parameter order must be of enum type Order")
+
+        response = self.request_helper.request(
+            USER_PATH,
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
+        )
+
+        response["metadata"] = {
+            "params": params,
+            "method": Users.list_users,
+        }
+
+        if "default_limit" in locals():
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
+            else:
+                response["metadata"] = {"params": {"default_limit": default_limit}}
+
+        return self.construct_from_response(response)

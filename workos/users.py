@@ -238,3 +238,54 @@ class Users(WorkOSListResource):
         )
 
         return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
+
+    def authenticate_with_password(
+        self,
+        email,
+        password,
+        expires_in=None,
+        ip_address=None,
+        user_agent=None,
+    ):
+        """Authenticates a user with email and password and optionally creates a session.
+
+        Kwargs:
+            email (str): The email address of the user.
+            password (str): The password of the user.
+            expires_in (int): The length of the session in minutes. Defaults to 1 day, 1440. (Optional)
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            (dict): Authentication response from WorkOS.
+                [user] (dict): User response from WorkOS
+                [session] (dict): Session response from WorkOS
+        """
+
+        headers = {}
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "email": email,
+            "password": password,
+            "grant_type": "password",
+        }
+
+        if expires_in:
+            payload["expires_in"] = expires_in
+
+        if ip_address:
+            payload["ip_address"] = ip_address
+
+        if user_agent:
+            payload["user_agent"] = user_agent
+
+        response = self.request_helper.request(
+            USER_SESSION_TOKEN,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+        )
+
+        return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()

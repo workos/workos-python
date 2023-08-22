@@ -1,5 +1,6 @@
 import workos
 from workos.resources.authentication_response import WorkOSAuthenticationResponse
+from workos.resources.password_challenge_response import WorkOSPasswordChallengeResponse
 from workos.resources.list import WorkOSListResource
 from workos.resources.users import (
     WorkOSUser,
@@ -16,7 +17,8 @@ from workos.utils.validation import validate_settings, USERS_MODULE
 USER_PATH = "users"
 USER_DETAIL_PATH = "users/{0}"
 USER_ORGANIZATION_PATH = "users/{0}/organization/{1}"
-USER_SESSION_TOKEN = "users/session/token"
+USER_SESSION_TOKEN_PATH = "users/session/token"
+USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
 
 RESPONSE_LIMIT = 10
 
@@ -231,7 +233,7 @@ class Users(WorkOSListResource):
             payload["user_agent"] = user_agent
 
         response = self.request_helper.request(
-            USER_SESSION_TOKEN,
+            USER_SESSION_TOKEN_PATH,
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
@@ -282,7 +284,7 @@ class Users(WorkOSListResource):
             payload["user_agent"] = user_agent
 
         response = self.request_helper.request(
-            USER_SESSION_TOKEN,
+            USER_SESSION_TOKEN_PATH,
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
@@ -331,10 +333,46 @@ class Users(WorkOSListResource):
             payload["user_agent"] = user_agent
 
         response = self.request_helper.request(
-            USER_SESSION_TOKEN,
+            USER_SESSION_TOKEN_PATH,
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
         )
 
         return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
+
+    def create_password_reset_challenge(
+        self,
+        email,
+        password_reset_url,
+    ):
+        """Creates a password reset challenge and emails a password reset link to a user
+
+        Kwargs:
+            email (str): The email of the user that wishes to reset their password.
+            password_reset_url (str): The URL that will be linked to in the email.
+
+        Returns:
+            (dict): Authentication response from WorkOS.
+                [token] (str): The password reset token.
+                [user] (dict): User response from WorkOS
+        """
+
+        headers = {}
+
+        payload = {
+            "email": email,
+            "password_reset_url": password_reset_url,
+        }
+
+        response = self.request_helper.request(
+            USER_PASSWORD_RESET_CHALLENGE_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+            token=workos.api_key,
+        )
+
+        return WorkOSPasswordChallengeResponse.construct_from_response(
+            response
+        ).to_dict()

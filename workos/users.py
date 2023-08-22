@@ -289,3 +289,52 @@ class Users(WorkOSListResource):
         )
 
         return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
+
+    def authenticate_with_code(
+        self,
+        code,
+        expires_in=None,
+        ip_address=None,
+        user_agent=None,
+    ):
+        """Authenticates an OAuth user or a managed SSO user that is logging in through SSO,
+            and optionally creates a session.
+
+        Kwargs:
+            code (str): The authorization value which was passed back as a query parameter in the callback to the Redirect URI.
+            expires_in (int): The length of the session in minutes. Defaults to 1 day, 1440. (Optional)
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            (dict): Authentication response from WorkOS.
+                [user] (dict): User response from WorkOS
+                [session] (dict): Session response from WorkOS
+        """
+
+        headers = {}
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "code": code,
+            "grant_type": "authorization_code",
+        }
+
+        if expires_in:
+            payload["expires_in"] = expires_in
+
+        if ip_address:
+            payload["ip_address"] = ip_address
+
+        if user_agent:
+            payload["user_agent"] = user_agent
+
+        response = self.request_helper.request(
+            USER_SESSION_TOKEN,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+        )
+
+        return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()

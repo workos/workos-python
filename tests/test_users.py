@@ -324,3 +324,15 @@ class TestUsers(object):
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert request["json"]["token"] == token
         assert request["json"]["new_password"] == new_password
+
+    def test_send_verification_email(self, capture_and_mock_request, mock_user):
+        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+
+        url, _ = capture_and_mock_request("post", mock_user, 200)
+
+        response = self.users.send_verification_email(user=user)
+
+        assert url[0].endswith(
+            "users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/send_verification_email"
+        )
+        assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"

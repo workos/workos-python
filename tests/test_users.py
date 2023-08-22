@@ -345,4 +345,4 @@ class TestUsers(object):
         assert url[0].endswith(
             "users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/send_verification_email"
         )
-        assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response["id"] == "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5"

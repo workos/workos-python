@@ -346,3 +346,16 @@ class TestUsers(object):
             "users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/send_verification_email"
         )
         assert response["id"] == "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5"
+
+    def test_verify_email(self, capture_and_mock_request, mock_user):
+        magic_auth_challenge_id = "auth_challenge_123"
+        code = "code_123"
+
+        url, _ = capture_and_mock_request("post", mock_user, 200)
+
+        response = self.users.verify_email(
+            magic_auth_challenge_id=magic_auth_challenge_id, code=code
+        )
+
+        assert url[0].endswith("users/verify_email")
+        assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"

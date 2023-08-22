@@ -371,6 +371,6 @@ class TestUsers(object):
 
         response = self.users.send_magic_auth_code(email=email)
 
-        assert url[0].endswith("users/send_magic_auth_code")
+        assert url[0].endswith("users/magic_auth/send")
         assert request["json"]["email"] == email
         assert response["id"] == "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5"

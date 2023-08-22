@@ -1,5 +1,6 @@
 import workos
 from workos.resources.authentication_response import WorkOSAuthenticationResponse
+from workos.resources.magic_auth_challenge_response import WorkOSMagicAuthChallenge
 from workos.resources.password_challenge_response import WorkOSPasswordChallengeResponse
 from workos.resources.list import WorkOSListResource
 from workos.resources.users import (
@@ -433,4 +434,4 @@ class Users(WorkOSListResource):
             token=workos.api_key,
         )
 
-        return WorkOSUser.construct_from_response(response).to_dict()
+        return WorkOSMagicAuthChallenge.construct_from_response(response).to_dict()

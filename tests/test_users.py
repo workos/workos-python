@@ -308,3 +308,19 @@ class TestUsers(object):
         assert response["token"] == "token_123"
         assert request["json"]["email"] == email
         assert request["json"]["password_reset_url"] == password_reset_url
+
+    def test_complete_password_reset(self, capture_and_mock_request, mock_user):
+        token = "token123"
+        new_password = "pass123"
+
+        url, request = capture_and_mock_request("post", mock_user, 200)
+
+        response = self.users.complete_password_reset(
+            token=token,
+            new_password=new_password,
+        )
+
+        assert url[0].endswith("users/password_reset")
+        assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert request["json"]["token"] == token
+        assert request["json"]["new_password"] == new_password

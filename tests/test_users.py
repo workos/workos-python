@@ -1,6 +1,5 @@
 import pytest
 
-import workos
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
 from workos.users import Users
@@ -109,6 +108,15 @@ class TestUsers(object):
         return {
             "user": user,
             "session": session,
+        }
+
+    @pytest.fixture
+    def mock_password_challenge_response(self):
+        user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").to_dict()
+
+        return {
+            "user": user,
+            "token": "token_123",
         }
 
     def test_create_user(self, mock_user, mock_request_method):
@@ -279,3 +287,24 @@ class TestUsers(object):
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
         assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
         assert request["json"]["grant_type"] == "authorization_code"
+
+    def test_create_password_challenge(
+        self, capture_and_mock_request, mock_password_challenge_response
+    ):
+        email = "marcelina@foo-corp.com"
+        password_reset_url = "https://foo-corp.com/reset-password"
+
+        url, request = capture_and_mock_request(
+            "post", mock_password_challenge_response, 200
+        )
+
+        response = self.users.create_password_reset_challenge(
+            email=email,
+            password_reset_url=password_reset_url,
+        )
+
+        assert url[0].endswith("users/password_reset_challenge")
+        assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response["token"] == "token_123"
+        assert request["json"]["email"] == email
+        assert request["json"]["password_reset_url"] == password_reset_url

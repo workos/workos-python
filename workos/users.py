@@ -19,6 +19,7 @@ USER_DETAIL_PATH = "users/{0}"
 USER_ORGANIZATION_PATH = "users/{0}/organization/{1}"
 USER_SESSION_TOKEN_PATH = "users/session/token"
 USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
+USER_PASSWORD_RESET_PATH = "users/password_reset"
 
 RESPONSE_LIMIT = 10
 
@@ -376,3 +377,35 @@ class Users(WorkOSListResource):
         return WorkOSPasswordChallengeResponse.construct_from_response(
             response
         ).to_dict()
+
+    def complete_password_reset(
+        self,
+        token,
+        new_password,
+    ):
+        """Resets user password using token that was sent to the user.
+
+        Kwargs:
+            token (str): The reset token emailed to the user.
+            new_password (str): The new password to be set for the user.
+
+        Returns:
+             dict: User response from WorkOS.
+        """
+
+        headers = {}
+
+        payload = {
+            "token": token,
+            "new_password": new_password,
+        }
+
+        response = self.request_helper.request(
+            USER_PASSWORD_RESET_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+            token=workos.api_key,
+        )
+
+        return WorkOSUser.construct_from_response(response).to_dict()

@@ -23,6 +23,7 @@ USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
 USER_PASSWORD_RESET_PATH = "users/password_reset"
 USER_SEND_VERIFICATION_EMAIL_PATH = "users/{0}/send_verification_email"
 USER_VERIFY_EMAIL_PATH = "users/verify_email"
+USER_SEND_MAGIC_AUTH_PATH = "users/magic_auth/send"
 
 RESPONSE_LIMIT = 10
 
@@ -423,7 +424,7 @@ class Users(WorkOSListResource):
             user (str): The unique ID of the User whose email address will be verified.
 
         Returns:
-            dict: User response from WorkOS.
+            dict: MagicAuthChallenge response from WorkOS.
         """
 
         headers = {}
@@ -469,3 +470,32 @@ class Users(WorkOSListResource):
         )
 
         return WorkOSUser.construct_from_response(response).to_dict()
+
+    def send_magic_auth_code(
+        self,
+        email,
+    ):
+        """Creates a one-time Magic Auth code and emails it to the user.
+
+        Kwargs:
+            email (str): The email address the one-time code will be sent to.
+
+        Returns:
+            dict: MagicAuthChallenge response from WorkOS.
+        """
+
+        headers = {}
+
+        payload = {
+            "email_address": email,
+        }
+
+        response = self.request_helper.request(
+            USER_SEND_MAGIC_AUTH_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+            token=workos.api_key,
+        )
+
+        return WorkOSMagicAuthChallenge.construct_from_response(response).to_dict()

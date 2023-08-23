@@ -119,6 +119,12 @@ class TestUsers(object):
             "token": "token_123",
         }
 
+    @pytest.fixture
+    def mock_magic_auth_challenge_response(self):
+        return {
+            "id": "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5",
+        }
+
     def test_create_user(self, mock_user, mock_request_method):
         mock_request_method("post", mock_user, 201)
 
@@ -324,3 +330,19 @@ class TestUsers(object):
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert request["json"]["token"] == token
         assert request["json"]["new_password"] == new_password
+
+    def test_send_verification_email(
+        self, capture_and_mock_request, mock_magic_auth_challenge_response
+    ):
+        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+
+        url, _ = capture_and_mock_request(
+            "post", mock_magic_auth_challenge_response, 200
+        )
+
+        response = self.users.send_verification_email(user=user)
+
+        assert url[0].endswith(
+            "users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/send_verification_email"
+        )
+        assert response["id"] == "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5"

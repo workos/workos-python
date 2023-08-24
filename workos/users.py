@@ -1,5 +1,6 @@
 import workos
 from workos.resources.authentication_response import WorkOSAuthenticationResponse
+from workos.resources.magic_auth_challenge_response import WorkOSMagicAuthChallenge
 from workos.resources.password_challenge_response import WorkOSPasswordChallengeResponse
 from workos.resources.list import WorkOSListResource
 from workos.resources.users import (
@@ -20,6 +21,7 @@ USER_ORGANIZATION_PATH = "users/{0}/organization/{1}"
 USER_SESSION_TOKEN_PATH = "users/session/token"
 USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
 USER_PASSWORD_RESET_PATH = "users/password_reset"
+USER_SEND_VERIFICATION_EMAIL_PATH = "users/{0}/send_verification_email"
 
 RESPONSE_LIMIT = 10
 
@@ -390,7 +392,7 @@ class Users(WorkOSListResource):
             new_password (str): The new password to be set for the user.
 
         Returns:
-             dict: User response from WorkOS.
+            dict: User response from WorkOS.
         """
 
         headers = {}
@@ -409,3 +411,27 @@ class Users(WorkOSListResource):
         )
 
         return WorkOSUser.construct_from_response(response).to_dict()
+
+    def send_verification_email(
+        self,
+        user,
+    ):
+        """Sends a verification email to the provided user.
+
+        Kwargs:
+            user (str): The unique ID of the User whose email address will be verified.
+
+        Returns:
+            dict: User response from WorkOS.
+        """
+
+        headers = {}
+
+        response = self.request_helper.request(
+            USER_SEND_VERIFICATION_EMAIL_PATH.format(user),
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSMagicAuthChallenge.construct_from_response(response).to_dict()

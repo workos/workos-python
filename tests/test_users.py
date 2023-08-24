@@ -331,21 +331,17 @@ class TestUsers(object):
         assert request["json"]["token"] == token
         assert request["json"]["new_password"] == new_password
 
-    def test_send_verification_email(
-        self, capture_and_mock_request, mock_magic_auth_challenge_response
-    ):
+    def test_send_verification_email(self, capture_and_mock_request, mock_user):
         user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
-        url, _ = capture_and_mock_request(
-            "post", mock_magic_auth_challenge_response, 200
-        )
+        url, _ = capture_and_mock_request("post", mock_user, 200)
 
         response = self.users.send_verification_email(user=user)
 
         assert url[0].endswith(
             "users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/send_verification_email"
         )
-        assert response["id"] == "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5"
+        assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_verify_email(self, capture_and_mock_request, mock_user):
         magic_auth_challenge_id = "auth_challenge_123"
@@ -360,17 +356,13 @@ class TestUsers(object):
         assert url[0].endswith("users/verify_email")
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
-    def test_send_magic_auth_code(
-        self, capture_and_mock_request, mock_magic_auth_challenge_response
-    ):
+    def test_send_magic_auth_code(self, capture_and_mock_request, mock_user):
         email = "marcelina@foo-corp.com"
 
-        url, request = capture_and_mock_request(
-            "post", mock_magic_auth_challenge_response, 200
-        )
+        url, request = capture_and_mock_request("post", mock_user, 200)
 
         response = self.users.send_magic_auth_code(email=email)
 
         assert url[0].endswith("users/magic_auth/send")
         assert request["json"]["email_address"] == email
-        assert response["id"] == "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5"
+        assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"

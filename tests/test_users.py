@@ -208,7 +208,7 @@ class TestUsers(object):
     ):
         code = "test_auth"
         expires_in = 3600
-        magic_auth_challenge_id = "magic_auth_challenge_id"
+        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
@@ -217,7 +217,7 @@ class TestUsers(object):
         response = self.users.authenticate_with_magic_auth(
             code=code,
             expires_in=expires_in,
-            magic_auth_challenge_id=magic_auth_challenge_id,
+            user=user,
             user_agent=user_agent,
             ip_address=ip_address,
         )
@@ -228,7 +228,7 @@ class TestUsers(object):
         assert request["json"]["code"] == code
         assert request["json"]["user_agent"] == user_agent
         assert request["json"]["expires_in"] == expires_in
-        assert request["json"]["magic_auth_challenge_id"] == magic_auth_challenge_id
+        assert request["json"]["user_id"] == user
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
         assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
@@ -344,16 +344,16 @@ class TestUsers(object):
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_verify_email(self, capture_and_mock_request, mock_user):
-        magic_auth_challenge_id = "auth_challenge_123"
+        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         code = "code_123"
 
-        url, _ = capture_and_mock_request("post", mock_user, 200)
+        url, request = capture_and_mock_request("post", mock_user, 200)
 
-        response = self.users.verify_email(
-            magic_auth_challenge_id=magic_auth_challenge_id, code=code
-        )
+        response = self.users.verify_email(user=user, code=code)
 
         assert url[0].endswith("users/verify_email")
+        assert request["json"]["user_id"] == user
+        assert request["json"]["code"] == code
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_send_magic_auth_code(self, capture_and_mock_request, mock_user):

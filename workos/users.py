@@ -1,6 +1,5 @@
 import workos
 from workos.resources.authentication_response import WorkOSAuthenticationResponse
-from workos.resources.magic_auth_challenge_response import WorkOSMagicAuthChallenge
 from workos.resources.password_challenge_response import WorkOSPasswordChallengeResponse
 from workos.resources.list import WorkOSListResource
 from workos.resources.users import (
@@ -198,7 +197,7 @@ class Users(WorkOSListResource):
     def authenticate_with_magic_auth(
         self,
         code,
-        magic_auth_challenge_id,
+        user,
         expires_in=None,
         ip_address=None,
         user_agent=None,
@@ -207,7 +206,7 @@ class Users(WorkOSListResource):
 
         Kwargs:
             code (str): The one-time code that was emailed to the user.
-            magic_auth_challenge_id (str): The challenge ID returned from when the one-time code was sent to the user.
+            user (str): The unique ID of the User who will be authenticated.
             expires_in (int): The length of the session in minutes. Defaults to 1 day, 1440. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
@@ -224,7 +223,7 @@ class Users(WorkOSListResource):
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
             "code": code,
-            "magic_auth_challenge_id": magic_auth_challenge_id,
+            "user_id": user,
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
         }
 
@@ -436,19 +435,19 @@ class Users(WorkOSListResource):
             token=workos.api_key,
         )
 
-        return WorkOSMagicAuthChallenge.construct_from_response(response).to_dict()
+        return WorkOSUser.construct_from_response(response).to_dict()
 
     def verify_email(
         self,
-        magic_auth_challenge_id,
+        user,
         code,
     ):
         """Verifies user email using one-time code that was sent to the user.
 
         Kwargs:
-            magic_auth_challenge_id (str): The challenge ID returned from the send verification email endpoint.
+            user (str): The unique ID of the User whose email address will be verified.
 
-            code (str): The unique ID of the User whose email address will be verified.
+            code (str): The one-time code emailed to the user.
 
         Returns:
             dict: User response from WorkOS.
@@ -457,7 +456,7 @@ class Users(WorkOSListResource):
         headers = {}
 
         payload = {
-            "magic_auth_challenge_id": magic_auth_challenge_id,
+            "user_id": user,
             "code": code,
         }
 
@@ -498,4 +497,4 @@ class Users(WorkOSListResource):
             token=workos.api_key,
         )
 
-        return WorkOSMagicAuthChallenge.construct_from_response(response).to_dict()
+        return WorkOSUser.construct_from_response(response).to_dict()

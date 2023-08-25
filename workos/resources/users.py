@@ -13,11 +13,7 @@ class WorkOSUser(WorkOSBaseResource):
         "email",
         "first_name",
         "last_name",
-        "user_type",
-        "sso_profile_id",
-        "email_verified_at",
-        "google_oauth_profile_id",
-        "microsoft_oauth_profile_id",
+        "email_verified",
         "created_at",
         "updated_at",
     ]

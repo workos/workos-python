@@ -1,5 +1,4 @@
 from workos.resources.base import WorkOSBaseResource
-from workos.resources.session import WorkOSSession
 from workos.resources.users import WorkOSUser
 
 
@@ -15,9 +14,6 @@ class WorkOSAuthenticationResponse(WorkOSBaseResource):
         user = WorkOSUser.construct_from_response(response["user"])
         authentication_response.user = user
 
-        session = WorkOSSession.construct_from_response(response["session"])
-        authentication_response.session = session
-
         return authentication_response
 
     def to_dict(self):
@@ -27,8 +23,5 @@ class WorkOSAuthenticationResponse(WorkOSBaseResource):
 
         user_dict = self.user.to_dict()
         authentication_response_dict["user"] = user_dict
-
-        session_dict = self.session.to_dict()
-        authentication_response_dict["session"] = session_dict
 
         return authentication_response_dict

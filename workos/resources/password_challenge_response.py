@@ -1,5 +1,4 @@
 from workos.resources.base import WorkOSBaseResource
-from workos.resources.session import WorkOSSession
 from workos.resources.users import WorkOSUser
 
 

@@ -195,6 +195,24 @@ class TestUsers(object):
         assert url[0].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
         assert user is None
 
+    def test_update_user(self, mock_user, capture_and_mock_request):
+        url, request = capture_and_mock_request("put", mock_user, 200)
+
+        user = self.users.update_user(
+            "user_01H7ZGXFP5C6BBQY6Z7277ZCT0",
+            {
+                "first_name": "Marcelina",
+                "last_name": "Hoeger",
+                "email_verified": True,
+            },
+        )
+
+        assert url[0].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert request["json"]["first_name"] == "Marcelina"
+        assert request["json"]["last_name"] == "Hoeger"
+        assert request["json"]["email_verified"] == True
+
     def test_update_user_password(self, mock_user, capture_and_mock_request):
         url, request = capture_and_mock_request("put", mock_user, 200)
 

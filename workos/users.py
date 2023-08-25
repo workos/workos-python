@@ -17,7 +17,7 @@ from workos.utils.validation import validate_settings, USERS_MODULE
 USER_PATH = "users"
 USER_DETAIL_PATH = "users/{0}"
 USER_ORGANIZATION_PATH = "users/{0}/organization/{1}"
-USER_SESSION_TOKEN_PATH = "users/session/token"
+USER_AUTHENTICATE_PATH = "users/authenticate"
 USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
 USER_PASSWORD_RESET_PATH = "users/password_reset"
 USER_SEND_VERIFICATION_EMAIL_PATH = "users/{0}/send_verification_email"
@@ -210,7 +210,6 @@ class Users(WorkOSListResource):
         self,
         code,
         user,
-        expires_in=None,
         ip_address=None,
         user_agent=None,
     ):
@@ -219,7 +218,6 @@ class Users(WorkOSListResource):
         Kwargs:
             code (str): The one-time code that was emailed to the user.
             user (str): The unique ID of the User who will be authenticated.
-            expires_in (int): The length of the session in minutes. Defaults to 1 day, 1440. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
 
@@ -239,9 +237,6 @@ class Users(WorkOSListResource):
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
         }
 
-        if expires_in:
-            payload["expires_in"] = expires_in
-
         if ip_address:
             payload["ip_address"] = ip_address
 
@@ -249,7 +244,7 @@ class Users(WorkOSListResource):
             payload["user_agent"] = user_agent
 
         response = self.request_helper.request(
-            USER_SESSION_TOKEN_PATH,
+            USER_AUTHENTICATE_PATH,
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
@@ -261,7 +256,6 @@ class Users(WorkOSListResource):
         self,
         email,
         password,
-        expires_in=None,
         ip_address=None,
         user_agent=None,
     ):
@@ -270,7 +264,6 @@ class Users(WorkOSListResource):
         Kwargs:
             email (str): The email address of the user.
             password (str): The password of the user.
-            expires_in (int): The length of the session in minutes. Defaults to 1 day, 1440. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
 
@@ -290,9 +283,6 @@ class Users(WorkOSListResource):
             "grant_type": "password",
         }
 
-        if expires_in:
-            payload["expires_in"] = expires_in
-
         if ip_address:
             payload["ip_address"] = ip_address
 
@@ -300,7 +290,7 @@ class Users(WorkOSListResource):
             payload["user_agent"] = user_agent
 
         response = self.request_helper.request(
-            USER_SESSION_TOKEN_PATH,
+            USER_AUTHENTICATE_PATH,
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
@@ -311,7 +301,6 @@ class Users(WorkOSListResource):
     def authenticate_with_code(
         self,
         code,
-        expires_in=None,
         ip_address=None,
         user_agent=None,
     ):
@@ -320,7 +309,6 @@ class Users(WorkOSListResource):
 
         Kwargs:
             code (str): The authorization value which was passed back as a query parameter in the callback to the Redirect URI.
-            expires_in (int): The length of the session in minutes. Defaults to 1 day, 1440. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
 
@@ -339,9 +327,6 @@ class Users(WorkOSListResource):
             "grant_type": "authorization_code",
         }
 
-        if expires_in:
-            payload["expires_in"] = expires_in
-
         if ip_address:
             payload["ip_address"] = ip_address
 
@@ -349,7 +334,7 @@ class Users(WorkOSListResource):
             payload["user_agent"] = user_agent
 
         response = self.request_helper.request(
-            USER_SESSION_TOKEN_PATH,
+            USER_AUTHENTICATE_PATH,
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,

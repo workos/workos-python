@@ -150,6 +150,18 @@ class Users(WorkOSListResource):
 
         return self.construct_from_response(response)
 
+    def delete_user(self, user):
+        """Delete an existing user.
+
+        Args:
+            user (str) -  User unique identifier
+        """
+        return self.request_helper.request(
+            USER_DETAIL_PATH.format(user),
+            method=REQUEST_METHOD_DELETE,
+            token=workos.api_key,
+        )
+
     def add_user_to_organization(self, user, organization):
         """Adds a User as a member of the given Organization.
 

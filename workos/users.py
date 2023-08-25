@@ -164,6 +164,28 @@ class Users(WorkOSListResource):
             token=workos.api_key,
         )
 
+    def update_user(self, user, payload):
+        """Update user attributes.
+
+        Args:
+            user (str) - The User unique identifier
+            payload (dict) - The User attributes to be updated
+                user[first_name] (string) - The user's first name.
+                user[last_name] (string) - The user's last name.
+                user[email_verified] (bool) - Whether the user's email address was previously verified.
+
+        Returns:
+            dict: Updated User response from WorkOS.
+        """
+        response = self.request_helper.request(
+            USER_DETAIL_PATH.format(user),
+            method=REQUEST_METHOD_PUT,
+            params=payload,
+            token=workos.api_key,
+        )
+
+        return WorkOSUser.construct_from_response(response).to_dict()
+
     def update_user_password(self, user, password):
         """Update user password.
 

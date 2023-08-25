@@ -140,7 +140,7 @@ class TestUsers(object):
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_get_user(self, mock_user, capture_and_mock_request):
-        url, request_kwargs = capture_and_mock_request("get", mock_user, 201)
+        url, request_kwargs = capture_and_mock_request("get", mock_user, 200)
 
         user = self.users.get_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
 
@@ -186,6 +186,14 @@ class TestUsers(object):
         dict_users = users.to_dict()
         assert dict_users["metadata"]["params"]["email"] == "marcelina@foo-corp.com"
         assert dict_users["metadata"]["params"]["organization"] == "foo-corp.com"
+
+    def test_delete_user(self, mock_user, capture_and_mock_request):
+        url, request_kwargs = capture_and_mock_request("delete", None, 200)
+
+        user = self.users.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+
+        assert url[0].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        assert user is None
 
     def test_add_user_to_organization(self, capture_and_mock_request, mock_user):
         url, _ = capture_and_mock_request("post", mock_user, 200)

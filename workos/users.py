@@ -11,12 +11,14 @@ from workos.utils.request import (
     REQUEST_METHOD_POST,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_DELETE,
+    REQUEST_METHOD_PUT,
 )
 from workos.utils.validation import validate_settings, USERS_MODULE
 
 USER_PATH = "users"
 USER_DETAIL_PATH = "users/{0}"
 USER_ORGANIZATION_PATH = "users/{0}/organization/{1}"
+USER_PASSWORD_PATH = "users/{0}/password"
 USER_AUTHENTICATE_PATH = "users/authenticate"
 USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
 USER_PASSWORD_RESET_PATH = "users/password_reset"
@@ -161,6 +163,27 @@ class Users(WorkOSListResource):
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
+
+    def update_user_password(self, user, password):
+        """Update user password.
+
+        Args:
+            user (str) - A user unique identifier
+            password (str) - The new password to be set
+
+        Returns:
+            dict: Updated User response from WorkOS.
+        """
+        payload = {"password": password}
+
+        response = self.request_helper.request(
+            USER_PASSWORD_PATH.format(user),
+            method=REQUEST_METHOD_PUT,
+            params=payload,
+            token=workos.api_key,
+        )
+
+        return WorkOSUser.construct_from_response(response).to_dict()
 
     def add_user_to_organization(self, user, organization):
         """Adds a User as a member of the given Organization.

@@ -187,13 +187,24 @@ class TestUsers(object):
         assert dict_users["metadata"]["params"]["email"] == "marcelina@foo-corp.com"
         assert dict_users["metadata"]["params"]["organization"] == "foo-corp.com"
 
-    def test_delete_user(self, mock_user, capture_and_mock_request):
+    def test_delete_user(self, capture_and_mock_request):
         url, request_kwargs = capture_and_mock_request("delete", None, 200)
 
         user = self.users.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
 
         assert url[0].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
         assert user is None
+
+    def test_update_user_password(self, mock_user, capture_and_mock_request):
+        url, request = capture_and_mock_request("put", mock_user, 200)
+
+        user = self.users.update_user_password(
+            "user_01H7ZGXFP5C6BBQY6Z7277ZCT0", "pass_123"
+        )
+
+        assert url[0].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/password")
+        assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert request["json"]["password"] == "pass_123"
 
     def test_add_user_to_organization(self, capture_and_mock_request, mock_user):
         url, _ = capture_and_mock_request("post", mock_user, 200)

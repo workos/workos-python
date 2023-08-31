@@ -107,7 +107,6 @@ class TestUsers(object):
 
         return {
             "user": user,
-            "session": session,
         }
 
     @pytest.fixture
@@ -368,15 +367,15 @@ class TestUsers(object):
         )
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
-    def test_verify_email(self, capture_and_mock_request, mock_user):
+    def test_verify_email_code(self, capture_and_mock_request, mock_auth_response):
         user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         code = "code_123"
 
-        url, request = capture_and_mock_request("post", mock_user, 200)
+        url, request = capture_and_mock_request("post", mock_auth_response, 200)
 
-        response = self.users.verify_email(user=user, code=code)
+        response = self.users.verify_email_code(user=user, code=code)
 
-        assert url[0].endswith("users/verify_email")
+        assert url[0].endswith("users/verify_email_code")
         assert request["json"]["user_id"] == user
         assert request["json"]["code"] == code
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"

@@ -23,7 +23,7 @@ USER_AUTHENTICATE_PATH = "users/authenticate"
 USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
 USER_PASSWORD_RESET_PATH = "users/password_reset"
 USER_SEND_VERIFICATION_EMAIL_PATH = "users/{0}/send_verification_email"
-USER_VERIFY_EMAIL_PATH = "users/verify_email"
+USER_VERIFY_EMAIL_CODE_PATH = "users/verify_email_code"
 USER_SEND_MAGIC_AUTH_PATH = "users/magic_auth/send"
 
 RESPONSE_LIMIT = 10
@@ -479,7 +479,7 @@ class Users(WorkOSListResource):
 
         return WorkOSUser.construct_from_response(response).to_dict()
 
-    def verify_email(
+    def verify_email_code(
         self,
         user,
         code,
@@ -503,14 +503,14 @@ class Users(WorkOSListResource):
         }
 
         response = self.request_helper.request(
-            USER_VERIFY_EMAIL_PATH,
+            USER_VERIFY_EMAIL_CODE_PATH,
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
             token=workos.api_key,
         )
 
-        return WorkOSUser.construct_from_response(response).to_dict()
+        return WorkOSUser.construct_from_response(response["user"]).to_dict()
 
     def send_magic_auth_code(
         self,

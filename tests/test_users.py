@@ -318,6 +318,33 @@ class TestUsers(object):
         assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
         assert request["json"]["grant_type"] == "authorization_code"
 
+    def test_authenticate_with_totp(self, capture_and_mock_request, mock_auth_response):
+        code = "test_code"
+        pending_authentication_token = "test_token"
+        authentication_challenge_id = "test_challenge_id"
+
+        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+
+        response = self.users.authenticate_with_totp(
+            code=code,
+            pending_authentication_token=pending_authentication_token,
+            authentication_challenge_id=authentication_challenge_id,
+        )
+
+        assert url[0].endswith("users/authenticate")
+        assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert request["json"]["code"] == code
+        assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
+        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert (
+            request["json"]["pending_authentication_token"]
+            == pending_authentication_token
+        )
+        assert (
+            request["json"]["authentication_challenge_id"]
+            == authentication_challenge_id
+        )
+
     def test_send_password_reset_email(
         self, capture_and_mock_request, mock_password_challenge_response
     ):

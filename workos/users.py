@@ -269,7 +269,6 @@ class Users(WorkOSListResource):
         Returns:
             (dict): Authentication response from WorkOS.
                 [user] (dict): User response from WorkOS
-                [session] (dict): Session response from WorkOS
         """
 
         headers = {}
@@ -315,7 +314,6 @@ class Users(WorkOSListResource):
         Returns:
             (dict): Authentication response from WorkOS.
                 [user] (dict): User response from WorkOS
-                [session] (dict): Session response from WorkOS
         """
 
         headers = {}
@@ -360,7 +358,6 @@ class Users(WorkOSListResource):
         Returns:
             (dict): Authentication response from WorkOS.
                 [user] (dict): User response from WorkOS
-                [session] (dict): Session response from WorkOS
         """
 
         headers = {}
@@ -377,6 +374,44 @@ class Users(WorkOSListResource):
 
         if user_agent:
             payload["user_agent"] = user_agent
+
+        response = self.request_helper.request(
+            USER_AUTHENTICATE_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+        )
+
+        return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
+
+    def authenticate_with_totp(
+        self,
+        code,
+        pending_authentication_token,
+        authentication_challenge_id,
+    ):
+        """Authenticates a user with a time-based one-time password (TOTP)
+
+        Kwargs:
+            code (str): The authorization value which was passed back as a query parameter in the callback to the Redirect URI.
+            pending_authentication_token (str)
+            authentication_challenge_id (str)
+
+        Returns:
+            (dict): Authentication response from WorkOS.
+                [user] (dict): User response from WorkOS
+        """
+
+        headers = {}
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "code": code,
+            "pending_authentication_token": pending_authentication_token,
+            "authentication_challenge_id": authentication_challenge_id,
+            "grant_type": "urn:workos:oauth:grant-type:mfa-totp",
+        }
 
         response = self.request_helper.request(
             USER_AUTHENTICATE_PATH,

@@ -318,7 +318,7 @@ class TestUsers(object):
         assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
         assert request["json"]["grant_type"] == "authorization_code"
 
-    def test_create_password_challenge(
+    def test_send_password_reset_email(
         self, capture_and_mock_request, mock_password_challenge_response
     ):
         email = "marcelina@foo-corp.com"
@@ -328,29 +328,29 @@ class TestUsers(object):
             "post", mock_password_challenge_response, 200
         )
 
-        response = self.users.create_password_reset_challenge(
+        response = self.users.send_password_reset_email(
             email=email,
             password_reset_url=password_reset_url,
         )
 
-        assert url[0].endswith("users/password_reset_challenge")
+        assert url[0].endswith("users/send_password_reset_email")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["token"] == "token_123"
         assert request["json"]["email"] == email
         assert request["json"]["password_reset_url"] == password_reset_url
 
-    def test_complete_password_reset(self, capture_and_mock_request, mock_user):
+    def test_reset_password(self, capture_and_mock_request, mock_user):
         token = "token123"
         new_password = "pass123"
 
         url, request = capture_and_mock_request("post", mock_user, 200)
 
-        response = self.users.complete_password_reset(
+        response = self.users.reset_password(
             token=token,
             new_password=new_password,
         )
 
-        assert url[0].endswith("users/password_reset")
+        assert url[0].endswith("users/reset_password")
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert request["json"]["token"] == token
         assert request["json"]["new_password"] == new_password

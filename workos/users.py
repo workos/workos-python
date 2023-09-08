@@ -20,8 +20,8 @@ USER_DETAIL_PATH = "users/{0}"
 USER_ORGANIZATION_PATH = "users/{0}/organization/{1}"
 USER_PASSWORD_PATH = "users/{0}/password"
 USER_AUTHENTICATE_PATH = "users/authenticate"
-USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
-USER_PASSWORD_RESET_PATH = "users/password_reset"
+USER_SEND_PASSWORD_RESET_EMAIL_PATH = "users/send_password_reset_email"
+USER_RESET_PASSWORD_PATH = "users/reset_password"
 USER_SEND_VERIFICATION_EMAIL_PATH = "users/{0}/send_verification_email"
 USER_VERIFY_EMAIL_CODE_PATH = "users/verify_email_code"
 USER_SEND_MAGIC_AUTH_PATH = "users/magic_auth/send"
@@ -387,7 +387,7 @@ class Users(WorkOSListResource):
 
         return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
 
-    def create_password_reset_challenge(
+    def send_password_reset_email(
         self,
         email,
         password_reset_url,
@@ -412,7 +412,7 @@ class Users(WorkOSListResource):
         }
 
         response = self.request_helper.request(
-            USER_PASSWORD_RESET_CHALLENGE_PATH,
+            USER_SEND_PASSWORD_RESET_EMAIL_PATH,
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
@@ -423,7 +423,7 @@ class Users(WorkOSListResource):
             response
         ).to_dict()
 
-    def complete_password_reset(
+    def reset_password(
         self,
         token,
         new_password,
@@ -446,7 +446,7 @@ class Users(WorkOSListResource):
         }
 
         response = self.request_helper.request(
-            USER_PASSWORD_RESET_PATH,
+            USER_RESET_PASSWORD_PATH,
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,

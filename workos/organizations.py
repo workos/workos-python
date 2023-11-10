@@ -175,10 +175,6 @@ class Organizations(WorkOSListResource):
         Args:
             organization (dict) - An organization object
                 organization[name] (str) - A unique, descriptive name for the organization
-                organization[allow_profiles_outside_organization] (boolean) - Whether Connections
-                    within the Organization allow profiles that are outside of the Organization's
-                    configured User Email Domains. (Optional)
-                organization[domains] (list) - List of domains that belong to the organization
             idempotency_key (str) - Idempotency key for creating an organization. (Optional)
 
         Returns:
@@ -199,25 +195,19 @@ class Organizations(WorkOSListResource):
         return WorkOSOrganization.construct_from_response(response).to_dict()
 
     def update_organization(
-        self, organization, name, allow_profiles_outside_organization=None, domains=None
+        self, organization, name
     ):
         """Update an organization
 
         Args:
             organization(str) - Organization's unique identifier.
             name (str) - A unique, descriptive name for the organization.
-            allow_profiles_outside_organization (boolean) - Whether Connections
-                within the Organization allow profiles that are outside of the Organization's
-                configured User Email Domains. (Optional)
-            domains (list) - List of domains that belong to the organization. (Optional)
 
         Returns:
             dict: Updated Organization response from WorkOS.
         """
         params = {
             "name": name,
-            "domains": domains,
-            "allow_profiles_outside_organization": allow_profiles_outside_organization,
         }
         response = self.request_helper.request(
             "organizations/{organization}".format(organization=organization),

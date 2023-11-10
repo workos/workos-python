@@ -12,10 +12,8 @@ class WorkOSOrganization(WorkOSBaseResource):
         "id",
         "object",
         "name",
-        "allow_profiles_outside_organization",
         "created_at",
         "updated_at",
-        "domains",
     ]
 
     @classmethod

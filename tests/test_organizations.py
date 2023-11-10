@@ -18,14 +18,6 @@ class TestOrganizations(object):
             "name": "Example Organization",
             "object": "organization",
             "id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            "allow_profiles_outside_organization": True,
-            "domains": [
-                {
-                    "domain": "example.io",
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
-                }
-            ],
         }
 
     @pytest.fixture
@@ -188,7 +180,7 @@ class TestOrganizations(object):
     def test_create_organization(self, mock_organization, mock_request_method):
         mock_request_method("post", mock_organization, 201)
 
-        payload = {"domains": ["example.com"], "name": "Test Organization"}
+        payload = {"name": "Test Organization"}
         organization = self.organizations.create_organization(payload)
 
         assert organization["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
@@ -196,7 +188,7 @@ class TestOrganizations(object):
 
     def test_sends_idempotency_key(self, capture_and_mock_request):
         idempotency_key = "test_123456789"
-        payload = {"domains": ["example.com"], "name": "Foo Corporation"}
+        payload = {"name": "Foo Corporation"}
 
         _, request_kwargs = capture_and_mock_request("post", payload, 200)
 
@@ -213,20 +205,10 @@ class TestOrganizations(object):
         updated_organization = self.organizations.update_organization(
             organization="org_01EHT88Z8J8795GZNQ4ZP1J81T",
             name="Example Organization",
-            domains=["example.io"],
-            allow_profiles_outside_organization=True,
         )
 
         assert updated_organization["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert updated_organization["name"] == "Example Organization"
-        assert updated_organization["domains"] == [
-            {
-                "domain": "example.io",
-                "object": "organization_domain",
-                "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
-            }
-        ]
-        assert updated_organization["allow_profiles_outside_organization"]
 
     def test_delete_organization(self, setup, mock_raw_request_method):
         mock_raw_request_method(

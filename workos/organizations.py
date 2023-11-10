@@ -194,9 +194,7 @@ class Organizations(WorkOSListResource):
 
         return WorkOSOrganization.construct_from_response(response).to_dict()
 
-    def update_organization(
-        self, organization, name
-    ):
+    def update_organization(self, organization, name):
         """Update an organization
 
         Args:

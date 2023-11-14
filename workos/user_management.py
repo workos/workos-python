@@ -13,7 +13,7 @@ from workos.utils.request import (
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_PUT,
 )
-from workos.utils.validation import validate_settings, USERS_MODULE
+from workos.utils.validation import validate_settings, USER_MANAGEMENT_MODULE
 
 USER_PATH = "users"
 USER_DETAIL_PATH = "users/{0}"
@@ -29,10 +29,10 @@ USER_SEND_MAGIC_AUTH_PATH = "users/magic_auth/send"
 RESPONSE_LIMIT = 10
 
 
-class Users(WorkOSListResource):
+class UserManagement(WorkOSListResource):
     """Offers methods for using the WorkOS User Management API."""
 
-    @validate_settings(USERS_MODULE)
+    @validate_settings(USER_MANAGEMENT_MODULE)
     def __init__(self):
         pass
 
@@ -141,7 +141,7 @@ class Users(WorkOSListResource):
 
         response["metadata"] = {
             "params": params,
-            "method": Users.list_users,
+            "method": UserManagement.list_users,
         }
 
         if "default_limit" in locals():

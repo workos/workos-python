@@ -2,13 +2,13 @@ import pytest
 
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
-from workos.users import Users
+from workos.user_management import UserManagement
 
 
-class TestUsers(object):
+class TestUserManagement(object):
     @pytest.fixture(autouse=True)
     def setup(self, set_api_key, set_client_id):
-        self.users = Users()
+        self.user_management = UserManagement()
 
     @pytest.fixture
     def mock_user(self):
@@ -31,7 +31,7 @@ class TestUsers(object):
                     "order": None,
                     "default_limit": True,
                 },
-                "method": Users.list_users,
+                "method": UserManagement.list_users,
             },
         }
         return dict_response
@@ -52,10 +52,10 @@ class TestUsers(object):
                     "after": None,
                     "order": None,
                 },
-                "method": Users.list_users,
+                "method": UserManagement.list_users,
             },
         }
-        return self.users.construct_from_response(dict_response)
+        return self.user_management.construct_from_response(dict_response)
 
     @pytest.fixture
     def mock_users_with_default_limit(self):
@@ -75,10 +75,10 @@ class TestUsers(object):
                     "order": None,
                     "default_limit": True,
                 },
-                "method": Users.list_users,
+                "method": UserManagement.list_users,
             },
         }
-        return self.users.construct_from_response(dict_response)
+        return self.user_management.construct_from_response(dict_response)
 
     @pytest.fixture
     def mock_users_pagination_response(self):
@@ -96,7 +96,7 @@ class TestUsers(object):
                     "order": None,
                     "default_limit": True,
                 },
-                "method": Users.list_users,
+                "method": UserManagement.list_users,
             },
         }
 
@@ -134,14 +134,14 @@ class TestUsers(object):
             "password": "password",
             "email_verified": False,
         }
-        user = self.users.create_user(payload)
+        user = self.user_management.create_user(payload)
 
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_get_user(self, mock_user, capture_and_mock_request):
         url, request_kwargs = capture_and_mock_request("get", mock_user, 200)
 
-        user = self.users.get_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        user = self.user_management.get_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
 
         assert url[0].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
@@ -177,7 +177,7 @@ class TestUsers(object):
     ):
         mock_request_method("get", mock_users, 200)
 
-        users = self.users.list_users(
+        users = self.user_management.list_users(
             email="marcelina@foo-corp.com",
             organization="foo-corp.com",
         )
@@ -189,7 +189,7 @@ class TestUsers(object):
     def test_delete_user(self, capture_and_mock_request):
         url, request_kwargs = capture_and_mock_request("delete", None, 200)
 
-        user = self.users.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        user = self.user_management.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
 
         assert url[0].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
         assert user is None
@@ -197,7 +197,7 @@ class TestUsers(object):
     def test_update_user(self, mock_user, capture_and_mock_request):
         url, request = capture_and_mock_request("put", mock_user, 200)
 
-        user = self.users.update_user(
+        user = self.user_management.update_user(
             "user_01H7ZGXFP5C6BBQY6Z7277ZCT0",
             {
                 "first_name": "Marcelina",
@@ -215,7 +215,7 @@ class TestUsers(object):
     def test_update_user_password(self, mock_user, capture_and_mock_request):
         url, request = capture_and_mock_request("put", mock_user, 200)
 
-        user = self.users.update_user_password(
+        user = self.user_management.update_user_password(
             "user_01H7ZGXFP5C6BBQY6Z7277ZCT0", "pass_123"
         )
 
@@ -226,7 +226,7 @@ class TestUsers(object):
     def test_add_user_to_organization(self, capture_and_mock_request, mock_user):
         url, _ = capture_and_mock_request("post", mock_user, 200)
 
-        user = self.users.add_user_to_organization("user_123", "org_123")
+        user = self.user_management.add_user_to_organization("user_123", "org_123")
 
         assert url[0].endswith("users/user_123/organization/org_123")
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
@@ -234,7 +234,7 @@ class TestUsers(object):
     def test_remove_user_from_organization(self, capture_and_mock_request, mock_user):
         url, _ = capture_and_mock_request("delete", mock_user, 200)
 
-        user = self.users.remove_user_from_organization("user_123", "org_123")
+        user = self.user_management.remove_user_from_organization("user_123", "org_123")
 
         assert url[0].endswith("users/user_123/organization/org_123")
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
@@ -249,7 +249,7 @@ class TestUsers(object):
 
         url, request = capture_and_mock_request("post", mock_auth_response, 200)
 
-        response = self.users.authenticate_with_magic_auth(
+        response = self.user_management.authenticate_with_magic_auth(
             code=code,
             user=user,
             user_agent=user_agent,
@@ -279,7 +279,7 @@ class TestUsers(object):
 
         url, request = capture_and_mock_request("post", mock_auth_response, 200)
 
-        response = self.users.authenticate_with_password(
+        response = self.user_management.authenticate_with_password(
             email=email,
             password=password,
             user_agent=user_agent,
@@ -303,7 +303,7 @@ class TestUsers(object):
 
         url, request = capture_and_mock_request("post", mock_auth_response, 200)
 
-        response = self.users.authenticate_with_code(
+        response = self.user_management.authenticate_with_code(
             code=code,
             user_agent=user_agent,
             ip_address=ip_address,
@@ -328,7 +328,7 @@ class TestUsers(object):
             "post", mock_password_challenge_response, 200
         )
 
-        response = self.users.create_password_reset_challenge(
+        response = self.user_management.create_password_reset_challenge(
             email=email,
             password_reset_url=password_reset_url,
         )
@@ -345,7 +345,7 @@ class TestUsers(object):
 
         url, request = capture_and_mock_request("post", mock_user, 200)
 
-        response = self.users.complete_password_reset(
+        response = self.user_management.complete_password_reset(
             token=token,
             new_password=new_password,
         )
@@ -360,7 +360,7 @@ class TestUsers(object):
 
         url, _ = capture_and_mock_request("post", mock_user, 200)
 
-        response = self.users.send_verification_email(user=user)
+        response = self.user_management.send_verification_email(user=user)
 
         assert url[0].endswith(
             "users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/send_verification_email"
@@ -373,7 +373,7 @@ class TestUsers(object):
 
         url, request = capture_and_mock_request("post", mock_auth_response, 200)
 
-        response = self.users.verify_email_code(user=user, code=code)
+        response = self.user_management.verify_email_code(user=user, code=code)
 
         assert url[0].endswith("users/verify_email_code")
         assert request["json"]["user_id"] == user
@@ -385,7 +385,7 @@ class TestUsers(object):
 
         url, request = capture_and_mock_request("post", mock_user, 200)
 
-        response = self.users.send_magic_auth_code(email=email)
+        response = self.user_management.send_magic_auth_code(email=email)
 
         assert url[0].endswith("users/magic_auth/send")
         assert request["json"]["email_address"] == email

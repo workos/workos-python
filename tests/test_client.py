@@ -14,7 +14,7 @@ class TestClient(object):
         client._passwordless = None
         client._portal = None
         client._sso = None
-        client._users = None
+        client._user_management = None
 
     def test_initialize_sso(self, set_api_key_and_client_id):
         assert bool(client.sso)
@@ -37,8 +37,8 @@ class TestClient(object):
     def test_initialize_portal(self, set_api_key):
         assert bool(client.portal)
 
-    def test_initialize_users(self, set_api_key, set_client_id):
-        assert bool(client.users)
+    def test_initialize_user_management(self, set_api_key, set_client_id):
+        assert bool(client.user_management)
 
     def test_initialize_sso_missing_api_key(self, set_client_id):
         with pytest.raises(ConfigurationException) as ex:
@@ -112,25 +112,25 @@ class TestClient(object):
 
         assert "api_key" in message
 
-    def test_initialize_users_missing_client_id(self, set_api_key):
+    def test_initialize_user_management_missing_client_id(self, set_api_key):
         with pytest.raises(ConfigurationException) as ex:
-            client.users
+            client.user_management
 
         message = str(ex)
 
         assert "client_id" in message
 
-    def test_initialize_users_missing_api_key(self, set_client_id):
+    def test_initialize_user_management_missing_api_key(self, set_client_id):
         with pytest.raises(ConfigurationException) as ex:
-            client.users
+            client.user_management
 
         message = str(ex)
 
         assert "api_key" in message
 
-    def test_initialize_users_missing_api_key_and_client_id(self):
+    def test_initialize_user_management_missing_api_key_and_client_id(self):
         with pytest.raises(ConfigurationException) as ex:
-            client.users
+            client.user_management
 
         message = str(ex)
 

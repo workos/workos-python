@@ -13,7 +13,7 @@ PORTAL_MODULE = "Portal"
 SSO_MODULE = "SSO"
 WEBHOOKS_MODULE = "Webhooks"
 MFA_MODULE = "MFA"
-USERS_MODULE = "UserManagement"
+USER_MANAGEMENT_MODULE = "UserManagement"
 
 REQUIRED_SETTINGS_FOR_MODULE = {
     AUDIT_LOGS_MODULE: [
@@ -43,7 +43,7 @@ REQUIRED_SETTINGS_FOR_MODULE = {
     ],
     WEBHOOKS_MODULE: ["api_key"],
     MFA_MODULE: ["api_key"],
-    USERS_MODULE: ["client_id", "api_key"],
+    USER_MANAGEMENT_MODULE: ["client_id", "api_key"],
 }
 
 

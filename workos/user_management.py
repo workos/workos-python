@@ -15,8 +15,8 @@ from workos.utils.request import (
 )
 from workos.utils.validation import validate_settings, USER_MANAGEMENT_MODULE
 
-USER_PATH = "users"
-USER_DETAIL_PATH = "users/{0}"
+USER_PATH = "user_management/users"
+USER_DETAIL_PATH = "user_management/users/{0}"
 USER_ORGANIZATION_PATH = "users/{0}/organization/{1}"
 USER_PASSWORD_PATH = "users/{0}/password"
 USER_AUTHENTICATE_PATH = "users/authenticate"
@@ -90,7 +90,7 @@ class UserManagement(WorkOSListResource):
     def list_users(
         self,
         email=None,
-        organization=None,
+        organization_id=None,
         limit=None,
         before=None,
         after=None,
@@ -100,7 +100,7 @@ class UserManagement(WorkOSListResource):
 
         Kwargs:
             email (str): Filter Users by their email. (Optional)
-            organization (list): Filter Users by the organization they are members of. (Optional)
+            organization_id (str): Filter Users by the organization they are members of. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided User ID. (Optional)
             after (str): Pagination cursor to receive records after a provided User ID. (Optional)
@@ -118,7 +118,7 @@ class UserManagement(WorkOSListResource):
 
         params = {
             "email": email,
-            "organization": organization,
+            "organization_id": organization_id,
             "limit": limit,
             "before": before,
             "after": after,

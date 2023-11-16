@@ -24,7 +24,7 @@ USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
 USER_PASSWORD_RESET_PATH = "users/password_reset"
 USER_SEND_VERIFICATION_EMAIL_PATH = "users/{0}/send_verification_email"
 USER_VERIFY_EMAIL_CODE_PATH = "users/verify_email_code"
-USER_SEND_MAGIC_AUTH_PATH = "users/magic_auth/send"
+USER_SEND_MAGIC_AUTH_PATH = "user_management/magic_auth/send"
 
 RESPONSE_LIMIT = 10
 
@@ -522,13 +522,13 @@ class UserManagement(WorkOSListResource):
             email (str): The email address the one-time code will be sent to.
 
         Returns:
-            dict: MagicAuthChallenge response from WorkOS.
+            dict: User response from WorkOS.
         """
 
         headers = {}
 
         payload = {
-            "email_address": email,
+            "email": email,
         }
 
         response = self.request_helper.request(

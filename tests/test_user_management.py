@@ -387,6 +387,6 @@ class TestUserManagement(object):
 
         response = self.user_management.send_magic_auth_code(email=email)
 
-        assert url[0].endswith("users/magic_auth/send")
-        assert request["json"]["email_address"] == email
+        assert url[0].endswith("user_management/magic_auth/send")
+        assert request["json"]["email"] == email
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"

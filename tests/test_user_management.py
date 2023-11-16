@@ -123,6 +123,32 @@ class TestUserManagement(object):
         return {
             "id": "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5",
         }
+    
+    @pytest.fixture
+    def mock_enroll_auth_factor_response(self):
+
+        return {
+            "authentication_challenge": {
+                "object": "authentication_challenge",
+                "id": "auth_challenge_01FVYZWQTZQ5VB6BC5MPG2EYC5",
+                "created_at": "2022-02-15T15:26:53.274Z",
+                "updated_at": "2022-02-15T15:26:53.274Z",
+                "expires_at": "2022-02-15T15:36:53.279Z",
+                "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+            },
+            "authentication_factor": {
+                "object": "authentication_factor",
+                "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+                "created_at": "2022-02-15T15:14:19.392Z",
+                "updated_at": "2022-02-15T15:14:19.392Z",
+                "type": "totp",
+                "totp": {
+                    "qr_code": "data:image/png;base64,{base64EncodedPng}",
+                    "secret": "NAGCCFS3EYRB422HNAKAKY3XDUORMSRF",
+                    "uri": "otpauth://totp/FooCorp:alan.turing@foo-corp.com?secret=NAGCCFS3EYRB422HNAKAKY3XDUORMSRF&issuer=FooCorp",
+                }
+            }
+        }
 
     def test_create_user(self, mock_user, mock_request_method):
         mock_request_method("post", mock_user, 201)
@@ -390,3 +416,17 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/magic_auth/send")
         assert request["json"]["email"] == email
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+
+    def test_enroll_auth_factor(self, mock_enroll_auth_factor_response, mock_request_method):
+        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        type = "totp"
+        totp_issuer="WorkOS"
+        email = "marcelina@foo-corp.com"
+
+        mock_request_method("post", mock_enroll_auth_factor_response, 200)
+
+        enroll_auth_factor = self.user_management.enroll_auth_factor(
+            user, type, totp_issuer, email,
+        )
+
+        assert enroll_auth_factor == mock_enroll_auth_factor_response

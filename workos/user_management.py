@@ -2,9 +2,8 @@ import workos
 from workos.resources.authentication_response import WorkOSAuthenticationResponse
 from workos.resources.password_challenge_response import WorkOSPasswordChallengeResponse
 from workos.resources.list import WorkOSListResource
-from workos.resources.users import (
-    WorkOSUser,
-)
+from workos.resources.mfa import WorkOSAuthenticationChallengeAndFactor
+from workos.resources.users import WorkOSUser
 from workos.utils.pagination_order import Order
 from workos.utils.request import (
     RequestHelper,
@@ -25,6 +24,7 @@ USER_PASSWORD_RESET_PATH = "users/password_reset"
 USER_SEND_VERIFICATION_EMAIL_PATH = "users/{0}/send_verification_email"
 USER_VERIFY_EMAIL_CODE_PATH = "users/verify_email_code"
 USER_SEND_MAGIC_AUTH_PATH = "user_management/magic_auth/send"
+USER_AUTH_FACTORS_PATH = "user_management/users/{0}/auth_factors"
 
 RESPONSE_LIMIT = 10
 
@@ -540,3 +540,44 @@ class UserManagement(WorkOSListResource):
         )
 
         return WorkOSUser.construct_from_response(response).to_dict()
+    
+    def enroll_auth_factor(
+        self,
+        user,
+        type,
+        totp_issuer=None,
+        totp_user=None,
+    ):
+        """Enrolls a user in a new auth factor.
+
+        Kwargs:
+            user (str): The unique ID of the User to be enrolled in the auth factor. 
+            type (str): The type of factor to enroll (Only option available is 'totp').
+            totp_issuer (str): Name of the Organization (Optional)
+            totp_user (str): Email of user (Optional)
+
+        Returns:
+            dict: AuthenticationChallengeAndFactor response from WorkOS.
+        """
+
+        if type not in ["totp"]:
+            raise ValueError("Type parameter must be 'totp'")
+        
+        headers = {}
+
+        payload = {
+            "user_id": user,
+            "type": type,
+            "totp_issuer": totp_issuer,
+            "totp_user": totp_user,
+        }
+
+        response = self.request_helper.request(
+            USER_AUTH_FACTORS_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+            token=workos.api_key,
+        )
+
+        return WorkOSAuthenticationChallengeAndFactor.construct_from_response(response).to_dict()

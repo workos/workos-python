@@ -1,9 +1,12 @@
 import workos
-from workos.resources.authentication_response import WorkOSAuthenticationResponse
-from workos.resources.password_challenge_response import WorkOSPasswordChallengeResponse
 from workos.resources.list import WorkOSListResource
 from workos.resources.mfa import WorkOSAuthenticationFactorTotp, WorkOSChallenge
-from workos.resources.users import WorkOSUser
+from workos.resources.user_management import (
+    WorkOSAuthenticationResponse,
+    WorkOSOrganizationMembership,
+    WorkOSPasswordChallengeResponse,
+    WorkOSUser,
+)
 from workos.utils.pagination_order import Order
 from workos.utils.request import (
     RequestHelper,
@@ -16,7 +19,8 @@ from workos.utils.validation import validate_settings, USER_MANAGEMENT_MODULE
 
 USER_PATH = "user_management/users"
 USER_DETAIL_PATH = "user_management/users/{0}"
-USER_ORGANIZATION_PATH = "users/{0}/organization/{1}"
+ORGANIZATION_MEMBERSHIP_PATH = "user_management/organization_memberships"
+ORGANIZATION_MEMBERSHIP_DETAIL_PATH = "user_management/organization_memberships/{0}"
 USER_PASSWORD_PATH = "users/{0}/password"
 USER_AUTHENTICATE_PATH = "users/authenticate"
 USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
@@ -207,49 +211,125 @@ class UserManagement(WorkOSListResource):
 
         return WorkOSUser.construct_from_response(response).to_dict()
 
-    def add_user_to_organization(self, user_id, organization_id):
-        """Adds a User as a member of the given Organization.
+    def create_organization_membership(self, user_id, organization_id):
+        """Create a new OrganizationMembership for the given Organization and User.
 
-        Kwargs:
-            user_id (str): The unique ID of the User.
-            organization_id (str): Unique ID of the Organization.
+        Args:
+            user_id: The Unique ID of the User.
+            organization_id: The Unique ID of the Organization to which the user belongs to.
 
         Returns:
-            dict: User response from WorkOS.
+            dict: Created OrganizationMembership response from WorkOS.
         """
-
         headers = {}
 
+        params = {"user_id": user_id, "organization_id": organization_id}
+
         response = self.request_helper.request(
-            USER_ORGANIZATION_PATH.format(user_id, organization_id),
+            ORGANIZATION_MEMBERSHIP_PATH,
             method=REQUEST_METHOD_POST,
+            params=params,
             headers=headers,
             token=workos.api_key,
         )
 
-        return WorkOSUser.construct_from_response(response).to_dict()
+        return WorkOSOrganizationMembership.construct_from_response(response).to_dict()
 
-    def remove_user_from_organization(self, user_id, organization_id):
-        """Removes a User from the given Organization.
+    def get_organization_membership(self, organization_membership_id):
+        """Get the details of an organization membership.
 
-        Kwargs:
-            user_id (str): The unique ID of the User.
-            organization_id (str): Unique ID of the Organization.
-
+        Args:
+            organization_membership_id (str) -  The unique ID of the Organization Membership.
         Returns:
-            dict: User response from WorkOS.
+            dict: OrganizationMembership response from WorkOS.
         """
-
         headers = {}
 
         response = self.request_helper.request(
-            USER_ORGANIZATION_PATH.format(user_id, organization_id),
-            method=REQUEST_METHOD_DELETE,
+            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
         )
 
-        return WorkOSUser.construct_from_response(response).to_dict()
+        return WorkOSOrganizationMembership.construct_from_response(response).to_dict()
+
+    def list_organization_memberships(
+        self,
+        user_id=None,
+        organization_id=None,
+        limit=None,
+        before=None,
+        after=None,
+        order=None,
+    ):
+        """Get a list of all of your existing organization memberships matching the criteria specified.
+
+        Kwargs:
+            user_id (str): Filter Organization Memberships by user. (Optional)
+            organization_id (str): Filter Organization Memberships by organization. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Organization Membership ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Organization Membership ID. (Optional)
+            order (Order): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
+
+        Returns:
+            dict: Organization Memberships response from WorkOS.
+        """
+
+        default_limit = None
+
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
+        params = {
+            "user_id": user_id,
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+        }
+
+        if order is not None:
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            elif order == "asc" or order == "desc":
+                params["order"] = order
+            else:
+                raise ValueError("Parameter order must be of enum type Order")
+
+        response = self.request_helper.request(
+            ORGANIZATION_MEMBERSHIP_PATH,
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
+        )
+
+        response["metadata"] = {
+            "params": params,
+            "method": UserManagement.list_organization_memberships,
+        }
+
+        if "default_limit" in locals():
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
+            else:
+                response["metadata"] = {"params": {"default_limit": default_limit}}
+
+        return self.construct_from_response(response)
+
+    def delete_organization_membership(self, organization_membership_id):
+        """Delete an existing organization membership.
+
+        Args:
+            organization_membership_id (str) -  The unique ID of the Organization Membership.
+        """
+        self.request_helper.request(
+            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=REQUEST_METHOD_DELETE,
+            token=workos.api_key,
+        )
 
     def authenticate_with_magic_auth(
         self,

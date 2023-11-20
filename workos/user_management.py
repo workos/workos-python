@@ -3,6 +3,7 @@ from workos.resources.authentication_response import WorkOSAuthenticationRespons
 from workos.resources.password_challenge_response import WorkOSPasswordChallengeResponse
 from workos.resources.list import WorkOSListResource
 from workos.resources.mfa import WorkOSAuthenticationChallengeAndFactor
+from workos.resources.mfa import WorkOSAuthenticationFactorTotp
 from workos.resources.users import WorkOSUser
 from workos.utils.pagination_order import Order
 from workos.utils.request import (
@@ -566,14 +567,13 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         payload = {
-            "user_id": user,
             "type": type,
             "totp_issuer": totp_issuer,
             "totp_user": totp_user,
         }
 
         response = self.request_helper.request(
-            USER_AUTH_FACTORS_PATH,
+            USER_AUTH_FACTORS_PATH.format(user),
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
@@ -581,3 +581,30 @@ class UserManagement(WorkOSListResource):
         )
 
         return WorkOSAuthenticationChallengeAndFactor.construct_from_response(response).to_dict()
+    
+    def list_auth_factors(
+        self,
+        user,
+    ):
+        """Lists the Auth Factors for a user.
+
+        Kwargs:
+            user (str): The unique ID of the User to list the auth factors for.
+
+        Returns:
+            dict: List of Authentication Factors for a User from WorkOS.
+        """
+        response = self.request_helper.request(
+            USER_AUTH_FACTORS_PATH.format(user),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        response["metadata"] = {
+            "params": {
+                "user_id": user,
+            },
+            "method": UserManagement.list_auth_factors,
+        }
+
+        return self.construct_from_response(response)

@@ -2,6 +2,7 @@ import pytest
 
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
+from tests.utils.fixtures.mock_auth_factor_totp import MockAuthFactorTotp
 from workos.user_management import UserManagement
 
 
@@ -126,7 +127,6 @@ class TestUserManagement(object):
     
     @pytest.fixture
     def mock_enroll_auth_factor_response(self):
-
         return {
             "authentication_challenge": {
                 "object": "authentication_challenge",
@@ -149,6 +149,22 @@ class TestUserManagement(object):
                 }
             }
         }
+
+    @pytest.fixture
+    def mock_auth_factors(self):
+        auth_factors_list = [MockAuthFactorTotp(id=str(i)).to_dict() for i in range(2)]
+
+        dict_response = {
+            "data": auth_factors_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "user_id": 'user_12345',
+                },
+                "method": UserManagement.list_auth_factors,
+            },
+        }
+        return dict_response
 
     def test_create_user(self, mock_user, mock_request_method):
         mock_request_method("post", mock_user, 201)
@@ -430,3 +446,17 @@ class TestUserManagement(object):
         )
 
         assert enroll_auth_factor == mock_enroll_auth_factor_response
+
+    def test_auth_factors_returns_metadata(
+        self,
+        mock_auth_factors,
+        mock_request_method,
+    ):
+        mock_request_method("get", mock_auth_factors, 200)
+
+        auth_factors = self.user_management.list_auth_factors(
+            user="user_12345",
+        )
+
+        dict_auth_factors = auth_factors.to_dict()
+        assert dict_auth_factors["metadata"]["params"]["user_id"] == "user_12345"

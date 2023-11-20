@@ -1,22 +1,29 @@
 from workos.resources.base import WorkOSBaseResource
 
 
-class WorkOSUser(WorkOSBaseResource):
-    """Representation of a User as returned by WorkOS through User Management features.
+class WorkOSAuthenticationResponse(WorkOSBaseResource):
+    """Representation of a User and Session response as returned by WorkOS through User Management features."""
 
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSUser comprises.
-    """
+    @classmethod
+    def construct_from_response(cls, response):
+        authentication_response = super(
+            WorkOSAuthenticationResponse, cls
+        ).construct_from_response(response)
 
-    OBJECT_FIELDS = [
-        "id",
-        "email",
-        "first_name",
-        "last_name",
-        "email_verified",
-        "created_at",
-        "updated_at",
-    ]
+        user = WorkOSUser.construct_from_response(response["user"])
+        authentication_response.user = user
+
+        return authentication_response
+
+    def to_dict(self):
+        authentication_response_dict = super(
+            WorkOSAuthenticationResponse, self
+        ).to_dict()
+
+        user_dict = self.user.to_dict()
+        authentication_response_dict["user"] = user_dict
+
+        return authentication_response_dict
 
 
 class WorkOSOrganizationMembership(WorkOSBaseResource):
@@ -30,6 +37,54 @@ class WorkOSOrganizationMembership(WorkOSBaseResource):
         "id",
         "user_id",
         "organization_id",
+        "created_at",
+        "updated_at",
+    ]
+
+
+class WorkOSPasswordChallengeResponse(WorkOSBaseResource):
+    """Representation of a User and token response as returned by WorkOS through User Management features.
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSPasswordChallengeResponse is comprised of.
+    """
+
+    OBJECT_FIELDS = [
+        "token",
+    ]
+
+    @classmethod
+    def construct_from_response(cls, response):
+        challenge_response = super(
+            WorkOSPasswordChallengeResponse, cls
+        ).construct_from_response(response)
+
+        user = WorkOSUser.construct_from_response(response["user"])
+        challenge_response.user = user
+
+        return challenge_response
+
+    def to_dict(self):
+        challenge_response = super(WorkOSPasswordChallengeResponse, self).to_dict()
+
+        user_dict = self.user.to_dict()
+        challenge_response["user"] = user_dict
+
+        return challenge_response
+
+
+class WorkOSUser(WorkOSBaseResource):
+    """Representation of a User as returned by WorkOS through User Management features.
+
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSUser comprises.
+    """
+
+    OBJECT_FIELDS = [
+        "id",
+        "email",
+        "first_name",
+        "last_name",
+        "email_verified",
         "created_at",
         "updated_at",
     ]

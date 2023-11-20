@@ -1,9 +1,12 @@
 import workos
-from workos.resources.authentication_response import WorkOSAuthenticationResponse
-from workos.resources.password_challenge_response import WorkOSPasswordChallengeResponse
 from workos.resources.list import WorkOSListResource
 from workos.resources.mfa import WorkOSAuthenticationFactorTotp, WorkOSChallenge
-from workos.resources.user_management import WorkOSUser, WorkOSOrganizationMembership
+from workos.resources.user_management import (
+    WorkOSAuthenticationResponse,
+    WorkOSOrganizationMembership,
+    WorkOSPasswordChallengeResponse,
+    WorkOSUser,
+)
 from workos.utils.pagination_order import Order
 from workos.utils.request import (
     RequestHelper,

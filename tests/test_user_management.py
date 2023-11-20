@@ -285,7 +285,7 @@ class TestUserManagement(object):
         self, capture_and_mock_request, mock_auth_response
     ):
         code = "test_auth"
-        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
@@ -293,7 +293,7 @@ class TestUserManagement(object):
 
         response = self.user_management.authenticate_with_magic_auth(
             code=code,
-            user=user,
+            user_id=user_id,
             user_agent=user_agent,
             ip_address=ip_address,
         )
@@ -302,7 +302,7 @@ class TestUserManagement(object):
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert request["json"]["code"] == code
         assert request["json"]["user_agent"] == user_agent
-        assert request["json"]["user_id"] == user
+        assert request["json"]["user_id"] == user_id
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
         assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
@@ -398,11 +398,11 @@ class TestUserManagement(object):
         assert request["json"]["new_password"] == new_password
 
     def test_send_verification_email(self, capture_and_mock_request, mock_user):
-        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
         url, _ = capture_and_mock_request("post", mock_user, 200)
 
-        response = self.user_management.send_verification_email(user=user)
+        response = self.user_management.send_verification_email(user_id=user_id)
 
         assert url[0].endswith(
             "users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/send_verification_email"
@@ -410,15 +410,15 @@ class TestUserManagement(object):
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_verify_email_code(self, capture_and_mock_request, mock_auth_response):
-        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         code = "code_123"
 
         url, request = capture_and_mock_request("post", mock_auth_response, 200)
 
-        response = self.user_management.verify_email_code(user=user, code=code)
+        response = self.user_management.verify_email_code(user_id=user_id, code=code)
 
         assert url[0].endswith("users/verify_email_code")
-        assert request["json"]["user_id"] == user
+        assert request["json"]["user_id"] == user_id
         assert request["json"]["code"] == code
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
@@ -436,18 +436,18 @@ class TestUserManagement(object):
     def test_enroll_auth_factor(
         self, mock_enroll_auth_factor_response, mock_request_method
     ):
-        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         type = "totp"
         totp_issuer = "WorkOS"
-        email = "marcelina@foo-corp.com"
+        totp_user = "marcelina@foo-corp.com"
 
         mock_request_method("post", mock_enroll_auth_factor_response, 200)
 
         enroll_auth_factor = self.user_management.enroll_auth_factor(
-            user,
-            type,
-            totp_issuer,
-            email,
+            user_id=user_id,
+            type=type,
+            totp_issuer=totp_issuer,
+            totp_user=totp_user,
         )
 
         assert enroll_auth_factor == mock_enroll_auth_factor_response
@@ -460,7 +460,7 @@ class TestUserManagement(object):
         mock_request_method("get", mock_auth_factors, 200)
 
         auth_factors = self.user_management.list_auth_factors(
-            user="user_12345",
+            user_id="user_12345",
         )
 
         dict_auth_factors = auth_factors.to_dict()

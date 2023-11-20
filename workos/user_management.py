@@ -68,18 +68,18 @@ class UserManagement(WorkOSListResource):
 
         return WorkOSUser.construct_from_response(response).to_dict()
 
-    def get_user(self, user):
+    def get_user(self, user_id):
         """Get the details of an existing user.
 
         Args:
-            user (str) - User unique identifier
+            user_id (str) - User unique identifier
         Returns:
             dict: User response from WorkOS.
         """
         headers = {}
 
         response = self.request_helper.request(
-            USER_DETAIL_PATH.format(user),
+            USER_DETAIL_PATH.format(user_id),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,
@@ -152,23 +152,23 @@ class UserManagement(WorkOSListResource):
 
         return self.construct_from_response(response)
 
-    def delete_user(self, user):
+    def delete_user(self, user_id):
         """Delete an existing user.
 
         Args:
-            user (str) -  User unique identifier
+            user_id (str) -  User unique identifier
         """
         self.request_helper.request(
-            USER_DETAIL_PATH.format(user),
+            USER_DETAIL_PATH.format(user_id),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
 
-    def update_user(self, user, payload):
+    def update_user(self, user_id, payload):
         """Update user attributes.
 
         Args:
-            user (str) - The User unique identifier
+            user_id (str) - The User unique identifier
             payload (dict) - The User attributes to be updated
                 user[first_name] (string) - The user's first name.
                 user[last_name] (string) - The user's last name.
@@ -178,7 +178,7 @@ class UserManagement(WorkOSListResource):
             dict: Updated User response from WorkOS.
         """
         response = self.request_helper.request(
-            USER_DETAIL_PATH.format(user),
+            USER_DETAIL_PATH.format(user_id),
             method=REQUEST_METHOD_PUT,
             params=payload,
             token=workos.api_key,
@@ -186,11 +186,11 @@ class UserManagement(WorkOSListResource):
 
         return WorkOSUser.construct_from_response(response).to_dict()
 
-    def update_user_password(self, user, password):
+    def update_user_password(self, user_id, password):
         """Update user password.
 
         Args:
-            user (str) - A user unique identifier
+            user_id (str) - A user unique identifier
             password (str) - The new password to be set
 
         Returns:
@@ -199,7 +199,7 @@ class UserManagement(WorkOSListResource):
         payload = {"password": password}
 
         response = self.request_helper.request(
-            USER_PASSWORD_PATH.format(user),
+            USER_PASSWORD_PATH.format(user_id),
             method=REQUEST_METHOD_PUT,
             params=payload,
             token=workos.api_key,
@@ -207,12 +207,12 @@ class UserManagement(WorkOSListResource):
 
         return WorkOSUser.construct_from_response(response).to_dict()
 
-    def add_user_to_organization(self, user, organization):
+    def add_user_to_organization(self, user_id, organization_id):
         """Adds a User as a member of the given Organization.
 
         Kwargs:
-            user (str): The unique ID of the User.
-            organization (str): Unique ID of the Organization.
+            user_id (str): The unique ID of the User.
+            organization_id (str): Unique ID of the Organization.
 
         Returns:
             dict: User response from WorkOS.
@@ -221,7 +221,7 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            USER_ORGANIZATION_PATH.format(user, organization),
+            USER_ORGANIZATION_PATH.format(user_id, organization_id),
             method=REQUEST_METHOD_POST,
             headers=headers,
             token=workos.api_key,
@@ -229,12 +229,12 @@ class UserManagement(WorkOSListResource):
 
         return WorkOSUser.construct_from_response(response).to_dict()
 
-    def remove_user_from_organization(self, user, organization):
+    def remove_user_from_organization(self, user_id, organization_id):
         """Removes a User from the given Organization.
 
         Kwargs:
-            user (str): The unique ID of the User.
-            organization (str): Unique ID of the Organization.
+            user_id (str): The unique ID of the User.
+            organization_id (str): Unique ID of the Organization.
 
         Returns:
             dict: User response from WorkOS.
@@ -243,7 +243,7 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            USER_ORGANIZATION_PATH.format(user, organization),
+            USER_ORGANIZATION_PATH.format(user_id, organization_id),
             method=REQUEST_METHOD_DELETE,
             headers=headers,
             token=workos.api_key,
@@ -254,7 +254,7 @@ class UserManagement(WorkOSListResource):
     def authenticate_with_magic_auth(
         self,
         code,
-        user,
+        user_id,
         ip_address=None,
         user_agent=None,
     ):
@@ -262,7 +262,7 @@ class UserManagement(WorkOSListResource):
 
         Kwargs:
             code (str): The one-time code that was emailed to the user.
-            user (str): The unique ID of the User who will be authenticated.
+            user_id (str): The unique ID of the User who will be authenticated.
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
 
@@ -278,7 +278,7 @@ class UserManagement(WorkOSListResource):
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
             "code": code,
-            "user_id": user,
+            "user_id": user_id,
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
         }
 
@@ -457,12 +457,12 @@ class UserManagement(WorkOSListResource):
 
     def send_verification_email(
         self,
-        user,
+        user_id,
     ):
         """Sends a verification email to the provided user.
 
         Kwargs:
-            user (str): The unique ID of the User whose email address will be verified.
+            user_id (str): The unique ID of the User whose email address will be verified.
 
         Returns:
             dict: MagicAuthChallenge response from WorkOS.
@@ -471,7 +471,7 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         response = self.request_helper.request(
-            USER_SEND_VERIFICATION_EMAIL_PATH.format(user),
+            USER_SEND_VERIFICATION_EMAIL_PATH.format(user_id),
             method=REQUEST_METHOD_POST,
             headers=headers,
             token=workos.api_key,
@@ -481,13 +481,13 @@ class UserManagement(WorkOSListResource):
 
     def verify_email_code(
         self,
-        user,
+        user_id,
         code,
     ):
         """Verifies user email using one-time code that was sent to the user.
 
         Kwargs:
-            user (str): The unique ID of the User whose email address will be verified.
+            user_id (str): The unique ID of the User whose email address will be verified.
 
             code (str): The one-time code emailed to the user.
 
@@ -498,7 +498,7 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         payload = {
-            "user_id": user,
+            "user_id": user_id,
             "code": code,
         }
 
@@ -543,7 +543,7 @@ class UserManagement(WorkOSListResource):
 
     def enroll_auth_factor(
         self,
-        user,
+        user_id,
         type,
         totp_issuer=None,
         totp_user=None,
@@ -551,7 +551,7 @@ class UserManagement(WorkOSListResource):
         """Enrolls a user in a new auth factor.
 
         Kwargs:
-            user (str): The unique ID of the User to be enrolled in the auth factor.
+            user_id (str): The unique ID of the User to be enrolled in the auth factor.
             type (str): The type of factor to enroll (Only option available is 'totp').
             totp_issuer (str): Name of the Organization (Optional)
             totp_user (str): Email of user (Optional)
@@ -571,7 +571,7 @@ class UserManagement(WorkOSListResource):
         }
 
         response = self.request_helper.request(
-            USER_AUTH_FACTORS_PATH.format(user),
+            USER_AUTH_FACTORS_PATH.format(user_id),
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
@@ -594,25 +594,25 @@ class UserManagement(WorkOSListResource):
 
     def list_auth_factors(
         self,
-        user,
+        user_id,
     ):
         """Lists the Auth Factors for a user.
 
         Kwargs:
-            user (str): The unique ID of the User to list the auth factors for.
+            user_id (str): The unique ID of the User to list the auth factors for.
 
         Returns:
             dict: List of Authentication Factors for a User from WorkOS.
         """
         response = self.request_helper.request(
-            USER_AUTH_FACTORS_PATH.format(user),
+            USER_AUTH_FACTORS_PATH.format(user_id),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
 
         response["metadata"] = {
             "params": {
-                "user_id": user,
+                "user_id": user_id,
             },
             "method": UserManagement.list_auth_factors,
         }

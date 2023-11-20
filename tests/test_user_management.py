@@ -2,6 +2,7 @@ import pytest
 
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
+from tests.utils.fixtures.mock_auth_factor_totp import MockAuthFactorTotp
 from workos.user_management import UserManagement
 
 
@@ -124,6 +125,47 @@ class TestUserManagement(object):
             "id": "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5",
         }
 
+    @pytest.fixture
+    def mock_enroll_auth_factor_response(self):
+        return {
+            "authentication_factor": {
+                "object": "authentication_factor",
+                "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+                "created_at": "2022-02-15T15:14:19.392Z",
+                "updated_at": "2022-02-15T15:14:19.392Z",
+                "type": "totp",
+                "totp": {
+                    "qr_code": "data:image/png;base64,{base64EncodedPng}",
+                    "secret": "NAGCCFS3EYRB422HNAKAKY3XDUORMSRF",
+                    "uri": "otpauth://totp/FooCorp:alan.turing@foo-corp.com?secret=NAGCCFS3EYRB422HNAKAKY3XDUORMSRF&issuer=FooCorp",
+                },
+            },
+            "authentication_challenge": {
+                "object": "authentication_challenge",
+                "id": "auth_challenge_01FVYZWQTZQ5VB6BC5MPG2EYC5",
+                "created_at": "2022-02-15T15:26:53.274Z",
+                "updated_at": "2022-02-15T15:26:53.274Z",
+                "expires_at": "2022-02-15T15:36:53.279Z",
+                "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+            },
+        }
+
+    @pytest.fixture
+    def mock_auth_factors(self):
+        auth_factors_list = [MockAuthFactorTotp(id=str(i)).to_dict() for i in range(2)]
+
+        dict_response = {
+            "data": auth_factors_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "user_id": "user_12345",
+                },
+                "method": UserManagement.list_auth_factors,
+            },
+        }
+        return dict_response
+
     def test_create_user(self, mock_user, mock_request_method):
         mock_request_method("post", mock_user, 201)
 
@@ -243,7 +285,7 @@ class TestUserManagement(object):
         self, capture_and_mock_request, mock_auth_response
     ):
         code = "test_auth"
-        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
@@ -251,7 +293,7 @@ class TestUserManagement(object):
 
         response = self.user_management.authenticate_with_magic_auth(
             code=code,
-            user=user,
+            user_id=user_id,
             user_agent=user_agent,
             ip_address=ip_address,
         )
@@ -260,7 +302,7 @@ class TestUserManagement(object):
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert request["json"]["code"] == code
         assert request["json"]["user_agent"] == user_agent
-        assert request["json"]["user_id"] == user
+        assert request["json"]["user_id"] == user_id
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
         assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
@@ -356,11 +398,11 @@ class TestUserManagement(object):
         assert request["json"]["new_password"] == new_password
 
     def test_send_verification_email(self, capture_and_mock_request, mock_user):
-        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
         url, _ = capture_and_mock_request("post", mock_user, 200)
 
-        response = self.user_management.send_verification_email(user=user)
+        response = self.user_management.send_verification_email(user_id=user_id)
 
         assert url[0].endswith(
             "users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/send_verification_email"
@@ -368,15 +410,15 @@ class TestUserManagement(object):
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_verify_email_code(self, capture_and_mock_request, mock_auth_response):
-        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         code = "code_123"
 
         url, request = capture_and_mock_request("post", mock_auth_response, 200)
 
-        response = self.user_management.verify_email_code(user=user, code=code)
+        response = self.user_management.verify_email_code(user_id=user_id, code=code)
 
         assert url[0].endswith("users/verify_email_code")
-        assert request["json"]["user_id"] == user
+        assert request["json"]["user_id"] == user_id
         assert request["json"]["code"] == code
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
@@ -390,3 +432,36 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/magic_auth/send")
         assert request["json"]["email"] == email
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+
+    def test_enroll_auth_factor(
+        self, mock_enroll_auth_factor_response, mock_request_method
+    ):
+        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        type = "totp"
+        totp_issuer = "WorkOS"
+        totp_user = "marcelina@foo-corp.com"
+
+        mock_request_method("post", mock_enroll_auth_factor_response, 200)
+
+        enroll_auth_factor = self.user_management.enroll_auth_factor(
+            user_id=user_id,
+            type=type,
+            totp_issuer=totp_issuer,
+            totp_user=totp_user,
+        )
+
+        assert enroll_auth_factor == mock_enroll_auth_factor_response
+
+    def test_auth_factors_returns_metadata(
+        self,
+        mock_auth_factors,
+        mock_request_method,
+    ):
+        mock_request_method("get", mock_auth_factors, 200)
+
+        auth_factors = self.user_management.list_auth_factors(
+            user_id="user_12345",
+        )
+
+        dict_auth_factors = auth_factors.to_dict()
+        assert dict_auth_factors["metadata"]["params"]["user_id"] == "user_12345"

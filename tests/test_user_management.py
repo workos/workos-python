@@ -2,6 +2,7 @@ import pytest
 
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
+from tests.utils.fixtures.mock_auth_factor_totp import MockAuthFactorTotp
 from workos.user_management import UserManagement
 
 
@@ -123,6 +124,47 @@ class TestUserManagement(object):
         return {
             "id": "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5",
         }
+
+    @pytest.fixture
+    def mock_enroll_auth_factor_response(self):
+        return {
+            "authentication_challenge": {
+                "object": "authentication_challenge",
+                "id": "auth_challenge_01FVYZWQTZQ5VB6BC5MPG2EYC5",
+                "created_at": "2022-02-15T15:26:53.274Z",
+                "updated_at": "2022-02-15T15:26:53.274Z",
+                "expires_at": "2022-02-15T15:36:53.279Z",
+                "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+            },
+            "authentication_factor": {
+                "object": "authentication_factor",
+                "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+                "created_at": "2022-02-15T15:14:19.392Z",
+                "updated_at": "2022-02-15T15:14:19.392Z",
+                "type": "totp",
+                "totp": {
+                    "qr_code": "data:image/png;base64,{base64EncodedPng}",
+                    "secret": "NAGCCFS3EYRB422HNAKAKY3XDUORMSRF",
+                    "uri": "otpauth://totp/FooCorp:alan.turing@foo-corp.com?secret=NAGCCFS3EYRB422HNAKAKY3XDUORMSRF&issuer=FooCorp",
+                },
+            },
+        }
+
+    @pytest.fixture
+    def mock_auth_factors(self):
+        auth_factors_list = [MockAuthFactorTotp(id=str(i)).to_dict() for i in range(2)]
+
+        dict_response = {
+            "data": auth_factors_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "user_id": "user_12345",
+                },
+                "method": UserManagement.list_auth_factors,
+            },
+        }
+        return dict_response
 
     def test_create_user(self, mock_user, mock_request_method):
         mock_request_method("post", mock_user, 201)
@@ -390,3 +432,36 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/magic_auth/send")
         assert request["json"]["email"] == email
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+
+    def test_enroll_auth_factor(
+        self, mock_enroll_auth_factor_response, mock_request_method
+    ):
+        user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        type = "totp"
+        totp_issuer = "WorkOS"
+        email = "marcelina@foo-corp.com"
+
+        mock_request_method("post", mock_enroll_auth_factor_response, 200)
+
+        enroll_auth_factor = self.user_management.enroll_auth_factor(
+            user,
+            type,
+            totp_issuer,
+            email,
+        )
+
+        assert enroll_auth_factor == mock_enroll_auth_factor_response
+
+    def test_auth_factors_returns_metadata(
+        self,
+        mock_auth_factors,
+        mock_request_method,
+    ):
+        mock_request_method("get", mock_auth_factors, 200)
+
+        auth_factors = self.user_management.list_auth_factors(
+            user="user_12345",
+        )
+
+        dict_auth_factors = auth_factors.to_dict()
+        assert dict_auth_factors["metadata"]["params"]["user_id"] == "user_12345"

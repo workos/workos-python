@@ -541,7 +541,7 @@ class UserManagement(WorkOSListResource):
         )
 
         return WorkOSUser.construct_from_response(response).to_dict()
-    
+
     def enroll_auth_factor(
         self,
         user,
@@ -552,7 +552,7 @@ class UserManagement(WorkOSListResource):
         """Enrolls a user in a new auth factor.
 
         Kwargs:
-            user (str): The unique ID of the User to be enrolled in the auth factor. 
+            user (str): The unique ID of the User to be enrolled in the auth factor.
             type (str): The type of factor to enroll (Only option available is 'totp').
             totp_issuer (str): Name of the Organization (Optional)
             totp_user (str): Email of user (Optional)
@@ -563,7 +563,7 @@ class UserManagement(WorkOSListResource):
 
         if type not in ["totp"]:
             raise ValueError("Type parameter must be 'totp'")
-        
+
         headers = {}
 
         payload = {
@@ -580,8 +580,10 @@ class UserManagement(WorkOSListResource):
             token=workos.api_key,
         )
 
-        return WorkOSAuthenticationChallengeAndFactor.construct_from_response(response).to_dict()
-    
+        return WorkOSAuthenticationChallengeAndFactor.construct_from_response(
+            response
+        ).to_dict()
+
     def list_auth_factors(
         self,
         user,

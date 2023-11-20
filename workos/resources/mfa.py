@@ -116,6 +116,7 @@ class WorkOSChallengeVerification(WorkOSBaseResource):
 
         return verification_response_dict
 
+
 class WorkOSAuthenticationChallengeAndFactor(WorkOSBaseResource):
     """Representation of an Authentication Challenge and Factor as returned by WorkOS through the User Management feature.
 
@@ -130,25 +131,33 @@ class WorkOSAuthenticationChallengeAndFactor(WorkOSBaseResource):
 
     @classmethod
     def construct_from_response(cls, response):
-        authentication_challenge_and_factor = super(WorkOSAuthenticationChallengeAndFactor, cls).construct_from_response(
-            response
+        authentication_challenge_and_factor = super(
+            WorkOSAuthenticationChallengeAndFactor, cls
+        ).construct_from_response(response)
+
+        authentication_challenge_and_factor.authentication_challenge = (
+            WorkOSChallenge.construct_from_response(
+                response["authentication_challenge"]
+            )
         )
 
-        authentication_challenge_and_factor.authentication_challenge = WorkOSChallenge.construct_from_response(
-            response["authentication_challenge"]
-        )
-
-        authentication_challenge_and_factor.authentication_factor = WorkOSAuthenticationFactorTotp.construct_from_response(
-            response["authentication_factor"]
+        authentication_challenge_and_factor.authentication_factor = (
+            WorkOSAuthenticationFactorTotp.construct_from_response(
+                response["authentication_factor"]
+            )
         )
 
         return authentication_challenge_and_factor
 
     def to_dict(self):
-        authentication_challenge_and_factor_dict = super(WorkOSAuthenticationChallengeAndFactor, self).to_dict()
+        authentication_challenge_and_factor_dict = super(
+            WorkOSAuthenticationChallengeAndFactor, self
+        ).to_dict()
 
         challenge_dict = self.authentication_challenge.to_dict()
-        authentication_challenge_and_factor_dict["authentication_challenge"] = challenge_dict
+        authentication_challenge_and_factor_dict[
+            "authentication_challenge"
+        ] = challenge_dict
 
         factor_dict = self.authentication_factor.to_dict()
         authentication_challenge_and_factor_dict["authentication_factor"] = factor_dict

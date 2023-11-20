@@ -13,7 +13,7 @@ class MockAuthFactorTotp(WorkOSBaseResource):
             "qr_code": "data:image/png;base64,{base64EncodedPng}",
             "secret": "NAGCCFS3EYRB422HNAKAKY3XDUORMSRF",
             "uri": "otpauth://totp/FooCorp:alan.turing@foo-corp.com?secret=NAGCCFS3EYRB422HNAKAKY3XDUORMSRF&issuer=FooCorp",
-            }
+        }
 
     OBJECT_FIELDS = [
         "object",

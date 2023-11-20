@@ -124,7 +124,7 @@ class TestUserManagement(object):
         return {
             "id": "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5",
         }
-    
+
     @pytest.fixture
     def mock_enroll_auth_factor_response(self):
         return {
@@ -146,8 +146,8 @@ class TestUserManagement(object):
                     "qr_code": "data:image/png;base64,{base64EncodedPng}",
                     "secret": "NAGCCFS3EYRB422HNAKAKY3XDUORMSRF",
                     "uri": "otpauth://totp/FooCorp:alan.turing@foo-corp.com?secret=NAGCCFS3EYRB422HNAKAKY3XDUORMSRF&issuer=FooCorp",
-                }
-            }
+                },
+            },
         }
 
     @pytest.fixture
@@ -159,7 +159,7 @@ class TestUserManagement(object):
             "list_metadata": {"before": None, "after": None},
             "metadata": {
                 "params": {
-                    "user_id": 'user_12345',
+                    "user_id": "user_12345",
                 },
                 "method": UserManagement.list_auth_factors,
             },
@@ -433,16 +433,21 @@ class TestUserManagement(object):
         assert request["json"]["email"] == email
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
-    def test_enroll_auth_factor(self, mock_enroll_auth_factor_response, mock_request_method):
+    def test_enroll_auth_factor(
+        self, mock_enroll_auth_factor_response, mock_request_method
+    ):
         user = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         type = "totp"
-        totp_issuer="WorkOS"
+        totp_issuer = "WorkOS"
         email = "marcelina@foo-corp.com"
 
         mock_request_method("post", mock_enroll_auth_factor_response, 200)
 
         enroll_auth_factor = self.user_management.enroll_auth_factor(
-            user, type, totp_issuer, email,
+            user,
+            type,
+            totp_issuer,
+            email,
         )
 
         assert enroll_auth_factor == mock_enroll_auth_factor_response

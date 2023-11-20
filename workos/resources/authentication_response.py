@@ -1,5 +1,5 @@
 from workos.resources.base import WorkOSBaseResource
-from workos.resources.users import WorkOSUser
+from workos.resources.user_management import WorkOSUser
 
 
 class WorkOSAuthenticationResponse(WorkOSBaseResource):

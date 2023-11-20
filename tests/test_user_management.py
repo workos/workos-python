@@ -3,6 +3,7 @@ import pytest
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
 from tests.utils.fixtures.mock_auth_factor_totp import MockAuthFactorTotp
+from tests.utils.fixtures.mock_organization_membership import MockOrganizationMembership
 from workos.user_management import UserManagement
 
 
@@ -100,6 +101,32 @@ class TestUserManagement(object):
                 "method": UserManagement.list_users,
             },
         }
+
+    @pytest.fixture
+    def mock_organization_membership(self):
+        return MockOrganizationMembership("om_ABCDE").to_dict()
+
+    @pytest.fixture
+    def mock_organization_memberships(self):
+        om_list = [MockOrganizationMembership(id=str(i)).to_dict() for i in range(50)]
+
+        dict_response = {
+            "data": om_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "user_id": None,
+                    "organization_id": None,
+                    "limit": None,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": UserManagement.list_organization_memberships,
+            },
+        }
+        return dict_response
 
     @pytest.fixture
     def mock_auth_response(self):
@@ -265,21 +292,54 @@ class TestUserManagement(object):
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert request["json"]["password"] == "pass_123"
 
-    def test_add_user_to_organization(self, capture_and_mock_request, mock_user):
-        url, _ = capture_and_mock_request("post", mock_user, 200)
+    def test_create_organization_membership(
+        self, capture_and_mock_request, mock_organization_membership
+    ):
+        user_id = "user_12345"
+        organization_id = "org_67890"
+        url, _ = capture_and_mock_request("post", mock_organization_membership, 201)
 
-        user = self.user_management.add_user_to_organization("user_123", "org_123")
+        organization_membership = self.user_management.create_organization_membership(
+            user_id=user_id, organization_id=organization_id
+        )
 
-        assert url[0].endswith("users/user_123/organization/org_123")
-        assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert url[0].endswith("user_management/organization_memberships")
+        assert organization_membership["user_id"] == user_id
+        assert organization_membership["organization_id"] == organization_id
 
-    def test_remove_user_from_organization(self, capture_and_mock_request, mock_user):
-        url, _ = capture_and_mock_request("delete", mock_user, 200)
+    def test_get_organization_membership(
+        self, mock_organization_membership, capture_and_mock_request
+    ):
+        url, request_kwargs = capture_and_mock_request(
+            "get", mock_organization_membership, 200
+        )
 
-        user = self.user_management.remove_user_from_organization("user_123", "org_123")
+        om = self.user_management.get_organization_membership("om_ABCDE")
 
-        assert url[0].endswith("users/user_123/organization/org_123")
-        assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert url[0].endswith("user_management/organization_memberships/om_ABCDE")
+        assert om["id"] == "om_ABCDE"
+
+    def test_list_organization_memberships_returns_metadata(
+        self,
+        mock_organization_memberships,
+        mock_request_method,
+    ):
+        mock_request_method("get", mock_organization_memberships, 200)
+
+        oms = self.user_management.list_organization_memberships(
+            organization_id="org_12345",
+        )
+
+        dict_oms = oms.to_dict()
+        assert dict_oms["metadata"]["params"]["organization_id"] == "org_12345"
+
+    def test_delete_organization_membership(self, capture_and_mock_request):
+        url, request_kwargs = capture_and_mock_request("delete", None, 200)
+
+        user = self.user_management.delete_organization_membership("om_ABCDE")
+
+        assert url[0].endswith("user_management/organization_memberships/om_ABCDE")
+        assert user is None
 
     def test_authenticate_with_magic_auth(
         self, capture_and_mock_request, mock_auth_response

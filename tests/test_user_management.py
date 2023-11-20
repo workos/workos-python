@@ -128,14 +128,6 @@ class TestUserManagement(object):
     @pytest.fixture
     def mock_enroll_auth_factor_response(self):
         return {
-            "authentication_challenge": {
-                "object": "authentication_challenge",
-                "id": "auth_challenge_01FVYZWQTZQ5VB6BC5MPG2EYC5",
-                "created_at": "2022-02-15T15:26:53.274Z",
-                "updated_at": "2022-02-15T15:26:53.274Z",
-                "expires_at": "2022-02-15T15:36:53.279Z",
-                "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            },
             "authentication_factor": {
                 "object": "authentication_factor",
                 "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
@@ -147,6 +139,14 @@ class TestUserManagement(object):
                     "secret": "NAGCCFS3EYRB422HNAKAKY3XDUORMSRF",
                     "uri": "otpauth://totp/FooCorp:alan.turing@foo-corp.com?secret=NAGCCFS3EYRB422HNAKAKY3XDUORMSRF&issuer=FooCorp",
                 },
+            },
+            "authentication_challenge": {
+                "object": "authentication_challenge",
+                "id": "auth_challenge_01FVYZWQTZQ5VB6BC5MPG2EYC5",
+                "created_at": "2022-02-15T15:26:53.274Z",
+                "updated_at": "2022-02-15T15:26:53.274Z",
+                "expires_at": "2022-02-15T15:36:53.279Z",
+                "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
             },
         }
 

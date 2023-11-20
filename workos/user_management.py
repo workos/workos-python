@@ -2,8 +2,7 @@ import workos
 from workos.resources.authentication_response import WorkOSAuthenticationResponse
 from workos.resources.password_challenge_response import WorkOSPasswordChallengeResponse
 from workos.resources.list import WorkOSListResource
-from workos.resources.mfa import WorkOSAuthenticationChallengeAndFactor
-from workos.resources.mfa import WorkOSAuthenticationFactorTotp
+from workos.resources.mfa import WorkOSAuthenticationFactorTotp, WorkOSChallenge
 from workos.resources.users import WorkOSUser
 from workos.utils.pagination_order import Order
 from workos.utils.request import (
@@ -557,8 +556,7 @@ class UserManagement(WorkOSListResource):
             totp_issuer (str): Name of the Organization (Optional)
             totp_user (str): Email of user (Optional)
 
-        Returns:
-            dict: AuthenticationChallengeAndFactor response from WorkOS.
+        Returns: { WorkOSAuthenticationFactorTotp, WorkOSChallenge}
         """
 
         if type not in ["totp"]:
@@ -580,9 +578,19 @@ class UserManagement(WorkOSListResource):
             token=workos.api_key,
         )
 
-        return WorkOSAuthenticationChallengeAndFactor.construct_from_response(
-            response
+        factor_and_challenge = {}
+        factor_and_challenge[
+            "authentication_factor"
+        ] = WorkOSAuthenticationFactorTotp.construct_from_response(
+            response["authentication_factor"]
         ).to_dict()
+        factor_and_challenge[
+            "authentication_challenge"
+        ] = WorkOSChallenge.construct_from_response(
+            response["authentication_challenge"]
+        ).to_dict()
+
+        return factor_and_challenge
 
     def list_auth_factors(
         self,

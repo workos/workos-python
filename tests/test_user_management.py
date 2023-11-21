@@ -1,9 +1,10 @@
 import pytest
 
+from tests.utils.fixtures.mock_auth_factor_totp import MockAuthFactorTotp
+from tests.utils.fixtures.mock_invitation import MockInvitation
+from tests.utils.fixtures.mock_organization_membership import MockOrganizationMembership
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
-from tests.utils.fixtures.mock_auth_factor_totp import MockAuthFactorTotp
-from tests.utils.fixtures.mock_organization_membership import MockOrganizationMembership
 from workos.user_management import UserManagement
 
 
@@ -189,6 +190,32 @@ class TestUserManagement(object):
                     "user_id": "user_12345",
                 },
                 "method": UserManagement.list_auth_factors,
+            },
+        }
+        return dict_response
+
+    @pytest.fixture
+    def mock_invitation(self):
+        return MockInvitation("invitation_ABCDE").to_dict()
+
+    @pytest.fixture
+    def mock_invitations(self):
+        invitation_list = [MockInvitation(id=str(i)).to_dict() for i in range(50)]
+
+        dict_response = {
+            "data": invitation_list,
+            "list_metadata": {"before": None, "after": None},
+            "metadata": {
+                "params": {
+                    "email": None,
+                    "organization_id": None,
+                    "limit": None,
+                    "before": None,
+                    "after": None,
+                    "order": None,
+                    "default_limit": True,
+                },
+                "method": UserManagement.list_invitations,
             },
         }
         return dict_response
@@ -525,3 +552,45 @@ class TestUserManagement(object):
 
         dict_auth_factors = auth_factors.to_dict()
         assert dict_auth_factors["metadata"]["params"]["user_id"] == "user_12345"
+
+    def test_get_invitation(self, mock_invitation, capture_and_mock_request):
+        url, request_kwargs = capture_and_mock_request("get", mock_invitation, 200)
+
+        invitation = self.user_management.get_invitation("invitation_ABCDE")
+
+        assert url[0].endswith("user_management/invitations/invitation_ABCDE")
+        assert invitation["id"] == "invitation_ABCDE"
+
+    def test_list_invitations_returns_metadata(
+        self,
+        mock_invitations,
+        mock_request_method,
+    ):
+        mock_request_method("get", mock_invitations, 200)
+
+        invitations = self.user_management.list_invitations(
+            organization_id="org_12345",
+        )
+
+        dict_invitations = invitations.to_dict()
+        assert dict_invitations["metadata"]["params"]["organization_id"] == "org_12345"
+
+    def test_send_invitation(self, capture_and_mock_request, mock_invitation):
+        email = "marcelina@foo-corp.com"
+        organization_id = "org_12345"
+        url, _ = capture_and_mock_request("post", mock_invitation, 201)
+
+        invitation = self.user_management.send_invitation(
+            email=email, organization_id=organization_id
+        )
+
+        assert url[0].endswith("user_management/invitations")
+        assert invitation["email"] == email
+        assert invitation["organization_id"] == organization_id
+
+    def test_revoke_invitation(self, capture_and_mock_request, mock_invitation):
+        url, _ = capture_and_mock_request("post", mock_invitation, 200)
+
+        user = self.user_management.revoke_invitation("invitation_ABCDE")
+
+        assert url[0].endswith("user_management/invitations/invitation_ABCDE/revoke")

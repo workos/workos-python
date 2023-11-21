@@ -26,6 +26,27 @@ class WorkOSAuthenticationResponse(WorkOSBaseResource):
         return authentication_response_dict
 
 
+class WorkOSInvitation(WorkOSBaseResource):
+    """Representation of an Invitation as returned by WorkOS through User Management features.
+
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSInvitation comprises.
+    """
+
+    OBJECT_FIELDS = [
+        "id",
+        "email",
+        "state",
+        "accepted_at",
+        "revoked_at",
+        "expires_at",
+        "token",
+        "organization_id",
+        "created_at",
+        "updated_at",
+    ]
+
+
 class WorkOSOrganizationMembership(WorkOSBaseResource):
     """Representation of an Organization Membership as returned by WorkOS through User Management features.
 

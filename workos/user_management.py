@@ -3,6 +3,7 @@ from workos.resources.list import WorkOSListResource
 from workos.resources.mfa import WorkOSAuthenticationFactorTotp, WorkOSChallenge
 from workos.resources.user_management import (
     WorkOSAuthenticationResponse,
+    WorkOSInvitation,
     WorkOSOrganizationMembership,
     WorkOSPasswordChallengeResponse,
     WorkOSUser,
@@ -29,6 +30,9 @@ USER_SEND_VERIFICATION_EMAIL_PATH = "users/{0}/send_verification_email"
 USER_VERIFY_EMAIL_CODE_PATH = "users/verify_email_code"
 USER_SEND_MAGIC_AUTH_PATH = "user_management/magic_auth/send"
 USER_AUTH_FACTORS_PATH = "user_management/users/{0}/auth_factors"
+INVITATION_PATH = "user_management/invitations"
+INVITATION_DETAIL_PATH = "user_management/invitations/{0}"
+INVITATION_REVOKE_PATH = "user_management/invitations/{0}/revoke"
 
 RESPONSE_LIMIT = 10
 
@@ -698,3 +702,141 @@ class UserManagement(WorkOSListResource):
         }
 
         return self.construct_from_response(response)
+
+    def get_invitation(self, invitation_id):
+        """Get the details of an invitation.
+
+        Args:
+            invitation_id (str) -  The unique ID of the Invitation.
+
+        Returns:
+            dict: Invitation response from WorkOS.
+        """
+        headers = {}
+
+        response = self.request_helper.request(
+            INVITATION_DETAIL_PATH.format(invitation_id),
+            method=REQUEST_METHOD_GET,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSInvitation.construct_from_response(response).to_dict()
+
+    def list_invitations(
+        self,
+        email=None,
+        organization_id=None,
+        limit=None,
+        before=None,
+        after=None,
+        order=None,
+    ):
+        """Get a list of all of your existing invitations matching the criteria specified.
+
+        Kwargs:
+            email (str): Filter Invitations by email. (Optional)
+            organization_id (str): Filter Invitations by organization. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Invitation ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Invitation ID. (Optional)
+            order (Order): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
+
+        Returns:
+            dict: Users response from WorkOS.
+        """
+
+        default_limit = None
+
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
+        params = {
+            "email": email,
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+        }
+
+        if order is not None:
+            if isinstance(order, Order):
+                params["order"] = str(order.value)
+            elif order == "asc" or order == "desc":
+                params["order"] = order
+            else:
+                raise ValueError("Parameter order must be of enum type Order")
+
+        response = self.request_helper.request(
+            INVITATION_PATH,
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
+        )
+
+        response["metadata"] = {
+            "params": params,
+            "method": UserManagement.list_invitations,
+        }
+
+        if "default_limit" in locals():
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
+            else:
+                response["metadata"] = {"params": {"default_limit": default_limit}}
+
+        return self.construct_from_response(response)
+
+    def send_invitation(
+        self, email, organization_id=None, expires_in_days=None, inviter_user_id=None
+    ):
+        """Sends an Invitation to a recipient.
+
+        Args:
+            email: The email address of the recipient.
+            organization_id: The ID of the Organization to which the recipient is being invited. (Optional)
+            expires_in_days: The number of days the invitations will be valid for. Must be between 1 and 30, defaults to 7 if not specified. (Optional)
+            inviter_user_id: The ID of the User sending the invitation. (Optional)
+
+        Returns:
+            dict: Sent Invitation response from WorkOS.
+        """
+        headers = {}
+
+        params = {
+            "email": email,
+            "organization_id": organization_id,
+            "expires_in_days": expires_in_days,
+            "inviter_user_id": inviter_user_id,
+        }
+
+        response = self.request_helper.request(
+            INVITATION_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSInvitation.construct_from_response(response).to_dict()
+
+    def revoke_invitation(self, invitation_id):
+        """Revokes an existing Invitation.
+
+        Args:
+            invitation_id (str) -  The unique ID of the Invitation.
+
+        Returns:
+            dict: Invitation response from WorkOS.
+        """
+        headers = {}
+
+        response = self.request_helper.request(
+            INVITATION_REVOKE_PATH.format(invitation_id),
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSInvitation.construct_from_response(response).to_dict()

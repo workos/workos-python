@@ -8,7 +8,6 @@ class TestClient(object):
     @pytest.fixture(autouse=True)
     def setup(self):
         client._audit_logs = None
-        client._audit_trail = None
         client._directory_sync = None
         client._organizations = None
         client._passwordless = None
@@ -18,9 +17,6 @@ class TestClient(object):
 
     def test_initialize_sso(self, set_api_key_and_client_id):
         assert bool(client.sso)
-
-    def test_initialize_audit_trail(self, set_api_key):
-        assert bool(client.audit_trail)
 
     def test_initialize_audit_logs(self, set_api_key):
         assert bool(client.audit_logs)
@@ -71,14 +67,6 @@ class TestClient(object):
                 "client_id",
             )
         )
-
-    def test_initialize_audit_trail_missing_api_key(self):
-        with pytest.raises(ConfigurationException) as ex:
-            client.audit_trail
-
-        message = str(ex)
-
-        assert "api_key" in message
 
     def test_initialize_directory_sync_missing_api_key(self):
         with pytest.raises(ConfigurationException) as ex:

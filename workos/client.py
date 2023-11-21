@@ -1,5 +1,4 @@
 from workos.audit_logs import AuditLogs
-from workos.audit_trail import AuditTrail
 from workos.directory_sync import DirectorySync
 from workos.organizations import Organizations
 from workos.passwordless import Passwordless
@@ -25,12 +24,6 @@ class Client(object):
         if not getattr(self, "_audit_logs", None):
             self._audit_logs = AuditLogs()
         return self._audit_logs
-
-    @property
-    def audit_trail(self):
-        if not getattr(self, "_audit_trail", None):
-            self._audit_trail = AuditTrail()
-        return self._audit_trail
 
     @property
     def directory_sync(self):

@@ -4,7 +4,6 @@ import workos
 from workos.exceptions import ConfigurationException
 
 AUDIT_LOGS_MODULE = "AuditLogs"
-AUDIT_TRAIL_MODULE = "AuditTrail"
 DIRECTORY_SYNC_MODULE = "DirectorySync"
 EVENTS_MODULE = "Events"
 ORGANIZATIONS_MODULE = "Organizations"
@@ -17,9 +16,6 @@ USER_MANAGEMENT_MODULE = "UserManagement"
 
 REQUIRED_SETTINGS_FOR_MODULE = {
     AUDIT_LOGS_MODULE: [
-        "api_key",
-    ],
-    AUDIT_TRAIL_MODULE: [
         "api_key",
     ],
     DIRECTORY_SYNC_MODULE: [

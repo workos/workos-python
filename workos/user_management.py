@@ -342,7 +342,7 @@ class UserManagement(WorkOSListResource):
         ip_address=None,
         user_agent=None,
     ):
-        """Authenticates a user with email and password and optionally creates a session.
+        """Authenticates a user with email and password.
 
         Kwargs:
             email (str): The email address of the user.
@@ -387,8 +387,7 @@ class UserManagement(WorkOSListResource):
         ip_address=None,
         user_agent=None,
     ):
-        """Authenticates an OAuth user or a managed SSO user that is logging in through SSO,
-            and optionally creates a session.
+        """Authenticates an OAuth user or a managed SSO user that is logging in through SSO.
 
         Kwargs:
             code (str): The authorization value which was passed back as a query parameter in the callback to the Redirect URI.

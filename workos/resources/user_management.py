@@ -5,7 +5,7 @@ class WorkOSAuthenticationResponse(WorkOSBaseResource):
     """Representation of a User and Organization ID response as returned by WorkOS through User Management features."""
 
     """Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSInvitation comprises.
+        OBJECT_FIELDS (list): List of fields a WorkOSAuthenticationResponse comprises.
     """
 
     OBJECT_FIELDS = [

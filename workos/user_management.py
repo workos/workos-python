@@ -387,7 +387,7 @@ class UserManagement(WorkOSListResource):
         ip_address=None,
         user_agent=None,
     ):
-        """Authenticates an OAuth user or a managed SSO user that is logging in through SSO.
+        """Authenticates an OAuth user or a user that is logging in through SSO.
 
         Kwargs:
             code (str): The authorization value which was passed back as a query parameter in the callback to the Redirect URI.

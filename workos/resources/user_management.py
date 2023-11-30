@@ -2,7 +2,15 @@ from workos.resources.base import WorkOSBaseResource
 
 
 class WorkOSAuthenticationResponse(WorkOSBaseResource):
-    """Representation of a User and Session response as returned by WorkOS through User Management features."""
+    """Representation of a User and Organization ID response as returned by WorkOS through User Management features."""
+
+    """Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSAuthenticationResponse comprises.
+    """
+
+    OBJECT_FIELDS = [
+        "organization_id",
+    ]
 
     @classmethod
     def construct_from_response(cls, response):

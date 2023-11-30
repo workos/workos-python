@@ -132,11 +132,8 @@ class TestUserManagement(object):
     @pytest.fixture
     def mock_auth_response(self):
         user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").to_dict()
-        session = MockSession("session_01E4ZCR3C56J083X43JQXF3JK5").to_dict()
 
-        return {
-            "user": user,
-        }
+        return {"user": user, "organization_id": "org_12345"}
 
     @pytest.fixture
     def mock_password_challenge_response(self):
@@ -368,36 +365,6 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/organization_memberships/om_ABCDE")
         assert user is None
 
-    def test_authenticate_with_magic_auth(
-        self, capture_and_mock_request, mock_auth_response
-    ):
-        code = "test_auth"
-        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
-        ip_address = "192.0.0.1"
-
-        url, request = capture_and_mock_request("post", mock_auth_response, 200)
-
-        response = self.user_management.authenticate_with_magic_auth(
-            code=code,
-            user_id=user_id,
-            user_agent=user_agent,
-            ip_address=ip_address,
-        )
-
-        assert url[0].endswith("users/authenticate")
-        assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        assert request["json"]["code"] == code
-        assert request["json"]["user_agent"] == user_agent
-        assert request["json"]["user_id"] == user_id
-        assert request["json"]["ip_address"] == ip_address
-        assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
-        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
-        assert (
-            request["json"]["grant_type"]
-            == "urn:workos:oauth:grant-type:magic-auth:code"
-        )
-
     def test_authenticate_with_password(
         self, capture_and_mock_request, mock_auth_response
     ):
@@ -415,8 +382,9 @@ class TestUserManagement(object):
             ip_address=ip_address,
         )
 
-        assert url[0].endswith("users/authenticate")
+        assert url[0].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response["organization_id"] == "org_12345"
         assert request["json"]["email"] == email
         assert request["json"]["password"] == password
         assert request["json"]["user_agent"] == user_agent
@@ -438,14 +406,149 @@ class TestUserManagement(object):
             ip_address=ip_address,
         )
 
-        assert url[0].endswith("users/authenticate")
+        assert url[0].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response["organization_id"] == "org_12345"
         assert request["json"]["code"] == code
         assert request["json"]["user_agent"] == user_agent
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
         assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
         assert request["json"]["grant_type"] == "authorization_code"
+
+    def test_authenticate_with_magic_auth(
+        self, capture_and_mock_request, mock_auth_response
+    ):
+        code = "test_auth"
+        email = "marcelina@foo-corp.com"
+        user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+        ip_address = "192.0.0.1"
+
+        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+
+        response = self.user_management.authenticate_with_magic_auth(
+            code=code,
+            email=email,
+            user_agent=user_agent,
+            ip_address=ip_address,
+        )
+
+        assert url[0].endswith("user_management/authenticate")
+        assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response["organization_id"] == "org_12345"
+        assert request["json"]["code"] == code
+        assert request["json"]["user_agent"] == user_agent
+        assert request["json"]["email"] == email
+        assert request["json"]["ip_address"] == ip_address
+        assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
+        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert (
+            request["json"]["grant_type"]
+            == "urn:workos:oauth:grant-type:magic-auth:code"
+        )
+
+    def test_authenticate_with_email_verification(
+        self, capture_and_mock_request, mock_auth_response
+    ):
+        code = "test_auth"
+        pending_authentication_token = "ql1AJgNoLN1tb9llaQ8jyC2dn"
+        user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+        ip_address = "192.0.0.1"
+
+        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+
+        response = self.user_management.authenticate_with_email_verification(
+            code=code,
+            pending_authentication_token=pending_authentication_token,
+            user_agent=user_agent,
+            ip_address=ip_address,
+        )
+
+        assert url[0].endswith("user_management/authenticate")
+        assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response["organization_id"] == "org_12345"
+        assert request["json"]["code"] == code
+        assert request["json"]["user_agent"] == user_agent
+        assert (
+            request["json"]["pending_authentication_token"]
+            == pending_authentication_token
+        )
+        assert request["json"]["ip_address"] == ip_address
+        assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
+        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert (
+            request["json"]["grant_type"]
+            == "urn:workos:oauth:grant-type:email-verification:code"
+        )
+
+    def test_authenticate_with_totp(self, capture_and_mock_request, mock_auth_response):
+        code = "test_auth"
+        authentication_challenge_id = "auth_challenge_01FVYZWQTZQ5VB6BC5MPG2EYC5"
+        pending_authentication_token = "ql1AJgNoLN1tb9llaQ8jyC2dn"
+        user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+        ip_address = "192.0.0.1"
+
+        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+
+        response = self.user_management.authenticate_with_totp(
+            code=code,
+            authentication_challenge_id=authentication_challenge_id,
+            pending_authentication_token=pending_authentication_token,
+            user_agent=user_agent,
+            ip_address=ip_address,
+        )
+
+        assert url[0].endswith("user_management/authenticate")
+        assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response["organization_id"] == "org_12345"
+        assert request["json"]["code"] == code
+        assert request["json"]["user_agent"] == user_agent
+        assert (
+            request["json"]["authentication_challenge_id"]
+            == authentication_challenge_id
+        )
+        assert (
+            request["json"]["pending_authentication_token"]
+            == pending_authentication_token
+        )
+        assert request["json"]["ip_address"] == ip_address
+        assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
+        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert request["json"]["grant_type"] == "urn:workos:oauth:grant-type:mfa-totp"
+
+    def test_authenticate_with_organization_selection(
+        self, capture_and_mock_request, mock_auth_response
+    ):
+        organization_id = "org_12345"
+        pending_authentication_token = "ql1AJgNoLN1tb9llaQ8jyC2dn"
+        user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+        ip_address = "192.0.0.1"
+
+        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+
+        response = self.user_management.authenticate_with_organization_selection(
+            organization_id=organization_id,
+            pending_authentication_token=pending_authentication_token,
+            user_agent=user_agent,
+            ip_address=ip_address,
+        )
+
+        assert url[0].endswith("user_management/authenticate")
+        assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response["organization_id"] == "org_12345"
+        assert request["json"]["organization_id"] == organization_id
+        assert request["json"]["user_agent"] == user_agent
+        assert (
+            request["json"]["pending_authentication_token"]
+            == pending_authentication_token
+        )
+        assert request["json"]["ip_address"] == ip_address
+        assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
+        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert (
+            request["json"]["grant_type"]
+            == "urn:workos:oauth:grant-type:organization-selection"
+        )
 
     def test_create_password_challenge(
         self, capture_and_mock_request, mock_password_challenge_response

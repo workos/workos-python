@@ -23,7 +23,7 @@ USER_DETAIL_PATH = "user_management/users/{0}"
 ORGANIZATION_MEMBERSHIP_PATH = "user_management/organization_memberships"
 ORGANIZATION_MEMBERSHIP_DETAIL_PATH = "user_management/organization_memberships/{0}"
 USER_PASSWORD_PATH = "users/{0}/password"
-USER_AUTHENTICATE_PATH = "users/authenticate"
+USER_AUTHENTICATE_PATH = "user_management/authenticate"
 USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
 USER_PASSWORD_RESET_PATH = "users/password_reset"
 USER_SEND_VERIFICATION_EMAIL_PATH = "users/{0}/send_verification_email"
@@ -335,52 +335,6 @@ class UserManagement(WorkOSListResource):
             token=workos.api_key,
         )
 
-    def authenticate_with_magic_auth(
-        self,
-        code,
-        user_id,
-        ip_address=None,
-        user_agent=None,
-    ):
-        """Authenticates a user by verifying a one-time code sent to the user's email address by the Magic Auth Send Code endpoint.
-
-        Kwargs:
-            code (str): The one-time code that was emailed to the user.
-            user_id (str): The unique ID of the User who will be authenticated.
-            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
-            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
-
-        Returns:
-            (dict): Authentication response from WorkOS.
-                [user] (dict): User response from WorkOS
-                [session] (dict): Session response from WorkOS
-        """
-
-        headers = {}
-
-        payload = {
-            "client_id": workos.client_id,
-            "client_secret": workos.api_key,
-            "code": code,
-            "user_id": user_id,
-            "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
-        }
-
-        if ip_address:
-            payload["ip_address"] = ip_address
-
-        if user_agent:
-            payload["user_agent"] = user_agent
-
-        response = self.request_helper.request(
-            USER_AUTHENTICATE_PATH,
-            method=REQUEST_METHOD_POST,
-            headers=headers,
-            params=payload,
-        )
-
-        return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
-
     def authenticate_with_password(
         self,
         email,
@@ -388,7 +342,7 @@ class UserManagement(WorkOSListResource):
         ip_address=None,
         user_agent=None,
     ):
-        """Authenticates a user with email and password and optionally creates a session.
+        """Authenticates a user with email and password.
 
         Kwargs:
             email (str): The email address of the user.
@@ -399,7 +353,7 @@ class UserManagement(WorkOSListResource):
         Returns:
             (dict): Authentication response from WorkOS.
                 [user] (dict): User response from WorkOS
-                [session] (dict): Session response from WorkOS
+                [organization_id] (str): The Organization the user selected to sign in for, if applicable.
         """
 
         headers = {}
@@ -433,8 +387,7 @@ class UserManagement(WorkOSListResource):
         ip_address=None,
         user_agent=None,
     ):
-        """Authenticates an OAuth user or a managed SSO user that is logging in through SSO,
-            and optionally creates a session.
+        """Authenticates an OAuth user or a user that is logging in through SSO.
 
         Kwargs:
             code (str): The authorization value which was passed back as a query parameter in the callback to the Redirect URI.
@@ -444,7 +397,7 @@ class UserManagement(WorkOSListResource):
         Returns:
             (dict): Authentication response from WorkOS.
                 [user] (dict): User response from WorkOS
-                [session] (dict): Session response from WorkOS
+                [organization_id] (str): The Organization the user selected to sign in for, if applicable.
         """
 
         headers = {}
@@ -454,6 +407,198 @@ class UserManagement(WorkOSListResource):
             "client_secret": workos.api_key,
             "code": code,
             "grant_type": "authorization_code",
+        }
+
+        if ip_address:
+            payload["ip_address"] = ip_address
+
+        if user_agent:
+            payload["user_agent"] = user_agent
+
+        response = self.request_helper.request(
+            USER_AUTHENTICATE_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+        )
+
+        return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
+
+    def authenticate_with_magic_auth(
+        self,
+        code,
+        email,
+        link_authorization_code=None,
+        ip_address=None,
+        user_agent=None,
+    ):
+        """Authenticates a user by verifying a one-time code sent to the user's email address by the Magic Auth Send Code endpoint.
+
+        Kwargs:
+            code (str): The one-time code that was emailed to the user.
+            email (str): The email of the User who will be authenticated.
+            link_authorization_code (str): An authorization code used in a previous authenticate request that resulted in an existing user error response. (Optional)
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            (dict): Authentication response from WorkOS.
+                [user] (dict): User response from WorkOS
+                [organization_id] (str): The Organization the user selected to sign in for, if applicable.
+        """
+
+        headers = {}
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "code": code,
+            "email": email,
+            "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
+        }
+
+        if link_authorization_code:
+            payload["link_authorization_code"] = link_authorization_code
+
+        if ip_address:
+            payload["ip_address"] = ip_address
+
+        if user_agent:
+            payload["user_agent"] = user_agent
+
+        response = self.request_helper.request(
+            USER_AUTHENTICATE_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+        )
+
+        return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
+
+    def authenticate_with_email_verification(
+        self,
+        code,
+        pending_authentication_token,
+        ip_address=None,
+        user_agent=None,
+    ):
+        """Authenticates a user that requires email verification by verifying a one-time code sent to the user's email address and the pending authentication token.
+
+        Kwargs:
+            code (str): The one-time code that was emailed to the user.
+            pending_authentication_token (str): The token returned from an authentication attempt due to an unverified email address.
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            (dict): Authentication response from WorkOS.
+                [user] (dict): User response from WorkOS
+                [organization_id] (str): The Organization the user selected to sign in for, if applicable.
+        """
+
+        headers = {}
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "code": code,
+            "pending_authentication_token": pending_authentication_token,
+            "grant_type": "urn:workos:oauth:grant-type:email-verification:code",
+        }
+
+        if ip_address:
+            payload["ip_address"] = ip_address
+
+        if user_agent:
+            payload["user_agent"] = user_agent
+
+        response = self.request_helper.request(
+            USER_AUTHENTICATE_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+        )
+
+        return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
+
+    def authenticate_with_totp(
+        self,
+        code,
+        authentication_challenge_id,
+        pending_authentication_token,
+        ip_address=None,
+        user_agent=None,
+    ):
+        """Authenticates a user that has MFA enrolled by verifying the TOTP code, the Challenge from the Factor, and the pending authentication token.
+
+        Kwargs:
+            code (str): The time-based-one-time-password generated by the Factor that was challenged.
+            authentication_challenge_id (str): The unique ID of the authentication Challenge created for the TOTP Factor for which the user is enrolled.
+            pending_authentication_token (str): The token returned from a failed authentication attempt due to MFA challenge.
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            (dict): Authentication response from WorkOS.
+                [user] (dict): User response from WorkOS
+                [organization_id] (str): The Organization the user selected to sign in for, if applicable.
+        """
+
+        headers = {}
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "code": code,
+            "authentication_challenge_id": authentication_challenge_id,
+            "pending_authentication_token": pending_authentication_token,
+            "grant_type": "urn:workos:oauth:grant-type:mfa-totp",
+        }
+
+        if ip_address:
+            payload["ip_address"] = ip_address
+
+        if user_agent:
+            payload["user_agent"] = user_agent
+
+        response = self.request_helper.request(
+            USER_AUTHENTICATE_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+        )
+
+        return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
+
+    def authenticate_with_organization_selection(
+        self,
+        organization_id,
+        pending_authentication_token,
+        ip_address=None,
+        user_agent=None,
+    ):
+        """Authenticates a user that is a member of multiple organizations by verifying the organization ID and the pending authentication token.
+
+        Kwargs:
+            organization_id (str): The time-based-one-time-password generated by the Factor that was challenged.
+            pending_authentication_token (str): The token returned from a failed authentication attempt due to MFA challenge.
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            (dict): Authentication response from WorkOS.
+                [user] (dict): User response from WorkOS
+                [organization_id] (str): The Organization the user selected to sign in for, if applicable.
+        """
+
+        headers = {}
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "organization_id": organization_id,
+            "pending_authentication_token": pending_authentication_token,
+            "grant_type": "urn:workos:oauth:grant-type:organization-selection",
         }
 
         if ip_address:

@@ -22,7 +22,6 @@ USER_PATH = "user_management/users"
 USER_DETAIL_PATH = "user_management/users/{0}"
 ORGANIZATION_MEMBERSHIP_PATH = "user_management/organization_memberships"
 ORGANIZATION_MEMBERSHIP_DETAIL_PATH = "user_management/organization_memberships/{0}"
-USER_PASSWORD_PATH = "users/{0}/password"
 USER_AUTHENTICATE_PATH = "user_management/authenticate"
 USER_PASSWORD_RESET_CHALLENGE_PATH = "users/password_reset_challenge"
 USER_PASSWORD_RESET_PATH = "users/password_reset"
@@ -49,32 +48,6 @@ class UserManagement(WorkOSListResource):
         if not getattr(self, "_request_helper", None):
             self._request_helper = RequestHelper()
         return self._request_helper
-
-    def create_user(self, user):
-        """Create a new unmanaged user with email password authentication.
-
-        Args:
-            user (dict) - An user object
-                user[email] (string) - The email address of the user.
-                user[password] (string) - The password to set for the user.
-                user[first_name] (string) - The user's first name.
-                user[last_name] (string) - The user's last name.
-                user[email_verified] (bool) - Whether the user's email address was previously verified.
-
-        Returns:
-            dict: Created User response from WorkOS.
-        """
-        headers = {}
-
-        response = self.request_helper.request(
-            USER_PATH,
-            method=REQUEST_METHOD_POST,
-            params=user,
-            headers=headers,
-            token=workos.api_key,
-        )
-
-        return WorkOSUser.construct_from_response(response).to_dict()
 
     def get_user(self, user_id):
         """Get the details of an existing user.
@@ -160,6 +133,57 @@ class UserManagement(WorkOSListResource):
 
         return self.construct_from_response(response)
 
+    def create_user(self, user):
+        """Create a new user.
+
+        Args:
+            user (dict) - An user object
+                user[email] (str) - The email address of the user.
+                user[password] (str) - The password to set for the user. (Optional)
+                user[first_name] (str) - The user's first name. (Optional)
+                user[last_name] (str) - The user's last name. (Optional)
+                user[email_verified] (bool) - Whether the user's email address was previously verified. (Optional)
+
+        Returns:
+            dict: Created User response from WorkOS.
+        """
+        headers = {}
+
+        response = self.request_helper.request(
+            USER_PATH,
+            method=REQUEST_METHOD_POST,
+            params=user,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSUser.construct_from_response(response).to_dict()
+
+    def update_user(self, user_id, payload):
+        """Update user attributes.
+
+        Args:
+            user_id (str) - The User unique identifier
+            payload (dict) - The User attributes to be updated
+                payload[first_name] (str) - The user's first name. (Optional)
+                payload[last_name] (str) - The user's last name. (Optional)
+                payload[email_verified] (bool) - Whether the user's email address was previously verified. (Optional)
+                payload[password] (str) - The password to set for the user. (Optional)
+                payload[password_hash] (str) - The hashed password to set for the user, used when migrating from another user store. Mutually exclusive with password. (Optional)
+                payload[password_hash_type] (str) - The algorithm originally used to hash the password, used when providing a password_hash. Only valid value is 'bcrypt'. (Optional)
+
+        Returns:
+            dict: Updated User response from WorkOS.
+        """
+        response = self.request_helper.request(
+            USER_DETAIL_PATH.format(user_id),
+            method=REQUEST_METHOD_PUT,
+            params=payload,
+            token=workos.api_key,
+        )
+
+        return WorkOSUser.construct_from_response(response).to_dict()
+
     def delete_user(self, user_id):
         """Delete an existing user.
 
@@ -171,49 +195,6 @@ class UserManagement(WorkOSListResource):
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
-
-    def update_user(self, user_id, payload):
-        """Update user attributes.
-
-        Args:
-            user_id (str) - The User unique identifier
-            payload (dict) - The User attributes to be updated
-                user[first_name] (string) - The user's first name.
-                user[last_name] (string) - The user's last name.
-                user[email_verified] (bool) - Whether the user's email address was previously verified.
-
-        Returns:
-            dict: Updated User response from WorkOS.
-        """
-        response = self.request_helper.request(
-            USER_DETAIL_PATH.format(user_id),
-            method=REQUEST_METHOD_PUT,
-            params=payload,
-            token=workos.api_key,
-        )
-
-        return WorkOSUser.construct_from_response(response).to_dict()
-
-    def update_user_password(self, user_id, password):
-        """Update user password.
-
-        Args:
-            user_id (str) - A user unique identifier
-            password (str) - The new password to be set
-
-        Returns:
-            dict: Updated User response from WorkOS.
-        """
-        payload = {"password": password}
-
-        response = self.request_helper.request(
-            USER_PASSWORD_PATH.format(user_id),
-            method=REQUEST_METHOD_PUT,
-            params=payload,
-            token=workos.api_key,
-        )
-
-        return WorkOSUser.construct_from_response(response).to_dict()
 
     def create_organization_membership(self, user_id, organization_id):
         """Create a new OrganizationMembership for the given Organization and User.

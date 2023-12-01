@@ -170,7 +170,7 @@ class UserManagement(WorkOSListResource):
                 payload[email_verified] (bool) - Whether the user's email address was previously verified. (Optional)
                 payload[password] (str) - The password to set for the user. (Optional)
                 payload[password_hash] (str) - The hashed password to set for the user, used when migrating from another user store. Mutually exclusive with password. (Optional)
-                payload[password_hash_type] (str) - The algorithm originally used to hash the password, used when providing a password_hash. Valid values are bcrypt. (Optional)
+                payload[password_hash_type] (str) - The algorithm originally used to hash the password, used when providing a password_hash. Only valid value is 'bcrypt'. (Optional)
 
         Returns:
             dict: Updated User response from WorkOS.

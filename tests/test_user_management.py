@@ -217,20 +217,6 @@ class TestUserManagement(object):
         }
         return dict_response
 
-    def test_create_user(self, mock_user, mock_request_method):
-        mock_request_method("post", mock_user, 201)
-
-        payload = {
-            "email": "marcelina@foo-corp.com",
-            "first_name": "Marcelina",
-            "last_name": "Hoeger",
-            "password": "password",
-            "email_verified": False,
-        }
-        user = self.user_management.create_user(payload)
-
-        assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-
     def test_get_user(self, mock_user, capture_and_mock_request):
         url, request_kwargs = capture_and_mock_request("get", mock_user, 200)
 
@@ -279,13 +265,19 @@ class TestUserManagement(object):
         assert dict_users["metadata"]["params"]["email"] == "marcelina@foo-corp.com"
         assert dict_users["metadata"]["params"]["organization_id"] == "org_12345"
 
-    def test_delete_user(self, capture_and_mock_request):
-        url, request_kwargs = capture_and_mock_request("delete", None, 200)
+    def test_create_user(self, mock_user, mock_request_method):
+        mock_request_method("post", mock_user, 201)
 
-        user = self.user_management.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        payload = {
+            "email": "marcelina@foo-corp.com",
+            "first_name": "Marcelina",
+            "last_name": "Hoeger",
+            "password": "password",
+            "email_verified": False,
+        }
+        user = self.user_management.create_user(payload)
 
-        assert url[0].endswith("user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
-        assert user is None
+        assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_update_user(self, mock_user, capture_and_mock_request):
         url, request = capture_and_mock_request("put", mock_user, 200)
@@ -296,6 +288,7 @@ class TestUserManagement(object):
                 "first_name": "Marcelina",
                 "last_name": "Hoeger",
                 "email_verified": True,
+                "password": "password",
             },
         )
 
@@ -304,17 +297,15 @@ class TestUserManagement(object):
         assert request["json"]["first_name"] == "Marcelina"
         assert request["json"]["last_name"] == "Hoeger"
         assert request["json"]["email_verified"] == True
+        assert request["json"]["password"] == "password"
 
-    def test_update_user_password(self, mock_user, capture_and_mock_request):
-        url, request = capture_and_mock_request("put", mock_user, 200)
+    def test_delete_user(self, capture_and_mock_request):
+        url, request_kwargs = capture_and_mock_request("delete", None, 200)
 
-        user = self.user_management.update_user_password(
-            "user_01H7ZGXFP5C6BBQY6Z7277ZCT0", "pass_123"
-        )
+        user = self.user_management.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
 
-        assert url[0].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/password")
-        assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        assert request["json"]["password"] == "pass_123"
+        assert url[0].endswith("user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        assert user is None
 
     def test_create_organization_membership(
         self, capture_and_mock_request, mock_organization_membership

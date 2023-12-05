@@ -1,4 +1,7 @@
+import json
+from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
+import workos
 
 from tests.utils.fixtures.mock_auth_factor_totp import MockAuthFactorTotp
 from tests.utils.fixtures.mock_invitation import MockInvitation
@@ -6,6 +9,7 @@ from tests.utils.fixtures.mock_organization_membership import MockOrganizationMe
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
 from workos.user_management import UserManagement
+from workos.utils.request import RESPONSE_TYPE_CODE
 
 
 class TestUserManagement(object):
@@ -346,6 +350,126 @@ class TestUserManagement(object):
 
         assert url[0].endswith("user_management/organization_memberships/om_ABCDE")
         assert user is None
+
+    def test_authorization_url_throws_value_error_with_missing_connection_organization_and_provider(
+        self,
+    ):
+        redirect_uri = "https://localhost/auth/callback"
+        with pytest.raises(ValueError, match=r"Incomplete arguments.*"):
+            self.user_management.get_authorization_url(redirect_uri=redirect_uri)
+
+    def test_authorization_url_has_expected_query_params_with_connection_id(self):
+        connection_id = "connection_123"
+        redirect_uri = "https://localhost/auth/callback"
+        authorization_url = self.user_management.get_authorization_url(
+            connection_id=connection_id,
+            redirect_uri=redirect_uri,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "connection_id": connection_id,
+            "client_id": workos.client_id,
+            "redirect_uri": redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+        }
+
+    def test_authorization_url_has_expected_query_params_with_organization_id(self):
+        organization_id = "organization_123"
+        redirect_uri = "https://localhost/auth/callback"
+        authorization_url = self.user_management.get_authorization_url(
+            organization_id=organization_id,
+            redirect_uri=redirect_uri,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "organization_id": organization_id,
+            "client_id": workos.client_id,
+            "redirect_uri": redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+        }
+
+    def test_authorization_url_has_expected_query_params_with_provider(self):
+        provider = "GoogleOAuth"
+        redirect_uri = "https://localhost/auth/callback"
+        authorization_url = self.user_management.get_authorization_url(
+            provider=provider, redirect_uri=redirect_uri
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "provider": provider,
+            "client_id": workos.client_id,
+            "redirect_uri": redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+        }
+
+    def test_authorization_url_has_expected_query_params_with_domain_hint(self):
+        connection_id = "connection_123"
+        redirect_uri = "https://localhost/auth/callback"
+        domain_hint = "workos.com"
+
+        authorization_url = self.user_management.get_authorization_url(
+            connection_id=connection_id,
+            domain_hint=domain_hint,
+            redirect_uri=redirect_uri,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "domain_hint": domain_hint,
+            "client_id": workos.client_id,
+            "redirect_uri": redirect_uri,
+            "connection_id": connection_id,
+            "response_type": RESPONSE_TYPE_CODE,
+        }
+
+    def test_authorization_url_has_expected_query_params_with_login_hint(self):
+        connection_id = "connection_123"
+        redirect_uri = "https://localhost/auth/callback"
+        login_hint = "foo@workos.com"
+
+        authorization_url = self.user_management.get_authorization_url(
+            connection_id=connection_id,
+            login_hint=login_hint,
+            redirect_uri=redirect_uri,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "login_hint": login_hint,
+            "client_id": workos.client_id,
+            "redirect_uri": redirect_uri,
+            "connection_id": connection_id,
+            "response_type": RESPONSE_TYPE_CODE,
+        }
+
+    def test_authorization_url_has_expected_query_params_with_state(self):
+        connection_id = "connection_123"
+        redirect_uri = "https://localhost/auth/callback"
+        state = json.dumps({"things": "with_stuff"})
+
+        authorization_url = self.user_management.get_authorization_url(
+            connection_id=connection_id,
+            state=state,
+            redirect_uri=redirect_uri,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "state": state,
+            "client_id": workos.client_id,
+            "redirect_uri": redirect_uri,
+            "connection_id": connection_id,
+            "response_type": RESPONSE_TYPE_CODE,
+        }
 
     def test_authenticate_with_password(
         self, capture_and_mock_request, mock_auth_response

@@ -136,15 +136,6 @@ class TestUserManagement(object):
         return {"user": user, "organization_id": "org_12345"}
 
     @pytest.fixture
-    def mock_password_challenge_response(self):
-        user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").to_dict()
-
-        return {
-            "user": user,
-            "token": "token_123",
-        }
-
-    @pytest.fixture
     def mock_magic_auth_challenge_response(self):
         return {
             "id": "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5",
@@ -541,39 +532,34 @@ class TestUserManagement(object):
             == "urn:workos:oauth:grant-type:organization-selection"
         )
 
-    def test_create_password_challenge(
-        self, capture_and_mock_request, mock_password_challenge_response
-    ):
+    def test_send_password_reset_email(self, capture_and_mock_request):
         email = "marcelina@foo-corp.com"
         password_reset_url = "https://foo-corp.com/reset-password"
 
-        url, request = capture_and_mock_request(
-            "post", mock_password_challenge_response, 200
-        )
+        url, request = capture_and_mock_request("post", None, 200)
 
-        response = self.user_management.create_password_reset_challenge(
+        response = self.user_management.send_password_reset_email(
             email=email,
             password_reset_url=password_reset_url,
         )
 
-        assert url[0].endswith("users/password_reset_challenge")
-        assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        assert response["token"] == "token_123"
+        assert url[0].endswith("user_management/password_reset/send")
         assert request["json"]["email"] == email
         assert request["json"]["password_reset_url"] == password_reset_url
+        assert response is None
 
-    def test_complete_password_reset(self, capture_and_mock_request, mock_user):
+    def test_reset_password(self, capture_and_mock_request, mock_user):
         token = "token123"
         new_password = "pass123"
 
         url, request = capture_and_mock_request("post", mock_user, 200)
 
-        response = self.user_management.complete_password_reset(
+        response = self.user_management.reset_password(
             token=token,
             new_password=new_password,
         )
 
-        assert url[0].endswith("users/password_reset")
+        assert url[0].endswith("user_management/password_reset/confirm")
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert request["json"]["token"] == token
         assert request["json"]["new_password"] == new_password
@@ -603,16 +589,16 @@ class TestUserManagement(object):
         assert request["json"]["code"] == code
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
-    def test_send_magic_auth_code(self, capture_and_mock_request, mock_user):
+    def test_send_magic_auth_code(self, capture_and_mock_request):
         email = "marcelina@foo-corp.com"
 
-        url, request = capture_and_mock_request("post", mock_user, 200)
+        url, request = capture_and_mock_request("post", None, 200)
 
         response = self.user_management.send_magic_auth_code(email=email)
 
         assert url[0].endswith("user_management/magic_auth/send")
         assert request["json"]["email"] == email
-        assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response is None
 
     def test_enroll_auth_factor(
         self, mock_enroll_auth_factor_response, mock_request_method

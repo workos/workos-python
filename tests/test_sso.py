@@ -235,7 +235,7 @@ class TestSSO(object):
                 state=self.state,
             )
 
-    def test_authorization_url_throws_value_error_wihout_redirect_uri(
+    def test_authorization_url_throws_value_error_without_redirect_uri(
         self, setup_with_client_id
     ):
         with pytest.raises(

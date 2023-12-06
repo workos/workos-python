@@ -351,6 +351,17 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/organization_memberships/om_ABCDE")
         assert user is None
 
+    def test_authorization_url_throws_value_error_without_redirect_uri(self):
+        connection_id = "connection_123"
+        login_hint = "foo@workos.com"
+        state = json.dumps({"things": "with_stuff"})
+        with pytest.raises(TypeError):
+            self.user_management.get_authorization_url(
+                connection_id=connection_id,
+                login_hint=login_hint,
+                state=state,
+            )
+
     def test_authorization_url_throws_value_error_with_missing_connection_organization_and_provider(
         self,
     ):

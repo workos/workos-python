@@ -9,6 +9,7 @@ from tests.utils.fixtures.mock_organization_membership import MockOrganizationMe
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
 from workos.user_management import UserManagement
+from workos.utils.provider_types import ProviderType
 from workos.utils.request import RESPONSE_TYPE_CODE
 
 
@@ -369,6 +370,27 @@ class TestUserManagement(object):
         with pytest.raises(ValueError, match=r"Incomplete arguments.*"):
             self.user_management.get_authorization_url(redirect_uri=redirect_uri)
 
+    @pytest.mark.parametrize(
+        "invalid_provider",
+        [
+            123,
+            ProviderType,
+            True,
+            False,
+            {"provider": "GoogleOAuth"},
+            ["GoogleOAuth"],
+        ],
+    )
+    def test_authorization_url_throws_value_error_with_incorrect_provider_type(
+        self, invalid_provider
+    ):
+        with pytest.raises(ValueError, match="'provider' must be of type ProviderType"):
+            redirect_uri = "https://localhost/auth/callback"
+            self.user_management.get_authorization_url(
+                provider=invalid_provider,
+                redirect_uri=redirect_uri,
+            )
+
     def test_authorization_url_has_expected_query_params_with_connection_id(self):
         connection_id = "connection_123"
         redirect_uri = "https://localhost/auth/callback"
@@ -404,7 +426,7 @@ class TestUserManagement(object):
         }
 
     def test_authorization_url_has_expected_query_params_with_provider(self):
-        provider = "GoogleOAuth"
+        provider = ProviderType.GoogleOAuth
         redirect_uri = "https://localhost/auth/callback"
         authorization_url = self.user_management.get_authorization_url(
             provider=provider, redirect_uri=redirect_uri
@@ -413,7 +435,7 @@ class TestUserManagement(object):
         parsed_url = urlparse(authorization_url)
 
         assert dict(parse_qsl(parsed_url.query)) == {
-            "provider": provider,
+            "provider": provider.value,
             "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,

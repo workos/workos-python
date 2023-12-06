@@ -4,6 +4,7 @@ import pytest
 import workos
 from workos.sso import SSO
 from workos.utils.connection_types import ConnectionType
+from workos.utils.provider_types import ProviderType
 from workos.utils.request import RESPONSE_TYPE_CODE
 from tests.utils.fixtures.mock_connection import MockConnection
 
@@ -12,7 +13,7 @@ class TestSSO(object):
     @pytest.fixture
     def setup_with_client_id(self, set_api_key_and_client_id):
         self.sso = SSO()
-        self.provider = ConnectionType.GoogleOAuth
+        self.provider = ProviderType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.login_hint = "foo@workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
@@ -204,19 +205,11 @@ class TestSSO(object):
                 redirect_uri=self.redirect_uri, state=self.state
             )
 
-    def test_authorization_url_throws_value_error_with_incorrect_string_provider_value(
-        self, setup_with_client_id
-    ):
-        with pytest.raises(ValueError, match=r"Invalid provider. Must be one of *"):
-            self.sso.get_authorization_url(
-                provider="foo", redirect_uri=self.redirect_uri, state=self.state
-            )
-
     @pytest.mark.parametrize(
         "invalid_provider",
         [
             123,
-            ConnectionType,
+            ProviderType,
             True,
             False,
             {"provider": "GoogleOAuth"},
@@ -226,9 +219,7 @@ class TestSSO(object):
     def test_authorization_url_throws_value_error_with_incorrect_provider_type(
         self, setup_with_client_id, invalid_provider
     ):
-        with pytest.raises(
-            ValueError, match="'provider' must be of type ConnectionType"
-        ):
+        with pytest.raises(ValueError, match="'provider' must be of type ProviderType"):
             self.sso.get_authorization_url(
                 provider=invalid_provider,
                 redirect_uri=self.redirect_uri,
@@ -348,7 +339,7 @@ class TestSSO(object):
         self, setup_with_client_id
     ):
         authorization_url = self.sso.get_authorization_url(
-            provider=self.provider.value,
+            provider=self.provider,
             organization=self.organization,
             redirect_uri=self.redirect_uri,
             state=self.state,

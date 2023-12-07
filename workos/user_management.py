@@ -1,3 +1,4 @@
+from requests import Request
 import workos
 from workos.resources.list import WorkOSListResource
 from workos.resources.mfa import WorkOSAuthenticationFactorTotp, WorkOSChallenge
@@ -9,8 +10,10 @@ from workos.resources.user_management import (
     WorkOSUser,
 )
 from workos.utils.pagination_order import Order
+from workos.utils.um_provider_types import UserManagementProviderType
 from workos.utils.request import (
     RequestHelper,
+    RESPONSE_TYPE_CODE,
     REQUEST_METHOD_POST,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_DELETE,
@@ -22,6 +25,7 @@ USER_PATH = "user_management/users"
 USER_DETAIL_PATH = "user_management/users/{0}"
 ORGANIZATION_MEMBERSHIP_PATH = "user_management/organization_memberships"
 ORGANIZATION_MEMBERSHIP_DETAIL_PATH = "user_management/organization_memberships/{0}"
+USER_AUTHORIZATION_PATH = "user_management/authorize"
 USER_AUTHENTICATE_PATH = "user_management/authenticate"
 USER_SEND_PASSWORD_RESET_PATH = "user_management/password_reset/send"
 USER_RESET_PASSWORD_PATH = "user_management/password_reset/confirm"
@@ -315,6 +319,77 @@ class UserManagement(WorkOSListResource):
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
+
+    def get_authorization_url(
+        self,
+        redirect_uri,
+        connection_id=None,
+        organization_id=None,
+        provider=None,
+        domain_hint=None,
+        login_hint=None,
+        state=None,
+    ):
+        """Generate an OAuth 2.0 authorization URL.
+
+        The URL generated will redirect a User to the Identity Provider configured through
+        WorkOS.
+
+        Kwargs:
+            redirect_uri (str) - A Redirect URI to return an authorized user to.
+            connection_id (str) - The connection_id connection selector is used to initiate SSO for a Connection.
+                The value of this parameter should be a WorkOS Connection ID. (Optional)
+            organization_id (str) - The organization_id connection selector is used to initiate SSO for an Organization.
+                The value of this parameter should be a WorkOS Organization ID. (Optional)
+            provider (UserManagementProviderType) - The provider connection selector is used to initiate SSO using an OAuth-compatible provider.
+                Currently, the supported values for provider are 'authkit', 'GoogleOAuth' and 'MicrosoftOAuth'. (Optional)
+            domain_hint (str) - Can be used to pre-fill the domain field when initiating authentication with Microsoft OAuth,
+                or with a GoogleSAML connection type. (Optional)
+            login_hint (str) - Can be used to pre-fill the username/email address field of the IdP sign-in page for the user,
+                if you know their username ahead of time. Currently, this parameter is supported for OAuth, OpenID Connect,
+                OktaSAML, and AzureSAML connection types. (Optional)
+            state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
+                back as a query parameter. (Optional)
+
+        Returns:
+            str: URL to redirect a User to to begin the OAuth workflow with WorkOS
+        """
+        params = {
+            "client_id": workos.client_id,
+            "redirect_uri": redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+        }
+
+        if connection_id is None and organization_id is None and provider is None:
+            raise ValueError(
+                "Incomplete arguments. Need to specify either a 'connection_id', 'organization_id', or 'provider_id'"
+            )
+
+        if connection_id is not None:
+            params["connection_id"] = connection_id
+        if organization_id is not None:
+            params["organization_id"] = organization_id
+        if provider is not None:
+            if not isinstance(provider, UserManagementProviderType):
+                raise ValueError(
+                    "'provider' must be of type UserManagementProviderType"
+                )
+
+            params["provider"] = provider.value
+        if domain_hint is not None:
+            params["domain_hint"] = domain_hint
+        if login_hint is not None:
+            params["login_hint"] = login_hint
+        if state is not None:
+            params["state"] = state
+
+        prepared_request = Request(
+            "GET",
+            self.request_helper.generate_api_url(USER_AUTHORIZATION_PATH),
+            params=params,
+        ).prepare()
+
+        return prepared_request.url
 
     def authenticate_with_password(
         self,

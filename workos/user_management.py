@@ -10,7 +10,7 @@ from workos.resources.user_management import (
     WorkOSUser,
 )
 from workos.utils.pagination_order import Order
-from workos.utils.provider_types import ProviderType
+from workos.utils.um_provider_types import UserManagementProviderType
 from workos.utils.request import (
     RequestHelper,
     RESPONSE_TYPE_CODE,
@@ -341,7 +341,7 @@ class UserManagement(WorkOSListResource):
                 The value of this parameter should be a WorkOS Connection ID. (Optional)
             organization_id (str) - The organization_id connection selector is used to initiate SSO for an Organization.
                 The value of this parameter should be a WorkOS Organization ID. (Optional)
-            provider (ProviderType) - The provider connection selector is used to initiate SSO using an OAuth-compatible provider.
+            provider (UserManagementProviderType) - The provider connection selector is used to initiate SSO using an OAuth-compatible provider.
                 Currently, the supported values for provider are 'authkit', 'GoogleOAuth' and 'MicrosoftOAuth'. (Optional)
             domain_hint (str) - Can be used to pre-fill the domain field when initiating authentication with Microsoft OAuth,
                 or with a GoogleSAML connection type. (Optional)
@@ -370,8 +370,10 @@ class UserManagement(WorkOSListResource):
         if organization_id is not None:
             params["organization_id"] = organization_id
         if provider is not None:
-            if not isinstance(provider, ProviderType):
-                raise ValueError("'provider' must be of type ProviderType")
+            if not isinstance(provider, UserManagementProviderType):
+                raise ValueError(
+                    "'provider' must be of type UserManagementProviderType"
+                )
 
             params["provider"] = provider.value
         if domain_hint is not None:

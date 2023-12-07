@@ -4,7 +4,7 @@ import pytest
 import workos
 from workos.sso import SSO
 from workos.utils.connection_types import ConnectionType
-from workos.utils.provider_types import ProviderType
+from workos.utils.sso_provider_types import SsoProviderType
 from workos.utils.request import RESPONSE_TYPE_CODE
 from tests.utils.fixtures.mock_connection import MockConnection
 
@@ -13,7 +13,7 @@ class TestSSO(object):
     @pytest.fixture
     def setup_with_client_id(self, set_api_key_and_client_id):
         self.sso = SSO()
-        self.provider = ProviderType.GoogleOAuth
+        self.provider = SsoProviderType.GoogleOAuth
         self.customer_domain = "workos.com"
         self.login_hint = "foo@workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
@@ -209,7 +209,7 @@ class TestSSO(object):
         "invalid_provider",
         [
             123,
-            ProviderType,
+            SsoProviderType,
             True,
             False,
             {"provider": "GoogleOAuth"},
@@ -219,7 +219,9 @@ class TestSSO(object):
     def test_authorization_url_throws_value_error_with_incorrect_provider_type(
         self, setup_with_client_id, invalid_provider
     ):
-        with pytest.raises(ValueError, match="'provider' must be of type ProviderType"):
+        with pytest.raises(
+            ValueError, match="'provider' must be of type SsoProviderType"
+        ):
             self.sso.get_authorization_url(
                 provider=invalid_provider,
                 redirect_uri=self.redirect_uri,

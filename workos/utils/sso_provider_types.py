@@ -1,7 +1,6 @@
 from enum import Enum
 
 
-class ProviderType(Enum):
-    AuthKit = "authkit"
+class SsoProviderType(Enum):
     GoogleOAuth = "GoogleOAuth"
     MicrosoftOAuth = "MicrosoftOAuth"

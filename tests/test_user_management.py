@@ -9,7 +9,7 @@ from tests.utils.fixtures.mock_organization_membership import MockOrganizationMe
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
 from workos.user_management import UserManagement
-from workos.utils.provider_types import ProviderType
+from workos.utils.um_provider_types import UserManagementProviderType
 from workos.utils.request import RESPONSE_TYPE_CODE
 
 
@@ -374,7 +374,7 @@ class TestUserManagement(object):
         "invalid_provider",
         [
             123,
-            ProviderType,
+            UserManagementProviderType,
             True,
             False,
             {"provider": "GoogleOAuth"},
@@ -384,7 +384,9 @@ class TestUserManagement(object):
     def test_authorization_url_throws_value_error_with_incorrect_provider_type(
         self, invalid_provider
     ):
-        with pytest.raises(ValueError, match="'provider' must be of type ProviderType"):
+        with pytest.raises(
+            ValueError, match="'provider' must be of type UserManagementProviderType"
+        ):
             redirect_uri = "https://localhost/auth/callback"
             self.user_management.get_authorization_url(
                 provider=invalid_provider,
@@ -426,7 +428,7 @@ class TestUserManagement(object):
         }
 
     def test_authorization_url_has_expected_query_params_with_provider(self):
-        provider = ProviderType.GoogleOAuth
+        provider = UserManagementProviderType.GoogleOAuth
         redirect_uri = "https://localhost/auth/callback"
         authorization_url = self.user_management.get_authorization_url(
             provider=provider, redirect_uri=redirect_uri

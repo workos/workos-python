@@ -8,7 +8,7 @@ from workos.resources.sso import (
     WorkOSConnection,
 )
 from workos.utils.connection_types import ConnectionType
-from workos.utils.provider_types import ProviderType
+from workos.utils.sso_provider_types import SsoProviderType
 from workos.utils.request import (
     RequestHelper,
     RESPONSE_TYPE_CODE,
@@ -62,7 +62,7 @@ class SSO(WorkOSListResource):
             redirect_uri (str) - A valid redirect URI, as specified on WorkOS
             state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
             back as a query parameter
-            provider (ProviderType) - Authentication service provider descriptor
+            provider (SsoProviderType) - Authentication service provider descriptor
             connection (string) - Unique identifier for a WorkOS Connection
             organization (string) - Unique identifier for a WorkOS Organization
 
@@ -85,8 +85,8 @@ class SSO(WorkOSListResource):
                 "Incomplete arguments. Need to specify either a 'connection', 'organization', 'domain', or 'provider'"
             )
         if provider is not None:
-            if not isinstance(provider, ProviderType):
-                raise ValueError("'provider' must be of type ProviderType")
+            if not isinstance(provider, SsoProviderType):
+                raise ValueError("'provider' must be of type SsoProviderType")
 
             params["provider"] = provider.value
         if domain is not None:

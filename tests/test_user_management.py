@@ -731,20 +731,21 @@ class TestUserManagement(object):
         response = self.user_management.send_verification_email(user_id=user_id)
 
         assert url[0].endswith(
-            "users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/send_verification_email"
+            "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/email_verification/send"
         )
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
-    def test_verify_email_code(self, capture_and_mock_request, mock_auth_response):
+    def test_verify_email(self, capture_and_mock_request, mock_user):
         user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         code = "code_123"
 
-        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+        url, request = capture_and_mock_request("post", mock_user, 200)
 
-        response = self.user_management.verify_email_code(user_id=user_id, code=code)
+        response = self.user_management.verify_email(user_id=user_id, code=code)
 
-        assert url[0].endswith("users/verify_email_code")
-        assert request["json"]["user_id"] == user_id
+        assert url[0].endswith(
+            "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/email_verification/confirm"
+        )
         assert request["json"]["code"] == code
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 

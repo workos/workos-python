@@ -29,8 +29,8 @@ USER_AUTHORIZATION_PATH = "user_management/authorize"
 USER_AUTHENTICATE_PATH = "user_management/authenticate"
 USER_SEND_PASSWORD_RESET_PATH = "user_management/password_reset/send"
 USER_RESET_PASSWORD_PATH = "user_management/password_reset/confirm"
-USER_SEND_VERIFICATION_EMAIL_PATH = "users/{0}/send_verification_email"
-USER_VERIFY_EMAIL_CODE_PATH = "users/verify_email_code"
+USER_SEND_VERIFICATION_EMAIL_PATH = "user_management/users/{0}/email_verification/send"
+USER_VERIFY_EMAIL_CODE_PATH = "user_management/users/{0}/email_verification/confirm"
 USER_SEND_MAGIC_AUTH_PATH = "user_management/magic_auth/send"
 USER_AUTH_FACTORS_PATH = "user_management/users/{0}/auth_factors"
 INVITATION_PATH = "user_management/invitations"
@@ -741,7 +741,7 @@ class UserManagement(WorkOSListResource):
             user_id (str): The unique ID of the User whose email address will be verified.
 
         Returns:
-            dict: MagicAuthChallenge response from WorkOS.
+            dict: User response from WorkOS.
         """
 
         headers = {}
@@ -755,7 +755,7 @@ class UserManagement(WorkOSListResource):
 
         return WorkOSUser.construct_from_response(response).to_dict()
 
-    def verify_email_code(
+    def verify_email(
         self,
         user_id,
         code,
@@ -774,19 +774,18 @@ class UserManagement(WorkOSListResource):
         headers = {}
 
         payload = {
-            "user_id": user_id,
             "code": code,
         }
 
         response = self.request_helper.request(
-            USER_VERIFY_EMAIL_CODE_PATH,
+            USER_VERIFY_EMAIL_CODE_PATH.format(user_id),
             method=REQUEST_METHOD_POST,
             headers=headers,
             params=payload,
             token=workos.api_key,
         )
 
-        return WorkOSUser.construct_from_response(response["user"]).to_dict()
+        return WorkOSUser.construct_from_response(response).to_dict()
 
     def send_magic_auth_code(
         self,

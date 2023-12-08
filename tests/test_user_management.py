@@ -711,7 +711,7 @@ class TestUserManagement(object):
         token = "token123"
         new_password = "pass123"
 
-        url, request = capture_and_mock_request("post", mock_user, 200)
+        url, request = capture_and_mock_request("post", {"user": mock_user}, 200)
 
         response = self.user_management.reset_password(
             token=token,
@@ -726,7 +726,7 @@ class TestUserManagement(object):
     def test_send_verification_email(self, capture_and_mock_request, mock_user):
         user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
-        url, _ = capture_and_mock_request("post", mock_user, 200)
+        url, _ = capture_and_mock_request("post", {"user": mock_user}, 200)
 
         response = self.user_management.send_verification_email(user_id=user_id)
 
@@ -739,7 +739,7 @@ class TestUserManagement(object):
         user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         code = "code_123"
 
-        url, request = capture_and_mock_request("post", mock_user, 200)
+        url, request = capture_and_mock_request("post", {"user": mock_user}, 200)
 
         response = self.user_management.verify_email(user_id=user_id, code=code)
 

@@ -12,6 +12,7 @@ class BaseRequestException(Exception):
         errors=None,
         error_description=None,
         code=None,
+        pending_authentication_token=None,
     ):
         super(BaseRequestException, self).__init__(message)
 
@@ -20,6 +21,7 @@ class BaseRequestException(Exception):
         self.errors = errors
         self.code = code
         self.error_description = error_description
+        self.pending_authentication_token = pending_authentication_token
         self.extract_and_set_response_related_data(response)
 
     def extract_and_set_response_related_data(self, response):
@@ -28,12 +30,20 @@ class BaseRequestException(Exception):
         try:
             response_json = response.json()
             self.message = response_json.get("message")
+            self.error = response_json.get("error")
             self.errors = response_json.get("errors")
             self.code = response_json.get("code")
+            self.error_description = response_json.get("error_description")
+            self.pending_authentication_token = response_json.get(
+                "pending_authentication_token"
+            )
         except ValueError:
             self.message = None
+            self.error = None
             self.errors = None
             self.code = None
+            self.error_description = None
+            self.pending_authentication_token = None
 
         headers = response.headers
         self.request_id = headers.get("X-Request-ID")
@@ -57,6 +67,11 @@ class BaseRequestException(Exception):
         if self.error_description is not None:
             exception += ", error_description=%s" % self.error_description
 
+        if self.pending_authentication_token is not None:
+            exception += (
+                ", pending_authentication_token=%s" % self.pending_authentication_token
+            )
+
         return exception + ")"
 
 
@@ -69,6 +84,10 @@ class AuthenticationException(BaseRequestException):
 
 
 class BadRequestException(BaseRequestException):
+    pass
+
+
+class NotFoundException(BaseRequestException):
     pass
 
 

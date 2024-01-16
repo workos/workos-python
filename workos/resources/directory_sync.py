@@ -4,7 +4,7 @@ from workos.resources.base import WorkOSBaseResource
 class WorkOSDirectory(WorkOSBaseResource):
     """Representation of a Directory Response as returned by WorkOS through the Directory Sync feature.
     Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSConnection is comprised of.
+        OBJECT_FIELDS (list): List of fields a WorkOSDirectory is comprised of.
     """
 
     OBJECT_FIELDS = [

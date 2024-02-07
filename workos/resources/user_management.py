@@ -114,6 +114,7 @@ class WorkOSUser(WorkOSBaseResource):
         "first_name",
         "last_name",
         "email_verified",
+        "profile_picture_url",
         "created_at",
         "updated_at",
     ]

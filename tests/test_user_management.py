@@ -220,6 +220,7 @@ class TestUserManagement(object):
 
         assert url[0].endswith("user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert user["profile_picture_url"] == "https://example.com/profile-picture.jpg"
 
     def test_list_users_auto_pagination(
         self,

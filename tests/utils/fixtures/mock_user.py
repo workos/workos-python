@@ -9,6 +9,7 @@ class MockUser(WorkOSBaseResource):
         self.first_name = "Marcelina"
         self.last_name = "Hoeger"
         self.email_verified_at = ""
+        self.profile_picture_url = "https://example.com/profile-picture.jpg"
         self.created_at = datetime.datetime.now()
         self.updated_at = datetime.datetime.now()
 
@@ -18,6 +19,7 @@ class MockUser(WorkOSBaseResource):
         "first_name",
         "last_name",
         "sso_profile_id",
+        "profile_picture_url",
         "email_verified_at",
         "created_at",
         "updated_at",

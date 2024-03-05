@@ -71,9 +71,9 @@ class Organizations(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
-            
+
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,
@@ -135,7 +135,7 @@ class Organizations(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
 
         response = self.request_helper.request(

@@ -84,9 +84,9 @@ class DirectorySync(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
-            
+
         response = self.request_helper.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
@@ -155,7 +155,7 @@ class DirectorySync(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
 
         response = self.request_helper.request(
@@ -223,7 +223,7 @@ class DirectorySync(WorkOSListResource):
                     params["order"] = order
                 else:
                     raise ValueError("Parameter order must be of enum type Order")
-            else: 
+            else:
                 params["order"] = "desc"
 
         response = self.request_helper.request(
@@ -287,7 +287,7 @@ class DirectorySync(WorkOSListResource):
                     params["order"] = order
                 else:
                     raise ValueError("Parameter order must be of enum type Order")
-            else: 
+            else:
                 params["order"] = "desc"
 
         response = self.request_helper.request(
@@ -414,7 +414,7 @@ class DirectorySync(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
 
         response = self.request_helper.request(
@@ -484,7 +484,7 @@ class DirectorySync(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
 
         response = self.request_helper.request(

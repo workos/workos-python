@@ -245,9 +245,9 @@ class SSO(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
-            
+
         response = self.request_helper.request(
             "connections",
             method=REQUEST_METHOD_GET,
@@ -330,7 +330,7 @@ class SSO(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
 
         response = self.request_helper.request(

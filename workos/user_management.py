@@ -116,7 +116,7 @@ class UserManagement(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
 
         response = self.request_helper.request(
@@ -289,7 +289,7 @@ class UserManagement(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
 
         response = self.request_helper.request(
@@ -853,16 +853,16 @@ class UserManagement(WorkOSListResource):
         )
 
         factor_and_challenge = {}
-        factor_and_challenge[
-            "authentication_factor"
-        ] = WorkOSAuthenticationFactorTotp.construct_from_response(
-            response["authentication_factor"]
-        ).to_dict()
-        factor_and_challenge[
-            "authentication_challenge"
-        ] = WorkOSChallenge.construct_from_response(
-            response["authentication_challenge"]
-        ).to_dict()
+        factor_and_challenge["authentication_factor"] = (
+            WorkOSAuthenticationFactorTotp.construct_from_response(
+                response["authentication_factor"]
+            ).to_dict()
+        )
+        factor_and_challenge["authentication_challenge"] = (
+            WorkOSChallenge.construct_from_response(
+                response["authentication_challenge"]
+            ).to_dict()
+        )
 
         return factor_and_challenge
 
@@ -957,9 +957,9 @@ class UserManagement(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else: 
+        else:
             params["order"] = "desc"
-            
+
         response = self.request_helper.request(
             INVITATION_PATH,
             method=REQUEST_METHOD_GET,

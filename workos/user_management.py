@@ -116,6 +116,8 @@ class UserManagement(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
+        else: 
+            params["order"] = "desc"
 
         response = self.request_helper.request(
             USER_PATH,
@@ -287,6 +289,8 @@ class UserManagement(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
+        else: 
+            params["order"] = "desc"
 
         response = self.request_helper.request(
             ORGANIZATION_MEMBERSHIP_PATH,
@@ -953,7 +957,9 @@ class UserManagement(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-
+        else: 
+            params["order"] = "desc"
+            
         response = self.request_helper.request(
             INVITATION_PATH,
             method=REQUEST_METHOD_GET,

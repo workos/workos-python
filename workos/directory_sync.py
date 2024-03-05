@@ -84,7 +84,9 @@ class DirectorySync(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-
+        else: 
+            params["order"] = "desc"
+            
         response = self.request_helper.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
@@ -153,6 +155,8 @@ class DirectorySync(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
+        else: 
+            params["order"] = "desc"
 
         response = self.request_helper.request(
             "directory_users",
@@ -219,6 +223,8 @@ class DirectorySync(WorkOSListResource):
                     params["order"] = order
                 else:
                     raise ValueError("Parameter order must be of enum type Order")
+            else: 
+                params["order"] = "desc"
 
         response = self.request_helper.request(
             "directory_groups",
@@ -281,6 +287,8 @@ class DirectorySync(WorkOSListResource):
                     params["order"] = order
                 else:
                     raise ValueError("Parameter order must be of enum type Order")
+            else: 
+                params["order"] = "desc"
 
         response = self.request_helper.request(
             "directory_groups",
@@ -406,6 +414,8 @@ class DirectorySync(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
+        else: 
+            params["order"] = "desc"
 
         response = self.request_helper.request(
             "directories",
@@ -474,6 +484,8 @@ class DirectorySync(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
+        else: 
+            params["order"] = "desc"
 
         response = self.request_helper.request(
             "directories",

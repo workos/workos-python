@@ -234,7 +234,7 @@ class SSO(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order,
+            "order": order or "desc",
         }
 
         if order is not None:
@@ -245,8 +245,6 @@ class SSO(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else:
-            params["order"] = "desc"
 
         response = self.request_helper.request(
             "connections",
@@ -319,7 +317,7 @@ class SSO(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order,
+            "order": order or "desc",
         }
 
         if order is not None:
@@ -330,8 +328,6 @@ class SSO(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else:
-            params["order"] = "desc"
 
         response = self.request_helper.request(
             "connections",

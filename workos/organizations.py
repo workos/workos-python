@@ -60,7 +60,7 @@ class Organizations(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order,
+            "order": order or "desc",
         }
 
         if order is not None:
@@ -71,8 +71,6 @@ class Organizations(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else:
-            params["order"] = "desc"
 
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
@@ -124,7 +122,7 @@ class Organizations(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order,
+            "order": order or "desc",
         }
 
         if order is not None:
@@ -135,8 +133,6 @@ class Organizations(WorkOSListResource):
                 params["order"] = order
             else:
                 raise ValueError("Parameter order must be of enum type Order")
-        else:
-            params["order"] = "desc"
 
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,

@@ -107,6 +107,7 @@ class UserManagement(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
+            "order": order or "desc",
         }
 
         if order is not None:
@@ -278,6 +279,7 @@ class UserManagement(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
+            "order": order or "desc",
         }
 
         if order is not None:
@@ -944,6 +946,7 @@ class UserManagement(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
+            "order": order or "desc",
         }
 
         if order is not None:

@@ -66,6 +66,7 @@ class WorkOSOrganizationMembership(WorkOSBaseResource):
         "id",
         "user_id",
         "organization_id",
+        "status",
         "created_at",
         "updated_at",
     ]

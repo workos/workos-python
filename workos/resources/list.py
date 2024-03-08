@@ -75,7 +75,7 @@ class WorkOSListResource(WorkOSBaseResource):
             params = {
                 "after": after,
                 "before": before,
-                "order": order,
+                "order": order or "desc",
             }
             params.update(resource_specific_params)
 

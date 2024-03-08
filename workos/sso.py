@@ -234,7 +234,7 @@ class SSO(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order,
+            "order": order or "desc",
         }
 
         if order is not None:
@@ -317,7 +317,7 @@ class SSO(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order,
+            "order": order or "desc",
         }
 
         if order is not None:

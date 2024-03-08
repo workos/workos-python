@@ -60,7 +60,7 @@ class Organizations(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order,
+            "order": order or "desc",
         }
 
         if order is not None:
@@ -122,7 +122,7 @@ class Organizations(WorkOSListResource):
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order,
+            "order": order or "desc",
         }
 
         if order is not None:

@@ -133,7 +133,7 @@ class WorkOSImpersonator(WorkOSBaseResource):
     """Representation of a WorkOS Dashboard member impersonating a user
 
     Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSUser comprises.
+        OBJECT_FIELDS (list): List of fields a WorkOSImpersonator comprises.
     """
 
     OBJECT_FIELDS = [

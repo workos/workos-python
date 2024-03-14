@@ -23,7 +23,6 @@ class Webhooks(object):
     DEFAULT_TOLERANCE = 180
 
     def verify_event(self, payload, sig_header, secret, tolerance=DEFAULT_TOLERANCE):
-
         if payload is None:
             raise ValueError("Payload body is missing and is a required parameter")
         if sig_header is None:

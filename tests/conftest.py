@@ -26,7 +26,7 @@ class MockRawResponse(object):
 
 @pytest.fixture
 def set_api_key(monkeypatch):
-    monkeypatch.setattr(workos, "api_key", "sk_abdsomecharactersm284")
+    monkeypatch.setattr(workos, "api_key", "sk_test")
 
 
 @pytest.fixture

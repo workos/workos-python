@@ -13,7 +13,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_users(self):
-
         user_list = [MockDirectoryUser(id=str(i)).to_dict() for i in range(100)]
 
         return {
@@ -36,7 +35,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_default_limit_users(self):
-
         user_list = [MockDirectoryUser(id=str(i)).to_dict() for i in range(10)]
 
         return {
@@ -59,7 +57,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_default_limit_users_v2(self):
-
         user_list = [MockDirectoryUser(id=str(i)).to_dict() for i in range(10)]
 
         dict_response = {
@@ -84,7 +81,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_users_pagination_response(self):
-
         user_list = [MockDirectoryUser(id=str(i)).to_dict() for i in range(90)]
 
         return {
@@ -107,7 +103,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_groups(self):
-
         group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(5000)]
 
         return {
@@ -130,7 +125,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_default_limit_groups(self):
-
         group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(10)]
 
         return {
@@ -153,7 +147,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_default_limit_groups_v2(self):
-
         group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(10)]
 
         dict_response = {
@@ -178,7 +171,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_groups_pagination_reponse(self):
-
         group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(4990)]
 
         return {
@@ -243,7 +235,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_directories(self):
-
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(5000)]
 
         return {
@@ -266,7 +257,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_directories_with_limit(self):
-
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(4)]
 
         return {
@@ -288,7 +278,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_directories_with_limit_v2(self):
-
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(4)]
 
         dict_response = {
@@ -312,7 +301,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_default_limit_directories(self):
-
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(10)]
 
         return {
@@ -335,7 +323,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_default_limit_directories_v2(self):
-
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(10)]
 
         dict_response = {
@@ -360,7 +347,6 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_directories_pagination_response(self):
-
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(4990)]
 
         return {
@@ -502,7 +488,6 @@ class TestDirectorySync(object):
         mock_directories,
         mock_request_method,
     ):
-
         directories = mock_default_limit_directories_v2
         mock_request_method("get", mock_directories_pagination_response, 200)
         all_directories = directories.auto_paging_iter()

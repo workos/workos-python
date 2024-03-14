@@ -63,7 +63,6 @@ class TestSSO(object):
 
     @pytest.fixture
     def mock_connections(self):
-
         connection_list = [MockConnection(id=str(i)).to_dict() for i in range(5000)]
 
         return {
@@ -84,7 +83,6 @@ class TestSSO(object):
 
     @pytest.fixture
     def mock_connections_with_limit(self):
-
         connection_list = [MockConnection(id=str(i)).to_dict() for i in range(4)]
 
         return {
@@ -106,7 +104,6 @@ class TestSSO(object):
 
     @pytest.fixture
     def mock_connections_with_limit_v2(self, set_api_key_and_client_id):
-
         connection_list = [MockConnection(id=str(i)).to_dict() for i in range(4)]
 
         dict_response = {
@@ -129,7 +126,6 @@ class TestSSO(object):
 
     @pytest.fixture
     def mock_connections_with_default_limit(self):
-
         connection_list = [MockConnection(id=str(i)).to_dict() for i in range(10)]
 
         return {
@@ -152,7 +148,6 @@ class TestSSO(object):
 
     @pytest.fixture
     def mock_connections_with_default_limit_v2(self, setup_with_client_id):
-
         connection_list = [MockConnection(id=str(i)).to_dict() for i in range(10)]
 
         dict_response = {
@@ -176,7 +171,6 @@ class TestSSO(object):
 
     @pytest.fixture
     def mock_connections_pagination_response(self):
-
         connection_list = [MockConnection(id=str(i)).to_dict() for i in range(4990)]
 
         return {
@@ -565,7 +559,6 @@ class TestSSO(object):
         mock_request_method,
         setup_with_client_id,
     ):
-
         connections = mock_connections_with_limit
         mock_request_method("get", mock_connections_pagination_response, 200)
         all_connections = SSO.construct_from_response(connections).auto_paging_iter()
@@ -579,7 +572,6 @@ class TestSSO(object):
         mock_request_method,
         setup_with_client_id,
     ):
-
         connections = mock_connections_with_limit_v2
         mock_request_method("get", mock_connections_pagination_response, 200)
         all_connections = connections.auto_paging_iter()

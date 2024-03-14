@@ -149,8 +149,8 @@ class TestUserManagement(object):
             "organization_id": "org_12345",
             "impersonator": {
                 "email": "admin@foocorp.com",
-                "reason": "Debugging an account issue."
-            }
+                "reason": "Debugging an account issue.",
+            },
         }
 
     @pytest.fixture
@@ -571,16 +571,20 @@ class TestUserManagement(object):
         assert request["json"]["client_secret"] == "sk_test"
         assert request["json"]["grant_type"] == "authorization_code"
 
-    def test_authenticate_impersonator_with_code(self, capture_and_mock_request, mock_auth_response_with_impersonator):
+    def test_authenticate_impersonator_with_code(
+        self, capture_and_mock_request, mock_auth_response_with_impersonator
+    ):
         code = "test_code"
 
-        url, request = capture_and_mock_request("post", mock_auth_response_with_impersonator, 200)
+        url, request = capture_and_mock_request(
+            "post", mock_auth_response_with_impersonator, 200
+        )
 
         response = self.user_management.authenticate_with_code(
             code=code,
         )
 
-        print (response)
+        print(response)
         assert url[0].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["impersonator"]["email"] == "admin@foocorp.com"

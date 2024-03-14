@@ -201,7 +201,7 @@ class UserManagement(WorkOSListResource):
             token=workos.api_key,
         )
 
-    def create_organization_membership(self, user_id, organization_id, role_slug):
+    def create_organization_membership(self, user_id, organization_id, role_slug=None):
         """Create a new OrganizationMembership for the given Organization and User.
 
         Args:

@@ -201,19 +201,21 @@ class UserManagement(WorkOSListResource):
             token=workos.api_key,
         )
 
-    def create_organization_membership(self, user_id, organization_id):
+    def create_organization_membership(self, user_id, organization_id, role_slug):
         """Create a new OrganizationMembership for the given Organization and User.
 
         Args:
             user_id: The Unique ID of the User.
             organization_id: The Unique ID of the Organization to which the user belongs to.
+            role_slug: The Unique Slug of the Role to which to grant to this membership. 
+                If no slug is passed in, the default role will be granted.(Optional)
 
         Returns:
             dict: Created OrganizationMembership response from WorkOS.
         """
         headers = {}
 
-        params = {"user_id": user_id, "organization_id": organization_id}
+        params = {"user_id": user_id, "organization_id": organization_id, "role_slug": role_slug}
 
         response = self.request_helper.request(
             ORGANIZATION_MEMBERSHIP_PATH,

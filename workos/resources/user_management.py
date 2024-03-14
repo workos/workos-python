@@ -22,7 +22,9 @@ class WorkOSAuthenticationResponse(WorkOSBaseResource):
         authentication_response.user = user
 
         if "impersonator" in response:
-            impersonator = WorkOSImpersonator.construct_from_response(response["impersonator"])
+            impersonator = WorkOSImpersonator.construct_from_response(
+                response["impersonator"]
+            )
             authentication_response.impersonator = impersonator
         else:
             authentication_response.impersonator = None
@@ -128,6 +130,7 @@ class WorkOSUser(WorkOSBaseResource):
         "created_at",
         "updated_at",
     ]
+
 
 class WorkOSImpersonator(WorkOSBaseResource):
     """Representation of a WorkOS Dashboard member impersonating a user

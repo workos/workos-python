@@ -207,7 +207,7 @@ class UserManagement(WorkOSListResource):
         Args:
             user_id: The Unique ID of the User.
             organization_id: The Unique ID of the Organization to which the user belongs to.
-            role_slug: The Unique Slug of the Role to which to grant to this membership. 
+            role_slug: The Unique Slug of the Role to which to grant to this membership.
                 If no slug is passed in, the default role will be granted.(Optional)
 
         Returns:
@@ -215,7 +215,11 @@ class UserManagement(WorkOSListResource):
         """
         headers = {}
 
-        params = {"user_id": user_id, "organization_id": organization_id, "role_slug": role_slug}
+        params = {
+            "user_id": user_id,
+            "organization_id": organization_id,
+            "role_slug": role_slug,
+        }
 
         response = self.request_helper.request(
             ORGANIZATION_MEMBERSHIP_PATH,
@@ -853,16 +857,16 @@ class UserManagement(WorkOSListResource):
         )
 
         factor_and_challenge = {}
-        factor_and_challenge[
-            "authentication_factor"
-        ] = WorkOSAuthenticationFactorTotp.construct_from_response(
-            response["authentication_factor"]
-        ).to_dict()
-        factor_and_challenge[
-            "authentication_challenge"
-        ] = WorkOSChallenge.construct_from_response(
-            response["authentication_challenge"]
-        ).to_dict()
+        factor_and_challenge["authentication_factor"] = (
+            WorkOSAuthenticationFactorTotp.construct_from_response(
+                response["authentication_factor"]
+            ).to_dict()
+        )
+        factor_and_challenge["authentication_challenge"] = (
+            WorkOSChallenge.construct_from_response(
+                response["authentication_challenge"]
+            ).to_dict()
+        )
 
         return factor_and_challenge
 

@@ -330,7 +330,7 @@ class TestUserManagement(object):
         )
 
         assert url[0].endswith("user_management/organization_memberships/om_ABCDE")
-        assert om["id"] == "om_ABCDE"
+        assert organization_membership["id"] == "om_ABCDE"
         assert organization_membership["role"] == {"slug": "member"}
 
     def test_get_organization_membership(

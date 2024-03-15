@@ -231,6 +231,33 @@ class UserManagement(WorkOSListResource):
 
         return WorkOSOrganizationMembership.construct_from_response(response).to_dict()
 
+     def update_organization_membership(self, organization_membership_id, role_slug=None):
+        """Updates an OrganizationMembership for the given id.
+
+        Args:
+            organization_membership_id (str) -  The unique ID of the Organization Membership.
+            role_slug: The Unique Slug of the Role to which to grant to this membership.
+                If no slug is passed in, it will not be changed (Optional)
+
+        Returns:
+            dict: Created OrganizationMembership response from WorkOS.
+        """
+        headers = {}
+
+        params = {
+            "role_slug": role_slug,
+        }
+
+        response = self.request_helper.request(
+            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=REQUEST_METHOD_PUT,
+            params=params,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSOrganizationMembership.construct_from_response(response).to_dict()
+
     def get_organization_membership(self, organization_membership_id):
         """Get the details of an organization membership.
 

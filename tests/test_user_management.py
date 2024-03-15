@@ -325,7 +325,8 @@ class TestUserManagement(object):
         url, _ = capture_and_mock_request("put", mock_organization_membership, 201)
 
         organization_membership = self.user_management.update_organization_membership(
-            organization_membership_id="om_ABCDE", role_slug="member",
+            organization_membership_id="om_ABCDE",
+            role_slug="member",
         )
 
         assert url[0].endswith("user_management/organization_memberships/om_ABCDE")

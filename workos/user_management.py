@@ -231,7 +231,9 @@ class UserManagement(WorkOSListResource):
 
         return WorkOSOrganizationMembership.construct_from_response(response).to_dict()
 
-     def update_organization_membership(self, organization_membership_id, role_slug=None):
+    def update_organization_membership(
+        self, organization_membership_id, role_slug=None
+    ):
         """Updates an OrganizationMembership for the given id.
 
         Args:

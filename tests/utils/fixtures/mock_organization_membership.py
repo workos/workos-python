@@ -8,6 +8,7 @@ class MockOrganizationMembership(WorkOSBaseResource):
         self.user_id = "user_12345"
         self.organization_id = "org_67890"
         self.status = "active"
+        self.role = {"slug": "member"}
         self.created_at = datetime.datetime.now()
         self.updated_at = datetime.datetime.now()
 
@@ -16,6 +17,7 @@ class MockOrganizationMembership(WorkOSBaseResource):
         "user_id",
         "organization_id",
         "status",
+        "role",
         "created_at",
         "updated_at",
     ]

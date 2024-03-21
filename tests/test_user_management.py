@@ -141,6 +141,19 @@ class TestUserManagement(object):
         return {"user": user, "organization_id": "org_12345"}
 
     @pytest.fixture
+    def mock_auth_response_with_impersonator(self):
+        user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").to_dict()
+
+        return {
+            "user": user,
+            "organization_id": "org_12345",
+            "impersonator": {
+                "email": "admin@foocorp.com",
+                "reason": "Debugging an account issue.",
+            },
+        }
+
+    @pytest.fixture
     def mock_magic_auth_challenge_response(self):
         return {
             "id": "auth_challenge_01E4ZCR3C56J083X43JQXF3JK5",
@@ -546,7 +559,7 @@ class TestUserManagement(object):
         assert request["json"]["user_agent"] == user_agent
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
-        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert request["json"]["client_secret"] == "sk_test"
         assert request["json"]["grant_type"] == "password"
 
     def test_authenticate_with_code(self, capture_and_mock_request, mock_auth_response):
@@ -569,8 +582,27 @@ class TestUserManagement(object):
         assert request["json"]["user_agent"] == user_agent
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
-        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert request["json"]["client_secret"] == "sk_test"
         assert request["json"]["grant_type"] == "authorization_code"
+
+    def test_authenticate_impersonator_with_code(
+        self, capture_and_mock_request, mock_auth_response_with_impersonator
+    ):
+        code = "test_code"
+
+        url, request = capture_and_mock_request(
+            "post", mock_auth_response_with_impersonator, 200
+        )
+
+        response = self.user_management.authenticate_with_code(
+            code=code,
+        )
+
+        print(response)
+        assert url[0].endswith("user_management/authenticate")
+        assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response["impersonator"]["email"] == "admin@foocorp.com"
+        assert response["impersonator"]["reason"] == "Debugging an account issue."
 
     def test_authenticate_with_magic_auth(
         self, capture_and_mock_request, mock_auth_response
@@ -597,7 +629,7 @@ class TestUserManagement(object):
         assert request["json"]["email"] == email
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
-        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert request["json"]["client_secret"] == "sk_test"
         assert (
             request["json"]["grant_type"]
             == "urn:workos:oauth:grant-type:magic-auth:code"
@@ -631,7 +663,7 @@ class TestUserManagement(object):
         )
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
-        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert request["json"]["client_secret"] == "sk_test"
         assert (
             request["json"]["grant_type"]
             == "urn:workos:oauth:grant-type:email-verification:code"
@@ -669,7 +701,7 @@ class TestUserManagement(object):
         )
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
-        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert request["json"]["client_secret"] == "sk_test"
         assert request["json"]["grant_type"] == "urn:workos:oauth:grant-type:mfa-totp"
 
     def test_authenticate_with_organization_selection(
@@ -700,7 +732,7 @@ class TestUserManagement(object):
         )
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
-        assert request["json"]["client_secret"] == "sk_abdsomecharactersm284"
+        assert request["json"]["client_secret"] == "sk_test"
         assert (
             request["json"]["grant_type"]
             == "urn:workos:oauth:grant-type:organization-selection"

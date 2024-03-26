@@ -26,6 +26,10 @@ jobs:
           cache: 'pip'
           cache-dependency-path: setup.py
 
+      - name: Install dependencies
+        run: |
+          pip install -e .[dev]
+
       - name: Check formatting
         run: black --check .
 

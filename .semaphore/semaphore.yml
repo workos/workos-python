@@ -5,7 +5,7 @@ agent:
     type: e1-standard-2
   containers:
     - name: main
-      image: "registry.semaphoreci.com/python:3.7"
+      image: "registry.semaphoreci.com/python:3.8"
 blocks:
   - task:
       secrets:

@@ -10,6 +10,7 @@ from workos.resources.user_management import (
     WorkOSUser,
 )
 from workos.utils.pagination_order import Order
+from workos.utils.screen_hint import ScreenHint
 from workos.utils.um_provider_types import UserManagementProviderType
 from workos.utils.request import (
     RequestHelper,
@@ -366,6 +367,7 @@ class UserManagement(WorkOSListResource):
         domain_hint=None,
         login_hint=None,
         state=None,
+        screen_hint=None,
     ):
         """Generate an OAuth 2.0 authorization URL.
 
@@ -387,6 +389,8 @@ class UserManagement(WorkOSListResource):
                 OktaSAML, and AzureSAML connection types. (Optional)
             state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
                 back as a query parameter. (Optional)
+            screen_hint (ScreenHint) -  Can be used when the provider is authkit.
+                allows you to control whether to redirect the user to the sign-up or sign-in page inside of authkit. (Optional)
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
@@ -419,6 +423,11 @@ class UserManagement(WorkOSListResource):
             params["login_hint"] = login_hint
         if state is not None:
             params["state"] = state
+
+        if screen_hint is not None:
+            if provider != UserManagementProviderType.AuthKit:
+                raise ValueError("A 'screen_hint' can only be provided when the provider is 'authkit'.")
+            params["screen_hint"] = screen_hint
 
         prepared_request = Request(
             "GET",

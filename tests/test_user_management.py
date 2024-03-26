@@ -471,6 +471,22 @@ class TestUserManagement(object):
             "response_type": RESPONSE_TYPE_CODE,
         }
 
+    def test_authorization_url_throws_error_when_screen_hint_with_non_authkit_provider(self):
+        redirect_uri = "https://localhost/auth/callback"
+        domain_hint = "workos.com"
+        screen_hint = ScreenHint.SignUp
+
+        with pytest.raises(ValueError) as exc_info:
+            authorization_url = self.user_management.get_authorization_url(
+                domain_hint=domain_hint,
+                redirect_uri=redirect_uri,
+                screen_hint=screen_hint,
+                provider=UserManagementProviderType.GoogleOAuth
+            )
+
+        # Check if the error message is as expected
+        assert str(exc_info.value) == "A 'screen_hint' can only be provided when the provider is 'authkit'."
+
     def test_authorization_url_has_expected_query_params_with_domain_hint(self):
         connection_id = "connection_123"
         redirect_uri = "https://localhost/auth/callback"

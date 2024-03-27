@@ -11,22 +11,6 @@ about = {}
 with open(os.path.join(base_dir, "workos", "__about__.py")) as f:
     exec(f.read(), about)
 
-dev_requirements = [
-    "flake8",
-    "pytest==4.6.9",
-    "pytest-cov==2.8.1",
-    "six==1.13.0",
-]
-if sys.version_info.major == 3:
-    dev_requirements.extend(
-        [
-            "black==22.3.0",
-            "twine==4.0.2",
-            "requests==2.30.0",
-            "urllib3==2.0.2",
-        ]
-    )
-
 setup(
     name=about["__package_name__"],
     version=about["__version__"],
@@ -45,7 +29,16 @@ setup(
     license=about["__license__"],
     install_requires=["requests>=2.22.0"],
     extras_require={
-        "dev": dev_requirements,
+        "dev": [
+            "flake8",
+            "pytest==8.1.1",
+            "pytest-cov==2.8.1",
+            "six==1.13.0",
+            "black==22.3.0",
+            "twine==4.0.2",
+            "requests==2.30.0",
+            "urllib3==2.0.2",
+        ],
         ":python_version<'3.4'": ["enum34"],
     },
     classifiers=[
@@ -54,8 +47,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",

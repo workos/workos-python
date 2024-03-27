@@ -4,8 +4,8 @@ name: PyPI Publishing
 
 agent:
   machine:
-    type: e1-standard-2
-    os_image: ubuntu1804
+    type: e2-standard-2
+    os_image: ubuntu2204
 
 blocks:
   - name: Publish
@@ -15,7 +15,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - sem-version python 3.7
+          - sem-version python 3.10
           - python -m pip install --upgrade pip
           - pip install -e .[dev]
       jobs:

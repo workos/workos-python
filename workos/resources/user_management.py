@@ -21,6 +21,14 @@ class WorkOSAuthenticationResponse(WorkOSBaseResource):
         user = WorkOSUser.construct_from_response(response["user"])
         authentication_response.user = user
 
+        if "impersonator" in response:
+            impersonator = WorkOSImpersonator.construct_from_response(
+                response["impersonator"]
+            )
+            authentication_response.impersonator = impersonator
+        else:
+            authentication_response.impersonator = None
+
         return authentication_response
 
     def to_dict(self):
@@ -30,6 +38,9 @@ class WorkOSAuthenticationResponse(WorkOSBaseResource):
 
         user_dict = self.user.to_dict()
         authentication_response_dict["user"] = user_dict
+
+        if self.impersonator:
+            authentication_response_dict["impersonator"] = self.impersonator.to_dict()
 
         return authentication_response_dict
 
@@ -66,8 +77,10 @@ class WorkOSOrganizationMembership(WorkOSBaseResource):
         "id",
         "user_id",
         "organization_id",
+        "status",
         "created_at",
         "updated_at",
+        "role",
     ]
 
 
@@ -114,6 +127,20 @@ class WorkOSUser(WorkOSBaseResource):
         "first_name",
         "last_name",
         "email_verified",
+        "profile_picture_url",
         "created_at",
         "updated_at",
+    ]
+
+
+class WorkOSImpersonator(WorkOSBaseResource):
+    """Representation of a WorkOS Dashboard member impersonating a user
+
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSImpersonator comprises.
+    """
+
+    OBJECT_FIELDS = [
+        "email",
+        "reason",
     ]

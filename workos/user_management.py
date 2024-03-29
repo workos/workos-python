@@ -886,16 +886,16 @@ class UserManagement(WorkOSListResource):
         )
 
         factor_and_challenge = {}
-        factor_and_challenge[
-            "authentication_factor"
-        ] = WorkOSAuthenticationFactorTotp.construct_from_response(
-            response["authentication_factor"]
-        ).to_dict()
-        factor_and_challenge[
-            "authentication_challenge"
-        ] = WorkOSChallenge.construct_from_response(
-            response["authentication_challenge"]
-        ).to_dict()
+        factor_and_challenge["authentication_factor"] = (
+            WorkOSAuthenticationFactorTotp.construct_from_response(
+                response["authentication_factor"]
+            ).to_dict()
+        )
+        factor_and_challenge["authentication_challenge"] = (
+            WorkOSChallenge.construct_from_response(
+                response["authentication_challenge"]
+            ).to_dict()
+        )
 
         return factor_and_challenge
 
@@ -1013,7 +1013,12 @@ class UserManagement(WorkOSListResource):
         return self.construct_from_response(response)
 
     def send_invitation(
-        self, email, organization_id=None, expires_in_days=None, inviter_user_id=None, role_slug=None,
+        self,
+        email,
+        organization_id=None,
+        expires_in_days=None,
+        inviter_user_id=None,
+        role_slug=None,
     ):
         """Sends an Invitation to a recipient.
 

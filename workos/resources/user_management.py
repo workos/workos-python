@@ -46,6 +46,33 @@ class WorkOSAuthenticationResponse(WorkOSBaseResource):
 
         return authentication_response_dict
 
+class WorkOSRefreshTokenAuthenticationResponse(WorkOSBaseResource):
+    """Representation of refresh token authentication response as returned by WorkOS through User Management features."""
+
+    """Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSRefreshTokenAuthenticationResponse comprises.
+    """
+
+    OBJECT_FIELDS = [
+        "access_token",
+        "refresh_token",
+    ]
+
+    @classmethod
+    def construct_from_response(cls, response):
+        authentication_response = super(
+            WorkOSAuthenticationResponse, cls
+        ).construct_from_response(response)
+
+        return authentication_response
+
+    def to_dict(self):
+        authentication_response_dict = super(
+            WorkOSAuthenticationResponse, self
+        ).to_dict()
+
+        return authentication_response_dict
+
 
 class WorkOSInvitation(WorkOSBaseResource):
     """Representation of an Invitation as returned by WorkOS through User Management features.

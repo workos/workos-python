@@ -146,6 +146,13 @@ class TestUserManagement(object):
         }
 
     @pytest.fixture
+    def mock_auth_refresh_token_response(self):
+        return {
+            "access_token": "access_token_12345",
+            "refresh_token": "refresh_token_12345",
+        }
+
+    @pytest.fixture
     def mock_auth_response_with_impersonator(self):
         user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").to_dict()
 
@@ -754,6 +761,32 @@ class TestUserManagement(object):
             request["json"]["grant_type"]
             == "urn:workos:oauth:grant-type:organization-selection"
         )
+
+    def test_authenticate_with_refresh_token(
+        self, capture_and_mock_request, mock_auth_refresh_token_response
+    ):
+        refresh_token = "refresh_token_12345"
+        user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+        ip_address = "192.0.0.1"
+
+        url, request = capture_and_mock_request("post", mock_auth_refresh_token_response, 200)
+
+        response = self.user_management.authenticate_with_refresh_token(
+            refresh_token=refresh_token,
+            user_agent=user_agent,
+            ip_address=ip_address,
+        )
+
+        assert url[0].endswith("user_management/authenticate")
+        assert response["access_token"] == "access_token_12345"
+        assert response["refresh_token"] == refresh_token
+        assert request["json"]["user_agent"] == user_agent
+        assert request["json"]["refresh_token"] == "refresh_token_98765"
+        assert request["json"]["ip_address"] == ip_address
+        assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
+        assert request["json"]["client_secret"] == "sk_test"
+        assert request["json"]["grant_type"]== "refresh_token"
+
 
     def test_send_password_reset_email(self, capture_and_mock_request):
         email = "marcelina@foo-corp.com"

@@ -751,7 +751,9 @@ class UserManagement(WorkOSListResource):
             params=payload,
         )
 
-        return WorkOSRefreshTokenAuthenticationResponse.construct_from_response(response).to_dict()
+        return WorkOSRefreshTokenAuthenticationResponse.construct_from_response(
+            response
+        ).to_dict()
 
     def send_password_reset_email(
         self,
@@ -930,16 +932,16 @@ class UserManagement(WorkOSListResource):
         )
 
         factor_and_challenge = {}
-        factor_and_challenge[
-            "authentication_factor"
-        ] = WorkOSAuthenticationFactorTotp.construct_from_response(
-            response["authentication_factor"]
-        ).to_dict()
-        factor_and_challenge[
-            "authentication_challenge"
-        ] = WorkOSChallenge.construct_from_response(
-            response["authentication_challenge"]
-        ).to_dict()
+        factor_and_challenge["authentication_factor"] = (
+            WorkOSAuthenticationFactorTotp.construct_from_response(
+                response["authentication_factor"]
+            ).to_dict()
+        )
+        factor_and_challenge["authentication_challenge"] = (
+            WorkOSChallenge.construct_from_response(
+                response["authentication_challenge"]
+            ).to_dict()
+        )
 
         return factor_and_challenge
 

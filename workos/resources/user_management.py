@@ -46,6 +46,7 @@ class WorkOSAuthenticationResponse(WorkOSBaseResource):
 
         return authentication_response_dict
 
+
 class WorkOSRefreshTokenAuthenticationResponse(WorkOSBaseResource):
     """Representation of refresh token authentication response as returned by WorkOS through User Management features."""
 

@@ -769,7 +769,9 @@ class TestUserManagement(object):
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
-        url, request = capture_and_mock_request("post", mock_auth_refresh_token_response, 200)
+        url, request = capture_and_mock_request(
+            "post", mock_auth_refresh_token_response, 200
+        )
 
         response = self.user_management.authenticate_with_refresh_token(
             refresh_token=refresh_token,
@@ -785,8 +787,7 @@ class TestUserManagement(object):
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
         assert request["json"]["client_secret"] == "sk_test"
-        assert request["json"]["grant_type"]== "refresh_token"
-
+        assert request["json"]["grant_type"] == "refresh_token"
 
     def test_send_password_reset_email(self, capture_and_mock_request):
         email = "marcelina@foo-corp.com"

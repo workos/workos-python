@@ -765,7 +765,7 @@ class TestUserManagement(object):
     def test_authenticate_with_refresh_token(
         self, capture_and_mock_request, mock_auth_refresh_token_response
     ):
-        refresh_token = "refresh_token_12345"
+        refresh_token = "refresh_token_98765"
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
@@ -781,9 +781,9 @@ class TestUserManagement(object):
 
         assert url[0].endswith("user_management/authenticate")
         assert response["access_token"] == "access_token_12345"
-        assert response["refresh_token"] == refresh_token
+        assert response["refresh_token"] == "refresh_token_12345"
         assert request["json"]["user_agent"] == user_agent
-        assert request["json"]["refresh_token"] == "refresh_token_98765"
+        assert request["json"]["refresh_token"] == refresh_token
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
         assert request["json"]["client_secret"] == "sk_test"

@@ -62,14 +62,14 @@ class WorkOSRefreshTokenAuthenticationResponse(WorkOSBaseResource):
     @classmethod
     def construct_from_response(cls, response):
         authentication_response = super(
-            WorkOSAuthenticationResponse, cls
+            WorkOSRefreshTokenAuthenticationResponse, cls
         ).construct_from_response(response)
 
         return authentication_response
 
     def to_dict(self):
         authentication_response_dict = super(
-            WorkOSAuthenticationResponse, self
+            WorkOSRefreshTokenAuthenticationResponse, self
         ).to_dict()
 
         return authentication_response_dict

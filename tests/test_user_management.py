@@ -138,7 +138,12 @@ class TestUserManagement(object):
     def mock_auth_response(self):
         user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").to_dict()
 
-        return {"user": user, "organization_id": "org_12345"}
+        return {
+            "user": user,
+            "organization_id": "org_12345",
+            "access_token": "access_token_12345",
+            "refresh_token": "refresh_token_12345",
+        }
 
     @pytest.fixture
     def mock_auth_response_with_impersonator(self):
@@ -554,6 +559,8 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
+        assert response["access_token"] == "access_token_12345"
+        assert response["refresh_token"] == "refresh_token_12345"
         assert request["json"]["email"] == email
         assert request["json"]["password"] == password
         assert request["json"]["user_agent"] == user_agent
@@ -578,6 +585,8 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
+        assert response["access_token"] == "access_token_12345"
+        assert response["refresh_token"] == "refresh_token_12345"
         assert request["json"]["code"] == code
         assert request["json"]["user_agent"] == user_agent
         assert request["json"]["ip_address"] == ip_address
@@ -624,6 +633,8 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
+        assert response["access_token"] == "access_token_12345"
+        assert response["refresh_token"] == "refresh_token_12345"
         assert request["json"]["code"] == code
         assert request["json"]["user_agent"] == user_agent
         assert request["json"]["email"] == email
@@ -655,6 +666,8 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
+        assert response["access_token"] == "access_token_12345"
+        assert response["refresh_token"] == "refresh_token_12345"
         assert request["json"]["code"] == code
         assert request["json"]["user_agent"] == user_agent
         assert (
@@ -689,6 +702,8 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
+        assert response["access_token"] == "access_token_12345"
+        assert response["refresh_token"] == "refresh_token_12345"
         assert request["json"]["code"] == code
         assert request["json"]["user_agent"] == user_agent
         assert (
@@ -724,6 +739,8 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
+        assert response["access_token"] == "access_token_12345"
+        assert response["refresh_token"] == "refresh_token_12345"
         assert request["json"]["organization_id"] == organization_id
         assert request["json"]["user_agent"] == user_agent
         assert (

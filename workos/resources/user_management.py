@@ -9,7 +9,9 @@ class WorkOSAuthenticationResponse(WorkOSBaseResource):
     """
 
     OBJECT_FIELDS = [
+        "access_token",
         "organization_id",
+        "refresh_token",
     ]
 
     @classmethod

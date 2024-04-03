@@ -4,6 +4,7 @@ from workos.resources.list import WorkOSListResource
 from workos.resources.mfa import WorkOSAuthenticationFactorTotp, WorkOSChallenge
 from workos.resources.user_management import (
     WorkOSAuthenticationResponse,
+    WorkOSRefreshTokenAuthenticationResponse,
     WorkOSInvitation,
     WorkOSOrganizationMembership,
     WorkOSPasswordChallengeResponse,
@@ -708,6 +709,51 @@ class UserManagement(WorkOSListResource):
         )
 
         return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
+
+    def authenticate_with_refresh_token(
+        self,
+        refresh_token,
+        ip_address=None,
+        user_agent=None,
+    ):
+        """Authenticates a user with a refresh token.
+
+        Kwargs:
+            refresh_token (str): The token associated to the user.
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            (dict): Refresh Token Authentication response from WorkOS.
+                [access_token] (str): The refreshed access token
+                [refresh_token] (str): The new refresh token.
+        """
+
+        headers = {}
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "refresh_token": refresh_token,
+            "grant_type": "refresh_token",
+        }
+
+        if ip_address:
+            payload["ip_address"] = ip_address
+
+        if user_agent:
+            payload["user_agent"] = user_agent
+
+        response = self.request_helper.request(
+            USER_AUTHENTICATE_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+        )
+
+        return WorkOSRefreshTokenAuthenticationResponse.construct_from_response(
+            response
+        ).to_dict()
 
     def send_password_reset_email(
         self,

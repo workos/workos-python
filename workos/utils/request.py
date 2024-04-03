@@ -25,8 +25,6 @@ REQUEST_METHOD_GET = "get"
 REQUEST_METHOD_POST = "post"
 REQUEST_METHOD_PUT = "put"
 
-REQUEST_DEFAULT_TIMEOUT = workos.request_timeout
-
 
 class RequestHelper(object):
     def __init__(self):

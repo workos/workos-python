@@ -7,6 +7,7 @@ from workos.exceptions import (
     AuthorizationException,
     AuthenticationException,
     BadRequestException,
+    NotFoundException,
     ServerException,
 )
 
@@ -100,6 +101,8 @@ class RequestHelper(object):
                 raise AuthenticationException(response)
             elif status_code == 403:
                 raise AuthorizationException(response)
+            elif status_code == 404:
+                raise NotFoundException(response)
             error = response_json.get("error")
             error_description = response_json.get("error_description")
             raise BadRequestException(

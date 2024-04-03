@@ -7,7 +7,6 @@ from workos.exceptions import (
     AuthorizationException,
     AuthenticationException,
     BadRequestException,
-    NotFoundException,
     ServerException,
 )
 
@@ -24,6 +23,8 @@ REQUEST_METHOD_DELETE = "delete"
 REQUEST_METHOD_GET = "get"
 REQUEST_METHOD_POST = "post"
 REQUEST_METHOD_PUT = "put"
+
+REQUEST_DEFAULT_TIMEOUT = 25
 
 
 class RequestHelper(object):
@@ -73,9 +74,13 @@ class RequestHelper(object):
 
         request_fn = getattr(requests, method)
         if method == REQUEST_METHOD_GET:
-            response = request_fn(url, headers=headers, params=params)
+            response = request_fn(
+                url, headers=headers, params=params, timeout=REQUEST_DEFAULT_TIMEOUT
+            )
         else:
-            response = request_fn(url, headers=headers, json=params)
+            response = request_fn(
+                url, headers=headers, json=params, timeout=REQUEST_DEFAULT_TIMEOUT
+            )
 
         response_json = None
         content_type = (
@@ -95,11 +100,11 @@ class RequestHelper(object):
                 raise AuthenticationException(response)
             elif status_code == 403:
                 raise AuthorizationException(response)
-            elif status_code == 404:
-                raise NotFoundException(response)
             error = response_json.get("error")
             error_description = response_json.get("error_description")
-            raise BadRequestException(response)
+            raise BadRequestException(
+                response, error=error, error_description=error_description
+            )
         elif status_code >= 500 and status_code < 600:
             raise ServerException(response)
 

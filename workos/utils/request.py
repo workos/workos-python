@@ -25,12 +25,16 @@ REQUEST_METHOD_GET = "get"
 REQUEST_METHOD_POST = "post"
 REQUEST_METHOD_PUT = "put"
 
-REQUEST_DEFAULT_TIMEOUT = 25
+REQUEST_DEFAULT_TIMEOUT = workos.request_timeout
 
 
 class RequestHelper(object):
     def __init__(self):
         self.set_base_api_url(workos.base_api_url)
+        self.set_request_timeout(workos.request_timeout)
+
+    def set_request_timeout(self, request_timeout):
+        self.request_timeout = request_timeout
 
     def set_base_api_url(self, base_api_url):
         """Creates an accessible template for constructing the URL for an API request.
@@ -76,11 +80,11 @@ class RequestHelper(object):
         request_fn = getattr(requests, method)
         if method == REQUEST_METHOD_GET:
             response = request_fn(
-                url, headers=headers, params=params, timeout=REQUEST_DEFAULT_TIMEOUT
+                url, headers=headers, params=params, timeout=self.request_timeout
             )
         else:
             response = request_fn(
-                url, headers=headers, json=params, timeout=REQUEST_DEFAULT_TIMEOUT
+                url, headers=headers, json=params, timeout=self.request_timeout
             )
 
         response_json = None

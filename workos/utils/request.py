@@ -29,6 +29,10 @@ REQUEST_METHOD_PUT = "put"
 class RequestHelper(object):
     def __init__(self):
         self.set_base_api_url(workos.base_api_url)
+        self.set_request_timeout(workos.request_timeout)
+
+    def set_request_timeout(self, request_timeout):
+        self.request_timeout = request_timeout
 
     def set_base_api_url(self, base_api_url):
         """Creates an accessible template for constructing the URL for an API request.
@@ -73,9 +77,13 @@ class RequestHelper(object):
 
         request_fn = getattr(requests, method)
         if method == REQUEST_METHOD_GET:
-            response = request_fn(url, headers=headers, params=params)
+            response = request_fn(
+                url, headers=headers, params=params, timeout=self.request_timeout
+            )
         else:
-            response = request_fn(url, headers=headers, json=params)
+            response = request_fn(
+                url, headers=headers, json=params, timeout=self.request_timeout
+            )
 
         response_json = None
         content_type = (
@@ -99,7 +107,9 @@ class RequestHelper(object):
                 raise NotFoundException(response)
             error = response_json.get("error")
             error_description = response_json.get("error_description")
-            raise BadRequestException(response)
+            raise BadRequestException(
+                response, error=error, error_description=error_description
+            )
         elif status_code >= 500 and status_code < 600:
             raise ServerException(response)
 

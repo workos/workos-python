@@ -146,6 +146,8 @@ class UserManagement(WorkOSListResource):
             user (dict) - An user object
                 user[email] (str) - The email address of the user.
                 user[password] (str) - The password to set for the user. (Optional)
+                user[password_hash] (str) - The hashed password to set for the user. Mutually exclusive with password. (Optional)
+                user[password_hash_type] (str) - The algorithm originally used to hash the password, used when providing a password_hash. Only valid value is 'bcrypt'. (Optional)
                 user[first_name] (str) - The user's first name. (Optional)
                 user[last_name] (str) - The user's last name. (Optional)
                 user[email_verified] (bool) - Whether the user's email address was previously verified. (Optional)

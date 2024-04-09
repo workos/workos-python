@@ -31,15 +31,7 @@ class TestEvents(object):
     def test_list_events(self, mock_events, mock_request_method):
         mock_request_method("get", mock_events, 200)
 
-        events = self.events.list_events()
+        events = self.events.list_events(events=["dsync.user.created"])
 
         assert events == mock_events
-
-    def test_list_events_returns_metadata(self, mock_events, mock_request_method):
-        mock_request_method("get", mock_events, 200)
-
-        events = self.events.list_events(
-            events=["dsync.user.created"],
-        )
-
         assert events["metadata"]["params"]["events"] == ["dsync.user.created"]

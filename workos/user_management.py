@@ -146,6 +146,8 @@ class UserManagement(WorkOSListResource):
             user (dict) - An user object
                 user[email] (str) - The email address of the user.
                 user[password] (str) - The password to set for the user. (Optional)
+                user[password_hash] (str) - The hashed password to set for the user. Mutually exclusive with password. (Optional)
+                user[password_hash_type] (str) - The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
                 user[first_name] (str) - The user's first name. (Optional)
                 user[last_name] (str) - The user's last name. (Optional)
                 user[email_verified] (bool) - Whether the user's email address was previously verified. (Optional)
@@ -176,7 +178,7 @@ class UserManagement(WorkOSListResource):
                 payload[email_verified] (bool) - Whether the user's email address was previously verified. (Optional)
                 payload[password] (str) - The password to set for the user. (Optional)
                 payload[password_hash] (str) - The hashed password to set for the user, used when migrating from another user store. Mutually exclusive with password. (Optional)
-                payload[password_hash_type] (str) - The algorithm originally used to hash the password, used when providing a password_hash. Only valid value is 'bcrypt'. (Optional)
+                payload[password_hash_type] (str) - The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
 
         Returns:
             dict: Updated User response from WorkOS.
@@ -1059,7 +1061,12 @@ class UserManagement(WorkOSListResource):
         return self.construct_from_response(response)
 
     def send_invitation(
-        self, email, organization_id=None, expires_in_days=None, inviter_user_id=None
+        self,
+        email,
+        organization_id=None,
+        expires_in_days=None,
+        inviter_user_id=None,
+        role_slug=None,
     ):
         """Sends an Invitation to a recipient.
 
@@ -1068,6 +1075,7 @@ class UserManagement(WorkOSListResource):
             organization_id: The ID of the Organization to which the recipient is being invited. (Optional)
             expires_in_days: The number of days the invitations will be valid for. Must be between 1 and 30, defaults to 7 if not specified. (Optional)
             inviter_user_id: The ID of the User sending the invitation. (Optional)
+            role_slug: The unique slug of the Role to give the Membership once the invite is accepted (Optional)
 
         Returns:
             dict: Sent Invitation response from WorkOS.
@@ -1079,6 +1087,7 @@ class UserManagement(WorkOSListResource):
             "organization_id": organization_id,
             "expires_in_days": expires_in_days,
             "inviter_user_id": inviter_user_id,
+            "role_slug": role_slug,
         }
 
         response = self.request_helper.request(

@@ -26,7 +26,7 @@ class Events(WorkOSListResource):
 
     def list_events(
         self,
-        events=None,
+        events,
         limit=None,
         after=None,
         range_start=None,
@@ -34,7 +34,7 @@ class Events(WorkOSListResource):
     ):
         """Gets a list of Events .
         Kwargs:
-            events (list): Filter to only return events of particular types. (Optional)
+            events (list): Filter to only return events of particular types.
             limit (int): Maximum number of records to return. (Optional)
             after (str): Pagination cursor to receive records after a provided Event ID. (Optional)
             range_start (str): Date range start for stream of events. (Optional)

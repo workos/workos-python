@@ -106,7 +106,9 @@ class Mfa(object):
             raise ValueError("Incomplete arguments. Need to specify a factor ID")
 
         response = self.request_helper.request(
-            "auth/factors/{authentication_factor_id}",
+            "auth/factors/{authentication_factor_id}".format(
+                authentication_factor_id=authentication_factor_id
+            ),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -135,7 +137,9 @@ class Mfa(object):
             raise ValueError("Incomplete arguments. Need to specify a factor ID.")
 
         return self.request_helper.request(
-            "auth/factors/{authentication_factor_id}",
+            "auth/factors/{authentication_factor_id}".format(
+                authentication_factor_id=authentication_factor_id
+            ),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

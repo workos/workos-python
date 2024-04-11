@@ -4,6 +4,7 @@ from workos.resources.list import WorkOSListResource
 from workos.resources.mfa import WorkOSAuthenticationFactorTotp, WorkOSChallenge
 from workos.resources.user_management import (
     WorkOSAuthenticationResponse,
+    WorkOSRefreshTokenAuthenticationResponse,
     WorkOSInvitation,
     WorkOSOrganizationMembership,
     WorkOSPasswordChallengeResponse,
@@ -145,6 +146,8 @@ class UserManagement(WorkOSListResource):
             user (dict) - An user object
                 user[email] (str) - The email address of the user.
                 user[password] (str) - The password to set for the user. (Optional)
+                user[password_hash] (str) - The hashed password to set for the user. Mutually exclusive with password. (Optional)
+                user[password_hash_type] (str) - The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
                 user[first_name] (str) - The user's first name. (Optional)
                 user[last_name] (str) - The user's last name. (Optional)
                 user[email_verified] (bool) - Whether the user's email address was previously verified. (Optional)
@@ -175,7 +178,7 @@ class UserManagement(WorkOSListResource):
                 payload[email_verified] (bool) - Whether the user's email address was previously verified. (Optional)
                 payload[password] (str) - The password to set for the user. (Optional)
                 payload[password_hash] (str) - The hashed password to set for the user, used when migrating from another user store. Mutually exclusive with password. (Optional)
-                payload[password_hash_type] (str) - The algorithm originally used to hash the password, used when providing a password_hash. Only valid value is 'bcrypt'. (Optional)
+                payload[password_hash_type] (str) - The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
 
         Returns:
             dict: Updated User response from WorkOS.
@@ -709,6 +712,51 @@ class UserManagement(WorkOSListResource):
 
         return WorkOSAuthenticationResponse.construct_from_response(response).to_dict()
 
+    def authenticate_with_refresh_token(
+        self,
+        refresh_token,
+        ip_address=None,
+        user_agent=None,
+    ):
+        """Authenticates a user with a refresh token.
+
+        Kwargs:
+            refresh_token (str): The token associated to the user.
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            (dict): Refresh Token Authentication response from WorkOS.
+                [access_token] (str): The refreshed access token
+                [refresh_token] (str): The new refresh token.
+        """
+
+        headers = {}
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "refresh_token": refresh_token,
+            "grant_type": "refresh_token",
+        }
+
+        if ip_address:
+            payload["ip_address"] = ip_address
+
+        if user_agent:
+            payload["user_agent"] = user_agent
+
+        response = self.request_helper.request(
+            USER_AUTHENTICATE_PATH,
+            method=REQUEST_METHOD_POST,
+            headers=headers,
+            params=payload,
+        )
+
+        return WorkOSRefreshTokenAuthenticationResponse.construct_from_response(
+            response
+        ).to_dict()
+
     def send_password_reset_email(
         self,
         email,
@@ -1013,7 +1061,12 @@ class UserManagement(WorkOSListResource):
         return self.construct_from_response(response)
 
     def send_invitation(
-        self, email, organization_id=None, expires_in_days=None, inviter_user_id=None
+        self,
+        email,
+        organization_id=None,
+        expires_in_days=None,
+        inviter_user_id=None,
+        role_slug=None,
     ):
         """Sends an Invitation to a recipient.
 
@@ -1022,6 +1075,7 @@ class UserManagement(WorkOSListResource):
             organization_id: The ID of the Organization to which the recipient is being invited. (Optional)
             expires_in_days: The number of days the invitations will be valid for. Must be between 1 and 30, defaults to 7 if not specified. (Optional)
             inviter_user_id: The ID of the User sending the invitation. (Optional)
+            role_slug: The unique slug of the Role to give the Membership once the invite is accepted (Optional)
 
         Returns:
             dict: Sent Invitation response from WorkOS.
@@ -1033,6 +1087,7 @@ class UserManagement(WorkOSListResource):
             "organization_id": organization_id,
             "expires_in_days": expires_in_days,
             "inviter_user_id": inviter_user_id,
+            "role_slug": role_slug,
         }
 
         response = self.request_helper.request(

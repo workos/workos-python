@@ -1,6 +1,7 @@
 import platform
 
 import requests
+import urllib
 
 import workos
 from workos.exceptions import (

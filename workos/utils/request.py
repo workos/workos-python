@@ -46,7 +46,8 @@ class RequestHelper(object):
         return self.base_api_url.format(path)
 
     def build_parameterized_url(self, url, **params):
-        return url.format(**params)
+        escaped_params = {k: urllib.parse.quote(str(v)) for k, v in params.items()}
+        return url.format(**escaped_params)
 
     def request(
         self,

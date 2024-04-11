@@ -1,6 +1,7 @@
 import platform
 
 import requests
+import urllib
 
 import workos
 from workos.exceptions import (
@@ -44,6 +45,10 @@ class RequestHelper(object):
 
     def generate_api_url(self, path):
         return self.base_api_url.format(path)
+
+    def build_parameterized_url(self, url, **params):
+        escaped_params = {k: urllib.parse.quote(str(v)) for k, v in params.items()}
+        return url.format(**escaped_params)
 
     def request(
         self,

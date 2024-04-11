@@ -151,6 +151,8 @@ class TestRequestHelper(object):
         assert RequestHelper().request("ok_place") == {"foo": "bar"}
 
     def test_build_url(self):
-        assert RequestHelper().build_parameterized_url('a/b/c') == 'a/b/c'
-        assert RequestHelper().build_parameterized_url('a/{b}/c', b='b') == 'a/b/c'
-        assert RequestHelper().build_parameterized_url('a/{b}/c', b='test') == 'a/test/c'
+        assert RequestHelper().build_parameterized_url("a/b/c") == "a/b/c"
+        assert RequestHelper().build_parameterized_url("a/{b}/c", b="b") == "a/b/c"
+        assert (
+            RequestHelper().build_parameterized_url("a/{b}/c", b="test") == "a/test/c"
+        )

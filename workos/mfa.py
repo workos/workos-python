@@ -106,7 +106,10 @@ class Mfa(object):
             raise ValueError("Incomplete arguments. Need to specify a factor ID")
 
         response = self.request_helper.request(
-            self.request_helper.build_parameterized_url("auth/factors/{authentication_factor_id}", authentication_factor_id=authentication_factor_id),
+            self.request_helper.build_parameterized_url(
+                "auth/factors/{authentication_factor_id}",
+                authentication_factor_id=authentication_factor_id,
+            ),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -135,7 +138,10 @@ class Mfa(object):
             raise ValueError("Incomplete arguments. Need to specify a factor ID.")
 
         return self.request_helper.request(
-            self.request_helper.build_parameterized_url("auth/factors/{authentication_factor_id}", authentication_factor_id=authentication_factor_id),
+            self.request_helper.build_parameterized_url(
+                "auth/factors/{authentication_factor_id}",
+                authentication_factor_id=authentication_factor_id,
+            ),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
@@ -165,7 +171,9 @@ class Mfa(object):
             )
 
         response = self.request_helper.request(
-            self.request_helper.build_parameterized_url("auth/factors/{factor_id}/challenge", factor_id=authentication_factor_id),
+            self.request_helper.build_parameterized_url(
+                "auth/factors/{factor_id}/challenge", factor_id=authentication_factor_id
+            ),
             method=REQUEST_METHOD_POST,
             params=params,
             token=workos.api_key,
@@ -222,7 +230,10 @@ class Mfa(object):
             )
 
         response = self.request_helper.request(
-            self.request_helper.build_parameterized_url("auth/challenges/{challenge_id}/verify", challenge_id=authentication_challenge_id),
+            self.request_helper.build_parameterized_url(
+                "auth/challenges/{challenge_id}/verify",
+                challenge_id=authentication_challenge_id,
+            ),
             method=REQUEST_METHOD_POST,
             params=params,
             token=workos.api_key,

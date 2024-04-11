@@ -45,6 +45,9 @@ class RequestHelper(object):
     def generate_api_url(self, path):
         return self.base_api_url.format(path)
 
+    def build_parameterized_url(self, url, **params):
+        return url.format(**params)
+
     def request(
         self,
         path,

@@ -207,7 +207,12 @@ class Organizations(WorkOSListResource):
         return WorkOSOrganization.construct_from_response(response).to_dict()
 
     def update_organization(
-        self, organization, name, allow_profiles_outside_organization=None, domains=None
+        self,
+        organization,
+        name,
+        allow_profiles_outside_organization=None,
+        domains=None,
+        domain_data=None,
     ):
         """Update an organization
 
@@ -217,14 +222,24 @@ class Organizations(WorkOSListResource):
             allow_profiles_outside_organization (boolean) - Whether Connections
                 within the Organization allow profiles that are outside of the Organization's
                 configured User Email Domains. (Optional)
-            domains (list) - List of domains that belong to the organization. (Optional)
+            domains (list) - [Deprecated] Use domain_data instead. List of domains that belong to the organization. (Optional)
+            domain_data (list[dict]) - List of domains that belong to the organization. (Optional)
+                domain_data[][domain] - The domain of the organization.
+                domain_data[][state] - The state of the domain: either 'verified' or 'pending'.
 
         Returns:
             dict: Updated Organization response from WorkOS.
         """
+        if domains:
+            warn(
+                "The 'domains' parameter for 'update_organization' is deprecated. Please use 'domain_data' instead.",
+                DeprecationWarning,
+            )
+
         params = {
             "name": name,
             "domains": domains,
+            "domain_data": domain_data,
             "allow_profiles_outside_organization": allow_profiles_outside_organization,
         }
         response = self.request_helper.request(

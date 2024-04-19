@@ -185,18 +185,41 @@ class TestOrganizations(object):
 
         assert organization == mock_organization
 
-    def test_create_organization(self, mock_organization, mock_request_method):
+    def test_create_organization_with_domain_data(
+        self, mock_organization, mock_request_method
+    ):
+        mock_request_method("post", mock_organization, 201)
+
+        payload = {
+            "domain_data": [{"domain": "example.com", "state": "verified"}],
+            "name": "Test Organization",
+        }
+        organization = self.organizations.create_organization(payload)
+
+        assert organization["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        assert organization["name"] == "Foo Corporation"
+
+    def test_create_organization_with_domains(
+        self, mock_organization, mock_request_method
+    ):
         mock_request_method("post", mock_organization, 201)
 
         payload = {"domains": ["example.com"], "name": "Test Organization"}
-        organization = self.organizations.create_organization(payload)
+        with pytest.warns(
+            DeprecationWarning,
+            match="The 'domains' parameter for 'create_organization' is deprecated.",
+        ):
+            organization = self.organizations.create_organization(payload)
 
         assert organization["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert organization["name"] == "Foo Corporation"
 
     def test_sends_idempotency_key(self, capture_and_mock_request):
         idempotency_key = "test_123456789"
-        payload = {"domains": ["example.com"], "name": "Foo Corporation"}
+        payload = {
+            "domain_data": [{"domain": "example.com", "state": "verified"}],
+            "name": "Foo Corporation",
+        }
 
         _, request_kwargs = capture_and_mock_request("post", payload, 200)
 
@@ -207,15 +230,44 @@ class TestOrganizations(object):
         assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
         assert response["name"] == "Foo Corporation"
 
-    def test_update_organization(self, mock_organization_updated, mock_request_method):
+    def test_update_organization_with_domain_data(
+        self, mock_organization_updated, mock_request_method
+    ):
         mock_request_method("put", mock_organization_updated, 201)
 
         updated_organization = self.organizations.update_organization(
             organization="org_01EHT88Z8J8795GZNQ4ZP1J81T",
             name="Example Organization",
-            domains=["example.io"],
+            domain_data=[{"domain": "example.io", "status": "verified"}],
             allow_profiles_outside_organization=True,
         )
+
+        assert updated_organization["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        assert updated_organization["name"] == "Example Organization"
+        assert updated_organization["domains"] == [
+            {
+                "domain": "example.io",
+                "object": "organization_domain",
+                "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
+            }
+        ]
+        assert updated_organization["allow_profiles_outside_organization"]
+
+    def test_update_organization_with_domains(
+        self, mock_organization_updated, mock_request_method
+    ):
+        mock_request_method("put", mock_organization_updated, 201)
+
+        with pytest.warns(
+            DeprecationWarning,
+            match="The 'domains' parameter for 'update_organization' is deprecated.",
+        ):
+            updated_organization = self.organizations.update_organization(
+                organization="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                name="Example Organization",
+                domains=["example.io"],
+                allow_profiles_outside_organization=True,
+            )
 
         assert updated_organization["id"] == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert updated_organization["name"] == "Example Organization"

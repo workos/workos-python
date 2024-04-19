@@ -88,7 +88,8 @@ class Organizations(WorkOSListResource):
             if "metadata" in response and "params" in response["metadata"]:
                 response["metadata"]["params"]["default_limit"] = default_limit
             else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
+                response["metadata"] = {"params": {
+                    "default_limit": default_limit}}
 
         return response
 
@@ -150,7 +151,8 @@ class Organizations(WorkOSListResource):
             if "metadata" in response and "params" in response["metadata"]:
                 response["metadata"]["params"]["default_limit"] = default_limit
             else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
+                response["metadata"] = {"params": {
+                    "default_limit": default_limit}}
 
         return self.construct_from_response(response)
 
@@ -178,7 +180,9 @@ class Organizations(WorkOSListResource):
                 organization[allow_profiles_outside_organization] (boolean) - Whether Connections
                     within the Organization allow profiles that are outside of the Organization's
                     configured User Email Domains. (Optional)
-                organization[domains] (list) - List of domains that belong to the organization
+                organization[domain_data] (list[dict]) - List of domains that belong to the organization.
+                    organization[domain_data][][domain] - The domain of the organization.
+                    organization[domain_data][][state] - The state of the domain: either 'verified' or 'pending'.
             idempotency_key (str) - Idempotency key for creating an organization. (Optional)
 
         Returns:
@@ -187,6 +191,12 @@ class Organizations(WorkOSListResource):
         headers = {}
         if idempotency_key:
             headers["idempotency-key"] = idempotency_key
+
+        if "domains" in organization:
+            warn(
+                "The 'domains' parameter for 'create_organization' is deprecated. Please use 'domain_data' instead.",
+                DeprecationWarning,
+            )
 
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,

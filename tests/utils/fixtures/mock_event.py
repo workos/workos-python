@@ -7,10 +7,7 @@ class MockEvent(WorkOSBaseResource):
         self.object = "event"
         self.id = id
         self.event = "dsync.user.created"
-        self.data = {
-            "id": "event_01234ABCD",
-            "organization_id": "org_1234"
-        }
+        self.data = {"id": "event_01234ABCD", "organization_id": "org_1234"}
         self.created_at = datetime.datetime.now()
 
     OBJECT_FIELDS = [

@@ -19,6 +19,7 @@ class TestEvents(object):
                 "params": {
                     "events": None,
                     "limit": None,
+                    "organization_id": None,
                     "after": None,
                     "range_start": None,
                     "range_end": None,
@@ -42,4 +43,16 @@ class TestEvents(object):
             events=["dsync.user.created"],
         )
 
+        assert events["metadata"]["params"]["events"] == ["dsync.user.created"]
+
+    def test_list_events_with_organization_id_returns_metadata(self, mock_events, mock_request_method):
+        mock_request_method("get", mock_events, 200)
+
+        events = self.events.list_events(
+            events=["dsync.user.created"],
+            organization_id="org_1234",
+        )
+
+
+        assert events["metadata"]["params"]["organization_id"] == "org_1234" 
         assert events["metadata"]["params"]["events"] == ["dsync.user.created"]

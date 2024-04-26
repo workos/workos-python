@@ -28,6 +28,7 @@ class Events(WorkOSListResource):
         self,
         events=None,
         limit=None,
+        organization_id=None,
         after=None,
         range_start=None,
         range_end=None,
@@ -36,6 +37,7 @@ class Events(WorkOSListResource):
         Kwargs:
             events (list): Filter to only return events of particular types. (Optional)
             limit (int): Maximum number of records to return. (Optional)
+            organization_id(str): Organization ID limits scope of events to a single organization. (Optional)
             after (str): Pagination cursor to receive records after a provided Event ID. (Optional)
             range_start (str): Date range start for stream of events. (Optional)
             range_end (str): Date range end for stream of events. (Optional)
@@ -53,6 +55,7 @@ class Events(WorkOSListResource):
             "events": events,
             "limit": limit,
             "after": after,
+            "organization_id": organization_id,
             "range_start": range_start,
             "range_end": range_end,
         }

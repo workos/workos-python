@@ -90,7 +90,26 @@ class WorkOSInvitation(WorkOSBaseResource):
         "revoked_at",
         "expires_at",
         "token",
+        "accept_invitation_url",
         "organization_id",
+        "created_at",
+        "updated_at",
+    ]
+
+
+class WorkOSMagicAuth(WorkOSBaseResource):
+    """Representation of a MagicAuth object as returned by WorkOS through User Management features.
+
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSMagicAuth comprises.
+    """
+
+    OBJECT_FIELDS = [
+        "id",
+        "user_id",
+        "email",
+        "expires_at",
+        "code",
         "created_at",
         "updated_at",
     ]

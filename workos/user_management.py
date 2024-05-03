@@ -1,4 +1,5 @@
 from requests import Request
+from warnings import warn
 import workos
 from workos.resources.list import WorkOSListResource
 from workos.resources.mfa import WorkOSAuthenticationFactorTotp, WorkOSChallenge
@@ -6,6 +7,7 @@ from workos.resources.user_management import (
     WorkOSAuthenticationResponse,
     WorkOSRefreshTokenAuthenticationResponse,
     WorkOSInvitation,
+    WorkOSMagicAuth,
     WorkOSOrganizationMembership,
     WorkOSPasswordChallengeResponse,
     WorkOSUser,
@@ -32,6 +34,8 @@ USER_SEND_PASSWORD_RESET_PATH = "user_management/password_reset/send"
 USER_RESET_PASSWORD_PATH = "user_management/password_reset/confirm"
 USER_SEND_VERIFICATION_EMAIL_PATH = "user_management/users/{0}/email_verification/send"
 USER_VERIFY_EMAIL_CODE_PATH = "user_management/users/{0}/email_verification/confirm"
+MAGIC_AUTH_DETAIL_PATH = "user_management/magic_auth/{0}"
+MAGIC_AUTH_PATH = "user_management/magic_auth"
 USER_SEND_MAGIC_AUTH_PATH = "user_management/magic_auth/send"
 USER_AUTH_FACTORS_PATH = "user_management/users/{0}/auth_factors"
 INVITATION_PATH = "user_management/invitations"
@@ -872,15 +876,73 @@ class UserManagement(WorkOSListResource):
 
         return WorkOSUser.construct_from_response(response["user"]).to_dict()
 
+    def get_magic_auth(self, magic_auth_id):
+        """Get the details of a Magic Auth object.
+
+        Args:
+            magic_auth_id (str) -  The unique ID of the Magic Auth object.
+
+        Returns:
+            dict: MagicAuth response from WorkOS.
+        """
+        headers = {}
+
+        response = self.request_helper.request(
+            MAGIC_AUTH_DETAIL_PATH.format(magic_auth_id),
+            method=REQUEST_METHOD_GET,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSMagicAuth.construct_from_response(response).to_dict()
+
+    def create_magic_auth(
+        self,
+        email,
+        invitation_token=None,
+    ):
+        """Creates a Magic Auth code challenge that can be sent to a user's email for authentication.
+
+        Args:
+            email: The email address of the user.
+            invitation_token: The token of an Invitation, if required. (Optional)
+
+        Returns:
+            dict: MagicAuth response from WorkOS.
+        """
+        headers = {}
+
+        params = {
+            "email": email,
+            "invitation_token": invitation_token,
+        }
+
+        response = self.request_helper.request(
+            MAGIC_AUTH_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSMagicAuth.construct_from_response(response).to_dict()
+
     def send_magic_auth_code(
         self,
         email,
     ):
         """Creates a one-time Magic Auth code and emails it to the user.
 
+        Deprecated: Please use `create_magic_auth` instead. This method will be removed in a future major version.
+
         Kwargs:
             email (str): The email address the one-time code will be sent to.
         """
+
+        warn(
+            "'send_magic_auth_code' is deprecated. Please use 'create_magic_auth' instead. This method will be removed in a future major version.",
+            DeprecationWarning,
+        )
 
         headers = {}
 

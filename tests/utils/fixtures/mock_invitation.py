@@ -10,7 +10,10 @@ class MockInvitation(WorkOSBaseResource):
         self.accepted_at = None
         self.revoked_at = None
         self.expires_at = datetime.datetime.now()
-        self.token = "ABCDE12345"
+        self.token = "Z1uX3RbwcIl5fIGJJJCXXisdI"
+        self.accept_invitation_url = (
+            "https://myauthkit.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI"
+        )
         self.organization_id = "org_12345"
         self.created_at = datetime.datetime.now()
         self.updated_at = datetime.datetime.now()
@@ -23,6 +26,7 @@ class MockInvitation(WorkOSBaseResource):
         "revoked_at",
         "expires_at",
         "token",
+        "accept_invitation_url",
         "organization_id",
         "created_at",
         "updated_at",

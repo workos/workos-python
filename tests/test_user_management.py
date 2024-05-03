@@ -5,6 +5,7 @@ import workos
 
 from tests.utils.fixtures.mock_auth_factor_totp import MockAuthFactorTotp
 from tests.utils.fixtures.mock_invitation import MockInvitation
+from tests.utils.fixtures.mock_magic_auth import MockMagicAuth
 from tests.utils.fixtures.mock_organization_membership import MockOrganizationMembership
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
@@ -211,6 +212,10 @@ class TestUserManagement(object):
             },
         }
         return dict_response
+
+    @pytest.fixture
+    def mock_magic_auth(self):
+        return MockMagicAuth("magic_auth_ABCDE").to_dict()
 
     @pytest.fixture
     def mock_invitation(self):
@@ -847,12 +852,33 @@ class TestUserManagement(object):
         assert request["json"]["code"] == code
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
+    def test_get_magic_auth(self, mock_magic_auth, capture_and_mock_request):
+        url, request_kwargs = capture_and_mock_request("get", mock_magic_auth, 200)
+
+        magic_auth = self.user_management.get_magic_auth("magic_auth_ABCDE")
+
+        assert url[0].endswith("user_management/magic_auth/magic_auth_ABCDE")
+        assert magic_auth["id"] == "magic_auth_ABCDE"
+
+    def test_create_magic_auth(self, capture_and_mock_request, mock_magic_auth):
+        email = "marcelina@foo-corp.com"
+        url, _ = capture_and_mock_request("post", mock_magic_auth, 201)
+
+        magic_auth = self.user_management.create_magic_auth(email=email)
+
+        assert url[0].endswith("user_management/magic_auth")
+        assert magic_auth["email"] == email
+
     def test_send_magic_auth_code(self, capture_and_mock_request):
         email = "marcelina@foo-corp.com"
 
         url, request = capture_and_mock_request("post", None, 200)
 
-        response = self.user_management.send_magic_auth_code(email=email)
+        with pytest.warns(
+            DeprecationWarning,
+            match="'send_magic_auth_code' is deprecated. Please use 'create_magic_auth' instead. This method will be removed in a future major version.",
+        ):
+            response = self.user_management.send_magic_auth_code(email=email)
 
         assert url[0].endswith("user_management/magic_auth/send")
         assert request["json"]["email"] == email

@@ -392,13 +392,15 @@ class TestUserManagement(object):
     def test_list_organization_memberships_with_multiple_statuses_returns_metadata(
         self, mock_organization_memberships, capture_and_mock_request
     ):
-        url, request_kwargs = capture_and_mock_request("get", mock_organization_memberships, 200)
+        _, request_kwargs = capture_and_mock_request(
+            "get", mock_organization_memberships, 200
+        )
 
         oms = self.user_management.list_organization_memberships(
             organization_id="org_12345",
             statuses=["active", "inactive"],
         )
-        
+
         assert request_kwargs["params"]["statuses"] == "active,inactive"
         dict_oms = oms.to_dict()
         assert dict_oms["metadata"]["params"]["organization_id"] == "org_12345"
@@ -406,13 +408,15 @@ class TestUserManagement(object):
     def test_list_organization_memberships_with_a_single_status_returns_metadata(
         self, mock_organization_memberships, capture_and_mock_request
     ):
-        url, request_kwargs = capture_and_mock_request("get", mock_organization_memberships, 200)
+        _, request_kwargs = capture_and_mock_request(
+            "get", mock_organization_memberships, 200
+        )
 
         oms = self.user_management.list_organization_memberships(
             organization_id="org_12345",
             statuses=["inactive"],
         )
-        
+
         assert request_kwargs["params"]["statuses"] == "inactive"
         dict_oms = oms.to_dict()
         assert dict_oms["metadata"]["params"]["organization_id"] == "org_12345"
@@ -434,7 +438,9 @@ class TestUserManagement(object):
 
         om = self.user_management.deactivate_organization_membership("om_ABCDE")
 
-        assert url[0].endswith("user_management/organization_memberships/om_ABCDE/deactivate")
+        assert url[0].endswith(
+            "user_management/organization_memberships/om_ABCDE/deactivate"
+        )
         assert om["id"] == "om_ABCDE"
 
     def test_reactivate_organization_membership(
@@ -446,7 +452,9 @@ class TestUserManagement(object):
 
         om = self.user_management.reactivate_organization_membership("om_ABCDE")
 
-        assert url[0].endswith("user_management/organization_memberships/om_ABCDE/reactivate")
+        assert url[0].endswith(
+            "user_management/organization_memberships/om_ABCDE/reactivate"
+        )
         assert om["id"] == "om_ABCDE"
 
     def test_authorization_url_throws_value_error_without_redirect_uri(self):

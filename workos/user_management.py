@@ -28,6 +28,8 @@ USER_PATH = "user_management/users"
 USER_DETAIL_PATH = "user_management/users/{0}"
 ORGANIZATION_MEMBERSHIP_PATH = "user_management/organization_memberships"
 ORGANIZATION_MEMBERSHIP_DETAIL_PATH = "user_management/organization_memberships/{0}"
+ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH = ORGANIZATION_MEMBERSHIP_DETAIL_PATH + "/deactivate"
+ORGANIZATION_MEMBERSHIP_REACTIVATE_PATH = ORGANIZATION_MEMBERSHIP_DETAIL_PATH + "/reactivate"
 USER_AUTHORIZATION_PATH = "user_management/authorize"
 USER_AUTHENTICATE_PATH = "user_management/authenticate"
 USER_SEND_PASSWORD_RESET_PATH = "user_management/password_reset/send"
@@ -290,6 +292,7 @@ class UserManagement(WorkOSListResource):
         self,
         user_id=None,
         organization_id=None,
+        statuses=None,
         limit=None,
         before=None,
         after=None,
@@ -300,6 +303,7 @@ class UserManagement(WorkOSListResource):
         Kwargs:
             user_id (str): Filter Organization Memberships by user. (Optional)
             organization_id (str): Filter Organization Memberships by organization. (Optional)
+            statuses (list): Filter Organization Memberships by status. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Organization Membership ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Organization Membership ID. (Optional)
@@ -315,9 +319,13 @@ class UserManagement(WorkOSListResource):
             limit = RESPONSE_LIMIT
             default_limit = True
 
+        if statuses is not None:
+            statuses = ",".join(statuses)
+
         params = {
             "user_id": user_id,
             "organization_id": organization_id,
+            "statuses": statuses,
             "limit": limit,
             "before": before,
             "after": after,
@@ -363,6 +371,38 @@ class UserManagement(WorkOSListResource):
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
+
+    def deactivate_organization_membership(self, organization_membership_id):
+        """Deactivate an organization membership.
+
+        Args:
+            organization_membership_id (str) -  The unique ID of the Organization Membership.
+        Returns:
+            dict: OrganizationMembership response from WorkOS.
+        """
+        response = self.request_helper.request(
+            ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH.format(organization_membership_id),
+            method=REQUEST_METHOD_POST,
+            token=workos.api_key,
+        )
+
+        return WorkOSOrganizationMembership.construct_from_response(response).to_dict()
+
+    def reactivate_organization_membership(self, organization_membership_id):
+        """Reactivates an organization membership.
+
+        Args:
+            organization_membership_id (str) -  The unique ID of the Organization Membership.
+        Returns:
+            dict: OrganizationMembership response from WorkOS.
+        """
+        response = self.request_helper.request(
+            ORGANIZATION_MEMBERSHIP_REACTIVATE_PATH.format(organization_membership_id),
+            method=REQUEST_METHOD_POST,
+            token=workos.api_key,
+        )
+
+        return WorkOSOrganizationMembership.construct_from_response(response).to_dict()
 
     def get_authorization_url(
         self,

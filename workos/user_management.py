@@ -386,7 +386,7 @@ class UserManagement(WorkOSListResource):
         """
         response = self.request_helper.request(
             ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_POST,
+            method=REQUEST_METHOD_PUT,
             token=workos.api_key,
         )
 
@@ -402,7 +402,7 @@ class UserManagement(WorkOSListResource):
         """
         response = self.request_helper.request(
             ORGANIZATION_MEMBERSHIP_REACTIVATE_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_POST,
+            method=REQUEST_METHOD_PUT,
             token=workos.api_key,
         )
 

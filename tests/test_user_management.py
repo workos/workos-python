@@ -433,7 +433,7 @@ class TestUserManagement(object):
         self, mock_organization_membership, capture_and_mock_request
     ):
         url, request_kwargs = capture_and_mock_request(
-            "post", mock_organization_membership, 200
+            "put", mock_organization_membership, 200
         )
 
         om = self.user_management.deactivate_organization_membership("om_ABCDE")
@@ -447,7 +447,7 @@ class TestUserManagement(object):
         self, mock_organization_membership, capture_and_mock_request
     ):
         url, request_kwargs = capture_and_mock_request(
-            "post", mock_organization_membership, 200
+            "put", mock_organization_membership, 200
         )
 
         om = self.user_management.reactivate_organization_membership("om_ABCDE")

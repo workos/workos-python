@@ -854,6 +854,21 @@ class TestUserManagement(object):
         assert request["json"]["client_secret"] == "sk_test"
         assert request["json"]["grant_type"] == "refresh_token"
 
+    def test_get_jwks_url(self):
+        expected = "%s/sso/jwks/%s" % (workos.base_api_url, workos.client_id)
+        result = self.user_management.get_jwks_url()
+
+        assert expected == result
+
+    def test_get_logout_url(self):
+        expected = "%s/user_management/sessions/logout?session_id=%s" % (
+            workos.base_api_url,
+            "session_123",
+        )
+        result = self.user_management.get_logout_url("session_123")
+
+        assert expected == result
+
     def test_send_password_reset_email(self, capture_and_mock_request):
         email = "marcelina@foo-corp.com"
         password_reset_url = "https://foo-corp.com/reset-password"

@@ -761,6 +761,11 @@ class UserManagement(WorkOSListResource):
             response
         ).to_dict()
 
+    def get_jwks_url(self):
+        """Get the public key that is used for verifying access tokens."""
+
+        return "%s/sso/jwks/%s"%(workos.base_api_url, workos.client_id)
+
     def send_password_reset_email(
         self,
         email,

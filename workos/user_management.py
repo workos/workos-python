@@ -761,6 +761,30 @@ class UserManagement(WorkOSListResource):
             response
         ).to_dict()
 
+    def get_jwks_url(self):
+        """Get the public key that is used for verifying access tokens.
+
+        Returns:
+            (str): The public JWKS URL.
+        """
+
+        return "%s/sso/jwks/%s" % (workos.base_api_url, workos.client_id)
+
+    def get_logout_url(self, session_id):
+        """Get the URL for ending the session and redirecting the user
+
+        Kwargs:
+            session_id (str): The ID of the user's session
+
+        Returns:
+            (str): URL to redirect the user to to end the session.
+        """
+
+        return "%s/user_management/sessions/logout?session_id=%s" % (
+            workos.base_api_url,
+            session_id,
+        )
+
     def send_password_reset_email(
         self,
         email,
@@ -1001,6 +1025,7 @@ class UserManagement(WorkOSListResource):
         ] = WorkOSAuthenticationFactorTotp.construct_from_response(
             response["authentication_factor"]
         ).to_dict()
+
         factor_and_challenge[
             "authentication_challenge"
         ] = WorkOSChallenge.construct_from_response(

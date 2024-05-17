@@ -795,13 +795,16 @@ class TestUserManagement(object):
         assert request["json"]["grant_type"] == "refresh_token"
 
     def test_get_jwks_url(self):
-        expected = "%s/sso/jwks/%s"%(workos.base_api_url, workos.client_id)
+        expected = "%s/sso/jwks/%s" % (workos.base_api_url, workos.client_id)
         result = self.user_management.get_jwks_url()
 
         assert expected == result
 
     def test_get_logout_url(self):
-        expected = "%s/user_management/sessions/logout?session_id=%s"%(workos.base_api_url, "session_123")
+        expected = "%s/user_management/sessions/logout?session_id=%s" % (
+            workos.base_api_url,
+            "session_123",
+        )
         result = self.user_management.get_logout_url("session_123")
 
         assert expected == result

@@ -800,6 +800,12 @@ class TestUserManagement(object):
 
         assert expected == result
 
+    def test_get_logout_url(self):
+        expected = "%s/user_management/sessions/logout?session_id=%s"%(workos.base_api_url, "session_123")
+        result = self.user_management.get_logout_url("session_123")
+
+        assert expected == result
+
     def test_send_password_reset_email(self, capture_and_mock_request):
         email = "marcelina@foo-corp.com"
         password_reset_url = "https://foo-corp.com/reset-password"

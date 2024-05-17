@@ -1023,14 +1023,14 @@ class UserManagement(WorkOSListResource):
         factor_and_challenge[
             "authentication_factor"
         ] = WorkOSAuthenticationFactorTotp.construct_from_response(
-                response["authentication_factor"]
-            ).to_dict()
+            response["authentication_factor"]
+        ).to_dict()
 
         factor_and_challenge[
             "authentication_challenge"
         ] = WorkOSChallenge.construct_from_response(
-                response["authentication_challenge"]
-            ).to_dict()
+            response["authentication_challenge"]
+        ).to_dict()
 
         return factor_and_challenge
 

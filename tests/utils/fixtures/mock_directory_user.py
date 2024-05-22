@@ -37,6 +37,9 @@ class MockDirectoryUser(WorkOSBaseResource):
             ],
         }
         self.object = "directory_user"
+        self.role = {
+            "slug": "member",
+        }
 
     OBJECT_FIELDS = [
         "id",
@@ -55,4 +58,5 @@ class MockDirectoryUser(WorkOSBaseResource):
         "custom_attributes",
         "raw_attributes",
         "object",
+        "role",
     ]

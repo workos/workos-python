@@ -817,7 +817,7 @@ class UserManagement(WorkOSListResource):
             (str): The public JWKS URL.
         """
 
-        return "%s/sso/jwks/%s" % (workos.base_api_url, workos.client_id)
+        return "%ssso/jwks/%s" % (workos.base_api_url, workos.client_id)
 
     def get_logout_url(self, session_id):
         """Get the URL for ending the session and redirecting the user
@@ -829,7 +829,7 @@ class UserManagement(WorkOSListResource):
             (str): URL to redirect the user to to end the session.
         """
 
-        return "%s/user_management/sessions/logout?session_id=%s" % (
+        return "%suser_management/sessions/logout?session_id=%s" % (
             workos.base_api_url,
             session_id,
         )

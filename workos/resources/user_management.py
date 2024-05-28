@@ -75,6 +75,24 @@ class WorkOSRefreshTokenAuthenticationResponse(WorkOSBaseResource):
         return authentication_response_dict
 
 
+class WorkOSEmailVerification(WorkOSBaseResource):
+    """Representation of a EmailVerification object as returned by WorkOS through User Management features.
+
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSEmailVerification comprises.
+    """
+
+    OBJECT_FIELDS = [
+        "id",
+        "user_id",
+        "email",
+        "expires_at",
+        "code",
+        "created_at",
+        "updated_at",
+    ]
+
+
 class WorkOSInvitation(WorkOSBaseResource):
     """Representation of an Invitation as returned by WorkOS through User Management features.
 
@@ -92,6 +110,7 @@ class WorkOSInvitation(WorkOSBaseResource):
         "token",
         "accept_invitation_url",
         "organization_id",
+        "inviter_user_id",
         "created_at",
         "updated_at",
     ]
@@ -112,6 +131,24 @@ class WorkOSMagicAuth(WorkOSBaseResource):
         "code",
         "created_at",
         "updated_at",
+    ]
+
+
+class WorkOSPasswordReset(WorkOSBaseResource):
+    """Representation of a PasswordReset object as returned by WorkOS through User Management features.
+
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSPasswordReset comprises.
+    """
+
+    OBJECT_FIELDS = [
+        "id",
+        "user_id",
+        "email",
+        "password_reset_token",
+        "password_reset_url",
+        "expires_at",
+        "created_at",
     ]
 
 

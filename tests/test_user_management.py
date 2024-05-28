@@ -4,9 +4,11 @@ import pytest
 import workos
 
 from tests.utils.fixtures.mock_auth_factor_totp import MockAuthFactorTotp
+from tests.utils.fixtures.mock_email_verification import MockEmailVerification
 from tests.utils.fixtures.mock_invitation import MockInvitation
 from tests.utils.fixtures.mock_magic_auth import MockMagicAuth
 from tests.utils.fixtures.mock_organization_membership import MockOrganizationMembership
+from tests.utils.fixtures.mock_password_reset import MockPasswordReset
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
 from workos.user_management import UserManagement
@@ -214,8 +216,16 @@ class TestUserManagement(object):
         return dict_response
 
     @pytest.fixture
+    def mock_email_verification(self):
+        return MockEmailVerification("email_verification_ABCDE").to_dict()
+
+    @pytest.fixture
     def mock_magic_auth(self):
         return MockMagicAuth("magic_auth_ABCDE").to_dict()
+
+    @pytest.fixture
+    def mock_password_reset(self):
+        return MockPasswordReset("password_reset_ABCDE").to_dict()
 
     @pytest.fixture
     def mock_invitation(self):
@@ -855,13 +865,13 @@ class TestUserManagement(object):
         assert request["json"]["grant_type"] == "refresh_token"
 
     def test_get_jwks_url(self):
-        expected = "%s/sso/jwks/%s" % (workos.base_api_url, workos.client_id)
+        expected = "%ssso/jwks/%s" % (workos.base_api_url, workos.client_id)
         result = self.user_management.get_jwks_url()
 
         assert expected == result
 
     def test_get_logout_url(self):
-        expected = "%s/user_management/sessions/logout?session_id=%s" % (
+        expected = "%suser_management/sessions/logout?session_id=%s" % (
             workos.base_api_url,
             "session_123",
         )
@@ -869,16 +879,37 @@ class TestUserManagement(object):
 
         assert expected == result
 
+    def test_get_password_reset(self, mock_password_reset, capture_and_mock_request):
+        url, request_kwargs = capture_and_mock_request("get", mock_password_reset, 200)
+
+        password_reset = self.user_management.get_password_reset("password_reset_ABCDE")
+
+        assert url[0].endswith("user_management/password_reset/password_reset_ABCDE")
+        assert password_reset["id"] == "password_reset_ABCDE"
+
+    def test_create_password_reset(self, capture_and_mock_request, mock_password_reset):
+        email = "marcelina@foo-corp.com"
+        url, _ = capture_and_mock_request("post", mock_password_reset, 201)
+
+        password_reset = self.user_management.create_password_reset(email=email)
+
+        assert url[0].endswith("user_management/password_reset")
+        assert password_reset["email"] == email
+
     def test_send_password_reset_email(self, capture_and_mock_request):
         email = "marcelina@foo-corp.com"
         password_reset_url = "https://foo-corp.com/reset-password"
 
         url, request = capture_and_mock_request("post", None, 200)
 
-        response = self.user_management.send_password_reset_email(
-            email=email,
-            password_reset_url=password_reset_url,
-        )
+        with pytest.warns(
+            DeprecationWarning,
+            match="'send_password_reset_email' is deprecated. Please use 'create_password_reset' instead. This method will be removed in a future major version.",
+        ):
+            response = self.user_management.send_password_reset_email(
+                email=email,
+                password_reset_url=password_reset_url,
+            )
 
         assert url[0].endswith("user_management/password_reset/send")
         assert request["json"]["email"] == email
@@ -900,6 +931,22 @@ class TestUserManagement(object):
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert request["json"]["token"] == token
         assert request["json"]["new_password"] == new_password
+
+    def test_get_email_verification(
+        self, mock_email_verification, capture_and_mock_request
+    ):
+        url, request_kwargs = capture_and_mock_request(
+            "get", mock_email_verification, 200
+        )
+
+        email_verification = self.user_management.get_email_verification(
+            "email_verification_ABCDE"
+        )
+
+        assert url[0].endswith(
+            "user_management/email_verification/email_verification_ABCDE"
+        )
+        assert email_verification["id"] == "email_verification_ABCDE"
 
     def test_send_verification_email(self, capture_and_mock_request, mock_user):
         user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"

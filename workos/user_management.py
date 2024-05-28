@@ -6,8 +6,10 @@ from workos.resources.mfa import WorkOSAuthenticationFactorTotp, WorkOSChallenge
 from workos.resources.user_management import (
     WorkOSAuthenticationResponse,
     WorkOSRefreshTokenAuthenticationResponse,
+    WorkOSEmailVerification,
     WorkOSInvitation,
     WorkOSMagicAuth,
+    WorkOSPasswordReset,
     WorkOSOrganizationMembership,
     WorkOSPasswordChallengeResponse,
     WorkOSUser,
@@ -44,9 +46,12 @@ MAGIC_AUTH_DETAIL_PATH = "user_management/magic_auth/{0}"
 MAGIC_AUTH_PATH = "user_management/magic_auth"
 USER_SEND_MAGIC_AUTH_PATH = "user_management/magic_auth/send"
 USER_AUTH_FACTORS_PATH = "user_management/users/{0}/auth_factors"
+EMAIL_VERIFICATION_DETAIL_PATH = "user_management/email_verification/{0}"
 INVITATION_PATH = "user_management/invitations"
 INVITATION_DETAIL_PATH = "user_management/invitations/{0}"
 INVITATION_REVOKE_PATH = "user_management/invitations/{0}/revoke"
+PASSWORD_RESET_PATH = "user_management/password_reset"
+PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
 
 RESPONSE_LIMIT = 10
 
@@ -812,7 +817,7 @@ class UserManagement(WorkOSListResource):
             (str): The public JWKS URL.
         """
 
-        return "%s/sso/jwks/%s" % (workos.base_api_url, workos.client_id)
+        return "%ssso/jwks/%s" % (workos.base_api_url, workos.client_id)
 
     def get_logout_url(self, session_id):
         """Get the URL for ending the session and redirecting the user
@@ -824,10 +829,58 @@ class UserManagement(WorkOSListResource):
             (str): URL to redirect the user to to end the session.
         """
 
-        return "%s/user_management/sessions/logout?session_id=%s" % (
+        return "%suser_management/sessions/logout?session_id=%s" % (
             workos.base_api_url,
             session_id,
         )
+
+    def get_password_reset(self, password_reset_id):
+        """Get the details of a password reset object.
+
+        Args:
+            password_reset_id (str) -  The unique ID of the password reset object.
+
+        Returns:
+            dict: PasswordReset response from WorkOS.
+        """
+        headers = {}
+
+        response = self.request_helper.request(
+            PASSWORD_RESET_DETAIL_PATH.format(password_reset_id),
+            method=REQUEST_METHOD_GET,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSPasswordReset.construct_from_response(response).to_dict()
+
+    def create_password_reset(
+        self,
+        email,
+    ):
+        """Creates a password reset token that can be sent to a user's email to reset the password.
+
+        Args:
+            email: The email address of the user.
+
+        Returns:
+            dict: PasswordReset response from WorkOS.
+        """
+        headers = {}
+
+        params = {
+            "email": email,
+        }
+
+        response = self.request_helper.request(
+            PASSWORD_RESET_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSPasswordReset.construct_from_response(response).to_dict()
 
     def send_password_reset_email(
         self,
@@ -836,10 +889,17 @@ class UserManagement(WorkOSListResource):
     ):
         """Sends a password reset email to a user.
 
+        Deprecated: Please use `create_password_reset` instead. This method will be removed in a future major version.
+
         Kwargs:
             email (str): The email of the user that wishes to reset their password.
             password_reset_url (str): The URL that will be linked to in the email.
         """
+
+        warn(
+            "'send_password_reset_email' is deprecated. Please use 'create_password_reset' instead. This method will be removed in a future major version.",
+            DeprecationWarning,
+        )
 
         headers = {}
 
@@ -887,6 +947,26 @@ class UserManagement(WorkOSListResource):
         )
 
         return WorkOSUser.construct_from_response(response["user"]).to_dict()
+
+    def get_email_verification(self, email_verification_id):
+        """Get the details of an email verification object.
+
+        Args:
+            email_verificationh_id (str) -  The unique ID of the email verification object.
+
+        Returns:
+            dict: EmailVerification response from WorkOS.
+        """
+        headers = {}
+
+        response = self.request_helper.request(
+            EMAIL_VERIFICATION_DETAIL_PATH.format(email_verification_id),
+            method=REQUEST_METHOD_GET,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSEmailVerification.construct_from_response(response).to_dict()
 
     def send_verification_email(
         self,

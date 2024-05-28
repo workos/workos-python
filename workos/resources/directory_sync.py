@@ -85,6 +85,7 @@ class WorkOSDirectoryUser(WorkOSBaseResource):
         "custom_attributes",
         "raw_attributes",
         "object",
+        "role",  # [OPTIONAL]
     ]
 
     @classmethod

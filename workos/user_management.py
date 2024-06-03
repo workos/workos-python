@@ -1112,6 +1112,7 @@ class UserManagement(WorkOSListResource):
         type,
         totp_issuer=None,
         totp_user=None,
+        totp_secret=None,
     ):
         """Enrolls a user in a new auth factor.
 
@@ -1120,6 +1121,7 @@ class UserManagement(WorkOSListResource):
             type (str): The type of factor to enroll (Only option available is 'totp').
             totp_issuer (str): Name of the Organization (Optional)
             totp_user (str): Email of user (Optional)
+            totp_secret (str): The secret key for the TOTP factor. Generated if not provided. (Optional)
 
         Returns: { WorkOSAuthenticationFactorTotp, WorkOSChallenge}
         """
@@ -1133,6 +1135,7 @@ class UserManagement(WorkOSListResource):
             "type": type,
             "totp_issuer": totp_issuer,
             "totp_user": totp_user,
+            "totp_secret": totp_secret,
         }
 
         response = self.request_helper.request(

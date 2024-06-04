@@ -1013,6 +1013,7 @@ class TestUserManagement(object):
         type = "totp"
         totp_issuer = "WorkOS"
         totp_user = "marcelina@foo-corp.com"
+        totp_secret = "secret-test"
 
         mock_request_method("post", mock_enroll_auth_factor_response, 200)
 
@@ -1021,6 +1022,7 @@ class TestUserManagement(object):
             type=type,
             totp_issuer=totp_issuer,
             totp_user=totp_user,
+            totp_secret=totp_secret,
         )
 
         assert enroll_auth_factor == mock_enroll_auth_factor_response

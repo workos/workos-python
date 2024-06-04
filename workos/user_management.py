@@ -49,6 +49,7 @@ USER_AUTH_FACTORS_PATH = "user_management/users/{0}/auth_factors"
 EMAIL_VERIFICATION_DETAIL_PATH = "user_management/email_verification/{0}"
 INVITATION_PATH = "user_management/invitations"
 INVITATION_DETAIL_PATH = "user_management/invitations/{0}"
+INVITATION_DETAIL_BY_TOKEN_PATH = "user_management/invitations/by_token/{0}"
 INVITATION_REVOKE_PATH = "user_management/invitations/{0}/revoke"
 PASSWORD_RESET_PATH = "user_management/password_reset"
 PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
@@ -1201,6 +1202,26 @@ class UserManagement(WorkOSListResource):
 
         response = self.request_helper.request(
             INVITATION_DETAIL_PATH.format(invitation_id),
+            method=REQUEST_METHOD_GET,
+            headers=headers,
+            token=workos.api_key,
+        )
+
+        return WorkOSInvitation.construct_from_response(response).to_dict()
+
+    def find_invitation_by_token(self, invitation_token):
+        """Get the details of an invitation.
+
+        Args:
+            invitation_token (str) -  The token of the Invitation.
+
+        Returns:
+            dict: Invitation response from WorkOS.
+        """
+        headers = {}
+
+        response = self.request_helper.request(
+            INVITATION_DETAIL_BY_TOKEN_PATH.format(invitation_token),
             method=REQUEST_METHOD_GET,
             headers=headers,
             token=workos.api_key,

@@ -1049,6 +1049,18 @@ class TestUserManagement(object):
         assert url[0].endswith("user_management/invitations/invitation_ABCDE")
         assert invitation["id"] == "invitation_ABCDE"
 
+    def test_find_invitation_by_token(self, mock_invitation, capture_and_mock_request):
+        url, request_kwargs = capture_and_mock_request("get", mock_invitation, 200)
+
+        invitation = self.user_management.find_invitation_by_token(
+            "Z1uX3RbwcIl5fIGJJJCXXisdI"
+        )
+
+        assert url[0].endswith(
+            "user_management/invitations/by_token/Z1uX3RbwcIl5fIGJJJCXXisdI"
+        )
+        assert invitation["token"] == "Z1uX3RbwcIl5fIGJJJCXXisdI"
+
     def test_list_invitations_returns_metadata(
         self,
         mock_invitations,

@@ -424,7 +424,6 @@ class UserManagement(WorkOSListResource):
         login_hint=None,
         state=None,
         code_challenge=None,
-        code_challenge_method="S256",
     ):
         """Generate an OAuth 2.0 authorization URL.
 
@@ -447,8 +446,6 @@ class UserManagement(WorkOSListResource):
             state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
                 back as a query parameter. (Optional)
             code_challenge (str) - Code challenge is derived from the code verifier used for the PKCE flow. (Optional)
-            code_challenge_method ("S256") - The only valid PKCE code challenge method is "S256".
-                This parameter is required when specifying a code_challenge for the PKCE flow. (Optional)
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
@@ -481,9 +478,9 @@ class UserManagement(WorkOSListResource):
             params["login_hint"] = login_hint
         if state is not None:
             params["state"] = state
-        if code_challenge is not None:
+        if code_challenge:
             params["code_challenge"] = code_challenge
-            params["code_challenge_method"] = code_challenge_method
+            params["code_challenge_method"] = "S256"
 
         prepared_request = Request(
             "GET",

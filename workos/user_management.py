@@ -423,6 +423,8 @@ class UserManagement(WorkOSListResource):
         domain_hint=None,
         login_hint=None,
         state=None,
+        code_challenge=None,
+        code_challenge_method="S256",
     ):
         """Generate an OAuth 2.0 authorization URL.
 
@@ -444,6 +446,9 @@ class UserManagement(WorkOSListResource):
                 OktaSAML, and AzureSAML connection types. (Optional)
             state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
                 back as a query parameter. (Optional)
+            code_challenge (str) - Code challenge is derived from the code verifier used for the PKCE flow. (Optional)
+            code_challenge_method ("S256") - The only valid PKCE code challenge method is "S256".
+                This parameter is required when specifying a code_challenge for the PKCE flow. (Optional)
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
@@ -476,6 +481,9 @@ class UserManagement(WorkOSListResource):
             params["login_hint"] = login_hint
         if state is not None:
             params["state"] = state
+        if code_challenge is not None:
+            params["code_challenge"] = code_challenge
+            params["code_challenge_method"] = code_challenge_method
 
         prepared_request = Request(
             "GET",
@@ -534,6 +542,7 @@ class UserManagement(WorkOSListResource):
     def authenticate_with_code(
         self,
         code,
+        code_verifier=None,
         ip_address=None,
         user_agent=None,
     ):
@@ -541,6 +550,8 @@ class UserManagement(WorkOSListResource):
 
         Kwargs:
             code (str): The authorization value which was passed back as a query parameter in the callback to the Redirect URI.
+            code_verifier (str): The randomly generated string used to derive the code challenge that was passed to the authorization
+                url as part of the PKCE flow. This parameter is required when the client secret is not present. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
 
@@ -564,6 +575,9 @@ class UserManagement(WorkOSListResource):
 
         if user_agent:
             payload["user_agent"] = user_agent
+
+        if code_verifier:
+            payload["code_verifier"] = code_verifier
 
         response = self.request_helper.request(
             USER_AUTHENTICATE_PATH,
@@ -1148,17 +1162,17 @@ class UserManagement(WorkOSListResource):
         )
 
         factor_and_challenge = {}
-        factor_and_challenge[
-            "authentication_factor"
-        ] = WorkOSAuthenticationFactorTotp.construct_from_response(
-            response["authentication_factor"]
-        ).to_dict()
+        factor_and_challenge["authentication_factor"] = (
+            WorkOSAuthenticationFactorTotp.construct_from_response(
+                response["authentication_factor"]
+            ).to_dict()
+        )
 
-        factor_and_challenge[
-            "authentication_challenge"
-        ] = WorkOSChallenge.construct_from_response(
-            response["authentication_challenge"]
-        ).to_dict()
+        factor_and_challenge["authentication_challenge"] = (
+            WorkOSChallenge.construct_from_response(
+                response["authentication_challenge"]
+            ).to_dict()
+        )
 
         return factor_and_challenge
 

@@ -14,7 +14,7 @@ class ConnectionType(Enum):
     DuoSAML = "DuoSAML"
     GenericOIDC = "GenericOIDC"
     GenericSAML = "GenericSAML"
-    GithubOAuth = "GithubOAuth"
+    GitHubOAuth = "GitHubOAuth"
     GoogleOAuth = "GoogleOAuth"
     GoogleSAML = "GoogleSAML"
     JumpCloudSAML = "JumpCloudSAML"

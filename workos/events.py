@@ -26,7 +26,7 @@ class Events(WorkOSListResource):
 
     def list_events(
         self,
-        events=None,
+        events,
         limit=None,
         organization_id=None,
         after=None,
@@ -35,7 +35,7 @@ class Events(WorkOSListResource):
     ):
         """Gets a list of Events .
         Kwargs:
-            events (list): Filter to only return events of particular types. (Optional)
+            events (list): Filter to only return events of particular types.
             limit (int): Maximum number of records to return. (Optional)
             organization_id(str): Organization ID limits scope of events to a single organization. (Optional)
             after (str): Pagination cursor to receive records after a provided Event ID. (Optional)

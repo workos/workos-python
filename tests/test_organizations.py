@@ -185,6 +185,15 @@ class TestOrganizations(object):
 
         assert organization == mock_organization
 
+    def test_get_organization_by_lookup_key(self, mock_organization, mock_request_method):
+        mock_request_method("get", mock_organization, 200)
+
+        organization = self.organizations.get_organization_by_lookup_key(
+            lookup_key="test"
+        )
+
+        assert organization == mock_organization
+
     def test_create_organization_with_domain_data(
         self, mock_organization, mock_request_method
     ):

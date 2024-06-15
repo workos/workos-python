@@ -175,9 +175,11 @@ class Organizations(WorkOSListResource):
         Args:
             organization (dict) - An organization object
                 organization[name] (str) - A unique, descriptive name for the organization
-                organization[allow_profiles_outside_organization] (boolean) - Whether Connections
+                organization[allow_profiles_outside_organization] (boolean) - [Deprecated] Whether Connections
                     within the Organization allow profiles that are outside of the Organization's
                     configured User Email Domains. (Optional)
+                organization[domains] (list[dict]) - [Deprecated] Use domain_data instead. List of domains that
+                    belong to the organization. (Optional)
                 organization[domain_data] (list[dict]) - List of domains that belong to the organization.
                     organization[domain_data][][domain] - The domain of the organization.
                     organization[domain_data][][state] - The state of the domain: either 'verified' or 'pending'.
@@ -193,6 +195,13 @@ class Organizations(WorkOSListResource):
         if "domains" in organization:
             warn(
                 "The 'domains' parameter for 'create_organization' is deprecated. Please use 'domain_data' instead.",
+                DeprecationWarning,
+            )
+
+        if "allow_profiles_outside_organization" in organization:
+            warn(
+                "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "\
+                "If you need to allow sign-ins from any email domain, contact support@workos.com.",
                 DeprecationWarning,
             )
 
@@ -219,7 +228,7 @@ class Organizations(WorkOSListResource):
         Args:
             organization(str) - Organization's unique identifier.
             name (str) - A unique, descriptive name for the organization.
-            allow_profiles_outside_organization (boolean) - Whether Connections
+            allow_profiles_outside_organization (boolean) - [Deprecated] Whether Connections
                 within the Organization allow profiles that are outside of the Organization's
                 configured User Email Domains. (Optional)
             domains (list) - [Deprecated] Use domain_data instead. List of domains that belong to the organization. (Optional)
@@ -233,6 +242,13 @@ class Organizations(WorkOSListResource):
         if domains:
             warn(
                 "The 'domains' parameter for 'update_organization' is deprecated. Please use 'domain_data' instead.",
+                DeprecationWarning,
+            )
+
+        if "allow_profiles_outside_organization" in organization:
+            warn(
+                "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "\
+                "If you need to allow sign-ins from any email domain, contact support@workos.com.",
                 DeprecationWarning,
             )
 

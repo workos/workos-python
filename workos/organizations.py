@@ -239,25 +239,27 @@ class Organizations(WorkOSListResource):
         Returns:
             dict: Updated Organization response from WorkOS.
         """
+
+        params = { "name": name }
+
         if domains:
             warn(
                 "The 'domains' parameter for 'update_organization' is deprecated. Please use 'domain_data' instead.",
                 DeprecationWarning,
             )
+            params["domains"] = domains
 
-        if "allow_profiles_outside_organization" in organization:
+        if allow_profiles_outside_organization:
             warn(
                 "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "\
                 "If you need to allow sign-ins from any email domain, contact support@workos.com.",
                 DeprecationWarning,
             )
+            params["allow_profiles_outside_organization"] = allow_profiles_outside_organization
 
-        params = {
-            "name": name,
-            "domains": domains,
-            "domain_data": domain_data,
-            "allow_profiles_outside_organization": allow_profiles_outside_organization,
-        }
+        if domain_data:
+            params["domain_data"] = domain_data
+
         response = self.request_helper.request(
             "organizations/{organization}".format(organization=organization),
             method=REQUEST_METHOD_PUT,

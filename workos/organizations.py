@@ -179,7 +179,7 @@ class Organizations(WorkOSListResource):
         response = self.request_helper.request(
             "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key
+            token=workos.api_key,
         )
 
         return WorkOSOrganization.construct_from_response(response).to_dict()

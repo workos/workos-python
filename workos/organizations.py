@@ -200,7 +200,7 @@ class Organizations(WorkOSListResource):
 
         if "allow_profiles_outside_organization" in organization:
             warn(
-                "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "\
+                "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "
                 "If you need to allow sign-ins from any email domain, contact support@workos.com.",
                 DeprecationWarning,
             )
@@ -240,7 +240,7 @@ class Organizations(WorkOSListResource):
             dict: Updated Organization response from WorkOS.
         """
 
-        params = { "name": name }
+        params = {"name": name}
 
         if domains:
             warn(
@@ -251,11 +251,13 @@ class Organizations(WorkOSListResource):
 
         if allow_profiles_outside_organization:
             warn(
-                "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "\
+                "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "
                 "If you need to allow sign-ins from any email domain, contact support@workos.com.",
                 DeprecationWarning,
             )
-            params["allow_profiles_outside_organization"] = allow_profiles_outside_organization
+            params["allow_profiles_outside_organization"] = (
+                allow_profiles_outside_organization
+            )
 
         if domain_data:
             params["domain_data"] = domain_data

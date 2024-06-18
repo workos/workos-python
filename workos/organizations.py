@@ -242,14 +242,14 @@ class Organizations(WorkOSListResource):
 
         params = {"name": name}
 
-        if domains:
+        if domains is not None:
             warn(
                 "The 'domains' parameter for 'update_organization' is deprecated. Please use 'domain_data' instead.",
                 DeprecationWarning,
             )
             params["domains"] = domains
 
-        if allow_profiles_outside_organization:
+        if allow_profiles_outside_organization is not None:
             warn(
                 "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "
                 "If you need to allow sign-ins from any email domain, contact support@workos.com.",
@@ -259,7 +259,7 @@ class Organizations(WorkOSListResource):
                 "allow_profiles_outside_organization"
             ] = allow_profiles_outside_organization
 
-        if domain_data:
+        if domain_data is not None:
             params["domain_data"] = domain_data
 
         response = self.request_helper.request(

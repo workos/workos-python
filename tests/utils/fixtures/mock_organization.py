@@ -26,4 +26,5 @@ class MockOrganization(WorkOSBaseResource):
         "created_at",
         "updated_at",
         "domains",
+        "lookup_key",
     ]

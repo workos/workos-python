@@ -367,7 +367,6 @@ class DirectorySync(WorkOSListResource):
 
     def list_directories(
         self,
-        domain=None,
         search=None,
         limit=None,
         before=None,
@@ -378,7 +377,6 @@ class DirectorySync(WorkOSListResource):
         """Gets details for existing Directories.
 
         Args:
-            domain (str): Domain of a Directory. (Optional)
             organization: ID of an Organization (Optional)
             search (str): Searchable text for a Directory. (Optional)
             limit (int): Maximum number of records to return. (Optional)
@@ -399,7 +397,6 @@ class DirectorySync(WorkOSListResource):
             default_limit = True
 
         params = {
-            "domain": domain,
             "organization_id": organization,
             "search": search,
             "limit": limit,
@@ -439,7 +436,6 @@ class DirectorySync(WorkOSListResource):
 
     def list_directories_v2(
         self,
-        domain=None,
         search=None,
         limit=None,
         before=None,
@@ -450,7 +446,6 @@ class DirectorySync(WorkOSListResource):
         """Gets details for existing Directories.
 
         Args:
-            domain (str): Domain of a Directory. (Optional)
             organization: ID of an Organization (Optional)
             search (str): Searchable text for a Directory. (Optional)
             limit (int): Maximum number of records to return. (Optional)
@@ -467,7 +462,6 @@ class DirectorySync(WorkOSListResource):
             default_limit = True
 
         params = {
-            "domain": domain,
             "organization_id": organization,
             "search": search,
             "limit": limit,

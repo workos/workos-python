@@ -242,7 +242,6 @@ class TestDirectorySync(object):
             "list_metadata": {"before": None, "after": None},
             "metadata": {
                 "params": {
-                    "domain": None,
                     "organization_id": None,
                     "search": None,
                     "limit": None,
@@ -264,7 +263,6 @@ class TestDirectorySync(object):
             "list_metadata": {"before": None, "after": None},
             "metadata": {
                 "params": {
-                    "domain": None,
                     "organization_id": None,
                     "search": None,
                     "limit": 4,
@@ -285,7 +283,6 @@ class TestDirectorySync(object):
             "list_metadata": {"before": None, "after": None},
             "metadata": {
                 "params": {
-                    "domain": None,
                     "organization_id": None,
                     "search": None,
                     "limit": 4,
@@ -308,7 +305,6 @@ class TestDirectorySync(object):
             "list_metadata": {"before": None, "after": "directory_id_xx"},
             "metadata": {
                 "params": {
-                    "domain": None,
                     "organization_id": None,
                     "search": None,
                     "limit": 10,
@@ -330,7 +326,6 @@ class TestDirectorySync(object):
             "list_metadata": {"before": None, "after": "directory_id_xx"},
             "metadata": {
                 "params": {
-                    "domain": None,
                     "organization_id": None,
                     "search": None,
                     "limit": 10,
@@ -354,7 +349,6 @@ class TestDirectorySync(object):
             "list_metadata": {"before": None, "after": None},
             "metadata": {
                 "params": {
-                    "domain": None,
                     "organization_id": None,
                     "search": None,
                     "limit": None,

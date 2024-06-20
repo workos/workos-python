@@ -169,6 +169,21 @@ class Organizations(WorkOSListResource):
 
         return WorkOSOrganization.construct_from_response(response).to_dict()
 
+    def get_organization_by_lookup_key(self, lookup_key):
+        """Gets details for a single Organization by lookup key
+        Args:
+            lookup_key (str): Organization's lookup key
+        Returns:
+            dict: Organization response from WorkOS
+        """
+        response = self.request_helper.request(
+            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        return WorkOSOrganization.construct_from_response(response).to_dict()
+
     def create_organization(self, organization, idempotency_key=None):
         """Create an organization
 
@@ -222,6 +237,7 @@ class Organizations(WorkOSListResource):
         allow_profiles_outside_organization=None,
         domains=None,
         domain_data=None,
+        lookup_key=None,
     ):
         """Update an organization
 
@@ -261,6 +277,9 @@ class Organizations(WorkOSListResource):
 
         if domain_data is not None:
             params["domain_data"] = domain_data
+
+        if lookup_key is not None:
+            params["lookup_key"] = lookup_key
 
         response = self.request_helper.request(
             "organizations/{organization}".format(organization=organization),

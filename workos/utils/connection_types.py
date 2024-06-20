@@ -4,6 +4,7 @@ from enum import Enum
 class ConnectionType(Enum):
     ADFSSAML = "ADFSSAML"
     AdpOidc = "AdpOidc"
+    AppleOAuth = "AppleOAuth"
     Auth0SAML = "Auth0SAML"
     AzureSAML = "AzureSAML"
     CasSAML = "CasSAML"
@@ -13,6 +14,7 @@ class ConnectionType(Enum):
     DuoSAML = "DuoSAML"
     GenericOIDC = "GenericOIDC"
     GenericSAML = "GenericSAML"
+    GitHubOAuth = "GitHubOAuth"
     GoogleOAuth = "GoogleOAuth"
     GoogleSAML = "GoogleSAML"
     JumpCloudSAML = "JumpCloudSAML"

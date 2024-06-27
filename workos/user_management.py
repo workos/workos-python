@@ -109,7 +109,7 @@ class UserManagement(WorkOSListResource):
             order (Order): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
 
         Returns:
-            dict: Users response from WorkOS.
+            UserManagement: Users response from WorkOS. Call `to_dict()` or `auto_paging_iter()` to access the data.
         """
 
         default_limit = None

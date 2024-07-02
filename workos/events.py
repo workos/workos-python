@@ -24,7 +24,7 @@ from workos.event_objects.directory_user import (
     DirectoryUserUpdatedEvent,
 )
 
-DSYNC_EVENT_TYPES = Dict[
+DSYNC_EVENT_TYPES = {
     DirectoryUserUpdatedEvent.event_name : DirectoryUserUpdatedEvent,
     DirectoryUserCreatedEvent.event_name : DirectoryUserCreatedEvent,
     DirectoryUserDeletedEvent.event_name : DirectoryUserDeletedEvent,
@@ -33,7 +33,7 @@ DSYNC_EVENT_TYPES = Dict[
     DirectoryGroupUpdatedEvent.event_name : DirectoryGroupUpdatedEvent,
     DirectoryActivatedEvent.event_name : DirectoryActivatedEvent,
     DirectoryActivatedEvent.event_name : DirectoryDeletedEvent,
-]
+}
 
 
 class ListDsyncEventsResponse(TypedDict):

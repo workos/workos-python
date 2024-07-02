@@ -40,7 +40,7 @@ class DirectoryActivatedEvent():
     self.id: str = attributes['id']
     self.name: str = attributes['name']
     self.type: DirectoryType = DirectoryType(attributes['type'])
-    self.state: DirectoryState = DirectoryState(attributes['state'])
+    self.state: DirectoryState = DirectoryState.ACTIVE
     self.domains: List[OrganizationDomain] = []
     for domain in attributes['domains']:
       self.domains.push(OrganizationDomain(domain))
@@ -48,3 +48,21 @@ class DirectoryActivatedEvent():
     self.created_at: str = attributes['created_at']
     self.updated_at: str = attributes['updated_at']
     self.external_key: str = attributes['external_key']
+    # always 'directory' for this event
+    self.object: str = attributes['object'] 
+
+class DirectoryDeletedEvent():
+  def __init__(self, attributes: JsonDict) -> None:
+    self.id: str = attributes['id']
+    self.name: str = attributes['name']
+    self.type: DirectoryType = DirectoryType(attributes['type'])
+    self.state: DirectoryState = DirectoryState.DELETING
+    self.domains: List[OrganizationDomain] = []
+    for domain in attributes['domains']:
+      self.domains.push(OrganizationDomain(domain))
+    self.organization_id: str = attributes['organization_id']
+    self.created_at: str = attributes['created_at']
+    self.updated_at: str = attributes['updated_at']
+    self.external_key: str = attributes['external_key']
+    # always 'directory' for this event
+    self.object: str = attributes['object']

@@ -8,7 +8,7 @@ from workos.utils.request import (
 from workos.utils.validation import EVENTS_MODULE, validate_settings
 from workos.utils.types import JsonDict
 from workos.resources.list import WorkOSListResource
-from typing import Optional, Dict, TypedDict, List, Any
+from typing import Optional, TypedDict, List, Union
 from workos.event_objects.directory import (
     DirectoryActivatedEvent,
     DirectoryDeletedEvent,
@@ -24,7 +24,7 @@ from workos.event_objects.directory_user import (
     DirectoryUserUpdatedEvent,
 )
 
-DSYNC_EVENT_TYPES = {
+DSYNC_EVENT_TO_OBJECT = {
     DirectoryUserUpdatedEvent.event_name: DirectoryUserUpdatedEvent,
     DirectoryUserCreatedEvent.event_name: DirectoryUserCreatedEvent,
     DirectoryUserDeletedEvent.event_name: DirectoryUserDeletedEvent,
@@ -34,11 +34,21 @@ DSYNC_EVENT_TYPES = {
     DirectoryActivatedEvent.event_name: DirectoryActivatedEvent,
     DirectoryActivatedEvent.event_name: DirectoryDeletedEvent,
 }
+DSYNC_EVENT_TYPES = Union[
+    DirectoryActivatedEvent,
+    DirectoryDeletedEvent,
+    DirectoryUserCreatedEvent,
+    DirectoryUserDeletedEvent,
+    DirectoryUserUpdatedEvent,
+    DirectoryGroupCreatedEvent,
+    DirectoryGroupDeletedEvent,
+    DirectoryGroupUpdatedEvent,
+]
 
 
 class ListDsyncEventsResponse(TypedDict):
     object: str
-    data: List[DSYNC_EVENT_TYPES.values()]
+    data: List[DSYNC_EVENT_TYPES]
     metadata: JsonDict
 
 

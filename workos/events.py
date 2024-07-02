@@ -6,7 +6,51 @@ from workos.utils.request import (
 )
 
 from workos.utils.validation import EVENTS_MODULE, validate_settings
+from workos.utils.types import JsonDict
 from workos.resources.list import WorkOSListResource
+from typing import Optional, TypedDict, List, Union
+from workos.event_objects.directory import (
+    DirectoryActivatedEvent,
+    DirectoryDeletedEvent,
+)
+from workos.event_objects.directory_group import (
+    DirectoryGroupCreatedEvent,
+    DirectoryGroupDeletedEvent,
+    DirectoryGroupUpdatedEvent,
+)
+from workos.event_objects.directory_user import (
+    DirectoryUserCreatedEvent,
+    DirectoryUserDeletedEvent,
+    DirectoryUserUpdatedEvent,
+)
+
+DSYNC_EVENT_TO_OBJECT = {
+    DirectoryUserUpdatedEvent.event_name: DirectoryUserUpdatedEvent,
+    DirectoryUserCreatedEvent.event_name: DirectoryUserCreatedEvent,
+    DirectoryUserDeletedEvent.event_name: DirectoryUserDeletedEvent,
+    DirectoryGroupCreatedEvent.event_name: DirectoryGroupCreatedEvent,
+    DirectoryGroupDeletedEvent.event_name: DirectoryGroupDeletedEvent,
+    DirectoryGroupUpdatedEvent.event_name: DirectoryGroupUpdatedEvent,
+    DirectoryActivatedEvent.event_name: DirectoryActivatedEvent,
+    DirectoryActivatedEvent.event_name: DirectoryDeletedEvent,
+}
+DSYNC_EVENT_TYPES = Union[
+    DirectoryActivatedEvent,
+    DirectoryDeletedEvent,
+    DirectoryUserCreatedEvent,
+    DirectoryUserDeletedEvent,
+    DirectoryUserUpdatedEvent,
+    DirectoryGroupCreatedEvent,
+    DirectoryGroupDeletedEvent,
+    DirectoryGroupUpdatedEvent,
+]
+
+
+class ListDsyncEventsResponse(TypedDict):
+    object: str
+    data: List[DSYNC_EVENT_TYPES]
+    metadata: JsonDict
+
 
 RESPONSE_LIMIT = 10
 
@@ -23,6 +67,45 @@ class Events(WorkOSListResource):
         if not getattr(self, "_request_helper", None):
             self._request_helper = RequestHelper()
         return self._request_helper
+
+    def list_dsync_events(
+        self,
+        limit: Optional[int] = None,
+        organization_id: Optional[str] = None,
+        after: Optional[str] = None,
+        range_start: Optional[str] = None,
+        range_end: Optional[str] = None,
+    ) -> ListDsyncEventsResponse:
+        if limit is None:
+            limit = RESPONSE_LIMIT
+            default_limit = True
+
+        params = {
+            "events": DSYNC_EVENT_TYPES.keys(),
+            "limit": limit,
+            "after": after,
+            "organization_id": organization_id,
+            "range_start": range_start,
+            "range_end": range_end,
+        }
+
+        response = self.request_helper.request(
+            "events",
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
+        )
+
+        response = {
+            "object": "list",
+            "params": params,
+        }
+
+        data = []
+        for list_data in response["data"]:
+            data.push(DSYNC_EVENT_TYPES[list_data["event"]](list_data))
+        response["data"] = data
+        return response
 
     def list_events(
         self,

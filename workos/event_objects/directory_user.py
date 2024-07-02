@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Literal
 from enum import Enum
 from workos.utils.types import JsonDict
 
@@ -21,18 +21,19 @@ class DirectoryUserState(Enum):
 
 
 class DirectoryUserEvent:
-    def __init__(self, attributes) -> None:
+    def __init__(self, attributes: JsonDict) -> None:
         self.id: str = attributes["id"]
-        self.name: str = attributes["name"]
         self.idp_id: str = attributes["idp_id"]
         self.directory_id: str = attributes["directory_id"]
         self.organization_id: str = attributes["organization_id"]
         self.first_name: Optional[str] = attributes.get("first_name")
         self.last_name: Optional[str] = attributes.get("last_name")
         self.job_title: Optional[str] = attributes.get("job_title")
+
         self.emails: List[DirectoryUserEmail] = []
         for email in attributes.get("emails"):
-            self.emails.push(DirectoryUserEmail(email))
+            self.emails.append(DirectoryUserEmail(email))
+
         self.username: Optional[str] = attributes.get("username")
         self.state: DirectoryUserState = DirectoryUserState(attributes["state"])
         self.custom_attributes: JsonDict = attributes.get("custom_attributes", {})
@@ -43,8 +44,7 @@ class DirectoryUserEvent:
             DirectoryUserRole(attributes["role"]) if attributes.get("role") else None
         )
         self.previous_attributes: JsonDict = attributes.get("previous_attributes", {})
-        # always 'directory_user' for this event
-        self.object: str = attributes["object"]
+        self.object: Literal["directory_user"] = attributes["object"]
 
 
 class DirectoryUserCreatedEvent:

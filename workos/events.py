@@ -1,4 +1,3 @@
-from warnings import warn
 import workos
 from workos.utils.request import (
     RequestHelper,
@@ -68,7 +67,7 @@ class Events(WorkOSListResource):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def list_dsync_events(
+    def list_directory_sync_events(
         self,
         limit: Optional[int] = None,
         organization_id: Optional[str] = None,
@@ -81,7 +80,7 @@ class Events(WorkOSListResource):
             default_limit = True
 
         params = {
-            "events": DSYNC_EVENT_TYPES.keys(),
+            "events": list(DSYNC_EVENT_TO_OBJECT.keys()),
             "limit": limit,
             "after": after,
             "organization_id": organization_id,
@@ -96,15 +95,22 @@ class Events(WorkOSListResource):
             token=workos.api_key,
         )
 
-        response = {
-            "object": "list",
+        response["metadata"] = {
             "params": params,
+            "method": Events.list_directory_sync_events,
         }
+
+        if "default_limit" in locals():
+            if "metadata" in response and "params" in response["metadata"]:
+                response["metadata"]["params"]["default_limit"] = default_limit
+            else:
+                response["metadata"] = {"params": {"default_limit": default_limit}}
 
         data = []
         for list_data in response["data"]:
-            data.push(DSYNC_EVENT_TYPES[list_data["event"]](list_data))
+            data.append(DSYNC_EVENT_TO_OBJECT[list_data["event"]](list_data))
         response["data"] = data
+
         return response
 
     def list_events(

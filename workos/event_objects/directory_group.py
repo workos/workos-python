@@ -1,3 +1,4 @@
+from typing import Literal
 from workos.utils.types import JsonDict
 
 
@@ -12,8 +13,7 @@ class DirectoryGroupEvent:
         self.updated_at: str = attributes["updated_at"]
         self.raw_attributes: JsonDict = attributes.get("raw_attributes", {})
         self.previous_attributes: JsonDict = attributes.get("previous_attributes", {})
-        # always 'directory_group' for this event
-        self.object: str = attributes["object"]
+        self.object: Literal["directory_group"] = attributes["object"]
 
 
 class DirectoryGroupCreatedEvent:

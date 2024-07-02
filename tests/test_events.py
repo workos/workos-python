@@ -1,12 +1,34 @@
 import pytest
 from workos.events import Events
 from tests.utils.fixtures.mock_event import MockEvent
+from tests.utils.fixtures.mock_directory_sync_event import MockDirectorySyncEvent
 
 
 class TestEvents(object):
     @pytest.fixture(autouse=True)
     def setup(self, set_api_key, set_client_id):
         self.events = Events()
+
+    @pytest.fixture
+    def mock_directory_sync_events(self):
+        events = [MockDirectorySyncEvent(id=str(i)).to_dict() for i in range(100)]
+
+        return {
+            "data": events,
+            "list_metadata": {"after": None},
+            "metadata": {
+                "params": {
+                    "events": None,
+                    "limit": None,
+                    "organization_id": None,
+                    "after": None,
+                    "range_start": None,
+                    "range_end": None,
+                    "default_limit": True,
+                },
+                "method": Events.list_directory_sync_events,
+            },
+        }
 
     @pytest.fixture
     def mock_events(self):
@@ -28,6 +50,15 @@ class TestEvents(object):
                 "method": Events.list_events,
             },
         }
+
+    def test_list_directory_sync_events(
+        self, mock_directory_sync_events, mock_request_method
+    ):
+        mock_request_method("get", mock_directory_sync_events, 200)
+
+        events = self.events.list_directory_sync_events()
+
+        assert events == mock_directory_sync_events
 
     def test_list_events(self, mock_events, mock_request_method):
         mock_request_method("get", mock_events, 200)

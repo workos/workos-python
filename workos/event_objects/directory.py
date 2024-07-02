@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal
 from enum import Enum
 from workos.utils.types import JsonDict
 
@@ -12,7 +12,6 @@ class DirectoryType(Enum):
     FOURTH_HR = "fourth hr"
     GENERIC_SCIM_v2 = "generic scim v2.0"
     GOOGLE = "gsuite directory"
-    GUSTO = "gusto"
     HIBOB = "hibob"
     JUMPCLOUD_SCIM_v2 = "jump cloud scim v2.0"
     OKTA_SCIM_v2 = "okta scim v2.0"
@@ -37,7 +36,7 @@ class OrganizationDomain:
         self.domain: str = attributes["domain"]
 
 
-class DirectoryEvent:
+class DirectoryEventWithLegacyFields:
     def __init__(self, attributes) -> None:
         self.id: str = attributes["id"]
         self.name: str = attributes["name"]
@@ -50,8 +49,19 @@ class DirectoryEvent:
         self.created_at: str = attributes["created_at"]
         self.updated_at: str = attributes["updated_at"]
         self.external_key: str = attributes["external_key"]
-        # always 'directory' for this event
-        self.object: str = attributes["object"]
+        self.object: Literal["directory"] = attributes["object"]
+
+
+class DirectoryEvent:
+    def __init__(self, attributes) -> None:
+        self.id: str = attributes["id"]
+        self.name: str = attributes["name"]
+        self.type: DirectoryType = DirectoryType(attributes["type"])
+        self.state: DirectoryState = DirectoryState.ACTIVE
+        self.organization_id: str = attributes["organization_id"]
+        self.created_at: str = attributes["created_at"]
+        self.updated_at: str = attributes["updated_at"]
+        self.object: Literal["directory"] = attributes["object"]
 
 
 class DirectoryActivatedEvent:
@@ -61,7 +71,9 @@ class DirectoryActivatedEvent:
         self.event: str = attributes["event"]
         self.id: str = attributes["id"]
         self.created_at = attributes["created_at"]
-        self.data: DirectoryEvent = DirectoryEvent(attributes["data"])
+        self.data: DirectoryEventWithLegacyFields = DirectoryEventWithLegacyFields(
+            attributes["data"]
+        )
 
 
 class DirectoryDeletedEvent:
@@ -71,4 +83,5 @@ class DirectoryDeletedEvent:
         self.event: str = attributes["event"]
         self.id: str = attributes["id"]
         self.created_at = attributes["created_at"]
+        self.state: DirectoryState = DirectoryState.DELETING
         self.data: DirectoryEvent = DirectoryEvent(attributes["data"])

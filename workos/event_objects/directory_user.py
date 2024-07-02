@@ -21,7 +21,7 @@ class DirectoryUserState(Enum):
 
 
 class DirectoryUserEvent:
-    def __init__(self) -> None:
+    def __init__(self, attributes) -> None:
         self.id: str = attributes["id"]
         self.name: str = attributes["name"]
         self.idp_id: str = attributes["idp_id"]

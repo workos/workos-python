@@ -1,4 +1,7 @@
 from workos.resources.base import WorkOSBaseResource
+from typing import Dict, Any
+
+JsonDict = Dict[str, Any]
 
 
 class WorkOSDirectory(WorkOSBaseResource):
@@ -6,6 +9,11 @@ class WorkOSDirectory(WorkOSBaseResource):
     Attributes:
         OBJECT_FIELDS (list): List of fields a WorkOSConnection is comprised of.
     """
+    def __init__(self, attributes: JsonDict) -> None:
+        super().__init__()
+        self.id: string = attributes['id']
+        self.
+        
 
     OBJECT_FIELDS = [
         "object",
@@ -20,7 +28,7 @@ class WorkOSDirectory(WorkOSBaseResource):
     ]
 
     @classmethod
-    def construct_from_response(cls, response):
+    def construct_from_response(cls, response: JsonDict) -> WorkOSDirectory:
         connection_response = super(WorkOSDirectory, cls).construct_from_response(
             response
         )

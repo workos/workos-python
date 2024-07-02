@@ -6,6 +6,7 @@ from workos.utils.request import (
 )
 
 from workos.utils.validation import EVENTS_MODULE, validate_settings
+from workos.utils.types import JsonDict
 from workos.resources.list import WorkOSListResource
 from typing import Optional, Dict, TypedDict, List, Any
 from workos.event_objects.directory import (
@@ -23,7 +24,6 @@ from workos.event_objects.directory_user import (
     DirectoryUserUpdatedEvent,
 )
 
-JsonDict = Dict[str, Any]
 DSYNC_EVENT_TYPES = Dict[
     DirectoryUserUpdatedEvent.event : DirectoryUserUpdatedEvent,
     DirectoryUserCreatedEvent.event : DirectoryUserCreatedEvent,

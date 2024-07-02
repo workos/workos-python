@@ -1,7 +1,6 @@
-from typing import Dict, Any, Optional, List
+from typing import Optional, List
 from enum import Enum
-
-JsonDict = Dict[str, Any]
+from workos.utils.types import JsonDict
 
 
 class DirectoryUserRole:

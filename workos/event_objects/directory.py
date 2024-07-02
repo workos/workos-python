@@ -1,7 +1,6 @@
-from typing import Dict, Any, List
+from typing import List
 from enum import Enum
-
-JsonDict = Dict[str, Any]
+from workos.utils.types import JsonDict
 
 
 class DirectoryType(Enum):
@@ -39,7 +38,7 @@ class OrganizationDomain:
 
 
 class DirectoryEvent:
-    def __init__(self) -> None:
+    def __init__(self, attributes) -> None:
         self.id: str = attributes["id"]
         self.name: str = attributes["name"]
         self.type: DirectoryType = DirectoryType(attributes["type"])

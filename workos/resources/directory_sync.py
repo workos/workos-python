@@ -1,5 +1,6 @@
 from workos.resources.base import WorkOSBaseResource
 
+
 class WorkOSDirectory(WorkOSBaseResource):
     """Representation of a Directory Response as returned by WorkOS through the Directory Sync feature.
     Attributes:

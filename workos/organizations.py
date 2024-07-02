@@ -271,9 +271,9 @@ class Organizations(WorkOSListResource):
                 "If you need to allow sign-ins from any email domain, contact support@workos.com.",
                 DeprecationWarning,
             )
-            params["allow_profiles_outside_organization"] = (
-                allow_profiles_outside_organization
-            )
+            params[
+                "allow_profiles_outside_organization"
+            ] = allow_profiles_outside_organization
 
         if domain_data is not None:
             params["domain_data"] = domain_data

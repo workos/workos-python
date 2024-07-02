@@ -25,14 +25,14 @@ from workos.event_objects.directory_user import (
 )
 
 DSYNC_EVENT_TYPES = Dict[
-    DirectoryUserUpdatedEvent.event : DirectoryUserUpdatedEvent,
-    DirectoryUserCreatedEvent.event : DirectoryUserCreatedEvent,
-    DirectoryUserDeletedEvent.event : DirectoryUserDeletedEvent,
-    DirectoryGroupCreatedEvent.event : DirectoryGroupCreatedEvent,
-    DirectoryGroupDeletedEvent.event : DirectoryGroupDeletedEvent,
-    DirectoryGroupUpdatedEvent.event : DirectoryGroupUpdatedEvent,
-    DirectoryActivatedEvent.event : DirectoryActivatedEvent,
-    DirectoryActivatedEvent.event : DirectoryDeletedEvent,
+    DirectoryUserUpdatedEvent.event_name : DirectoryUserUpdatedEvent,
+    DirectoryUserCreatedEvent.event_name : DirectoryUserCreatedEvent,
+    DirectoryUserDeletedEvent.event_name : DirectoryUserDeletedEvent,
+    DirectoryGroupCreatedEvent.event_name : DirectoryGroupCreatedEvent,
+    DirectoryGroupDeletedEvent.event_name : DirectoryGroupDeletedEvent,
+    DirectoryGroupUpdatedEvent.event_name : DirectoryGroupUpdatedEvent,
+    DirectoryActivatedEvent.event_name : DirectoryActivatedEvent,
+    DirectoryActivatedEvent.event_name : DirectoryDeletedEvent,
 ]
 
 

@@ -17,24 +17,30 @@ class DirectoryGroupEvent:
 
 
 class DirectoryGroupCreatedEvent:
+    event_name = "dsync.group.created"
+
     def __init__(self, attributes: JsonDict) -> None:
-        self.event: str = "dsync.group.created"
+        self.event: str = attributes["event"]
         self.id: str = attributes["id"]
         self.created_at: str = attributes["created_at"]
         self.data: DirectoryGroupEvent = DirectoryGroupEvent(attributes["data"])
 
 
 class DirectoryGroupDeletedEvent:
+    event_name = "dsync.group.deleted"
+
     def __init__(self, attributes: JsonDict) -> None:
-        self.event: str = "dsync.group.deleted"
+        self.event: str = attributes["event"]
         self.id: str = attributes["id"]
         self.created_at: str = attributes["created_at"]
         self.data: DirectoryGroupEvent = DirectoryGroupEvent(attributes["data"])
 
 
 class DirectoryGroupUpdatedEvent:
+    event_name = "dsync.group.updated"
+
     def __init__(self, attributes: JsonDict) -> None:
-        self.event: str = "dsync.group.updated"
+        self.event: str = attributes["event"]
         self.id: str = attributes["id"]
         self.created_at: str = attributes["created_at"]
         self.data: DirectoryGroupEvent = DirectoryGroupEvent(attributes["data"])

@@ -48,24 +48,30 @@ class DirectoryUserEvent:
 
 
 class DirectoryUserCreatedEvent:
+    event_name = "dsync.user.created"
+
     def __init__(self, attributes: JsonDict) -> None:
         self.id: str = attributes["id"]
-        self.event: str = "dsync.user.created"
+        self.event: str = attributes["event"]
         self.created_at: str = attributes["created_at"]
         self.data: DirectoryUserEvent = DirectoryUserEvent(attributes["data"])
 
 
 class DirectoryUserDeletedEvent:
+    event_name = "dsync.user.deleted"
+
     def __init__(self, attributes: JsonDict) -> None:
         self.id: str = attributes["id"]
-        self.event: str = "dsync.user.deleted"
+        self.event: str = attributes["event"]
         self.created_at: str = attributes["created_at"]
         self.data: DirectoryUserEvent = DirectoryUserEvent(attributes["data"])
 
 
 class DirectoryUserUpdatedEvent:
+    event_name = "dsync.user.updated"
+
     def __init__(self, attributes: JsonDict) -> None:
         self.id: str = attributes["id"]
-        self.event: str = "dsync.user.updated"
+        self.event: str = attributes["event"]
         self.created_at: str = attributes["created_at"]
         self.data: DirectoryUserEvent = DirectoryUserEvent(attributes["data"])

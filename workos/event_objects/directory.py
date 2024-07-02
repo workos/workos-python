@@ -55,16 +55,20 @@ class DirectoryEvent:
 
 
 class DirectoryActivatedEvent:
+    event_name = "dsync.activated"
+
     def __init__(self, attributes: JsonDict) -> None:
-        self.event: str = "dsync.activated"
+        self.event: str = attributes["event"]
         self.id: str = attributes["id"]
         self.created_at = attributes["created_at"]
         self.data: DirectoryEvent = DirectoryEvent(attributes["data"])
 
 
 class DirectoryDeletedEvent:
+    event_name = "dsync.deleted"
+
     def __init__(self, attributes: JsonDict) -> None:
-        self.event: str = "dsync.deleted"
+        self.event: str = attributes["event"]
         self.id: str = attributes["id"]
         self.created_at = attributes["created_at"]
         self.data: DirectoryEvent = DirectoryEvent(attributes["data"])

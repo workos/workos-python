@@ -107,13 +107,13 @@ class DirectorySync(WorkOSListResource):
 
     def list_users_v2(
         self,
-        directory=None,
-        group=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
-    ):
+        directory: str = None,
+        group: str = None,
+        limit: int = None,
+        before: str = None,
+        after: str = None,
+        order: Order = None,
+    ) -> WorkOSListResource:
         """Gets a list of provisioned Users for a Directory.
 
         Note, either 'directory' or 'group' must be provided.
@@ -247,13 +247,13 @@ class DirectorySync(WorkOSListResource):
 
     def list_groups_v2(
         self,
-        directory=None,
-        user=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
-    ):
+        directory: str = None,
+        user: str = None,
+        limit: int = None,
+        before: str = None,
+        after: str = None,
+        order: Order = None,
+    ) -> WorkOSListResource:
         """Gets a list of provisioned Groups for a Directory .
 
         Note, either 'directory' or 'user' must be provided.
@@ -312,7 +312,7 @@ class DirectorySync(WorkOSListResource):
 
         return self.construct_from_response(response)
 
-    def get_user(self, user):
+    def get_user(self, user: str) -> WorkOSDirectoryUser:
         """Gets details for a single provisioned Directory User.
 
         Args:
@@ -329,7 +329,7 @@ class DirectorySync(WorkOSListResource):
 
         return WorkOSDirectoryUser.construct_from_response(response).to_dict()
 
-    def get_group(self, group):
+    def get_group(self, group: str) -> WorkOSDirectoryGroup:
         """Gets details for a single provisioned Directory Group.
 
         Args:
@@ -439,19 +439,19 @@ class DirectorySync(WorkOSListResource):
 
     def list_directories_v2(
         self,
-        domain=None,
-        search=None,
-        limit=None,
-        before=None,
-        after=None,
-        organization=None,
-        order=None,
+        domain: str = None,
+        search: str = None,
+        limit: int = None,
+        before: str = None,
+        after: str = None,
+        organization: str = None,
+        order: Order = None,
     ):
         """Gets details for existing Directories.
 
         Args:
             domain (str): Domain of a Directory. (Optional)
-            organization: ID of an Organization (Optional)
+            organization (str): ID of an Organization (Optional)
             search (str): Searchable text for a Directory. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
@@ -505,7 +505,7 @@ class DirectorySync(WorkOSListResource):
 
         return self.construct_from_response(response)
 
-    def get_directory(self, directory):
+    def get_directory(self, directory: str) -> WorkOSDirectory:
         """Gets details for a single Directory
 
         Args:
@@ -524,7 +524,7 @@ class DirectorySync(WorkOSListResource):
 
         return WorkOSDirectory.construct_from_response(response).to_dict()
 
-    def delete_directory(self, directory):
+    def delete_directory(self, directory: str) -> dict:
         """Delete one existing Directory.
 
         Args:

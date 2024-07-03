@@ -1,4 +1,6 @@
 from warnings import warn
+from typing import Optional
+
 import workos
 from workos.utils.pagination_order import Order
 from workos.utils.request import (
@@ -107,12 +109,12 @@ class DirectorySync(WorkOSListResource):
 
     def list_users_v2(
         self,
-        directory: str = None,
-        group: str = None,
-        limit: int = None,
-        before: str = None,
-        after: str = None,
-        order: Order = None,
+        directory: Optional[str] = None,
+        group: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Order] = None,
     ) -> WorkOSListResource:
         """Gets a list of provisioned Users for a Directory.
 
@@ -247,12 +249,12 @@ class DirectorySync(WorkOSListResource):
 
     def list_groups_v2(
         self,
-        directory: str = None,
-        user: str = None,
-        limit: int = None,
-        before: str = None,
-        after: str = None,
-        order: Order = None,
+        directory: Optional[str] = None,
+        user: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Order] = None,
     ) -> WorkOSListResource:
         """Gets a list of provisioned Groups for a Directory .
 
@@ -439,13 +441,13 @@ class DirectorySync(WorkOSListResource):
 
     def list_directories_v2(
         self,
-        domain: str = None,
-        search: str = None,
-        limit: int = None,
-        before: str = None,
-        after: str = None,
-        organization: str = None,
-        order: Order = None,
+        domain: Optional[str] = None,
+        search: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        organization: Optional[str] = None,
+        order: Optional[Order] = None,
     ):
         """Gets details for existing Directories.
 

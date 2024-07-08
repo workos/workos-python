@@ -23,7 +23,7 @@ from workos.event_objects.directory_user import (
     DirectoryUserUpdatedEvent,
 )
 
-DSYNC_EVENT_TO_OBJECT = {
+EVENT_TO_OBJECT = {
     DirectoryUserUpdatedEvent.event_name: DirectoryUserUpdatedEvent,
     DirectoryUserCreatedEvent.event_name: DirectoryUserCreatedEvent,
     DirectoryUserDeletedEvent.event_name: DirectoryUserDeletedEvent,
@@ -33,7 +33,7 @@ DSYNC_EVENT_TO_OBJECT = {
     DirectoryActivatedEvent.event_name: DirectoryActivatedEvent,
     DirectoryActivatedEvent.event_name: DirectoryDeletedEvent,
 }
-DSYNC_EVENT_TYPES = Union[
+EVENT_TYPES = Union[
     DirectoryActivatedEvent,
     DirectoryDeletedEvent,
     DirectoryUserCreatedEvent,
@@ -45,9 +45,9 @@ DSYNC_EVENT_TYPES = Union[
 ]
 
 
-class ListDsyncEventsResponse(TypedDict):
+class ListEventsResponse(TypedDict):
     object: str
-    data: List[DSYNC_EVENT_TYPES]
+    data: List[EVENT_TYPES]
     metadata: JsonDict
 
 
@@ -67,61 +67,15 @@ class Events(WorkOSListResource):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def list_directory_sync_events(
+    def list_events(
         self,
+        events: Optional[List[EVENT_TYPES]]=None,
         limit: Optional[int] = None,
         organization_id: Optional[str] = None,
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> ListDsyncEventsResponse:
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
-            "events": list(DSYNC_EVENT_TO_OBJECT.keys()),
-            "limit": limit,
-            "after": after,
-            "organization_id": organization_id,
-            "range_start": range_start,
-            "range_end": range_end,
-        }
-
-        response = self.request_helper.request(
-            "events",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        response["metadata"] = {
-            "params": params,
-            "method": Events.list_directory_sync_events,
-        }
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        data = []
-        for list_data in response["data"]:
-            data.append(DSYNC_EVENT_TO_OBJECT[list_data["event"]](list_data))
-        response["data"] = data
-
-        return response
-
-    def list_events(
-        self,
-        events=None,
-        limit=None,
-        organization_id=None,
-        after=None,
-        range_start=None,
-        range_end=None,
-    ):
+    ) -> ListEventsResponse:
         """Gets a list of Events .
         Kwargs:
             events (list): Filter to only return events of particular types. (Optional)
@@ -166,5 +120,12 @@ class Events(WorkOSListResource):
             "params": params,
             "method": Events.list_events,
         }
+
+        data = []
+        for list_data in response["data"]:
+            if list_data["event"] in EVENT_TO_OBJECT.keys():
+                data.append(EVENT_TO_OBJECT[list_data["event"]](list_data))
+            
+        response["data"] = data
 
         return response

@@ -8,6 +8,7 @@ from workos.utils.request import (
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
 )
+from workos.utils.types import JsonDict
 
 from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
 from workos.resources.directory_sync import (
@@ -348,7 +349,7 @@ class DirectorySync(WorkOSListResource):
 
         return WorkOSDirectoryGroup.construct_from_response(response).to_dict()
 
-    def get_directory(self, directory):
+    def get_directory(self, directory: str) -> WorkOSDirectory:
         """Gets details for a single Directory
 
         Args:
@@ -507,26 +508,7 @@ class DirectorySync(WorkOSListResource):
 
         return self.construct_from_response(response)
 
-    def get_directory(self, directory: str) -> WorkOSDirectory:
-        """Gets details for a single Directory
-
-        Args:
-            directory (str): Directory unique identifier.
-
-        Returns:
-            dict: Directory response from WorkOS
-
-        """
-
-        response = self.request_helper.request(
-            "directories/{directory}".format(directory=directory),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
-
-        return WorkOSDirectory.construct_from_response(response).to_dict()
-
-    def delete_directory(self, directory: str) -> dict:
+    def delete_directory(self, directory: str) -> JsonDict:
         """Delete one existing Directory.
 
         Args:

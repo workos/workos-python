@@ -69,7 +69,7 @@ class Events(WorkOSListResource):
 
     def list_events(
         self,
-        events: Optional[List[EVENT_TYPES]]=None,
+        events: Optional[List[EVENT_TYPES]] = None,
         limit: Optional[int] = None,
         organization_id: Optional[str] = None,
         after: Optional[str] = None,
@@ -125,7 +125,7 @@ class Events(WorkOSListResource):
         for list_data in response["data"]:
             if list_data["event"] in EVENT_TO_OBJECT.keys():
                 data.append(EVENT_TO_OBJECT[list_data["event"]](list_data))
-            
+
         response["data"] = data
 
         return response

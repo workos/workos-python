@@ -1,4 +1,7 @@
 import json
+
+import jwt
+from jwt import PyJWKClient
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
 import workos
@@ -9,6 +12,7 @@ from tests.utils.fixtures.mock_invitation import MockInvitation
 from tests.utils.fixtures.mock_magic_auth import MockMagicAuth
 from tests.utils.fixtures.mock_organization_membership import MockOrganizationMembership
 from tests.utils.fixtures.mock_password_reset import MockPasswordReset
+from tests.utils.fixtures.mock_pyjwkclient import MockJWKSigningKey
 from tests.utils.fixtures.mock_session import MockSession
 from tests.utils.fixtures.mock_user import MockUser
 from workos.user_management import UserManagement
@@ -147,6 +151,27 @@ class TestUserManagement(object):
             "access_token": "access_token_12345",
             "refresh_token": "refresh_token_12345",
         }
+
+    @pytest.fixture
+    def mock_jwt_decode(self, monkeypatch):
+        def inner(content):
+            def mock(*args, **kwargs):
+                print("args", args, kwargs)
+                return content
+
+            monkeypatch.setattr(jwt, "decode", mock)
+
+        return inner
+
+    @pytest.fixture
+    def mock_jwk_client_get_signing_key_from_jwt(self, monkeypatch):
+        def inner():
+            def mock(*args, **kwargs):
+                return MockJWKSigningKey()
+
+            monkeypatch.setattr(PyJWKClient, "get_signing_key_from_jwt", mock)
+
+        return inner
 
     @pytest.fixture
     def mock_auth_refresh_token_response(self):
@@ -888,6 +913,28 @@ class TestUserManagement(object):
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"
         assert request["json"]["client_secret"] == "sk_test"
         assert request["json"]["grant_type"] == "refresh_token"
+
+    def test_authenticate_with_access_token(
+        self, mock_jwt_decode, mock_jwk_client_get_signing_key_from_jwt
+    ):
+        jwt_payload = {
+            "sid": "testsession",
+            "org_id": "org_12345",
+            "role": "member",
+            "permissions": ["users:view", "users:edit"],
+        }
+
+        mock_jwt_decode(jwt_payload)
+        mock_jwk_client_get_signing_key_from_jwt()
+
+        authenticated, decoded_jwt = (
+            self.user_management.authenticate_with_access_token(jwt_payload)
+        )
+
+        assert authenticated == True
+        assert decoded_jwt.organization_id == "org_12345"
+        assert decoded_jwt.role == "member"
+        assert decoded_jwt.permissions == ["users:view", "users:edit"]
 
     def test_get_jwks_url(self):
         expected = "%ssso/jwks/%s" % (workos.base_api_url, workos.client_id)

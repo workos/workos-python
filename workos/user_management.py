@@ -1,5 +1,10 @@
-from requests import Request
 from warnings import warn
+from typing import Tuple, Union
+
+import jwt
+from jwt import PyJWKClient
+from requests import Request
+
 import workos
 from workos.resources.list import WorkOSListResource
 from workos.resources.mfa import WorkOSAuthenticationFactorTotp, WorkOSChallenge
@@ -11,7 +16,7 @@ from workos.resources.user_management import (
     WorkOSMagicAuth,
     WorkOSPasswordReset,
     WorkOSOrganizationMembership,
-    WorkOSPasswordChallengeResponse,
+    WorkOSSessionJWT,
     WorkOSUser,
 )
 from workos.utils.pagination_order import Order
@@ -489,6 +494,51 @@ class UserManagement(WorkOSListResource):
         ).prepare()
 
         return prepared_request.url
+
+    def authenticate_with_access_token(
+        self,
+        access_token: str,
+    ) -> Tuple[bool, Union[WorkOSSessionJWT, None]]:
+        """Authenticates a user with the provided session cookie.
+
+        Kwargs:
+            access_token (str): The access token from the unsealed session cookie.
+
+        Returns:
+            tuple: A tuple containing:
+                - bool: True if authentication is successful, False otherwise.
+                - WorkOSSessionJWT: An instance of WorkOSSessionJWT if authentication is successful, None otherwise.
+        """
+        if not access_token:
+            return False, None
+
+        jwks_url = self.get_jwks_url()
+
+        try:
+            jwks_client = PyJWKClient(jwks_url)
+            signing_key = jwks_client.get_signing_key_from_jwt(access_token)
+            decoded_session = jwt.decode(
+                token=access_token,
+                key=signing_key.key,
+                algorithms=["RS256"],
+                options={
+                    "verify_signature": True,
+                    "required": ["iss", "sub", "sid", "jti"],
+                },
+            )
+
+            return True, WorkOSSessionJWT(
+                session_id=decoded_session.get("sid"),
+                organization_id=decoded_session.get("org_id", None),
+                role=decoded_session.get("role", None),
+                permissions=decoded_session.get("permissions", None),
+            )
+        except (
+            jwt.DecodeError,
+            jwt.ExpiredSignatureError,
+            jwt.PyJWKClientConnectionError,
+        ):
+            return False, None
 
     def authenticate_with_password(
         self,

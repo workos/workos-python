@@ -1,3 +1,5 @@
+from typing import Optional, List
+
 from workos.resources.base import WorkOSBaseResource
 
 
@@ -230,3 +232,29 @@ class WorkOSImpersonator(WorkOSBaseResource):
         "email",
         "reason",
     ]
+
+
+class WorkOSSessionJWT:
+    """Representation of an AuthKit session JWT and its claims.
+
+    Attributes:
+        session_id (str): The session ID.
+        organization_id (str): The organization ID attached to the session.
+        role (str): The role attach to the specific organization membership. Only defined when organization ID is set.
+        permissions (Optional[list]): Optional list of permissions attach to the session by the role.
+    """
+
+    def __init__(
+        self,
+        session_id: str,
+        organization_id: Optional[str],
+        role: Optional[str],
+        permissions: Optional[List[str]],
+    ):
+        self.session_id = session_id
+        self.organization_id = organization_id
+        self.role = role
+        self.permissions = permissions
+
+    def __getattr__(self, name: str):
+        return self.__dict__[f"_{name}"]

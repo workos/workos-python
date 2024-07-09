@@ -38,6 +38,8 @@ setup(
             "twine==4.0.2",
             "requests==2.30.0",
             "urllib3==2.0.2",
+            "cryptography==42.0.8",
+            "pyjwt==2.8.0",
         ],
         ":python_version<'3.4'": ["enum34"],
     },

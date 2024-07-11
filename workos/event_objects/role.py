@@ -1,7 +1,9 @@
 from typing import TypedDict
 
+
 class Role(TypedDict):
     slug: str
+
 
 class WorkOSRole:
     slug: str

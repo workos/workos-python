@@ -33,6 +33,7 @@ class OrganizationDomain(TypedDict):
     id: str
     domain: str
 
+
 class WorkOSOrganizationDomain:
     id: str
     domain: str
@@ -64,6 +65,7 @@ class DirectoryEventWithLegacyFields(TypedDict):
     external_key: str
     object: Literal["directory"]
 
+
 class WorkOSDirectoryEventWithLegacyFields:
     id: str
     name: str
@@ -80,14 +82,16 @@ class WorkOSDirectoryEventWithLegacyFields:
     def construct_from_response(cls, response: dict):
         instance = cls()
         for k, v in response.items():
-            if k == 'domains':
+            if k == "domains":
                 domains = []
                 for domain in v:
-                    domains.append(WorkOSOrganizationDomain.construct_from_response(domain))
+                    domains.append(
+                        WorkOSOrganizationDomain.construct_from_response(domain)
+                    )
                 setattr(instance, k, domains)
-            elif k == 'type':
+            elif k == "type":
                 setattr(instance, k, DirectoryType(v))
-            elif k == 'state':
+            elif k == "state":
                 setattr(instance, k, DirectoryState(v))
             else:
                 setattr(instance, k, v)
@@ -111,6 +115,7 @@ class DirectoryEvent:
     updated_at: str
     object: Literal["directory"]
 
+
 class WorkOSDirectoryEvent:
     id: str
     name: str
@@ -125,9 +130,9 @@ class WorkOSDirectoryEvent:
     def construct_from_response(cls, response: dict):
         instance = cls()
         for k, v in response.items():
-            if k == 'type':
+            if k == "type":
                 setattr(instance, k, DirectoryType(v))
-            elif k == 'state':
+            elif k == "state":
                 setattr(instance, k, DirectoryState(v))
             else:
                 setattr(instance, k, v)
@@ -147,8 +152,9 @@ class DirectoryActivatedEvent(TypedDict):
     created_at: str
     data: DirectoryEventWithLegacyFields
 
+
 class WorkOSDirectoryActivatedEvent:
-    event: Literal["dsync.activated"] = 'dsync.activated'
+    event: Literal["dsync.activated"] = "dsync.activated"
     id: str
     created_at: str
     data: WorkOSDirectoryEventWithLegacyFields
@@ -157,8 +163,12 @@ class WorkOSDirectoryActivatedEvent:
     def construct_from_response(cls, response: dict):
         instance = cls()
         for k, v in response.items():
-            if k == 'data':
-                setattr(instance, k, WorkOSDirectoryEventWithLegacyFields.construct_from_response(v))
+            if k == "data":
+                setattr(
+                    instance,
+                    k,
+                    WorkOSDirectoryEventWithLegacyFields.construct_from_response(v),
+                )
             else:
                 setattr(instance, k, v)
 
@@ -180,7 +190,7 @@ class DirectoryDeletedEvent:
 
 
 class WorkOSDirectoryDeletedEvent:
-    event: Literal["dsync.deleted"] = 'dsync.deleted'
+    event: Literal["dsync.deleted"] = "dsync.deleted"
     id: str
     created_at: str
     state: DirectoryState
@@ -190,9 +200,9 @@ class WorkOSDirectoryDeletedEvent:
     def construct_from_response(cls, response: dict):
         instance = cls()
         for k, v in response.items():
-            if k == 'data':
+            if k == "data":
                 setattr(instance, k, WorkOSDirectoryEvent.construct_from_response(v))
-            elif k == 'state':
+            elif k == "state":
                 setattr(instance, k, DirectoryState(v))
             else:
                 setattr(instance, k, v)

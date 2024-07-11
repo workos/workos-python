@@ -14,6 +14,7 @@ class DirectoryGroupEvent(TypedDict):
     previous_attributes: JsonDict
     object: Literal["directory_group"]
 
+
 class WorkOSDirectoryGroupEvent:
     id: str
     name: str
@@ -39,13 +40,14 @@ class WorkOSDirectoryGroupEvent:
 
     def __str__(self):
         return f"{self.__class__.__name__} {self.to_dict()}"
-    
+
 
 class DirectoryGroupCreatedEvent(TypedDict):
     event: Literal["dsync.activated"]
     id: str
     created_at: str
     data: DirectoryGroupEvent
+
 
 class WorkOSDirectoryGroupCreatedEvent:
     event: Literal["dsync.activated"]
@@ -57,8 +59,10 @@ class WorkOSDirectoryGroupCreatedEvent:
     def construct_from_response(cls, response: dict):
         instance = cls()
         for k, v in response.items():
-            if k == 'data':
-                setattr(instance, k, WorkOSDirectoryGroupEvent.construct_from_response(v))
+            if k == "data":
+                setattr(
+                    instance, k, WorkOSDirectoryGroupEvent.construct_from_response(v)
+                )
             else:
                 setattr(instance, k, v)
 
@@ -77,6 +81,7 @@ class DirectoryGroupDeletedEvent(TypedDict):
     created_at: str
     data: DirectoryGroupEvent
 
+
 class WorkOSDirectoryGroupDeletedEvent:
     event: Literal["dsync.group.deleted"]
     id: str
@@ -87,8 +92,10 @@ class WorkOSDirectoryGroupDeletedEvent:
     def construct_from_response(cls, response: dict):
         instance = cls()
         for k, v in response.items():
-            if k == 'data':
-                setattr(instance, k, WorkOSDirectoryGroupEvent.construct_from_response(v))
+            if k == "data":
+                setattr(
+                    instance, k, WorkOSDirectoryGroupEvent.construct_from_response(v)
+                )
             else:
                 setattr(instance, k, v)
 
@@ -107,6 +114,7 @@ class DirectoryGroupUpdatedEvent(TypedDict):
     created_at: str
     data: DirectoryGroupEvent
 
+
 class WorkOSDirectoryGroupUpdatedEvent:
     event: Literal["dsync.group.updated"]
     id: str
@@ -117,8 +125,10 @@ class WorkOSDirectoryGroupUpdatedEvent:
     def construct_from_response(cls, response: dict):
         instance = cls()
         for k, v in response.items():
-            if k == 'data':
-                setattr(instance, k, WorkOSDirectoryGroupEvent.construct_from_response(v))
+            if k == "data":
+                setattr(
+                    instance, k, WorkOSDirectoryGroupEvent.construct_from_response(v)
+                )
             else:
                 setattr(instance, k, v)
 

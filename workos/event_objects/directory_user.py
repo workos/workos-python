@@ -35,7 +35,7 @@ class WorkOSDirectoryUserEmail:
         return f"{self.__class__.__name__} {self.to_dict()}"
 
 
-class DirectoryUserEvent(TypedDict):
+class DirectoryUserEventData(TypedDict):
     id: str
     idp_id: str
     directory_id: str
@@ -55,7 +55,7 @@ class DirectoryUserEvent(TypedDict):
     object: Literal["directory_user"]
 
 
-class WorkOSDirectoryUserEvent:
+class WorkOSDirectoryUserEventData:
     id: str
     idp_id: str
     directory_id: str
@@ -94,25 +94,25 @@ class WorkOSDirectoryUserEvent:
 
         return instance
 
-    def to_dict(self) -> DirectoryUserEvent:
+    def to_dict(self) -> DirectoryUserEventData:
         return self.__dict__
 
     def __str__(self):
         return f"{self.__class__.__name__} {self.to_dict()}"
 
 
-class DirectoryUserCreatedEvent:
+class DirectoryUserCreatedEvent(TypedDict):
     id: str
     event: Literal["dsync.user.created"]
     created_at: str
-    data: DirectoryUserEvent
+    data: DirectoryUserEventData
 
 
 class WorkOSDirectoryUserCreatedEvent:
     id: str
     event: Literal["dsync.user.created"]
     created_at: str
-    data: WorkOSDirectoryUserEvent
+    data: WorkOSDirectoryUserEventData
 
     @classmethod
     def construct_from_response(cls, response: dict):
@@ -120,7 +120,7 @@ class WorkOSDirectoryUserCreatedEvent:
         for k, v in response.items():
             if k == "data":
                 setattr(
-                    instance, k, WorkOSDirectoryUserEvent.construct_from_response(v)
+                    instance, k, WorkOSDirectoryUserEventData.construct_from_response(v)
                 )
             else:
                 setattr(instance, k, v)
@@ -134,18 +134,18 @@ class WorkOSDirectoryUserCreatedEvent:
         return f"{self.__class__.__name__} {self.to_dict()}"
 
 
-class DirectoryUserDeletedEvent:
+class DirectoryUserDeletedEvent(TypedDict):
     id: str
     event: Literal["dsync.user.deleted"]
     created_at: str
-    data: DirectoryUserEvent
+    data: DirectoryUserEventData
 
 
 class WorkOSDirectoryUserDeletedEvent:
     id: str
     event: Literal["dsync.user.deleted"]
     created_at: str
-    data: WorkOSDirectoryUserEvent
+    data: WorkOSDirectoryUserEventData
 
     @classmethod
     def construct_from_response(cls, response: dict):
@@ -153,7 +153,7 @@ class WorkOSDirectoryUserDeletedEvent:
         for k, v in response.items():
             if k == "data":
                 setattr(
-                    instance, k, WorkOSDirectoryUserEvent.construct_from_response(v)
+                    instance, k, WorkOSDirectoryUserEventData.construct_from_response(v)
                 )
             else:
                 setattr(instance, k, v)
@@ -167,18 +167,18 @@ class WorkOSDirectoryUserDeletedEvent:
         return f"{self.__class__.__name__} {self.to_dict()}"
 
 
-class DirectoryUserUpdatedEvent:
+class DirectoryUserUpdatedEvent(TypedDict):
     id: str
     event: Literal["dsync.user.updated"]
     created_at: str
-    data: DirectoryUserEvent
+    data: DirectoryUserEventData
 
 
 class WorkOSDirectoryUserUpdatedEvent:
     id: str
     event: Literal["dsync.user.updated"]
     created_at: str
-    data: WorkOSDirectoryUserEvent
+    data: WorkOSDirectoryUserEventData
 
     @classmethod
     def construct_from_response(cls, response: dict):
@@ -186,7 +186,7 @@ class WorkOSDirectoryUserUpdatedEvent:
         for k, v in response.items():
             if k == "data":
                 setattr(
-                    instance, k, WorkOSDirectoryUserEvent.construct_from_response(v)
+                    instance, k, WorkOSDirectoryUserEventData.construct_from_response(v)
                 )
             else:
                 setattr(instance, k, v)

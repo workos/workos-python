@@ -2,7 +2,7 @@ from typing import Literal, TypedDict
 from workos.utils.types import JsonDict
 
 
-class DirectoryGroupEvent(TypedDict):
+class DirectoryGroupEventData(TypedDict):
     id: str
     name: str
     idp_id: str
@@ -15,7 +15,7 @@ class DirectoryGroupEvent(TypedDict):
     object: Literal["directory_group"]
 
 
-class WorkOSDirectoryGroupEvent:
+class WorkOSDirectoryGroupEventData:
     id: str
     name: str
     idp_id: str
@@ -35,7 +35,7 @@ class WorkOSDirectoryGroupEvent:
 
         return instance
 
-    def to_dict(self) -> DirectoryGroupEvent:
+    def to_dict(self) -> DirectoryGroupEventData:
         return self.__dict__
 
     def __str__(self):
@@ -46,14 +46,14 @@ class DirectoryGroupCreatedEvent(TypedDict):
     event: Literal["dsync.activated"]
     id: str
     created_at: str
-    data: DirectoryGroupEvent
+    data: DirectoryGroupEventData
 
 
 class WorkOSDirectoryGroupCreatedEvent:
     event: Literal["dsync.activated"]
     id: str
     created_at: str
-    data: WorkOSDirectoryGroupEvent
+    data: WorkOSDirectoryGroupEventData
 
     @classmethod
     def construct_from_response(cls, response: dict):
@@ -61,7 +61,9 @@ class WorkOSDirectoryGroupCreatedEvent:
         for k, v in response.items():
             if k == "data":
                 setattr(
-                    instance, k, WorkOSDirectoryGroupEvent.construct_from_response(v)
+                    instance,
+                    k,
+                    WorkOSDirectoryGroupEventData.construct_from_response(v),
                 )
             else:
                 setattr(instance, k, v)
@@ -79,14 +81,14 @@ class DirectoryGroupDeletedEvent(TypedDict):
     event: Literal["dsync.group.deleted"]
     id: str
     created_at: str
-    data: DirectoryGroupEvent
+    data: DirectoryGroupEventData
 
 
 class WorkOSDirectoryGroupDeletedEvent:
     event: Literal["dsync.group.deleted"]
     id: str
     created_at: str
-    data: WorkOSDirectoryGroupEvent
+    data: WorkOSDirectoryGroupEventData
 
     @classmethod
     def construct_from_response(cls, response: dict):
@@ -94,7 +96,9 @@ class WorkOSDirectoryGroupDeletedEvent:
         for k, v in response.items():
             if k == "data":
                 setattr(
-                    instance, k, WorkOSDirectoryGroupEvent.construct_from_response(v)
+                    instance,
+                    k,
+                    WorkOSDirectoryGroupEventData.construct_from_response(v),
                 )
             else:
                 setattr(instance, k, v)
@@ -112,14 +116,14 @@ class DirectoryGroupUpdatedEvent(TypedDict):
     event: Literal["dsync.group.updated"]
     id: str
     created_at: str
-    data: DirectoryGroupEvent
+    data: DirectoryGroupEventData
 
 
 class WorkOSDirectoryGroupUpdatedEvent:
     event: Literal["dsync.group.updated"]
     id: str
     created_at: str
-    data: WorkOSDirectoryGroupEvent
+    data: WorkOSDirectoryGroupEventData
 
     @classmethod
     def construct_from_response(cls, response: dict):
@@ -127,7 +131,9 @@ class WorkOSDirectoryGroupUpdatedEvent:
         for k, v in response.items():
             if k == "data":
                 setattr(
-                    instance, k, WorkOSDirectoryGroupEvent.construct_from_response(v)
+                    instance,
+                    k,
+                    WorkOSDirectoryGroupEventData.construct_from_response(v),
                 )
             else:
                 setattr(instance, k, v)

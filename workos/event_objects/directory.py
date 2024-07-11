@@ -69,7 +69,7 @@ class WorkOSDirectoryEventWithLegacyFields:
     name: str
     type: DirectoryType
     state: DirectoryState
-    domains: List[OrganizationDomain]
+    domains: List[WorkOSOrganizationDomain]
     organization_id: str
     created_at: str
     updated_at: str
@@ -148,8 +148,7 @@ class DirectoryActivatedEvent(TypedDict):
     data: DirectoryEventWithLegacyFields
 
 class WorkOSDirectoryActivatedEvent:
-    event_name: Literal["dsync.activated"] = 'dsync.activated'
-    event: str
+    event: Literal["dsync.activated"] = 'dsync.activated'
     id: str
     created_at: str
     data: WorkOSDirectoryEventWithLegacyFields
@@ -181,8 +180,7 @@ class DirectoryDeletedEvent:
 
 
 class WorkOSDirectoryDeletedEvent:
-    event_name: Literal["dsync.deleted"] = 'dsync.deleted'
-    event: str
+    event: Literal["dsync.deleted"] = 'dsync.deleted'
     id: str
     created_at: str
     state: DirectoryState

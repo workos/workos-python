@@ -1,5 +1,19 @@
+from abc import abstractmethod
+from typing import (
+    List,
+    Any,
+    Literal,
+    TypeVar,
+    Generic,
+    Callable,
+    Iterator,
+    Optional,
+)
+
 from workos.resources.base import WorkOSBaseResource
-from warnings import warn
+from workos.resources.organizations import Organization
+
+from pydantic import BaseModel, Extra
 
 
 class WorkOSListResource(WorkOSBaseResource):
@@ -90,3 +104,60 @@ class WorkOSListResource(WorkOSBaseResource):
                 next_page_marker = response["list_metadata"][string_direction]
                 yield data
                 data = []
+
+
+# add all possible generics of List Resource
+T = TypeVar("T", Organization, Any)
+
+
+class ListMetadata(BaseModel):
+    after: Optional[str] = None
+    before: Optional[str] = None
+
+
+class ListArgs(BaseModel, extra=Extra.allow):
+    limit: Optional[int] = 10
+    before: Optional[str] = None
+    after: Optional[str] = None
+    order: Literal["asc", "desc"] = "desc"
+
+    class Config:
+        extra = "allow"
+
+
+class WorkOsListResource(BaseModel, Generic[T]):
+    object: Literal["list"]
+    data: List[T]
+    list_metadata: ListMetadata
+
+    list_method: Callable
+    list_args: ListArgs
+
+    def auto_paging_iter(self) -> Iterator[T]:
+        next_page: WorkOsListResource[T]
+
+        after = self.list_metadata.after
+        order = self.list_args.order
+
+        fixed_pagination_params = {"order": order, "limit": self.list_args.limit}
+        filter_params = self.list_args.model_dump(
+            exclude={"after", "before", "order", "limit"}
+        )
+
+        asc_order = order == "asc"
+        index: int = 0
+
+        while True:
+            if index >= len(self.data):
+                if after is not None:
+                    next_page = self.list_method(
+                        after=after, **fixed_pagination_params, **filter_params
+                    )
+                    self.data = next_page.data
+                    after = next_page.list_metadata.after
+                    index = 0
+                    continue
+                else:
+                    return
+            yield self.data[index]
+            index += 1

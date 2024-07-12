@@ -505,25 +505,6 @@ class DirectorySync(WorkOSListResource):
 
         return self.construct_from_response(response)
 
-    def get_directory(self, directory):
-        """Gets details for a single Directory
-
-        Args:
-            directory (str): Directory unique identifier.
-
-        Returns:
-            dict: Directory response from WorkOS
-
-        """
-
-        response = self.request_helper.request(
-            "directories/{directory}".format(directory=directory),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
-
-        return WorkOSDirectory.construct_from_response(response).to_dict()
-
     def delete_directory(self, directory):
         """Delete one existing Directory.
 

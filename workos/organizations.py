@@ -169,15 +169,32 @@ class Organizations(WorkOSListResource):
 
         return WorkOSOrganization.construct_from_response(response).to_dict()
 
+    def get_organization_by_lookup_key(self, lookup_key):
+        """Gets details for a single Organization by lookup key
+        Args:
+            lookup_key (str): Organization's lookup key
+        Returns:
+            dict: Organization response from WorkOS
+        """
+        response = self.request_helper.request(
+            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        return WorkOSOrganization.construct_from_response(response).to_dict()
+
     def create_organization(self, organization, idempotency_key=None):
         """Create an organization
 
         Args:
             organization (dict) - An organization object
                 organization[name] (str) - A unique, descriptive name for the organization
-                organization[allow_profiles_outside_organization] (boolean) - Whether Connections
+                organization[allow_profiles_outside_organization] (boolean) - [Deprecated] Whether Connections
                     within the Organization allow profiles that are outside of the Organization's
                     configured User Email Domains. (Optional)
+                organization[domains] (list[dict]) - [Deprecated] Use domain_data instead. List of domains that
+                    belong to the organization. (Optional)
                 organization[domain_data] (list[dict]) - List of domains that belong to the organization.
                     organization[domain_data][][domain] - The domain of the organization.
                     organization[domain_data][][state] - The state of the domain: either 'verified' or 'pending'.
@@ -193,6 +210,13 @@ class Organizations(WorkOSListResource):
         if "domains" in organization:
             warn(
                 "The 'domains' parameter for 'create_organization' is deprecated. Please use 'domain_data' instead.",
+                DeprecationWarning,
+            )
+
+        if "allow_profiles_outside_organization" in organization:
+            warn(
+                "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "
+                "If you need to allow sign-ins from any email domain, contact support@workos.com.",
                 DeprecationWarning,
             )
 
@@ -213,13 +237,14 @@ class Organizations(WorkOSListResource):
         allow_profiles_outside_organization=None,
         domains=None,
         domain_data=None,
+        lookup_key=None,
     ):
         """Update an organization
 
         Args:
             organization(str) - Organization's unique identifier.
             name (str) - A unique, descriptive name for the organization.
-            allow_profiles_outside_organization (boolean) - Whether Connections
+            allow_profiles_outside_organization (boolean) - [Deprecated] Whether Connections
                 within the Organization allow profiles that are outside of the Organization's
                 configured User Email Domains. (Optional)
             domains (list) - [Deprecated] Use domain_data instead. List of domains that belong to the organization. (Optional)
@@ -230,18 +255,32 @@ class Organizations(WorkOSListResource):
         Returns:
             dict: Updated Organization response from WorkOS.
         """
-        if domains:
+
+        params = {"name": name}
+
+        if domains is not None:
             warn(
                 "The 'domains' parameter for 'update_organization' is deprecated. Please use 'domain_data' instead.",
                 DeprecationWarning,
             )
+            params["domains"] = domains
 
-        params = {
-            "name": name,
-            "domains": domains,
-            "domain_data": domain_data,
-            "allow_profiles_outside_organization": allow_profiles_outside_organization,
-        }
+        if allow_profiles_outside_organization is not None:
+            warn(
+                "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "
+                "If you need to allow sign-ins from any email domain, contact support@workos.com.",
+                DeprecationWarning,
+            )
+            params[
+                "allow_profiles_outside_organization"
+            ] = allow_profiles_outside_organization
+
+        if domain_data is not None:
+            params["domain_data"] = domain_data
+
+        if lookup_key is not None:
+            params["lookup_key"] = lookup_key
+
         response = self.request_helper.request(
             "organizations/{organization}".format(organization=organization),
             method=REQUEST_METHOD_PUT,

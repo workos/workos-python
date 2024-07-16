@@ -110,7 +110,8 @@ class Organizations:
             dict: Organization response from WorkOS
         """
         response = self.request_helper.request(
-            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            "organizations/by_lookup_key/{lookup_key}".format(
+                lookup_key=lookup_key),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -128,7 +129,8 @@ class Organizations:
         if idempotency_key:
             headers["idempotency-key"] = idempotency_key
 
-        params = CreateOrUpdateOrganizationOptions(name=name, domain_data=domain_data)
+        params = CreateOrUpdateOrganizationOptions(
+            name=name, domain_data=domain_data)
 
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
@@ -148,10 +150,12 @@ class Organizations:
         lookup_key=None,
     ):
         """Update an organization"""
-        params = CreateOrUpdateOrganizationOptions(name=name, domain_data=domain_data)
+        params = CreateOrUpdateOrganizationOptions(
+            name=name, domain_data=domain_data)
 
         response = self.request_helper.request(
-            "organizations/{organization}".format(organization=organization_id),
+            "organizations/{organization}".format(
+                organization=organization_id),
             method=REQUEST_METHOD_PUT,
             params=params,
             token=workos.api_key,
@@ -166,7 +170,8 @@ class Organizations:
             organization (str): Organization unique identifier
         """
         return self.request_helper.request(
-            "organizations/{organization}".format(organization=organization_id),
+            "organizations/{organization}".format(
+                organization=organization_id),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

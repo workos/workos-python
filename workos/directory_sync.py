@@ -32,7 +32,6 @@ class DirectorySync:
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    
     def list_users(
         self,
         directory=None,
@@ -148,7 +147,6 @@ class DirectorySync:
             params=params,
             token=workos.api_key,
         )
-
 
         return WorkOsListResource(
             list_method=self.list_groups,

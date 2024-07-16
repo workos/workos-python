@@ -17,6 +17,8 @@ from workos.resources.organizations import Organization
 from pydantic import BaseModel, Extra, Field
 
 # TODO: THIS OLD RESOURCE GOES AWAY
+
+
 class WorkOSListResource(WorkOSBaseResource):
     """Representation of a WorkOS List Resource as returned through the API.
 
@@ -115,10 +117,12 @@ class ListMetadata(BaseModel):
     after: Optional[str] = None
     before: Optional[str] = None
 
+
 class ListPage(BaseModel, Generic[T]):
     object: Literal["list"]
     data: List[T]
     list_metadata: ListMetadata
+
 
 class ListArgs(BaseModel, extra="allow"):
     limit: Optional[int] = 10
@@ -135,17 +139,18 @@ class WorkOsListResource(BaseModel, Generic[T]):
     data: List[T]
     list_metadata: ListMetadata
 
-    # These fields end up exposed in the types. Does we care? 
+    # These fields end up exposed in the types. Does we care?
     list_method: Callable = Field(exclude=True)
     list_args: ListArgs = Field(exclude=True)
-        
+
     def auto_paging_iter(self) -> Iterator[T]:
         next_page: WorkOsListResource[T]
 
         after = self.list_metadata.after
         order = self.list_args.order
 
-        fixed_pagination_params = {"order": order, "limit": self.list_args.limit}
+        fixed_pagination_params = {
+            "order": order, "limit": self.list_args.limit}
         filter_params = self.list_args.model_dump(
             exclude={"after", "before", "order", "limit"}
         )

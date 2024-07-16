@@ -2,39 +2,45 @@ from pydantic import BaseModel
 from typing import List, Optional, Literal
 from enum import Enum
 
-class DirectoryType(Enum):
-    AZURE_SCIM_v2 = "azure scim v2.0"
-    BAMBOO_HR = "bamboohr"
-    BREATHE_HR = "breathe hr"
-    CEZANNE_HR = "cezanne hr"
-    CYBERARK_SCIM_v2 = "cyperark scim v2.0"
-    FOURTH_HR = "fourth hr"
-    GENERIC_SCIM_v2 = "generic scim v2.0"
-    GOOGLE = "gsuite directory"
-    HIBOB = "hibob"
-    JUMPCLOUD_SCIM_v2 = "jump cloud scim v2.0"
-    OKTA_SCIM_v2 = "okta scim v2.0"
-    ONELOGIN_SCIM_v2 = "onelogin scim v2.0"
-    PEOPLE_HR = "people hr"
-    PERSONIO = "personio"
-    PINGFEDERATE_SCIM_v2 = "pingfederate scim v2.0"
-    RIPPLING_SCIM_v2 = "rippling v2.0"
-    SFTP = "sftp"
-    SFTP_WORKDAY = "sftp workday"
-    WORKDAY = "workday"
+DirectoryType = Literal[
+    "azure scim v2.0",
+    "bamboohr",
+    "breathe hr",
+    "cezanne hr",
+    "cyperark scim v2.0",
+    "fourth hr",
+    "generic scim v2.0",
+    "gsuite directory",
+    "hibob",
+    "jump cloud scim v2.0",
+    "okta scim v2.0",
+    "onelogin scim v2.0",
+    "people hr",
+    "personio",
+    "pingfederate scim v2.0",
+    "rippling v2.0",
+    "sftp",
+    "sftp workday",
+    "workday",
+]
 
-class DirectoryState(Enum):
-    LINKED = "linked"
-    UNLINKED = "unlinked"
-    VALIDATING = "validating"
-    DELETING = "deleting"
-    INVALID_CREDENTIALS = "invalid_credentials"
+
+DirectoryState = Literal[
+    "linked",
+    "unlinked",
+    "validating",
+    "deleting",
+    "invalid_credentials",
+]
+
 
 # Should this be WorkOSDirectory?
 """Representation of a Directory Response as returned by WorkOS through the Directory Sync feature.
 Attributes:
     OBJECT_FIELDS (list): List of fields a WorkOSConnection is comprised of.
 """
+
+
 class Directory(BaseModel):
     id: str
     object: Literal["directory"]
@@ -45,6 +51,7 @@ class Directory(BaseModel):
     type: DirectoryType
     created_at: str
     updated_at: str
+
 
 # class WorkOSDirectory(WorkOSBaseResource):
 #     """Representation of a Directory Response as returned by WorkOS through the Directory Sync feature.
@@ -84,15 +91,20 @@ class Directory(BaseModel):
 Attributes:
     OBJECT_FIELDS (list): List of fields a WorkOSDirectoryGroup is comprised of.
 """
+
+
 class DirectoryGroup(BaseModel):
     id: str
     object: Literal["directory_group"]
     idp_id: str
     name: str
-    directort_id: str
+    directory_id: str
+    organization_id: str
     raw_attributes: dict
     created_at: str
     updated_at: str
+    # TODO: raw_attributes, yes or no?
+
 
 # class WorkOSDirectoryGroup(WorkOSBaseResource):
 #     """Representation of a Directory Group as returned by WorkOS through the Directory Sync feature.
@@ -127,12 +139,12 @@ class DirectoryUserEmail(BaseModel):
     value: Optional[str]
     primary: Optional[bool]
 
+
 class Role(BaseModel):
     slug: str
 
-class DirectoryUserState(Enum):
-    ACTIVE = "active"
-    INACTIVE = "inactive"
+
+DirectoryUserState = Literal["active", "inactive"]
 
 # Should this be WorkOSDirectoryUser?
 """Representation of a Directory User as returned by WorkOS through the Directory Sync feature.
@@ -140,6 +152,8 @@ class DirectoryUserState(Enum):
 Attributes:
     OBJECT_FIELDS (list): List of fields a WorkOSDirectoryUser is comprised of.
 """
+
+
 class DirectoryUser(BaseModel):
     id: str
     object: Literal["directory_user"]
@@ -151,13 +165,13 @@ class DirectoryUser(BaseModel):
     job_title: Optional[str]
     emails: List[DirectoryUserEmail]
     username: Optional[str]
+    # TODO: add groups
     state: DirectoryUserState
     custom_attributes: dict
     raw_attributes: dict
     created_at: str
     updated_at: str
     role: Optional[Role]
-    previous_attributes: dict
 
 
 # class WorkOSDirectoryUser(WorkOSBaseResource):

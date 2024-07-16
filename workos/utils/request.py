@@ -47,7 +47,8 @@ class RequestHelper(object):
         return self.base_api_url.format(path)
 
     def build_parameterized_url(self, url, **params):
-        escaped_params = {k: urllib.parse.quote(str(v)) for k, v in params.items()}
+        escaped_params = {k: urllib.parse.quote(
+            str(v)) for k, v in params.items()}
         return url.format(**escaped_params)
 
     def request(
@@ -100,11 +101,11 @@ class RequestHelper(object):
                 response_json = response.json()
             except ValueError:
                 raise ServerException(response)
-        
+
         # If the `content_type` is not `application/json`, then response_json is None. What should we return?
         if response_json is None:
             raise ServerException(response)
-        
+
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:
             if status_code == 401:

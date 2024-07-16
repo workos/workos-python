@@ -135,9 +135,9 @@ class DirectoryGroup(BaseModel):
 
 
 class DirectoryUserEmail(BaseModel):
-    type: Optional[str]
-    value: Optional[str]
-    primary: Optional[bool]
+    type: Optional[str] = None
+    value: Optional[str] = None
+    primary: Optional[bool] = None
 
 
 class Role(BaseModel):
@@ -160,18 +160,18 @@ class DirectoryUser(BaseModel):
     idp_id: str
     directory_id: str
     organization_id: str
-    first_name: Optional[str]
-    last_name: Optional[str]
-    job_title: Optional[str]
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    job_title: Optional[str] = None
     emails: List[DirectoryUserEmail]
-    username: Optional[str]
+    username: Optional[str] = None
     # TODO: add groups
     state: DirectoryUserState
     custom_attributes: dict
     raw_attributes: dict
     created_at: str
     updated_at: str
-    role: Optional[Role]
+    role: Optional[Role] = None
 
 
 # class WorkOSDirectoryUser(WorkOSBaseResource):

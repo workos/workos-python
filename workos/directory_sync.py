@@ -1,4 +1,7 @@
+from typing import Any
 from warnings import warn
+
+from pydantic import BaseModel
 import workos
 from workos.utils.pagination_order import Order
 from workos.utils.request import (
@@ -17,7 +20,6 @@ from workos.resources.list import ListArgs, ListPage, WorkOsListResource
 
 
 RESPONSE_LIMIT = 10
-
 
 class DirectorySync:
     """Offers methods through the WorkOS Directory Sync service."""

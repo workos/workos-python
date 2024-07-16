@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from typing import List, Optional, Literal
+from pydantic import BaseModel, Field, TypeAdapter, ValidationError, ValidationInfo, ValidatorFunctionWrapHandler, WrapValidator
+from typing import Annotated, Any, List, LiteralString, Optional, Literal, TypeVar, Union
 from enum import Enum
+
+from workos.directory_sync import UntypedValue
 
 DirectoryType = Literal[
     "azure scim v2.0",
@@ -10,7 +12,8 @@ DirectoryType = Literal[
     "cyperark scim v2.0",
     "fourth hr",
     "generic scim v2.0",
-    "gsuite directory",
+    # TODO: Re-enable. Temp disabling for unknown enum testing.
+    # "gsuite directory",
     "hibob",
     "jump cloud scim v2.0",
     "okta scim v2.0",
@@ -33,22 +36,40 @@ DirectoryState = Literal[
     "invalid_credentials",
 ]
 
+class UntypedValue(BaseModel):
+    raw_value: Any
+
+def convert_unknown_enum_to_untyped(
+    value: Any, handler: ValidatorFunctionWrapHandler, info: ValidationInfo
+) -> int:
+    try:
+        return handler(value)
+    except ValidationError as validation_error:
+        if validation_error.errors()[0]['type'] == 'literal_error':
+            return handler(UntypedValue(raw_value=value))
+        else:
+            return handler(value)
+
+
+LiteralType = TypeVar('LiteralType', bound='LiteralString')
+SafeLiteral = Annotated[Annotated[Union[LiteralType , UntypedValue], Field(union_mode='left_to_right')], WrapValidator(convert_unknown_enum_to_untyped)]
+
 
 # Should this be WorkOSDirectory?
-"""Representation of a Directory Response as returned by WorkOS through the Directory Sync feature.
-Attributes:
-    OBJECT_FIELDS (list): List of fields a WorkOSConnection is comprised of.
-"""
-
-
 class Directory(BaseModel):
+    """Representation of a Directory Response as returned by WorkOS through the Directory Sync feature.
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSConnection is comprised of.
+    """
     id: str
     object: Literal["directory"]
     domain: Optional[str] = None
     name: str
     organization_id: str
-    state: DirectoryState
-    type: DirectoryType
+    state: SafeLiteral[DirectoryState]
+    # state: DirectoryState
+    type: SafeLiteral[DirectoryType]
+    # type: DirectoryType
     created_at: str
     updated_at: str
 

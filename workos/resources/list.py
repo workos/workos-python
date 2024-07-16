@@ -11,11 +11,12 @@ from typing import (
 )
 
 from workos.resources.base import WorkOSBaseResource
+from workos.resources.directory_sync import Directory, DirectoryGroup, DirectoryUser
 from workos.resources.organizations import Organization
 
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel, Extra, Field
 
-
+# TODO: THIS OLD RESOURCE GOES AWAY
 class WorkOSListResource(WorkOSBaseResource):
     """Representation of a WorkOS List Resource as returned through the API.
 
@@ -107,15 +108,19 @@ class WorkOSListResource(WorkOSBaseResource):
 
 
 # add all possible generics of List Resource
-T = TypeVar("T", Organization, Any)
+T = TypeVar("T", Organization, Directory, DirectoryGroup, DirectoryUser)
 
 
 class ListMetadata(BaseModel):
     after: Optional[str] = None
     before: Optional[str] = None
 
+class ListPage(BaseModel, Generic[T]):
+    object: Literal["list"]
+    data: List[T]
+    list_metadata: ListMetadata
 
-class ListArgs(BaseModel, extra=Extra.allow):
+class ListArgs(BaseModel, extra="allow"):
     limit: Optional[int] = 10
     before: Optional[str] = None
     after: Optional[str] = None
@@ -130,9 +135,10 @@ class WorkOsListResource(BaseModel, Generic[T]):
     data: List[T]
     list_metadata: ListMetadata
 
-    list_method: Callable
-    list_args: ListArgs
-
+    # These fields end up exposed in the types. Does we care? 
+    list_method: Callable = Field(exclude=True)
+    list_args: ListArgs = Field(exclude=True)
+        
     def auto_paging_iter(self) -> Iterator[T]:
         next_page: WorkOsListResource[T]
 

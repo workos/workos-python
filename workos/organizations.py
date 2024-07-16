@@ -15,7 +15,7 @@ from workos.resources.organizations import (
     CreateOrUpdateOrganizationOptions,
     DomainData,
 )
-from workos.resources.list import WorkOsListResource, ListArgs
+from workos.resources.list import ListPage, WorkOsListResource, ListArgs
 
 ORGANIZATIONS_PATH = "organizations"
 RESPONSE_LIMIT = 10
@@ -83,8 +83,8 @@ class Organizations:
 
         return WorkOsListResource[Organization](
             list_method=self.list_organizations,
-            list_args=ListArgs.parse_obj(params),
-            **response
+            list_args=ListArgs.model_validate(params),
+            **ListPage[Organization](**response).model_dump()
         )
 
     def get_organization(self, organization: str) -> Organization:

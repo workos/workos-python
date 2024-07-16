@@ -80,14 +80,13 @@ class RequestHelper(object):
         headers.update(BASE_HEADERS)
         url = self.generate_api_url(path)
 
-        request_fn = getattr(requests, method)
         if method == REQUEST_METHOD_GET:
-            response = request_fn(
-                url, headers=headers, params=params, timeout=self.request_timeout
+            response = requests.request(
+                method, url, headers=headers, params=params, timeout=self.request_timeout
             )
         else:
-            response = request_fn(
-                url, headers=headers, json=params, timeout=self.request_timeout
+            response = requests.request(
+                method, url, headers=headers, json=params, timeout=self.request_timeout
             )
 
         response_json = None
@@ -101,7 +100,11 @@ class RequestHelper(object):
                 response_json = response.json()
             except ValueError:
                 raise ServerException(response)
-
+        
+        # If the `content_type` is not `application/json`, then response_json is None. What should we return?
+        if response_json is None:
+            raise ServerException(response)
+        
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:
             if status_code == 401:

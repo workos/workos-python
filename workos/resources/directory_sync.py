@@ -165,7 +165,7 @@ class DirectoryUser(BaseModel):
     job_title: Optional[str] = None
     emails: List[DirectoryUserEmail]
     username: Optional[str] = None
-    # TODO: add groups
+    groups: List[DirectoryGroup]
     state: DirectoryUserState
     custom_attributes: dict
     raw_attributes: dict

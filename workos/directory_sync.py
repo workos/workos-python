@@ -139,7 +139,8 @@ class DirectorySync:
                 elif order == "asc" or order == "desc":
                     params["order"] = order
                 else:
-                    raise ValueError("Parameter order must be of enum type Order")
+                    raise ValueError(
+                        "Parameter order must be of enum type Order")
 
         response = self.request_helper.request(
             "directory_groups",
@@ -154,7 +155,7 @@ class DirectorySync:
             **ListPage[DirectoryGroup](**response).model_dump()
         )
 
-    def get_user(self, user):
+    def get_user(self, user: str):
         """Gets details for a single provisioned Directory User.
 
         Args:
@@ -171,7 +172,7 @@ class DirectorySync:
 
         return DirectoryUser.model_validate(response)
 
-    def get_group(self, group):
+    def get_group(self, group: str):
         """Gets details for a single provisioned Directory Group.
 
         Args:
@@ -188,7 +189,7 @@ class DirectorySync:
 
         return DirectoryGroup.model_validate(response)
 
-    def get_directory(self, directory):
+    def get_directory(self, directory: str):
         """Gets details for a single Directory
 
         Args:

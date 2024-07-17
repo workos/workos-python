@@ -21,6 +21,7 @@ from workos.resources.list import ListArgs, ListPage, WorkOsListResource
 
 RESPONSE_LIMIT = 10
 
+
 class DirectorySync:
     """Offers methods through the WorkOS Directory Sync service."""
 

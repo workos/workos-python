@@ -1,79 +1,45 @@
+import re
 from typing_extensions import TypeIs
 from pydantic import BaseModel, Field, TypeAdapter, ValidationError, ValidationInfo, ValidatorFunctionWrapHandler, WrapValidator
 from typing import Annotated, Any, List, LiteralString, Optional, Literal, TypeVar, Union
 from enum import Enum
 
-DirectoryType = Literal[
-    "azure scim v2.0",
-    "bamboohr",
-    "breathe hr",
-    "cezanne hr",
-    "cyperark scim v2.0",
-    "fourth hr",
-    "generic scim v2.0",
-    # TODO: Re-enable. Temp disabling for unknown enum testing.
-    # "gsuite directory",
-    "hibob",
-    "jump cloud scim v2.0",
-    "okta scim v2.0",
-    "onelogin scim v2.0",
-    "people hr",
-    "personio",
-    "pingfederate scim v2.0",
-    "rippling v2.0",
-    "sftp",
-    "sftp workday",
-    "workday",
-]
+from workos.typing.enums import EnumOrUntyped
+from workos.typing.literals import LiteralOrUntyped
 
 
-DirectoryState = Literal[
-    "linked",
-    "unlinked",
-    "validating",
-    "deleting",
-    "invalid_credentials",
-]
-
-# This approach works, but it has some downsides:
-# - If the rest of the values are literals, this is a different type of object,
-#   it can't just be treated as a string. Maybe that's OK?
-# - If you serialize the object, it be a dictionary {raw_value: "foo"} rathe than just a string
-# - I wonder if we can do something sneaky like create a custom type guard that considers any
-#   string literal that looks like "untyped[FOO]" to be an untyped value and we just return a string
-#  if validation fails. The downside there is the return type of all of our literals will look like
-#   Literal["a", "b"]  | str
-# - Can we do something better if we use enums rather than string literals?
-
-
-class UntypedValue(BaseModel):
-    raw_value: Any
-
-
-def is_untyped_value(value: Any) -> TypeIs[UntypedValue]:
-    return isinstance(value, UntypedValue)
+class DirectoryType(str, Enum):
+    AZURE_SCIM_v2 = "azure scim v2.0"
+    BAMBOO_HR = "bamboohr"
+    BREATHE_HR = "breathe hr"
+    CEZANNE_HR = "cezanne hr"
+    CYBERARK_SCIM_v2 = "cyperark scim v2.0"
+    FOURTH_HR = "fourth hr"
+    GENERIC_SCIM_v2 = "generic scim v2.0"
+    # GOOGLE = "gsuite directory"
+    HIBOB = "hibob"
+    JUMPCLOUD_SCIM_v2 = "jump cloud scim v2.0"
+    OKTA_SCIM_v2 = "okta scim v2.0"
+    ONELOGIN_SCIM_v2 = "onelogin scim v2.0"
+    PEOPLE_HR = "people hr"
+    PERSONIO = "personio"
+    PINGFEDERATE_SCIM_v2 = "pingfederate scim v2.0"
+    RIPPLING_SCIM_v2 = "rippling v2.0"
+    SFTP = "sftp"
+    SFTP_WORKDAY = "sftp workday"
+    WORKDAY = "workday"
 
 
-def convert_unknown_enum_to_untyped(
-    value: Any, handler: ValidatorFunctionWrapHandler, info: ValidationInfo
-) -> int:
-    try:
-        return handler(value)
-    except ValidationError as validation_error:
-        if validation_error.errors()[0]['type'] == 'literal_error':
-            return handler(UntypedValue(raw_value=value))
-        else:
-            return handler(value)
-
-
-LiteralType = TypeVar('LiteralType', bound='LiteralString')
-SafeLiteral = Annotated[Annotated[Union[LiteralType, UntypedValue], Field(
-    union_mode='left_to_right')], WrapValidator(convert_unknown_enum_to_untyped)]
-
-# Should this be WorkOSDirectory?
+class DirectoryState(str, Enum):
+    ACTIVE = "linked"
+    UNLINKED = "unlinked"
+    VALIDATING = "validating"
+    DELETING = "deleting"
+    INVALID_CREDENTIALS = "invalid_credentials"
 
 
 class Directory(BaseModel):
+    # Should this be WorkOSDirectory?
     """Representation of a Directory Response as returned by WorkOS through the Directory Sync feature.
     Attributes:
         OBJECT_FIELDS (list): List of fields a WorkOSConnection is comprised of.
@@ -83,9 +49,66 @@ class Directory(BaseModel):
     domain: Optional[str] = None
     name: str
     organization_id: str
-    state: SafeLiteral[DirectoryState]
+    # Toying around with the differences in type hinting or deserialization for enums vs literals. In the end pretty equivalent,
+    # it's a question of whether we want to present strings ot DirectoryState.ACTIVE to the user
+    # state: LiteralOrUntyped[Literal[
+    #     # # 'linked',
+    #     "unlinked",
+    #     "validating",
+    #     "deleting",
+    #     "invalid_credentials",
+    # ]]
+    state: EnumOrUntyped[Literal[
+        # DirectoryStateEnum.ACTIVE,
+        DirectoryState.UNLINKED,
+        DirectoryState.VALIDATING,
+        DirectoryState.DELETING,
+        DirectoryState.INVALID_CREDENTIALS,
+    ]]
     # state: DirectoryState
-    type: SafeLiteral[DirectoryType]
+    # type: LiteralOrUntyped[Literal[
+    #     "azure scim v2.0",
+    #     "bamboohr",
+    #     "breathe hr",
+    #     "cezanne hr",
+    #     "cyperark scim v2.0",
+    #     "fourth hr",
+    #     "generic scim v2.0",
+    #     # TODO: Re-enable. Temp disabling for unknown enum testing.
+    #     # "gsuite directory",
+    #     "hibob",
+    #     "jump cloud scim v2.0",
+    #     "okta scim v2.0",
+    #     "onelogin scim v2.0",
+    #     "people hr",
+    #     "personio",
+    #     "pingfederate scim v2.0",
+    #     "rippling v2.0",
+    #     "sftp",
+    #     "sftp workday",
+    #     "workday",
+    # ]]
+    type: EnumOrUntyped[Literal[
+        DirectoryType.AZURE_SCIM_v2,
+        DirectoryType.BAMBOO_HR,
+        DirectoryType.BREATHE_HR,
+        DirectoryType.CEZANNE_HR,
+        DirectoryType.CYBERARK_SCIM_v2,
+        DirectoryType.FOURTH_HR,
+        DirectoryType.GENERIC_SCIM_v2,
+        # DirectoryType.GOOGLE,
+        DirectoryType.HIBOB,
+        DirectoryType.JUMPCLOUD_SCIM_v2,
+        DirectoryType.OKTA_SCIM_v2,
+        DirectoryType.ONELOGIN_SCIM_v2,
+        DirectoryType.PEOPLE_HR,
+        DirectoryType.PERSONIO,
+        DirectoryType.PINGFEDERATE_SCIM_v2,
+        DirectoryType.RIPPLING_SCIM_v2,
+        DirectoryType.SFTP,
+        DirectoryType.SFTP_WORKDAY,
+        DirectoryType.WORKDAY,
+    ]]
     # type: DirectoryType
     created_at: str
     updated_at: str
@@ -123,8 +146,8 @@ class Directory(BaseModel):
 #         return connection_response_dict
 
 
-# Should this be WorkOSDirectoryGroup?
 class DirectoryGroup(BaseModel):
+    # Should this be WorkOSDirectoryGroup?
     """Representation of a Directory Group as returned by WorkOS through the Directory Sync feature.
 
     Attributes:
@@ -182,10 +205,9 @@ class Role(BaseModel):
 
 DirectoryUserState = Literal["active", "inactive"]
 
-# Should this be WorkOSDirectoryUser?
-
 
 class DirectoryUser(BaseModel):
+    # Should this be WorkOSDirectoryUser?
     """Representation of a Directory User as returned by WorkOS through the Directory Sync feature.
 
     Attributes:

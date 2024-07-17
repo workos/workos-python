@@ -2,8 +2,6 @@ from pydantic import BaseModel, Field, TypeAdapter, ValidationError, ValidationI
 from typing import Annotated, Any, List, LiteralString, Optional, Literal, TypeVar, Union
 from enum import Enum
 
-from workos.directory_sync import UntypedValue
-
 DirectoryType = Literal[
     "azure scim v2.0",
     "bamboohr",
@@ -36,8 +34,10 @@ DirectoryState = Literal[
     "invalid_credentials",
 ]
 
+
 class UntypedValue(BaseModel):
     raw_value: Any
+
 
 def convert_unknown_enum_to_untyped(
     value: Any, handler: ValidatorFunctionWrapHandler, info: ValidationInfo
@@ -52,7 +52,8 @@ def convert_unknown_enum_to_untyped(
 
 
 LiteralType = TypeVar('LiteralType', bound='LiteralString')
-SafeLiteral = Annotated[Annotated[Union[LiteralType , UntypedValue], Field(union_mode='left_to_right')], WrapValidator(convert_unknown_enum_to_untyped)]
+SafeLiteral = Annotated[Annotated[Union[LiteralType, UntypedValue], Field(
+    union_mode='left_to_right')], WrapValidator(convert_unknown_enum_to_untyped)]
 
 
 # Should this be WorkOSDirectory?
@@ -107,14 +108,12 @@ class Directory(BaseModel):
 
 
 # Should this be WorkOSDirectoryGroup?
-"""Representation of a Directory Group as returned by WorkOS through the Directory Sync feature.
-
-Attributes:
-    OBJECT_FIELDS (list): List of fields a WorkOSDirectoryGroup is comprised of.
-"""
-
-
 class DirectoryGroup(BaseModel):
+    """Representation of a Directory Group as returned by WorkOS through the Directory Sync feature.
+
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSDirectoryGroup is comprised of.
+    """
     id: str
     object: Literal["directory_group"]
     idp_id: str
@@ -168,14 +167,14 @@ class Role(BaseModel):
 DirectoryUserState = Literal["active", "inactive"]
 
 # Should this be WorkOSDirectoryUser?
-"""Representation of a Directory User as returned by WorkOS through the Directory Sync feature.
-
-Attributes:
-    OBJECT_FIELDS (list): List of fields a WorkOSDirectoryUser is comprised of.
-"""
 
 
 class DirectoryUser(BaseModel):
+    """Representation of a Directory User as returned by WorkOS through the Directory Sync feature.
+
+    Attributes:
+        OBJECT_FIELDS (list): List of fields a WorkOSDirectoryUser is comprised of.
+    """
     id: str
     object: Literal["directory_user"]
     idp_id: str

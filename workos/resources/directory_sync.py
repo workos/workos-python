@@ -1,3 +1,4 @@
+from typing_extensions import TypeIs
 from pydantic import BaseModel, Field, TypeAdapter, ValidationError, ValidationInfo, ValidatorFunctionWrapHandler, WrapValidator
 from typing import Annotated, Any, List, LiteralString, Optional, Literal, TypeVar, Union
 from enum import Enum
@@ -34,9 +35,23 @@ DirectoryState = Literal[
     "invalid_credentials",
 ]
 
+# This approach works, but it has some downsides:
+# - If the rest of the values are literals, this is a different type of object,
+#   it can't just be treated as a string. Maybe that's OK?
+# - If you serialize the object, it be a dictionary {raw_value: "foo"} rathe than just a string
+# - I wonder if we can do something sneaky like create a custom type guard that considers any
+#   string literal that looks like "untyped[FOO]" to be an untyped value and we just return a string
+#  if validation fails. The downside there is the return type of all of our literals will look like
+#   Literal["a", "b"]  | str
+# - Can we do something better if we use enums rather than string literals?
+
 
 class UntypedValue(BaseModel):
     raw_value: Any
+
+
+def is_untyped_value(value: Any) -> TypeIs[UntypedValue]:
+    return isinstance(value, UntypedValue)
 
 
 def convert_unknown_enum_to_untyped(
@@ -55,8 +70,9 @@ LiteralType = TypeVar('LiteralType', bound='LiteralString')
 SafeLiteral = Annotated[Annotated[Union[LiteralType, UntypedValue], Field(
     union_mode='left_to_right')], WrapValidator(convert_unknown_enum_to_untyped)]
 
-
 # Should this be WorkOSDirectory?
+
+
 class Directory(BaseModel):
     """Representation of a Directory Response as returned by WorkOS through the Directory Sync feature.
     Attributes:

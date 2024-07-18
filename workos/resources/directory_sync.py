@@ -6,6 +6,7 @@ from workos.typing.literals import LiteralOrUntyped
 
 
 class DirectoryType(str, Enum):
+    # TODO: Delete this if we don't go with enums over string literals
     AZURE_SCIM_v2 = "azure scim v2.0"
     BAMBOO_HR = "bamboohr"
     BREATHE_HR = "breathe hr"
@@ -28,6 +29,7 @@ class DirectoryType(str, Enum):
 
 
 class DirectoryState(str, Enum):
+    # TODO: Delete this if we don't go with enums over string literals
     ACTIVE = "linked"
     UNLINKED = "unlinked"
     VALIDATING = "validating"

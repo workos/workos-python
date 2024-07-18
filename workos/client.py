@@ -8,10 +8,18 @@ from workos.webhooks import Webhooks
 from workos.mfa import Mfa
 from workos.events import Events
 from workos.user_management import UserManagement
+from workos.utils.sync_http_client import SyncHTTPClient
 
 
-class Client(object):
+class SyncClient(object):
     """Client for a convenient way to access the WorkOS feature set."""
+
+    _http_client: SyncHTTPClient
+
+    def __init__(self, base_url: str, version: str, timeout: int):
+        self._http_client = SyncHTTPClient(
+            base_url=base_url, version=version, timeout=timeout
+        )
 
     @property
     def sso(self):
@@ -34,7 +42,7 @@ class Client(object):
     @property
     def events(self):
         if not getattr(self, "_events", None):
-            self._events = Events()
+            self._events = Events(self._http_client)
         return self._events
 
     @property
@@ -72,6 +80,3 @@ class Client(object):
         if not getattr(self, "_user_management", None):
             self._user_management = UserManagement()
         return self._user_management
-
-
-client = Client()

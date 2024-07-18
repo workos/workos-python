@@ -1,4 +1,5 @@
 import platform
+import urllib.parse
 
 import requests
 import urllib
@@ -47,8 +48,7 @@ class RequestHelper(object):
         return self.base_api_url.format(path)
 
     def build_parameterized_url(self, url, **params):
-        escaped_params = {k: urllib.parse.quote(
-            str(v)) for k, v in params.items()}
+        escaped_params = {k: urllib.parse.quote(str(v)) for k, v in params.items()}
         return url.format(**escaped_params)
 
     def request(
@@ -83,7 +83,11 @@ class RequestHelper(object):
 
         if method == REQUEST_METHOD_GET:
             response = requests.request(
-                method, url, headers=headers, params=params, timeout=self.request_timeout
+                method,
+                url,
+                headers=headers,
+                params=params,
+                timeout=self.request_timeout,
             )
         else:
             response = requests.request(

@@ -1,9 +1,9 @@
-from typing import Any
+from typing import Any, Optional
 from warnings import warn
 
 from pydantic import BaseModel
 import workos
-from workos.utils.pagination_order import Order
+from workos.utils.pagination_order import Order, PaginationOrder
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_DELETE,
@@ -37,12 +37,12 @@ class DirectorySync:
 
     def list_users(
         self,
-        directory=None,
-        group=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
+        directory: Optional[str] = None,
+        group: Optional[str] = None,
+        limit: Optional[int] = RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[PaginationOrder] = "desc",
     ) -> WorkOsListResource[DirectoryUser]:
         """Gets a list of provisioned Users for a Directory.
 
@@ -60,29 +60,17 @@ class DirectorySync:
             dict: Directory Users response from WorkOS.
         """
 
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
         params = {
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order or "desc",
+            "order": order,
         }
 
         if group is not None:
             params["group"] = group
         if directory is not None:
             params["directory"] = directory
-
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
 
         response = self.request_helper.request(
             "directory_users",
@@ -99,12 +87,12 @@ class DirectorySync:
 
     def list_groups(
         self,
-        directory=None,
-        user=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
+        directory: Optional[str] = None,
+        user: Optional[str] = None,
+        limit: Optional[int] = RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[PaginationOrder] = "desc",
     ) -> WorkOsListResource[DirectoryGroup]:
         """Gets a list of provisioned Groups for a Directory .
 
@@ -121,29 +109,16 @@ class DirectorySync:
         Returns:
             dict: Directory Groups response from WorkOS.
         """
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
         params = {
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order or "desc",
+            "order": order,
         }
         if user is not None:
             params["user"] = user
         if directory is not None:
             params["directory"] = directory
-
-            if order is not None:
-                if isinstance(order, Order):
-                    params["order"] = str(order.value)
-                elif order == "asc" or order == "desc":
-                    params["order"] = order
-                else:
-                    raise ValueError(
-                        "Parameter order must be of enum type Order")
 
         response = self.request_helper.request(
             "directory_groups",
@@ -213,13 +188,13 @@ class DirectorySync:
 
     def list_directories(
         self,
-        domain=None,
-        search=None,
-        limit=None,
-        before=None,
-        after=None,
-        organization=None,
-        order=None,
+        domain: Optional[str] = None,
+        search: Optional[str] = None,
+        limit: Optional[int] = RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        organization: Optional[str] = None,
+        order: Optional[PaginationOrder] = "desc",
     ) -> WorkOsListResource[Directory]:
         """Gets details for existing Directories.
 
@@ -236,10 +211,6 @@ class DirectorySync:
             dict: Directories response from WorkOS.
         """
 
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
         params = {
             "domain": domain,
             "organization_id": organization,
@@ -247,17 +218,8 @@ class DirectorySync:
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order or "desc",
+            "order": order,
         }
-
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
-
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
 
         response = self.request_helper.request(
             "directories",
@@ -272,7 +234,7 @@ class DirectorySync:
             **ListPage[Directory](**response).model_dump()
         )
 
-    def delete_directory(self, directory):
+    def delete_directory(self, directory: str):
         """Delete one existing Directory.
 
         Args:

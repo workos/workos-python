@@ -1,13 +1,21 @@
 import re
-from typing import Annotated, Any
+from typing import Annotated, Any, TypeGuard
+from pydantic_core import CoreSchema, core_schema
 from typing_extensions import TypeIs
 
-from pydantic import Field
+from pydantic import Field, GetCoreSchemaHandler
 
 
-untyped_literal_re = re.compile(r"^Untyped\[[a-zA-Z_ ]+\]$")
-UntypedLiteral = Annotated[str, Field(pattern=untyped_literal_re)]
+class UntypedLiteral(str):
+    def __new__(cls, value: str):
+        return super().__new__(cls, f"Untyped[{value}]")
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        return core_schema.no_info_after_validator_function(cls, handler(str))
 
 
-def is_untyped_literal(value: str) -> TypeIs[UntypedLiteral]:
-    return untyped_literal_re.match(value) is not None
+def is_untyped_literal(value: Any) -> TypeIs[UntypedLiteral]:
+    return isinstance(value, UntypedLiteral)

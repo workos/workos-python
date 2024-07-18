@@ -1,9 +1,6 @@
-import re
-from typing_extensions import TypeIs
-from pydantic import BaseModel, Field, TypeAdapter, ValidationError, ValidationInfo, ValidatorFunctionWrapHandler, WrapValidator
-from typing import Annotated, Any, List, LiteralString, Optional, Literal, TypeVar, Union
+from pydantic import BaseModel
+from typing import List,  Optional, Literal
 from enum import Enum
-
 from workos.typing.enums import EnumOrUntyped
 from workos.typing.literals import LiteralOrUntyped
 
@@ -16,7 +13,7 @@ class DirectoryType(str, Enum):
     CYBERARK_SCIM_v2 = "cyperark scim v2.0"
     FOURTH_HR = "fourth hr"
     GENERIC_SCIM_v2 = "generic scim v2.0"
-    # GOOGLE = "gsuite directory"
+    GOOGLE = "gsuite directory"
     HIBOB = "hibob"
     JUMPCLOUD_SCIM_v2 = "jump cloud scim v2.0"
     OKTA_SCIM_v2 = "okta scim v2.0"
@@ -50,66 +47,64 @@ class Directory(BaseModel):
     name: str
     organization_id: str
     # Toying around with the differences in type hinting or deserialization for enums vs literals. In the end pretty equivalent,
-    # it's a question of whether we want to present strings ot DirectoryState.ACTIVE to the user
-    # state: LiteralOrUntyped[Literal[
-    #     # # 'linked',
-    #     "unlinked",
-    #     "validating",
-    #     "deleting",
-    #     "invalid_credentials",
-    # ]]
-    state: EnumOrUntyped[Literal[
-        # DirectoryStateEnum.ACTIVE,
-        DirectoryState.UNLINKED,
-        DirectoryState.VALIDATING,
-        DirectoryState.DELETING,
-        DirectoryState.INVALID_CREDENTIALS,
+    # it's a question of whether we want to present strings or DirectoryState.ACTIVE to the user
+    # leaving both options here for now until we settle on a preference
+    state: LiteralOrUntyped[Literal[
+        'linked',
+        "unlinked",
+        "validating",
+        "deleting",
+        "invalid_credentials",
     ]]
-    # state: DirectoryState
-    # type: LiteralOrUntyped[Literal[
-    #     "azure scim v2.0",
-    #     "bamboohr",
-    #     "breathe hr",
-    #     "cezanne hr",
-    #     "cyperark scim v2.0",
-    #     "fourth hr",
-    #     "generic scim v2.0",
-    #     # TODO: Re-enable. Temp disabling for unknown enum testing.
-    #     # "gsuite directory",
-    #     "hibob",
-    #     "jump cloud scim v2.0",
-    #     "okta scim v2.0",
-    #     "onelogin scim v2.0",
-    #     "people hr",
-    #     "personio",
-    #     "pingfederate scim v2.0",
-    #     "rippling v2.0",
-    #     "sftp",
-    #     "sftp workday",
-    #     "workday",
+    # state: EnumOrUntyped[Literal[
+    #     DirectoryState.ACTIVE,
+    #     DirectoryState.UNLINKED,
+    #     DirectoryState.VALIDATING,
+    #     DirectoryState.DELETING,
+    #     DirectoryState.INVALID_CREDENTIALS,
     # ]]
-    type: EnumOrUntyped[Literal[
-        DirectoryType.AZURE_SCIM_v2,
-        DirectoryType.BAMBOO_HR,
-        DirectoryType.BREATHE_HR,
-        DirectoryType.CEZANNE_HR,
-        DirectoryType.CYBERARK_SCIM_v2,
-        DirectoryType.FOURTH_HR,
-        DirectoryType.GENERIC_SCIM_v2,
-        # DirectoryType.GOOGLE,
-        DirectoryType.HIBOB,
-        DirectoryType.JUMPCLOUD_SCIM_v2,
-        DirectoryType.OKTA_SCIM_v2,
-        DirectoryType.ONELOGIN_SCIM_v2,
-        DirectoryType.PEOPLE_HR,
-        DirectoryType.PERSONIO,
-        DirectoryType.PINGFEDERATE_SCIM_v2,
-        DirectoryType.RIPPLING_SCIM_v2,
-        DirectoryType.SFTP,
-        DirectoryType.SFTP_WORKDAY,
-        DirectoryType.WORKDAY,
+    type: LiteralOrUntyped[Literal[
+        "azure scim v2.0",
+        "bamboohr",
+        "breathe hr",
+        "cezanne hr",
+        "cyperark scim v2.0",
+        "fourth hr",
+        "generic scim v2.0",
+        "gsuite directory",
+        "hibob",
+        "jump cloud scim v2.0",
+        "okta scim v2.0",
+        "onelogin scim v2.0",
+        "people hr",
+        "personio",
+        "pingfederate scim v2.0",
+        "rippling v2.0",
+        "sftp",
+        "sftp workday",
+        "workday",
     ]]
-    # type: DirectoryType
+    # type: EnumOrUntyped[Literal[
+    #     DirectoryType.AZURE_SCIM_v2,
+    #     DirectoryType.BAMBOO_HR,
+    #     DirectoryType.BREATHE_HR,
+    #     DirectoryType.CEZANNE_HR,
+    #     DirectoryType.CYBERARK_SCIM_v2,
+    #     DirectoryType.FOURTH_HR,
+    #     DirectoryType.GENERIC_SCIM_v2,
+    #     DirectoryType.GOOGLE,
+    #     DirectoryType.HIBOB,
+    #     DirectoryType.JUMPCLOUD_SCIM_v2,
+    #     DirectoryType.OKTA_SCIM_v2,
+    #     DirectoryType.ONELOGIN_SCIM_v2,
+    #     DirectoryType.PEOPLE_HR,
+    #     DirectoryType.PERSONIO,
+    #     DirectoryType.PINGFEDERATE_SCIM_v2,
+    #     DirectoryType.RIPPLING_SCIM_v2,
+    #     DirectoryType.SFTP,
+    #     DirectoryType.SFTP_WORKDAY,
+    #     DirectoryType.WORKDAY,
+    # ]]
     created_at: str
     updated_at: str
 

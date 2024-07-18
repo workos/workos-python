@@ -59,7 +59,7 @@ class TestOrganizations(object):
     def mock_pagination_request(self, monkeypatch):
         def inner(method, response_dict, status_code, headers=None):
             def mock(*args, **kwargs):
-                params = kwargs.get("params")
+                params = kwargs.get("params") or {}
                 if params.get("after") is None:
                     response_dict["list_metadata"]["after"] = "after"
 
@@ -145,7 +145,7 @@ class TestOrganizations(object):
         mock_request_method("put", mock_organization_updated, 201)
 
         updated_organization = self.organizations.update_organization(
-            organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            organization="org_01EHT88Z8J8795GZNQ4ZP1J81T",
             name="Example Organization",
             domain_data=[{"domain": "example.io", "state": "verified"}],
         )
@@ -168,9 +168,7 @@ class TestOrganizations(object):
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
-        response = self.organizations.delete_organization(
-            organization_id="connection_id"
-        )
+        response = self.organizations.delete_organization(organization="connection_id")
 
         assert response is None
 

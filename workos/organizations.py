@@ -1,7 +1,6 @@
-from typing import List, Literal, Optional
-from warnings import warn
+from typing import List, Optional
 import workos
-from workos.utils.pagination_order import Order, PaginationOrder
+from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_DELETE,
@@ -35,10 +34,10 @@ class Organizations:
     def list_organizations(
         self,
         domains: Optional[List[str]] = None,
-        limit: Optional[int] = None,
+        limit: Optional[int] = RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[PaginationOrder] = None,
+        order: Optional[PaginationOrder] = "desc",
     ) -> WorkOsListResource[Organization]:
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
@@ -53,26 +52,13 @@ class Organizations:
             dict: Organizations response from WorkOS.
         """
 
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
         params = {
             "domains": domains,
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order or "desc",
+            "order": order,
         }
-
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
-
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
 
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
@@ -100,9 +86,9 @@ class Organizations:
             token=workos.api_key,
         )
 
-        return Organization.parse_obj(response)
+        return Organization.model_validate(response)
 
-    def get_organization_by_lookup_key(self, lookup_key) -> Organization:
+    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
         """Gets details for a single Organization by lookup key
         Args:
             lookup_key (str): Organization's lookup key
@@ -115,7 +101,7 @@ class Organizations:
             token=workos.api_key,
         )
 
-        return Organization.parse_obj(response)
+        return Organization.model_validate(response)
 
     def create_organization(
         self,
@@ -138,35 +124,34 @@ class Organizations:
             token=workos.api_key,
         )
 
-        return Organization.parse_obj(response)
+        return Organization.model_validate(response)
 
     def update_organization(
         self,
-        organization_id: str,
+        organization: str,
         name: str,
         domain_data: Optional[list[DomainData]] = None,
-        lookup_key=None,
     ):
         """Update an organization"""
         params = CreateOrUpdateOrganizationOptions(name=name, domain_data=domain_data)
 
         response = self.request_helper.request(
-            "organizations/{organization}".format(organization=organization_id),
+            "organizations/{organization}".format(organization=organization),
             method=REQUEST_METHOD_PUT,
             params=params,
             token=workos.api_key,
         )
 
-        return Organization.parse_obj(response)
+        return Organization.model_validate(response)
 
-    def delete_organization(self, organization_id: str):
+    def delete_organization(self, organization: str):
         """Deletes a single Organization
 
         Args:
             organization (str): Organization unique identifier
         """
         return self.request_helper.request(
-            "organizations/{organization}".format(organization=organization_id),
+            "organizations/{organization}".format(organization=organization),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

@@ -1,9 +1,6 @@
-from typing import Any, Optional
-from warnings import warn
-
-from pydantic import BaseModel
+from typing import Optional
 import workos
-from workos.utils.pagination_order import Order, PaginationOrder
+from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
     RequestHelper,
     REQUEST_METHOD_DELETE,

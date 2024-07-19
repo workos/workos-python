@@ -1,9 +1,11 @@
 import pytest
+from tests.utils.list_resource import list_data_to_dicts, list_resource_of
 from workos.directory_sync import DirectorySync
 from workos.resources.directory_sync import DirectoryUser
 from tests.utils.fixtures.mock_directory import MockDirectory
 from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
 from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
+from workos.resources.list import WorkOsListResource
 
 
 class TestDirectorySync(object):
@@ -67,25 +69,8 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_groups(self):
-        group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(5000)]
-
-        return {
-            "data": group_list,
-            "list_metadata": {"before": None, "after": "xxx"},
-            "metadata": {
-                "params": {
-                    "domain": None,
-                    "organization_id": None,
-                    "search": None,
-                    "limit": 10,
-                    "before": None,
-                    "after": None,
-                    "order": None,
-                    "default_limit": True,
-                },
-                "method": DirectorySync.list_groups,
-            },
-        }
+        group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(10)]
+        return list_resource_of(data=group_list, after="xxx")
 
     @pytest.fixture
     def mock_default_limit_groups(self):
@@ -334,31 +319,28 @@ class TestDirectorySync(object):
 
         users = self.directory_sync.list_users(directory="directory_id")
 
-        def to_dict(x):
-            return x.dict()
-
-        assert list(map(to_dict, users.data)) == mock_users["data"]
+        assert list_data_to_dicts(users) == mock_users["data"]
 
     def test_list_users_with_group(self, mock_users, mock_request_method):
         mock_request_method("get", mock_users, 200)
 
         users = self.directory_sync.list_users(group="directory_grp_id")
 
-        assert users == mock_users
+        assert list_data_to_dicts(users) == mock_users["data"]
 
     def test_list_groups_with_directory(self, mock_groups, mock_request_method):
         mock_request_method("get", mock_groups, 200)
 
         groups = self.directory_sync.list_groups(directory="directory_id")
 
-        assert groups == mock_groups
+        assert list_data_to_dicts(groups) == mock_groups["data"]
 
     def test_list_groups_with_user(self, mock_groups, mock_request_method):
         mock_request_method("get", mock_groups, 200)
 
         groups = self.directory_sync.list_groups(user="directory_usr_id")
 
-        assert groups == mock_groups
+        assert list_data_to_dicts(groups) == mock_groups["data"]
 
     def test_get_user(self, mock_user, mock_request_method):
         mock_request_method("get", mock_user, 200)

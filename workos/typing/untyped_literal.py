@@ -27,7 +27,7 @@ class UntypedLiteral(str):
 # TypeGuard doesn't actually work for exhaustiveness checking, but we can return a boolean expression instead
 # https://github.com/python/mypy/issues/15305
 # TODO: see if there is a way to define this as TypeGuard, TypeIs, or bool depending on python version
-# def is_untyped_literal(value: str | UntypedLiteral) -> TypeGuard[UntypedLiteral]:
+# def is_untyped_literal(value: Union[str, UntypedLiteral]) -> TypeGuard[UntypedLiteral]:
 #     return isinstance(value, UntypedLiteral)
 
 

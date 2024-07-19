@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from typing import Literal, Optional, TypedDict
+from typing import List, Literal, Optional, TypedDict
 
 
 class OrganizationDomain(BaseModel):
@@ -30,4 +30,4 @@ class DomainData(TypedDict):
 
 class CreateOrUpdateOrganizationOptions(TypedDict):
     name: str
-    domain_data: Optional[list[DomainData]]
+    domain_data: Optional[List[DomainData]]

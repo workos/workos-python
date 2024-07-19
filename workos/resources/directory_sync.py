@@ -1,6 +1,6 @@
-from pydantic import BaseModel
 from typing import List, Optional, Literal
 from enum import Enum
+from workos.resources.workos_model import WorkOSModel
 from workos.typing.enums import EnumOrUntyped
 from workos.typing.literals import LiteralOrUntyped
 
@@ -35,7 +35,7 @@ DirectoryType = Literal[
 ]
 
 
-class Directory(BaseModel):
+class Directory(WorkOSModel):
     # Should this be WorkOSDirectory?
     """Representation of a Directory Response as returned by WorkOS through the Directory Sync feature.
     Attributes:
@@ -55,7 +55,7 @@ class Directory(BaseModel):
     updated_at: str
 
 
-class DirectoryGroup(BaseModel):
+class DirectoryGroup(WorkOSModel):
     # Should this be WorkOSDirectoryGroup?
     """Representation of a Directory Group as returned by WorkOS through the Directory Sync feature.
 
@@ -71,23 +71,23 @@ class DirectoryGroup(BaseModel):
     raw_attributes: dict
     created_at: str
     updated_at: str
-    # TODO: raw_attributes, yes or no?
+    raw_attributes: dict
 
 
-class DirectoryUserEmail(BaseModel):
+class DirectoryUserEmail(WorkOSModel):
     type: Optional[str] = None
     value: Optional[str] = None
     primary: Optional[bool] = None
 
 
-class Role(BaseModel):
+class Role(WorkOSModel):
     slug: str
 
 
 DirectoryUserState = Literal["active", "inactive"]
 
 
-class DirectoryUser(BaseModel):
+class DirectoryUser(WorkOSModel):
     # Should this be WorkOSDirectoryUser?
     """Representation of a Directory User as returned by WorkOS through the Directory Sync feature.
 

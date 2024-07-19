@@ -18,19 +18,7 @@ class TestDirectorySync(object):
         return {
             "data": user_list,
             "list_metadata": {"before": None, "after": None},
-            "metadata": {
-                "params": {
-                    "domain": None,
-                    "organization_id": None,
-                    "search": None,
-                    "limit": 10,
-                    "before": None,
-                    "after": None,
-                    "order": None,
-                    "default_limit": True,
-                },
-                "method": DirectorySync.list_users,
-            },
+            "object": "list",
         }
 
     @pytest.fixture
@@ -346,7 +334,10 @@ class TestDirectorySync(object):
 
         users = self.directory_sync.list_users(directory="directory_id")
 
-        assert users == mock_users
+        def to_dict(x):
+            return x.dict()
+
+        assert list(map(to_dict, users.data)) == mock_users["data"]
 
     def test_list_users_with_group(self, mock_users, mock_request_method):
         mock_request_method("get", mock_users, 200)
@@ -383,7 +374,7 @@ class TestDirectorySync(object):
             group="directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE"
         )
 
-        assert group == mock_group
+        assert group.dict() == mock_group
 
     def test_list_directories(self, mock_directories, mock_request_method):
         mock_request_method("get", mock_directories, 200)

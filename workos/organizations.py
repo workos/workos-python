@@ -11,8 +11,7 @@ from workos.utils.request import (
 from workos.utils.validation import ORGANIZATIONS_MODULE, validate_settings
 from workos.resources.organizations import (
     Organization,
-    CreateOrUpdateOrganizationOptions,
-    DomainData,
+    DomainDataInput,
 )
 from workos.resources.list import ListPage, WorkOsListResource, ListArgs
 
@@ -106,7 +105,7 @@ class Organizations:
     def create_organization(
         self,
         name: str,
-        domain_data: Optional[List[DomainData]] = None,
+        domain_data: Optional[List[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
     ) -> Organization:
         """Create an organization"""
@@ -114,7 +113,11 @@ class Organizations:
         if idempotency_key:
             headers["idempotency-key"] = idempotency_key
 
-        params = CreateOrUpdateOrganizationOptions(name=name, domain_data=domain_data)
+        params = {
+            "name": name,
+            "domain_data": domain_data,
+            "idempotency_key": idempotency_key,
+        }
 
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
@@ -130,10 +133,12 @@ class Organizations:
         self,
         organization: str,
         name: str,
-        domain_data: Optional[List[DomainData]] = None,
+        domain_data: Optional[List[DomainDataInput]] = None,
     ):
-        """Update an organization"""
-        params = CreateOrUpdateOrganizationOptions(name=name, domain_data=domain_data)
+        params = {
+            "name": name,
+            "domain_data": domain_data,
+        }
 
         response = self.request_helper.request(
             "organizations/{organization}".format(organization=organization),

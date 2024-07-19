@@ -1,9 +1,8 @@
-from pydantic import BaseModel
-
 from typing import List, Literal, Optional, TypedDict
+from workos.resources.workos_model import WorkOSModel
 
 
-class OrganizationDomain(BaseModel):
+class OrganizationDomain(WorkOSModel):
     id: str
     organization_id: str
     object: Literal["organization"]
@@ -12,7 +11,7 @@ class OrganizationDomain(BaseModel):
     domain: str
 
 
-class Organization(BaseModel):
+class Organization(WorkOSModel):
     id: str
     object: Literal["organization"]
     name: str
@@ -23,11 +22,6 @@ class Organization(BaseModel):
     lookup_key: Optional[str] = None
 
 
-class DomainData(TypedDict):
+class DomainDataInput(TypedDict):
     domain: str
     state: Literal["verified", "pending"]
-
-
-class CreateOrUpdateOrganizationOptions(TypedDict):
-    name: str
-    domain_data: Optional[List[DomainData]]

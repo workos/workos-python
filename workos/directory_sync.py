@@ -161,7 +161,6 @@ class DirectorySync:
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
-
         return DirectoryGroup.model_validate(response)
 
     def get_directory(self, directory: str):

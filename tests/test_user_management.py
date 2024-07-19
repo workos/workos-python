@@ -714,7 +714,6 @@ class TestUserManagement(object):
             code=code,
         )
 
-        print(response)
         assert url[0].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["impersonator"]["email"] == "admin@foocorp.com"

@@ -45,7 +45,7 @@ def mock_request_method(monkeypatch):
         def mock(*args, **kwargs):
             return MockResponse(response_dict, status_code, headers=headers)
 
-        monkeypatch.setattr(requests, method, mock)
+        monkeypatch.setattr(requests, "request", mock)
 
     return inner
 

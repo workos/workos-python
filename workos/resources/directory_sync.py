@@ -4,38 +4,6 @@ from enum import Enum
 from workos.typing.enums import EnumOrUntyped
 from workos.typing.literals import LiteralOrUntyped
 
-
-# class DirectoryType(str, Enum):
-#     # TODO: Delete this if we don't go with enums over string literals
-#     AZURE_SCIM_v2 = "azure scim v2.0"
-#     BAMBOO_HR = "bamboohr"
-#     BREATHE_HR = "breathe hr"
-#     CEZANNE_HR = "cezanne hr"
-#     CYBERARK_SCIM_v2 = "cyperark scim v2.0"
-#     FOURTH_HR = "fourth hr"
-#     GENERIC_SCIM_v2 = "generic scim v2.0"
-#     GOOGLE = "gsuite directory"
-#     HIBOB = "hibob"
-#     JUMPCLOUD_SCIM_v2 = "jump cloud scim v2.0"
-#     OKTA_SCIM_v2 = "okta scim v2.0"
-#     ONELOGIN_SCIM_v2 = "onelogin scim v2.0"
-#     PEOPLE_HR = "people hr"
-#     PERSONIO = "personio"
-#     PINGFEDERATE_SCIM_v2 = "pingfederate scim v2.0"
-#     RIPPLING_SCIM_v2 = "rippling v2.0"
-#     SFTP = "sftp"
-#     SFTP_WORKDAY = "sftp workday"
-#     WORKDAY = "workday"
-
-
-# class DirectoryState(str, Enum):
-#     # TODO: Delete this if we don't go with enums over string literals
-#     ACTIVE = "linked"
-#     UNLINKED = "unlinked"
-#     VALIDATING = "validating"
-#     DELETING = "deleting"
-#     INVALID_CREDENTIALS = "invalid_credentials"
-
 DirectoryState = Literal[
     "linked",
     "unlinked",
@@ -82,35 +50,7 @@ class Directory(BaseModel):
     # it's a question of whether we want to present strings or DirectoryState.ACTIVE to the user
     # leaving both options here for now until we settle on a preference
     state: LiteralOrUntyped[DirectoryState]
-    # state: EnumOrUntyped[Literal[
-    #     DirectoryState.ACTIVE,
-    #     DirectoryState.UNLINKED,
-    #     DirectoryState.VALIDATING,
-    #     DirectoryState.DELETING,
-    #     DirectoryState.INVALID_CREDENTIALS,
-    # ]]
     type: LiteralOrUntyped[DirectoryType]
-    # type: EnumOrUntyped[Literal[
-    #     DirectoryType.AZURE_SCIM_v2,
-    #     DirectoryType.BAMBOO_HR,
-    #     DirectoryType.BREATHE_HR,
-    #     DirectoryType.CEZANNE_HR,
-    #     DirectoryType.CYBERARK_SCIM_v2,
-    #     DirectoryType.FOURTH_HR,
-    #     DirectoryType.GENERIC_SCIM_v2,
-    #     DirectoryType.GOOGLE,
-    #     DirectoryType.HIBOB,
-    #     DirectoryType.JUMPCLOUD_SCIM_v2,
-    #     DirectoryType.OKTA_SCIM_v2,
-    #     DirectoryType.ONELOGIN_SCIM_v2,
-    #     DirectoryType.PEOPLE_HR,
-    #     DirectoryType.PERSONIO,
-    #     DirectoryType.PINGFEDERATE_SCIM_v2,
-    #     DirectoryType.RIPPLING_SCIM_v2,
-    #     DirectoryType.SFTP,
-    #     DirectoryType.SFTP_WORKDAY,
-    #     DirectoryType.WORKDAY,
-    # ]]
     created_at: str
     updated_at: str
 

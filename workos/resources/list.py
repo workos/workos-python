@@ -149,8 +149,7 @@ class WorkOsListResource(BaseModel, Generic[T]):
         after = self.list_metadata.after
         order = self.list_args.order
 
-        fixed_pagination_params = {
-            "order": order, "limit": self.list_args.limit}
+        fixed_pagination_params = {"order": order, "limit": self.list_args.limit}
         filter_params = self.list_args.model_dump(
             exclude={"after", "before", "order", "limit"}
         )

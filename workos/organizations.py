@@ -106,7 +106,7 @@ class Organizations:
     def create_organization(
         self,
         name: str,
-        domain_data: Optional[list[DomainData]] = None,
+        domain_data: Optional[List[DomainData]] = None,
         idempotency_key: Optional[str] = None,
     ) -> Organization:
         """Create an organization"""
@@ -130,7 +130,7 @@ class Organizations:
         self,
         organization: str,
         name: str,
-        domain_data: Optional[list[DomainData]] = None,
+        domain_data: Optional[List[DomainData]] = None,
     ):
         """Update an organization"""
         params = CreateOrUpdateOrganizationOptions(name=name, domain_data=domain_data)

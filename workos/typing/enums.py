@@ -1,5 +1,6 @@
 from enum import Enum
-from typing import Annotated, Any, TypeVar, Union
+from typing import Any, TypeVar, Union
+from typing_extensions import Annotated
 from pydantic import (
     Field,
     ValidationError,
@@ -17,7 +18,7 @@ EnumType = TypeVar("EnumType", bound=Enum)
 
 def convert_unknown_enum_to_untyped_literal(
     value: Any, handler: ValidatorFunctionWrapHandler, info: ValidationInfo
-) -> Enum | UntypedLiteral:
+) -> Union[Enum, UntypedLiteral]:
     try:
         return handler(value)
     except ValidationError as validation_error:
@@ -29,7 +30,7 @@ def convert_unknown_enum_to_untyped_literal(
 
 def allow_unknown_enum_value(
     value: Any, handler: ValidatorFunctionWrapHandler, info: ValidationInfo
-) -> Enum | str:
+) -> Union[Enum, str]:
     try:
         return handler(value)
     except ValidationError as validation_error:

@@ -1,4 +1,5 @@
-from typing import Annotated, Any, LiteralString, TypeVar, Union
+from typing import Any, TypeVar, Union
+from typing_extensions import Annotated, LiteralString
 from pydantic import (
     Field,
     ValidationError,
@@ -13,7 +14,7 @@ from workos.typing.untyped_literal import UntypedLiteral
 
 def convert_unknown_literal_to_untyped_literal(
     value: Any, handler: ValidatorFunctionWrapHandler, info: ValidationInfo
-) -> LiteralString | UntypedLiteral:
+) -> Union[LiteralString, UntypedLiteral]:
     try:
         return handler(value)
     except ValidationError as validation_error:
@@ -25,7 +26,7 @@ def convert_unknown_literal_to_untyped_literal(
 
 def allow_unknown_literal_value(
     value: Any, handler: ValidatorFunctionWrapHandler, info: ValidationInfo
-) -> LiteralString | UntypedLiteral:
+) -> Union[LiteralString, UntypedLiteral]:
     try:
         return handler(value)
     except ValidationError as validation_error:

@@ -73,7 +73,7 @@ def capture_and_mock_request(monkeypatch):
 
             return MockResponse(response_dict, status_code, headers=headers)
 
-        monkeypatch.setattr(requests, method, capture_and_mock)
+        monkeypatch.setattr(requests, "request", capture_and_mock)
 
         return (request_args, request_kwargs)
 

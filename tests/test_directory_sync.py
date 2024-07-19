@@ -1,6 +1,6 @@
 import pytest
 from workos.directory_sync import DirectorySync
-from workos.resources.directory_sync import WorkOSDirectoryUser
+from workos.resources.directory_sync import DirectoryUser
 from tests.utils.fixtures.mock_directory import MockDirectory
 from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
 from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
@@ -54,30 +54,6 @@ class TestDirectorySync(object):
                 "method": DirectorySync.list_users,
             },
         }
-
-    @pytest.fixture
-    def mock_default_limit_users_v2(self):
-        user_list = [MockDirectoryUser(id=str(i)).to_dict() for i in range(10)]
-
-        dict_response = {
-            "data": user_list,
-            "list_metadata": {"before": None, "after": "xxx"},
-            "metadata": {
-                "params": {
-                    "domain": None,
-                    "organization_id": None,
-                    "search": None,
-                    "limit": 10,
-                    "before": None,
-                    "after": None,
-                    "order": None,
-                    "default_limit": True,
-                },
-                "method": DirectorySync.list_users,
-            },
-        }
-
-        return self.directory_sync.construct_from_response(dict_response)
 
     @pytest.fixture
     def mock_users_pagination_response(self):
@@ -149,7 +125,7 @@ class TestDirectorySync(object):
     def mock_default_limit_groups_v2(self):
         group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(10)]
 
-        dict_response = {
+        return {
             "data": group_list,
             "list_metadata": {"before": None, "after": "xxx"},
             "metadata": {
@@ -166,8 +142,6 @@ class TestDirectorySync(object):
                 "method": DirectorySync.list_groups,
             },
         }
-
-        return self.directory_sync.construct_from_response(dict_response)
 
     @pytest.fixture
     def mock_groups_pagination_reponse(self):
@@ -280,7 +254,7 @@ class TestDirectorySync(object):
     def mock_directories_with_limit_v2(self):
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(4)]
 
-        dict_response = {
+        return {
             "data": directory_list,
             "list_metadata": {"before": None, "after": None},
             "metadata": {
@@ -296,8 +270,6 @@ class TestDirectorySync(object):
                 "method": DirectorySync.list_directories,
             },
         }
-
-        return self.directory_sync.construct_from_response(dict_response)
 
     @pytest.fixture
     def mock_default_limit_directories(self):
@@ -325,7 +297,7 @@ class TestDirectorySync(object):
     def mock_default_limit_directories_v2(self):
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(10)]
 
-        dict_response = {
+        return {
             "data": directory_list,
             "list_metadata": {"before": None, "after": "directory_id_xx"},
             "metadata": {
@@ -342,8 +314,6 @@ class TestDirectorySync(object):
                 "method": DirectorySync.list_directories,
             },
         }
-
-        return self.directory_sync.construct_from_response(dict_response)
 
     @pytest.fixture
     def mock_directories_pagination_response(self):
@@ -448,9 +418,7 @@ class TestDirectorySync(object):
         mock_user_instance = self.directory_sync.get_user(
             "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ"
         )
-        primary_email = WorkOSDirectoryUser.construct_from_response(
-            mock_user_instance
-        ).primary_email()
+        primary_email = mock_user_instance.primary_email()
 
         assert primary_email == mock_user_primary_email
 
@@ -459,8 +427,8 @@ class TestDirectorySync(object):
         mock_user_instance = self.directory_sync.get_user(
             "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ"
         )
-        primary_email = WorkOSDirectoryUser.construct_from_response(mock_user_instance)
-        me = primary_email.primary_email()
+
+        me = mock_user_instance.primary_email()
 
         assert me == None
 
@@ -475,9 +443,7 @@ class TestDirectorySync(object):
 
         directories = mock_default_limit_directories
 
-        all_directories = DirectorySync.construct_from_response(
-            directories
-        ).auto_paging_iter()
+        all_directories = directories.auto_paging_iter()
 
         assert len(*list(all_directories)) == len(mock_directories["data"])
 
@@ -504,7 +470,7 @@ class TestDirectorySync(object):
         mock_request_method("get", mock_users_pagination_response, 200)
         users = mock_default_limit_users
 
-        all_users = DirectorySync.construct_from_response(users).auto_paging_iter()
+        all_users = users.auto_paging_iter()
 
         assert len(*list(all_users)) == len(mock_users["data"])
 
@@ -532,7 +498,7 @@ class TestDirectorySync(object):
         mock_request_method("get", mock_groups_pagination_reponse, 200)
 
         groups = mock_default_limit_groups
-        all_groups = DirectorySync.construct_from_response(groups).auto_paging_iter()
+        all_groups = groups.auto_paging_iter()
 
         assert len(*list(all_groups)) == len(mock_groups["data"])
 
@@ -560,9 +526,7 @@ class TestDirectorySync(object):
 
         directories = mock_directories_with_limit
 
-        all_directories = DirectorySync.construct_from_response(
-            directories
-        ).auto_paging_iter()
+        all_directories = directories.auto_paging_iter()
 
         assert len(*list(all_directories)) == len(mock_directories_with_limit["data"])
 
@@ -579,31 +543,3 @@ class TestDirectorySync(object):
         all_directories = directories.auto_paging_iter()
 
         assert len(*list(all_directories)) == len(dict_directories["data"])
-
-    def test_list_directories_returns_metadata(
-        self,
-        mock_directories,
-        mock_request_method,
-    ):
-        mock_request_method("get", mock_directories, 200)
-        directories = self.directory_sync.list_directories(
-            organization="Planet Express"
-        )
-
-        assert directories["metadata"]["params"]["organization_id"] == "Planet Express"
-
-    def test_list_directories_returns_metadata_v2(
-        self,
-        mock_directories,
-        mock_request_method,
-    ):
-        mock_request_method("get", mock_directories, 200)
-        directories = self.directory_sync.list_directories_v2(
-            organization="Planet Express"
-        )
-        dict_directories = directories.to_dict()
-
-        assert (
-            dict_directories["metadata"]["params"]["organization_id"]
-            == "Planet Express"
-        )

@@ -171,3 +171,6 @@ class DirectoryUser(BaseModel):
     created_at: str
     updated_at: str
     role: Optional[Role] = None
+
+    def primary_email(self):
+        return next((email for email in self.emails if email.primary), None)

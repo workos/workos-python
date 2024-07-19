@@ -1,4 +1,5 @@
 import platform
+from typing import Any
 import urllib.parse
 
 import requests
@@ -58,7 +59,8 @@ class RequestHelper(object):
         params=None,
         headers=None,
         token=None,
-    ):
+        # TODO: This isn't quite true. There are paths where this may return None.
+    ) -> Any:
         """Executes a request against the WorkOS API.
 
         Args:
@@ -106,10 +108,6 @@ class RequestHelper(object):
             except ValueError:
                 raise ServerException(response)
 
-        # If the `content_type` is not `application/json`, then response_json is None. What should we return?
-        if response_json is None:
-            raise ServerException(response)
-
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:
             if status_code == 401:
@@ -118,8 +116,9 @@ class RequestHelper(object):
                 raise AuthorizationException(response)
             elif status_code == 404:
                 raise NotFoundException(response)
-            error = response_json.get("error")
-            error_description = response_json.get("error_description")
+            if response_json is not None:
+                error = response_json.get("error")
+                error_description = response_json.get("error_description")
             raise BadRequestException(
                 response, error=error, error_description=error_description
             )

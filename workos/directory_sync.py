@@ -237,12 +237,10 @@ class DirectorySync:
             directory (str): The ID of the directory to be deleted. (Required)
 
         Returns:
-            dict: Directories response from WorkOS.
+            None
         """
-        response = self.request_helper.request(
+        self.request_helper.request(
             "directories/{directory}".format(directory=directory),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
-
-        return Directory.model_validate(response)

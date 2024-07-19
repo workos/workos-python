@@ -56,7 +56,7 @@ def mock_raw_request_method(monkeypatch):
         def mock(*args, **kwargs):
             return MockRawResponse(content, status_code, headers=headers)
 
-        monkeypatch.setattr(requests, method, mock)
+        monkeypatch.setattr(requests, "request", mock)
 
     return inner
 

@@ -69,7 +69,7 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_groups(self):
-        group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(10)]
+        group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(20)]
         return list_resource_of(data=group_list, after="xxx")
 
     @pytest.fixture
@@ -140,7 +140,7 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_user_primary_email(self):
-        return {"primary": "true", "type": "work", "value": "marcelina@foo-corp.com"}
+        return {"primary": True, "type": "work", "value": "marcelina@foo-corp.com"}
 
     @pytest.fixture
     def mock_user(self):
@@ -150,6 +150,7 @@ class TestDirectorySync(object):
     def mock_user_no_email(self):
         return {
             "id": "directory_user_01E1JG7J09H96KYP8HM9B0GZZZ",
+            "object": "directory_user",
             "idp_id": "2836",
             "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
             "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
@@ -161,6 +162,10 @@ class TestDirectorySync(object):
             "groups": [
                 {
                     "id": "directory_group_01E64QTDNS0EGJ0FMCVY9BWGZT",
+                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                    "object": "directory_group",
+                    "idp_id": "2836",
                     "name": "Engineering",
                     "created_at": "2021-06-25T19:07:33.155Z",
                     "updated_at": "2021-06-25T19:07:33.155Z",
@@ -182,25 +187,8 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_directories(self):
-        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(5000)]
-
-        return {
-            "data": directory_list,
-            "list_metadata": {"before": None, "after": None},
-            "metadata": {
-                "params": {
-                    "domain": None,
-                    "organization_id": None,
-                    "search": None,
-                    "limit": None,
-                    "before": None,
-                    "after": None,
-                    "order": None,
-                    "default_limit": True,
-                },
-                "method": DirectorySync.list_directories,
-            },
-        }
+        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(20)]
+        return list_resource_of(data=directory_list)
 
     @pytest.fixture
     def mock_directories_with_limit(self):
@@ -290,25 +278,8 @@ class TestDirectorySync(object):
 
     @pytest.fixture
     def mock_directories_pagination_response(self):
-        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(4990)]
-
-        return {
-            "data": directory_list,
-            "list_metadata": {"before": None, "after": None},
-            "metadata": {
-                "params": {
-                    "domain": None,
-                    "organization_id": None,
-                    "search": None,
-                    "limit": None,
-                    "before": None,
-                    "after": None,
-                    "order": None,
-                    "default_limit": True,
-                },
-                "method": DirectorySync.list_directories,
-            },
-        }
+        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(40)]
+        return list_resource_of(data=directory_list)
 
     @pytest.fixture
     def mock_directory(self):
@@ -347,7 +318,7 @@ class TestDirectorySync(object):
 
         user = self.directory_sync.get_user(user="directory_usr_id")
 
-        assert user == mock_user
+        assert user.dict() == mock_user
 
     def test_get_group(self, mock_group, mock_request_method):
         mock_request_method("get", mock_group, 200)
@@ -363,14 +334,14 @@ class TestDirectorySync(object):
 
         directories = self.directory_sync.list_directories()
 
-        assert directories == mock_directories
+        assert list_data_to_dicts(directories) == mock_directories["data"]
 
     def test_get_directory(self, mock_directory, mock_request_method):
         mock_request_method("get", mock_directory, 200)
 
         directory = self.directory_sync.get_directory(directory="directory_id")
 
-        assert directory == mock_directory
+        assert directory.dict() == mock_directory
 
     def test_delete_directory(self, mock_directories, mock_raw_request_method):
         mock_raw_request_method(
@@ -392,8 +363,8 @@ class TestDirectorySync(object):
             "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ"
         )
         primary_email = mock_user_instance.primary_email()
-
-        assert primary_email == mock_user_primary_email
+        assert primary_email
+        assert primary_email.dict() == mock_user_primary_email
 
     def test_primary_email_none(self, mock_user_no_email, mock_request_method):
         mock_request_method("get", mock_user_no_email, 200)
@@ -427,11 +398,20 @@ class TestDirectorySync(object):
         mock_directories,
         mock_request_method,
     ):
-        directories = mock_default_limit_directories_v2
         mock_request_method("get", mock_directories_pagination_response, 200)
-        all_directories = directories.auto_paging_iter()
+        directories = self.directory_sync.list_directories()
+        all_directories = []
+        # TODO: this is the same approach the the organizations test takes, but it's wrong.
+        # this doesn't actually test that the iterator makes multiple requests for consecutive pages
+        # of data. This test needs to be reworked to return multiple responses to properly test the
+        # auto_paging_iter.
+        for directory in directories.auto_paging_iter():
+            all_directories.append(directory)
 
-        assert len(*list(all_directories)) == len(mock_directories["data"])
+        assert len(list(all_directories)) == 40
+
+        for i, dir in enumerate(all_directories):
+            assert dir.id == str(i)
 
     def test_directory_users_auto_pagination(
         self,

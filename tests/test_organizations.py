@@ -71,7 +71,7 @@ class TestOrganizations(object):
 
                 return MockResponse(response_dict, status_code, headers=headers)
 
-            monkeypatch.setattr(requests, method, mock)
+            monkeypatch.setattr(requests, "request", mock)
 
         return inner
 

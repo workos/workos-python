@@ -36,10 +36,10 @@ class DirectorySync:
         self,
         directory: Optional[str] = None,
         group: Optional[str] = None,
-        limit: Optional[int] = RESPONSE_LIMIT,
+        limit: int = RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[PaginationOrder] = "desc",
+        order: PaginationOrder = "desc",
     ) -> WorkOsListResource[DirectoryUser]:
         """Gets a list of provisioned Users for a Directory.
 
@@ -78,6 +78,7 @@ class DirectorySync:
 
         return WorkOsListResource(
             list_method=self.list_users,
+            # TODO: Should we even bother with this validation?
             list_args=ListArgs.model_validate(params),
             **ListPage[DirectoryUser](**response).model_dump()
         )
@@ -86,10 +87,10 @@ class DirectorySync:
         self,
         directory: Optional[str] = None,
         user: Optional[str] = None,
-        limit: Optional[int] = RESPONSE_LIMIT,
+        limit: int = RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[PaginationOrder] = "desc",
+        order: PaginationOrder = "desc",
     ) -> WorkOsListResource[DirectoryGroup]:
         """Gets a list of provisioned Groups for a Directory .
 
@@ -126,6 +127,7 @@ class DirectorySync:
 
         return WorkOsListResource(
             list_method=self.list_groups,
+            # TODO: Should we even bother with this validation?
             list_args=ListArgs.model_validate(params),
             **ListPage[DirectoryGroup](**response).model_dump()
         )
@@ -186,11 +188,11 @@ class DirectorySync:
         self,
         domain: Optional[str] = None,
         search: Optional[str] = None,
-        limit: Optional[int] = RESPONSE_LIMIT,
+        limit: int = RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         organization: Optional[str] = None,
-        order: Optional[PaginationOrder] = "desc",
+        order: PaginationOrder = "desc",
     ) -> WorkOsListResource[Directory]:
         """Gets details for existing Directories.
 
@@ -223,9 +225,9 @@ class DirectorySync:
             params=params,
             token=workos.api_key,
         )
-
         return WorkOsListResource(
             list_method=self.list_directories,
+            # TODO: Should we even bother with this validation?
             list_args=ListArgs.model_validate(params),
             **ListPage[Directory](**response).model_dump()
         )

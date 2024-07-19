@@ -33,10 +33,10 @@ class Organizations:
     def list_organizations(
         self,
         domains: Optional[List[str]] = None,
-        limit: Optional[int] = RESPONSE_LIMIT,
+        limit: int = RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[PaginationOrder] = "desc",
+        order: PaginationOrder = "desc",
     ) -> WorkOsListResource[Organization]:
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
@@ -68,6 +68,7 @@ class Organizations:
 
         return WorkOsListResource[Organization](
             list_method=self.list_organizations,
+            # TODO: Should we even bother with this validation?
             list_args=ListArgs.model_validate(params),
             **ListPage[Organization](**response).model_dump()
         )

@@ -1,9 +1,11 @@
 import datetime
+from typing import Dict, List, Union, cast
 
 import pytest
 import requests
 
 from tests.conftest import MockResponse
+from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.organizations import Organizations
 from tests.utils.fixtures.mock_organization import MockOrganization
 
@@ -46,9 +48,9 @@ class TestOrganizations(object):
         }
 
     @pytest.fixture
-    def mock_organizations_pagination_response(self):
+    def mock_organizations_single_page_response(self):
+        print("Retyrning single page response")
         organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(10)]
-
         return {
             "data": organization_list,
             "list_metadata": {"before": None, "after": None},
@@ -56,24 +58,8 @@ class TestOrganizations(object):
         }
 
     @pytest.fixture
-    def mock_pagination_request(self, monkeypatch):
-        def inner(method, response_dict, status_code, headers=None):
-            def mock(*args, **kwargs):
-                params = kwargs.get("params") or {}
-                if params.get("after") is None:
-                    response_dict["list_metadata"]["after"] = "after"
-
-                if params.get("after") == "after":
-                    response_dict["list_metadata"]["after"] = None
-
-                    for item in response_dict["data"]:
-                        item["id"] = str(int(item["id"]) + 10)
-
-                return MockResponse(response_dict, status_code, headers=headers)
-
-            monkeypatch.setattr(requests, "request", mock)
-
-        return inner
+    def mock_organizations_multiple_data_pages(self):
+        return [MockOrganization(id=str(f"org_{i+1}")).to_dict() for i in range(25)]
 
     def test_list_organizations(self, mock_organizations, mock_request_method):
         mock_request_method("get", mock_organizations, 200)
@@ -172,22 +158,41 @@ class TestOrganizations(object):
 
         assert response is None
 
-    def test_list_organizations_auto_pagination(
+    def test_list_organizations_auto_pagination_for_single_page(
         self,
-        mock_organizations_pagination_response,
+        mock_organizations_single_page_response,
         mock_organizations,
-        mock_pagination_request,
+        mock_request_method,
     ):
-        mock_pagination_request("get", mock_organizations_pagination_response, 200)
+        mock_request_method("get", mock_organizations_single_page_response, 200)
 
         all_organizations = []
-
         organizations = self.organizations.list_organizations()
 
         for org in organizations.auto_paging_iter():
             all_organizations.append(org)
 
-        assert len(list(all_organizations)) == 20
+        assert len(list(all_organizations)) == 10
 
-        for i, org in enumerate(all_organizations):
-            assert org.id == str(i)
+        organization_data = mock_organizations_single_page_response["data"]
+        assert (list_data_to_dicts(all_organizations)) == organization_data
+
+    def test_list_organizations_auto_pagination_for_multiple_pages(
+        self,
+        mock_organizations_multiple_data_pages,
+        mock_pagination_request,
+    ):
+        mock_pagination_request("get", mock_organizations_multiple_data_pages, 200)
+
+        all_organizations = []
+        organizations = self.organizations.list_organizations()
+
+        for org in organizations.auto_paging_iter():
+            all_organizations.append(org)
+
+        assert len(list(all_organizations)) == len(
+            mock_organizations_multiple_data_pages
+        )
+        assert (
+            list_data_to_dicts(all_organizations)
+        ) == mock_organizations_multiple_data_pages

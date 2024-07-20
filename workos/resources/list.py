@@ -154,7 +154,6 @@ class WorkOsListResource(BaseModel, Generic[T]):
             exclude={"after", "before", "order", "limit"}
         )
 
-        asc_order = order == "asc"
         index: int = 0
 
         while True:

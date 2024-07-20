@@ -211,7 +211,7 @@ class DirectorySync:
 
         params = {
             "domain": domain,
-            "organization_id": organization,
+            "organization": organization,
             "search": search,
             "limit": limit,
             "before": before,

@@ -1,5 +1,7 @@
 import pytest
-from tests.utils.list_resource import list_data_to_dicts, list_resource_of
+import requests
+from tests.conftest import MockResponse, mock_pagination_request
+from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.directory_sync import DirectorySync
 from workos.resources.directory_sync import DirectoryUser
 from tests.utils.fixtures.mock_directory import MockDirectory
@@ -27,12 +29,12 @@ class TestDirectorySync(object):
     def mock_users_pagination_response(self):
         user_list = [MockDirectoryUser(id=str(i)).to_dict() for i in range(40)]
 
-        return list_resource_of(data=user_list)
+        return list_response_of(data=user_list)
 
     @pytest.fixture
     def mock_groups(self):
         group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(20)]
-        return list_resource_of(data=group_list, after="xxx")
+        return list_response_of(data=group_list, after="xxx")
 
     @pytest.fixture
     def mock_default_limit_groups(self):
@@ -81,7 +83,7 @@ class TestDirectorySync(object):
     @pytest.fixture
     def mock_groups_pagination_reponse(self):
         group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(40)]
-        return list_resource_of(data=group_list)
+        return list_response_of(data=group_list)
 
     @pytest.fixture
     def mock_user_primary_email(self):
@@ -133,7 +135,7 @@ class TestDirectorySync(object):
     @pytest.fixture
     def mock_directories(self):
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(20)]
-        return list_resource_of(data=directory_list)
+        return list_response_of(data=directory_list)
 
     @pytest.fixture
     def mock_directories_with_limit(self):
@@ -202,7 +204,11 @@ class TestDirectorySync(object):
     @pytest.fixture
     def mock_directories_pagination_response(self):
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(40)]
-        return list_resource_of(data=directory_list)
+        return list_response_of(data=directory_list)
+
+    @pytest.fixture
+    def mock_directories_multiple_data_pages(self):
+        return [MockDirectory(id=str(f"dir_{i}")).to_dict() for i in range(40)]
 
     @pytest.fixture
     def mock_directory(self):
@@ -213,28 +219,28 @@ class TestDirectorySync(object):
 
         users = self.directory_sync.list_users(directory="directory_id")
 
-        assert list_data_to_dicts(users) == mock_users["data"]
+        assert list_data_to_dicts(users.data) == mock_users["data"]
 
     def test_list_users_with_group(self, mock_users, mock_request_method):
         mock_request_method("get", mock_users, 200)
 
         users = self.directory_sync.list_users(group="directory_grp_id")
 
-        assert list_data_to_dicts(users) == mock_users["data"]
+        assert list_data_to_dicts(users.data) == mock_users["data"]
 
     def test_list_groups_with_directory(self, mock_groups, mock_request_method):
         mock_request_method("get", mock_groups, 200)
 
         groups = self.directory_sync.list_groups(directory="directory_id")
 
-        assert list_data_to_dicts(groups) == mock_groups["data"]
+        assert list_data_to_dicts(groups.data) == mock_groups["data"]
 
     def test_list_groups_with_user(self, mock_groups, mock_request_method):
         mock_request_method("get", mock_groups, 200)
 
         groups = self.directory_sync.list_groups(user="directory_usr_id")
 
-        assert list_data_to_dicts(groups) == mock_groups["data"]
+        assert list_data_to_dicts(groups.data) == mock_groups["data"]
 
     def test_get_user(self, mock_user, mock_request_method):
         mock_request_method("get", mock_user, 200)
@@ -257,7 +263,7 @@ class TestDirectorySync(object):
 
         directories = self.directory_sync.list_directories()
 
-        assert list_data_to_dicts(directories) == mock_directories["data"]
+        assert list_data_to_dicts(directories.data) == mock_directories["data"]
 
     def test_get_directory(self, mock_directory, mock_request_method):
         mock_request_method("get", mock_directory, 200)
@@ -368,24 +374,18 @@ class TestDirectorySync(object):
 
     def test_auto_pagination_honors_limit(
         self,
-        mock_directories_with_limit,
-        mock_directories_pagination_response,
-        mock_request_method,
+        mock_directories_multiple_data_pages,
+        mock_pagination_request,
     ):
-        # TODO: I don't see how this ever tested anything. We need to validate request params
-        # to make this test meaningful.
-        mock_request_method("get", mock_directories_pagination_response, 200)
+        mock_pagination_request("get", mock_directories_multiple_data_pages, 200)
 
         directories = self.directory_sync.list_directories()
         all_directories = []
-        # TODO: this is the same approach the the organizations test takes, but it's wrong.
-        # this doesn't actually test that the iterator makes multiple requests for consecutive pages
-        # of data. This test needs to be reworked to return multiple responses to properly test the
-        # auto_paging_iter.
+
         for directory in directories.auto_paging_iter():
             all_directories.append(directory)
 
-        assert len(list(all_directories)) == 40
-
-        for i, dir in enumerate(all_directories):
-            assert dir.id == str(i)
+        assert len(list(all_directories)) == len(mock_directories_multiple_data_pages)
+        assert (
+            list_data_to_dicts(all_directories)
+        ) == mock_directories_multiple_data_pages

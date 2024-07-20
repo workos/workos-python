@@ -1,6 +1,7 @@
 import pytest
 import requests
 
+from tests.utils.list_resource import list_response_of
 import workos
 
 
@@ -76,5 +77,43 @@ def capture_and_mock_request(monkeypatch):
         monkeypatch.setattr(requests, "request", capture_and_mock)
 
         return (request_args, request_kwargs)
+
+    return inner
+
+
+@pytest.fixture
+def mock_pagination_request(monkeypatch):
+    # Mocking pagination correctly requires us to index into a list of data
+    # and correctly set the before and after metadata in the response.
+    def inner(method, data_list, status_code, headers=None):
+        # For convenient index lookip, store the list of object IDs.
+        data_ids = list(map(lambda x: x["id"], data_list))
+
+        def mock(*args, **kwargs):
+            params = kwargs.get("params") or {}
+            request_after = params.get("after", None)
+            limit = params.get("limit", 10)
+
+            if request_after is None:
+                # First page
+                start = 0
+            else:
+                # A subsequent page, return the first item _after_ the index we locate
+                start = data_ids.index(request_after) + 1
+            data = data_list[start : start + limit]
+            if len(data) < limit or len(data) == 0:
+                # No more data, set after to None
+                after = None
+            else:
+                # Set after to the last item in this page of results
+                after = data[-1]["id"]
+
+            return MockResponse(
+                list_response_of(data=data, before=request_after, after=after),
+                status_code,
+                headers=headers,
+            )
+
+        monkeypatch.setattr(requests, "request", mock)
 
     return inner

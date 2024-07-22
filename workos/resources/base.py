@@ -1,3 +1,6 @@
+from typing import List
+
+
 class WorkOSBaseResource(object):
     """Representation of a WorkOS Resource as returned through the API.
 
@@ -5,7 +8,7 @@ class WorkOSBaseResource(object):
         OBJECT_FIELDS (list): List of fields a Resource is comprised of.
     """
 
-    OBJECT_FIELDS = []
+    OBJECT_FIELDS: List[str] = []
 
     @classmethod
     def construct_from_response(cls, response):

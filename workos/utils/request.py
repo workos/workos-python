@@ -1,4 +1,6 @@
 import platform
+from typing import Any
+import urllib.parse
 
 import requests
 import urllib
@@ -57,7 +59,8 @@ class RequestHelper(object):
         params=None,
         headers=None,
         token=None,
-    ):
+        # TODO: This isn't quite true. There are paths where this may return None.
+    ) -> Any:
         """Executes a request against the WorkOS API.
 
         Args:
@@ -80,14 +83,17 @@ class RequestHelper(object):
         headers.update(BASE_HEADERS)
         url = self.generate_api_url(path)
 
-        request_fn = getattr(requests, method)
         if method == REQUEST_METHOD_GET:
-            response = request_fn(
-                url, headers=headers, params=params, timeout=self.request_timeout
+            response = requests.request(
+                method,
+                url,
+                headers=headers,
+                params=params,
+                timeout=self.request_timeout,
             )
         else:
-            response = request_fn(
-                url, headers=headers, json=params, timeout=self.request_timeout
+            response = requests.request(
+                method, url, headers=headers, json=params, timeout=self.request_timeout
             )
 
         response_json = None
@@ -110,8 +116,9 @@ class RequestHelper(object):
                 raise AuthorizationException(response)
             elif status_code == 404:
                 raise NotFoundException(response)
-            error = response_json.get("error")
-            error_description = response_json.get("error_description")
+            if response_json is not None:
+                error = response_json.get("error")
+                error_description = response_json.get("error_description")
             raise BadRequestException(
                 response, error=error, error_description=error_description
             )

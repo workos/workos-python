@@ -1,29 +1,27 @@
-from workos.resources.base import WorkOSBaseResource
+from typing import List, Literal, Optional, TypedDict
+from workos.resources.workos_model import WorkOSModel
 
 
-class WorkOSOrganization(WorkOSBaseResource):
-    """Representation of WorkOS Organization as returned by WorkOS through the Organizations feature.
+class OrganizationDomain(WorkOSModel):
+    id: str
+    organization_id: str
+    object: Literal["organization_domain"]
+    verification_strategy: Literal["manual", "dns"]
+    state: Literal["failed", "pending", "legacy_verified", "verified"]
+    domain: str
 
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSOrganization is comprised of.
-    """
 
-    OBJECT_FIELDS = [
-        "id",
-        "object",
-        "name",
-        "allow_profiles_outside_organization",
-        "created_at",
-        "updated_at",
-        "domains",
-        "lookup_key",
-    ]
+class Organization(WorkOSModel):
+    id: str
+    object: Literal["organization"]
+    name: str
+    allow_profiles_outside_organization: bool
+    created_at: str
+    updated_at: str
+    domains: list
+    lookup_key: Optional[str] = None
 
-    @classmethod
-    def construct_from_response(cls, response):
-        return super(WorkOSOrganization, cls).construct_from_response(response)
 
-    def to_dict(self):
-        organization = super(WorkOSOrganization, self).to_dict()
-
-        return organization
+class DomainDataInput(TypedDict):
+    domain: str
+    state: Literal["verified", "pending"]

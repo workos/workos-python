@@ -27,7 +27,11 @@ setup(
     ),
     zip_safe=False,
     license=about["__license__"],
-    install_requires=["requests>=2.22.0"],
+    install_requires=[
+        "requests>=2.22.0",
+        "pydantic==2.8.2",
+        "types-requests==2.32.0.20240712",
+    ],
     extras_require={
         "dev": [
             "flake8",
@@ -38,6 +42,7 @@ setup(
             "twine==4.0.2",
             "requests==2.30.0",
             "urllib3==2.0.2",
+            "mypy==1.10.1",
         ],
         ":python_version<'3.4'": ["enum34"],
     },

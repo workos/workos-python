@@ -1,5 +1,5 @@
 import json
-from six.moves.urllib.parse import parse_qsl, urlparse
+from six.moves.urllib.parse import parse_qsl, urlparse, parse_qs
 import pytest
 import workos
 
@@ -254,11 +254,12 @@ class TestUserManagement(object):
         return dict_response
 
     def test_get_user(self, mock_user, capture_and_mock_request):
-        url, request_kwargs = capture_and_mock_request("get", mock_user, 200)
+        request_args, request_kwargs = capture_and_mock_request("get", mock_user, 200)
 
         user = self.user_management.get_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
-
-        assert url[0].endswith("user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        assert request_args[1].endswith(
+            "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        )
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert user["profile_picture_url"] == "https://example.com/profile-picture.jpg"
 
@@ -317,7 +318,7 @@ class TestUserManagement(object):
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_update_user(self, mock_user, capture_and_mock_request):
-        url, request = capture_and_mock_request("put", mock_user, 200)
+        request_args, request = capture_and_mock_request("put", mock_user, 200)
 
         user = self.user_management.update_user(
             "user_01H7ZGXFP5C6BBQY6Z7277ZCT0",
@@ -329,7 +330,7 @@ class TestUserManagement(object):
             },
         )
 
-        assert url[0].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        assert request_args[1].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
         assert user["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert request["json"]["first_name"] == "Marcelina"
         assert request["json"]["last_name"] == "Hoeger"
@@ -337,11 +338,13 @@ class TestUserManagement(object):
         assert request["json"]["password"] == "password"
 
     def test_delete_user(self, capture_and_mock_request):
-        url, request_kwargs = capture_and_mock_request("delete", None, 200)
+        request_args, request_kwargs = capture_and_mock_request("delete", None, 200)
 
         user = self.user_management.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
 
-        assert url[0].endswith("user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        assert request_args[1].endswith(
+            "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        )
         assert user is None
 
     def test_create_organization_membership(
@@ -349,40 +352,48 @@ class TestUserManagement(object):
     ):
         user_id = "user_12345"
         organization_id = "org_67890"
-        url, _ = capture_and_mock_request("post", mock_organization_membership, 201)
+        request_args, _ = capture_and_mock_request(
+            "post", mock_organization_membership, 201
+        )
 
         organization_membership = self.user_management.create_organization_membership(
             user_id=user_id, organization_id=organization_id
         )
 
-        assert url[0].endswith("user_management/organization_memberships")
+        assert request_args[1].endswith("user_management/organization_memberships")
         assert organization_membership["user_id"] == user_id
         assert organization_membership["organization_id"] == organization_id
 
     def test_update_organization_membership(
         self, capture_and_mock_request, mock_organization_membership
     ):
-        url, _ = capture_and_mock_request("put", mock_organization_membership, 201)
+        request_args, _ = capture_and_mock_request(
+            "put", mock_organization_membership, 201
+        )
 
         organization_membership = self.user_management.update_organization_membership(
             organization_membership_id="om_ABCDE",
             role_slug="member",
         )
 
-        assert url[0].endswith("user_management/organization_memberships/om_ABCDE")
+        assert request_args[1].endswith(
+            "user_management/organization_memberships/om_ABCDE"
+        )
         assert organization_membership["id"] == "om_ABCDE"
         assert organization_membership["role"] == {"slug": "member"}
 
     def test_get_organization_membership(
         self, mock_organization_membership, capture_and_mock_request
     ):
-        url, request_kwargs = capture_and_mock_request(
+        request_args, request_kwargs = capture_and_mock_request(
             "get", mock_organization_membership, 200
         )
 
         om = self.user_management.get_organization_membership("om_ABCDE")
 
-        assert url[0].endswith("user_management/organization_memberships/om_ABCDE")
+        assert request_args[1].endswith(
+            "user_management/organization_memberships/om_ABCDE"
+        )
         assert om["id"] == "om_ABCDE"
 
     def test_list_organization_memberships_returns_metadata(
@@ -432,23 +443,25 @@ class TestUserManagement(object):
         assert dict_oms["metadata"]["params"]["organization_id"] == "org_12345"
 
     def test_delete_organization_membership(self, capture_and_mock_request):
-        url, request_kwargs = capture_and_mock_request("delete", None, 200)
+        request_args, request_kwargs = capture_and_mock_request("delete", None, 200)
 
         user = self.user_management.delete_organization_membership("om_ABCDE")
 
-        assert url[0].endswith("user_management/organization_memberships/om_ABCDE")
+        assert request_args[1].endswith(
+            "user_management/organization_memberships/om_ABCDE"
+        )
         assert user is None
 
     def test_deactivate_organization_membership(
         self, mock_organization_membership, capture_and_mock_request
     ):
-        url, request_kwargs = capture_and_mock_request(
+        request_args, request_kwargs = capture_and_mock_request(
             "put", mock_organization_membership, 200
         )
 
         om = self.user_management.deactivate_organization_membership("om_ABCDE")
 
-        assert url[0].endswith(
+        assert request_args[1].endswith(
             "user_management/organization_memberships/om_ABCDE/deactivate"
         )
         assert om["id"] == "om_ABCDE"
@@ -456,13 +469,13 @@ class TestUserManagement(object):
     def test_reactivate_organization_membership(
         self, mock_organization_membership, capture_and_mock_request
     ):
-        url, request_kwargs = capture_and_mock_request(
+        request_args, request_kwargs = capture_and_mock_request(
             "put", mock_organization_membership, 200
         )
 
         om = self.user_management.reactivate_organization_membership("om_ABCDE")
 
-        assert url[0].endswith(
+        assert request_args[1].endswith(
             "user_management/organization_memberships/om_ABCDE/reactivate"
         )
         assert om["id"] == "om_ABCDE"
@@ -476,7 +489,9 @@ class TestUserManagement(object):
                 connection_id=connection_id,
                 login_hint=login_hint,
                 state=state,
-            )
+            )  # type: ignore
+            # TODO: ignore above added temporarily, this runtime error isn't needed with modern python type validation
+            # leaving this as a reminder to remove the runtime check.
 
     def test_authorization_url_throws_value_error_with_missing_connection_organization_and_provider(
         self,
@@ -517,8 +532,7 @@ class TestUserManagement(object):
         )
 
         parsed_url = urlparse(authorization_url)
-
-        assert dict(parse_qsl(parsed_url.query)) == {
+        assert dict(parse_qsl(str(parsed_url.query))) == {
             "connection_id": connection_id,
             "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
@@ -534,8 +548,7 @@ class TestUserManagement(object):
         )
 
         parsed_url = urlparse(authorization_url)
-
-        assert dict(parse_qsl(parsed_url.query)) == {
+        assert dict(parse_qsl(str(parsed_url.query))) == {
             "organization_id": organization_id,
             "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
@@ -550,8 +563,7 @@ class TestUserManagement(object):
         )
 
         parsed_url = urlparse(authorization_url)
-
-        assert dict(parse_qsl(parsed_url.query)) == {
+        assert dict(parse_qsl(str(parsed_url.query))) == {
             "provider": provider.value,
             "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
@@ -570,8 +582,7 @@ class TestUserManagement(object):
         )
 
         parsed_url = urlparse(authorization_url)
-
-        assert dict(parse_qsl(parsed_url.query)) == {
+        assert dict(parse_qsl(str(parsed_url.query))) == {
             "domain_hint": domain_hint,
             "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
@@ -591,8 +602,7 @@ class TestUserManagement(object):
         )
 
         parsed_url = urlparse(authorization_url)
-
-        assert dict(parse_qsl(parsed_url.query)) == {
+        assert dict(parse_qsl(str(parsed_url.query))) == {
             "login_hint": login_hint,
             "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
@@ -612,8 +622,7 @@ class TestUserManagement(object):
         )
 
         parsed_url = urlparse(authorization_url)
-
-        assert dict(parse_qsl(parsed_url.query)) == {
+        assert dict(parse_qsl(str(parsed_url.query))) == {
             "state": state,
             "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
@@ -633,8 +642,7 @@ class TestUserManagement(object):
         )
 
         parsed_url = urlparse(authorization_url)
-
-        assert dict(parse_qsl(parsed_url.query)) == {
+        assert dict(parse_qsl(str(parsed_url.query))) == {
             "code_challenge": code_challenge,
             "code_challenge_method": "S256",
             "client_id": workos.client_id,
@@ -651,7 +659,9 @@ class TestUserManagement(object):
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
-        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+        request_args, request = capture_and_mock_request(
+            "post", mock_auth_response, 200
+        )
 
         response = self.user_management.authenticate_with_password(
             email=email,
@@ -660,7 +670,7 @@ class TestUserManagement(object):
             ip_address=ip_address,
         )
 
-        assert url[0].endswith("user_management/authenticate")
+        assert request_args[1].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
         assert response["access_token"] == "access_token_12345"
@@ -679,7 +689,9 @@ class TestUserManagement(object):
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
-        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+        request_args, request = capture_and_mock_request(
+            "post", mock_auth_response, 200
+        )
 
         response = self.user_management.authenticate_with_code(
             code=code,
@@ -688,7 +700,7 @@ class TestUserManagement(object):
             ip_address=ip_address,
         )
 
-        assert url[0].endswith("user_management/authenticate")
+        assert request_args[1].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
         assert response["access_token"] == "access_token_12345"
@@ -706,7 +718,7 @@ class TestUserManagement(object):
     ):
         code = "test_code"
 
-        url, request = capture_and_mock_request(
+        request_args, request = capture_and_mock_request(
             "post", mock_auth_response_with_impersonator, 200
         )
 
@@ -714,7 +726,7 @@ class TestUserManagement(object):
             code=code,
         )
 
-        assert url[0].endswith("user_management/authenticate")
+        assert request_args[1].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["impersonator"]["email"] == "admin@foocorp.com"
         assert response["impersonator"]["reason"] == "Debugging an account issue."
@@ -727,7 +739,9 @@ class TestUserManagement(object):
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
-        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+        request_args, request = capture_and_mock_request(
+            "post", mock_auth_response, 200
+        )
 
         response = self.user_management.authenticate_with_magic_auth(
             code=code,
@@ -736,7 +750,7 @@ class TestUserManagement(object):
             ip_address=ip_address,
         )
 
-        assert url[0].endswith("user_management/authenticate")
+        assert request_args[1].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
         assert response["access_token"] == "access_token_12345"
@@ -760,7 +774,9 @@ class TestUserManagement(object):
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
-        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+        request_args, request = capture_and_mock_request(
+            "post", mock_auth_response, 200
+        )
 
         response = self.user_management.authenticate_with_email_verification(
             code=code,
@@ -769,7 +785,7 @@ class TestUserManagement(object):
             ip_address=ip_address,
         )
 
-        assert url[0].endswith("user_management/authenticate")
+        assert request_args[1].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
         assert response["access_token"] == "access_token_12345"
@@ -795,7 +811,9 @@ class TestUserManagement(object):
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
-        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+        request_args, request = capture_and_mock_request(
+            "post", mock_auth_response, 200
+        )
 
         response = self.user_management.authenticate_with_totp(
             code=code,
@@ -805,7 +823,7 @@ class TestUserManagement(object):
             ip_address=ip_address,
         )
 
-        assert url[0].endswith("user_management/authenticate")
+        assert request_args[1].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
         assert response["access_token"] == "access_token_12345"
@@ -833,7 +851,9 @@ class TestUserManagement(object):
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
-        url, request = capture_and_mock_request("post", mock_auth_response, 200)
+        request_args, request = capture_and_mock_request(
+            "post", mock_auth_response, 200
+        )
 
         response = self.user_management.authenticate_with_organization_selection(
             organization_id=organization_id,
@@ -842,7 +862,7 @@ class TestUserManagement(object):
             ip_address=ip_address,
         )
 
-        assert url[0].endswith("user_management/authenticate")
+        assert request_args[1].endswith("user_management/authenticate")
         assert response["user"]["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response["organization_id"] == "org_12345"
         assert response["access_token"] == "access_token_12345"
@@ -868,7 +888,7 @@ class TestUserManagement(object):
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
-        url, request = capture_and_mock_request(
+        request_args, request = capture_and_mock_request(
             "post", mock_auth_refresh_token_response, 200
         )
 
@@ -878,7 +898,7 @@ class TestUserManagement(object):
             ip_address=ip_address,
         )
 
-        assert url[0].endswith("user_management/authenticate")
+        assert request_args[1].endswith("user_management/authenticate")
         assert response["access_token"] == "access_token_12345"
         assert response["refresh_token"] == "refresh_token_12345"
         assert request["json"]["user_agent"] == user_agent
@@ -904,27 +924,31 @@ class TestUserManagement(object):
         assert expected == result
 
     def test_get_password_reset(self, mock_password_reset, capture_and_mock_request):
-        url, request_kwargs = capture_and_mock_request("get", mock_password_reset, 200)
+        request_args, request_kwargs = capture_and_mock_request(
+            "get", mock_password_reset, 200
+        )
 
         password_reset = self.user_management.get_password_reset("password_reset_ABCDE")
 
-        assert url[0].endswith("user_management/password_reset/password_reset_ABCDE")
+        assert request_args[1].endswith(
+            "user_management/password_reset/password_reset_ABCDE"
+        )
         assert password_reset["id"] == "password_reset_ABCDE"
 
     def test_create_password_reset(self, capture_and_mock_request, mock_password_reset):
         email = "marcelina@foo-corp.com"
-        url, _ = capture_and_mock_request("post", mock_password_reset, 201)
+        request_args, _ = capture_and_mock_request("post", mock_password_reset, 201)
 
         password_reset = self.user_management.create_password_reset(email=email)
 
-        assert url[0].endswith("user_management/password_reset")
+        assert request_args[1].endswith("user_management/password_reset")
         assert password_reset["email"] == email
 
     def test_send_password_reset_email(self, capture_and_mock_request):
         email = "marcelina@foo-corp.com"
         password_reset_url = "https://foo-corp.com/reset-password"
 
-        url, request = capture_and_mock_request("post", None, 200)
+        request_args, request = capture_and_mock_request("post", None, 200)
 
         with pytest.warns(
             DeprecationWarning,
@@ -935,7 +959,7 @@ class TestUserManagement(object):
                 password_reset_url=password_reset_url,
             )
 
-        assert url[0].endswith("user_management/password_reset/send")
+        assert request_args[1].endswith("user_management/password_reset/send")
         assert request["json"]["email"] == email
         assert request["json"]["password_reset_url"] == password_reset_url
         assert response is None
@@ -944,14 +968,16 @@ class TestUserManagement(object):
         token = "token123"
         new_password = "pass123"
 
-        url, request = capture_and_mock_request("post", {"user": mock_user}, 200)
+        request_args, request = capture_and_mock_request(
+            "post", {"user": mock_user}, 200
+        )
 
         response = self.user_management.reset_password(
             token=token,
             new_password=new_password,
         )
 
-        assert url[0].endswith("user_management/password_reset/confirm")
+        assert request_args[1].endswith("user_management/password_reset/confirm")
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert request["json"]["token"] == token
         assert request["json"]["new_password"] == new_password
@@ -959,7 +985,7 @@ class TestUserManagement(object):
     def test_get_email_verification(
         self, mock_email_verification, capture_and_mock_request
     ):
-        url, request_kwargs = capture_and_mock_request(
+        request_args, request_kwargs = capture_and_mock_request(
             "get", mock_email_verification, 200
         )
 
@@ -967,7 +993,7 @@ class TestUserManagement(object):
             "email_verification_ABCDE"
         )
 
-        assert url[0].endswith(
+        assert request_args[1].endswith(
             "user_management/email_verification/email_verification_ABCDE"
         )
         assert email_verification["id"] == "email_verification_ABCDE"
@@ -975,11 +1001,11 @@ class TestUserManagement(object):
     def test_send_verification_email(self, capture_and_mock_request, mock_user):
         user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
-        url, _ = capture_and_mock_request("post", {"user": mock_user}, 200)
+        request_args, _ = capture_and_mock_request("post", {"user": mock_user}, 200)
 
         response = self.user_management.send_verification_email(user_id=user_id)
 
-        assert url[0].endswith(
+        assert request_args[1].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/email_verification/send"
         )
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
@@ -988,37 +1014,41 @@ class TestUserManagement(object):
         user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         code = "code_123"
 
-        url, request = capture_and_mock_request("post", {"user": mock_user}, 200)
+        request_args, request = capture_and_mock_request(
+            "post", {"user": mock_user}, 200
+        )
 
         response = self.user_management.verify_email(user_id=user_id, code=code)
 
-        assert url[0].endswith(
+        assert request_args[1].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/email_verification/confirm"
         )
         assert request["json"]["code"] == code
         assert response["id"] == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_get_magic_auth(self, mock_magic_auth, capture_and_mock_request):
-        url, request_kwargs = capture_and_mock_request("get", mock_magic_auth, 200)
+        request_args, request_kwargs = capture_and_mock_request(
+            "get", mock_magic_auth, 200
+        )
 
         magic_auth = self.user_management.get_magic_auth("magic_auth_ABCDE")
 
-        assert url[0].endswith("user_management/magic_auth/magic_auth_ABCDE")
+        assert request_args[1].endswith("user_management/magic_auth/magic_auth_ABCDE")
         assert magic_auth["id"] == "magic_auth_ABCDE"
 
     def test_create_magic_auth(self, capture_and_mock_request, mock_magic_auth):
         email = "marcelina@foo-corp.com"
-        url, _ = capture_and_mock_request("post", mock_magic_auth, 201)
+        request_args, _ = capture_and_mock_request("post", mock_magic_auth, 201)
 
         magic_auth = self.user_management.create_magic_auth(email=email)
 
-        assert url[0].endswith("user_management/magic_auth")
+        assert request_args[1].endswith("user_management/magic_auth")
         assert magic_auth["email"] == email
 
     def test_send_magic_auth_code(self, capture_and_mock_request):
         email = "marcelina@foo-corp.com"
 
-        url, request = capture_and_mock_request("post", None, 200)
+        request_args, request = capture_and_mock_request("post", None, 200)
 
         with pytest.warns(
             DeprecationWarning,
@@ -1026,7 +1056,7 @@ class TestUserManagement(object):
         ):
             response = self.user_management.send_magic_auth_code(email=email)
 
-        assert url[0].endswith("user_management/magic_auth/send")
+        assert request_args[1].endswith("user_management/magic_auth/send")
         assert request["json"]["email"] == email
         assert response is None
 
@@ -1066,21 +1096,25 @@ class TestUserManagement(object):
         assert dict_auth_factors["metadata"]["params"]["user_id"] == "user_12345"
 
     def test_get_invitation(self, mock_invitation, capture_and_mock_request):
-        url, request_kwargs = capture_and_mock_request("get", mock_invitation, 200)
+        request_args, request_kwargs = capture_and_mock_request(
+            "get", mock_invitation, 200
+        )
 
         invitation = self.user_management.get_invitation("invitation_ABCDE")
 
-        assert url[0].endswith("user_management/invitations/invitation_ABCDE")
+        assert request_args[1].endswith("user_management/invitations/invitation_ABCDE")
         assert invitation["id"] == "invitation_ABCDE"
 
     def test_find_invitation_by_token(self, mock_invitation, capture_and_mock_request):
-        url, request_kwargs = capture_and_mock_request("get", mock_invitation, 200)
+        request_args, request_kwargs = capture_and_mock_request(
+            "get", mock_invitation, 200
+        )
 
         invitation = self.user_management.find_invitation_by_token(
             "Z1uX3RbwcIl5fIGJJJCXXisdI"
         )
 
-        assert url[0].endswith(
+        assert request_args[1].endswith(
             "user_management/invitations/by_token/Z1uX3RbwcIl5fIGJJJCXXisdI"
         )
         assert invitation["token"] == "Z1uX3RbwcIl5fIGJJJCXXisdI"
@@ -1102,19 +1136,21 @@ class TestUserManagement(object):
     def test_send_invitation(self, capture_and_mock_request, mock_invitation):
         email = "marcelina@foo-corp.com"
         organization_id = "org_12345"
-        url, _ = capture_and_mock_request("post", mock_invitation, 201)
+        request_args, _ = capture_and_mock_request("post", mock_invitation, 201)
 
         invitation = self.user_management.send_invitation(
             email=email, organization_id=organization_id
         )
 
-        assert url[0].endswith("user_management/invitations")
+        assert request_args[1].endswith("user_management/invitations")
         assert invitation["email"] == email
         assert invitation["organization_id"] == organization_id
 
     def test_revoke_invitation(self, capture_and_mock_request, mock_invitation):
-        url, _ = capture_and_mock_request("post", mock_invitation, 200)
+        request_args, _ = capture_and_mock_request("post", mock_invitation, 200)
 
-        user = self.user_management.revoke_invitation("invitation_ABCDE")
+        self.user_management.revoke_invitation("invitation_ABCDE")
 
-        assert url[0].endswith("user_management/invitations/invitation_ABCDE/revoke")
+        assert request_args[1].endswith(
+            "user_management/invitations/invitation_ABCDE/revoke"
+        )

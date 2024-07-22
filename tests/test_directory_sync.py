@@ -59,29 +59,7 @@ class TestDirectorySync(object):
         }
 
     @pytest.fixture
-    def mock_default_limit_groups_v2(self):
-        group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(10)]
-
-        return {
-            "data": group_list,
-            "list_metadata": {"before": None, "after": "xxx"},
-            "metadata": {
-                "params": {
-                    "domain": None,
-                    "organization_id": None,
-                    "search": None,
-                    "limit": 10,
-                    "before": None,
-                    "after": None,
-                    "order": None,
-                    "default_limit": True,
-                },
-                "method": DirectorySync.list_groups,
-            },
-        }
-
-    @pytest.fixture
-    def mock_groups_pagination_reponse(self):
+    def mock_groups_pagination_response(self):
         group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(40)]
         return list_response_of(data=group_list)
 
@@ -153,49 +131,6 @@ class TestDirectorySync(object):
                     "before": None,
                     "after": None,
                     "order": None,
-                },
-                "method": DirectorySync.list_directories,
-            },
-        }
-
-    @pytest.fixture
-    def mock_directories_with_limit_v2(self):
-        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(4)]
-
-        return {
-            "data": directory_list,
-            "list_metadata": {"before": None, "after": None},
-            "metadata": {
-                "params": {
-                    "domain": None,
-                    "organization_id": None,
-                    "search": None,
-                    "limit": 4,
-                    "before": None,
-                    "after": None,
-                    "order": None,
-                },
-                "method": DirectorySync.list_directories,
-            },
-        }
-
-    @pytest.fixture
-    def mock_default_limit_directories_v2(self):
-        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(10)]
-
-        return {
-            "data": directory_list,
-            "list_metadata": {"before": None, "after": "directory_id_xx"},
-            "metadata": {
-                "params": {
-                    "domain": None,
-                    "organization_id": None,
-                    "search": None,
-                    "limit": 10,
-                    "before": None,
-                    "after": None,
-                    "order": None,
-                    "default_limit": True,
                 },
                 "method": DirectorySync.list_directories,
             },
@@ -353,10 +288,10 @@ class TestDirectorySync(object):
         self,
         mock_groups,
         mock_default_limit_groups,
-        mock_groups_pagination_reponse,
+        mock_groups_pagination_response,
         mock_request_method,
     ):
-        mock_request_method("get", mock_groups_pagination_reponse, 200)
+        mock_request_method("get", mock_groups_pagination_response, 200)
 
         groups = self.directory_sync.list_groups()
         all_groups = []

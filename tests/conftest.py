@@ -87,7 +87,7 @@ def mock_pagination_request(monkeypatch):
     # Mocking pagination correctly requires us to index into a list of data
     # and correctly set the before and after metadata in the response.
     def inner(method, data_list, status_code, headers=None):
-        # For convenient index lookip, store the list of object IDs.
+        # For convenient index lookup, store the list of object IDs.
         data_ids = list(map(lambda x: x["id"], data_list))
 
         def mock(*args, **kwargs):

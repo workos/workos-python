@@ -1,3 +1,5 @@
+from platform import python_version
+
 import httpx
 import pytest
 from unittest.mock import AsyncMock
@@ -34,7 +36,7 @@ class TestAsyncHTTPClient(object):
                 {
                     "accept": "application/json",
                     "content-type": "application/json",
-                    "user-agent": "WorkOS Python/3.8.18 Python SDK/test",
+                    "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
                     "authorization": "Bearer test",
                 }
             ),
@@ -57,7 +59,7 @@ class TestAsyncHTTPClient(object):
                 {
                     "accept": "application/json",
                     "content-type": "application/json",
-                    "user-agent": "WorkOS Python/3.8.18 Python SDK/test",
+                    "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
                     "authorization": "Bearer test",
                 }
             ),
@@ -80,7 +82,7 @@ class TestAsyncHTTPClient(object):
                 {
                     "accept": "application/json",
                     "content-type": "application/json",
-                    "user-agent": "WorkOS Python/3.8.18 Python SDK/test",
+                    "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
                     "authorization": "Bearer test",
                 }
             ),
@@ -103,7 +105,7 @@ class TestAsyncHTTPClient(object):
                 {
                     "accept": "application/json",
                     "content-type": "application/json",
-                    "user-agent": "WorkOS Python/3.8.18 Python SDK/test",
+                    "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
                     "authorization": "Bearer test",
                 }
             ),
@@ -126,7 +128,7 @@ class TestAsyncHTTPClient(object):
                 {
                     "accept": "application/json",
                     "content-type": "application/json",
-                    "user-agent": "WorkOS Python/3.8.18 Python SDK/test",
+                    "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
                     "authorization": "Bearer test",
                 }
             ),

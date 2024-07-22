@@ -26,20 +26,9 @@ class TestDirectorySync(object):
         }
 
     @pytest.fixture
-    def mock_users_pagination_response(self):
-        user_list = [MockDirectoryUser(id=str(i)).to_dict() for i in range(40)]
-
-        return list_response_of(data=user_list)
-
-    @pytest.fixture
     def mock_groups(self):
         group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(20)]
         return list_response_of(data=group_list, after="xxx")
-
-    @pytest.fixture
-    def mock_groups_pagination_response(self):
-        group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(40)]
-        return list_response_of(data=group_list)
 
     @pytest.fixture
     def mock_user_primary_email(self):
@@ -91,32 +80,6 @@ class TestDirectorySync(object):
     @pytest.fixture
     def mock_directories(self):
         directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(20)]
-        return list_response_of(data=directory_list)
-
-    @pytest.fixture
-    def mock_directories_with_limit(self):
-        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(4)]
-
-        return {
-            "data": directory_list,
-            "list_metadata": {"before": None, "after": None},
-            "metadata": {
-                "params": {
-                    "domain": None,
-                    "organization_id": None,
-                    "search": None,
-                    "limit": 4,
-                    "before": None,
-                    "after": None,
-                    "order": None,
-                },
-                "method": DirectorySync.list_directories,
-            },
-        }
-
-    @pytest.fixture
-    def mock_directories_pagination_response(self):
-        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(40)]
         return list_response_of(data=directory_list)
 
     @pytest.fixture

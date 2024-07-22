@@ -2,7 +2,7 @@ import platform
 from typing import (
     Generic,
     TypeVar,
-    Tuple,
+    TypedDict,
     Union,
 )
 
@@ -15,13 +15,22 @@ from workos.exceptions import (
     NotFoundException,
     BadRequestException,
 )
-from workos.utils.request import REQUEST_METHOD_GET
+from workos.utils.request import REQUEST_METHOD_DELETE, REQUEST_METHOD_GET
 
 
 _HttpxClientT = TypeVar("_HttpxClientT", bound=Union[httpx.Client, httpx.AsyncClient])
 
 
 DEFAULT_REQUEST_TIMEOUT = 25
+
+
+class PreparedRequest(TypedDict):
+    method: str
+    url: str
+    headers: httpx.Headers
+    params: dict
+    json: dict
+    timeout: int
 
 
 class BaseHTTPClient(Generic[_HttpxClientT]):
@@ -85,7 +94,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         params: dict = None,
         headers: dict = None,
         token: str = None,
-    ) -> Tuple[str, httpx.Headers, dict, _HttpxClientT]:
+    ) -> PreparedRequest:
         """Executes a request against the WorkOS API.
 
         Args:
@@ -101,15 +110,36 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         """
         url = self._generate_api_url(path)
         headers = self._build_headers(headers, token)
-        # Remove any parameters that are None
-        params = (
-            {k: v for k, v in params.items() if v is not None}
-            if method == REQUEST_METHOD_GET
-            else params
-        )
+        bodyless_http_method = method.lower() in [
+            REQUEST_METHOD_DELETE,
+            REQUEST_METHOD_GET,
+        ]
 
-        request_fn = getattr(self._client, method)
-        return url, headers, params, request_fn
+        # Remove any parameters that are None
+        if params is not None:
+            params = (
+                {k: v for k, v in params.items() if v is not None}
+                if bodyless_http_method
+                else params
+            )
+
+        # We'll spread these return values onto the HTTP client request method
+        if bodyless_http_method:
+            return {
+                "method": method,
+                "url": url,
+                "headers": headers,
+                "params": params,
+                "timeout": self.timeout,
+            }
+        else:
+            return {
+                "method": method,
+                "url": url,
+                "headers": headers,
+                "json": params,
+                "timeout": self.timeout,
+            }
 
     def _handle_response(self, response: httpx.Response) -> dict:
         response_json = None

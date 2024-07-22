@@ -37,6 +37,7 @@ setup(
         "dev": [
             "flake8",
             "pytest==8.1.1",
+            "pytest-asyncio==0.23.8",
             "pytest-cov==2.8.1",
             "six==1.13.0",
             "black==22.3.0",

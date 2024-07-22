@@ -1,15 +1,6 @@
-from workos.audit_logs import AuditLogs
-from workos.directory_sync import DirectorySync
-from workos.organizations import Organizations
-from workos.passwordless import Passwordless
-from workos.portal import Portal
-from workos.sso import SSO
-from workos.webhooks import Webhooks
-from workos.mfa import Mfa
 from workos.events import AsyncEvents
-from workos.user_management import UserManagement
 
-from workos.utils.async_http_client import AsyncHTTPClient
+from workos.utils.http_client import AsyncHTTPClient
 
 
 class AsyncClient(object):

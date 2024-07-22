@@ -8,7 +8,7 @@ from workos.webhooks import Webhooks
 from workos.mfa import Mfa
 from workos.events import Events
 from workos.user_management import UserManagement
-from workos.utils.sync_http_client import SyncHTTPClient
+from workos.utils.http_client import SyncHTTPClient
 
 
 class SyncClient(object):

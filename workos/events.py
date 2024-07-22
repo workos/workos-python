@@ -1,9 +1,10 @@
+from typing import List
+
 import workos
 from workos.utils.request import (
     REQUEST_METHOD_GET,
 )
-from workos.utils.async_http_client import AsyncHTTPClient
-from workos.utils.sync_http_client import SyncHTTPClient
+from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.validation import EVENTS_MODULE, validate_settings
 from workos.resources.list import WorkOSListResource
 
@@ -21,7 +22,8 @@ class Events(WorkOSListResource):
 
     def list_events(
         self,
-        events=None,
+        # TODO: Use event Literal type when available
+        events: List[str],
         limit=None,
         organization_id=None,
         after=None,
@@ -136,7 +138,7 @@ class AsyncEvents(WorkOSListResource):
 
         response["metadata"] = {
             "params": params,
-            "method": Events.list_events,
+            "method": AsyncEvents.list_events,
         }
 
         return response

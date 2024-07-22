@@ -49,7 +49,6 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organizations_single_page_response(self):
-        print("Retyrning single page response")
         organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(10)]
         return {
             "data": organization_list,

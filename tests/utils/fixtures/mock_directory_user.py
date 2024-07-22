@@ -4,6 +4,7 @@ from workos.resources.base import WorkOSBaseResource
 
 class MockDirectoryUser(WorkOSBaseResource):
     def __init__(self, id):
+        now = datetime.datetime.now().isoformat()
         self.id = id
         self.idp_id = "idp_id_" + id
         self.directory_id = "directory_id"
@@ -12,14 +13,14 @@ class MockDirectoryUser(WorkOSBaseResource):
         self.last_name = "fried chicken"
         self.job_title = "developer"
         self.emails = [
-            {"primary": "true", "type": "work", "value": "marcelina@foo-corp.com"}
+            {"primary": True, "type": "work", "value": "marcelina@foo-corp.com"}
         ]
         self.username = None
-        self.groups = None
-        self.state = None
-        self.created_at = datetime.datetime.now()
-        self.updated_at = datetime.datetime.now()
-        self.custom_attributes = None
+        self.groups = []
+        self.state = "active"
+        self.created_at = now
+        self.updated_at = now
+        self.custom_attributes = {}
         self.raw_attributes = {
             "schemas": ["urn:scim:schemas:core:1.0"],
             "name": {"familyName": "Seri", "givenName": "Marcelina"},

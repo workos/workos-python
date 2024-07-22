@@ -1,5 +1,4 @@
 import asyncio
-from typing_extensions import Self
 
 import httpx
 
@@ -53,7 +52,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         if hasattr(self, "_client"):
             self._client.close()
 
-    def __enter__(self) -> Self:
+    def __enter__(self):
         return self
 
     def __exit__(
@@ -135,7 +134,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         """
         await self._client.aclose()
 
-    async def __aenter__(self) -> Self:
+    async def __aenter__(self):
         return self
 
     async def __aexit__(

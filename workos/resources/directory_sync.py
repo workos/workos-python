@@ -46,9 +46,6 @@ class Directory(WorkOSModel):
     domain: Optional[str] = None
     name: str
     organization_id: str
-    # Toying around with the differences in type hinting or deserialization for enums vs literals. In the end pretty equivalent,
-    # it's a question of whether we want to present strings or DirectoryState.ACTIVE to the user
-    # leaving both options here for now until we settle on a preference
     state: LiteralOrUntyped[DirectoryState]
     type: LiteralOrUntyped[DirectoryType]
     created_at: str

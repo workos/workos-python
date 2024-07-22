@@ -13,8 +13,6 @@ from workos.typing.untyped_literal import UntypedLiteral
 
 EnumType = TypeVar("EnumType", bound=Enum)
 
-# Identical to the literal or strings path, except meant for a literal of enum values.
-
 
 def convert_unknown_enum_to_untyped_literal(
     value: Any, handler: ValidatorFunctionWrapHandler, info: ValidationInfo

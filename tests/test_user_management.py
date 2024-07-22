@@ -1,5 +1,5 @@
 import json
-from six.moves.urllib.parse import parse_qsl, urlparse, parse_qs
+from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
 import workos
 

@@ -1,5 +1,4 @@
-from typing import Optional, Protocol
-
+from typing import Optional, TypedDict, Union, Protocol
 import workos
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
@@ -18,6 +17,21 @@ from workos.resources.list import ListArgs, ListPage, WorkOsListResource
 
 
 RESPONSE_LIMIT = 10
+DirectoryListFilters = TypedDict(
+    "DirectoryListFilters",
+    {"search": Optional[str], "organization": Optional[str], "domain": Optional[str]},
+    total=False,
+)
+DirectoryUserListFilters = TypedDict(
+    "DirectoryUserListFilters",
+    {"group": Optional[str], "directory": Optional[str]},
+    total=False,
+)
+DirectoryGroupListFilters = TypedDict(
+    "DirectoryGroupListFilters",
+    {"user": Optional[str], "directory": Optional[str]},
+    total=False,
+)
 
 
 class DirectorySyncModule(Protocol):
@@ -29,8 +43,7 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[DirectoryUser]:
-        ...
+    ) -> WorkOsListResource[DirectoryUser]: ...
 
     def list_groups(
         self,
@@ -40,17 +53,13 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[DirectoryGroup]:
-        ...
+    ) -> WorkOsListResource[DirectoryGroup]: ...
 
-    def get_user(self, user: str) -> DirectoryUser:
-        ...
+    def get_user(self, user: str) -> DirectoryUser: ...
 
-    def get_group(self, group: str) -> DirectoryGroup:
-        ...
+    def get_group(self, group: str) -> DirectoryGroup: ...
 
-    def get_directory(self, directory: str) -> Directory:
-        ...
+    def get_directory(self, directory: str) -> Directory: ...
 
     def list_directories(
         self,
@@ -61,11 +70,9 @@ class DirectorySyncModule(Protocol):
         after: Optional[str] = None,
         organization: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Directory]:
-        ...
+    ) -> WorkOsListResource[Directory]: ...
 
-    def delete_directory(self, directory: str) -> None:
-        ...
+    def delete_directory(self, directory: str) -> None: ...
 
 
 class DirectorySync(DirectorySyncModule):
@@ -89,7 +96,7 @@ class DirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[DirectoryUser]:
+    ) -> WorkOsListResource[DirectoryUser, DirectoryUserListFilters]:
         """Gets a list of provisioned Users for a Directory.
 
         Note, either 'directory' or 'group' must be provided.
@@ -106,30 +113,31 @@ class DirectorySync(DirectorySyncModule):
             dict: Directory Users response from WorkOS.
         """
 
-        params = {
+        list_params: ListArgs = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
         }
 
+        filter_params: DirectoryUserListFilters = {}
         if group is not None:
-            params["group"] = group
+            filter_params["group"] = group
         if directory is not None:
-            params["directory"] = directory
+            filter_params["directory"] = directory
 
         response = self.request_helper.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
-            params=params,
+            params={**list_params, **filter_params},
             token=workos.api_key,
         )
 
         return WorkOsListResource(
             list_method=self.list_users,
-            # TODO: Should we even bother with this validation?
-            list_args=ListArgs.model_validate(params),
-            **ListPage[DirectoryUser](**response).model_dump()
+            list_args=list_params,
+            filter_params=filter_params,
+            **ListPage[DirectoryUser](**response).model_dump(),
         )
 
     def list_groups(
@@ -140,7 +148,7 @@ class DirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[DirectoryGroup]:
+    ) -> WorkOsListResource[DirectoryGroup, DirectoryGroupListFilters]:
         """Gets a list of provisioned Groups for a Directory .
 
         Note, either 'directory' or 'user' must be provided.
@@ -156,29 +164,30 @@ class DirectorySync(DirectorySyncModule):
         Returns:
             dict: Directory Groups response from WorkOS.
         """
-        params = {
+        list_params: ListArgs = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
         }
+        filter_params: DirectoryGroupListFilters = {}
         if user is not None:
-            params["user"] = user
+            filter_params["user"] = user
         if directory is not None:
-            params["directory"] = directory
+            filter_params["directory"] = directory
 
         response = self.request_helper.request(
             "directory_groups",
             method=REQUEST_METHOD_GET,
-            params=params,
+            params={**list_params, **filter_params},
             token=workos.api_key,
         )
 
         return WorkOsListResource(
             list_method=self.list_groups,
-            # TODO: Should we even bother with this validation?
-            list_args=ListArgs.model_validate(params),
-            **ListPage[DirectoryGroup](**response).model_dump()
+            list_args=list_params,
+            filter_params=filter_params,
+            **ListPage[DirectoryGroup](**response).model_dump(),
         )
 
     def get_user(self, user: str):
@@ -242,7 +251,7 @@ class DirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         organization: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Directory]:
+    ) -> WorkOsListResource[Directory, DirectoryListFilters]:
         """Gets details for existing Directories.
 
         Args:
@@ -258,27 +267,28 @@ class DirectorySync(DirectorySyncModule):
             dict: Directories response from WorkOS.
         """
 
-        params = {
-            "domain": domain,
-            "organization": organization,
-            "search": search,
+        list_params: ListArgs = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
         }
-
+        filter_params: DirectoryListFilters = {
+            "domain": domain,
+            "search": search,
+            "organization": organization,
+        }
         response = self.request_helper.request(
             "directories",
             method=REQUEST_METHOD_GET,
-            params=params,
+            params={**list_params, **filter_params},
             token=workos.api_key,
         )
         return WorkOsListResource(
             list_method=self.list_directories,
-            # TODO: Should we even bother with this validation?
-            list_args=ListArgs.model_validate(params),
-            **ListPage[Directory](**response).model_dump()
+            list_args=list_params,
+            filter_params=filter_params,
+            **ListPage[Directory](**response).model_dump(),
         )
 
     def delete_directory(self, directory: str):

@@ -1,5 +1,4 @@
-from typing import List, Optional, Protocol
-
+from typing import List, Optional, TypedDict, Union, Protocol
 import workos
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
@@ -18,6 +17,11 @@ from workos.resources.list import ListPage, WorkOsListResource, ListArgs
 
 ORGANIZATIONS_PATH = "organizations"
 RESPONSE_LIMIT = 10
+OrganizationListFilters = TypedDict(
+    "OrganizationListFilters",
+    {"domains": Optional[List[str]]},
+    total=False,
+)
 
 
 class OrganizationsModule(Protocol):
@@ -28,33 +32,27 @@ class OrganizationsModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Organization]:
-        ...
+    ) -> WorkOsListResource[Organization]: ...
 
-    def get_organization(self, organization: str) -> Organization:
-        ...
+    def get_organization(self, organization: str) -> Organization: ...
 
-    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
-        ...
+    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization: ...
 
     def create_organization(
         self,
         name: str,
         domain_data: Optional[List[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
-    ) -> Organization:
-        ...
+    ) -> Organization: ...
 
     def update_organization(
         self,
         organization: str,
         name: str,
         domain_data: Optional[List[DomainDataInput]] = None,
-    ) -> Organization:
-        ...
+    ) -> Organization: ...
 
-    def delete_organization(self, organization: str) -> None:
-        ...
+    def delete_organization(self, organization: str) -> None: ...
 
 
 class Organizations(OrganizationsModule):
@@ -75,7 +73,7 @@ class Organizations(OrganizationsModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Organization]:
+    ) -> WorkOsListResource[Organization, OrganizationListFilters]:
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
         Kwargs:
@@ -89,25 +87,26 @@ class Organizations(OrganizationsModule):
             dict: Organizations response from WorkOS.
         """
 
-        params = {
-            "domains": domains,
+        list_params: ListArgs = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
         }
 
+        filter_params: OrganizationListFilters = {"domains": domains}
+
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,
-            params=params,
+            params={**list_params, **filter_params},
             token=workos.api_key,
         )
 
-        return WorkOsListResource[Organization](
+        return WorkOsListResource[Organization, OrganizationListFilters](
             list_method=self.list_organizations,
-            # TODO: Should we even bother with this validation?
-            list_args=ListArgs.model_validate(params),
+            list_args=list_params,
+            filter_params=filter_params,
             **ListPage[Organization](**response).model_dump()
         )
 

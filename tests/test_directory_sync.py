@@ -37,28 +37,6 @@ class TestDirectorySync(object):
         return list_response_of(data=group_list, after="xxx")
 
     @pytest.fixture
-    def mock_default_limit_groups(self):
-        group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(10)]
-
-        return {
-            "data": group_list,
-            "list_metadata": {"before": None, "after": "xxx"},
-            "metadata": {
-                "params": {
-                    "domain": None,
-                    "organization_id": None,
-                    "search": None,
-                    "limit": 10,
-                    "before": None,
-                    "after": None,
-                    "order": None,
-                    "default_limit": True,
-                },
-                "method": DirectorySync.list_groups,
-            },
-        }
-
-    @pytest.fixture
     def mock_groups_pagination_response(self):
         group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(40)]
         return list_response_of(data=group_list)
@@ -142,8 +120,22 @@ class TestDirectorySync(object):
         return list_response_of(data=directory_list)
 
     @pytest.fixture
+    def mock_directory_users_multiple_data_pages(self):
+        return [
+            MockDirectoryUser(id=str(f"directory_user_{i}")).to_dict()
+            for i in range(40)
+        ]
+
+    @pytest.fixture
     def mock_directories_multiple_data_pages(self):
         return [MockDirectory(id=str(f"dir_{i}")).to_dict() for i in range(40)]
+
+    @pytest.fixture
+    def mock_directory_groups_multiple_data_pages(self):
+        return [
+            MockDirectoryGroup(id=str(f"directory_group_{i}")).to_dict()
+            for i in range(40)
+        ]
 
     @pytest.fixture
     def mock_directory(self):
@@ -242,76 +234,64 @@ class TestDirectorySync(object):
 
     def test_list_directories_auto_pagination(
         self,
-        mock_directories_pagination_response,
-        mock_directories,
-        mock_request_method,
+        mock_directories_multiple_data_pages,
+        mock_pagination_request,
     ):
-        mock_request_method("get", mock_directories_pagination_response, 200)
+        mock_pagination_request("get", mock_directories_multiple_data_pages, 200)
 
         directories = self.directory_sync.list_directories()
         all_directories = []
-        # TODO: this is the same approach the the organizations test takes, but it's wrong.
-        # this doesn't actually test that the iterator makes multiple requests for consecutive pages
-        # of data. This test needs to be reworked to return multiple responses to properly test the
-        # auto_paging_iter.
+
         for directory in directories.auto_paging_iter():
             all_directories.append(directory)
 
-        assert len(list(all_directories)) == 40
-
-        for i, dir in enumerate(all_directories):
-            assert dir.id == str(i)
+        assert len(list(all_directories)) == len(mock_directories_multiple_data_pages)
+        assert (
+            list_data_to_dicts(all_directories)
+        ) == mock_directories_multiple_data_pages
 
     def test_directory_users_auto_pagination(
         self,
-        mock_users,
-        mock_users_pagination_response,
-        mock_request_method,
+        mock_directory_users_multiple_data_pages,
+        mock_pagination_request,
     ):
-        mock_request_method("get", mock_users_pagination_response, 200)
+        mock_pagination_request("get", mock_directory_users_multiple_data_pages, 200)
 
         users = self.directory_sync.list_users()
         all_users = []
-        # TODO: this is the same approach the the organizations test takes, but it's wrong.
-        # this doesn't actually test that the iterator makes multiple requests for consecutive pages
-        # of data. This test needs to be reworked to return multiple responses to properly test the
-        # auto_paging_iter.
+
         for user in users.auto_paging_iter():
             all_users.append(user)
 
-        assert len(list(all_users)) == 40
-
-        for i, user in enumerate(all_users):
-            assert user.id == str(i)
+        assert len(list(all_users)) == len(mock_directory_users_multiple_data_pages)
+        assert (
+            list_data_to_dicts(all_users)
+        ) == mock_directory_users_multiple_data_pages
 
     def test_directory_user_groups_auto_pagination(
         self,
-        mock_groups,
-        mock_default_limit_groups,
-        mock_groups_pagination_response,
-        mock_request_method,
+        mock_directory_groups_multiple_data_pages,
+        mock_pagination_request,
     ):
-        mock_request_method("get", mock_groups_pagination_response, 200)
+        mock_pagination_request("get", mock_directory_groups_multiple_data_pages, 200)
 
         groups = self.directory_sync.list_groups()
         all_groups = []
-        # TODO: this is the same approach the the organizations test takes, but it's wrong.
-        # this doesn't actually test that the iterator makes multiple requests for consecutive pages
-        # of data. This test needs to be reworked to return multiple responses to properly test the
-        # auto_paging_iter.
+
         for group in groups.auto_paging_iter():
             all_groups.append(group)
 
-        assert len(list(all_groups)) == 40
-
-        for i, group in enumerate(all_groups):
-            assert group.id == str(i)
+        assert len(list(all_groups)) == len(mock_directory_groups_multiple_data_pages)
+        assert (
+            list_data_to_dicts(all_groups)
+        ) == mock_directory_groups_multiple_data_pages
 
     def test_auto_pagination_honors_limit(
         self,
         mock_directories_multiple_data_pages,
         mock_pagination_request,
     ):
+        # TODO: This does not actually test anything about the limit.
         mock_pagination_request("get", mock_directories_multiple_data_pages, 200)
 
         directories = self.directory_sync.list_directories()

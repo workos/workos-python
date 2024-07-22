@@ -71,7 +71,6 @@ class DirectoryGroup(WorkOSModel):
     raw_attributes: dict
     created_at: str
     updated_at: str
-    raw_attributes: dict
 
 
 class DirectoryUserEmail(WorkOSModel):

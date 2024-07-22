@@ -109,8 +109,14 @@ class WorkOSListResource(WorkOSBaseResource):
                 data = []
 
 
-# add all possible generics of List Resource
-T = TypeVar("T", Organization, Directory, DirectoryGroup, DirectoryUser)
+ListableResource = TypeVar(
+    # add all possible generics of List Resource
+    "ListableResource",
+    Organization,
+    Directory,
+    DirectoryGroup,
+    DirectoryUser,
+)
 
 
 class ListMetadata(BaseModel):
@@ -118,9 +124,9 @@ class ListMetadata(BaseModel):
     before: Optional[str] = None
 
 
-class ListPage(BaseModel, Generic[T]):
+class ListPage(BaseModel, Generic[ListableResource]):
     object: Literal["list"]
-    data: List[T]
+    data: List[ListableResource]
     list_metadata: ListMetadata
 
 
@@ -134,17 +140,17 @@ class ListArgs(BaseModel, extra="allow"):
         extra = "allow"
 
 
-class WorkOsListResource(BaseModel, Generic[T]):
+class WorkOsListResource(BaseModel, Generic[ListableResource]):
     object: Literal["list"]
-    data: List[T]
+    data: List[ListableResource]
     list_metadata: ListMetadata
 
     # These fields end up exposed in the types. Does we care?
     list_method: Callable = Field(exclude=True)
     list_args: ListArgs = Field(exclude=True)
 
-    def auto_paging_iter(self) -> Iterator[T]:
-        next_page: WorkOsListResource[T]
+    def auto_paging_iter(self) -> Iterator[ListableResource]:
+        next_page: WorkOsListResource[ListableResource]
 
         after = self.list_metadata.after
         order = self.list_args.order

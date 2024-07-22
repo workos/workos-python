@@ -1,7 +1,5 @@
 from typing import List, Optional, Literal
-from enum import Enum
 from workos.resources.workos_model import WorkOSModel
-from workos.typing.enums import EnumOrUntyped
 from workos.typing.literals import LiteralOrUntyped
 
 DirectoryState = Literal[

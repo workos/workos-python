@@ -5,7 +5,7 @@ from workos.resources.workos_model import WorkOSModel
 class OrganizationDomain(WorkOSModel):
     id: str
     organization_id: str
-    object: Literal["organization"]
+    object: Literal["organization_domain"]
     verification_strategy: Literal["manual", "dns"]
     state: Literal["failed", "pending", "legacy_verified", "verified"]
     domain: str

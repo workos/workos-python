@@ -6,8 +6,8 @@ from typing import (
     Callable,
     Iterator,
     Optional,
-    TypedDict,
 )
+from typing_extensions import TypedDict
 from workos.resources.base import WorkOSBaseResource
 from workos.resources.directory_sync import Directory, DirectoryGroup, DirectoryUser
 from workos.resources.organizations import Organization

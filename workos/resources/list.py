@@ -1,7 +1,5 @@
-from abc import abstractmethod
 from typing import (
     List,
-    Any,
     Literal,
     TypeVar,
     Generic,
@@ -9,17 +7,16 @@ from typing import (
     Iterator,
     Optional,
 )
-
+from typing_extensions import TypedDict
 from workos.resources.base import WorkOSBaseResource
 from workos.resources.directory_sync import Directory, DirectoryGroup, DirectoryUser
 from workos.resources.organizations import Organization
-
-from pydantic import BaseModel, Extra, Field
-
-# TODO: THIS OLD RESOURCE GOES AWAY
+from pydantic import BaseModel, Field
+from workos.resources.workos_model import WorkOSModel
 
 
 class WorkOSListResource(WorkOSBaseResource):
+    # TODO: THIS OLD RESOURCE GOES AWAY
     """Representation of a WorkOS List Resource as returned through the API.
 
     Attributes:
@@ -124,44 +121,49 @@ class ListMetadata(BaseModel):
     before: Optional[str] = None
 
 
-class ListPage(BaseModel, Generic[ListableResource]):
+class ListPage(WorkOSModel, Generic[ListableResource]):
     object: Literal["list"]
     data: List[ListableResource]
     list_metadata: ListMetadata
 
 
-class ListArgs(BaseModel, extra="allow"):
-    limit: Optional[int] = 10
-    before: Optional[str] = None
-    after: Optional[str] = None
-    order: Literal["asc", "desc"] = "desc"
-
-    class Config:
-        extra = "allow"
+class ListArgs(TypedDict):
+    limit: int
+    before: Optional[str]
+    after: Optional[str]
+    order: Literal["asc", "desc"]
 
 
-class WorkOsListResource(BaseModel, Generic[ListableResource]):
+ListAndFilterParams = TypeVar("ListAndFilterParams", bound=ListArgs)
+
+
+class WorkOsListResource(
+    WorkOSModel,
+    Generic[ListableResource, ListAndFilterParams],
+):
     object: Literal["list"]
     data: List[ListableResource]
     list_metadata: ListMetadata
 
-    # These fields end up exposed in the types. Does we care?
     list_method: Callable = Field(exclude=True)
-    list_args: ListArgs = Field(exclude=True)
+    list_args: ListAndFilterParams = Field(exclude=True)
 
     def auto_paging_iter(self) -> Iterator[ListableResource]:
-        next_page: WorkOsListResource[ListableResource]
+        next_page: WorkOsListResource[ListableResource, ListAndFilterParams]
 
         after = self.list_metadata.after
-        order = self.list_args.order
 
-        fixed_pagination_params = {"order": order, "limit": self.list_args.limit}
-        filter_params = self.list_args.model_dump(
-            exclude={"after", "before", "order", "limit"}
-        )
-
+        fixed_pagination_params = {
+            "order": self.list_args["order"],
+            "limit": self.list_args["limit"],
+        }
+        # Omit common list parameters
+        filter_params = {
+            k: v
+            for k, v in self.list_args.items()
+            if k not in {"order", "limit", "before", "after"}
+        }
         index: int = 0
-
         while True:
             if index >= len(self.data):
                 if after is not None:

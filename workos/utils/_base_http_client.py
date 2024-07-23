@@ -31,8 +31,8 @@ class PreparedRequest(TypedDict):
     method: str
     url: str
     headers: httpx.Headers
-    params: Optional[dict]
-    json: Optional[dict]
+    params: Union[dict, None]
+    json: Union[dict, None]
     timeout: int
 
 
@@ -46,7 +46,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         *,
         base_url: str,
         version: str,
-        timeout: int = DEFAULT_REQUEST_TIMEOUT,
+        timeout: Optional[int] = DEFAULT_REQUEST_TIMEOUT,
     ) -> None:
         self.base_url = base_url
         self._version = version
@@ -71,7 +71,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         return httpx.Headers({**self.default_headers, **custom_headers})
 
     def _maybe_raise_error_by_status_code(
-        self, response: httpx.Response, response_json: Union[Any, None]
+        self, response: httpx.Response, response_json: Union[dict, None]
     ) -> None:
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:
@@ -82,8 +82,16 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             elif status_code == 404:
                 raise NotFoundException(response)
 
-            error = response_json.get("error")
-            error_description = response_json.get("error_description")
+            error = (
+                response_json.get("error")
+                if response_json and "error" in response_json
+                else "Unknown"
+            )
+            error_description = (
+                response_json.get("error_description")
+                if response_json and "error_description" in response_json
+                else "Unknown"
+            )
             raise BadRequestException(
                 response, error=error, error_description=error_description
             )
@@ -158,6 +166,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             except ValueError:
                 raise ServerException(response)
 
+        # type: ignore
         self._maybe_raise_error_by_status_code(response, response_json)
 
         return response_json

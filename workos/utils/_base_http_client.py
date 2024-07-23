@@ -1,6 +1,6 @@
 import platform
 from typing import (
-    Any,
+    cast,
     Dict,
     Generic,
     Optional,
@@ -8,6 +8,7 @@ from typing import (
     TypedDict,
     Union,
 )
+from typing_extensions import NotRequired
 
 import httpx
 
@@ -31,8 +32,8 @@ class PreparedRequest(TypedDict):
     method: str
     url: str
     headers: httpx.Headers
-    params: Union[dict, None]
-    json: Union[dict, None]
+    params: NotRequired[Union[Dict, None]]
+    json: NotRequired[Union[Dict, None]]
     timeout: int
 
 
@@ -40,6 +41,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     _client: _HttpxClientT
     _base_url: str
     _version: str
+    _timeout: int
 
     def __init__(
         self,
@@ -50,7 +52,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     ) -> None:
         self.base_url = base_url
         self._version = version
-        self._timeout = timeout
+        self._timeout = DEFAULT_REQUEST_TIMEOUT if timeout is None else timeout
 
     def _enforce_trailing_slash(self, url: str) -> str:
         return url if url.endswith("/") else url + "/"
@@ -121,8 +123,9 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             dict: Response from WorkOS
         """
         url = self._generate_api_url(path)
-        headers = self._build_headers(headers, token)
-        bodyless_http_method = method.lower() in [
+        parsed_headers = self._build_headers(headers, token)
+        parsed_method = REQUEST_METHOD_GET if method is None else method
+        bodyless_http_method = parsed_method.lower() in [
             REQUEST_METHOD_DELETE,
             REQUEST_METHOD_GET,
         ]
@@ -138,17 +141,17 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         # We'll spread these return values onto the HTTP client request method
         if bodyless_http_method:
             return {
-                "method": method,
+                "method": parsed_method,
                 "url": url,
-                "headers": headers,
+                "headers": parsed_headers,
                 "params": params,
                 "timeout": self.timeout,
             }
         else:
             return {
-                "method": method,
+                "method": parsed_method,
                 "url": url,
-                "headers": headers,
+                "headers": parsed_headers,
                 "json": params,
                 "timeout": self.timeout,
             }
@@ -169,7 +172,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         # type: ignore
         self._maybe_raise_error_by_status_code(response, response_json)
 
-        return response_json
+        return cast(Dict, response_json)
 
     @property
     def base_url(self) -> str:

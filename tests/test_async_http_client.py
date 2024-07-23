@@ -62,7 +62,7 @@ class TestAsyncHTTPClient(object):
                 }
             ),
             params={"test_param": "test_value"},
-            timeout=None,
+            timeout=25,
         )
 
         assert response == expected_response
@@ -101,7 +101,7 @@ class TestAsyncHTTPClient(object):
                 }
             ),
             json={"test_param": "test_value"},
-            timeout=None,
+            timeout=25,
         )
 
         assert response == expected_response

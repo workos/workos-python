@@ -7,11 +7,9 @@ from workos.resources.passwordless import WorkOSPasswordlessSession
 
 
 class PasswordlessModule(Protocol):
-    def create_session(self, session_options: dict) -> dict:
-        ...
+    def create_session(self, session_options: dict) -> dict: ...
 
-    def send_session(self, session_id: str) -> Literal[True]:
-        ...
+    def send_session(self, session_id: str) -> Literal[True]: ...
 
 
 class Passwordless(PasswordlessModule):
@@ -59,7 +57,7 @@ class Passwordless(PasswordlessModule):
 
         return WorkOSPasswordlessSession.construct_from_response(response).to_dict()
 
-    def send_session(self, session_id: str) -> None:
+    def send_session(self, session_id: str) -> Literal[True]:
         """Send a Passwordless Session via email.
 
         Args:

@@ -1,4 +1,4 @@
-from typing import Coroutine, Dict, List, Optional, Protocol, Union
+from typing import Awaitable, List, Optional, Protocol, Union
 
 import workos
 from workos.utils.request import (
@@ -21,8 +21,7 @@ class EventsModule(Protocol):
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> Union[Dict, Coroutine[Dict]]:
-        ...
+    ) -> Union[dict, Awaitable[dict]]: ...
 
 
 class Events(EventsModule, WorkOSListResource):
@@ -43,7 +42,7 @@ class Events(EventsModule, WorkOSListResource):
         after=None,
         range_start=None,
         range_end=None,
-    ):
+    ) -> dict:
         """Gets a list of Events .
         Kwargs:
             events (list): Filter to only return events of particular types. (Optional)
@@ -110,7 +109,7 @@ class AsyncEvents(EventsModule, WorkOSListResource):
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> Coroutine[Dict]:
+    ) -> dict:
         """Gets a list of Events .
         Kwargs:
             events (list): Filter to only return events of particular types. (Optional)

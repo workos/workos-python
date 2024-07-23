@@ -61,7 +61,7 @@ class TestSyncHTTPClient(object):
                 }
             ),
             params={"test_param": "test_value"},
-            timeout=None,
+            timeout=25,
         )
 
         assert response == expected_response
@@ -99,7 +99,7 @@ class TestSyncHTTPClient(object):
                 }
             ),
             json={"test_param": "test_value"},
-            timeout=None,
+            timeout=25,
         )
 
         assert response == expected_response

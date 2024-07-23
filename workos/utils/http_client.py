@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional
+from typing import Awaitable, Optional
 
 import httpx
 
@@ -111,7 +111,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         base_url: str,
         version: str,
         timeout: Optional[int] = None,
-        transport: Optional[httpx.BaseTransport] = httpx.HTTPTransport(),
+        transport: Optional[httpx.AsyncBaseTransport] = httpx.AsyncHTTPTransport(),
     ) -> None:
         super().__init__(
             base_url=base_url,

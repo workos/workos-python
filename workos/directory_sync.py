@@ -47,7 +47,7 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[DirectoryUser]: ...
+    ) -> WorkOsListResource[DirectoryUser, DirectoryUserListFilters]: ...
 
     def list_groups(
         self,
@@ -57,7 +57,7 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[DirectoryGroup]: ...
+    ) -> WorkOsListResource[DirectoryGroup, DirectoryGroupListFilters]: ...
 
     def get_user(self, user: str) -> DirectoryUser: ...
 
@@ -74,7 +74,7 @@ class DirectorySyncModule(Protocol):
         after: Optional[str] = None,
         organization: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Directory]: ...
+    ) -> WorkOsListResource[Directory, DirectoryListFilters]: ...
 
     def delete_directory(self, directory: str) -> None: ...
 

@@ -1,4 +1,4 @@
-from typing import List, Protocol
+from typing import List, Optional, Protocol
 
 import workos
 from workos.utils.request import (
@@ -16,11 +16,11 @@ class EventsModule(Protocol):
         self,
         # TODO: Use event Literal type when available
         events: List[str],
-        limit=None,
-        organization_id=None,
-        after=None,
-        range_start=None,
-        range_end=None,
+        limit: Optional[int] = None,
+        organization_id: Optional[str] = None,
+        after: Optional[str] = None,
+        range_start: Optional[str] = None,
+        range_end: Optional[str] = None,
     ) -> dict:
         ...
 
@@ -103,12 +103,13 @@ class AsyncEvents(EventsModule, WorkOSListResource):
 
     async def list_events(
         self,
-        events=None,
-        limit=None,
-        organization_id=None,
-        after=None,
-        range_start=None,
-        range_end=None,
+        # TODO: Use event Literal type when available
+        events: List[str],
+        limit: Optional[int] = None,
+        organization_id: Optional[str] = None,
+        after: Optional[str] = None,
+        range_start: Optional[str] = None,
+        range_end: Optional[str] = None,
     ):
         """Gets a list of Events .
         Kwargs:

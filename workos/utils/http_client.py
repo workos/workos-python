@@ -1,4 +1,5 @@
 import asyncio
+from typing import Optional
 
 import httpx
 
@@ -24,8 +25,8 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         *,
         base_url: str,
         version: str,
-        timeout: int = None,
-        transport: httpx.BaseTransport = httpx.HTTPTransport(),
+        timeout: Optional[int] = None,
+        transport: Optional[httpx.BaseTransport] = httpx.HTTPTransport(),
     ) -> None:
         super().__init__(
             base_url=base_url,
@@ -66,10 +67,10 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
     def request(
         self,
         path: str,
-        method: str = REQUEST_METHOD_GET,
-        params: dict = None,
-        headers: dict = None,
-        token: str = None,
+        method: Optional[str] = REQUEST_METHOD_GET,
+        params: Optional[dict] = None,
+        headers: Optional[dict] = None,
+        token: Optional[str] = None,
     ) -> dict:
         """Executes a request against the WorkOS API.
 
@@ -109,8 +110,8 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         *,
         base_url: str,
         version: str,
-        timeout: int = None,
-        transport: httpx.BaseTransport = httpx.HTTPTransport(),
+        timeout: Optional[int] = None,
+        transport: Optional[httpx.BaseTransport] = httpx.HTTPTransport(),
     ) -> None:
         super().__init__(
             base_url=base_url,
@@ -148,10 +149,10 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
     async def request(
         self,
         path: str,
-        method: str = REQUEST_METHOD_GET,
-        params: dict = None,
-        headers: dict = None,
-        token: str = None,
+        method: Optional[str] = REQUEST_METHOD_GET,
+        params: Optional[dict] = None,
+        headers: Optional[dict] = None,
+        token: Optional[str] = None,
     ) -> dict:
         """Executes a request against the WorkOS API.
 

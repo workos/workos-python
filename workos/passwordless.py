@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Literal, Protocol
 
 import workos
 from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
@@ -7,10 +7,10 @@ from workos.resources.passwordless import WorkOSPasswordlessSession
 
 
 class PasswordlessModule(Protocol):
-    def create_session(self, session_options) -> dict:
+    def create_session(self, session_options: dict) -> dict:
         ...
 
-    def send_session(self, session_id) -> True:
+    def send_session(self, session_id: str) -> Literal[True]:
         ...
 
 
@@ -59,7 +59,7 @@ class Passwordless(PasswordlessModule):
 
         return WorkOSPasswordlessSession.construct_from_response(response).to_dict()
 
-    def send_session(self, session_id):
+    def send_session(self, session_id: str) -> None:
         """Send a Passwordless Session via email.
 
         Args:

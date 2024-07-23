@@ -34,8 +34,8 @@ class Portal(PortalModule):
         self,
         intent: Literal["audit_logs", "dsync", "log_streams", "sso"],
         organization: str,
-        return_url: str = None,
-        success_url: str = None,
+        return_url: Optional[str] = None,
+        success_url: Optional[str] = None,
     ):
         """Generate a link to grant access to an organization's Admin Portal
 

@@ -1,7 +1,9 @@
 import platform
 from typing import (
+    Any,
     Dict,
     Generic,
+    Optional,
     TypeVar,
     TypedDict,
     Union,
@@ -29,8 +31,8 @@ class PreparedRequest(TypedDict):
     method: str
     url: str
     headers: httpx.Headers
-    params: dict
-    json: dict
+    params: Optional[dict]
+    json: Optional[dict]
     timeout: int
 
 
@@ -57,7 +59,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         return self._base_url.format(path)
 
     def _build_headers(
-        self, custom_headers: Union[dict, None], token: str = None
+        self, custom_headers: Union[dict, None], token: Optional[str] = None
     ) -> httpx.Headers:
         if custom_headers is None:
             custom_headers = {}
@@ -69,7 +71,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         return httpx.Headers({**self.default_headers, **custom_headers})
 
     def _maybe_raise_error_by_status_code(
-        self, response: httpx.Response, response_json: dict
+        self, response: httpx.Response, response_json: Union[Any, None]
     ) -> None:
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:
@@ -91,10 +93,10 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     def _prepare_request(
         self,
         path: str,
-        method: str = REQUEST_METHOD_GET,
-        params: dict = None,
-        headers: dict = None,
-        token: str = None,
+        method: Optional[str] = REQUEST_METHOD_GET,
+        params: Optional[dict] = None,
+        headers: Optional[dict] = None,
+        token: Optional[str] = None,
     ) -> PreparedRequest:
         """Executes a request against the WorkOS API.
 
@@ -102,9 +104,10 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             path (str): Path for the api request that'd be appended to the base API URL
 
         Kwargs:
-            method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
-            params (dict): Query params or body payload to be added to the request
-            token (str): Bearer token
+            method Optional[str]: One of the supported methods as defined by the REQUEST_METHOD_X constants
+            params Optional[dict]: Query params or body payload to be added to the request
+            headers Optional[dict]: Custom headers to be added to the request
+            token Optional[str]: Bearer token
 
         Returns:
             dict: Response from WorkOS

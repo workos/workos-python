@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Optional, Protocol
 from warnings import warn
 
 import workos
@@ -46,7 +46,9 @@ class AuditLogs(AuditLogsModule):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def create_event(self, organization, event, idempotency_key=None):
+    def create_event(
+        self, organization: str, event: dict, idempotency_key: Optional[str] = None
+    ):
         """Create an Audit Logs event.
 
         Args:

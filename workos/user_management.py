@@ -60,7 +60,8 @@ RESPONSE_LIMIT = 10
 
 
 class UserManagementModule(Protocol):
-    def get_user(self, user_id: str) -> dict: ...
+    def get_user(self, user_id: str) -> dict:
+        ...
 
     def list_users(
         self,
@@ -70,23 +71,30 @@ class UserManagementModule(Protocol):
         before=None,
         after=None,
         order=None,
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
-    def create_user(self, user: dict) -> dict: ...
+    def create_user(self, user: dict) -> dict:
+        ...
 
-    def update_user(self, user_id: str, payload: dict) -> dict: ...
+    def update_user(self, user_id: str, payload: dict) -> dict:
+        ...
 
-    def delete_user(self, user_id: str) -> None: ...
+    def delete_user(self, user_id: str) -> None:
+        ...
 
     def create_organization_membership(
         self, user_id: str, organization_id: str, role_slug=None
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
     def update_organization_membership(
         self, organization_membership_id: str, role_slug=None
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
-    def get_organization_membership(self, organization_membership_id: str) -> dict: ...
+    def get_organization_membership(self, organization_membership_id: str) -> dict:
+        ...
 
     def list_organization_memberships(
         self,
@@ -97,19 +105,21 @@ class UserManagementModule(Protocol):
         before=None,
         after=None,
         order=None,
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
-    def delete_organization_membership(
-        self, organization_membership_id: str
-    ) -> None: ...
+    def delete_organization_membership(self, organization_membership_id: str) -> None:
+        ...
 
     def deactivate_organization_membership(
         self, organization_membership_id: str
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
     def reactivate_organization_membership(
         self, organization_membership_id: str
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
     def get_authorization_url(
         self,
@@ -121,15 +131,18 @@ class UserManagementModule(Protocol):
         login_hint=None,
         state=None,
         code_challenge=None,
-    ) -> str: ...
+    ) -> str:
+        ...
 
     def authenticate_with_password(
         self, email: str, password: str, ip_address=None, user_agent=None
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
     def authenticate_with_code(
         self, code: str, code_verifier=None, ip_address=None, user_agent=None
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
     def authenticate_with_magic_auth(
         self,
@@ -138,7 +151,8 @@ class UserManagementModule(Protocol):
         link_authorization_code=None,
         ip_address=None,
         user_agent=None,
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
     def authenticate_with_email_verification(
         self,
@@ -146,7 +160,8 @@ class UserManagementModule(Protocol):
         pending_authentication_token: str,
         ip_address=None,
         user_agent=None,
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
     def authenticate_with_totp(
         self,
@@ -155,7 +170,8 @@ class UserManagementModule(Protocol):
         pending_authentication_token: str,
         ip_address=None,
         user_agent=None,
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
     def authenticate_with_organization_selection(
         self,
@@ -163,40 +179,54 @@ class UserManagementModule(Protocol):
         pending_authentication_token,
         ip_address=None,
         user_agent=None,
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
     def authenticate_with_refresh_token(
         self,
         refresh_token,
         ip_address=None,
         user_agent=None,
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
     # TODO: Methods that don't method network requests can just be defined in the base class
-    def get_jwks_url(self) -> str: ...
+    def get_jwks_url(self) -> str:
+        ...
 
     # TODO: Methods that don't method network requests can just be defined in the base class
-    def get_logout_url(self, session_id) -> str: ...
+    def get_logout_url(self, session_id) -> str:
+        ...
 
-    def get_password_reset(self, password_reset_id) -> dict: ...
+    def get_password_reset(self, password_reset_id) -> dict:
+        ...
 
-    def create_password_reset(self, email) -> dict: ...
+    def create_password_reset(self, email) -> dict:
+        ...
 
-    def send_password_reset_email(self, email, password_reset_url) -> None: ...
+    def send_password_reset_email(self, email, password_reset_url) -> None:
+        ...
 
-    def reset_password(self, token, new_password) -> dict: ...
+    def reset_password(self, token, new_password) -> dict:
+        ...
 
-    def get_email_verification(self, email_verification_id) -> dict: ...
+    def get_email_verification(self, email_verification_id) -> dict:
+        ...
 
-    def send_verification_email(self, user_id) -> dict: ...
+    def send_verification_email(self, user_id) -> dict:
+        ...
 
-    def verify_email(self, user_id, code) -> dict: ...
+    def verify_email(self, user_id, code) -> dict:
+        ...
 
-    def get_magic_auth(self, magic_auth_id) -> dict: ...
+    def get_magic_auth(self, magic_auth_id) -> dict:
+        ...
 
-    def create_magic_auth(self, email, invitation_token=None) -> dict: ...
+    def create_magic_auth(self, email, invitation_token=None) -> dict:
+        ...
 
-    def send_magic_auth_code(self, email) -> None: ...
+    def send_magic_auth_code(self, email) -> None:
+        ...
 
     def enroll_auth_factor(
         self,
@@ -205,13 +235,17 @@ class UserManagementModule(Protocol):
         totp_issuer=None,
         totp_user=None,
         totp_secret=None,
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
-    def list_auth_factors(self, user_id) -> WorkOSListResource: ...
+    def list_auth_factors(self, user_id) -> WorkOSListResource:
+        ...
 
-    def get_invitation(self, invitation_id) -> dict: ...
+    def get_invitation(self, invitation_id) -> dict:
+        ...
 
-    def find_invitation_by_token(self, invitation_token) -> dict: ...
+    def find_invitation_by_token(self, invitation_token) -> dict:
+        ...
 
     def list_invitations(
         self,
@@ -221,7 +255,8 @@ class UserManagementModule(Protocol):
         before=None,
         after=None,
         order=None,
-    ) -> WorkOSListResource: ...
+    ) -> WorkOSListResource:
+        ...
 
     def send_invitation(
         self,
@@ -230,9 +265,11 @@ class UserManagementModule(Protocol):
         expires_in_days=None,
         inviter_user_id=None,
         role_slug=None,
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
-    def revoke_invitation(self, invitation_id) -> dict: ...
+    def revoke_invitation(self, invitation_id) -> dict:
+        ...
 
 
 class UserManagement(UserManagementModule, WorkOSListResource):
@@ -1337,17 +1374,17 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         )
 
         factor_and_challenge = {}
-        factor_and_challenge["authentication_factor"] = (
-            WorkOSAuthenticationFactorTotp.construct_from_response(
-                response["authentication_factor"]
-            ).to_dict()
-        )
+        factor_and_challenge[
+            "authentication_factor"
+        ] = WorkOSAuthenticationFactorTotp.construct_from_response(
+            response["authentication_factor"]
+        ).to_dict()
 
-        factor_and_challenge["authentication_challenge"] = (
-            WorkOSChallenge.construct_from_response(
-                response["authentication_challenge"]
-            ).to_dict()
-        )
+        factor_and_challenge[
+            "authentication_challenge"
+        ] = WorkOSChallenge.construct_from_response(
+            response["authentication_challenge"]
+        ).to_dict()
 
         return factor_and_challenge
 

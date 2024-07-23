@@ -21,7 +21,8 @@ class EventsModule(Protocol):
         after=None,
         range_start=None,
         range_end=None,
-    ) -> dict: ...
+    ) -> dict:
+        ...
 
 
 class Events(EventsModule, WorkOSListResource):

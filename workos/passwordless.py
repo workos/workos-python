@@ -1,10 +1,18 @@
+from typing import Protocol
+
 import workos
 from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
 from workos.utils.validation import PASSWORDLESS_MODULE, validate_settings
 from workos.resources.passwordless import WorkOSPasswordlessSession
 
 
-class Passwordless(object):
+class PasswordlessModule(Protocol):
+    def create_session(self, session_options) -> dict: ...
+
+    def send_session(self, session_id) -> True: ...
+
+
+class Passwordless(PasswordlessModule):
     """Offers methods through the WorkOS Passwordless service."""
 
     @validate_settings(PASSWORDLESS_MODULE)

@@ -1,4 +1,6 @@
+from typing import Protocol
 from warnings import warn
+
 import workos
 from workos.utils.request import (
     RequestHelper,
@@ -15,7 +17,29 @@ from workos.resources.mfa import (
 )
 
 
-class Mfa(object):
+class MFAModule(Protocol):
+    def enroll_factor(
+        self,
+        type=None,
+        totp_issuer=None,
+        totp_user=None,
+        phone_number=None,
+    ) -> dict: ...
+
+    def get_factor(self, authentication_factor_id=None) -> dict: ...
+
+    def delete_factor(self, authentication_factor_id=None) -> None: ...
+
+    def challenge_factor(
+        self, authentication_factor_id=None, sms_template=None
+    ) -> dict: ...
+
+    def verify_factor(self, authentication_challenge_id=None, code=None) -> dict: ...
+
+    def verify_challenge(self, authentication_challenge_id=None, code=None) -> dict: ...
+
+
+class Mfa(MFAModule):
     """Methods to assist in creating, challenging, and verifying Authentication Factors through the WorkOS MFA service."""
 
     @validate_settings(MFA_MODULE)

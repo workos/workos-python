@@ -1,3 +1,4 @@
+from workos._base_client import BaseClient
 from workos.audit_logs import AuditLogs
 from workos.directory_sync import DirectorySync
 from workos.organizations import Organizations
@@ -11,7 +12,7 @@ from workos.user_management import UserManagement
 from workos.utils.http_client import SyncHTTPClient
 
 
-class SyncClient(object):
+class SyncClient(BaseClient):
     """Client for a convenient way to access the WorkOS feature set."""
 
     _http_client: SyncHTTPClient

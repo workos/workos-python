@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Protocol
 
 import workos
 from workos.utils.request import (
@@ -11,7 +11,20 @@ from workos.resources.list import WorkOSListResource
 RESPONSE_LIMIT = 10
 
 
-class Events(WorkOSListResource):
+class EventsModule(Protocol):
+    def list_events(
+        self,
+        # TODO: Use event Literal type when available
+        events: List[str],
+        limit=None,
+        organization_id=None,
+        after=None,
+        range_start=None,
+        range_end=None,
+    ) -> dict: ...
+
+
+class Events(EventsModule, WorkOSListResource):
     """Offers methods through the WorkOS Events service."""
 
     _http_client: SyncHTTPClient
@@ -78,7 +91,7 @@ class Events(WorkOSListResource):
         return response
 
 
-class AsyncEvents(WorkOSListResource):
+class AsyncEvents(EventsModule, WorkOSListResource):
     """Offers methods through the WorkOS Events service."""
 
     _http_client: AsyncHTTPClient

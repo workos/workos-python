@@ -1,9 +1,9 @@
+from workos._base_client import BaseClient
 from workos.events import AsyncEvents
-
 from workos.utils.http_client import AsyncHTTPClient
 
 
-class AsyncClient(object):
+class AsyncClient(BaseClient):
     """Client for a convenient way to access the WorkOS feature set."""
 
     _http_client: AsyncHTTPClient

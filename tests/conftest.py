@@ -120,6 +120,8 @@ def mock_pagination_request(monkeypatch):
 
         monkeypatch.setattr(requests, "request", mock)
 
+    return inner
+
 
 @pytest.fixture
 def mock_sync_http_client_with_response():

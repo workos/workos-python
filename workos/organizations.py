@@ -1,4 +1,5 @@
-from typing import List, Optional
+from typing import List, Optional, Protocol
+
 import workos
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
@@ -19,7 +20,38 @@ ORGANIZATIONS_PATH = "organizations"
 RESPONSE_LIMIT = 10
 
 
-class Organizations:
+class OrganizationsModule(Protocol):
+    def list_organizations(
+        self,
+        domains: Optional[List[str]] = None,
+        limit: int = RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> WorkOsListResource[Organization]: ...
+
+    def get_organization(self, organization: str) -> Organization: ...
+
+    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization: ...
+
+    def create_organization(
+        self,
+        name: str,
+        domain_data: Optional[List[DomainDataInput]] = None,
+        idempotency_key: Optional[str] = None,
+    ) -> Organization: ...
+
+    def update_organization(
+        self,
+        organization: str,
+        name: str,
+        domain_data: Optional[List[DomainDataInput]] = None,
+    ) -> Organization: ...
+
+    def delete_organization(self, organization: str) -> None: ...
+
+
+class Organizations(OrganizationsModule):
     @validate_settings(ORGANIZATIONS_MODULE)
     def __init__(self):
         pass

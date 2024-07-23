@@ -1,5 +1,6 @@
 import platform
 from typing import (
+    Dict,
     Generic,
     TypeVar,
     TypedDict,
@@ -172,7 +173,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         self._base_url = "{}{{}}".format(self._enforce_trailing_slash(url))
 
     @property
-    def default_headers(self) -> "dict[str, str]":
+    def default_headers(self) -> Dict[str, str]:
         return {
             "Accept": "application/json",
             "Content-Type": "application/json",

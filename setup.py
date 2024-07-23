@@ -28,6 +28,7 @@ setup(
     zip_safe=False,
     license=about["__license__"],
     install_requires=[
+        "httpx>=0.27.0",
         "requests>=2.22.0",
         "pydantic==2.8.2",
         "types-requests==2.32.0.20240712",
@@ -36,6 +37,7 @@ setup(
         "dev": [
             "flake8",
             "pytest==8.1.1",
+            "pytest-asyncio==0.23.8",
             "pytest-cov==2.8.1",
             "six==1.13.0",
             "black==22.3.0",
@@ -43,6 +45,7 @@ setup(
             "requests==2.30.0",
             "urllib3==2.0.2",
             "mypy==1.10.1",
+            "httpx>=0.27.0",
         ],
         ":python_version<'3.4'": ["enum34"],
     },

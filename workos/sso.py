@@ -1,5 +1,7 @@
-from requests import Request
+from typing import Protocol
 from warnings import warn
+
+from requests import Request
 import workos
 from workos.utils.pagination_order import Order
 from workos.resources.sso import (
@@ -28,7 +30,58 @@ OAUTH_GRANT_TYPE = "authorization_code"
 RESPONSE_LIMIT = 10
 
 
-class SSO(WorkOSListResource):
+class SSOModule(Protocol):
+    def get_authorization_url(
+        self,
+        domain=None,
+        domain_hint=None,
+        login_hint=None,
+        redirect_uri=None,
+        state=None,
+        provider=None,
+        connection=None,
+        organization=None,
+    ) -> str:
+        ...
+
+    def get_profile(self, accessToken: str) -> WorkOSProfile:
+        ...
+
+    def get_profile_and_token(self, code: str) -> WorkOSProfileAndToken:
+        ...
+
+    def get_connection(self, connection: str) -> dict:
+        ...
+
+    def list_connections(
+        self,
+        connection_type=None,
+        domain=None,
+        organization_id=None,
+        limit=None,
+        before=None,
+        after=None,
+        order=None,
+    ) -> dict:
+        ...
+
+    def list_connections_v2(
+        self,
+        connection_type=None,
+        domain=None,
+        organization_id=None,
+        limit=None,
+        before=None,
+        after=None,
+        order=None,
+    ) -> dict:
+        ...
+
+    def delete_connection(self, connection: str) -> None:
+        ...
+
+
+class SSO(SSOModule, WorkOSListResource):
     """Offers methods to assist in authenticating through the WorkOS SSO service."""
 
     @validate_settings(SSO_MODULE)

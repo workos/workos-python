@@ -1,13 +1,10 @@
 import pytest
-import requests
-from tests.conftest import MockResponse, mock_pagination_request
+
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.directory_sync import DirectorySync
-from workos.resources.directory_sync import DirectoryUser
 from tests.utils.fixtures.mock_directory import MockDirectory
 from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
 from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
-from workos.resources.list import WorkOsListResource
 
 
 class TestDirectorySync(object):

@@ -1,3 +1,5 @@
+from typing import Protocol
+
 from workos.utils.request import RequestHelper
 from workos.utils.validation import WEBHOOKS_MODULE, validate_settings
 import hmac
@@ -7,7 +9,21 @@ from collections import OrderedDict
 import hashlib
 
 
-class Webhooks(object):
+class WebhooksModule(Protocol):
+    def verify_event(self, payload, sig_header, secret, tolerance) -> dict:
+        ...
+
+    def verify_header(self, event_body, event_signature, secret, tolerance) -> None:
+        ...
+
+    def constant_time_compare(self, val1, val2) -> bool:
+        ...
+
+    def check_timestamp_range(self, time, max_range) -> None:
+        ...
+
+
+class Webhooks(WebhooksModule):
     """Offers methods through the WorkOS Webhooks service."""
 
     @validate_settings(WEBHOOKS_MODULE)

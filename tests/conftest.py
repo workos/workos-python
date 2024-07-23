@@ -1,9 +1,12 @@
-from typing import Dict
+from unittest.mock import AsyncMock, MagicMock
+
+import httpx
 import pytest
 import requests
 
 from tests.utils.list_resource import list_response_of
 import workos
+from workos.utils.http_client import SyncHTTPClient
 
 
 class MockResponse(object):
@@ -116,5 +119,25 @@ def mock_pagination_request(monkeypatch):
             )
 
         monkeypatch.setattr(requests, "request", mock)
+
+    return inner
+
+
+@pytest.fixture
+def mock_sync_http_client_with_response():
+    def inner(http_client: SyncHTTPClient, response_dict: dict, status_code: int):
+        http_client._client.request = MagicMock(
+            return_value=httpx.Response(status_code, json=response_dict),
+        )
+
+    return inner
+
+
+@pytest.fixture
+def mock_async_http_client_with_response():
+    def inner(http_client: SyncHTTPClient, response_dict: dict, status_code: int):
+        http_client._client.request = AsyncMock(
+            return_value=httpx.Response(status_code, json=response_dict),
+        )
 
     return inner

@@ -1,3 +1,5 @@
+from typing import Literal, Optional, Protocol
+
 import workos
 from workos.utils.request import RequestHelper, REQUEST_METHOD_POST
 from workos.utils.validation import PORTAL_MODULE, validate_settings
@@ -6,7 +8,18 @@ from workos.utils.validation import PORTAL_MODULE, validate_settings
 PORTAL_GENERATE_PATH = "portal/generate_link"
 
 
-class Portal(object):
+class PortalModule(Protocol):
+    def generate_link(
+        self,
+        intent: Literal["audit_logs", "dsync", "log_streams", "sso"],
+        organization: str,
+        return_url: Optional[str] = None,
+        success_url: Optional[str] = None,
+    ) -> dict:
+        ...
+
+
+class Portal(PortalModule):
     @validate_settings(PORTAL_MODULE)
     def __init__(self):
         pass
@@ -17,7 +30,13 @@ class Portal(object):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def generate_link(self, intent, organization, return_url=None, success_url=None):
+    def generate_link(
+        self,
+        intent: Literal["audit_logs", "dsync", "log_streams", "sso"],
+        organization: str,
+        return_url: Optional[str] = None,
+        success_url: Optional[str] = None,
+    ):
         """Generate a link to grant access to an organization's Admin Portal
 
         Args:

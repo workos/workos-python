@@ -1,4 +1,6 @@
+from typing import Optional, Protocol
 from warnings import warn
+
 import workos
 from workos.resources.audit_logs_export import WorkOSAuditLogExport
 from workos.utils.request import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST
@@ -8,7 +10,30 @@ EVENTS_PATH = "audit_logs/events"
 EXPORTS_PATH = "audit_logs/exports"
 
 
-class AuditLogs(object):
+class AuditLogsModule(Protocol):
+    def create_event(
+        self, organization: str, event: dict, idempotency_key: Optional[str] = None
+    ) -> None:
+        ...
+
+    def create_export(
+        self,
+        organization,
+        range_start,
+        range_end,
+        actions=None,
+        actors=None,
+        targets=None,
+        actor_names=None,
+        actor_ids=None,
+    ) -> WorkOSAuditLogExport:
+        ...
+
+    def get_export(self, export_id) -> WorkOSAuditLogExport:
+        ...
+
+
+class AuditLogs(AuditLogsModule):
     """Offers methods through the WorkOS Audit Logs service."""
 
     @validate_settings(AUDIT_LOGS_MODULE)
@@ -21,7 +46,9 @@ class AuditLogs(object):
             self._request_helper = RequestHelper()
         return self._request_helper
 
-    def create_event(self, organization, event, idempotency_key=None):
+    def create_event(
+        self, organization: str, event: dict, idempotency_key: Optional[str] = None
+    ):
         """Create an Audit Logs event.
 
         Args:

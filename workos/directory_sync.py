@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Protocol
+
 import workos
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
@@ -19,7 +20,55 @@ from workos.resources.list import ListArgs, ListPage, WorkOsListResource
 RESPONSE_LIMIT = 10
 
 
-class DirectorySync:
+class DirectorySyncModule(Protocol):
+    def list_users(
+        self,
+        directory: Optional[str] = None,
+        group: Optional[str] = None,
+        limit: int = RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> WorkOsListResource[DirectoryUser]:
+        ...
+
+    def list_groups(
+        self,
+        directory: Optional[str] = None,
+        user: Optional[str] = None,
+        limit: int = RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> WorkOsListResource[DirectoryGroup]:
+        ...
+
+    def get_user(self, user: str) -> DirectoryUser:
+        ...
+
+    def get_group(self, group: str) -> DirectoryGroup:
+        ...
+
+    def get_directory(self, directory: str) -> Directory:
+        ...
+
+    def list_directories(
+        self,
+        domain: Optional[str] = None,
+        search: Optional[str] = None,
+        limit: int = RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        organization: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> WorkOsListResource[Directory]:
+        ...
+
+    def delete_directory(self, directory: str) -> None:
+        ...
+
+
+class DirectorySync(DirectorySyncModule):
     """Offers methods through the WorkOS Directory Sync service."""
 
     @validate_settings(DIRECTORY_SYNC_MODULE)

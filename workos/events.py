@@ -21,7 +21,8 @@ class EventsModule(Protocol):
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> Union[dict, Awaitable[dict]]: ...
+    ) -> Union[dict, Awaitable[dict]]:
+        ...
 
 
 class Events(EventsModule, WorkOSListResource):

@@ -1,5 +1,4 @@
 from typing import List, Optional, Protocol
-
 import workos
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
@@ -20,6 +19,10 @@ ORGANIZATIONS_PATH = "organizations"
 RESPONSE_LIMIT = 10
 
 
+class OrganizationListFilters(ListArgs, total=False):
+    domains: Optional[List[str]]
+
+
 class OrganizationsModule(Protocol):
     def list_organizations(
         self,
@@ -28,7 +31,7 @@ class OrganizationsModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Organization]:
+    ) -> WorkOsListResource[Organization, OrganizationListFilters]:
         ...
 
     def get_organization(self, organization: str) -> Organization:
@@ -75,7 +78,7 @@ class Organizations(OrganizationsModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Organization]:
+    ) -> WorkOsListResource[Organization, OrganizationListFilters]:
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
         Kwargs:
@@ -89,25 +92,24 @@ class Organizations(OrganizationsModule):
             dict: Organizations response from WorkOS.
         """
 
-        params = {
-            "domains": domains,
+        list_params: OrganizationListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
+            "domains": domains,
         }
 
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,
-            params=params,
+            params=list_params,
             token=workos.api_key,
         )
 
-        return WorkOsListResource[Organization](
+        return WorkOsListResource[Organization, OrganizationListFilters](
             list_method=self.list_organizations,
-            # TODO: Should we even bother with this validation?
-            list_args=ListArgs.model_validate(params),
+            list_args=list_params,
             **ListPage[Organization](**response).model_dump()
         )
 

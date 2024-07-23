@@ -1,4 +1,4 @@
-from typing import List, Optional, TypedDict, Union, Protocol
+from typing import List, Optional, Protocol
 import workos
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
@@ -17,11 +17,10 @@ from workos.resources.list import ListPage, WorkOsListResource, ListArgs
 
 ORGANIZATIONS_PATH = "organizations"
 RESPONSE_LIMIT = 10
-OrganizationListFilters = TypedDict(
-    "OrganizationListFilters",
-    {"domains": Optional[List[str]]},
-    total=False,
-)
+
+
+class OrganizationListFilters(ListArgs, total=False):
+    domains: Optional[List[str]]
 
 
 class OrganizationsModule(Protocol):
@@ -87,26 +86,24 @@ class Organizations(OrganizationsModule):
             dict: Organizations response from WorkOS.
         """
 
-        list_params: ListArgs = {
+        list_params: OrganizationListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
+            "domains": domains,
         }
-
-        filter_params: OrganizationListFilters = {"domains": domains}
 
         response = self.request_helper.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,
-            params={**list_params, **filter_params},
+            params=list_params,
             token=workos.api_key,
         )
 
         return WorkOsListResource[Organization, OrganizationListFilters](
             list_method=self.list_organizations,
             list_args=list_params,
-            filter_params=filter_params,
             **ListPage[Organization](**response).model_dump()
         )
 

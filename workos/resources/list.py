@@ -1,12 +1,6 @@
-from abc import abstractmethod
 from typing import (
-    Dict,
     List,
-    Any,
     Literal,
-    Mapping,
-    Protocol,
-    Tuple,
     TypeVar,
     Generic,
     Callable,
@@ -14,19 +8,15 @@ from typing import (
     Optional,
     TypedDict,
 )
-
 from workos.resources.base import WorkOSBaseResource
 from workos.resources.directory_sync import Directory, DirectoryGroup, DirectoryUser
 from workos.resources.organizations import Organization
-from operator import itemgetter
 from pydantic import BaseModel, Field
-
 from workos.resources.workos_model import WorkOSModel
-
-# TODO: THIS OLD RESOURCE GOES AWAY
 
 
 class WorkOSListResource(WorkOSBaseResource):
+    # TODO: THIS OLD RESOURCE GOES AWAY
     """Representation of a WorkOS List Resource as returned through the API.
 
     Attributes:
@@ -124,7 +114,6 @@ ListableResource = TypeVar(
     DirectoryGroup,
     DirectoryUser,
 )
-FilterParams = TypeVar("FilterParams")
 
 
 class ListMetadata(BaseModel):
@@ -145,20 +134,22 @@ class ListArgs(TypedDict):
     order: Literal["asc", "desc"]
 
 
+ListAndFilterParams = TypeVar("ListAndFilterParams", bound=ListArgs)
+
+
 class WorkOsListResource(
     WorkOSModel,
-    Generic[ListableResource, FilterParams],
+    Generic[ListableResource, ListAndFilterParams],
 ):
     object: Literal["list"]
     data: List[ListableResource]
     list_metadata: ListMetadata
 
     list_method: Callable = Field(exclude=True)
-    list_args: ListArgs = Field(exclude=True)
-    filter_params: FilterParams = Field(exclude=True)
+    list_args: ListAndFilterParams = Field(exclude=True)
 
     def auto_paging_iter(self) -> Iterator[ListableResource]:
-        next_page: WorkOsListResource[ListableResource, FilterParams]
+        next_page: WorkOsListResource[ListableResource, ListAndFilterParams]
 
         after = self.list_metadata.after
 
@@ -166,13 +157,18 @@ class WorkOsListResource(
             "order": self.list_args["order"],
             "limit": self.list_args["limit"],
         }
+        # Omit common list parameters
+        filter_params = {
+            k: v
+            for k, v in self.list_args.items()
+            if k not in {"order", "limit", "before", "after"}
+        }
         index: int = 0
-
         while True:
             if index >= len(self.data):
                 if after is not None:
                     next_page = self.list_method(
-                        after=after, **fixed_pagination_params, **self.filter_params
+                        after=after, **fixed_pagination_params, **filter_params
                     )
                     self.data = next_page.data
                     after = next_page.list_metadata.after

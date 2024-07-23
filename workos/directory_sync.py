@@ -1,4 +1,4 @@
-from typing import Optional, TypedDict, Union, Protocol
+from typing import Optional, Protocol
 import workos
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
@@ -17,21 +17,25 @@ from workos.resources.list import ListArgs, ListPage, WorkOsListResource
 
 
 RESPONSE_LIMIT = 10
-DirectoryListFilters = TypedDict(
-    "DirectoryListFilters",
-    {"search": Optional[str], "organization": Optional[str], "domain": Optional[str]},
+
+
+class DirectoryListFilters(ListArgs, total=False):
+    search: Optional[str]
+    organization_id: Optional[str]
+    domain: Optional[str]
+
+
+class DirectoryUserListFilters(
+    ListArgs,
     total=False,
-)
-DirectoryUserListFilters = TypedDict(
-    "DirectoryUserListFilters",
-    {"group": Optional[str], "directory": Optional[str]},
-    total=False,
-)
-DirectoryGroupListFilters = TypedDict(
-    "DirectoryGroupListFilters",
-    {"user": Optional[str], "directory": Optional[str]},
-    total=False,
-)
+):
+    group: Optional[str]
+    directory: Optional[str]
+
+
+class DirectoryGroupListFilters(ListArgs, total=False):
+    user: Optional[str]
+    directory: Optional[str]
 
 
 class DirectorySyncModule(Protocol):
@@ -113,30 +117,28 @@ class DirectorySync(DirectorySyncModule):
             dict: Directory Users response from WorkOS.
         """
 
-        list_params: ListArgs = {
+        list_params: DirectoryUserListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
         }
 
-        filter_params: DirectoryUserListFilters = {}
         if group is not None:
-            filter_params["group"] = group
+            list_params["group"] = group
         if directory is not None:
-            filter_params["directory"] = directory
+            list_params["directory"] = directory
 
         response = self.request_helper.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
-            params={**list_params, **filter_params},
+            params=list_params,
             token=workos.api_key,
         )
 
         return WorkOsListResource(
             list_method=self.list_users,
             list_args=list_params,
-            filter_params=filter_params,
             **ListPage[DirectoryUser](**response).model_dump(),
         )
 
@@ -164,29 +166,28 @@ class DirectorySync(DirectorySyncModule):
         Returns:
             dict: Directory Groups response from WorkOS.
         """
-        list_params: ListArgs = {
+        list_params: DirectoryGroupListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
         }
-        filter_params: DirectoryGroupListFilters = {}
+
         if user is not None:
-            filter_params["user"] = user
+            list_params["user"] = user
         if directory is not None:
-            filter_params["directory"] = directory
+            list_params["directory"] = directory
 
         response = self.request_helper.request(
             "directory_groups",
             method=REQUEST_METHOD_GET,
-            params={**list_params, **filter_params},
+            params=list_params,
             token=workos.api_key,
         )
 
         return WorkOsListResource(
             list_method=self.list_groups,
             list_args=list_params,
-            filter_params=filter_params,
             **ListPage[DirectoryGroup](**response).model_dump(),
         )
 
@@ -267,27 +268,25 @@ class DirectorySync(DirectorySyncModule):
             dict: Directories response from WorkOS.
         """
 
-        list_params: ListArgs = {
+        list_params: DirectoryListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
-        }
-        filter_params: DirectoryListFilters = {
             "domain": domain,
+            "organization_id": organization,
             "search": search,
-            "organization": organization,
         }
+
         response = self.request_helper.request(
             "directories",
             method=REQUEST_METHOD_GET,
-            params={**list_params, **filter_params},
+            params=list_params,
             token=workos.api_key,
         )
         return WorkOsListResource(
             list_method=self.list_directories,
             list_args=list_params,
-            filter_params=filter_params,
             **ListPage[Directory](**response).model_dump(),
         )
 

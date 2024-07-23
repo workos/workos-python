@@ -31,27 +31,33 @@ class OrganizationsModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Organization, OrganizationListFilters]: ...
+    ) -> WorkOsListResource[Organization, OrganizationListFilters]:
+        ...
 
-    def get_organization(self, organization: str) -> Organization: ...
+    def get_organization(self, organization: str) -> Organization:
+        ...
 
-    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization: ...
+    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
+        ...
 
     def create_organization(
         self,
         name: str,
         domain_data: Optional[List[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
-    ) -> Organization: ...
+    ) -> Organization:
+        ...
 
     def update_organization(
         self,
         organization: str,
         name: str,
         domain_data: Optional[List[DomainDataInput]] = None,
-    ) -> Organization: ...
+    ) -> Organization:
+        ...
 
-    def delete_organization(self, organization: str) -> None: ...
+    def delete_organization(self, organization: str) -> None:
+        ...
 
 
 class Organizations(OrganizationsModule):

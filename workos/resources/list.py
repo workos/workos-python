@@ -1,4 +1,7 @@
+import abc
 from typing import (
+    AsyncIterator,
+    Awaitable,
     List,
     Literal,
     TypeVar,
@@ -6,6 +9,7 @@ from typing import (
     Callable,
     Iterator,
     Optional,
+    Union,
 )
 from typing_extensions import TypedDict
 from workos.resources.base import WorkOSBaseResource
@@ -137,7 +141,7 @@ class ListArgs(TypedDict):
 ListAndFilterParams = TypeVar("ListAndFilterParams", bound=ListArgs)
 
 
-class WorkOsListResource(
+class BaseWorkOsListResource(
     WorkOSModel,
     Generic[ListableResource, ListAndFilterParams],
 ):
@@ -148,11 +152,7 @@ class WorkOsListResource(
     list_method: Callable = Field(exclude=True)
     list_args: ListAndFilterParams = Field(exclude=True)
 
-    def auto_paging_iter(self) -> Iterator[ListableResource]:
-        next_page: WorkOsListResource[ListableResource, ListAndFilterParams]
-
-        after = self.list_metadata.after
-
+    def _parse_params(self):
         fixed_pagination_params = {
             "order": self.list_args["order"],
             "limit": self.list_args["limit"],
@@ -163,7 +163,26 @@ class WorkOsListResource(
             for k, v in self.list_args.items()
             if k not in {"order", "limit", "before", "after"}
         }
+
+        return fixed_pagination_params, filter_params
+
+    @abc.abstractmethod
+    def auto_paging_iter(
+        self,
+    ) -> Union[AsyncIterator[ListableResource], Iterator[ListableResource]]:
+        ...
+
+
+class WorkOsListResource(
+    BaseWorkOsListResource,
+    Generic[ListableResource, ListAndFilterParams],
+):
+    def auto_paging_iter(self) -> Iterator[ListableResource]:
+        next_page: WorkOsListResource[ListableResource, ListAndFilterParams]
+        after = self.list_metadata.after
+        fixed_pagination_params, filter_params = self._parse_params()
         index: int = 0
+
         while True:
             if index >= len(self.data):
                 if after is not None:
@@ -178,3 +197,35 @@ class WorkOsListResource(
                     return
             yield self.data[index]
             index += 1
+
+
+class AsyncWorkOsListResource(
+    BaseWorkOsListResource,
+    Generic[ListableResource, ListAndFilterParams],
+):
+    async def auto_paging_iter(self) -> AsyncIterator[ListableResource]:
+        next_page: WorkOsListResource[ListableResource, ListAndFilterParams]
+        after = self.list_metadata.after
+        fixed_pagination_params, filter_params = self._parse_params()
+        index: int = 0
+
+        while True:
+            if index >= len(self.data):
+                if after is not None:
+                    next_page = await self.list_method(
+                        after=after, **fixed_pagination_params, **filter_params
+                    )
+                    self.data = next_page.data
+                    after = next_page.list_metadata.after
+                    index = 0
+                    continue
+                else:
+                    return
+            yield self.data[index]
+            index += 1
+
+
+SyncOrAsyncListResource = Union[
+    Awaitable[AsyncWorkOsListResource],
+    WorkOsListResource,
+]

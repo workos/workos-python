@@ -1,6 +1,6 @@
 import pytest
 
-from workos import client
+from workos import async_client, client
 from workos.exceptions import ConfigurationException
 
 
@@ -9,6 +9,7 @@ class TestClient(object):
     def setup(self):
         client._audit_logs = None
         client._directory_sync = None
+        client._events = None
         client._organizations = None
         client._passwordless = None
         client._portal = None
@@ -23,6 +24,9 @@ class TestClient(object):
 
     def test_initialize_directory_sync(self, set_api_key):
         assert bool(client.directory_sync)
+
+    def test_initialize_events(self, set_api_key):
+        assert bool(client.events)
 
     def test_initialize_organizations(self, set_api_key):
         assert bool(client.organizations)
@@ -76,6 +80,14 @@ class TestClient(object):
 
         assert "api_key" in message
 
+    def test_initialize_events_missing_api_key(self):
+        with pytest.raises(ConfigurationException) as ex:
+            client.events
+
+        message = str(ex)
+
+        assert "api_key" in message
+
     def test_initialize_organizations_missing_api_key(self):
         with pytest.raises(ConfigurationException) as ex:
             client.organizations
@@ -124,3 +136,38 @@ class TestClient(object):
 
         assert "api_key" in message
         assert "client_id" in message
+
+
+class TestAsyncClient(object):
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        async_client._audit_logs = None
+        async_client._directory_sync = None
+        async_client._events = None
+        async_client._organizations = None
+        async_client._passwordless = None
+        async_client._portal = None
+        async_client._sso = None
+        async_client._user_management = None
+
+    def test_initialize_directory_sync(self, set_api_key):
+        assert bool(async_client.directory_sync)
+
+    def test_initialize_directory_sync_missing_api_key(self):
+        with pytest.raises(ConfigurationException) as ex:
+            async_client.directory_sync
+
+        message = str(ex)
+
+        assert "api_key" in message
+
+    def test_initialize_events(self, set_api_key):
+        assert bool(async_client.events)
+
+    def test_initialize_events_missing_api_key(self):
+        with pytest.raises(ConfigurationException) as ex:
+            async_client.events
+
+        message = str(ex)
+
+        assert "api_key" in message

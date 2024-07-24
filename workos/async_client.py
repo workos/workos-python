@@ -1,4 +1,5 @@
 from workos._base_client import BaseClient
+from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
 from workos.utils.http_client import AsyncHTTPClient
 
@@ -25,9 +26,9 @@ class AsyncClient(BaseClient):
 
     @property
     def directory_sync(self):
-        raise NotImplementedError(
-            "Directory Sync APIs are not yet supported in the async client."
-        )
+        if not getattr(self, "_directory_sync", None):
+            self._directory_sync = AsyncDirectorySync(self._http_client)
+        return self._directory_sync
 
     @property
     def events(self):

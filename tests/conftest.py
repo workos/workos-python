@@ -1,3 +1,4 @@
+from typing import Mapping, Union
 from unittest.mock import AsyncMock, MagicMock
 
 import httpx
@@ -6,7 +7,7 @@ import requests
 
 from tests.utils.list_resource import list_response_of
 import workos
-from workos.utils.http_client import SyncHTTPClient
+from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 
 
 class MockResponse(object):
@@ -124,20 +125,69 @@ def mock_pagination_request(monkeypatch):
 
 
 @pytest.fixture
-def mock_sync_http_client_with_response():
-    def inner(http_client: SyncHTTPClient, response_dict: dict, status_code: int):
-        http_client._client.request = MagicMock(
-            return_value=httpx.Response(status_code, json=response_dict),
+def mock_http_client_with_response(monkeypatch):
+    def inner(
+        http_client: Union[SyncHTTPClient, AsyncHTTPClient],
+        response_dict: dict,
+        status_code: int = 200,
+        headers: Mapping[str, str] = None,
+    ):
+        mock_class = (
+            AsyncMock if isinstance(http_client, AsyncHTTPClient) else MagicMock
         )
+        mock = mock_class(
+            return_value=httpx.Response(
+                status_code=status_code, headers=headers, json=response_dict
+            ),
+        )
+        monkeypatch.setattr(http_client._client, "request", mock)
 
     return inner
 
 
 @pytest.fixture
-def mock_async_http_client_with_response():
-    def inner(http_client: SyncHTTPClient, response_dict: dict, status_code: int):
-        http_client._client.request = AsyncMock(
-            return_value=httpx.Response(status_code, json=response_dict),
+def mock_pagination_request_for_http_client(monkeypatch):
+    # Mocking pagination correctly requires us to index into a list of data
+    # and correctly set the before and after metadata in the response.
+    def inner(
+        http_client: Union[SyncHTTPClient, AsyncHTTPClient],
+        data_list: list,
+        status_code: int = 200,
+        headers: Mapping[str, str] = None,
+    ):
+        # For convenient index lookup, store the list of object IDs.
+        data_ids = list(map(lambda x: x["id"], data_list))
+
+        def mock_function(*args, **kwargs):
+            params = kwargs.get("params") or {}
+            request_after = params.get("after", None)
+            limit = params.get("limit", 10)
+
+            if request_after is None:
+                # First page
+                start = 0
+            else:
+                # A subsequent page, return the first item _after_ the index we locate
+                start = data_ids.index(request_after) + 1
+            data = data_list[start : start + limit]
+            if len(data) < limit or len(data) == 0:
+                # No more data, set after to None
+                after = None
+            else:
+                # Set after to the last item in this page of results
+                after = data[-1]["id"]
+
+            return httpx.Response(
+                status_code=status_code,
+                headers=headers,
+                json=list_response_of(data=data, before=request_after, after=after),
+            )
+
+        mock_class = (
+            AsyncMock if isinstance(http_client, AsyncHTTPClient) else MagicMock
         )
+        mock = mock_class(side_effect=mock_function)
+
+        monkeypatch.setattr(http_client._client, "request", mock)
 
     return inner

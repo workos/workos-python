@@ -37,7 +37,7 @@ class SyncClient(BaseClient):
     @property
     def directory_sync(self):
         if not getattr(self, "_directory_sync", None):
-            self._directory_sync = DirectorySync()
+            self._directory_sync = DirectorySync(self._http_client)
         return self._directory_sync
 
     @property

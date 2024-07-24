@@ -1,9 +1,8 @@
-from typing import Awaitable, List, Optional, Protocol, Union
+from typing import List, Optional, Protocol
 
 import workos
-from workos.utils.request import (
-    REQUEST_METHOD_GET,
-)
+from workos.typing.sync_or_async import SyncOrAsync
+from workos.utils.request import REQUEST_METHOD_GET
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.validation import EVENTS_MODULE, validate_settings
 from workos.resources.list import WorkOSListResource
@@ -21,7 +20,7 @@ class EventsModule(Protocol):
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> Union[dict, Awaitable[dict]]:
+    ) -> SyncOrAsync[dict]:
         ...
 
 

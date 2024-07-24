@@ -6,7 +6,7 @@ class MockEvent(WorkOSBaseResource):
     def __init__(self, id):
         self.object = "event"
         self.id = id
-        self.event = "dsync.user.created"
+        self.event = "dsync.activated"
         self.data = {"id": "event_01234ABCD", "organization_id": "org_1234"}
         self.created_at = datetime.datetime.now().isoformat()
 

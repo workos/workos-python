@@ -25,7 +25,7 @@ class TestEvents(object):
             "data": events,
             "metadata": {
                 "params": {
-                    "events": ["dsync.user.created"],
+                    "events": ["dsync.activated"],
                     "limit": 10,
                     "organization_id": None,
                     "after": None,
@@ -43,7 +43,7 @@ class TestEvents(object):
             response_dict={"data": mock_events["data"]},
         )
 
-        events = self.events.list_events(events=["dsync.user.created"])
+        events = self.events.list_events(events=["dsync.activated"])
 
         assert events == mock_events
 

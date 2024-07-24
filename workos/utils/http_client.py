@@ -1,8 +1,9 @@
 import asyncio
-from typing import Awaitable, Optional
+from typing import Dict, Mapping, Optional, Union, TypedDict
 
 import httpx
 
+from workos.resources.list import ListArgs
 from workos.utils._base_http_client import BaseHTTPClient
 from workos.utils.request import REQUEST_METHOD_GET
 
@@ -68,7 +69,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         self,
         path: str,
         method: Optional[str] = REQUEST_METHOD_GET,
-        params: Optional[dict] = None,
+        params: Optional[Mapping] = None,
         headers: Optional[dict] = None,
         token: Optional[str] = None,
     ) -> dict:

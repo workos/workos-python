@@ -3,6 +3,7 @@ from typing import (
     cast,
     Dict,
     Generic,
+    Mapping,
     Optional,
     TypeVar,
     TypedDict,
@@ -32,8 +33,8 @@ class PreparedRequest(TypedDict):
     method: str
     url: str
     headers: httpx.Headers
-    params: NotRequired[Union[Dict, None]]
-    json: NotRequired[Union[Dict, None]]
+    params: NotRequired[Union[Mapping, None]]
+    json: NotRequired[Union[Mapping, None]]
     timeout: int
 
 
@@ -104,7 +105,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         self,
         path: str,
         method: Optional[str] = REQUEST_METHOD_GET,
-        params: Optional[dict] = None,
+        params: Optional[Mapping] = None,
         headers: Optional[dict] = None,
         token: Optional[str] = None,
     ) -> PreparedRequest:

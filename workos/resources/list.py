@@ -1,5 +1,7 @@
+import abc
 from typing import (
     AsyncIterator,
+    Awaitable,
     List,
     Literal,
     TypeVar,
@@ -7,6 +9,7 @@ from typing import (
     Callable,
     Iterator,
     Optional,
+    Union,
 )
 from typing_extensions import TypedDict
 from workos.resources.base import WorkOSBaseResource
@@ -163,11 +166,17 @@ class BaseWorkOsListResource(
 
         return fixed_pagination_params, filter_params
 
-    def auto_paging_iter(self) -> Iterator[ListableResource]:
+    @abc.abstractmethod
+    def auto_paging_iter(
+        self,
+    ) -> Union[AsyncIterator[ListableResource], Iterator[ListableResource]]:
         ...
 
 
-class WorkOsListResource(BaseWorkOsListResource):
+class WorkOsListResource(
+    BaseWorkOsListResource,
+    Generic[ListableResource, ListAndFilterParams],
+):
     def auto_paging_iter(self) -> Iterator[ListableResource]:
         next_page: WorkOsListResource[ListableResource, ListAndFilterParams]
         after = self.list_metadata.after
@@ -190,7 +199,10 @@ class WorkOsListResource(BaseWorkOsListResource):
             index += 1
 
 
-class AsyncWorkOsListResource(BaseWorkOsListResource):
+class AsyncWorkOsListResource(
+    BaseWorkOsListResource,
+    Generic[ListableResource, ListAndFilterParams],
+):
     async def auto_paging_iter(self) -> AsyncIterator[ListableResource]:
         next_page: WorkOsListResource[ListableResource, ListAndFilterParams]
         after = self.list_metadata.after
@@ -211,3 +223,9 @@ class AsyncWorkOsListResource(BaseWorkOsListResource):
                     return
             yield self.data[index]
             index += 1
+
+
+SyncOrAsyncListResource = Union[
+    Awaitable[AsyncWorkOsListResource[ListableResource, ListAndFilterParams]],
+    WorkOsListResource[ListableResource, ListAndFilterParams],
+]

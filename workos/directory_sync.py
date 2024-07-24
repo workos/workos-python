@@ -15,6 +15,7 @@ from workos.resources.list import (
     ListArgs,
     ListPage,
     AsyncWorkOsListResource,
+    SyncOrAsyncListResource,
     WorkOsListResource,
 )
 
@@ -50,7 +51,7 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[WorkOsListResource[DirectoryUser, DirectoryUserListFilters]]:
+    ) -> SyncOrAsyncListResource[DirectoryUser, DirectoryUserListFilters]:
         ...
 
     def list_groups(
@@ -61,7 +62,7 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[WorkOsListResource[DirectoryGroup, DirectoryGroupListFilters]]:
+    ) -> SyncOrAsyncListResource[DirectoryGroup, DirectoryGroupListFilters]:
         ...
 
     def get_user(self, user: str) -> SyncOrAsync[DirectoryUser]:
@@ -82,7 +83,7 @@ class DirectorySyncModule(Protocol):
         after: Optional[str] = None,
         organization: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[WorkOsListResource[Directory, DirectoryListFilters]]:
+    ) -> SyncOrAsyncListResource[Directory, DirectoryListFilters]:
         ...
 
     def delete_directory(self, directory: str) -> SyncOrAsync[None]:
@@ -518,7 +519,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             **ListPage[Directory](**response).model_dump(),
         )
 
-    async def delete_directory(self, directory: str):
+    async def delete_directory(self, directory: str) -> None:
         """Delete one existing Directory.
 
         Args:

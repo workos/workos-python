@@ -34,7 +34,8 @@ class EventsModule(Protocol):
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> SyncOrAsync[EventsListResource]: ...
+    ) -> SyncOrAsync[EventsListResource]:
+        ...
 
 
 class Events(EventsModule):

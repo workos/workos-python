@@ -163,7 +163,8 @@ class BaseWorkOsListResource(
 
         return fixed_pagination_params, filter_params
 
-    def auto_paging_iter(self) -> Iterator[ListableResource]: ...
+    def auto_paging_iter(self) -> Iterator[ListableResource]:
+        ...
 
 
 class WorkOsListResource(BaseWorkOsListResource):

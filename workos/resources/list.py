@@ -226,6 +226,6 @@ class AsyncWorkOsListResource(
 
 
 SyncOrAsyncListResource = Union[
-    Awaitable[AsyncWorkOsListResource[ListableResource, ListAndFilterParams]],
-    WorkOsListResource[ListableResource, ListAndFilterParams],
+    Awaitable[AsyncWorkOsListResource],
+    WorkOsListResource,
 ]

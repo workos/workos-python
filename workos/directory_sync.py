@@ -51,7 +51,7 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource[DirectoryUser, DirectoryUserListFilters]:
+    ) -> SyncOrAsyncListResource:
         ...
 
     def list_groups(
@@ -62,7 +62,7 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource[DirectoryGroup, DirectoryGroupListFilters]:
+    ) -> SyncOrAsyncListResource:
         ...
 
     def get_user(self, user: str) -> SyncOrAsync[DirectoryUser]:
@@ -83,7 +83,7 @@ class DirectorySyncModule(Protocol):
         after: Optional[str] = None,
         organization: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource[Directory, DirectoryListFilters]:
+    ) -> SyncOrAsyncListResource:
         ...
 
     def delete_directory(self, directory: str) -> SyncOrAsync[None]:

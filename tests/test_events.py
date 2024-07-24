@@ -22,17 +22,10 @@ class TestEvents(object):
         events = [MockEvent(id=str(i)).to_dict() for i in range(10)]
 
         return {
+            "object": "list",
             "data": events,
-            "metadata": {
-                "params": {
-                    "events": ["dsync.activated"],
-                    "limit": 10,
-                    "organization_id": None,
-                    "after": None,
-                    "range_start": None,
-                    "range_end": None,
-                },
-                "method": Events.list_events,
+            "list_metadata": {
+                "after": None,
             },
         }
 
@@ -40,44 +33,12 @@ class TestEvents(object):
         mock_http_client_with_response(
             http_client=self.http_client,
             status_code=200,
-            response_dict={"data": mock_events["data"]},
+            response_dict=mock_events,
         )
 
         events = self.events.list_events(events=["dsync.activated"])
 
-        assert events == mock_events
-
-    def test_list_events_returns_metadata(
-        self, mock_events, mock_http_client_with_response
-    ):
-        mock_http_client_with_response(
-            http_client=self.http_client,
-            status_code=200,
-            response_dict={"data": mock_events["data"]},
-        )
-
-        events = self.events.list_events(
-            events=["dsync.user.created"],
-        )
-
-        assert events["metadata"]["params"]["events"] == ["dsync.user.created"]
-
-    def test_list_events_with_organization_id_returns_metadata(
-        self, mock_events, mock_http_client_with_response
-    ):
-        mock_http_client_with_response(
-            http_client=self.http_client,
-            status_code=200,
-            response_dict={"data": mock_events["data"]},
-        )
-
-        events = self.events.list_events(
-            events=["dsync.user.created"],
-            organization_id="org_1234",
-        )
-
-        assert events["metadata"]["params"]["organization_id"] == "org_1234"
-        assert events["metadata"]["params"]["events"] == ["dsync.user.created"]
+        assert events.dict() == mock_events
 
 
 @pytest.mark.asyncio
@@ -98,17 +59,10 @@ class TestAsyncEvents(object):
         events = [MockEvent(id=str(i)).to_dict() for i in range(10)]
 
         return {
+            "object": "list",
             "data": events,
-            "metadata": {
-                "params": {
-                    "events": ["dsync.user.created"],
-                    "limit": 10,
-                    "organization_id": None,
-                    "after": None,
-                    "range_start": None,
-                    "range_end": None,
-                },
-                "method": AsyncEvents.list_events,
+            "list_metadata": {
+                "after": None,
             },
         }
 
@@ -116,41 +70,9 @@ class TestAsyncEvents(object):
         mock_http_client_with_response(
             http_client=self.http_client,
             status_code=200,
-            response_dict={"data": mock_events["data"]},
+            response_dict=mock_events,
         )
 
-        events = await self.events.list_events(events=["dsync.user.created"])
+        events = await self.events.list_events(events=["dsync.activated"])
 
-        assert events == mock_events
-
-    async def test_list_events_returns_metadata(
-        self, mock_events, mock_http_client_with_response
-    ):
-        mock_http_client_with_response(
-            http_client=self.http_client,
-            status_code=200,
-            response_dict={"data": mock_events["data"]},
-        )
-
-        events = await self.events.list_events(
-            events=["dsync.user.created"],
-        )
-
-        assert events["metadata"]["params"]["events"] == ["dsync.user.created"]
-
-    async def test_list_events_with_organization_id_returns_metadata(
-        self, mock_events, mock_http_client_with_response
-    ):
-        mock_http_client_with_response(
-            http_client=self.http_client,
-            status_code=200,
-            response_dict={"data": mock_events["data"]},
-        )
-
-        events = await self.events.list_events(
-            events=["dsync.user.created"],
-            organization_id="org_1234",
-        )
-
-        assert events["metadata"]["params"]["organization_id"] == "org_1234"
-        assert events["metadata"]["params"]["events"] == ["dsync.user.created"]
+        assert events.dict() == mock_events

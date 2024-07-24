@@ -1,14 +1,7 @@
 from typing import List, Optional, Literal
 from workos.resources.workos_model import WorkOSModel
+from workos.types.directory_sync.directory_state import DirectoryState
 from workos.typing.literals import LiteralOrUntyped
-
-DirectoryState = Literal[
-    "linked",
-    "unlinked",
-    "validating",
-    "deleting",
-    "invalid_credentials",
-]
 
 DirectoryType = Literal[
     "azure scim v2.0",
@@ -44,6 +37,7 @@ class Directory(WorkOSModel):
     domain: Optional[str] = None
     name: str
     organization_id: str
+    external_key: str
     state: LiteralOrUntyped[DirectoryState]
     type: LiteralOrUntyped[DirectoryType]
     created_at: str

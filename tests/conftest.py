@@ -1,4 +1,4 @@
-from typing import Mapping, Union
+from typing import Mapping, Optional, Union
 from unittest.mock import AsyncMock, MagicMock
 
 import httpx
@@ -130,7 +130,7 @@ def mock_http_client_with_response(monkeypatch):
         http_client: Union[SyncHTTPClient, AsyncHTTPClient],
         response_dict: dict,
         status_code: int = 200,
-        headers: Mapping[str, str] = None,
+        headers: Optional[Mapping[str, str]] = None,
     ):
         mock_class = (
             AsyncMock if isinstance(http_client, AsyncHTTPClient) else MagicMock
@@ -153,7 +153,7 @@ def mock_pagination_request_for_http_client(monkeypatch):
         http_client: Union[SyncHTTPClient, AsyncHTTPClient],
         data_list: list,
         status_code: int = 200,
-        headers: Mapping[str, str] = None,
+        headers: Optional[Mapping[str, str]] = None,
     ):
         # For convenient index lookup, store the list of object IDs.
         data_ids = list(map(lambda x: x["id"], data_list))

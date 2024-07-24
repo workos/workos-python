@@ -87,7 +87,7 @@ class DirectorySyncFixtures:
 
     @pytest.fixture
     def mock_directories(self):
-        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(1)]
+        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(10)]
         return list_response_of(data=directory_list)
 
     @pytest.fixture

@@ -9,7 +9,6 @@ from workos.utils.validation import EVENTS_MODULE, validate_settings
 from workos.resources.list import (
     ListArgs,
     ListPage,
-    WorkOSListResource,
     WorkOsListResource,
 )
 
@@ -38,7 +37,7 @@ class EventsModule(Protocol):
     ) -> SyncOrAsync[EventsListResource]: ...
 
 
-class Events(EventsModule, WorkOSListResource):
+class Events(EventsModule):
     """Offers methods through the WorkOS Events service."""
 
     _http_client: SyncHTTPClient
@@ -77,9 +76,6 @@ class Events(EventsModule, WorkOSListResource):
             "organization_id": organization,
             "range_start": range_start,
             "range_end": range_end,
-            # TODO: This is a hack, and it's wrong. Events does not support before or order
-            "before": None,
-            "order": "desc",
         }
 
         response = self._http_client.request(
@@ -88,15 +84,14 @@ class Events(EventsModule, WorkOSListResource):
             params=params,
             token=workos.api_key,
         )
-
         return WorkOsListResource(
             list_method=self.list_events,
             list_args=params,
-            **ListPage[Event](**response).model_dump(),
+            **ListPage[Event](**response).model_dump(exclude_unset=True),
         )
 
 
-class AsyncEvents(EventsModule, WorkOSListResource):
+class AsyncEvents(EventsModule):
     """Offers methods through the WorkOS Events service."""
 
     _http_client: AsyncHTTPClient
@@ -134,9 +129,6 @@ class AsyncEvents(EventsModule, WorkOSListResource):
             "organization_id": organization_id,
             "range_start": range_start,
             "range_end": range_end,
-            # TODO: THis is wrong, Events does not support before or order
-            "before": None,
-            "order": "desc",
         }
 
         response = await self._http_client.request(
@@ -149,5 +141,5 @@ class AsyncEvents(EventsModule, WorkOSListResource):
         return WorkOsListResource(
             list_method=self.list_events,
             list_args=params,
-            **ListPage[Event](**response).model_dump(),
+            **ListPage[Event](**response).model_dump(exclude_unset=True),
         )

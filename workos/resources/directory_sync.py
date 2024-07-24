@@ -34,11 +34,11 @@ DirectoryType = Literal[
 
 
 class Directory(WorkOSModel):
-    # Should this be WorkOSDirectory?
     """Representation of a Directory Response as returned by WorkOS through the Directory Sync feature.
     Attributes:
         OBJECT_FIELDS (list): List of fields a Directory is comprised of.
     """
+
     id: str
     object: Literal["directory"]
     domain: Optional[str] = None
@@ -51,12 +51,12 @@ class Directory(WorkOSModel):
 
 
 class DirectoryGroup(WorkOSModel):
-    # Should this be WorkOSDirectoryGroup?
     """Representation of a Directory Group as returned by WorkOS through the Directory Sync feature.
 
     Attributes:
         OBJECT_FIELDS (list): List of fields a DirectoryGroup is comprised of.
     """
+
     id: str
     object: Literal["directory_group"]
     idp_id: str
@@ -82,12 +82,12 @@ DirectoryUserState = Literal["active", "inactive"]
 
 
 class DirectoryUser(WorkOSModel):
-    # Should this be WorkOSDirectoryUser?
     """Representation of a Directory User as returned by WorkOS through the Directory Sync feature.
 
     Attributes:
         OBJECT_FIELDS (list): List of fields a DirectoryUser is comprised of.
     """
+
     id: str
     object: Literal["directory_user"]
     idp_id: str

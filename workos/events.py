@@ -3,24 +3,39 @@ from typing import List, Optional, Protocol
 import workos
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.request import REQUEST_METHOD_GET
+from workos.resources.events import Event, EventType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.validation import EVENTS_MODULE, validate_settings
-from workos.resources.list import WorkOSListResource
+from workos.resources.list import (
+    ListArgs,
+    ListPage,
+    WorkOSListResource,
+    WorkOsListResource,
+)
 
 RESPONSE_LIMIT = 10
+
+
+class EventsListFilters(ListArgs, total=False):
+    events: List[EventType]
+    organization_id: Optional[str]
+    range_start: Optional[str]
+    range_end: Optional[str]
+
+
+EventsListResource = WorkOsListResource[Event, EventsListFilters]
 
 
 class EventsModule(Protocol):
     def list_events(
         self,
-        # TODO: Use event Literal type when available
-        events: List[str],
-        limit: Optional[int] = None,
+        events: List[EventType],
+        limit: int = RESPONSE_LIMIT,
         organization_id: Optional[str] = None,
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> SyncOrAsync[dict]: ...
+    ) -> SyncOrAsync[EventsListResource]: ...
 
 
 class Events(EventsModule, WorkOSListResource):
@@ -34,14 +49,13 @@ class Events(EventsModule, WorkOSListResource):
 
     def list_events(
         self,
-        # TODO: Use event Literal type when available
-        events: List[str],
-        limit=None,
-        organization_id=None,
-        after=None,
-        range_start=None,
-        range_end=None,
-    ) -> dict:
+        events: List[EventType],
+        limit: int = RESPONSE_LIMIT,
+        organization: Optional[str] = None,
+        after: Optional[str] = None,
+        range_start: Optional[str] = None,
+        range_end: Optional[str] = None,
+    ) -> EventsListResource:
         """Gets a list of Events .
         Kwargs:
             events (list): Filter to only return events of particular types. (Optional)
@@ -56,17 +70,16 @@ class Events(EventsModule, WorkOSListResource):
             dict: Events response from WorkOS.
         """
 
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
+        params: EventsListFilters = {
             "events": events,
             "limit": limit,
             "after": after,
-            "organization_id": organization_id,
+            "organization_id": organization,
             "range_start": range_start,
             "range_end": range_end,
+            # TODO: This is a hack, and it's wrong. Events does not support before or order
+            "before": None,
+            "order": "desc",
         }
 
         response = self._http_client.request(
@@ -76,18 +89,11 @@ class Events(EventsModule, WorkOSListResource):
             token=workos.api_key,
         )
 
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        response["metadata"] = {
-            "params": params,
-            "method": Events.list_events,
-        }
-
-        return response
+        return WorkOsListResource(
+            list_method=self.list_events,
+            list_args=params,
+            **ListPage[Event](**response).model_dump(),
+        )
 
 
 class AsyncEvents(EventsModule, WorkOSListResource):
@@ -101,14 +107,13 @@ class AsyncEvents(EventsModule, WorkOSListResource):
 
     async def list_events(
         self,
-        # TODO: Use event Literal type when available
-        events: List[str],
-        limit: Optional[int] = None,
+        events: List[EventType],
+        limit: int = RESPONSE_LIMIT,
         organization_id: Optional[str] = None,
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> dict:
+    ) -> EventsListResource:
         """Gets a list of Events .
         Kwargs:
             events (list): Filter to only return events of particular types. (Optional)
@@ -122,18 +127,16 @@ class AsyncEvents(EventsModule, WorkOSListResource):
         Returns:
             dict: Events response from WorkOS.
         """
-
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
+        params: EventsListFilters = {
             "events": events,
             "limit": limit,
             "after": after,
             "organization_id": organization_id,
             "range_start": range_start,
             "range_end": range_end,
+            # TODO: THis is wrong, Events does not support before or order
+            "before": None,
+            "order": "desc",
         }
 
         response = await self._http_client.request(
@@ -143,15 +146,8 @@ class AsyncEvents(EventsModule, WorkOSListResource):
             token=workos.api_key,
         )
 
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        response["metadata"] = {
-            "params": params,
-            "method": AsyncEvents.list_events,
-        }
-
-        return response
+        return WorkOsListResource(
+            list_method=self.list_events,
+            list_args=params,
+            **ListPage[Event](**response).model_dump(),
+        )

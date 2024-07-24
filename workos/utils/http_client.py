@@ -150,7 +150,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         self,
         path: str,
         method: Optional[str] = REQUEST_METHOD_GET,
-        params: Optional[dict] = None,
+        params: Optional[Mapping] = None,
         headers: Optional[dict] = None,
         token: Optional[str] = None,
     ) -> dict:

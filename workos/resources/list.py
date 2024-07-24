@@ -14,6 +14,7 @@ from typing import (
 from typing_extensions import TypedDict
 from workos.resources.base import WorkOSBaseResource
 from workos.resources.directory_sync import Directory, DirectoryGroup, DirectoryUser
+from workos.resources.events import Event
 from workos.resources.organizations import Organization
 from pydantic import BaseModel, Field
 from workos.resources.workos_model import WorkOSModel
@@ -117,6 +118,7 @@ ListableResource = TypeVar(
     Directory,
     DirectoryGroup,
     DirectoryUser,
+    Event,
 )
 
 

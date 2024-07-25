@@ -213,7 +213,6 @@ class TestDirectorySync(DirectorySyncFixtures):
         mock_http_client_with_response(
             http_client=self.http_client,
             status_code=202,
-            response_dict=None,
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
@@ -450,7 +449,6 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         mock_http_client_with_response(
             http_client=self.http_client,
             status_code=202,
-            response_dict=None,
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 

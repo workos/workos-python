@@ -172,3 +172,26 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         )
         response = await self._client.request(**prepared_request_parameters)
         return self._handle_response(response)
+
+
+class FakeHTTPClient(SyncHTTPClient):
+    """Fake HTTP client used to build requests, without sending."""
+
+    def __init__(
+        self,
+        *,
+        base_url: str,
+        version: str,
+        timeout: Optional[int] = None,
+    ) -> None:
+        def fake_request_handler(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(
+                status_code=200, json={"message": "This is a fake HTTP client."}
+            )
+
+        super().__init__(
+            base_url=base_url,
+            version=version,
+            timeout=timeout,
+            transport=httpx.MockTransport(fake_request_handler),
+        )

@@ -128,7 +128,7 @@ def mock_pagination_request(monkeypatch):
 def mock_http_client_with_response(monkeypatch):
     def inner(
         http_client: Union[SyncHTTPClient, AsyncHTTPClient],
-        response_dict: dict,
+        response_dict: Optional[dict] = None,
         status_code: int = 200,
         headers: Optional[Mapping[str, str]] = None,
     ):
@@ -141,6 +141,39 @@ def mock_http_client_with_response(monkeypatch):
             ),
         )
         monkeypatch.setattr(http_client._client, "request", mock)
+
+    return inner
+
+
+@pytest.fixture
+def capture_and_mock_http_client_request(monkeypatch):
+    def inner(
+        http_client: Union[SyncHTTPClient, AsyncHTTPClient],
+        response_dict: dict,
+        status_code: int = 200,
+        headers: Optional[Mapping[str, str]] = None,
+    ):
+        request_args = []
+        request_kwargs = {}
+
+        def capture_and_mock(*args, **kwargs):
+            request_args.extend(args)
+            request_kwargs.update(kwargs)
+
+            return httpx.Response(
+                status_code=status_code,
+                headers=headers,
+                json=response_dict,
+            )
+
+        mock_class = (
+            AsyncMock if isinstance(http_client, AsyncHTTPClient) else MagicMock
+        )
+        mock = mock_class(side_effect=capture_and_mock)
+
+        monkeypatch.setattr(http_client._client, "request", mock)
+
+        return (request_args, request_kwargs)
 
     return inner
 

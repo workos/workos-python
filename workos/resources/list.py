@@ -19,6 +19,7 @@ from workos.resources.directory_sync import Directory, DirectoryGroup, Directory
 from workos.resources.events import Event
 from workos.resources.organizations import Organization
 from pydantic import BaseModel, Field
+from workos.resources.sso import Connection
 from workos.resources.workos_model import WorkOSModel
 
 
@@ -116,11 +117,12 @@ class WorkOSListResource(WorkOSBaseResource):
 ListableResource = TypeVar(
     # add all possible generics of List Resource
     "ListableResource",
-    Organization,
+    Connection,
     Directory,
     DirectoryGroup,
     DirectoryUser,
     Event,
+    Organization,
 )
 
 

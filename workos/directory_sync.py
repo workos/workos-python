@@ -12,7 +12,7 @@ from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
 from workos.resources.directory_sync import (
     DirectoryGroup,
     Directory,
-    DirectoryUser,
+    DirectoryUserWithGroups,
 )
 from workos.resources.list import (
     ListArgs,
@@ -63,7 +63,7 @@ class DirectorySyncModule(Protocol):
         order: PaginationOrder = "desc",
     ) -> SyncOrAsyncListResource: ...
 
-    def get_user(self, user: str) -> SyncOrAsync[DirectoryUser]: ...
+    def get_user(self, user: str) -> SyncOrAsync[DirectoryUserWithGroups]: ...
 
     def get_group(self, group: str) -> SyncOrAsync[DirectoryGroup]: ...
 
@@ -100,7 +100,7 @@ class DirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[DirectoryUser, DirectoryUserListFilters]:
+    ) -> WorkOsListResource[DirectoryUserWithGroups, DirectoryUserListFilters]:
         """Gets a list of provisioned Users for a Directory.
 
         Note, either 'directory' or 'group' must be provided.
@@ -139,7 +139,7 @@ class DirectorySync(DirectorySyncModule):
         return WorkOsListResource(
             list_method=self.list_users,
             list_args=list_params,
-            **ListPage[DirectoryUser](**response).model_dump(),
+            **ListPage[DirectoryUserWithGroups](**response).model_dump(),
         )
 
     def list_groups(
@@ -191,7 +191,7 @@ class DirectorySync(DirectorySyncModule):
             **ListPage[DirectoryGroup](**response).model_dump(),
         )
 
-    def get_user(self, user: str) -> DirectoryUser:
+    def get_user(self, user: str) -> DirectoryUserWithGroups:
         """Gets details for a single provisioned Directory User.
 
         Args:
@@ -206,7 +206,7 @@ class DirectorySync(DirectorySyncModule):
             token=workos.api_key,
         )
 
-        return DirectoryUser.model_validate(response)
+        return DirectoryUserWithGroups.model_validate(response)
 
     def get_group(self, group: str) -> DirectoryGroup:
         """Gets details for a single provisioned Directory Group.
@@ -323,7 +323,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AsyncWorkOsListResource[DirectoryUser, DirectoryUserListFilters]:
+    ) -> AsyncWorkOsListResource[DirectoryUserWithGroups, DirectoryUserListFilters]:
         """Gets a list of provisioned Users for a Directory.
 
         Note, either 'directory' or 'group' must be provided.
@@ -362,7 +362,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         return AsyncWorkOsListResource(
             list_method=self.list_users,
             list_args=list_params,
-            **ListPage[DirectoryUser](**response).model_dump(),
+            **ListPage[DirectoryUserWithGroups](**response).model_dump(),
         )
 
     async def list_groups(
@@ -413,7 +413,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             **ListPage[DirectoryGroup](**response).model_dump(),
         )
 
-    async def get_user(self, user: str) -> DirectoryUser:
+    async def get_user(self, user: str) -> DirectoryUserWithGroups:
         """Gets details for a single provisioned Directory User.
 
         Args:
@@ -428,7 +428,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             token=workos.api_key,
         )
 
-        return DirectoryUser.model_validate(response)
+        return DirectoryUserWithGroups.model_validate(response)
 
     async def get_group(self, group: str) -> DirectoryGroup:
         """Gets details for a single provisioned Directory Group.

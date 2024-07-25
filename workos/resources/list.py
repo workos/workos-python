@@ -184,8 +184,7 @@ class BaseWorkOsListResource(
     @abc.abstractmethod
     def auto_paging_iter(
         self,
-    ) -> Union[AsyncIterator[ListableResource], Iterator[ListableResource]]:
-        ...
+    ) -> Union[AsyncIterator[ListableResource], Iterator[ListableResource]]: ...
 
 
 class WorkOsListResource(

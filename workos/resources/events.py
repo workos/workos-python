@@ -34,7 +34,7 @@ class DirectoryActivatedEvent(
     event: Literal["dsync.activated"]
 
 
-class DirectoryDeletedEvent(EventModel[Literal["dsync.activated"], DirectoryPayload]):
+class DirectoryDeletedEvent(EventModel[Literal["dsync.deleted"], DirectoryPayload]):
     event: Literal["dsync.deleted"]
 
 

@@ -1,9 +1,6 @@
-from enum import Enum
+from typing import Literal
 
 
-class UserManagementProviderType(Enum):
-    AuthKit = "authkit"
-    AppleOAuth = "AppleOAuth"
-    GitHubOAuth = "GitHubOAuth"
-    GoogleOAuth = "GoogleOAuth"
-    MicrosoftOAuth = "MicrosoftOAuth"
+UserManagementProviderType = Literal[
+    "authkit", "AppleOAuth", "GitHubOAuth", "GoogleOAuth", "MicrosoftOAuth"
+]

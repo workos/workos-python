@@ -1,232 +1,122 @@
-from workos.resources.base import WorkOSBaseResource
+from typing import Literal, Optional
+from typing_extensions import TypedDict
+
+from workos.resources.workos_model import WorkOSModel
 
 
-class WorkOSAuthenticationResponse(WorkOSBaseResource):
+PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
+
+
+class User(WorkOSModel):
+    """Representation of a User as returned by WorkOS through User Management features."""
+
+    object: Literal["user"]
+    id: str
+    email: str
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email_verified: bool
+    profile_picture_url: Optional[str] = None
+    created_at: str
+    updated_at: str
+
+
+class Impersonator(WorkOSModel):
+    """Representation of a WorkOS Dashboard member impersonating a user"""
+
+    email: str
+    reason: str
+
+
+class AuthenticationResponse(WorkOSModel):
     """Representation of a User and Organization ID response as returned by WorkOS through User Management features."""
 
-    """Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSAuthenticationResponse comprises.
-    """
-
-    OBJECT_FIELDS = [
-        "access_token",
-        "organization_id",
-        "refresh_token",
-    ]
-
-    @classmethod
-    def construct_from_response(cls, response):
-        authentication_response = super(
-            WorkOSAuthenticationResponse, cls
-        ).construct_from_response(response)
-
-        user = WorkOSUser.construct_from_response(response["user"])
-        authentication_response.user = user
-
-        if "impersonator" in response:
-            impersonator = WorkOSImpersonator.construct_from_response(
-                response["impersonator"]
-            )
-            authentication_response.impersonator = impersonator
-        else:
-            authentication_response.impersonator = None
-
-        return authentication_response
-
-    def to_dict(self):
-        authentication_response_dict = super(
-            WorkOSAuthenticationResponse, self
-        ).to_dict()
-
-        user_dict = self.user.to_dict()
-        authentication_response_dict["user"] = user_dict
-
-        if self.impersonator:
-            authentication_response_dict["impersonator"] = self.impersonator.to_dict()
-
-        return authentication_response_dict
+    access_token: str
+    impersonator: Optional[Impersonator] = None
+    organization_id: Optional[str] = None
+    refresh_token: str
+    user: User
 
 
-class WorkOSRefreshTokenAuthenticationResponse(WorkOSBaseResource):
+class RefreshTokenAuthenticationResponse(WorkOSModel):
     """Representation of refresh token authentication response as returned by WorkOS through User Management features."""
 
-    """Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSRefreshTokenAuthenticationResponse comprises.
-    """
-
-    OBJECT_FIELDS = [
-        "access_token",
-        "refresh_token",
-    ]
-
-    @classmethod
-    def construct_from_response(cls, response):
-        authentication_response = super(
-            WorkOSRefreshTokenAuthenticationResponse, cls
-        ).construct_from_response(response)
-
-        return authentication_response
-
-    def to_dict(self):
-        authentication_response_dict = super(
-            WorkOSRefreshTokenAuthenticationResponse, self
-        ).to_dict()
-
-        return authentication_response_dict
+    access_token: str
+    refresh_token: str
 
 
-class WorkOSEmailVerification(WorkOSBaseResource):
-    """Representation of a EmailVerification object as returned by WorkOS through User Management features.
+class EmailVerification(WorkOSModel):
+    """Representation of a EmailVerification object as returned by WorkOS through User Management features."""
 
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSEmailVerification comprises.
-    """
-
-    OBJECT_FIELDS = [
-        "id",
-        "user_id",
-        "email",
-        "expires_at",
-        "code",
-        "created_at",
-        "updated_at",
-    ]
+    object: Literal["email_verification"]
+    id: str
+    user_id: str
+    email: str
+    expires_at: str
+    code: str
+    created_at: str
+    updated_at: str
 
 
-class WorkOSInvitation(WorkOSBaseResource):
-    """Representation of an Invitation as returned by WorkOS through User Management features.
+class Invitation(WorkOSModel):
+    """Representation of an Invitation as returned by WorkOS through User Management features."""
 
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSInvitation comprises.
-    """
-
-    OBJECT_FIELDS = [
-        "id",
-        "email",
-        "state",
-        "accepted_at",
-        "revoked_at",
-        "expires_at",
-        "token",
-        "accept_invitation_url",
-        "organization_id",
-        "inviter_user_id",
-        "created_at",
-        "updated_at",
-    ]
+    object: Literal["invitation"]
+    id: str
+    email: str
+    state: str
+    accepted_at: Optional[str] = None
+    revoked_at: Optional[str] = None
+    expires_at: str
+    token: str
+    accept_invitation_url: str
+    organization_id: Optional[str] = None
+    inviter_user_id: Optional[str] = None
+    created_at: str
+    updated_at: str
 
 
-class WorkOSMagicAuth(WorkOSBaseResource):
-    """Representation of a MagicAuth object as returned by WorkOS through User Management features.
+class MagicAuth(WorkOSModel):
+    """Representation of a MagicAuth object as returned by WorkOS through User Management features."""
 
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSMagicAuth comprises.
-    """
-
-    OBJECT_FIELDS = [
-        "id",
-        "user_id",
-        "email",
-        "expires_at",
-        "code",
-        "created_at",
-        "updated_at",
-    ]
+    object: Literal["magic_auth"]
+    id: str
+    user_id: str
+    email: str
+    expires_at: str
+    code: str
+    created_at: str
+    updated_at: str
 
 
-class WorkOSPasswordReset(WorkOSBaseResource):
-    """Representation of a PasswordReset object as returned by WorkOS through User Management features.
+class PasswordReset(WorkOSModel):
+    """Representation of a PasswordReset object as returned by WorkOS through User Management features."""
 
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSPasswordReset comprises.
-    """
-
-    OBJECT_FIELDS = [
-        "id",
-        "user_id",
-        "email",
-        "password_reset_token",
-        "password_reset_url",
-        "expires_at",
-        "created_at",
-    ]
+    object: Literal["password_reset"]
+    id: str
+    user_id: str
+    email: str
+    password_reset_token: str
+    password_reset_url: str
+    expires_at: str
+    created_at: str
 
 
-class WorkOSOrganizationMembership(WorkOSBaseResource):
-    """Representation of an Organization Membership as returned by WorkOS through User Management features.
-
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSOrganizationMembership comprises.
-    """
-
-    OBJECT_FIELDS = [
-        "id",
-        "user_id",
-        "organization_id",
-        "status",
-        "created_at",
-        "updated_at",
-        "role",
-    ]
+class OrganizationMembershipRole(TypedDict):
+    slug: str
 
 
-class WorkOSPasswordChallengeResponse(WorkOSBaseResource):
-    """Representation of a User and token response as returned by WorkOS through User Management features.
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSPasswordChallengeResponse is comprised of.
-    """
-
-    OBJECT_FIELDS = [
-        "token",
-    ]
-
-    @classmethod
-    def construct_from_response(cls, response):
-        challenge_response = super(
-            WorkOSPasswordChallengeResponse, cls
-        ).construct_from_response(response)
-
-        user = WorkOSUser.construct_from_response(response["user"])
-        challenge_response.user = user
-
-        return challenge_response
-
-    def to_dict(self):
-        challenge_response = super(WorkOSPasswordChallengeResponse, self).to_dict()
-
-        user_dict = self.user.to_dict()
-        challenge_response["user"] = user_dict
-
-        return challenge_response
+OrganizationMembershipStatus = Literal["active", "inactive", "pending"]
 
 
-class WorkOSUser(WorkOSBaseResource):
-    """Representation of a User as returned by WorkOS through User Management features.
+class OrganizationMembership(WorkOSModel):
+    """Representation of an Organization Membership as returned by WorkOS through User Management features."""
 
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSUser comprises.
-    """
-
-    OBJECT_FIELDS = [
-        "id",
-        "email",
-        "first_name",
-        "last_name",
-        "email_verified",
-        "profile_picture_url",
-        "created_at",
-        "updated_at",
-    ]
-
-
-class WorkOSImpersonator(WorkOSBaseResource):
-    """Representation of a WorkOS Dashboard member impersonating a user
-
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSImpersonator comprises.
-    """
-
-    OBJECT_FIELDS = [
-        "email",
-        "reason",
-    ]
+    object: Literal["organization_membership"]
+    id: str
+    user_id: str
+    organization_id: str
+    role: OrganizationMembershipRole
+    status: OrganizationMembershipStatus
+    created_at: str
+    updated_at: str

@@ -97,7 +97,7 @@ class DirectorySync(DirectorySyncModule):
         self,
         directory: Optional[str] = None,
         group: Optional[str] = None,
-        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -121,7 +121,7 @@ class DirectorySync(DirectorySyncModule):
         """
 
         list_params: DirectoryUserListFilters = {
-            "limit": limit if limit is not None else DEFAULT_LIST_RESPONSE_LIMIT,
+            "limit": limit,
             "before": before,
             "after": after,
             "order": order,
@@ -188,7 +188,7 @@ class DirectorySync(DirectorySyncModule):
             token=workos.api_key,
         )
 
-        return WorkOsListResource(
+        return WorkOsListResource[DirectoryGroup, DirectoryGroupListFilters](
             list_method=self.list_groups,
             list_args=list_params,
             **ListPage[DirectoryGroup](**response).model_dump(),
@@ -253,7 +253,7 @@ class DirectorySync(DirectorySyncModule):
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        organization: Optional[str] = None,
+        organization_id: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> WorkOsListResource[Directory, DirectoryListFilters, ListMetadata]:
         """Gets details for existing Directories.
@@ -277,7 +277,7 @@ class DirectorySync(DirectorySyncModule):
             "after": after,
             "order": order,
             "domain": domain,
-            "organization_id": organization,
+            "organization_id": organization_id,
             "search": search,
         }
 
@@ -287,7 +287,7 @@ class DirectorySync(DirectorySyncModule):
             params=list_params,
             token=workos.api_key,
         )
-        return WorkOsListResource(
+        return WorkOsListResource[Directory, DirectoryListFilters](
             list_method=self.list_directories,
             list_args=list_params,
             **ListPage[Directory](**response).model_dump(),
@@ -345,7 +345,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             dict: Directory Users response from WorkOS.
         """
 
-        list_params = {
+        list_params: DirectoryUserListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
@@ -396,7 +396,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         Returns:
             dict: Directory Groups response from WorkOS.
         """
-        list_params = {
+        list_params: DirectoryGroupListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
@@ -414,7 +414,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             token=workos.api_key,
         )
 
-        return AsyncWorkOsListResource(
+        return AsyncWorkOsListResource[DirectoryGroup, DirectoryGroupListFilters](
             list_method=self.list_groups,
             list_args=list_params,
             **ListPage[DirectoryGroup](**response).model_dump(),
@@ -479,7 +479,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        organization: Optional[str] = None,
+        organization_id: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> AsyncWorkOsListResource[Directory, DirectoryListFilters, ListMetadata]:
         """Gets details for existing Directories.
@@ -497,9 +497,9 @@ class AsyncDirectorySync(DirectorySyncModule):
             dict: Directories response from WorkOS.
         """
 
-        list_params = {
+        list_params: DirectoryListFilters = {
             "domain": domain,
-            "organization": organization,
+            "organization_id": organization_id,
             "search": search,
             "limit": limit,
             "before": before,
@@ -513,7 +513,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             params=list_params,
             token=workos.api_key,
         )
-        return AsyncWorkOsListResource(
+        return AsyncWorkOsListResource[Directory, DirectoryListFilters](
             list_method=self.list_directories,
             list_args=list_params,
             **ListPage[Directory](**response).model_dump(),

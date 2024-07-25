@@ -1,4 +1,4 @@
-from typing import List, Optional, Protocol
+from typing import List, Optional, Protocol, Union
 
 import workos
 from workos.typing.sync_or_async import SyncOrAsync
@@ -8,6 +8,7 @@ from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.validation import EVENTS_MODULE, validate_settings
 from workos.resources.list import (
     ListAfterMetadata,
+    AsyncWorkOsListResource,
     ListArgs,
     ListPage,
     WorkOsListResource,
@@ -21,7 +22,10 @@ class EventsListFilters(ListArgs, total=False):
     range_end: Optional[str]
 
 
-EventsListResource = WorkOsListResource[Event, EventsListFilters, ListAfterMetadata]
+EventsListResource = Union[
+    AsyncWorkOsListResource[Event, EventsListFilters, ListAfterMetadata],
+    WorkOsListResource[Event, EventsListFilters, ListAfterMetadata],
+]
 
 
 class EventsModule(Protocol):
@@ -83,7 +87,7 @@ class Events(EventsModule):
             params=params,
             token=workos.api_key,
         )
-        return WorkOsListResource(
+        return WorkOsListResource[Event, EventsListFilters, ListAfterMetadata](
             list_method=self.list_events,
             list_args=params,
             **ListPage[Event](**response).model_dump(exclude_unset=True),
@@ -137,7 +141,7 @@ class AsyncEvents(EventsModule):
             token=workos.api_key,
         )
 
-        return WorkOsListResource(
+        return AsyncWorkOsListResource[Event, EventsListFilters, ListAfterMetadata](
             list_method=self.list_events,
             list_args=params,
             **ListPage[Event](**response).model_dump(exclude_unset=True),

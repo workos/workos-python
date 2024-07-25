@@ -9,8 +9,6 @@ from pydantic import (
 )
 from workos.typing.untyped_literal import UntypedLiteral
 
-# Identical to the enums approach, except typed for a literal of string.
-
 
 def convert_unknown_literal_to_untyped_literal(
     value: Any, handler: ValidatorFunctionWrapHandler, info: ValidationInfo

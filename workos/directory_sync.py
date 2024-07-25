@@ -4,7 +4,6 @@ from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import REQUEST_METHOD_DELETE, REQUEST_METHOD_GET
-
 from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
 from workos.resources.directory_sync import (
     DirectoryGroup,

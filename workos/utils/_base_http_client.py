@@ -1,5 +1,6 @@
 import platform
 from typing import (
+    Mapping,
     cast,
     Dict,
     Generic,

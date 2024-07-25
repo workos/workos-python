@@ -5,7 +5,6 @@ from typing import (
     Dict,
     List,
     Literal,
-    Required,
     TypeVar,
     Generic,
     Callable,
@@ -14,7 +13,7 @@ from typing import (
     Union,
     cast,
 )
-from typing_extensions import TypedDict
+from typing_extensions import Required, TypedDict
 from workos.resources.base import WorkOSBaseResource
 from workos.resources.directory_sync import Directory, DirectoryGroup, DirectoryUser
 from workos.resources.events import Event

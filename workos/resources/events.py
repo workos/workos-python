@@ -1,4 +1,5 @@
-from typing import Annotated, Generic, Literal, TypeVar, Union
+from typing import Generic, Literal, TypeVar, Union
+from typing_extensions import Annotated
 from pydantic import Field
 from workos.resources.workos_model import WorkOSModel
 from workos.types.events.directory_payload import DirectoryPayload

@@ -2,16 +2,30 @@ from typing import Generic, Literal, TypeVar, Union
 from typing_extensions import Annotated
 from pydantic import Field
 from workos.resources.workos_model import WorkOSModel
+from workos.types.directory_sync.directory_group import DirectoryGroup
+from workos.types.events.directory_group_with_previous_attributes import (
+    DirectoryGroupWithPreviousAttributes,
+)
 from workos.types.events.directory_payload import DirectoryPayload
 from workos.types.events.directory_payload_with_legacy_fields import (
     DirectoryPayloadWithLegacyFields,
 )
 from workos.typing.literals import LiteralOrUntyped
 
-EventType = Literal["dsync.activated", "dsync.deleted"]
+EventType = Literal[
+    "dsync.activated",
+    "dsync.deleted",
+    "dsync.group.created",
+    "dsync.group.deleted",
+    "dsync.group.updated",
+]
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
-    "EventPayload", DirectoryPayload, DirectoryPayloadWithLegacyFields
+    "EventPayload",
+    DirectoryPayload,
+    DirectoryPayloadWithLegacyFields,
+    DirectoryGroup,
+    DirectoryGroupWithPreviousAttributes,
 )
 
 
@@ -39,7 +53,31 @@ class DirectoryDeletedEvent(EventModel[Literal["dsync.deleted"], DirectoryPayloa
     event: Literal["dsync.deleted"]
 
 
+class DirectoryGroupCreatedEvent(
+    EventModel[Literal["dsync.group.created"], DirectoryGroup]
+):
+    event: Literal["dsync.group.created"]
+
+
+class DirectoryGroupDeletedEvent(
+    EventModel[Literal["dsync.group.deleted"], DirectoryGroup]
+):
+    event: Literal["dsync.group.deleted"]
+
+
+class DirectoryGroupUpdatedEvent(
+    EventModel[Literal["dsync.group.updated"], DirectoryGroupWithPreviousAttributes]
+):
+    event: Literal["dsync.group.deleted"]
+
+
 Event = Annotated[
-    Union[DirectoryActivatedEvent, DirectoryDeletedEvent],
+    Union[
+        DirectoryActivatedEvent,
+        DirectoryDeletedEvent,
+        DirectoryGroupCreatedEvent,
+        DirectoryGroupDeletedEvent,
+        DirectoryGroupUpdatedEvent,
+    ],
     Field(..., discriminator="event"),
 ]

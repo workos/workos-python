@@ -1,5 +1,6 @@
 from typing import List, Optional, Literal
 from workos.resources.workos_model import WorkOSModel
+from workos.types.directory_sync.directory_group import DirectoryGroup
 from workos.types.directory_sync.directory_state import DirectoryState
 from workos.typing.literals import LiteralOrUntyped
 
@@ -40,24 +41,6 @@ class Directory(WorkOSModel):
     external_key: str
     state: LiteralOrUntyped[DirectoryState]
     type: LiteralOrUntyped[DirectoryType]
-    created_at: str
-    updated_at: str
-
-
-class DirectoryGroup(WorkOSModel):
-    """Representation of a Directory Group as returned by WorkOS through the Directory Sync feature.
-
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a DirectoryGroup is comprised of.
-    """
-
-    id: str
-    object: Literal["directory_group"]
-    idp_id: str
-    name: str
-    directory_id: str
-    organization_id: str
-    raw_attributes: dict
     created_at: str
     updated_at: str
 

@@ -1,4 +1,4 @@
-from typing import Optional, Protocol
+from typing import Optional, Protocol, Union
 
 import workos
 from workos.typing.sync_or_async import SyncOrAsync
@@ -42,7 +42,7 @@ class ConnectionsListFilters(ListArgs, total=False):
 
 
 class SSOModule(Protocol):
-    _http_client: SyncHTTPClient | AsyncHTTPClient
+    _http_client: Union[SyncHTTPClient, AsyncHTTPClient]
 
     def get_authorization_url(
         self,

@@ -1,7 +1,7 @@
-from typing import Dict, List, Optional
+from typing import Dict, Optional, Sequence
 
 
-def list_data_to_dicts(list_data: List):
+def list_data_to_dicts(list_data: Sequence):
     return list(map(lambda x: x.dict(), list_data))
 
 

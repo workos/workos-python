@@ -8,6 +8,20 @@ from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
 from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
 
 
+def api_directory_to_sdk(directory):
+    # The API returns an active directory as 'linked'
+    # We normalize this to 'active' in the SDK. This helper function
+    # does this conversion to make make assertions easier.
+    if directory["state"] == "linked":
+        return {**directory, "state": "active"}
+    else:
+        return directory
+
+
+def api_directories_to_sdk(directories):
+    return list(map(lambda x: api_directory_to_sdk(x), directories))
+
+
 class DirectorySyncFixtures:
     @pytest.fixture
     def mock_users(self):
@@ -73,7 +87,7 @@ class DirectorySyncFixtures:
 
     @pytest.fixture
     def mock_directories(self):
-        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(20)]
+        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(10)]
         return list_response_of(data=directory_list)
 
     @pytest.fixture
@@ -180,7 +194,9 @@ class TestDirectorySync(DirectorySyncFixtures):
 
         directories = self.directory_sync.list_directories()
 
-        assert list_data_to_dicts(directories.data) == mock_directories["data"]
+        assert list_data_to_dicts(directories.data) == api_directories_to_sdk(
+            mock_directories["data"]
+        )
 
     def test_get_directory(self, mock_directory, mock_http_client_with_response):
         mock_http_client_with_response(
@@ -191,7 +207,7 @@ class TestDirectorySync(DirectorySyncFixtures):
 
         directory = self.directory_sync.get_directory(directory="directory_id")
 
-        assert directory.dict() == mock_directory
+        assert directory.dict() == api_directory_to_sdk(mock_directory)
 
     def test_delete_directory(self, mock_http_client_with_response):
         mock_http_client_with_response(
@@ -254,9 +270,9 @@ class TestDirectorySync(DirectorySyncFixtures):
             all_directories.append(directory)
 
         assert len(list(all_directories)) == len(mock_directories_multiple_data_pages)
-        assert (
-            list_data_to_dicts(all_directories)
-        ) == mock_directories_multiple_data_pages
+        assert (list_data_to_dicts(all_directories)) == api_directories_to_sdk(
+            mock_directories_multiple_data_pages
+        )
 
     def test_directory_users_auto_pagination(
         self,
@@ -321,9 +337,9 @@ class TestDirectorySync(DirectorySyncFixtures):
             all_directories.append(directory)
 
         assert len(list(all_directories)) == len(mock_directories_multiple_data_pages)
-        assert (
-            list_data_to_dicts(all_directories)
-        ) == mock_directories_multiple_data_pages
+        assert (list_data_to_dicts(all_directories)) == api_directories_to_sdk(
+            mock_directories_multiple_data_pages
+        )
 
 
 @pytest.mark.asyncio
@@ -415,7 +431,9 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
 
         directories = await self.directory_sync.list_directories()
 
-        assert list_data_to_dicts(directories.data) == mock_directories["data"]
+        assert list_data_to_dicts(directories.data) == api_directories_to_sdk(
+            mock_directories["data"]
+        )
 
     async def test_get_directory(self, mock_directory, mock_http_client_with_response):
         mock_http_client_with_response(
@@ -426,7 +444,7 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
 
         directory = await self.directory_sync.get_directory(directory="directory_id")
 
-        assert directory.dict() == mock_directory
+        assert directory.dict() == api_directory_to_sdk(mock_directory)
 
     async def test_delete_directory(self, mock_http_client_with_response):
         mock_http_client_with_response(
@@ -489,9 +507,9 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
             all_directories.append(directory)
 
         assert len(list(all_directories)) == len(mock_directories_multiple_data_pages)
-        assert (
-            list_data_to_dicts(all_directories)
-        ) == mock_directories_multiple_data_pages
+        assert (list_data_to_dicts(all_directories)) == api_directories_to_sdk(
+            mock_directories_multiple_data_pages
+        )
 
     async def test_directory_users_auto_pagination(
         self,
@@ -556,6 +574,6 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
             all_directories.append(directory)
 
         assert len(list(all_directories)) == len(mock_directories_multiple_data_pages)
-        assert (
-            list_data_to_dicts(all_directories)
-        ) == mock_directories_multiple_data_pages
+        assert (list_data_to_dicts(all_directories)) == api_directories_to_sdk(
+            mock_directories_multiple_data_pages
+        )

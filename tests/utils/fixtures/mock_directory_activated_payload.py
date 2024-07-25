@@ -2,16 +2,16 @@ import datetime
 from workos.resources.base import WorkOSBaseResource
 
 
-class MockDirectory(WorkOSBaseResource):
+class MockDirectoryActivatedPayload(WorkOSBaseResource):
     def __init__(self, id):
         now = datetime.datetime.now().isoformat()
         self.object = "directory"
         self.id = id
         self.organization_id = "organization_id"
         self.external_key = "ext_123"
-        self.domain = "somefakedomain.com"
+        self.domains = []
         self.name = "Some fake name"
-        self.state = "linked"
+        self.state = "active"
         self.type = "gsuite directory"
         self.created_at = now
         self.updated_at = now
@@ -19,9 +19,9 @@ class MockDirectory(WorkOSBaseResource):
     OBJECT_FIELDS = [
         "object",
         "id",
-        "domain",
         "name",
         "external_key",
+        "domains",
         "organization_id",
         "state",
         "type",

@@ -2,6 +2,7 @@ import abc
 from typing import (
     AsyncIterator,
     Awaitable,
+    Dict,
     List,
     Literal,
     TypeVar,
@@ -10,10 +11,12 @@ from typing import (
     Iterator,
     Optional,
     Union,
+    cast,
 )
-from typing_extensions import TypedDict
+from typing_extensions import Required, TypedDict
 from workos.resources.base import WorkOSBaseResource
 from workos.resources.directory_sync import Directory, DirectoryGroup, DirectoryUser
+from workos.resources.events import Event
 from workos.resources.organizations import Organization
 from pydantic import BaseModel, Field
 from workos.resources.workos_model import WorkOSModel
@@ -117,11 +120,15 @@ ListableResource = TypeVar(
     Directory,
     DirectoryGroup,
     DirectoryUser,
+    Event,
 )
 
 
-class ListMetadata(BaseModel):
+class ListAfterMetadata(BaseModel):
     after: Optional[str] = None
+
+
+class ListMetadata(ListAfterMetadata):
     before: Optional[str] = None
 
 
@@ -131,14 +138,15 @@ class ListPage(WorkOSModel, Generic[ListableResource]):
     list_metadata: ListMetadata
 
 
-class ListArgs(TypedDict):
-    limit: int
+class ListArgs(TypedDict, total=False):
     before: Optional[str]
     after: Optional[str]
-    order: Literal["asc", "desc"]
+    limit: Required[int]
+    order: Optional[Literal["asc", "desc"]]
 
 
 ListAndFilterParams = TypeVar("ListAndFilterParams", bound=ListArgs)
+ListMetadataType = TypeVar("ListMetadataType", ListAfterMetadata, ListMetadata)
 
 
 class BaseWorkOsListResource(
@@ -147,16 +155,22 @@ class BaseWorkOsListResource(
 ):
     object: Literal["list"]
     data: List[ListableResource]
-    list_metadata: ListMetadata
+    list_metadata: Union[ListAfterMetadata, ListMetadata]
 
     list_method: Callable = Field(exclude=True)
     list_args: ListAndFilterParams = Field(exclude=True)
 
     def _parse_params(self):
-        fixed_pagination_params = {
-            "order": self.list_args["order"],
-            "limit": self.list_args["limit"],
-        }
+        fixed_pagination_params = cast(
+            # Type hints consider this a mismatch because it assume the dictionary is dict[str, int]
+            Dict[str, Union[int, str, None]],
+            {
+                "limit": self.list_args["limit"],
+            },
+        )
+        if "order" in self.list_args:
+            fixed_pagination_params["order"] = self.list_args["order"]
+
         # Omit common list parameters
         filter_params = {
             k: v

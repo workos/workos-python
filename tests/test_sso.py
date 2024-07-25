@@ -3,7 +3,7 @@ import json
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
 
-from tests.utils.list_resource import list_data_to_dicts
+from tests.utils.list_resource import list_data_to_dicts, list_response_of
 import workos
 from workos.sso import SSO, AsyncSSO
 from workos.resources.sso import SsoProviderType
@@ -58,11 +58,7 @@ class SSOFixtures:
     def mock_connections(self):
         connection_list = [MockConnection(id=str(i)).to_dict() for i in range(10)]
 
-        return {
-            "object": "list",
-            "data": connection_list,
-            "list_metadata": {"before": None, "after": None},
-        }
+        return list_response_of(data=connection_list)
 
     @pytest.fixture
     def mock_connections_multiple_data_pages(self):
@@ -103,7 +99,6 @@ class TestSSOBase(SSOFixtures):
         )
 
         parsed_url = urlparse(authorization_url)
-        print(parsed_url, authorization_url)
 
         assert dict(parse_qsl(parsed_url.query)) == {
             "provider": self.provider,

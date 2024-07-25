@@ -1,6 +1,7 @@
 from workos._base_client import BaseClient
 from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
+from workos.sso import AsyncSSO
 from workos.utils.http_client import AsyncHTTPClient
 
 
@@ -16,7 +17,9 @@ class AsyncClient(BaseClient):
 
     @property
     def sso(self):
-        raise NotImplementedError("SSO APIs are not yet supported in the async client.")
+        if not getattr(self, "_sso", None):
+            self._sso = AsyncSSO(self._http_client)
+        return self._sso
 
     @property
     def audit_logs(self):

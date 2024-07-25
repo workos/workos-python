@@ -19,6 +19,7 @@ from workos.resources.user_management import (
 from workos.utils.pagination_order import Order
 from workos.utils.um_provider_types import UserManagementProviderType
 from workos.utils.request import (
+    DEFAULT_LIST_RESPONSE_LIMIT,
     RequestHelper,
     RESPONSE_TYPE_CODE,
     REQUEST_METHOD_POST,
@@ -55,8 +56,6 @@ INVITATION_DETAIL_BY_TOKEN_PATH = "user_management/invitations/by_token/{0}"
 INVITATION_REVOKE_PATH = "user_management/invitations/{0}/revoke"
 PASSWORD_RESET_PATH = "user_management/password_reset"
 PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
-
-RESPONSE_LIMIT = 10
 
 
 class UserManagementModule(Protocol):
@@ -293,7 +292,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         default_limit = None
 
         if limit is None:
-            limit = RESPONSE_LIMIT
+            limit = DEFAULT_LIST_RESPONSE_LIMIT
             default_limit = True
 
         params = {
@@ -504,7 +503,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         default_limit = None
 
         if limit is None:
-            limit = RESPONSE_LIMIT
+            limit = DEFAULT_LIST_RESPONSE_LIMIT
             default_limit = True
 
         if statuses is not None:
@@ -1449,7 +1448,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         default_limit = None
 
         if limit is None:
-            limit = RESPONSE_LIMIT
+            limit = DEFAULT_LIST_RESPONSE_LIMIT
             default_limit = True
 
         params = {

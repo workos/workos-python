@@ -25,7 +25,7 @@ class SyncClient(BaseClient):
     @property
     def sso(self):
         if not getattr(self, "_sso", None):
-            self._sso = SSO()
+            self._sso = SSO(self._http_client)
         return self._sso
 
     @property

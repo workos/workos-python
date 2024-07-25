@@ -3,7 +3,11 @@ import workos
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
-from workos.utils.request import REQUEST_METHOD_DELETE, REQUEST_METHOD_GET
+from workos.utils.request import (
+    DEFAULT_LIST_RESPONSE_LIMIT,
+    REQUEST_METHOD_DELETE,
+    REQUEST_METHOD_GET,
+)
 from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
 from workos.resources.directory_sync import (
     DirectoryGroup,
@@ -17,9 +21,6 @@ from workos.resources.list import (
     SyncOrAsyncListResource,
     WorkOsListResource,
 )
-
-
-RESPONSE_LIMIT = 10
 
 
 class DirectoryListFilters(ListArgs, total=False):
@@ -46,7 +47,7 @@ class DirectorySyncModule(Protocol):
         self,
         directory: Optional[str] = None,
         group: Optional[str] = None,
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -56,7 +57,7 @@ class DirectorySyncModule(Protocol):
         self,
         directory: Optional[str] = None,
         user: Optional[str] = None,
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -72,7 +73,7 @@ class DirectorySyncModule(Protocol):
         self,
         domain: Optional[str] = None,
         search: Optional[str] = None,
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         organization: Optional[str] = None,
@@ -95,7 +96,7 @@ class DirectorySync(DirectorySyncModule):
         self,
         directory: Optional[str] = None,
         group: Optional[str] = None,
-        limit: Optional[int] = RESPONSE_LIMIT,
+        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -117,7 +118,7 @@ class DirectorySync(DirectorySyncModule):
         """
 
         list_params: DirectoryUserListFilters = {
-            "limit": limit if limit is not None else RESPONSE_LIMIT,
+            "limit": limit if limit is not None else DEFAULT_LIST_RESPONSE_LIMIT,
             "before": before,
             "after": after,
             "order": order,
@@ -145,7 +146,7 @@ class DirectorySync(DirectorySyncModule):
         self,
         directory: Optional[str] = None,
         user: Optional[str] = None,
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -246,7 +247,7 @@ class DirectorySync(DirectorySyncModule):
         self,
         domain: Optional[str] = None,
         search: Optional[str] = None,
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         organization: Optional[str] = None,
@@ -318,7 +319,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         self,
         directory: Optional[str] = None,
         group: Optional[str] = None,
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -368,7 +369,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         self,
         directory: Optional[str] = None,
         user: Optional[str] = None,
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -468,7 +469,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         self,
         domain: Optional[str] = None,
         search: Optional[str] = None,
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         organization: Optional[str] = None,

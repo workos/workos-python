@@ -2,7 +2,7 @@ from typing import List, Optional, Protocol
 
 import workos
 from workos.typing.sync_or_async import SyncOrAsync
-from workos.utils.request import REQUEST_METHOD_GET
+from workos.utils.request import DEFAULT_LIST_RESPONSE_LIMIT, REQUEST_METHOD_GET
 from workos.resources.events import Event, EventType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.validation import EVENTS_MODULE, validate_settings
@@ -11,8 +11,6 @@ from workos.resources.list import (
     ListPage,
     WorkOsListResource,
 )
-
-RESPONSE_LIMIT = 10
 
 
 class EventsListFilters(ListArgs, total=False):
@@ -29,7 +27,7 @@ class EventsModule(Protocol):
     def list_events(
         self,
         events: List[EventType],
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         organization_id: Optional[str] = None,
         after: Optional[str] = None,
         range_start: Optional[str] = None,
@@ -49,7 +47,7 @@ class Events(EventsModule):
     def list_events(
         self,
         events: List[EventType],
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         organization: Optional[str] = None,
         after: Optional[str] = None,
         range_start: Optional[str] = None,
@@ -103,7 +101,7 @@ class AsyncEvents(EventsModule):
     async def list_events(
         self,
         events: List[EventType],
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         organization_id: Optional[str] = None,
         after: Optional[str] = None,
         range_start: Optional[str] = None,

@@ -15,8 +15,7 @@ class PortalModule(Protocol):
         organization: str,
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
-    ) -> dict:
-        ...
+    ) -> dict: ...
 
 
 class Portal(PortalModule):

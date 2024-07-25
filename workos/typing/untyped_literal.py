@@ -1,6 +1,6 @@
 from typing import Any
 from pydantic_core import CoreSchema, core_schema
-from pydantic import GetCoreSchemaHandler, TypeAdapter, ValidationError
+from pydantic import GetCoreSchemaHandler
 
 
 class UntypedLiteral(str):

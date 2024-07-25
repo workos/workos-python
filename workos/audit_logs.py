@@ -13,7 +13,8 @@ EXPORTS_PATH = "audit_logs/exports"
 class AuditLogsModule(Protocol):
     def create_event(
         self, organization: str, event: dict, idempotency_key: Optional[str] = None
-    ) -> None: ...
+    ) -> None:
+        ...
 
     def create_export(
         self,
@@ -25,9 +26,11 @@ class AuditLogsModule(Protocol):
         targets=None,
         actor_names=None,
         actor_ids=None,
-    ) -> WorkOSAuditLogExport: ...
+    ) -> WorkOSAuditLogExport:
+        ...
 
-    def get_export(self, export_id) -> WorkOSAuditLogExport: ...
+    def get_export(self, export_id) -> WorkOSAuditLogExport:
+        ...
 
 
 class AuditLogs(AuditLogsModule):

@@ -82,7 +82,7 @@ class TestSSOBase(SSOFixtures):
         self.customer_domain = "workos.com"
         self.login_hint = "foo@workos.com"
         self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps({"things": "with_stuff"})
+        self.authorization_state = json.dumps({"things": "with_stuff"})
         self.connection_id = "connection_123"
         self.organization_id = "organization_123"
         self.setup_completed = True
@@ -92,22 +92,25 @@ class TestSSOBase(SSOFixtures):
     ):
         with pytest.raises(ValueError, match=r"Incomplete arguments.*"):
             self.sso.get_authorization_url(
-                redirect_uri=self.redirect_uri, state=self.state
+                redirect_uri=self.redirect_uri, state=self.authorization_state
             )
 
     def test_authorization_url_has_expected_query_params_with_provider(self):
         authorization_url = self.sso.get_authorization_url(
-            provider=self.provider, redirect_uri=self.redirect_uri, state=self.state
+            provider=self.provider,
+            redirect_uri=self.redirect_uri,
+            state=self.authorization_state,
         )
 
         parsed_url = urlparse(authorization_url)
+        print(parsed_url, authorization_url)
 
         assert dict(parse_qsl(parsed_url.query)) == {
             "provider": self.provider,
             "client_id": workos.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
-            "state": self.state,
+            "state": self.authorization_state,
         }
 
     def test_authorization_url_has_expected_query_params_with_domain_hint(self):
@@ -115,7 +118,7 @@ class TestSSOBase(SSOFixtures):
             connection_id=self.connection_id,
             domain_hint=self.customer_domain,
             redirect_uri=self.redirect_uri,
-            state=self.state,
+            state=self.authorization_state,
         )
 
         parsed_url = urlparse(authorization_url)
@@ -126,7 +129,7 @@ class TestSSOBase(SSOFixtures):
             "redirect_uri": self.redirect_uri,
             "connection": self.connection_id,
             "response_type": RESPONSE_TYPE_CODE,
-            "state": self.state,
+            "state": self.authorization_state,
         }
 
     def test_authorization_url_has_expected_query_params_with_login_hint(self):
@@ -134,7 +137,7 @@ class TestSSOBase(SSOFixtures):
             connection_id=self.connection_id,
             login_hint=self.login_hint,
             redirect_uri=self.redirect_uri,
-            state=self.state,
+            state=self.authorization_state,
         )
 
         parsed_url = urlparse(authorization_url)
@@ -145,14 +148,14 @@ class TestSSOBase(SSOFixtures):
             "redirect_uri": self.redirect_uri,
             "connection": self.connection_id,
             "response_type": RESPONSE_TYPE_CODE,
-            "state": self.state,
+            "state": self.authorization_state,
         }
 
     def test_authorization_url_has_expected_query_params_with_connection(self):
         authorization_url = self.sso.get_authorization_url(
             connection_id=self.connection_id,
             redirect_uri=self.redirect_uri,
-            state=self.state,
+            state=self.authorization_state,
         )
 
         parsed_url = urlparse(authorization_url)
@@ -162,7 +165,7 @@ class TestSSOBase(SSOFixtures):
             "client_id": workos.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
-            "state": self.state,
+            "state": self.authorization_state,
         }
 
     def test_authorization_url_with_string_provider_has_expected_query_params_with_organization(
@@ -172,7 +175,7 @@ class TestSSOBase(SSOFixtures):
             provider=self.provider,
             organization_id=self.organization_id,
             redirect_uri=self.redirect_uri,
-            state=self.state,
+            state=self.authorization_state,
         )
 
         parsed_url = urlparse(authorization_url)
@@ -183,14 +186,14 @@ class TestSSOBase(SSOFixtures):
             "client_id": workos.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
-            "state": self.state,
+            "state": self.authorization_state,
         }
 
     def test_authorization_url_has_expected_query_params_with_organization(self):
         authorization_url = self.sso.get_authorization_url(
             organization_id=self.organization_id,
             redirect_uri=self.redirect_uri,
-            state=self.state,
+            state=self.authorization_state,
         )
 
         parsed_url = urlparse(authorization_url)
@@ -200,7 +203,7 @@ class TestSSOBase(SSOFixtures):
             "client_id": workos.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
-            "state": self.state,
+            "state": self.authorization_state,
         }
 
     def test_authorization_url_has_expected_query_params_with_organization_and_provider(
@@ -210,7 +213,7 @@ class TestSSOBase(SSOFixtures):
             organization_id=self.organization_id,
             provider=self.provider,
             redirect_uri=self.redirect_uri,
-            state=self.state,
+            state=self.authorization_state,
         )
 
         parsed_url = urlparse(authorization_url)
@@ -221,7 +224,7 @@ class TestSSOBase(SSOFixtures):
             "client_id": workos.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
-            "state": self.state,
+            "state": self.authorization_state,
         }
 
 
@@ -314,7 +317,7 @@ class TestSSO(SSOFixtures):
     def test_list_connections_with_connection_type(
         self, mock_connections, capture_and_mock_http_client_request
     ):
-        request_args, request_kwargs = capture_and_mock_http_client_request(
+        _, request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             response_dict=mock_connections,
             status_code=200,
@@ -322,8 +325,11 @@ class TestSSO(SSOFixtures):
 
         self.sso.list_connections(connection_type="GenericSAML")
 
-        request_params = request_kwargs["params"]
-        assert request_params["connection_type"] == "GenericSAML"
+        assert request_kwargs["params"] == {
+            "connection_type": "GenericSAML",
+            "limit": 10,
+            "order": "desc",
+        }
 
     def test_delete_connection(self, mock_http_client_with_response):
         mock_http_client_with_response(
@@ -453,7 +459,7 @@ class TestAsyncSSO(SSOFixtures):
     async def test_list_connections_with_connection_type(
         self, mock_connections, capture_and_mock_http_client_request
     ):
-        request_args, request_kwargs = capture_and_mock_http_client_request(
+        _, request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             response_dict=mock_connections,
             status_code=200,
@@ -461,8 +467,11 @@ class TestAsyncSSO(SSOFixtures):
 
         await self.sso.list_connections(connection_type="GenericSAML")
 
-        request_params = request_kwargs["params"]
-        assert request_params["connection_type"] == "GenericSAML"
+        assert request_kwargs["params"] == {
+            "connection_type": "GenericSAML",
+            "limit": 10,
+            "order": "desc",
+        }
 
     async def test_delete_connection(self, mock_http_client_with_response):
         mock_http_client_with_response(

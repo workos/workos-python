@@ -28,7 +28,9 @@ class ProfileAndToken(WorkOSModel):
     profile: Profile
 
 
-ConnectionState = Literal["linked", "unlinked"]
+ConnectionState = Literal[
+    "active", "deleting", "inactive", "requires_type", "validating"
+]
 
 
 class ConnectionDomain(WorkOSModel):

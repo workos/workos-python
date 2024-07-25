@@ -9,7 +9,7 @@ class MockConnection(WorkOSBaseResource):
         self.organization_id = "org_id_" + id
         self.connection_type = "OktaSAML"
         self.name = "Foo Corporation"
-        self.state = "linked"
+        self.state = "active"
         self.created_at = datetime.datetime.now().isoformat()
         self.updated_at = datetime.datetime.now().isoformat()
         self.domains = [

@@ -2,7 +2,7 @@ from typing import Optional, Protocol, Union
 
 import workos
 from workos.typing.sync_or_async import SyncOrAsync
-from workos.utils.http_client import AsyncHTTPClient, FakeHTTPClient, SyncHTTPClient
+from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.resources.sso import (
     Connection,
@@ -12,10 +12,12 @@ from workos.resources.sso import (
 )
 from workos.utils.connection_types import ConnectionType
 from workos.utils.request import (
+    DEFAULT_LIST_RESPONSE_LIMIT,
     RESPONSE_TYPE_CODE,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_POST,
+    RequestHelper,
 )
 from workos.utils.validation import SSO_MODULE, validate_settings
 from workos.resources.list import (
@@ -31,8 +33,6 @@ TOKEN_PATH = "sso/token"
 PROFILE_PATH = "sso/profile"
 
 OAUTH_GRANT_TYPE = "authorization_code"
-
-DEFAULT_RESPONSE_LIMIT = 10
 
 
 class ConnectionsListFilters(ListArgs, total=False):
@@ -94,18 +94,9 @@ class SSOModule(Protocol):
         if state is not None:
             params["state"] = state
 
-        fake_http_client = FakeHTTPClient(
-            base_url=self._http_client.base_url,
-            version=self._http_client.version,
-            timeout=self._http_client.timeout,
+        return RequestHelper.build_url_with_query_params(
+            self._http_client.base_url, **params
         )
-
-        request_url = fake_http_client.build_request_url(
-            url=AUTHORIZATION_PATH, method=REQUEST_METHOD_GET, params=params
-        )
-
-        fake_http_client.close()
-        return request_url
 
     def get_profile(self, accessToken: str) -> SyncOrAsync[Profile]: ...
 
@@ -118,7 +109,7 @@ class SSOModule(Protocol):
         connection_type: Optional[ConnectionType] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
-        limit: int = DEFAULT_RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -199,7 +190,7 @@ class SSO(SSOModule):
         connection_type: Optional[ConnectionType] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
-        limit: int = DEFAULT_RESPONSE_LIMIT,
+        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -222,7 +213,7 @@ class SSO(SSOModule):
             "connection_type": connection_type,
             "domain": domain,
             "organization_id": organization_id,
-            "limit": limit or DEFAULT_RESPONSE_LIMIT,
+            "limit": limit,
             "before": before,
             "after": after,
             "order": order or "desc",
@@ -238,7 +229,7 @@ class SSO(SSOModule):
         return WorkOsListResource(
             list_method=self.list_connections,
             list_args=params,
-            **ListPage[Connection](**response).model_dump(exclude_unset=True),
+            **ListPage[Connection](**response).model_dump(),
         )
 
     def delete_connection(self, connection_id: str) -> None:
@@ -326,7 +317,7 @@ class AsyncSSO(SSOModule):
         connection_type: Optional[ConnectionType] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
-        limit: int = DEFAULT_RESPONSE_LIMIT,
+        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -349,7 +340,7 @@ class AsyncSSO(SSOModule):
             "connection_type": connection_type,
             "domain": domain,
             "organization_id": organization_id,
-            "limit": limit or DEFAULT_RESPONSE_LIMIT,
+            "limit": limit,
             "before": before,
             "after": after,
             "order": order or "desc",
@@ -365,7 +356,7 @@ class AsyncSSO(SSOModule):
         return AsyncWorkOsListResource(
             list_method=self.list_connections,
             list_args=params,
-            **ListPage[Connection](**response).model_dump(exclude_unset=True),
+            **ListPage[Connection](**response).model_dump(),
         )
 
     async def delete_connection(self, connection_id: str) -> None:

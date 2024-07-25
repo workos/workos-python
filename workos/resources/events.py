@@ -1,9 +1,8 @@
 from typing import Generic, Literal, TypeVar, Union
 from typing_extensions import Annotated
 from pydantic import Field
+from workos.resources.directory_sync import DirectoryGroup, DirectoryUser
 from workos.resources.workos_model import WorkOSModel
-from workos.types.directory_sync.directory_group import DirectoryGroup
-from workos.types.directory_sync.directory_user import DirectoryUser
 from workos.types.events.directory_group_with_previous_attributes import (
     DirectoryGroupWithPreviousAttributes,
 )

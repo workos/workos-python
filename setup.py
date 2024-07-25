@@ -1,5 +1,4 @@
 import os
-import sys
 from setuptools import setup, find_packages
 
 base_dir = os.path.dirname(__file__)
@@ -36,15 +35,14 @@ setup(
     extras_require={
         "dev": [
             "flake8",
-            "pytest==8.1.1",
+            "pytest==8.3.2",
             "pytest-asyncio==0.23.8",
-            "pytest-cov==2.8.1",
-            "six==1.13.0",
-            "black==22.3.0",
-            "twine==4.0.2",
+            "pytest-cov==5.0.0",
+            "six==1.16.0",
+            "black==24.4.2",
+            "twine==5.1.1",
             "requests==2.30.0",
-            "urllib3==2.0.2",
-            "mypy==1.10.1",
+            "mypy==1.11.0",
             "httpx>=0.27.0",
         ],
         ":python_version<'3.4'": ["enum34"],

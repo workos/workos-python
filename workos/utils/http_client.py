@@ -1,9 +1,8 @@
 import asyncio
-from typing import Dict, Mapping, Optional, Union, TypedDict
+from typing import Mapping, Optional
 
 import httpx
 
-from workos.resources.list import ListArgs
 from workos.utils._base_http_client import BaseHTTPClient
 from workos.utils.request import REQUEST_METHOD_GET
 

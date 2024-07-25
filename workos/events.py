@@ -20,8 +20,7 @@ class EventsModule(Protocol):
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> SyncOrAsync[dict]:
-        ...
+    ) -> SyncOrAsync[dict]: ...
 
 
 class Events(EventsModule, WorkOSListResource):

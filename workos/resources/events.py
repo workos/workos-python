@@ -3,6 +3,9 @@ from typing_extensions import Annotated
 from pydantic import Field
 from workos.resources.directory_sync import DirectoryGroup, DirectoryUser
 from workos.resources.workos_model import WorkOSModel
+from workos.types.events.directory_group_membership_payload import (
+    DirectoryGroupMembershipPayload,
+)
 from workos.types.events.directory_group_with_previous_attributes import (
     DirectoryGroupWithPreviousAttributes,
 )
@@ -24,6 +27,8 @@ EventType = Literal[
     "dsync.user.created",
     "dsync.user.deleted",
     "dsync.user.updated",
+    "dsync.group.user_added",
+    "dsync.group.user_removed",
 ]
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
@@ -33,6 +38,7 @@ EventPayload = TypeVar(
     DirectoryGroup,
     DirectoryGroupWithPreviousAttributes,
     DirectoryUser,
+    DirectoryGroupMembershipPayload,
 )
 
 
@@ -94,6 +100,18 @@ class DirectoryUserUpdatedEvent(
     EventModel[Literal["dsync.user.updated"], DirectoryUserWithPreviousAttributes]
 ):
     event: Literal["dsync.user.updated"]
+
+
+class DirectoryUserAddedToGroupEvent(
+    EventModel[Literal["dsync.group.user_added"], DirectoryGroupMembershipPayload]
+):
+    event: Literal["dsync.group.user_added"]
+
+
+class DirectoryUserRemovedFromGroupEvent(
+    EventModel[Literal["dsync.group.user_removed"], DirectoryGroupMembershipPayload]
+):
+    event: Literal["dsync.group.user_removed"]
 
 
 Event = Annotated[

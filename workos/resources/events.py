@@ -39,6 +39,7 @@ EventPayload = TypeVar(
     DirectoryGroup,
     DirectoryGroupWithPreviousAttributes,
     DirectoryUser,
+    DirectoryUserWithPreviousAttributes,
     DirectoryGroupMembershipPayload,
 )
 

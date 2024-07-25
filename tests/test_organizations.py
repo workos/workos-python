@@ -1,11 +1,8 @@
 import datetime
-from typing import Dict, List, Union, cast
 
 import pytest
-import requests
 
-from tests.conftest import MockResponse
-from tests.utils.list_resource import list_data_to_dicts, list_response_of
+from tests.utils.list_resource import list_data_to_dicts
 from workos.organizations import Organizations
 from tests.utils.fixtures.mock_organization import MockOrganization
 

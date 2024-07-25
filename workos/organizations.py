@@ -2,6 +2,7 @@ from typing import List, Optional, Protocol
 import workos
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
+    DEFAULT_LIST_RESPONSE_LIMIT,
     RequestHelper,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
@@ -16,7 +17,6 @@ from workos.resources.organizations import (
 from workos.resources.list import ListPage, WorkOsListResource, ListArgs
 
 ORGANIZATIONS_PATH = "organizations"
-RESPONSE_LIMIT = 10
 
 
 class OrganizationListFilters(ListArgs, total=False):
@@ -27,7 +27,7 @@ class OrganizationsModule(Protocol):
     def list_organizations(
         self,
         domains: Optional[List[str]] = None,
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -68,7 +68,7 @@ class Organizations(OrganizationsModule):
     def list_organizations(
         self,
         domains: Optional[List[str]] = None,
-        limit: int = RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",

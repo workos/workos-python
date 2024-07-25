@@ -176,6 +176,16 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
 
         return cast(Dict, response_json)
 
+    def build_request_url(
+        self,
+        url: str,
+        method: Optional[str] = REQUEST_METHOD_GET,
+        params: Optional[Mapping] = None,
+    ) -> str:
+        return self._client.build_request(
+            method=method or REQUEST_METHOD_GET, url=url, params=params
+        ).url.__str__()
+
     @property
     def base_url(self) -> str:
         return self._base_url
@@ -207,3 +217,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     @property
     def timeout(self) -> int:
         return self._timeout
+
+    @property
+    def version(self) -> str:
+        return self._version

@@ -171,3 +171,38 @@ class TestAsyncClient(object):
         message = str(ex)
 
         assert "api_key" in message
+
+    def test_initialize_sso(self, set_api_key_and_client_id):
+        assert bool(async_client.sso)
+
+    def test_initialize_sso_missing_api_key(self, set_client_id):
+        with pytest.raises(ConfigurationException) as ex:
+            async_client.sso
+
+        message = str(ex)
+
+        assert "api_key" in message
+        assert "client_id" not in message
+
+    def test_initialize_sso_missing_client_id(self, set_api_key):
+        with pytest.raises(ConfigurationException) as ex:
+            async_client.sso
+
+        message = str(ex)
+
+        assert "client_id" in message
+        assert "api_key" not in message
+
+    def test_initialize_sso_missing_api_key_and_client_id(self):
+        with pytest.raises(ConfigurationException) as ex:
+            async_client.sso
+
+        message = str(ex)
+
+        assert all(
+            setting in message
+            for setting in (
+                "api_key",
+                "client_id",
+            )
+        )

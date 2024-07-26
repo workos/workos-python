@@ -7,6 +7,7 @@ from workos.resources.events import Event, EventType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.validation import EVENTS_MODULE, validate_settings
 from workos.resources.list import (
+    ListAfterMetadata,
     ListArgs,
     ListPage,
     WorkOsListResource,
@@ -20,7 +21,7 @@ class EventsListFilters(ListArgs, total=False):
     range_end: Optional[str]
 
 
-EventsListResource = WorkOsListResource[Event, EventsListFilters]
+EventsListResource = WorkOsListResource[Event, EventsListFilters, ListAfterMetadata]
 
 
 class EventsModule(Protocol):

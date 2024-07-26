@@ -139,6 +139,9 @@ class ListMetadata(ListAfterMetadata):
     before: Optional[str] = None
 
 
+ListMetadataType = TypeVar("ListMetadataType", ListAfterMetadata, ListMetadata)
+
+
 class ListPage(WorkOSModel, Generic[ListableResource]):
     object: Literal["list"]
     data: List[ListableResource]
@@ -158,11 +161,11 @@ ListMetadataType = TypeVar("ListMetadataType", ListAfterMetadata, ListMetadata)
 
 class BaseWorkOsListResource(
     WorkOSModel,
-    Generic[ListableResource, ListAndFilterParams],
+    Generic[ListableResource, ListAndFilterParams, ListMetadataType],
 ):
     object: Literal["list"]
     data: List[ListableResource]
-    list_metadata: Union[ListAfterMetadata, ListMetadata]
+    list_metadata: ListMetadataType
 
     list_method: Callable = Field(exclude=True)
     list_args: ListAndFilterParams = Field(exclude=True)
@@ -195,10 +198,12 @@ class BaseWorkOsListResource(
 
 class WorkOsListResource(
     BaseWorkOsListResource,
-    Generic[ListableResource, ListAndFilterParams],
+    Generic[ListableResource, ListAndFilterParams, ListMetadataType],
 ):
     def auto_paging_iter(self) -> Iterator[ListableResource]:
-        next_page: WorkOsListResource[ListableResource, ListAndFilterParams]
+        next_page: WorkOsListResource[
+            ListableResource, ListAndFilterParams, ListMetadataType
+        ]
         after = self.list_metadata.after
         fixed_pagination_params, filter_params = self._parse_params()
         index: int = 0
@@ -221,10 +226,12 @@ class WorkOsListResource(
 
 class AsyncWorkOsListResource(
     BaseWorkOsListResource,
-    Generic[ListableResource, ListAndFilterParams],
+    Generic[ListableResource, ListAndFilterParams, ListMetadataType],
 ):
     async def auto_paging_iter(self) -> AsyncIterator[ListableResource]:
-        next_page: WorkOsListResource[ListableResource, ListAndFilterParams]
+        next_page: WorkOsListResource[
+            ListableResource, ListAndFilterParams, ListMetadataType
+        ]
         after = self.list_metadata.after
         fixed_pagination_params, filter_params = self._parse_params()
         index: int = 0

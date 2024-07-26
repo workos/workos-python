@@ -16,6 +16,7 @@ from workos.resources.directory_sync import (
 )
 from workos.resources.list import (
     ListArgs,
+    ListMetadata,
     ListPage,
     AsyncWorkOsListResource,
     SyncOrAsyncListResource,
@@ -100,7 +101,9 @@ class DirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[DirectoryUserWithGroups, DirectoryUserListFilters]:
+    ) -> WorkOsListResource[
+        DirectoryUserWithGroups, DirectoryUserListFilters, ListMetadata
+    ]:
         """Gets a list of provisioned Users for a Directory.
 
         Note, either 'directory' or 'group' must be provided.
@@ -150,7 +153,7 @@ class DirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[DirectoryGroup, DirectoryGroupListFilters]:
+    ) -> WorkOsListResource[DirectoryGroup, DirectoryGroupListFilters, ListMetadata]:
         """Gets a list of provisioned Groups for a Directory .
 
         Note, either 'directory' or 'user' must be provided.
@@ -252,7 +255,7 @@ class DirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         organization: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Directory, DirectoryListFilters]:
+    ) -> WorkOsListResource[Directory, DirectoryListFilters, ListMetadata]:
         """Gets details for existing Directories.
 
         Args:
@@ -323,7 +326,9 @@ class AsyncDirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AsyncWorkOsListResource[DirectoryUserWithGroups, DirectoryUserListFilters]:
+    ) -> AsyncWorkOsListResource[
+        DirectoryUserWithGroups, DirectoryUserListFilters, ListMetadata
+    ]:
         """Gets a list of provisioned Users for a Directory.
 
         Note, either 'directory' or 'group' must be provided.
@@ -373,7 +378,9 @@ class AsyncDirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AsyncWorkOsListResource[DirectoryGroup, DirectoryGroupListFilters]:
+    ) -> AsyncWorkOsListResource[
+        DirectoryGroup, DirectoryGroupListFilters, ListMetadata
+    ]:
         """Gets a list of provisioned Groups for a Directory .
 
         Note, either 'directory' or 'user' must be provided.
@@ -474,7 +481,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         organization: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AsyncWorkOsListResource[Directory, DirectoryListFilters]:
+    ) -> AsyncWorkOsListResource[Directory, DirectoryListFilters, ListMetadata]:
         """Gets details for existing Directories.
 
         Args:

@@ -23,6 +23,7 @@ from workos.utils.validation import SSO_MODULE, validate_settings
 from workos.resources.list import (
     AsyncWorkOsListResource,
     ListArgs,
+    ListMetadata,
     ListPage,
     SyncOrAsyncListResource,
     WorkOsListResource,
@@ -194,7 +195,7 @@ class SSO(SSOModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Connection, ConnectionsListFilters]:
+    ) -> WorkOsListResource[Connection, ConnectionsListFilters, ListMetadata]:
         """Gets details for existing Connections.
 
         Args:
@@ -321,7 +322,7 @@ class AsyncSSO(SSOModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AsyncWorkOsListResource[Connection, ConnectionsListFilters]:
+    ) -> AsyncWorkOsListResource[Connection, ConnectionsListFilters, ListMetadata]:
         """Gets details for existing Connections.
 
         Args:

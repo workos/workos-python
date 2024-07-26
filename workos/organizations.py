@@ -14,7 +14,7 @@ from workos.resources.organizations import (
     Organization,
     DomainDataInput,
 )
-from workos.resources.list import ListPage, WorkOsListResource, ListArgs
+from workos.resources.list import ListMetadata, ListPage, WorkOsListResource, ListArgs
 
 ORGANIZATIONS_PATH = "organizations"
 
@@ -31,7 +31,7 @@ class OrganizationsModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Organization, OrganizationListFilters]: ...
+    ) -> WorkOsListResource[Organization, OrganizationListFilters, ListMetadata]: ...
 
     def get_organization(self, organization: str) -> Organization: ...
 
@@ -72,7 +72,7 @@ class Organizations(OrganizationsModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Organization, OrganizationListFilters]:
+    ) -> WorkOsListResource[Organization, OrganizationListFilters, ListMetadata]:
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
         Kwargs:
@@ -101,7 +101,7 @@ class Organizations(OrganizationsModule):
             token=workos.api_key,
         )
 
-        return WorkOsListResource[Organization, OrganizationListFilters](
+        return WorkOsListResource[Organization, OrganizationListFilters, ListMetadata](
             list_method=self.list_organizations,
             list_args=list_params,
             **ListPage[Organization](**response).model_dump()

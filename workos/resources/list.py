@@ -156,7 +156,6 @@ class ListArgs(TypedDict, total=False):
 
 
 ListAndFilterParams = TypeVar("ListAndFilterParams", bound=ListArgs)
-ListMetadataType = TypeVar("ListMetadataType", ListAfterMetadata, ListMetadata)
 
 
 class BaseWorkOsListResource(

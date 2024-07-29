@@ -123,7 +123,7 @@ EventPayload = TypeVar(
 )
 
 
-class EventModel(WorkOSModel, Generic[EventTypeDiscriminator, EventPayload]):
+class EventModel(WorkOSModel, Generic[EventPayload]):
     # TODO: fix these docs
     """Representation of an Event returned from the Events API or via Webhook.
     Attributes:
@@ -132,253 +132,181 @@ class EventModel(WorkOSModel, Generic[EventTypeDiscriminator, EventPayload]):
 
     id: str
     object: Literal["event"]
-    event: LiteralOrUntyped[EventTypeDiscriminator]
     data: EventPayload
     created_at: str
 
 
 class AuthenticationEmailVerificationSucceededEvent(
-    EventModel[
-        Literal["authentication.email_verification_succeeded"],
-        AuthenticationEmailVerificationSucceededPayload,
-    ]
+    EventModel[AuthenticationEmailVerificationSucceededPayload,]
 ):
     event: Literal["authentication.email_verification_succeeded"]
 
 
 class AuthenticationMagicAuthFailedEvent(
-    EventModel[
-        Literal["authentication.magic_auth_failed"],
-        AuthenticationMagicAuthFailedPayload,
-    ]
+    EventModel[AuthenticationMagicAuthFailedPayload,]
 ):
     event: Literal["authentication.magic_auth_failed"]
 
 
 class AuthenticationMagicAuthSucceededEvent(
-    EventModel[
-        Literal["authentication.magic_auth_succeeded"],
-        AuthenticationMagicAuthSucceededPayload,
-    ]
+    EventModel[AuthenticationMagicAuthSucceededPayload,]
 ):
     event: Literal["authentication.magic_auth_succeeded"]
 
 
-class AuthenticationMfaSucceededEvent(
-    EventModel[
-        Literal["authentication.mfa_succeeded"], AuthenticationMfaSucceededPayload
-    ]
-):
+class AuthenticationMfaSucceededEvent(EventModel[AuthenticationMfaSucceededPayload]):
     event: Literal["authentication.mfa_succeeded"]
 
 
 class AuthenticationOauthSucceededEvent(
-    EventModel[
-        Literal["authentication.oauth_succeeded"], AuthenticationOauthSucceededPayload
-    ]
+    EventModel[AuthenticationOauthSucceededPayload]
 ):
     event: Literal["authentication.oauth_succeeded"]
 
 
 class AuthenticationPasswordFailedEvent(
-    EventModel[
-        Literal["authentication.password_failed"], AuthenticationPasswordFailedPayload
-    ]
+    EventModel[AuthenticationPasswordFailedPayload]
 ):
     event: Literal["authentication.password_failed"]
 
 
 class AuthenticationPasswordSucceededEvent(
-    EventModel[
-        Literal["authentication.password_succeeded"],
-        AuthenticationPasswordSucceededPayload,
-    ]
+    EventModel[AuthenticationPasswordSucceededPayload,]
 ):
     event: Literal["authentication.password_succeeded"]
 
 
-class AuthenticationSsoSucceededEvent(
-    EventModel[
-        Literal["authentication.sso_succeeded"], AuthenticationSsoSucceededPayload
-    ]
-):
+class AuthenticationSsoSucceededEvent(EventModel[AuthenticationSsoSucceededPayload]):
     event: Literal["authentication.sso_succeeded"]
 
 
-class ConnectionActivatedEvent(
-    EventModel[Literal["connection.activated"], ConnectionPayloadWithLegacyFields]
-):
+class ConnectionActivatedEvent(EventModel[ConnectionPayloadWithLegacyFields]):
     event: Literal["connection.activated"]
 
 
-class ConnectionDeactivatedEvent(
-    EventModel[Literal["connection.deactivated"], ConnectionPayloadWithLegacyFields]
-):
+class ConnectionDeactivatedEvent(EventModel[ConnectionPayloadWithLegacyFields]):
     event: Literal["connection.deactivated"]
 
 
-class ConnectionDeletedEvent(EventModel[Literal["connection.deleted"], Connection]):
+class ConnectionDeletedEvent(EventModel[Connection]):
     event: Literal["connection.deleted"]
 
 
-class DirectoryActivatedEvent(
-    EventModel[Literal["dsync.activated"], DirectoryPayloadWithLegacyFields]
-):
+class DirectoryActivatedEvent(EventModel[DirectoryPayloadWithLegacyFields]):
     event: Literal["dsync.activated"]
 
 
-class DirectoryDeletedEvent(EventModel[Literal["dsync.deleted"], DirectoryPayload]):
+class DirectoryDeletedEvent(EventModel[DirectoryPayload]):
     event: Literal["dsync.deleted"]
 
 
-class DirectoryGroupCreatedEvent(
-    EventModel[Literal["dsync.group.created"], DirectoryGroup]
-):
+class DirectoryGroupCreatedEvent(EventModel[DirectoryGroup]):
     event: Literal["dsync.group.created"]
 
 
-class DirectoryGroupDeletedEvent(
-    EventModel[Literal["dsync.group.deleted"], DirectoryGroup]
-):
+class DirectoryGroupDeletedEvent(EventModel[DirectoryGroup]):
     event: Literal["dsync.group.deleted"]
 
 
-class DirectoryGroupUpdatedEvent(
-    EventModel[Literal["dsync.group.updated"], DirectoryGroupWithPreviousAttributes]
-):
+class DirectoryGroupUpdatedEvent(EventModel[DirectoryGroupWithPreviousAttributes]):
     event: Literal["dsync.group.updated"]
 
 
-class DirectoryUserCreatedEvent(
-    EventModel[Literal["dsync.user.created"], DirectoryUser]
-):
+class DirectoryUserCreatedEvent(EventModel[DirectoryUser]):
     event: Literal["dsync.user.created"]
 
 
-class DirectoryUserDeletedEvent(
-    EventModel[Literal["dsync.user.deleted"], DirectoryUser]
-):
+class DirectoryUserDeletedEvent(EventModel[DirectoryUser]):
     event: Literal["dsync.user.deleted"]
 
 
-class DirectoryUserUpdatedEvent(
-    EventModel[Literal["dsync.user.updated"], DirectoryUserWithPreviousAttributes]
-):
+class DirectoryUserUpdatedEvent(EventModel[DirectoryUserWithPreviousAttributes]):
     event: Literal["dsync.user.updated"]
 
 
-class DirectoryUserAddedToGroupEvent(
-    EventModel[Literal["dsync.group.user_added"], DirectoryGroupMembershipPayload]
-):
+class DirectoryUserAddedToGroupEvent(EventModel[DirectoryGroupMembershipPayload]):
     event: Literal["dsync.group.user_added"]
 
 
-class DirectoryUserRemovedFromGroupEvent(
-    EventModel[Literal["dsync.group.user_removed"], DirectoryGroupMembershipPayload]
-):
+class DirectoryUserRemovedFromGroupEvent(EventModel[DirectoryGroupMembershipPayload]):
     event: Literal["dsync.group.user_removed"]
 
 
-class EmailVerificationCreatedEvent(
-    EventModel[Literal["email_verification.created"], EmailVerificationCommon]
-):
+class EmailVerificationCreatedEvent(EventModel[EmailVerificationCommon]):
     event: Literal["email_verification.created"]
 
 
-class InvitationCreatedEvent(
-    EventModel[Literal["invitation.created"], InvitationCommon]
-):
+class InvitationCreatedEvent(EventModel[InvitationCommon]):
     event: Literal["invitation.created"]
 
 
-class MagicAuthCreatedEvent(EventModel[Literal["magic_auth.created"], MagicAuthCommon]):
+class MagicAuthCreatedEvent(EventModel[MagicAuthCommon]):
     event: Literal["magic_auth.created"]
 
 
-class OrganizationCreatedEvent(
-    EventModel[Literal["organization.created"], OrganizationCommon]
-):
+class OrganizationCreatedEvent(EventModel[OrganizationCommon]):
     event: Literal["organization.created"]
 
 
-class OrganizationDeletedEvent(
-    EventModel[Literal["organization.deleted"], OrganizationCommon]
-):
+class OrganizationDeletedEvent(EventModel[OrganizationCommon]):
     event: Literal["organization.deleted"]
 
 
-class OrganizationUpdatedEvent(
-    EventModel[Literal["organization.updated"], OrganizationCommon]
-):
+class OrganizationUpdatedEvent(EventModel[OrganizationCommon]):
     event: Literal["organization.updated"]
 
 
 class OrganizationDomainVerificationFailedEvent(
-    EventModel[
-        Literal["organization_domain.verification_failed"],
-        OrganizationDomainVerificationFailedPayload,
-    ]
+    EventModel[OrganizationDomainVerificationFailedPayload,]
 ):
     event: Literal["organization_domain.verification_failed"]
 
 
-class OrganizationDomainVerifiedEvent(
-    EventModel[Literal["organization_domain.verified"], OrganizationDomain]
-):
+class OrganizationDomainVerifiedEvent(EventModel[OrganizationDomain]):
     event: Literal["organization_domain.verified"]
 
 
-class OrganizationMembershipCreatedEvent(
-    EventModel[Literal["organization_membership.created"], OrganizationMembership]
-):
+class OrganizationMembershipCreatedEvent(EventModel[OrganizationMembership]):
     event: Literal["organization_membership.created"]
 
 
-class OrganizationMembershipDeletedEvent(
-    EventModel[Literal["organization_membership.deleted"], OrganizationMembership]
-):
+class OrganizationMembershipDeletedEvent(EventModel[OrganizationMembership]):
     event: Literal["organization_membership.deleted"]
 
 
-class OrganizationMembershipUpdatedEvent(
-    EventModel[Literal["organization_membership.updated"], OrganizationMembership]
-):
+class OrganizationMembershipUpdatedEvent(EventModel[OrganizationMembership]):
     event: Literal["organization_membership.updated"]
 
 
-class PasswordResetCreatedEvent(
-    EventModel[Literal["password_reset.created"], PasswordResetCommon]
-):
+class PasswordResetCreatedEvent(EventModel[PasswordResetCommon]):
     event: Literal["password_reset.created"]
 
 
-class RoleCreatedEvent(EventModel[Literal["role.created"], Role]):
+class RoleCreatedEvent(EventModel[Role]):
     event: Literal["role.created"]
 
 
-class RoleDeletedEvent(EventModel[Literal["role.deleted"], Role]):
+class RoleDeletedEvent(EventModel[Role]):
     event: Literal["role.deleted"]
 
 
-class RoleUpdatedEvent(EventModel[Literal["role.updated"], Role]):
+class RoleUpdatedEvent(EventModel[Role]):
     event: Literal["role.updated"]
 
 
-class SessionCreatedEvent(
-    EventModel[Literal["session.created"], SessionCreatedPayload]
-):
+class SessionCreatedEvent(EventModel[SessionCreatedPayload]):
     event: Literal["session.created"]
 
 
-class UserCreatedEvent(EventModel[Literal["user.created"], User]):
+class UserCreatedEvent(EventModel[User]):
     event: Literal["user.created"]
 
 
-class UserDeletedEvent(EventModel[Literal["user.deleted"], User]):
+class UserDeletedEvent(EventModel[User]):
     event: Literal["user.deleted"]
 
 
-class UserUpdatedEvent(EventModel[Literal["user.updated"], User]):
+class UserUpdatedEvent(EventModel[User]):
     event: Literal["user.updated"]
 
 

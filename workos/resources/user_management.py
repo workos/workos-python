@@ -2,6 +2,7 @@ from typing import Literal, Optional
 from typing_extensions import TypedDict
 
 from workos.resources.workos_model import WorkOSModel
+from workos.types.user_management.invitation_common import InvitationCommon
 
 
 PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
@@ -70,25 +71,11 @@ class EmailVerification(WorkOSModel):
     updated_at: str
 
 
-InvitationState = Literal["accepted", "expired", "pending", "revoked"]
-
-
-class Invitation(WorkOSModel):
+class Invitation(InvitationCommon):
     """Representation of a WorkOS Invitation as returned."""
 
-    object: Literal["invitation"]
-    id: str
-    email: str
-    state: InvitationState
-    accepted_at: Optional[str] = None
-    revoked_at: Optional[str] = None
-    expires_at: str
     token: str
     accept_invitation_url: str
-    organization_id: Optional[str] = None
-    inviter_user_id: Optional[str] = None
-    created_at: str
-    updated_at: str
 
 
 class MagicAuth(WorkOSModel):

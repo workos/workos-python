@@ -33,6 +33,7 @@ from workos.types.events.directory_user_with_previous_attributes import (
 from workos.types.events.email_verification_payload import EmailVerificationPayload
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.sso.connection import Connection
+from workos.types.user_management.invitation_common import InvitationCommon
 from workos.typing.literals import LiteralOrUntyped
 
 EventType = Literal[
@@ -58,6 +59,7 @@ EventType = Literal[
     "dsync.group.user_added",
     "dsync.group.user_removed",
     "email_verification.created",
+    "invitation.created",
     "organization.created",
     "organization.deleted",
     "organization.updated",
@@ -83,6 +85,7 @@ EventPayload = TypeVar(
     DirectoryUserWithPreviousAttributes,
     DirectoryGroupMembershipPayload,
     EmailVerificationPayload,
+    InvitationCommon,
     OrganizationCommon,
 )
 
@@ -249,6 +252,10 @@ class EmailVerificationCreated(
     event: Literal["email_verification.created"]
 
 
+class InvitationCreated(EventModel[Literal["invitation.created"], InvitationCommon]):
+    event: Literal["invitation.created"]
+
+
 class OrganizationCreated(
     EventModel[Literal["organization.created"], OrganizationCommon]
 ):
@@ -291,6 +298,7 @@ Event = Annotated[
         DirectoryUserAddedToGroupEvent,
         DirectoryUserRemovedFromGroupEvent,
         EmailVerificationCreated,
+        InvitationCreated,
         OrganizationCreated,
         OrganizationDeleted,
         OrganizationUpdated,

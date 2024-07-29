@@ -36,6 +36,7 @@ from workos.types.events.organization_domain_verification_failed_payload import 
 )
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organizations.organization_domain import OrganizationDomain
+from workos.types.roles.role import Role
 from workos.types.sso.connection import Connection
 from workos.types.user_management.email_verification_common import (
     EmailVerificationCommon,
@@ -79,6 +80,9 @@ EventType = Literal[
     "organization_membership.deleted",
     "organization_membership.updated",
     "password_reset.created",
+    "role.created",
+    "role.deleted",
+    "role.updated",
 ]
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
@@ -108,6 +112,7 @@ EventPayload = TypeVar(
     OrganizationDomainVerificationFailedPayload,
     OrganizationMembership,
     PasswordResetCommon,
+    Role,
 )
 
 
@@ -338,6 +343,18 @@ class PasswordResetCreatedEvent(
     EventModel[Literal["password_reset.created"], PasswordResetCommon]
 ):
     event: Literal["password_reset.created"]
+
+
+class RoleCreatedEvent(EventModel[Literal["role.created"], Role]):
+    event: Literal["role.created"]
+
+
+class RoleDeletedEvent(EventModel[Literal["role.deleted"], Role]):
+    event: Literal["role.deleted"]
+
+
+class RoleUpdatedEvent(EventModel[Literal["role.updated"], Role]):
+    event: Literal["role.updated"]
 
 
 Event = Annotated[

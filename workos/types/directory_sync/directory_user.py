@@ -12,7 +12,7 @@ class DirectoryUserEmail(WorkOSModel):
     primary: Optional[bool] = None
 
 
-class Role(WorkOSModel):
+class InlineRole(WorkOSModel):
     slug: str
 
 
@@ -32,7 +32,7 @@ class DirectoryUser(WorkOSModel):
     raw_attributes: dict
     created_at: str
     updated_at: str
-    role: Optional[Role] = None
+    role: Optional[InlineRole] = None
 
     def primary_email(self):
         return next((email for email in self.emails if email.primary), None)

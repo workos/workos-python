@@ -34,6 +34,7 @@ from workos.types.events.directory_user_with_previous_attributes import (
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
+from workos.types.events.session_created_payload import SessionCreatedPayload
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organizations.organization_domain import OrganizationDomain
 from workos.types.roles.role import Role
@@ -83,6 +84,7 @@ EventType = Literal[
     "role.created",
     "role.deleted",
     "role.updated",
+    "session.created",
 ]
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
@@ -113,6 +115,7 @@ EventPayload = TypeVar(
     OrganizationMembership,
     PasswordResetCommon,
     Role,
+    SessionCreatedPayload,
 )
 
 
@@ -357,6 +360,12 @@ class RoleUpdatedEvent(EventModel[Literal["role.updated"], Role]):
     event: Literal["role.updated"]
 
 
+class SessionCreatedEvent(
+    EventModel[Literal["session.created"], SessionCreatedPayload]
+):
+    event: Literal["session.created"]
+
+
 Event = Annotated[
     Union[
         AuthenticationEmailVerificationSucceededEvent,
@@ -389,6 +398,7 @@ Event = Annotated[
         OrganizationDomainVerificationFailedEvent,
         OrganizationDomainVerifiedEvent,
         PasswordResetCreatedEvent,
+        SessionCreatedEvent,
     ],
     Field(..., discriminator="event"),
 ]

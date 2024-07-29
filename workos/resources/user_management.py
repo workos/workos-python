@@ -5,6 +5,7 @@ from workos.resources.workos_model import WorkOSModel
 from workos.types.user_management.email_verification_common import (
     EmailVerificationCommon,
 )
+from workos.types.user_management.impersonator import Impersonator
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
 from workos.types.user_management.password_reset_common import PasswordResetCommon
@@ -36,13 +37,6 @@ class User(WorkOSModel):
     profile_picture_url: Optional[str] = None
     created_at: str
     updated_at: str
-
-
-class Impersonator(WorkOSModel):
-    """Representation of a WorkOS Dashboard member impersonating a user"""
-
-    email: str
-    reason: str
 
 
 class AuthenticationResponse(WorkOSModel):

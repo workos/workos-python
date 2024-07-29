@@ -1,9 +1,9 @@
 from typing import List, Optional, Protocol
 import workos
+from workos.utils.http_client import SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request import (
     DEFAULT_LIST_RESPONSE_LIMIT,
-    RequestHelper,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_POST,
@@ -55,15 +55,12 @@ class OrganizationsModule(Protocol):
 
 
 class Organizations(OrganizationsModule):
-    @validate_settings(ORGANIZATIONS_MODULE)
-    def __init__(self):
-        pass
 
-    @property
-    def request_helper(self):
-        if not getattr(self, "_request_helper", None):
-            self._request_helper = RequestHelper()
-        return self._request_helper
+    _http_client: SyncHTTPClient
+
+    @validate_settings(ORGANIZATIONS_MODULE)
+    def __init__(self, http_client: SyncHTTPClient):
+        self._http_client = http_client
 
     def list_organizations(
         self,
@@ -94,7 +91,7 @@ class Organizations(OrganizationsModule):
             "domains": domains,
         }
 
-        response = self.request_helper.request(
+        response = self._http_client.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,
             params=list_params,
@@ -114,7 +111,7 @@ class Organizations(OrganizationsModule):
         Returns:
             dict: Organization response from WorkOS
         """
-        response = self.request_helper.request(
+        response = self._http_client.request(
             "organizations/{organization}".format(organization=organization),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
@@ -129,7 +126,7 @@ class Organizations(OrganizationsModule):
         Returns:
             dict: Organization response from WorkOS
         """
-        response = self.request_helper.request(
+        response = self._http_client.request(
             "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
@@ -154,7 +151,7 @@ class Organizations(OrganizationsModule):
             "idempotency_key": idempotency_key,
         }
 
-        response = self.request_helper.request(
+        response = self._http_client.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_POST,
             params=params,
@@ -175,7 +172,7 @@ class Organizations(OrganizationsModule):
             "domain_data": domain_data,
         }
 
-        response = self.request_helper.request(
+        response = self._http_client.request(
             "organizations/{organization}".format(organization=organization),
             method=REQUEST_METHOD_PUT,
             params=params,
@@ -190,7 +187,7 @@ class Organizations(OrganizationsModule):
         Args:
             organization (str): Organization unique identifier
         """
-        return self.request_helper.request(
+        return self._http_client.request(
             "organizations/{organization}".format(organization=organization),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,

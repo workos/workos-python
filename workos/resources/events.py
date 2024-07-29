@@ -2,7 +2,7 @@ from typing import Generic, Literal, TypeVar, Union
 from typing_extensions import Annotated
 from pydantic import Field
 from workos.resources.directory_sync import DirectoryGroup
-from workos.resources.user_management import OrganizationMembership
+from workos.resources.user_management import OrganizationMembership, User
 from workos.resources.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_user import DirectoryUser
 from workos.types.events.authentication_payload import (
@@ -85,6 +85,9 @@ EventType = Literal[
     "role.deleted",
     "role.updated",
     "session.created",
+    "user.created",
+    "user.deleted",
+    "user.updated",
 ]
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
@@ -116,6 +119,7 @@ EventPayload = TypeVar(
     PasswordResetCommon,
     Role,
     SessionCreatedPayload,
+    User,
 )
 
 
@@ -366,6 +370,18 @@ class SessionCreatedEvent(
     event: Literal["session.created"]
 
 
+class UserCreatedEvent(EventModel[Literal["user.created"], User]):
+    event: Literal["user.created"]
+
+
+class UserDeletedEvent(EventModel[Literal["user.deleted"], User]):
+    event: Literal["user.deleted"]
+
+
+class UserUpdatedEvent(EventModel[Literal["user.updated"], User]):
+    event: Literal["user.updated"]
+
+
 Event = Annotated[
     Union[
         AuthenticationEmailVerificationSucceededEvent,
@@ -398,7 +414,13 @@ Event = Annotated[
         OrganizationDomainVerificationFailedEvent,
         OrganizationDomainVerifiedEvent,
         PasswordResetCreatedEvent,
+        RoleCreatedEvent,
+        RoleDeletedEvent,
+        RoleUpdatedEvent,
         SessionCreatedEvent,
+        UserCreatedEvent,
+        UserDeletedEvent,
+        UserUpdatedEvent,
     ],
     Field(..., discriminator="event"),
 ]

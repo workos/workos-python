@@ -2,6 +2,7 @@ from typing import Generic, Literal, TypeVar, Union
 from typing_extensions import Annotated
 from pydantic import Field
 from workos.resources.directory_sync import DirectoryGroup
+from workos.resources.user_management import OrganizationMembership
 from workos.resources.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_user import DirectoryUser
 from workos.types.events.authentication_payload import (
@@ -73,6 +74,9 @@ EventType = Literal[
     "organization.updated",
     "organization_domain.verification_failed",
     "organization_domain.verified",
+    "organization_membership.created",
+    "organization_membership.deleted",
+    "organization_membership.updated",
 ]
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
@@ -100,6 +104,7 @@ EventPayload = TypeVar(
     OrganizationCommon,
     OrganizationDomain,
     OrganizationDomainVerificationFailedPayload,
+    OrganizationMembership,
 )
 
 
@@ -304,6 +309,24 @@ class OrganizationDomainVerified(
     EventModel[Literal["organization_domain.verified"], OrganizationDomain]
 ):
     event: Literal["organization_domain.verified"]
+
+
+class OrganizationMembershipCreated(
+    EventModel[Literal["organization_membership.created"], OrganizationMembership]
+):
+    event: Literal["organization_membership.created"]
+
+
+class OrganizationMembershipDeleted(
+    EventModel[Literal["organization_membership.deleted"], OrganizationMembership]
+):
+    event: Literal["organization_membership.deleted"]
+
+
+class OrganizationMembershipUpdated(
+    EventModel[Literal["organization_membership.updated"], OrganizationMembership]
+):
+    event: Literal["organization_membership.updated"]
 
 
 Event = Annotated[

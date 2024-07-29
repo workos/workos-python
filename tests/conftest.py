@@ -233,7 +233,7 @@ def test_sync_auto_pagination(
         http_client: Union[SyncHTTPClient, AsyncHTTPClient],
         list_function: Callable[[], WorkOsListResource],
         expected_all_page_data: dict,
-        list_function_params: Optional[Mapping[str, Any]] = {},
+        list_function_params: Optional[Mapping[str, Any]] = None,
     ):
         mock_pagination_request_for_http_client(
             http_client=http_client,

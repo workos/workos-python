@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Literal, Optional, Union
 from workos.resources.base import WorkOSBaseResource
 from workos.resources.workos_model import WorkOSModel
 
@@ -11,11 +11,15 @@ AuthenticationFactorType = Literal[
 
 
 class TotpFactor(WorkOSModel):
+    """Representation of a TOTP factor as returned in events."""
+
     issuer: str
     user: str
 
 
 class ExtendedTotpFactor(TotpFactor):
+    """Representation of a TOTP factor as returned by the API."""
+
     issuer: str
     user: str
     qr_code: str
@@ -57,28 +61,29 @@ class WorkOSAuthenticationFactorTotp(WorkOSBaseResource):
         return challenge_response_dict
 
 
-class AuthenticationFactorTotp(WorkOSModel):
+class AuthenticationFactorBase(WorkOSModel):
     """Representation of a MFA Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     object: Literal["authentication_factor"]
     id: str
     created_at: str
     updated_at: str
+    type: AuthenticationFactorType
+    user_id: Optional[str] = None
+
+
+class AuthenticationFactorTotp(AuthenticationFactorBase):
+    """Representation of a MFA Authentication Factor Response as returned by WorkOS through the MFA feature."""
+
     type: TotpAuthenticationFactorType
     totp: Union[TotpFactor, ExtendedTotpFactor, None]
-    user_id: str
 
 
-class AuthenticationFactorSms(WorkOSModel):
+class AuthenticationFactorSms(AuthenticationFactorBase):
     """Representation of a SMS Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
-    object: Literal["authentication_factor"]
-    id: str
-    created_at: str
-    updated_at: str
     type: SmsAuthenticationFactorType
     sms: Union[SmsFactor, None]
-    user_id: str
 
 
 AuthenticationFactor = Union[AuthenticationFactorTotp, AuthenticationFactorSms]
@@ -151,7 +156,8 @@ class AuthenticationChallenge(WorkOSModel):
     id: str
     created_at: str
     updated_at: str
-    expires_at: str
+    expires_at: Optional[str] = None
+    code: Optional[str] = None
     authentication_factor_id: str
 
 

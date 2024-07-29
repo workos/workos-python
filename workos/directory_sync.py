@@ -188,7 +188,9 @@ class DirectorySync(DirectorySyncModule):
             token=workos.api_key,
         )
 
-        return WorkOsListResource[DirectoryGroup, DirectoryGroupListFilters](
+        return WorkOsListResource[
+            DirectoryGroup, DirectoryGroupListFilters, ListMetadata
+        ](
             list_method=self.list_groups,
             list_args=list_params,
             **ListPage[DirectoryGroup](**response).model_dump(),
@@ -287,7 +289,7 @@ class DirectorySync(DirectorySyncModule):
             params=list_params,
             token=workos.api_key,
         )
-        return WorkOsListResource[Directory, DirectoryListFilters](
+        return WorkOsListResource[Directory, DirectoryListFilters, ListMetadata](
             list_method=self.list_directories,
             list_args=list_params,
             **ListPage[Directory](**response).model_dump(),
@@ -414,7 +416,9 @@ class AsyncDirectorySync(DirectorySyncModule):
             token=workos.api_key,
         )
 
-        return AsyncWorkOsListResource[DirectoryGroup, DirectoryGroupListFilters](
+        return AsyncWorkOsListResource[
+            DirectoryGroup, DirectoryGroupListFilters, ListMetadata
+        ](
             list_method=self.list_groups,
             list_args=list_params,
             **ListPage[DirectoryGroup](**response).model_dump(),
@@ -513,7 +517,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             params=list_params,
             token=workos.api_key,
         )
-        return AsyncWorkOsListResource[Directory, DirectoryListFilters](
+        return AsyncWorkOsListResource[Directory, DirectoryListFilters, ListMetadata](
             list_method=self.list_directories,
             list_args=list_params,
             **ListPage[Directory](**response).model_dump(),

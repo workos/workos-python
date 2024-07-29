@@ -6,9 +6,20 @@ from workos.resources.workos_model import WorkOSModel
 
 PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
 
+AuthenticationMethod = Literal[
+    "SSO",
+    "Password",
+    "AppleOAuth",
+    "GitHubOAuth",
+    "GoogleOAuth",
+    "MicrosoftOAuth",
+    "MagicAuth",
+    "Impersonation",
+]
+
 
 class User(WorkOSModel):
-    """Representation of a User as returned by WorkOS through User Management features."""
+    """Representation of a WorkOS User."""
 
     object: Literal["user"]
     id: str
@@ -29,9 +40,10 @@ class Impersonator(WorkOSModel):
 
 
 class AuthenticationResponse(WorkOSModel):
-    """Representation of a User and Organization ID response as returned by WorkOS through User Management features."""
+    """Representation of a WorkOS User and Organization ID response."""
 
     access_token: str
+    authentication_method: Optional[AuthenticationMethod] = None
     impersonator: Optional[Impersonator] = None
     organization_id: Optional[str] = None
     refresh_token: str
@@ -39,14 +51,14 @@ class AuthenticationResponse(WorkOSModel):
 
 
 class RefreshTokenAuthenticationResponse(WorkOSModel):
-    """Representation of refresh token authentication response as returned by WorkOS through User Management features."""
+    """Representation of a WorkOS refresh token authentication response."""
 
     access_token: str
     refresh_token: str
 
 
 class EmailVerification(WorkOSModel):
-    """Representation of a EmailVerification object as returned by WorkOS through User Management features."""
+    """Representation of a WorkOS EmailVerification object."""
 
     object: Literal["email_verification"]
     id: str
@@ -58,13 +70,16 @@ class EmailVerification(WorkOSModel):
     updated_at: str
 
 
+InvitationState = Literal["accepted", "expired", "pending", "revoked"]
+
+
 class Invitation(WorkOSModel):
-    """Representation of an Invitation as returned by WorkOS through User Management features."""
+    """Representation of a WorkOS Invitation as returned."""
 
     object: Literal["invitation"]
     id: str
     email: str
-    state: str
+    state: InvitationState
     accepted_at: Optional[str] = None
     revoked_at: Optional[str] = None
     expires_at: str
@@ -77,7 +92,7 @@ class Invitation(WorkOSModel):
 
 
 class MagicAuth(WorkOSModel):
-    """Representation of a MagicAuth object as returned by WorkOS through User Management features."""
+    """Representation of a WorkOS MagicAuth object."""
 
     object: Literal["magic_auth"]
     id: str
@@ -90,7 +105,7 @@ class MagicAuth(WorkOSModel):
 
 
 class PasswordReset(WorkOSModel):
-    """Representation of a PasswordReset object as returned by WorkOS through User Management features."""
+    """Representation of a WorkOS PasswordReset object."""
 
     object: Literal["password_reset"]
     id: str
@@ -110,7 +125,7 @@ OrganizationMembershipStatus = Literal["active", "inactive", "pending"]
 
 
 class OrganizationMembership(WorkOSModel):
-    """Representation of an Organization Membership as returned by WorkOS through User Management features."""
+    """Representation of an WorkOS Organization Membership."""
 
     object: Literal["organization_membership"]
     id: str

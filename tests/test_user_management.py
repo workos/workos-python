@@ -116,6 +116,7 @@ class TestUserManagement(object):
                 "created_at": "2022-02-15T15:26:53.274Z",
                 "updated_at": "2022-02-15T15:26:53.274Z",
                 "expires_at": "2022-02-15T15:36:53.279Z",
+                "code": None,
                 "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
             },
         }

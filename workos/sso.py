@@ -227,7 +227,7 @@ class SSO(SSOModule):
             token=workos.api_key,
         )
 
-        return WorkOsListResource[Connection, ConnectionsListFilters](
+        return WorkOsListResource[Connection, ConnectionsListFilters, ListMetadata](
             list_method=self.list_connections,
             list_args=params,
             **ListPage[Connection](**response).model_dump(),
@@ -354,7 +354,9 @@ class AsyncSSO(SSOModule):
             token=workos.api_key,
         )
 
-        return AsyncWorkOsListResource[Connection, ConnectionsListFilters](
+        return AsyncWorkOsListResource[
+            Connection, ConnectionsListFilters, ListMetadata
+        ](
             list_method=self.list_connections,
             list_args=params,
             **ListPage[Connection](**response).model_dump(),

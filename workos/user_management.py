@@ -3,6 +3,7 @@ from typing import Optional, Protocol, Set, Union
 import workos
 from workos.resources.list import (
     ListArgs,
+    ListMetadata,
     ListPage,
     SyncOrAsyncListResource,
     WorkOSListResource,
@@ -112,7 +113,7 @@ class UserManagementModule(Protocol):
         password_hash_type: Optional[PasswordHashType] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
-        email_verified: Optional[bool] = False,
+        email_verified: Optional[bool] = None,
     ) -> User: ...
 
     def update_user(
@@ -120,7 +121,7 @@ class UserManagementModule(Protocol):
         user_id: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
-        email_verified: Optional[bool] = False,
+        email_verified: Optional[bool] = None,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
         password_hash_type: Optional[PasswordHashType] = None,
@@ -410,7 +411,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[User, UsersListFilters]:
+    ) -> WorkOsListResource[User, UsersListFilters, ListMetadata]:
         """Get a list of all of your existing users matching the criteria specified.
 
         Kwargs:
@@ -441,7 +442,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
             token=workos.api_key,
         )
 
-        return WorkOsListResource[User, UsersListFilters](
+        return WorkOsListResource[User, UsersListFilters, ListMetadata](
             list_method=self.list_users,
             list_args=params,
             **ListPage[User](**response).model_dump(),
@@ -455,7 +456,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         password_hash_type: Optional[PasswordHashType] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
-        email_verified: Optional[bool] = False,
+        email_verified: Optional[bool] = None,
     ) -> User:
         """Create a new user.
 
@@ -495,7 +496,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         user_id: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
-        email_verified: Optional[bool] = False,
+        email_verified: Optional[bool] = None,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
         password_hash_type: Optional[PasswordHashType] = None,
@@ -629,7 +630,9 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[OrganizationMembership, OrganizationMembershipsListFilters]:
+    ) -> WorkOsListResource[
+        OrganizationMembership, OrganizationMembershipsListFilters, ListMetadata
+    ]:
         """Get a list of all of your existing organization memberships matching the criteria specified.
 
         Kwargs:
@@ -663,7 +666,9 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         )
 
         return WorkOsListResource[
-            OrganizationMembership, OrganizationMembershipsListFilters
+            OrganizationMembership,
+            OrganizationMembershipsListFilters,
+            ListMetadata,
         ](
             list_method=self.list_organization_memberships,
             list_args=params,
@@ -1170,7 +1175,9 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[AuthenticationFactor, AuthenticationFactorsListFilters]:
+    ) -> WorkOsListResource[
+        AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
+    ]:
         """Lists the Auth Factors for a user.
 
         Kwargs:
@@ -1204,7 +1211,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         }
 
         return WorkOsListResource[
-            AuthenticationFactor, AuthenticationFactorsListFilters
+            AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
         ](
             list_method=self.list_auth_factors,
             list_args=list_args,
@@ -1255,7 +1262,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Invitation, InvitationsListFilters]:
+    ) -> WorkOsListResource[Invitation, InvitationsListFilters, ListMetadata]:
         """Get a list of all of your existing invitations matching the criteria specified.
 
         Kwargs:
@@ -1286,7 +1293,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
             token=workos.api_key,
         )
 
-        return WorkOsListResource[Invitation, InvitationsListFilters](
+        return WorkOsListResource[Invitation, InvitationsListFilters, ListMetadata](
             list_method=self.list_invitations,
             list_args=params,
             **ListPage[Invitation](**response).model_dump(),

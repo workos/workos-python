@@ -18,7 +18,6 @@ from workos.resources.base import WorkOSBaseResource
 from workos.resources.directory_sync import (
     Directory,
     DirectoryGroup,
-    DirectoryUser,
     DirectoryUserWithGroups,
 )
 from workos.resources.events import Event

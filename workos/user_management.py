@@ -1206,7 +1206,7 @@ class UserManagement(UserManagementModule, WorkOSListResource):
             "limit": limit or DEFAULT_LIST_RESPONSE_LIMIT,
             "before": before,
             "after": after,
-            "order": order or "desc",
+            "order": order,
             "user_id": user_id,
         }
 

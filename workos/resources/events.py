@@ -4,6 +4,16 @@ from pydantic import Field
 from workos.resources.directory_sync import DirectoryGroup
 from workos.resources.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_user import DirectoryUser
+from workos.types.events.authentication_payload import (
+    AuthenticationEmailVerificationSucceededPayload,
+    AuthenticationMagicAuthFailedPayload,
+    AuthenticationMagicAuthSucceededPayload,
+    AuthenticationMfaSucceededPayload,
+    AuthenticationOauthSucceededPayload,
+    AuthenticationPasswordFailedPayload,
+    AuthenticationPasswordSucceededPayload,
+    AuthenticationSsoSucceededPayload,
+)
 from workos.types.events.connection_payload_with_legacy_fields import (
     ConnectionPayloadWithLegacyFields,
 )
@@ -24,6 +34,14 @@ from workos.types.sso.connection import Connection
 from workos.typing.literals import LiteralOrUntyped
 
 EventType = Literal[
+    "authentication.email_verification_succeeded",
+    "authentication.magic_auth_failed",
+    "authentication.magic_auth_succeeded",
+    "authentication.mfa_succeeded",
+    "authentication.oauth_succeeded",
+    "authentication.password_failed",
+    "authentication.password_succeeded",
+    "authentication.sso_succeeded",
     "connection.activated",
     "connection.deactivated",
     "connection.deleted",
@@ -41,6 +59,14 @@ EventType = Literal[
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
     "EventPayload",
+    AuthenticationEmailVerificationSucceededPayload,
+    AuthenticationMagicAuthFailedPayload,
+    AuthenticationMagicAuthSucceededPayload,
+    AuthenticationMfaSucceededPayload,
+    AuthenticationOauthSucceededPayload,
+    AuthenticationPasswordFailedPayload,
+    AuthenticationPasswordSucceededPayload,
+    AuthenticationSsoSucceededPayload,
     Connection,
     ConnectionPayloadWithLegacyFields,
     DirectoryPayload,
@@ -65,6 +91,74 @@ class EventModel(WorkOSModel, Generic[EventTypeDiscriminator, EventPayload]):
     event: LiteralOrUntyped[EventTypeDiscriminator]
     data: EventPayload
     created_at: str
+
+
+class AuthenticationEmailVerificationSucceededEvent(
+    EventModel[
+        Literal["authentication.email_verification_succeeded"],
+        AuthenticationEmailVerificationSucceededPayload,
+    ]
+):
+    event: Literal["authentication.email_verification_succeeded"]
+
+
+class AuthenticationMagicAuthFailedEvent(
+    EventModel[
+        Literal["authentication.magic_auth_failed"],
+        AuthenticationMagicAuthFailedPayload,
+    ]
+):
+    event: Literal["authentication.magic_auth_failed"]
+
+
+class AuthenticationMagicAuthSucceededEvent(
+    EventModel[
+        Literal["authentication.magic_auth_succeeded"],
+        AuthenticationMagicAuthSucceededPayload,
+    ]
+):
+    event: Literal["authentication.magic_auth_succeeded"]
+
+
+class AuthenticationMfaSucceededEvent(
+    EventModel[
+        Literal["authentication.mfa_succeeded"], AuthenticationMfaSucceededPayload
+    ]
+):
+    event: Literal["authentication.mfa_succeeded"]
+
+
+class AuthenticationOauthSucceededEvent(
+    EventModel[
+        Literal["authentication.oauth_succeeded"], AuthenticationOauthSucceededPayload
+    ]
+):
+    event: Literal["authentication.oauth_succeeded"]
+
+
+class AuthenticationPasswordFailedEvent(
+    EventModel[
+        Literal["authentication.password_failed"], AuthenticationPasswordFailedPayload
+    ]
+):
+    event: Literal["authentication.password_failed"]
+
+
+class AuthenticationPasswordSucceededEvent(
+    EventModel[
+        Literal["authentication.password_succeeded"],
+        AuthenticationPasswordSucceededPayload,
+    ]
+):
+    event: Literal["authentication.password_succeeded"]
+
+
+class AuthenticationSsoSucceededEvent(
+    EventModel[
+        Literal["authentication.sso_succeeded"], AuthenticationSsoSucceededPayload
+    ]
+):
+    event: Literal["authentication.sso_succeeded"]
 
 
 class ConnectionActivatedEvent(
@@ -143,6 +237,14 @@ class DirectoryUserRemovedFromGroupEvent(
 
 Event = Annotated[
     Union[
+        AuthenticationEmailVerificationSucceededEvent,
+        AuthenticationMagicAuthFailedEvent,
+        AuthenticationMagicAuthSucceededEvent,
+        AuthenticationMfaSucceededEvent,
+        AuthenticationOauthSucceededEvent,
+        AuthenticationPasswordFailedEvent,
+        AuthenticationPasswordSucceededEvent,
+        AuthenticationSsoSucceededEvent,
         ConnectionActivatedEvent,
         ConnectionDeactivatedEvent,
         ConnectionDeletedEvent,

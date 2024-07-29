@@ -30,9 +30,11 @@ from workos.types.events.directory_payload_with_legacy_fields import (
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
-from workos.types.events.email_verification_payload import EmailVerificationPayload
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.sso.connection import Connection
+from workos.types.user_management.email_verification_common import (
+    EmailVerificationCommon,
+)
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
 from workos.typing.literals import LiteralOrUntyped
@@ -86,7 +88,7 @@ EventPayload = TypeVar(
     DirectoryUser,
     DirectoryUserWithPreviousAttributes,
     DirectoryGroupMembershipPayload,
-    EmailVerificationPayload,
+    EmailVerificationCommon,
     InvitationCommon,
     MagicAuthCommon,
     OrganizationCommon,
@@ -250,7 +252,7 @@ class DirectoryUserRemovedFromGroupEvent(
 
 
 class EmailVerificationCreated(
-    EventModel[Literal["email_verification.created"], EmailVerificationPayload]
+    EventModel[Literal["email_verification.created"], EmailVerificationCommon]
 ):
     event: Literal["email_verification.created"]
 

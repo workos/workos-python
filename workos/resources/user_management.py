@@ -2,6 +2,9 @@ from typing import Literal, Optional
 from typing_extensions import TypedDict
 
 from workos.resources.workos_model import WorkOSModel
+from workos.types.user_management.email_verification_common import (
+    EmailVerificationCommon,
+)
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
 
@@ -59,17 +62,10 @@ class RefreshTokenAuthenticationResponse(WorkOSModel):
     refresh_token: str
 
 
-class EmailVerification(WorkOSModel):
+class EmailVerification(EmailVerificationCommon):
     """Representation of a WorkOS EmailVerification object."""
 
-    object: Literal["email_verification"]
-    id: str
-    user_id: str
-    email: str
-    expires_at: str
     code: str
-    created_at: str
-    updated_at: str
 
 
 class Invitation(InvitationCommon):

@@ -10,6 +10,7 @@ class TestClient(object):
         client._audit_logs = None
         client._directory_sync = None
         client._events = None
+        client._mfa = None
         client._organizations = None
         client._passwordless = None
         client._portal = None
@@ -27,6 +28,9 @@ class TestClient(object):
 
     def test_initialize_events(self, set_api_key):
         assert bool(client.events)
+
+    def test_initialize_mfa(self, set_api_key):
+        assert bool(client.mfa)
 
     def test_initialize_organizations(self, set_api_key):
         assert bool(client.organizations)
@@ -83,6 +87,14 @@ class TestClient(object):
     def test_initialize_events_missing_api_key(self):
         with pytest.raises(ConfigurationException) as ex:
             client.events
+
+        message = str(ex)
+
+        assert "api_key" in message
+
+    def test_initialize_mfa_missing_api_key(self):
+        with pytest.raises(ConfigurationException) as ex:
+            client.mfa
 
         message = str(ex)
 

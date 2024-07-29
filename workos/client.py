@@ -73,7 +73,7 @@ class SyncClient(BaseClient):
     @property
     def mfa(self):
         if not getattr(self, "_mfa", None):
-            self._mfa = Mfa()
+            self._mfa = Mfa(self._http_client)
         return self._mfa
 
     @property

@@ -31,7 +31,7 @@ class SyncClient(BaseClient):
     @property
     def audit_logs(self):
         if not getattr(self, "_audit_logs", None):
-            self._audit_logs = AuditLogs()
+            self._audit_logs = AuditLogs(self._http_client)
         return self._audit_logs
 
     @property

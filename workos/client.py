@@ -79,5 +79,5 @@ class SyncClient(BaseClient):
     @property
     def user_management(self):
         if not getattr(self, "_user_management", None):
-            self._user_management = UserManagement()
+            self._user_management = UserManagement(self._http_client)
         return self._user_management

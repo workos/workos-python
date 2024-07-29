@@ -18,13 +18,14 @@ from workos.resources.base import WorkOSBaseResource
 from workos.resources.directory_sync import (
     Directory,
     DirectoryGroup,
-    DirectoryUser,
     DirectoryUserWithGroups,
 )
 from workos.resources.events import Event
+from workos.resources.mfa import AuthenticationFactor
 from workos.resources.organizations import Organization
 from pydantic import BaseModel, Field
 from workos.resources.sso import Connection
+from workos.resources.user_management import Invitation, OrganizationMembership, User
 from workos.resources.workos_model import WorkOSModel
 
 
@@ -122,12 +123,16 @@ class WorkOSListResource(WorkOSBaseResource):
 ListableResource = TypeVar(
     # add all possible generics of List Resource
     "ListableResource",
+    AuthenticationFactor,
     Connection,
     Directory,
     DirectoryGroup,
     DirectoryUserWithGroups,
     Event,
+    Invitation,
     Organization,
+    OrganizationMembership,
+    User,
 )
 
 

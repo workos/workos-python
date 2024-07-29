@@ -30,6 +30,7 @@ from workos.types.events.directory_payload_with_legacy_fields import (
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
+from workos.types.events.email_verification_payload import EmailVerificationPayload
 from workos.types.sso.connection import Connection
 from workos.typing.literals import LiteralOrUntyped
 
@@ -42,6 +43,7 @@ EventType = Literal[
     "authentication.password_failed",
     "authentication.password_succeeded",
     "authentication.sso_succeeded",
+    "email_verification.created",
     "connection.activated",
     "connection.deactivated",
     "connection.deleted",
@@ -76,6 +78,7 @@ EventPayload = TypeVar(
     DirectoryUser,
     DirectoryUserWithPreviousAttributes,
     DirectoryGroupMembershipPayload,
+    EmailVerificationPayload,
 )
 
 
@@ -235,6 +238,12 @@ class DirectoryUserRemovedFromGroupEvent(
     event: Literal["dsync.group.user_removed"]
 
 
+class EmailVerificationCreated(
+    EventModel[Literal["email_verification.created"], EmailVerificationPayload]
+):
+    event: Literal["email_verification.created"]
+
+
 Event = Annotated[
     Union[
         AuthenticationEmailVerificationSucceededEvent,
@@ -258,6 +267,7 @@ Event = Annotated[
         DirectoryUserUpdatedEvent,
         DirectoryUserAddedToGroupEvent,
         DirectoryUserRemovedFromGroupEvent,
+        EmailVerificationCreated,
     ],
     Field(..., discriminator="event"),
 ]

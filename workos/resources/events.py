@@ -31,6 +31,7 @@ from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
 from workos.types.events.email_verification_payload import EmailVerificationPayload
+from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.sso.connection import Connection
 from workos.typing.literals import LiteralOrUntyped
 
@@ -43,7 +44,6 @@ EventType = Literal[
     "authentication.password_failed",
     "authentication.password_succeeded",
     "authentication.sso_succeeded",
-    "email_verification.created",
     "connection.activated",
     "connection.deactivated",
     "connection.deleted",
@@ -57,6 +57,10 @@ EventType = Literal[
     "dsync.user.updated",
     "dsync.group.user_added",
     "dsync.group.user_removed",
+    "email_verification.created",
+    "organization.created",
+    "organization.deleted",
+    "organization.updated",
 ]
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
@@ -79,6 +83,7 @@ EventPayload = TypeVar(
     DirectoryUserWithPreviousAttributes,
     DirectoryGroupMembershipPayload,
     EmailVerificationPayload,
+    OrganizationCommon,
 )
 
 
@@ -244,6 +249,24 @@ class EmailVerificationCreated(
     event: Literal["email_verification.created"]
 
 
+class OrganizationCreated(
+    EventModel[Literal["organization.created"], OrganizationCommon]
+):
+    event: Literal["organization.created"]
+
+
+class OrganizationDeleted(
+    EventModel[Literal["organization.deleted"], OrganizationCommon]
+):
+    event: Literal["organization.deleted"]
+
+
+class OrganizationUpdated(
+    EventModel[Literal["organization.updated"], OrganizationCommon]
+):
+    event: Literal["organization.updated"]
+
+
 Event = Annotated[
     Union[
         AuthenticationEmailVerificationSucceededEvent,
@@ -268,6 +291,9 @@ Event = Annotated[
         DirectoryUserAddedToGroupEvent,
         DirectoryUserRemovedFromGroupEvent,
         EmailVerificationCreated,
+        OrganizationCreated,
+        OrganizationDeleted,
+        OrganizationUpdated,
     ],
     Field(..., discriminator="event"),
 ]

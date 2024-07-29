@@ -4,6 +4,9 @@ from pydantic import Field
 from workos.resources.directory_sync import DirectoryGroup
 from workos.resources.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_user import DirectoryUser
+from workos.types.events.connection_payload_with_legacy_fields import (
+    ConnectionPayloadWithLegacyFields,
+)
 from workos.types.events.directory_group_membership_payload import (
     DirectoryGroupMembershipPayload,
 )
@@ -17,9 +20,13 @@ from workos.types.events.directory_payload_with_legacy_fields import (
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
+from workos.types.sso.connection import Connection
 from workos.typing.literals import LiteralOrUntyped
 
 EventType = Literal[
+    "connection.activated",
+    "connection.deactivated",
+    "connection.deleted",
     "dsync.activated",
     "dsync.deleted",
     "dsync.group.created",
@@ -34,6 +41,8 @@ EventType = Literal[
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
     "EventPayload",
+    Connection,
+    ConnectionPayloadWithLegacyFields,
     DirectoryPayload,
     DirectoryPayloadWithLegacyFields,
     DirectoryGroup,
@@ -56,6 +65,22 @@ class EventModel(WorkOSModel, Generic[EventTypeDiscriminator, EventPayload]):
     event: LiteralOrUntyped[EventTypeDiscriminator]
     data: EventPayload
     created_at: str
+
+
+class ConnectionActivatedEvent(
+    EventModel[Literal["connection.activated"], ConnectionPayloadWithLegacyFields]
+):
+    event: Literal["connection.activated"]
+
+
+class ConnectionDeactivatedEvent(
+    EventModel[Literal["connection.deactivated"], ConnectionPayloadWithLegacyFields]
+):
+    event: Literal["connection.deactivated"]
+
+
+class ConnectionDeletedEvent(EventModel[Literal["connection.deleted"], Connection]):
+    event: Literal["connection.deleted"]
 
 
 class DirectoryActivatedEvent(
@@ -118,6 +143,9 @@ class DirectoryUserRemovedFromGroupEvent(
 
 Event = Annotated[
     Union[
+        ConnectionActivatedEvent,
+        ConnectionDeactivatedEvent,
+        ConnectionDeletedEvent,
         DirectoryActivatedEvent,
         DirectoryDeletedEvent,
         DirectoryGroupCreatedEvent,

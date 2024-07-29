@@ -100,6 +100,7 @@ class TestSSOBase(SSOFixtures):
 
         parsed_url = urlparse(authorization_url)
 
+        assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "provider": self.provider,
             "client_id": workos.client_id,
@@ -118,6 +119,7 @@ class TestSSOBase(SSOFixtures):
 
         parsed_url = urlparse(authorization_url)
 
+        assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "domain_hint": self.customer_domain,
             "client_id": workos.client_id,
@@ -137,6 +139,7 @@ class TestSSOBase(SSOFixtures):
 
         parsed_url = urlparse(authorization_url)
 
+        assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "login_hint": self.login_hint,
             "client_id": workos.client_id,
@@ -155,6 +158,7 @@ class TestSSOBase(SSOFixtures):
 
         parsed_url = urlparse(authorization_url)
 
+        assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "connection": self.connection_id,
             "client_id": workos.client_id,
@@ -175,6 +179,7 @@ class TestSSOBase(SSOFixtures):
 
         parsed_url = urlparse(authorization_url)
 
+        assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "organization": self.organization_id,
             "provider": self.provider,
@@ -193,6 +198,7 @@ class TestSSOBase(SSOFixtures):
 
         parsed_url = urlparse(authorization_url)
 
+        assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "organization": self.organization_id,
             "client_id": workos.client_id,
@@ -213,6 +219,7 @@ class TestSSOBase(SSOFixtures):
 
         parsed_url = urlparse(authorization_url)
 
+        assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "organization": self.organization_id,
             "provider": self.provider,
@@ -312,7 +319,7 @@ class TestSSO(SSOFixtures):
     def test_list_connections_with_connection_type(
         self, mock_connections, capture_and_mock_http_client_request
     ):
-        _, request_kwargs = capture_and_mock_http_client_request(
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             response_dict=mock_connections,
             status_code=200,
@@ -454,7 +461,7 @@ class TestAsyncSSO(SSOFixtures):
     async def test_list_connections_with_connection_type(
         self, mock_connections, capture_and_mock_http_client_request
     ):
-        _, request_kwargs = capture_and_mock_http_client_request(
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             response_dict=mock_connections,
             status_code=200,

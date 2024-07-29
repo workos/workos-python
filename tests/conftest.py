@@ -1,12 +1,13 @@
-from typing import Mapping, Optional, Union
+from typing import Any, Callable, Mapping, Optional, Union
 from unittest.mock import AsyncMock, MagicMock
 
 import httpx
 import pytest
 import requests
 
-from tests.utils.list_resource import list_response_of
+from tests.utils.list_resource import list_data_to_dicts, list_response_of
 import workos
+from workos.resources.list import WorkOsListResource
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 
 
@@ -149,15 +150,13 @@ def mock_http_client_with_response(monkeypatch):
 def capture_and_mock_http_client_request(monkeypatch):
     def inner(
         http_client: Union[SyncHTTPClient, AsyncHTTPClient],
-        response_dict: dict,
+        response_dict: Optional[dict] = None,
         status_code: int = 200,
         headers: Optional[Mapping[str, str]] = None,
     ):
-        request_args = []
         request_kwargs = {}
 
         def capture_and_mock(*args, **kwargs):
-            request_args.extend(args)
             request_kwargs.update(kwargs)
 
             return httpx.Response(
@@ -173,7 +172,7 @@ def capture_and_mock_http_client_request(monkeypatch):
 
         monkeypatch.setattr(http_client._client, "request", mock)
 
-        return (request_args, request_kwargs)
+        return request_kwargs
 
     return inner
 
@@ -222,5 +221,33 @@ def mock_pagination_request_for_http_client(monkeypatch):
         mock = mock_class(side_effect=mock_function)
 
         monkeypatch.setattr(http_client._client, "request", mock)
+
+    return inner
+
+
+@pytest.fixture
+def test_sync_auto_pagination(
+    mock_pagination_request_for_http_client,
+):
+    def inner(
+        http_client: Union[SyncHTTPClient, AsyncHTTPClient],
+        list_function: Callable[[], WorkOsListResource],
+        expected_all_page_data: dict,
+        list_function_params: Optional[Mapping[str, Any]] = None,
+    ):
+        mock_pagination_request_for_http_client(
+            http_client=http_client,
+            data_list=expected_all_page_data,
+            status_code=200,
+        )
+
+        results = list_function(**list_function_params or {})
+        all_results = []
+
+        for result in results.auto_paging_iter():
+            all_results.append(result)
+
+        assert len(list(all_results)) == len(expected_all_page_data)
+        assert (list_data_to_dicts(all_results)) == expected_all_page_data
 
     return inner

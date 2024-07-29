@@ -1,7 +1,6 @@
 from typing import List, Literal
 from workos.resources.workos_model import WorkOSModel
 from workos.types.events.directory_payload import DirectoryPayload
-from workos.typing.literals import LiteralOrUntyped
 
 
 class MinimalOrganizationDomain(WorkOSModel):

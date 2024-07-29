@@ -53,8 +53,8 @@ class RequestHelper(object):
         return url.format(**escaped_params)
 
     @classmethod
-    def build_url_with_query_params(cls, url, **params):
-        return url.format("?" + urllib.parse.urlencode(params))
+    def build_url_with_query_params(cls, base_url: str, path: str, **params):
+        return base_url.format(path) + "?" + urllib.parse.urlencode(params)
 
     def request(
         self,

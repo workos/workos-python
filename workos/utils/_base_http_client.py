@@ -1,16 +1,14 @@
 import platform
 from typing import (
-    Mapping,
     cast,
     Dict,
     Generic,
     Mapping,
     Optional,
     TypeVar,
-    TypedDict,
     Union,
 )
-from typing_extensions import NotRequired
+from typing_extensions import NotRequired, TypedDict
 
 import httpx
 

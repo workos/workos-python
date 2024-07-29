@@ -96,7 +96,7 @@ class SSOModule(Protocol):
             params["state"] = state
 
         return RequestHelper.build_url_with_query_params(
-            self._http_client.base_url, **params
+            base_url=self._http_client.base_url, path=AUTHORIZATION_PATH, **params
         )
 
     def get_profile(self, accessToken: str) -> SyncOrAsync[Profile]: ...
@@ -191,7 +191,7 @@ class SSO(SSOModule):
         connection_type: Optional[ConnectionType] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
-        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -210,14 +210,14 @@ class SSO(SSOModule):
             dict: Connections response from WorkOS.
         """
 
-        params = {
+        params: ConnectionsListFilters = {
             "connection_type": connection_type,
             "domain": domain,
             "organization_id": organization_id,
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order or "desc",
+            "order": order,
         }
 
         response = self._http_client.request(
@@ -227,7 +227,7 @@ class SSO(SSOModule):
             token=workos.api_key,
         )
 
-        return WorkOsListResource(
+        return WorkOsListResource[Connection, ConnectionsListFilters, ListMetadata](
             list_method=self.list_connections,
             list_args=params,
             **ListPage[Connection](**response).model_dump(),
@@ -318,7 +318,7 @@ class AsyncSSO(SSOModule):
         connection_type: Optional[ConnectionType] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
-        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
@@ -337,14 +337,14 @@ class AsyncSSO(SSOModule):
             dict: Connections response from WorkOS.
         """
 
-        params = {
+        params: ConnectionsListFilters = {
             "connection_type": connection_type,
             "domain": domain,
             "organization_id": organization_id,
             "limit": limit,
             "before": before,
             "after": after,
-            "order": order or "desc",
+            "order": order,
         }
 
         response = await self._http_client.request(
@@ -354,7 +354,9 @@ class AsyncSSO(SSOModule):
             token=workos.api_key,
         )
 
-        return AsyncWorkOsListResource(
+        return AsyncWorkOsListResource[
+            Connection, ConnectionsListFilters, ListMetadata
+        ](
             list_method=self.list_connections,
             list_args=params,
             **ListPage[Connection](**response).model_dump(),

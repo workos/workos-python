@@ -4,14 +4,15 @@ from workos.resources.base import WorkOSBaseResource
 
 class MockConnection(WorkOSBaseResource):
     def __init__(self, id):
+        now = datetime.datetime.now().isoformat()
         self.object = "connection"
         self.id = id
         self.organization_id = "org_id_" + id
         self.connection_type = "OktaSAML"
         self.name = "Foo Corporation"
         self.state = "active"
-        self.created_at = datetime.datetime.now().isoformat()
-        self.updated_at = datetime.datetime.now().isoformat()
+        self.created_at = now
+        self.updated_at = now
         self.domains = [
             {
                 "id": "connection_domain_abc123",

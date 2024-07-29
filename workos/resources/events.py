@@ -42,6 +42,7 @@ from workos.types.user_management.email_verification_common import (
 )
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
+from workos.types.user_management.password_reset_common import PasswordResetCommon
 from workos.typing.literals import LiteralOrUntyped
 
 EventType = Literal[
@@ -77,6 +78,7 @@ EventType = Literal[
     "organization_membership.created",
     "organization_membership.deleted",
     "organization_membership.updated",
+    "password_reset.created",
 ]
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
@@ -105,6 +107,7 @@ EventPayload = TypeVar(
     OrganizationDomain,
     OrganizationDomainVerificationFailedPayload,
     OrganizationMembership,
+    PasswordResetCommon,
 )
 
 
@@ -329,6 +332,12 @@ class OrganizationMembershipUpdated(
     event: Literal["organization_membership.updated"]
 
 
+class PasswordResetCreatedEvent(
+    EventModel[Literal["password_reset.created"], PasswordResetCommon]
+):
+    event: Literal["password_reset.created"]
+
+
 Event = Annotated[
     Union[
         AuthenticationEmailVerificationSucceededEvent,
@@ -360,6 +369,7 @@ Event = Annotated[
         OrganizationUpdated,
         OrganizationDomainVerificationFailed,
         OrganizationDomainVerified,
+        PasswordResetCreatedEvent,
     ],
     Field(..., discriminator="event"),
 ]

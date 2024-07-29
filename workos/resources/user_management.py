@@ -7,6 +7,7 @@ from workos.types.user_management.email_verification_common import (
 )
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
+from workos.types.user_management.password_reset_common import PasswordResetCommon
 
 
 PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
@@ -81,17 +82,11 @@ class MagicAuth(MagicAuthCommon):
     code: str
 
 
-class PasswordReset(WorkOSModel):
+class PasswordReset(PasswordResetCommon):
     """Representation of a WorkOS PasswordReset object."""
 
-    object: Literal["password_reset"]
-    id: str
-    user_id: str
-    email: str
     password_reset_token: str
     password_reset_url: str
-    expires_at: str
-    created_at: str
 
 
 class OrganizationMembershipRole(TypedDict):

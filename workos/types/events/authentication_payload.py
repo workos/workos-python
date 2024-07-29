@@ -6,6 +6,7 @@ class AuthenticationResultCommon(WorkOSModel):
     ip_address: Union[str, None]
     user_agent: Union[str, None]
     email: str
+    created_at: str
 
 
 class AuthenticationResultSucceeded(AuthenticationResultCommon):

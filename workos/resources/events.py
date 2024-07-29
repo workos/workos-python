@@ -267,39 +267,41 @@ class DirectoryUserRemovedFromGroupEvent(
     event: Literal["dsync.group.user_removed"]
 
 
-class EmailVerificationCreated(
+class EmailVerificationCreatedEvent(
     EventModel[Literal["email_verification.created"], EmailVerificationCommon]
 ):
     event: Literal["email_verification.created"]
 
 
-class InvitationCreated(EventModel[Literal["invitation.created"], InvitationCommon]):
+class InvitationCreatedEvent(
+    EventModel[Literal["invitation.created"], InvitationCommon]
+):
     event: Literal["invitation.created"]
 
 
-class MagicAuthCreated(EventModel[Literal["magic_auth.created"], MagicAuthCommon]):
+class MagicAuthCreatedEvent(EventModel[Literal["magic_auth.created"], MagicAuthCommon]):
     event: Literal["magic_auth.created"]
 
 
-class OrganizationCreated(
+class OrganizationCreatedEvent(
     EventModel[Literal["organization.created"], OrganizationCommon]
 ):
     event: Literal["organization.created"]
 
 
-class OrganizationDeleted(
+class OrganizationDeletedEvent(
     EventModel[Literal["organization.deleted"], OrganizationCommon]
 ):
     event: Literal["organization.deleted"]
 
 
-class OrganizationUpdated(
+class OrganizationUpdatedEvent(
     EventModel[Literal["organization.updated"], OrganizationCommon]
 ):
     event: Literal["organization.updated"]
 
 
-class OrganizationDomainVerificationFailed(
+class OrganizationDomainVerificationFailedEvent(
     EventModel[
         Literal["organization_domain.verification_failed"],
         OrganizationDomainVerificationFailedPayload,
@@ -308,25 +310,25 @@ class OrganizationDomainVerificationFailed(
     event: Literal["organization_domain.verification_failed"]
 
 
-class OrganizationDomainVerified(
+class OrganizationDomainVerifiedEvent(
     EventModel[Literal["organization_domain.verified"], OrganizationDomain]
 ):
     event: Literal["organization_domain.verified"]
 
 
-class OrganizationMembershipCreated(
+class OrganizationMembershipCreatedEvent(
     EventModel[Literal["organization_membership.created"], OrganizationMembership]
 ):
     event: Literal["organization_membership.created"]
 
 
-class OrganizationMembershipDeleted(
+class OrganizationMembershipDeletedEvent(
     EventModel[Literal["organization_membership.deleted"], OrganizationMembership]
 ):
     event: Literal["organization_membership.deleted"]
 
 
-class OrganizationMembershipUpdated(
+class OrganizationMembershipUpdatedEvent(
     EventModel[Literal["organization_membership.updated"], OrganizationMembership]
 ):
     event: Literal["organization_membership.updated"]
@@ -361,14 +363,14 @@ Event = Annotated[
         DirectoryUserUpdatedEvent,
         DirectoryUserAddedToGroupEvent,
         DirectoryUserRemovedFromGroupEvent,
-        EmailVerificationCreated,
-        InvitationCreated,
-        MagicAuthCreated,
-        OrganizationCreated,
-        OrganizationDeleted,
-        OrganizationUpdated,
-        OrganizationDomainVerificationFailed,
-        OrganizationDomainVerified,
+        EmailVerificationCreatedEvent,
+        InvitationCreatedEvent,
+        MagicAuthCreatedEvent,
+        OrganizationCreatedEvent,
+        OrganizationDeletedEvent,
+        OrganizationUpdatedEvent,
+        OrganizationDomainVerificationFailedEvent,
+        OrganizationDomainVerifiedEvent,
         PasswordResetCreatedEvent,
     ],
     Field(..., discriminator="event"),

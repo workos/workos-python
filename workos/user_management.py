@@ -780,6 +780,7 @@ class UserManagement(WorkOSListResource):
     def authenticate_with_refresh_token(
         self,
         refresh_token,
+        organization_id=None,
         ip_address=None,
         user_agent=None,
     ):
@@ -787,6 +788,7 @@ class UserManagement(WorkOSListResource):
 
         Kwargs:
             refresh_token (str): The token associated to the user.
+            organization_id (str): The organization to issue the new access token for. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
 
@@ -804,6 +806,9 @@ class UserManagement(WorkOSListResource):
             "refresh_token": refresh_token,
             "grant_type": "refresh_token",
         }
+
+        if organization_id:
+            payload["organization_id"] = organization_id
 
         if ip_address:
             payload["ip_address"] = ip_address

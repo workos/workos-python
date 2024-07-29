@@ -2,15 +2,19 @@ import datetime
 
 import pytest
 
-from tests.utils.list_resource import list_data_to_dicts
+from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.organizations import Organizations
 from tests.utils.fixtures.mock_organization import MockOrganization
+from workos.utils.http_client import SyncHTTPClient
 
 
 class TestOrganizations(object):
     @pytest.fixture(autouse=True)
     def setup(self, set_api_key):
-        self.organizations = Organizations()
+        self.http_client = SyncHTTPClient(
+            base_url="https://api.workos.test", version="test"
+        )
+        self.organizations = Organizations(http_client=self.http_client)
 
     @pytest.fixture
     def mock_organization(self):
@@ -55,10 +59,15 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organizations_multiple_data_pages(self):
-        return [MockOrganization(id=str(f"org_{i+1}")).to_dict() for i in range(25)]
+        organizations_list = [
+            MockOrganization(id=str(f"org_{i+1}")).to_dict() for i in range(40)
+        ]
+        return list_response_of(data=organizations_list)
 
-    def test_list_organizations(self, mock_organizations, mock_request_method):
-        mock_request_method("get", mock_organizations, 200)
+    def test_list_organizations(
+        self, mock_organizations, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(self.http_client, mock_organizations, 200)
 
         organizations_response = self.organizations.list_organizations()
 
@@ -70,8 +79,8 @@ class TestOrganizations(object):
             == mock_organizations["data"]
         )
 
-    def test_get_organization(self, mock_organization, mock_request_method):
-        mock_request_method("get", mock_organization, 200)
+    def test_get_organization(self, mock_organization, mock_http_client_with_response):
+        mock_http_client_with_response(self.http_client, mock_organization, 200)
 
         organization = self.organizations.get_organization(
             organization="organization_id"
@@ -80,9 +89,9 @@ class TestOrganizations(object):
         assert organization.dict() == mock_organization
 
     def test_get_organization_by_lookup_key(
-        self, mock_organization, mock_request_method
+        self, mock_organization, mock_http_client_with_response
     ):
-        mock_request_method("get", mock_organization, 200)
+        mock_http_client_with_response(self.http_client, mock_organization, 200)
 
         organization = self.organizations.get_organization_by_lookup_key(
             lookup_key="test"
@@ -91,9 +100,9 @@ class TestOrganizations(object):
         assert organization.dict() == mock_organization
 
     def test_create_organization_with_domain_data(
-        self, mock_organization, mock_request_method
+        self, mock_organization, mock_http_client_with_response
     ):
-        mock_request_method("post", mock_organization, 201)
+        mock_http_client_with_response(self.http_client, mock_organization, 201)
 
         payload = {
             "domain_data": [{"domain": "example.com", "state": "verified"}],
@@ -104,7 +113,9 @@ class TestOrganizations(object):
         assert organization.id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert organization.name == "Foo Corporation"
 
-    def test_sends_idempotency_key(self, mock_organization, capture_and_mock_request):
+    def test_sends_idempotency_key(
+        self, mock_organization, capture_and_mock_http_client_request
+    ):
         idempotency_key = "test_123456789"
 
         payload = {
@@ -112,7 +123,9 @@ class TestOrganizations(object):
             "name": "Foo Corporation",
         }
 
-        _, request_kwargs = capture_and_mock_request("post", mock_organization, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization, 200
+        )
 
         response = self.organizations.create_organization(
             **payload, idempotency_key=idempotency_key
@@ -122,9 +135,9 @@ class TestOrganizations(object):
         assert response.name == "Foo Corporation"
 
     def test_update_organization_with_domain_data(
-        self, mock_organization_updated, mock_request_method
+        self, mock_organization_updated, mock_http_client_with_response
     ):
-        mock_request_method("put", mock_organization_updated, 201)
+        mock_http_client_with_response(self.http_client, mock_organization_updated, 201)
 
         updated_organization = self.organizations.update_organization(
             organization="org_01EHT88Z8J8795GZNQ4ZP1J81T",
@@ -142,10 +155,9 @@ class TestOrganizations(object):
             }
         ]
 
-    def test_delete_organization(self, setup, mock_raw_request_method):
-        mock_raw_request_method(
-            "delete",
-            "Accepted",
+    def test_delete_organization(self, setup, mock_http_client_with_response):
+        mock_http_client_with_response(
+            self.http_client,
             202,
             headers={"content-type": "text/plain; charset=utf-8"},
         )
@@ -158,9 +170,11 @@ class TestOrganizations(object):
         self,
         mock_organizations_single_page_response,
         mock_organizations,
-        mock_request_method,
+        mock_http_client_with_response,
     ):
-        mock_request_method("get", mock_organizations_single_page_response, 200)
+        mock_http_client_with_response(
+            self.http_client, mock_organizations_single_page_response, 200
+        )
 
         all_organizations = []
         organizations = self.organizations.list_organizations()
@@ -176,19 +190,10 @@ class TestOrganizations(object):
     def test_list_organizations_auto_pagination_for_multiple_pages(
         self,
         mock_organizations_multiple_data_pages,
-        mock_pagination_request,
+        test_sync_auto_pagination,
     ):
-        mock_pagination_request("get", mock_organizations_multiple_data_pages, 200)
-
-        all_organizations = []
-        organizations = self.organizations.list_organizations()
-
-        for org in organizations.auto_paging_iter():
-            all_organizations.append(org)
-
-        assert len(list(all_organizations)) == len(
-            mock_organizations_multiple_data_pages
+        test_sync_auto_pagination(
+            http_client=self.http_client,
+            list_function=self.organizations.list_organizations,
+            expected_all_page_data=mock_organizations_multiple_data_pages["data"],
         )
-        assert (
-            list_data_to_dicts(all_organizations)
-        ) == mock_organizations_multiple_data_pages

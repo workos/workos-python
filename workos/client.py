@@ -49,7 +49,7 @@ class SyncClient(BaseClient):
     @property
     def organizations(self):
         if not getattr(self, "_organizations", None):
-            self._organizations = Organizations()
+            self._organizations = Organizations(self._http_client)
         return self._organizations
 
     @property
@@ -61,7 +61,7 @@ class SyncClient(BaseClient):
     @property
     def portal(self):
         if not getattr(self, "_portal", None):
-            self._portal = Portal()
+            self._portal = Portal(self._http_client)
         return self._portal
 
     @property

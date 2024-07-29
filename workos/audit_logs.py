@@ -1,9 +1,9 @@
-from typing import Optional, Protocol
-from warnings import warn
+from typing import List, Optional, Protocol
 
 import workos
-from workos.resources.audit_logs_export import WorkOSAuditLogExport
-from workos.utils.request import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST
+from workos.resources.audit_logs import AuditLogEvent, AuditLogExport
+from workos.utils.http_client import SyncHTTPClient
+from workos.utils.request import REQUEST_METHOD_GET, REQUEST_METHOD_POST
 from workos.utils.validation import AUDIT_LOGS_MODULE, validate_settings
 
 EVENTS_PATH = "audit_logs/events"
@@ -12,70 +12,55 @@ EXPORTS_PATH = "audit_logs/exports"
 
 class AuditLogsModule(Protocol):
     def create_event(
-        self, organization: str, event: dict, idempotency_key: Optional[str] = None
+        self,
+        organization_id: str,
+        event: AuditLogEvent,
+        idempotency_key: Optional[str] = None,
     ) -> None: ...
 
     def create_export(
         self,
-        organization,
-        range_start,
-        range_end,
-        actions=None,
-        actors=None,
-        targets=None,
-        actor_names=None,
-        actor_ids=None,
-    ) -> WorkOSAuditLogExport: ...
+        organization_id: str,
+        range_start: str,
+        range_end: str,
+        actions: Optional[List[str]] = None,
+        targets: Optional[List[str]] = None,
+        actor_names: Optional[List[str]] = None,
+        actor_ids: Optional[List[str]] = None,
+    ) -> AuditLogExport: ...
 
-    def get_export(self, export_id) -> WorkOSAuditLogExport: ...
+    def get_export(self, audit_log_export_id: str) -> AuditLogExport: ...
 
 
 class AuditLogs(AuditLogsModule):
     """Offers methods through the WorkOS Audit Logs service."""
 
-    @validate_settings(AUDIT_LOGS_MODULE)
-    def __init__(self):
-        pass
+    _http_client: SyncHTTPClient
 
-    @property
-    def request_helper(self):
-        if not getattr(self, "_request_helper", None):
-            self._request_helper = RequestHelper()
-        return self._request_helper
+    @validate_settings(AUDIT_LOGS_MODULE)
+    def __init__(self, http_client: SyncHTTPClient):
+        self._http_client = http_client
 
     def create_event(
-        self, organization: str, event: dict, idempotency_key: Optional[str] = None
-    ):
+        self,
+        organization_id: str,
+        event: AuditLogEvent,
+        idempotency_key: Optional[str] = None,
+    ) -> None:
         """Create an Audit Logs event.
 
         Args:
             organization (str) - Organization's unique identifier
-            event (dict) - An event object
-                event[action] (string) - The event action
-                event[version] (int) - The schema version of the event
-                event[occurred_at] (datetime) - ISO-8601 datetime of when an event occurred
-                event[actor] (dict) - Describes the entity that generated the event
-                    event[actor][id] (str)
-                    event[actor][name] (str)
-                    event[actor][type] (str)
-                    event[actor][metadata] (dict)
-                event[targets] (list[dict]) - List of event targets
-                event[context] (dict) - Attributes of event context
-                    event[context][location] (str)
-                    event[context][user_agent] (str)
-                event[metadata] (dict) - Extra metadata
+            event (AuditLogEvent) - An AuditLogEvent object
             idempotency_key (str) - Optional idempotency key
-
-        Returns:
-            boolean: Returns True
         """
-        payload = {"organization_id": organization, "event": event}
+        payload = {"organization_id": organization_id, "event": event}
 
         headers = {}
         if idempotency_key:
             headers["idempotency-key"] = idempotency_key
 
-        response = self.request_helper.request(
+        self._http_client.request(
             EVENTS_PATH,
             method=REQUEST_METHOD_POST,
             params=payload,
@@ -85,15 +70,14 @@ class AuditLogs(AuditLogsModule):
 
     def create_export(
         self,
-        organization,
-        range_start,
-        range_end,
-        actions=None,
-        actors=None,
-        targets=None,
-        actor_names=None,
-        actor_ids=None,
-    ):
+        organization_id: str,
+        range_start: str,
+        range_end: str,
+        actions: Optional[List[str]] = None,
+        targets: Optional[List[str]] = None,
+        actor_names: Optional[List[str]] = None,
+        actor_ids: Optional[List[str]] = None,
+    ) -> AuditLogExport:
         """Trigger the creation of an export of audit logs.
 
         Args:
@@ -105,54 +89,39 @@ class AuditLogs(AuditLogsModule):
             targets (list) - Optional list of targets to filter
 
         Returns:
-            dict: Object that describes the audit log export
+            AuditLogExport: Object that describes the audit log export
         """
 
         payload = {
-            "organization_id": organization,
+            "actions": actions,
+            "actor_ids": actor_ids,
+            "actor_names": actor_names,
+            "organization_id": organization_id,
             "range_start": range_start,
             "range_end": range_end,
+            "targets": targets,
         }
 
-        if actions:
-            payload["actions"] = actions
-
-        if actors:
-            payload["actors"] = actors
-            warn(
-                "The 'actors' parameter is deprecated. Please use 'actor_names' instead.",
-                DeprecationWarning,
-            )
-
-        if actor_names:
-            payload["actor_names"] = actor_names
-
-        if actor_ids:
-            payload["actor_ids"] = actor_ids
-
-        if targets:
-            payload["targets"] = targets
-
-        response = self.request_helper.request(
+        response = self._http_client.request(
             EXPORTS_PATH,
             method=REQUEST_METHOD_POST,
             params=payload,
             token=workos.api_key,
         )
 
-        return WorkOSAuditLogExport.construct_from_response(response)
+        return AuditLogExport.model_validate(response)
 
-    def get_export(self, export_id):
+    def get_export(self, audit_log_export_id: str) -> AuditLogExport:
         """Retrieve an created export.
 
         Returns:
-            dict: Object that describes the audit log export
+            AuditLogExport: Object that describes the audit log export
         """
 
-        response = self.request_helper.request(
-            "{0}/{1}".format(EXPORTS_PATH, export_id),
+        response = self._http_client.request(
+            "{0}/{1}".format(EXPORTS_PATH, audit_log_export_id),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
 
-        return WorkOSAuditLogExport.construct_from_response(response)
+        return AuditLogExport.model_validate(response)

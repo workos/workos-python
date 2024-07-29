@@ -30,7 +30,11 @@ from workos.types.events.directory_payload_with_legacy_fields import (
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
+from workos.types.events.organization_domain_verification_failed_payload import (
+    OrganizationDomainVerificationFailedPayload,
+)
 from workos.types.organizations.organization_common import OrganizationCommon
+from workos.types.organizations.organization_domain import OrganizationDomain
 from workos.types.sso.connection import Connection
 from workos.types.user_management.email_verification_common import (
     EmailVerificationCommon,
@@ -67,6 +71,8 @@ EventType = Literal[
     "organization.created",
     "organization.deleted",
     "organization.updated",
+    "organization_domain.verification_failed",
+    "organization_domain.verified",
 ]
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
@@ -92,6 +98,8 @@ EventPayload = TypeVar(
     InvitationCommon,
     MagicAuthCommon,
     OrganizationCommon,
+    OrganizationDomain,
+    OrganizationDomainVerificationFailedPayload,
 )
 
 
@@ -283,6 +291,21 @@ class OrganizationUpdated(
     event: Literal["organization.updated"]
 
 
+class OrganizationDomainVerificationFailed(
+    EventModel[
+        Literal["organization_domain.verification_failed"],
+        OrganizationDomainVerificationFailedPayload,
+    ]
+):
+    event: Literal["organization_domain.verification_failed"]
+
+
+class OrganizationDomainVerified(
+    EventModel[Literal["organization_domain.verified"], OrganizationDomain]
+):
+    event: Literal["organization_domain.verified"]
+
+
 Event = Annotated[
     Union[
         AuthenticationEmailVerificationSucceededEvent,
@@ -312,6 +335,8 @@ Event = Annotated[
         OrganizationCreated,
         OrganizationDeleted,
         OrganizationUpdated,
+        OrganizationDomainVerificationFailed,
+        OrganizationDomainVerified,
     ],
     Field(..., discriminator="event"),
 ]

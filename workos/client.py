@@ -55,7 +55,7 @@ class SyncClient(BaseClient):
     @property
     def passwordless(self):
         if not getattr(self, "_passwordless", None):
-            self._passwordless = Passwordless()
+            self._passwordless = Passwordless(self._http_client)
         return self._passwordless
 
     @property

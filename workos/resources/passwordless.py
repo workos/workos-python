@@ -1,30 +1,14 @@
-from workos.resources.base import WorkOSBaseResource
+from typing import Literal
+from workos.resources.workos_model import WorkOSModel
+
+PasswordlessSessionType = Literal["MagicLink"]
 
 
-class WorkOSPasswordlessSession(WorkOSBaseResource):
-    """Representation of a Passwordless Session Response as returned by WorkOS through the Magic Link feature.
+class PasswordlessSession(WorkOSModel):
+    """Representation of a WorkOS Passwordless Session Response."""
 
-    Attributes:
-        OBJECT_FIELDS (list): List of fields a WorkOSPasswordlessSession is comprised of.
-    """
-
-    OBJECT_FIELDS = [
-        "object",
-        "id",
-        "email",
-        "expires_at",
-        "link",
-    ]
-
-    @classmethod
-    def construct_from_response(cls, response):
-        create_session_response = super(
-            WorkOSPasswordlessSession, cls
-        ).construct_from_response(response)
-
-        return create_session_response
-
-    def to_dict(self):
-        passwordless_session_response = super(WorkOSPasswordlessSession, self).to_dict()
-
-        return passwordless_session_response
+    object: Literal["passwordless_session"]
+    id: str
+    email: str
+    expires_at: str
+    link: str

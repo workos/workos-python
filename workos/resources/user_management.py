@@ -3,6 +3,7 @@ from typing_extensions import TypedDict
 
 from workos.resources.workos_model import WorkOSModel
 from workos.types.user_management.invitation_common import InvitationCommon
+from workos.types.user_management.magic_auth_common import MagicAuthCommon
 
 
 PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
@@ -78,17 +79,10 @@ class Invitation(InvitationCommon):
     accept_invitation_url: str
 
 
-class MagicAuth(WorkOSModel):
+class MagicAuth(MagicAuthCommon):
     """Representation of a WorkOS MagicAuth object."""
 
-    object: Literal["magic_auth"]
-    id: str
-    user_id: str
-    email: str
-    expires_at: str
     code: str
-    created_at: str
-    updated_at: str
 
 
 class PasswordReset(WorkOSModel):

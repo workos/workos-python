@@ -34,6 +34,7 @@ from workos.types.events.email_verification_payload import EmailVerificationPayl
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.sso.connection import Connection
 from workos.types.user_management.invitation_common import InvitationCommon
+from workos.types.user_management.magic_auth_common import MagicAuthCommon
 from workos.typing.literals import LiteralOrUntyped
 
 EventType = Literal[
@@ -60,6 +61,7 @@ EventType = Literal[
     "dsync.group.user_removed",
     "email_verification.created",
     "invitation.created",
+    "magic_auth.created",
     "organization.created",
     "organization.deleted",
     "organization.updated",
@@ -86,6 +88,7 @@ EventPayload = TypeVar(
     DirectoryGroupMembershipPayload,
     EmailVerificationPayload,
     InvitationCommon,
+    MagicAuthCommon,
     OrganizationCommon,
 )
 
@@ -256,6 +259,10 @@ class InvitationCreated(EventModel[Literal["invitation.created"], InvitationComm
     event: Literal["invitation.created"]
 
 
+class MagicAuthCreated(EventModel[Literal["magic_auth.created"], MagicAuthCommon]):
+    event: Literal["magic_auth.created"]
+
+
 class OrganizationCreated(
     EventModel[Literal["organization.created"], OrganizationCommon]
 ):
@@ -299,6 +306,7 @@ Event = Annotated[
         DirectoryUserRemovedFromGroupEvent,
         EmailVerificationCreated,
         InvitationCreated,
+        MagicAuthCreated,
         OrganizationCreated,
         OrganizationDeleted,
         OrganizationUpdated,

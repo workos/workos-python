@@ -5,7 +5,7 @@ from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.resources.sso import (
-    Connection,
+    ConnectionWithDomains,
     Profile,
     ProfileAndToken,
     SsoProviderType,
@@ -103,7 +103,7 @@ class SSOModule(Protocol):
 
     def get_profile_and_token(self, code: str) -> SyncOrAsync[ProfileAndToken]: ...
 
-    def get_connection(self, connection: str) -> SyncOrAsync[Connection]: ...
+    def get_connection(self, connection: str) -> SyncOrAsync[ConnectionWithDomains]: ...
 
     def list_connections(
         self,
@@ -169,7 +169,7 @@ class SSO(SSOModule):
 
         return ProfileAndToken.model_validate(response)
 
-    def get_connection(self, connection_id: str) -> Connection:
+    def get_connection(self, connection_id: str) -> ConnectionWithDomains:
         """Gets details for a single Connection
 
         Args:
@@ -184,7 +184,7 @@ class SSO(SSOModule):
             token=workos.api_key,
         )
 
-        return Connection.model_validate(response)
+        return ConnectionWithDomains.model_validate(response)
 
     def list_connections(
         self,
@@ -195,7 +195,9 @@ class SSO(SSOModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Connection, ConnectionsListFilters, ListMetadata]:
+    ) -> WorkOsListResource[
+        ConnectionWithDomains, ConnectionsListFilters, ListMetadata
+    ]:
         """Gets details for existing Connections.
 
         Args:
@@ -227,10 +229,12 @@ class SSO(SSOModule):
             token=workos.api_key,
         )
 
-        return WorkOsListResource[Connection, ConnectionsListFilters, ListMetadata](
+        return WorkOsListResource[
+            ConnectionWithDomains, ConnectionsListFilters, ListMetadata
+        ](
             list_method=self.list_connections,
             list_args=params,
-            **ListPage[Connection](**response).model_dump(),
+            **ListPage[ConnectionWithDomains](**response).model_dump(),
         )
 
     def delete_connection(self, connection_id: str) -> None:
@@ -296,7 +300,7 @@ class AsyncSSO(SSOModule):
 
         return ProfileAndToken.model_validate(response)
 
-    async def get_connection(self, connection_id: str) -> Connection:
+    async def get_connection(self, connection_id: str) -> ConnectionWithDomains:
         """Gets details for a single Connection
 
         Args:
@@ -311,7 +315,7 @@ class AsyncSSO(SSOModule):
             token=workos.api_key,
         )
 
-        return Connection.model_validate(response)
+        return ConnectionWithDomains.model_validate(response)
 
     async def list_connections(
         self,
@@ -322,7 +326,9 @@ class AsyncSSO(SSOModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AsyncWorkOsListResource[Connection, ConnectionsListFilters, ListMetadata]:
+    ) -> AsyncWorkOsListResource[
+        ConnectionWithDomains, ConnectionsListFilters, ListMetadata
+    ]:
         """Gets details for existing Connections.
 
         Args:
@@ -355,11 +361,11 @@ class AsyncSSO(SSOModule):
         )
 
         return AsyncWorkOsListResource[
-            Connection, ConnectionsListFilters, ListMetadata
+            ConnectionWithDomains, ConnectionsListFilters, ListMetadata
         ](
             list_method=self.list_connections,
             list_args=params,
-            **ListPage[Connection](**response).model_dump(),
+            **ListPage[ConnectionWithDomains](**response).model_dump(),
         )
 
     async def delete_connection(self, connection_id: str) -> None:

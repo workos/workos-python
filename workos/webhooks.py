@@ -1,4 +1,5 @@
-from typing import Protocol
+from lib2to3 import btm_matcher
+from typing import Optional, Protocol, Union
 
 from workos.utils.request_helper import RequestHelper
 from workos.utils.validation import WEBHOOKS_MODULE, validate_settings
@@ -7,6 +8,8 @@ import json
 import time
 from collections import OrderedDict
 import hashlib
+
+EventPayload = Union[bytes, bytearray]
 
 
 class WebhooksModule(Protocol):
@@ -34,19 +37,26 @@ class Webhooks(WebhooksModule):
 
     DEFAULT_TOLERANCE = 180
 
-    def verify_event(self, payload, sig_header, secret, tolerance=DEFAULT_TOLERANCE):
-        if payload is None:
-            raise ValueError("Payload body is missing and is a required parameter")
-        if sig_header is None:
-            raise ValueError("Payload signature missing and is a required parameter")
-        if secret is None:
-            raise ValueError("Secret is missing and is a required parameter")
+    def verify_event(
+        self,
+        payload: EventPayload,
+        sig_header: str,
+        secret: str,
+        tolerance: Optional[int] = DEFAULT_TOLERANCE,
+    ):
 
         Webhooks.verify_header(self, payload, sig_header, secret, tolerance)
+        # TODO: this should validate the event
         event = json.loads(payload, object_pairs_hook=OrderedDict)
         return event
 
-    def verify_header(self, event_body, event_signature, secret, tolerance=None):
+    def verify_header(
+        self,
+        event_body: EventPayload,
+        event_signature: str,
+        secret: str,
+        tolerance: Optional[int] = None,
+    ):
         try:
             # Verify and define variables parsed from the event body
             issued_timestamp, signature_hash = event_signature.split(", ")

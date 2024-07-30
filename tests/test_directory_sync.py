@@ -25,7 +25,7 @@ def api_directories_to_sdk(directories):
 class DirectorySyncFixtures:
     @pytest.fixture
     def mock_users(self):
-        user_list = [MockDirectoryUser(id=str(i)).to_dict() for i in range(100)]
+        user_list = [MockDirectoryUser(id=str(i)).dict() for i in range(100)]
 
         return {
             "data": user_list,
@@ -35,7 +35,7 @@ class DirectorySyncFixtures:
 
     @pytest.fixture
     def mock_groups(self):
-        group_list = [MockDirectoryGroup(id=str(i)).to_dict() for i in range(20)]
+        group_list = [MockDirectoryGroup(id=str(i)).dict() for i in range(20)]
         return list_response_of(data=group_list, after="xxx")
 
     @pytest.fixture
@@ -44,7 +44,7 @@ class DirectorySyncFixtures:
 
     @pytest.fixture
     def mock_user(self):
-        return MockDirectoryUser("directory_user_01E1JG7J09H96KYP8HM9B0G5SJ").to_dict()
+        return MockDirectoryUser("directory_user_01E1JG7J09H96KYP8HM9B0G5SJ").dict()
 
     @pytest.fixture
     def mock_user_no_email(self):
@@ -81,36 +81,32 @@ class DirectorySyncFixtures:
 
     @pytest.fixture
     def mock_group(self):
-        return MockDirectoryGroup(
-            "directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE"
-        ).to_dict()
+        return MockDirectoryGroup("directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE").dict()
 
     @pytest.fixture
     def mock_directories(self):
-        directory_list = [MockDirectory(id=str(i)).to_dict() for i in range(10)]
+        directory_list = [MockDirectory(id=str(i)).dict() for i in range(10)]
         return list_response_of(data=directory_list)
 
     @pytest.fixture
     def mock_directory_users_multiple_data_pages(self):
         return [
-            MockDirectoryUser(id=str(f"directory_user_{i}")).to_dict()
-            for i in range(40)
+            MockDirectoryUser(id=str(f"directory_user_{i}")).dict() for i in range(40)
         ]
 
     @pytest.fixture
     def mock_directories_multiple_data_pages(self):
-        return [MockDirectory(id=str(f"dir_{i}")).to_dict() for i in range(40)]
+        return [MockDirectory(id=str(f"dir_{i}")).dict() for i in range(40)]
 
     @pytest.fixture
     def mock_directory_groups_multiple_data_pages(self):
         return [
-            MockDirectoryGroup(id=str(f"directory_group_{i}")).to_dict()
-            for i in range(40)
+            MockDirectoryGroup(id=str(f"directory_group_{i}")).dict() for i in range(40)
         ]
 
     @pytest.fixture
     def mock_directory(self):
-        return MockDirectory("directory_id").to_dict()
+        return MockDirectory("directory_id").dict()
 
 
 class TestDirectorySync(DirectorySyncFixtures):

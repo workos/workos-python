@@ -6,7 +6,6 @@ from workos.resources.list import (
     ListMetadata,
     ListPage,
     SyncOrAsyncListResource,
-    WorkOSListResource,
     WorkOsListResource,
 )
 from workos.resources.mfa import (
@@ -378,7 +377,7 @@ class UserManagementModule(Protocol):
     def revoke_invitation(self, invitation_id) -> Invitation: ...
 
 
-class UserManagement(UserManagementModule, WorkOSListResource):
+class UserManagement(UserManagementModule):
     """Offers methods for using the WorkOS User Management API."""
 
     _http_client: SyncHTTPClient

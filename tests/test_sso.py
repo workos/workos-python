@@ -3,10 +3,11 @@ import json
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
 
+from tests.utils.fixtures.mock_profile import MockProfile
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 import workos
 from workos.sso import SSO, AsyncSSO
-from workos.resources.sso import SsoProviderType
+from workos.resources.sso import Profile, SsoProviderType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.request_helper import RESPONSE_TYPE_CODE
 from tests.utils.fixtures.mock_connection import MockConnection
@@ -15,54 +16,37 @@ from tests.utils.fixtures.mock_connection import MockConnection
 class SSOFixtures:
     @pytest.fixture
     def mock_profile(self):
-        return {
-            "object": "profile",
-            "id": "prof_01DWAS7ZQWM70PV93BFV1V78QV",
-            "email": "demo@workos-okta.com",
-            "first_name": "WorkOS",
-            "last_name": "Demo",
-            "groups": ["Admins", "Developers"],
-            "organization_id": "org_01FG53X8636WSNW2WEKB2C31ZB",
-            "connection_id": "conn_01EMH8WAK20T42N2NBMNBCYHAG",
-            "connection_type": "OktaSAML",
-            "idp_id": "00u1klkowm8EGah2H357",
-            "raw_attributes": {
-                "email": "demo@workos-okta.com",
-                "first_name": "WorkOS",
-                "last_name": "Demo",
-                "groups": ["Admins", "Developers"],
-            },
-        }
+        return MockProfile("prof_01DWAS7ZQWM70PV93BFV1V78QV").dict()
 
     @pytest.fixture
     def mock_magic_link_profile(self):
-        return {
-            "object": "profile",
-            "id": "prof_01DWAS7ZQWM70PV93BFV1V78QV",
-            "email": "demo@workos-magic-link.com",
-            "organization_id": None,
-            "connection_id": "conn_01EMH8WAK20T42N2NBMNBCYHAG",
-            "connection_type": "MagicLink",
-            "idp_id": "",
-            "first_name": None,
-            "last_name": None,
-            "groups": None,
-            "raw_attributes": {},
-        }
+        return Profile(
+            object="profile",
+            id="prof_01DWAS7ZQWM70PV93BFV1V78QV",
+            email="demo@workos-magic-link.com",
+            organization_id=None,
+            connection_id="conn_01EMH8WAK20T42N2NBMNBCYHAG",
+            connection_type="MagicLink",
+            idp_id="",
+            first_name=None,
+            last_name=None,
+            groups=None,
+            raw_attributes={},
+        ).dict()
 
     @pytest.fixture
     def mock_connection(self):
-        return MockConnection("conn_01E4ZCR3C56J083X43JQXF3JK5").to_dict()
+        return MockConnection("conn_01E4ZCR3C56J083X43JQXF3JK5").dict()
 
     @pytest.fixture
     def mock_connections(self):
-        connection_list = [MockConnection(id=str(i)).to_dict() for i in range(10)]
+        connection_list = [MockConnection(id=str(i)).dict() for i in range(10)]
 
         return list_response_of(data=connection_list)
 
     @pytest.fixture
     def mock_connections_multiple_data_pages(self):
-        return [MockConnection(id=str(i)).to_dict() for i in range(40)]
+        return [MockConnection(id=str(i)).dict() for i in range(40)]
 
 
 class TestSSOBase(SSOFixtures):
@@ -252,24 +236,7 @@ class TestSSO(SSOFixtures):
         self, mock_profile, mock_http_client_with_response
     ):
         response_dict = {
-            "profile": {
-                "object": "profile",
-                "id": mock_profile["id"],
-                "email": mock_profile["email"],
-                "first_name": mock_profile["first_name"],
-                "groups": mock_profile["groups"],
-                "organization_id": mock_profile["organization_id"],
-                "connection_id": mock_profile["connection_id"],
-                "connection_type": mock_profile["connection_type"],
-                "last_name": mock_profile["last_name"],
-                "idp_id": mock_profile["idp_id"],
-                "raw_attributes": {
-                    "email": mock_profile["raw_attributes"]["email"],
-                    "first_name": mock_profile["raw_attributes"]["first_name"],
-                    "last_name": mock_profile["raw_attributes"]["last_name"],
-                    "groups": mock_profile["raw_attributes"]["groups"],
-                },
-            },
+            "profile": mock_profile,
             "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
         }
 
@@ -387,27 +354,10 @@ class TestAsyncSSO(SSOFixtures):
         self.setup_completed = True
 
     async def test_get_profile_and_token_returns_expected_profile_object(
-        self, mock_profile, mock_http_client_with_response
+        self, mock_profile: Profile, mock_http_client_with_response
     ):
         response_dict = {
-            "profile": {
-                "object": "profile",
-                "id": mock_profile["id"],
-                "email": mock_profile["email"],
-                "first_name": mock_profile["first_name"],
-                "groups": mock_profile["groups"],
-                "organization_id": mock_profile["organization_id"],
-                "connection_id": mock_profile["connection_id"],
-                "connection_type": mock_profile["connection_type"],
-                "last_name": mock_profile["last_name"],
-                "idp_id": mock_profile["idp_id"],
-                "raw_attributes": {
-                    "email": mock_profile["raw_attributes"]["email"],
-                    "first_name": mock_profile["raw_attributes"]["first_name"],
-                    "last_name": mock_profile["raw_attributes"]["last_name"],
-                    "groups": mock_profile["raw_attributes"]["groups"],
-                },
-            },
+            "profile": mock_profile,
             "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
         }
 

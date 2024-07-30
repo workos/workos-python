@@ -1,23 +1,29 @@
 import datetime
-from tests.utils.fixtures.mock_directory import MockDirectory
-from tests.utils.fixtures.mock_directory_activated_payload import (
-    MockDirectoryActivatedPayload,
+
+from workos.resources.events import DirectoryActivatedEvent
+from workos.types.events.directory_payload_with_legacy_fields import (
+    DirectoryPayloadWithLegacyFields,
 )
-from workos.resources.base import WorkOSBaseResource
 
 
-class MockEvent(WorkOSBaseResource):
+class MockEvent(DirectoryActivatedEvent):
     def __init__(self, id):
-        self.object = "event"
-        self.id = id
-        self.event = "dsync.activated"
-        self.data = MockDirectoryActivatedPayload("dir_1234").to_dict()
-        self.created_at = datetime.datetime.now().isoformat()
-
-    OBJECT_FIELDS = [
-        "object",
-        "id",
-        "event",
-        "data",
-        "created_at",
-    ]
+        now = datetime.datetime.now().isoformat()
+        super().__init__(
+            object="event",
+            id=id,
+            event="dsync.activated",
+            data=DirectoryPayloadWithLegacyFields(
+                object="directory",
+                id="dir_1234",
+                organization_id="organization_id",
+                external_key="ext_123",
+                domains=[],
+                name="Some fake name",
+                state="active",
+                type="gsuite directory",
+                created_at=now,
+                updated_at=now,
+            ),
+            created_at=now,
+        )

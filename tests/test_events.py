@@ -7,11 +7,7 @@ from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 
 class TestEvents(object):
     @pytest.fixture(autouse=True)
-    def setup(
-        self,
-        set_api_key,
-        set_client_id,
-    ):
+    def setup(self, set_api_key, set_client_id):
         self.http_client = SyncHTTPClient(
             base_url="https://api.workos.test", version="test"
         )
@@ -19,7 +15,7 @@ class TestEvents(object):
 
     @pytest.fixture
     def mock_events(self):
-        events = [MockEvent(id=str(i)).to_dict() for i in range(10)]
+        events = [MockEvent(id=str(i)).dict() for i in range(10)]
 
         return {
             "object": "list",
@@ -44,11 +40,7 @@ class TestEvents(object):
 @pytest.mark.asyncio
 class TestAsyncEvents(object):
     @pytest.fixture(autouse=True)
-    def setup(
-        self,
-        set_api_key,
-        set_client_id,
-    ):
+    def setup(self, set_api_key, set_client_id):
         self.http_client = AsyncHTTPClient(
             base_url="https://api.workos.test", version="test"
         )
@@ -56,7 +48,7 @@ class TestAsyncEvents(object):
 
     @pytest.fixture
     def mock_events(self):
-        events = [MockEvent(id=str(i)).to_dict() for i in range(10)]
+        events = [MockEvent(id=str(i)).dict() for i in range(10)]
 
         return {
             "object": "list",

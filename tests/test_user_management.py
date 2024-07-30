@@ -692,6 +692,7 @@ class TestUserManagement(object):
         assert request_kwargs["json"] == {
             **params,
             **base_authentication_params,
+            "organization_id": None,
             "grant_type": "refresh_token",
         }
 

@@ -286,6 +286,7 @@ class UserManagementModule(Protocol):
     def authenticate_with_refresh_token(
         self,
         refresh_token: str,
+        organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> RefreshTokenAuthenticationResponse: ...

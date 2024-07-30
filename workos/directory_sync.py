@@ -72,7 +72,6 @@ class DirectorySyncModule(Protocol):
 
     def list_directories(
         self,
-        domain: Optional[str] = None,
         search: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -250,7 +249,6 @@ class DirectorySync(DirectorySyncModule):
 
     def list_directories(
         self,
-        domain: Optional[str] = None,
         search: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -261,8 +259,7 @@ class DirectorySync(DirectorySyncModule):
         """Gets details for existing Directories.
 
         Args:
-            domain (str): Domain of a Directory. (Optional)
-            organization: ID of an Organization (Optional)
+            organization_id: ID of an Organization (Optional)
             search (str): Searchable text for a Directory. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
@@ -278,7 +275,6 @@ class DirectorySync(DirectorySyncModule):
             "before": before,
             "after": after,
             "order": order,
-            "domain": domain,
             "organization_id": organization_id,
             "search": search,
         }
@@ -478,7 +474,6 @@ class AsyncDirectorySync(DirectorySyncModule):
 
     async def list_directories(
         self,
-        domain: Optional[str] = None,
         search: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -502,7 +497,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         """
 
         list_params: DirectoryListFilters = {
-            "domain": domain,
             "organization_id": organization_id,
             "search": search,
             "limit": limit,

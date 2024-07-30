@@ -18,7 +18,7 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organization(self):
-        return MockOrganization("org_01EHT88Z8J8795GZNQ4ZP1J81T").to_dict()
+        return MockOrganization("org_01EHT88Z8J8795GZNQ4ZP1J81T").dict()
 
     @pytest.fixture
     def mock_organization_updated(self):
@@ -40,7 +40,7 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organizations(self):
-        organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(10)]
+        organization_list = [MockOrganization(id=str(i)).dict() for i in range(10)]
 
         return {
             "data": organization_list,
@@ -50,7 +50,7 @@ class TestOrganizations(object):
 
     @pytest.fixture
     def mock_organizations_single_page_response(self):
-        organization_list = [MockOrganization(id=str(i)).to_dict() for i in range(10)]
+        organization_list = [MockOrganization(id=str(i)).dict() for i in range(10)]
         return {
             "data": organization_list,
             "list_metadata": {"before": None, "after": None},
@@ -60,7 +60,7 @@ class TestOrganizations(object):
     @pytest.fixture
     def mock_organizations_multiple_data_pages(self):
         organizations_list = [
-            MockOrganization(id=str(f"org_{i+1}")).to_dict() for i in range(40)
+            MockOrganization(id=str(f"org_{i+1}")).dict() for i in range(40)
         ]
         return list_response_of(data=organizations_list)
 

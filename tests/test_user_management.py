@@ -3,7 +3,7 @@ import json
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
 
-from tests.utils.fixtures.mock_auth_factor_totp import MockAuthFactorTotp
+from tests.utils.fixtures.mock_auth_factor_totp import MockAuthenticationFactorTotp
 from tests.utils.fixtures.mock_email_verification import MockEmailVerification
 from tests.utils.fixtures.mock_invitation import MockInvitation
 from tests.utils.fixtures.mock_magic_auth import MockMagicAuth
@@ -28,27 +28,27 @@ class TestUserManagement(object):
 
     @pytest.fixture
     def mock_user(self):
-        return MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").to_dict()
+        return MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").dict()
 
     @pytest.fixture
     def mock_users_multiple_pages(self):
-        users_list = [MockUser(id=str(i)).to_dict() for i in range(40)]
+        users_list = [MockUser(id=str(i)).dict() for i in range(40)]
         return list_response_of(data=users_list)
 
     @pytest.fixture
     def mock_organization_membership(self):
-        return MockOrganizationMembership("om_ABCDE").to_dict()
+        return MockOrganizationMembership("om_ABCDE").dict()
 
     @pytest.fixture
     def mock_organization_memberships_multiple_pages(self):
         organization_memberships_list = [
-            MockOrganizationMembership(id=str(i)).to_dict() for i in range(40)
+            MockOrganizationMembership(id=str(i)).dict() for i in range(40)
         ]
         return list_response_of(data=organization_memberships_list)
 
     @pytest.fixture
     def mock_auth_response(self):
-        user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").to_dict()
+        user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").dict()
 
         return {
             "user": user,
@@ -73,7 +73,7 @@ class TestUserManagement(object):
 
     @pytest.fixture
     def mock_auth_response_with_impersonator(self):
-        user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").to_dict()
+        user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").dict()
 
         return {
             "user": user,
@@ -123,28 +123,30 @@ class TestUserManagement(object):
 
     @pytest.fixture
     def mock_auth_factors_multiple_pages(self):
-        auth_factors_list = [MockAuthFactorTotp(id=str(i)).to_dict() for i in range(40)]
+        auth_factors_list = [
+            MockAuthenticationFactorTotp(id=str(i)).dict() for i in range(40)
+        ]
         return list_response_of(data=auth_factors_list)
 
     @pytest.fixture
     def mock_email_verification(self):
-        return MockEmailVerification("email_verification_ABCDE").to_dict()
+        return MockEmailVerification("email_verification_ABCDE").dict()
 
     @pytest.fixture
     def mock_magic_auth(self):
-        return MockMagicAuth("magic_auth_ABCDE").to_dict()
+        return MockMagicAuth("magic_auth_ABCDE").dict()
 
     @pytest.fixture
     def mock_password_reset(self):
-        return MockPasswordReset("password_reset_ABCDE").to_dict()
+        return MockPasswordReset("password_reset_ABCDE").dict()
 
     @pytest.fixture
     def mock_invitation(self):
-        return MockInvitation("invitation_ABCDE").to_dict()
+        return MockInvitation("invitation_ABCDE").dict()
 
     @pytest.fixture
     def mock_invitations_multiple_pages(self):
-        invitations_list = [MockInvitation(id=str(i)).to_dict() for i in range(40)]
+        invitations_list = [MockInvitation(id=str(i)).dict() for i in range(40)]
         return list_response_of(data=invitations_list)
 
     def test_get_user(self, mock_user, capture_and_mock_http_client_request):

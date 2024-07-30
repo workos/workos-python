@@ -26,12 +26,7 @@ setup(
     ),
     zip_safe=False,
     license=about["__license__"],
-    install_requires=[
-        "httpx>=0.27.0",
-        "requests>=2.22.0",
-        "pydantic==2.8.2",
-        "types-requests==2.32.0.20240712",
-    ],
+    install_requires=["httpx>=0.27.0", "pydantic==2.8.2"],
     extras_require={
         "dev": [
             "flake8",
@@ -41,7 +36,6 @@ setup(
             "six==1.16.0",
             "black==24.4.2",
             "twine==5.1.1",
-            "requests==2.30.0",
             "mypy==1.11.0",
             "httpx>=0.27.0",
         ],
@@ -54,10 +48,10 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
 )

@@ -6,7 +6,7 @@ import time
 import pytest
 import workos
 from workos.webhooks import Webhooks
-from workos.utils.request import RESPONSE_TYPE_CODE
+from workos.utils.request_helper import RESPONSE_TYPE_CODE
 
 
 class TestWebhooks(object):

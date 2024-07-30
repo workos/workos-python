@@ -2,6 +2,13 @@ from typing import Literal, Optional
 from typing_extensions import TypedDict
 
 from workos.resources.workos_model import WorkOSModel
+from workos.types.user_management.email_verification_common import (
+    EmailVerificationCommon,
+)
+from workos.types.user_management.impersonator import Impersonator
+from workos.types.user_management.invitation_common import InvitationCommon
+from workos.types.user_management.magic_auth_common import MagicAuthCommon
+from workos.types.user_management.password_reset_common import PasswordResetCommon
 
 
 PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
@@ -32,13 +39,6 @@ class User(WorkOSModel):
     updated_at: str
 
 
-class Impersonator(WorkOSModel):
-    """Representation of a WorkOS Dashboard member impersonating a user"""
-
-    email: str
-    reason: str
-
-
 class AuthenticationResponse(WorkOSModel):
     """Representation of a WorkOS User and Organization ID response."""
 
@@ -57,64 +57,30 @@ class RefreshTokenAuthenticationResponse(WorkOSModel):
     refresh_token: str
 
 
-class EmailVerification(WorkOSModel):
+class EmailVerification(EmailVerificationCommon):
     """Representation of a WorkOS EmailVerification object."""
 
-    object: Literal["email_verification"]
-    id: str
-    user_id: str
-    email: str
-    expires_at: str
     code: str
-    created_at: str
-    updated_at: str
 
 
-InvitationState = Literal["accepted", "expired", "pending", "revoked"]
-
-
-class Invitation(WorkOSModel):
+class Invitation(InvitationCommon):
     """Representation of a WorkOS Invitation as returned."""
 
-    object: Literal["invitation"]
-    id: str
-    email: str
-    state: InvitationState
-    accepted_at: Optional[str] = None
-    revoked_at: Optional[str] = None
-    expires_at: str
     token: str
     accept_invitation_url: str
-    organization_id: Optional[str] = None
-    inviter_user_id: Optional[str] = None
-    created_at: str
-    updated_at: str
 
 
-class MagicAuth(WorkOSModel):
+class MagicAuth(MagicAuthCommon):
     """Representation of a WorkOS MagicAuth object."""
 
-    object: Literal["magic_auth"]
-    id: str
-    user_id: str
-    email: str
-    expires_at: str
     code: str
-    created_at: str
-    updated_at: str
 
 
-class PasswordReset(WorkOSModel):
+class PasswordReset(PasswordResetCommon):
     """Representation of a WorkOS PasswordReset object."""
 
-    object: Literal["password_reset"]
-    id: str
-    user_id: str
-    email: str
     password_reset_token: str
     password_reset_url: str
-    expires_at: str
-    created_at: str
 
 
 class OrganizationMembershipRole(TypedDict):

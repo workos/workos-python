@@ -15,7 +15,7 @@ from workos.exceptions import (
 from workos.utils.http_client import SyncHTTPClient
 
 
-STATUS_CODE_TO_EXCEPTION_MAPPING: List[Tuple[int, type[BaseRequestException]]] = [
+STATUS_CODE_TO_EXCEPTION_MAPPING = [
     (400, BadRequestException),
     (401, AuthenticationException),
     (403, AuthorizationException),

@@ -8,7 +8,7 @@ import workos
 from workos.sso import SSO, AsyncSSO
 from workos.resources.sso import SsoProviderType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
-from workos.utils.request import RESPONSE_TYPE_CODE
+from workos.utils.request_helper import RESPONSE_TYPE_CODE
 from tests.utils.fixtures.mock_connection import MockConnection
 
 

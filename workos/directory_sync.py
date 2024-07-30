@@ -3,7 +3,7 @@ import workos
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
-from workos.utils.request import (
+from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,

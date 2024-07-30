@@ -4,7 +4,7 @@ from typing import Mapping, Optional
 import httpx
 
 from workos.utils._base_http_client import BaseHTTPClient
-from workos.utils.request import REQUEST_METHOD_GET
+from workos.utils.request_helper import REQUEST_METHOD_GET
 
 
 class SyncHttpxClientWrapper(httpx.Client):

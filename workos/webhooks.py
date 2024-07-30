@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from workos.utils.request import RequestHelper
+from workos.utils.request_helper import RequestHelper
 from workos.utils.validation import WEBHOOKS_MODULE, validate_settings
 import hmac
 import json

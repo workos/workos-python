@@ -2,7 +2,7 @@ from typing import List, Optional, Protocol, Union
 
 import workos
 from workos.typing.sync_or_async import SyncOrAsync
-from workos.utils.request import DEFAULT_LIST_RESPONSE_LIMIT, REQUEST_METHOD_GET
+from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT, REQUEST_METHOD_GET
 from workos.resources.events import Event, EventType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.validation import EVENTS_MODULE, validate_settings

@@ -11,7 +11,7 @@ from workos.resources.sso import (
     SsoProviderType,
 )
 from workos.utils.connection_types import ConnectionType
-from workos.utils.request import (
+from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     RESPONSE_TYPE_CODE,
     REQUEST_METHOD_DELETE,

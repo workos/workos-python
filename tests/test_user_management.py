@@ -15,7 +15,7 @@ from tests.utils.list_resource import list_response_of
 import workos
 from workos.user_management import UserManagement
 from workos.utils.http_client import SyncHTTPClient
-from workos.utils.request import RESPONSE_TYPE_CODE
+from workos.utils.request_helper import RESPONSE_TYPE_CODE
 
 
 class TestUserManagement(object):

@@ -3,7 +3,7 @@ from typing import List, Optional, Protocol
 import workos
 from workos.resources.audit_logs import AuditLogEvent, AuditLogExport
 from workos.utils.http_client import SyncHTTPClient
-from workos.utils.request import REQUEST_METHOD_GET, REQUEST_METHOD_POST
+from workos.utils.request_helper import REQUEST_METHOD_GET, REQUEST_METHOD_POST
 from workos.utils.validation import AUDIT_LOGS_MODULE, validate_settings
 
 EVENTS_PATH = "audit_logs/events"

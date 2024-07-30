@@ -2,7 +2,7 @@ from typing import List, Optional, Protocol
 import workos
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
-from workos.utils.request import (
+from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,

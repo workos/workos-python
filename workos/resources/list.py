@@ -24,7 +24,7 @@ from workos.resources.events import Event
 from workos.resources.mfa import AuthenticationFactor
 from workos.resources.organizations import Organization
 from pydantic import BaseModel, Field
-from workos.resources.sso import Connection
+from workos.resources.sso import Connection, ConnectionWithDomains
 from workos.resources.user_management import Invitation, OrganizationMembership, User
 from workos.resources.workos_model import WorkOSModel
 
@@ -124,7 +124,7 @@ ListableResource = TypeVar(
     # add all possible generics of List Resource
     "ListableResource",
     AuthenticationFactor,
-    Connection,
+    ConnectionWithDomains,
     Directory,
     DirectoryGroup,
     DirectoryUserWithGroups,

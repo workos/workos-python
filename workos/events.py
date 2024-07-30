@@ -53,7 +53,7 @@ class Events(EventsModule):
         self,
         events: List[EventType],
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
-        organization: Optional[str] = None,
+        organization_id: Optional[str] = None,
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
@@ -76,7 +76,7 @@ class Events(EventsModule):
             "events": events,
             "limit": limit,
             "after": after,
-            "organization_id": organization,
+            "organization_id": organization_id,
             "range_start": range_start,
             "range_end": range_end,
         }

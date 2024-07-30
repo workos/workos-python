@@ -33,7 +33,7 @@ class OrganizationsModule(Protocol):
         order: PaginationOrder = "desc",
     ) -> WorkOsListResource[Organization, OrganizationListFilters, ListMetadata]: ...
 
-    def get_organization(self, organization: str) -> Organization: ...
+    def get_organization(self, organization_id: str) -> Organization: ...
 
     def get_organization_by_lookup_key(self, lookup_key: str) -> Organization: ...
 
@@ -46,12 +46,12 @@ class OrganizationsModule(Protocol):
 
     def update_organization(
         self,
-        organization: str,
+        organization_id: str,
         name: str,
         domain_data: Optional[List[DomainDataInput]] = None,
     ) -> Organization: ...
 
-    def delete_organization(self, organization: str) -> None: ...
+    def delete_organization(self, organization_id: str) -> None: ...
 
 
 class Organizations(OrganizationsModule):
@@ -101,18 +101,18 @@ class Organizations(OrganizationsModule):
         return WorkOsListResource[Organization, OrganizationListFilters, ListMetadata](
             list_method=self.list_organizations,
             list_args=list_params,
-            **ListPage[Organization](**response).model_dump()
+            **ListPage[Organization](**response).model_dump(),
         )
 
-    def get_organization(self, organization: str) -> Organization:
+    def get_organization(self, organization_id: str) -> Organization:
         """Gets details for a single Organization
         Args:
-            organization (str): Organization's unique identifier
+            organization_id (str): Organization's unique identifier
         Returns:
-            dict: Organization response from WorkOS
+            Organization: Organization response from WorkOS
         """
         response = self._http_client.request(
-            "organizations/{organization}".format(organization=organization),
+            f"organizations/{organization_id}",
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -163,17 +163,17 @@ class Organizations(OrganizationsModule):
 
     def update_organization(
         self,
-        organization: str,
+        organization_id: str,
         name: str,
         domain_data: Optional[List[DomainDataInput]] = None,
-    ):
+    ) -> Organization:
         params = {
             "name": name,
             "domain_data": domain_data,
         }
 
         response = self._http_client.request(
-            "organizations/{organization}".format(organization=organization),
+            f"organizations/{organization_id}",
             method=REQUEST_METHOD_PUT,
             params=params,
             token=workos.api_key,
@@ -181,14 +181,14 @@ class Organizations(OrganizationsModule):
 
         return Organization.model_validate(response)
 
-    def delete_organization(self, organization: str):
+    def delete_organization(self, organization_id: str) -> None:
         """Deletes a single Organization
 
         Args:
-            organization (str): Organization unique identifier
+            organization_id (str): Organization unique identifier
         """
-        return self._http_client.request(
-            "organizations/{organization}".format(organization=organization),
+        self._http_client.request(
+            f"organizations/{organization_id}",
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

@@ -76,7 +76,7 @@ class DirectorySyncModule(Protocol):
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        organization: Optional[str] = None,
+        organization_id: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> SyncOrAsyncListResource: ...
 
@@ -485,7 +485,7 @@ class AsyncDirectorySync(DirectorySyncModule):
 
         Args:
             domain (str): Domain of a Directory. (Optional)
-            organization: ID of an Organization (Optional)
+            organization_id: ID of an Organization (Optional)
             search (str): Searchable text for a Directory. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)

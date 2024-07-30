@@ -83,7 +83,7 @@ class TestOrganizations(object):
         mock_http_client_with_response(self.http_client, mock_organization, 200)
 
         organization = self.organizations.get_organization(
-            organization="organization_id"
+            organization_id="organization_id"
         )
 
         assert organization.dict() == mock_organization
@@ -140,7 +140,7 @@ class TestOrganizations(object):
         mock_http_client_with_response(self.http_client, mock_organization_updated, 201)
 
         updated_organization = self.organizations.update_organization(
-            organization="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
             name="Example Organization",
             domain_data=[{"domain": "example.io", "state": "verified"}],
         )
@@ -162,7 +162,9 @@ class TestOrganizations(object):
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
-        response = self.organizations.delete_organization(organization="connection_id")
+        response = self.organizations.delete_organization(
+            organization_id="connection_id"
+        )
 
         assert response is None
 

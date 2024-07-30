@@ -19,7 +19,7 @@ from workos.exceptions import (
     NotFoundException,
     BadRequestException,
 )
-from workos.utils.request import REQUEST_METHOD_DELETE, REQUEST_METHOD_GET
+from workos.utils.request_helper import REQUEST_METHOD_DELETE, REQUEST_METHOD_GET
 
 
 _HttpxClientT = TypeVar("_HttpxClientT", bound=Union[httpx.Client, httpx.AsyncClient])

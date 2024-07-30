@@ -2,7 +2,7 @@ from typing import Optional, Protocol
 
 import workos
 from workos.utils.http_client import SyncHTTPClient
-from workos.utils.request import (
+from workos.utils.request_helper import (
     REQUEST_METHOD_POST,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,

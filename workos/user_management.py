@@ -29,7 +29,7 @@ from workos.resources.user_management import (
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.um_provider_types import UserManagementProviderType
-from workos.utils.request import (
+from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     RESPONSE_TYPE_CODE,
     REQUEST_METHOD_POST,

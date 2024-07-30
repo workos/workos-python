@@ -3,7 +3,7 @@ from typing import Optional, Protocol
 import workos
 from workos.resources.portal import PortalLink, PortalLinkIntent
 from workos.utils.http_client import SyncHTTPClient
-from workos.utils.request import REQUEST_METHOD_POST
+from workos.utils.request_helper import REQUEST_METHOD_POST
 from workos.utils.validation import PORTAL_MODULE, validate_settings
 
 

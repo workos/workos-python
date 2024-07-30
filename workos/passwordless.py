@@ -2,7 +2,7 @@ from typing import Literal, Optional, Protocol
 
 import workos
 from workos.utils.http_client import SyncHTTPClient
-from workos.utils.request import REQUEST_METHOD_POST
+from workos.utils.request_helper import REQUEST_METHOD_POST
 from workos.utils.validation import PASSWORDLESS_MODULE, validate_settings
 from workos.resources.passwordless import PasswordlessSession, PasswordlessSessionType
 

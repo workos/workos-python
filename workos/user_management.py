@@ -285,6 +285,7 @@ class UserManagementModule(Protocol):
     def authenticate_with_refresh_token(
         self,
         refresh_token: str,
+        organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> RefreshTokenAuthenticationResponse: ...
@@ -927,6 +928,7 @@ class UserManagement(UserManagementModule):
     def authenticate_with_refresh_token(
         self,
         refresh_token: str,
+        organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> RefreshTokenAuthenticationResponse:
@@ -934,6 +936,7 @@ class UserManagement(UserManagementModule):
 
         Kwargs:
             refresh_token (str): The token associated to the user.
+            organization_id (str): The organization to issue the new access token for. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
 
@@ -945,6 +948,7 @@ class UserManagement(UserManagementModule):
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
             "refresh_token": refresh_token,
+            "organization_id": organization_id,
             "grant_type": "refresh_token",
             "ip_address": ip_address,
             "user_agent": user_agent,

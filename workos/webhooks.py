@@ -1,15 +1,14 @@
-from lib2to3 import btm_matcher
 from typing import Optional, Protocol, Union
-
+from pydantic import TypeAdapter
+from workos.resources.webhooks import Webhook
 from workos.utils.request_helper import RequestHelper
 from workos.utils.validation import WEBHOOKS_MODULE, validate_settings
 import hmac
-import json
 import time
-from collections import OrderedDict
 import hashlib
 
-EventPayload = Union[bytes, bytearray]
+WebhookPayload = Union[bytes, bytearray]
+WebhookTypeAdapter = TypeAdapter(Webhook)
 
 
 class WebhooksModule(Protocol):
@@ -39,20 +38,18 @@ class Webhooks(WebhooksModule):
 
     def verify_event(
         self,
-        payload: EventPayload,
+        payload: WebhookPayload,
         sig_header: str,
         secret: str,
         tolerance: Optional[int] = DEFAULT_TOLERANCE,
-    ):
+    ) -> Webhook:
 
         Webhooks.verify_header(self, payload, sig_header, secret, tolerance)
-        # TODO: this should validate the event
-        event = json.loads(payload, object_pairs_hook=OrderedDict)
-        return event
+        return WebhookTypeAdapter.validate_json(payload)
 
     def verify_header(
         self,
-        event_body: EventPayload,
+        event_body: WebhookPayload,
         event_signature: str,
         secret: str,
         tolerance: Optional[int] = None,

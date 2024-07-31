@@ -64,7 +64,7 @@ class Webhooks(WebhooksModule):
         event_signature: str,
         secret: str,
         tolerance: Optional[int] = None,
-    ):
+    ) -> None:
         try:
             # Verify and define variables parsed from the event body
             issued_timestamp, signature_hash = event_signature.split(", ")

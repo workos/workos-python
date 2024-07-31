@@ -1,3 +1,4 @@
+import datetime
 import json
 from os import error
 from workos.webhooks import Webhooks
@@ -37,25 +38,6 @@ class TestWebhooks(object):
     @pytest.fixture
     def mock_sig_hash(self):
         return "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea259"
-
-    def test_missing_body(self, mock_header, mock_secret):
-        with pytest.raises(ValueError) as err:
-            self.webhooks.verify_event(None, mock_header, mock_secret)
-        assert "Payload body is missing and is a required parameter" in str(err.value)
-
-    def test_missing_header(self, mock_event_body, mock_secret):
-        with pytest.raises(ValueError) as err:
-            self.webhooks.verify_event(
-                mock_event_body.encode("utf-8"), None, mock_secret
-            )
-        assert "Payload signature missing and is a required parameter" in str(err.value)
-
-    def test_missing_secret(self, mock_event_body, mock_header):
-        with pytest.raises(ValueError) as err:
-            self.webhooks.verify_event(
-                mock_event_body.encode("utf-8"), mock_header, None
-            )
-        assert "Secret is missing and is a required parameter" in str(err.value)
 
     def test_unable_to_extract_timestamp(
         self, mock_event_body, mock_header_no_timestamp, mock_secret

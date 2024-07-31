@@ -8,13 +8,25 @@ import time
 import hashlib
 
 WebhookPayload = Union[bytes, bytearray]
-WebhookTypeAdapter = TypeAdapter(Webhook)
+WebhookTypeAdapter: TypeAdapter[Webhook] = TypeAdapter(Webhook)
 
 
 class WebhooksModule(Protocol):
-    def verify_event(self, payload, sig_header, secret, tolerance) -> dict: ...
+    def verify_event(
+        self,
+        payload: WebhookPayload,
+        sig_header: str,
+        secret: str,
+        tolerance: Optional[int] = None,
+    ) -> Webhook: ...
 
-    def verify_header(self, event_body, event_signature, secret, tolerance) -> None: ...
+    def verify_header(
+        self,
+        event_body: WebhookPayload,
+        event_signature: str,
+        secret: str,
+        tolerance: Optional[int] = None,
+    ) -> None: ...
 
     def constant_time_compare(self, val1, val2) -> bool: ...
 
@@ -43,7 +55,6 @@ class Webhooks(WebhooksModule):
         secret: str,
         tolerance: Optional[int] = DEFAULT_TOLERANCE,
     ) -> Webhook:
-
         Webhooks.verify_header(self, payload, sig_header, secret, tolerance)
         return WebhookTypeAdapter.validate_json(payload)
 

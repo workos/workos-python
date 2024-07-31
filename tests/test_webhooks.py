@@ -1,3 +1,4 @@
+import datetime
 import json
 from os import error
 from workos.webhooks import Webhooks
@@ -16,15 +17,15 @@ class TestWebhooks(object):
 
     @pytest.fixture
     def mock_event_body(self):
-        return '{"id":"wh_01FG9JXJ9C9S052FX59JVG4EG1","data":{"id":"conn_01EHWNC0FCBHZ3BJ7EGKYXK0E6","name":"Foo Corp\'s Connection","state":"active","object":"connection","domains":[{"id":"conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB","domain":"foo-corp.com","object":"connection_domain"}],"connection_type":"OktaSAML","organization_id":"org_01EHWNCE74X7JSDV0X3SZ3KJNY"},"event":"connection.activated"}'
+        return '{"id":"event_01J44T8116Q5M0RYCFA6KWNXN9","data":{"id":"conn_01EHWNC0FCBHZ3BJ7EGKYXK0E6","name":"Foo Corp\'s Connection","state":"active","object":"connection","status":"linked","domains":[{"id":"conn_domain_01EHWNFTAFCF3CQAE5A9Q0P1YB","domain":"foo-corp.com","object":"connection_domain"}],"created_at":"2021-06-25T19:07:33.155Z","updated_at":"2021-06-25T19:07:33.155Z","external_key":"3QMR4u0Tok6SgwY2AWG6u6mkQ","connection_type":"OktaSAML","organization_id":"org_01EHWNCE74X7JSDV0X3SZ3KJNY"},"event":"connection.activated","created_at":"2021-06-25T19:07:33.155Z"}'
 
     @pytest.fixture
     def mock_header(self):
-        return "t=1632409405772, v1=67612f0e74f008b436a13b00266f90ef5c13f9cbcf6262206f5f4a539ff61702"
+        return "t=1722443701539, v1=bd54a3768f461461c8439c2f97ab0d646ef3976f84d5d5b132d18f2fa89cdad5"
 
     @pytest.fixture
     def mock_secret(self):
-        return "1lyKDzhJjuCkIscIWqkSe4YsQ"
+        return "2sAZJlbjP8Ce3rwkKEv2GfKef"
 
     @pytest.fixture
     def mock_bad_secret(self):
@@ -32,30 +33,11 @@ class TestWebhooks(object):
 
     @pytest.fixture
     def mock_header_no_timestamp(self):
-        return "v1=67612f0e74f008b436a13b00266f90ef5c13f9cbcf6262206f5f4a539ff61702"
+        return "v1=bd54a3768f461461c8439c2f97ab0d646ef3976f84d5d5b132d18f2fa89cdad5"
 
     @pytest.fixture
     def mock_sig_hash(self):
         return "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea259"
-
-    def test_missing_body(self, mock_header, mock_secret):
-        with pytest.raises(ValueError) as err:
-            self.webhooks.verify_event(None, mock_header, mock_secret)
-        assert "Payload body is missing and is a required parameter" in str(err.value)
-
-    def test_missing_header(self, mock_event_body, mock_secret):
-        with pytest.raises(ValueError) as err:
-            self.webhooks.verify_event(
-                mock_event_body.encode("utf-8"), None, mock_secret
-            )
-        assert "Payload signature missing and is a required parameter" in str(err.value)
-
-    def test_missing_secret(self, mock_event_body, mock_header):
-        with pytest.raises(ValueError) as err:
-            self.webhooks.verify_event(
-                mock_event_body.encode("utf-8"), mock_header, None
-            )
-        assert "Secret is missing and is a required parameter" in str(err.value)
 
     def test_unable_to_extract_timestamp(
         self, mock_event_body, mock_header_no_timestamp, mock_secret

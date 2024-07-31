@@ -1,18 +1,32 @@
-from typing import Protocol
-
+from typing import Optional, Protocol, Union
+from pydantic import TypeAdapter
+from workos.resources.webhooks import Webhook
 from workos.utils.request_helper import RequestHelper
 from workos.utils.validation import WEBHOOKS_MODULE, validate_settings
 import hmac
-import json
 import time
-from collections import OrderedDict
 import hashlib
+
+WebhookPayload = Union[bytes, bytearray]
+WebhookTypeAdapter: TypeAdapter[Webhook] = TypeAdapter(Webhook)
 
 
 class WebhooksModule(Protocol):
-    def verify_event(self, payload, sig_header, secret, tolerance) -> dict: ...
+    def verify_event(
+        self,
+        payload: WebhookPayload,
+        sig_header: str,
+        secret: str,
+        tolerance: Optional[int] = None,
+    ) -> Webhook: ...
 
-    def verify_header(self, event_body, event_signature, secret, tolerance) -> None: ...
+    def verify_header(
+        self,
+        event_body: WebhookPayload,
+        event_signature: str,
+        secret: str,
+        tolerance: Optional[int] = None,
+    ) -> None: ...
 
     def constant_time_compare(self, val1, val2) -> bool: ...
 
@@ -34,19 +48,23 @@ class Webhooks(WebhooksModule):
 
     DEFAULT_TOLERANCE = 180
 
-    def verify_event(self, payload, sig_header, secret, tolerance=DEFAULT_TOLERANCE):
-        if payload is None:
-            raise ValueError("Payload body is missing and is a required parameter")
-        if sig_header is None:
-            raise ValueError("Payload signature missing and is a required parameter")
-        if secret is None:
-            raise ValueError("Secret is missing and is a required parameter")
-
+    def verify_event(
+        self,
+        payload: WebhookPayload,
+        sig_header: str,
+        secret: str,
+        tolerance: Optional[int] = DEFAULT_TOLERANCE,
+    ) -> Webhook:
         Webhooks.verify_header(self, payload, sig_header, secret, tolerance)
-        event = json.loads(payload, object_pairs_hook=OrderedDict)
-        return event
+        return WebhookTypeAdapter.validate_json(payload)
 
-    def verify_header(self, event_body, event_signature, secret, tolerance=None):
+    def verify_header(
+        self,
+        event_body: WebhookPayload,
+        event_signature: str,
+        secret: str,
+        tolerance: Optional[int] = None,
+    ) -> None:
         try:
             # Verify and define variables parsed from the event body
             issued_timestamp, signature_hash = event_signature.split(", ")

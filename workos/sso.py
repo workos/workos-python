@@ -103,7 +103,9 @@ class SSOModule(Protocol):
 
     def get_profile_and_token(self, code: str) -> SyncOrAsync[ProfileAndToken]: ...
 
-    def get_connection(self, connection: str) -> SyncOrAsync[ConnectionWithDomains]: ...
+    def get_connection(
+        self, connection_id: str
+    ) -> SyncOrAsync[ConnectionWithDomains]: ...
 
     def list_connections(
         self,

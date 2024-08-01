@@ -1,4 +1,4 @@
-from typing import List, Optional, Protocol
+from typing import List, Optional, Protocol, Sequence
 import workos
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
@@ -137,7 +137,7 @@ class Organizations(OrganizationsModule):
     def create_organization(
         self,
         name: str,
-        domain_data: Optional[List[DomainDataInput]] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
     ) -> Organization:
         """Create an organization"""
@@ -165,7 +165,7 @@ class Organizations(OrganizationsModule):
         self,
         organization_id: str,
         name: str,
-        domain_data: Optional[List[DomainDataInput]] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
     ) -> Organization:
         params = {
             "name": name,

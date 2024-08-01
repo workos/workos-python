@@ -46,7 +46,7 @@ class DirectoryGroupListFilters(ListArgs, total=False):
 class DirectorySyncModule(Protocol):
     def list_users(
         self,
-        directory: Optional[str] = None,
+        directory_id: Optional[str] = None,
         group: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -56,7 +56,7 @@ class DirectorySyncModule(Protocol):
 
     def list_groups(
         self,
-        directory: Optional[str] = None,
+        directory_id: Optional[str] = None,
         user: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -94,7 +94,7 @@ class DirectorySync(DirectorySyncModule):
 
     def list_users(
         self,
-        directory: Optional[str] = None,
+        directory_id: Optional[str] = None,
         group: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -108,7 +108,7 @@ class DirectorySync(DirectorySyncModule):
         Note, either 'directory' or 'group' must be provided.
 
         Args:
-            directory (str): Directory unique identifier.
+            directory_id (str): Directory unique identifier.
             group (str): Directory Group unique identifier.
             limit (int): Maximum number of records to return.
             before (str): Pagination cursor to receive records before a provided Directory ID.
@@ -128,8 +128,8 @@ class DirectorySync(DirectorySyncModule):
 
         if group is not None:
             list_params["group"] = group
-        if directory is not None:
-            list_params["directory"] = directory
+        if directory_id is not None:
+            list_params["directory"] = directory_id
 
         response = self._http_client.request(
             "directory_users",
@@ -146,8 +146,8 @@ class DirectorySync(DirectorySyncModule):
 
     def list_groups(
         self,
-        directory: Optional[str] = None,
-        user: Optional[str] = None,
+        directory_id: Optional[str] = None,
+        user_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -155,11 +155,11 @@ class DirectorySync(DirectorySyncModule):
     ) -> WorkOsListResource[DirectoryGroup, DirectoryGroupListFilters, ListMetadata]:
         """Gets a list of provisioned Groups for a Directory .
 
-        Note, either 'directory' or 'user' must be provided.
+        Note, either 'directory_id' or 'user_id' must be provided.
 
         Args:
-            directory (str): Directory unique identifier.
-            user (str): Directory User unique identifier.
+            directory_id (str): Directory unique identifier.
+            user_id (str): Directory User unique identifier.
             limit (int): Maximum number of records to return.
             before (str): Pagination cursor to receive records before a provided Directory ID.
             after (str): Pagination cursor to receive records after a provided Directory ID.
@@ -175,10 +175,10 @@ class DirectorySync(DirectorySyncModule):
             "order": order,
         }
 
-        if user is not None:
-            list_params["user"] = user
-        if directory is not None:
-            list_params["directory"] = directory
+        if user_id is not None:
+            list_params["user"] = user_id
+        if directory_id is not None:
+            list_params["directory"] = directory_id
 
         response = self._http_client.request(
             "directory_groups",
@@ -195,44 +195,44 @@ class DirectorySync(DirectorySyncModule):
             **ListPage[DirectoryGroup](**response).model_dump(),
         )
 
-    def get_user(self, user: str) -> DirectoryUserWithGroups:
+    def get_user(self, user_id: str) -> DirectoryUserWithGroups:
         """Gets details for a single provisioned Directory User.
 
         Args:
-            user (str): Directory User unique identifier.
+            user_id (str): Directory User unique identifier.
 
         Returns:
             dict: Directory User response from WorkOS.
         """
         response = self._http_client.request(
-            "directory_users/{user}".format(user=user),
+            "directory_users/{user}".format(user=user_id),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
 
         return DirectoryUserWithGroups.model_validate(response)
 
-    def get_group(self, group: str) -> DirectoryGroup:
+    def get_group(self, group_id: str) -> DirectoryGroup:
         """Gets details for a single provisioned Directory Group.
 
         Args:
-            group (str): Directory Group unique identifier.
+            group_id (str): Directory Group unique identifier.
 
         Returns:
             dict: Directory Group response from WorkOS.
         """
         response = self._http_client.request(
-            "directory_groups/{group}".format(group=group),
+            "directory_groups/{group}".format(group=group_id),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
         return DirectoryGroup.model_validate(response)
 
-    def get_directory(self, directory: str) -> Directory:
+    def get_directory(self, directory_id: str) -> Directory:
         """Gets details for a single Directory
 
         Args:
-            directory (str): Directory unique identifier.
+            directory_id (str): Directory unique identifier.
 
         Returns:
             dict: Directory response from WorkOS
@@ -240,7 +240,7 @@ class DirectorySync(DirectorySyncModule):
         """
 
         response = self._http_client.request(
-            "directories/{directory}".format(directory=directory),
+            "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -291,17 +291,17 @@ class DirectorySync(DirectorySyncModule):
             **ListPage[Directory](**response).model_dump(),
         )
 
-    def delete_directory(self, directory: str) -> None:
+    def delete_directory(self, directory_id: str) -> None:
         """Delete one existing Directory.
 
         Args:
-            directory (str): The ID of the directory to be deleted. (Required)
+            directory_id (str): The ID of the directory to be deleted. (Required)
 
         Returns:
             None
         """
         self._http_client.request(
-            "directories/{directory}".format(directory=directory),
+            "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
@@ -318,8 +318,8 @@ class AsyncDirectorySync(DirectorySyncModule):
 
     async def list_users(
         self,
-        directory: Optional[str] = None,
-        group: Optional[str] = None,
+        directory_id: Optional[str] = None,
+        group_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -329,11 +329,11 @@ class AsyncDirectorySync(DirectorySyncModule):
     ]:
         """Gets a list of provisioned Users for a Directory.
 
-        Note, either 'directory' or 'group' must be provided.
+        Note, either 'directory_id' or 'group_id' must be provided.
 
         Args:
-            directory (str): Directory unique identifier.
-            group (str): Directory Group unique identifier.
+            directory_id (str): Directory unique identifier.
+            group_id (str): Directory Group unique identifier.
             limit (int): Maximum number of records to return.
             before (str): Pagination cursor to receive records before a provided Directory ID.
             after (str): Pagination cursor to receive records after a provided Directory ID.
@@ -350,10 +350,10 @@ class AsyncDirectorySync(DirectorySyncModule):
             "order": order,
         }
 
-        if group is not None:
-            list_params["group"] = group
-        if directory is not None:
-            list_params["directory"] = directory
+        if group_id is not None:
+            list_params["group"] = group_id
+        if directory_id is not None:
+            list_params["directory"] = directory_id
 
         response = await self._http_client.request(
             "directory_users",
@@ -370,8 +370,8 @@ class AsyncDirectorySync(DirectorySyncModule):
 
     async def list_groups(
         self,
-        directory: Optional[str] = None,
-        user: Optional[str] = None,
+        directory_id: Optional[str] = None,
+        user_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -381,11 +381,11 @@ class AsyncDirectorySync(DirectorySyncModule):
     ]:
         """Gets a list of provisioned Groups for a Directory .
 
-        Note, either 'directory' or 'user' must be provided.
+        Note, either 'directory_id' or 'user_id' must be provided.
 
         Args:
-            directory (str): Directory unique identifier.
-            user (str): Directory User unique identifier.
+            directory_id (str): Directory unique identifier.
+            user_id (str): Directory User unique identifier.
             limit (int): Maximum number of records to return.
             before (str): Pagination cursor to receive records before a provided Directory ID.
             after (str): Pagination cursor to receive records after a provided Directory ID.
@@ -400,10 +400,10 @@ class AsyncDirectorySync(DirectorySyncModule):
             "after": after,
             "order": order,
         }
-        if user is not None:
-            list_params["user"] = user
-        if directory is not None:
-            list_params["directory"] = directory
+        if user_id is not None:
+            list_params["user"] = user_id
+        if directory_id is not None:
+            list_params["directory"] = directory_id
 
         response = await self._http_client.request(
             "directory_groups",
@@ -420,44 +420,44 @@ class AsyncDirectorySync(DirectorySyncModule):
             **ListPage[DirectoryGroup](**response).model_dump(),
         )
 
-    async def get_user(self, user: str) -> DirectoryUserWithGroups:
+    async def get_user(self, user_id: str) -> DirectoryUserWithGroups:
         """Gets details for a single provisioned Directory User.
 
         Args:
-            user (str): Directory User unique identifier.
+            user_id (str): Directory User unique identifier.
 
         Returns:
             dict: Directory User response from WorkOS.
         """
         response = await self._http_client.request(
-            "directory_users/{user}".format(user=user),
+            "directory_users/{user}".format(user=user_id),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
 
         return DirectoryUserWithGroups.model_validate(response)
 
-    async def get_group(self, group: str) -> DirectoryGroup:
+    async def get_group(self, group_id: str) -> DirectoryGroup:
         """Gets details for a single provisioned Directory Group.
 
         Args:
-            group (str): Directory Group unique identifier.
+            group_id (str): Directory Group unique identifier.
 
         Returns:
             dict: Directory Group response from WorkOS.
         """
         response = await self._http_client.request(
-            "directory_groups/{group}".format(group=group),
+            "directory_groups/{group}".format(group=group_id),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
         return DirectoryGroup.model_validate(response)
 
-    async def get_directory(self, directory: str) -> Directory:
+    async def get_directory(self, directory_id: str) -> Directory:
         """Gets details for a single Directory
 
         Args:
-            directory (str): Directory unique identifier.
+            directory_id (str): Directory unique identifier.
 
         Returns:
             dict: Directory response from WorkOS
@@ -465,7 +465,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         """
 
         response = await self._http_client.request(
-            "directories/{directory}".format(directory=directory),
+            "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
         )
@@ -517,17 +517,17 @@ class AsyncDirectorySync(DirectorySyncModule):
             **ListPage[Directory](**response).model_dump(),
         )
 
-    async def delete_directory(self, directory: str) -> None:
+    async def delete_directory(self, directory_id: str) -> None:
         """Delete one existing Directory.
 
         Args:
-            directory (str): The ID of the directory to be deleted. (Required)
+            directory_id (str): The ID of the directory to be deleted. (Required)
 
         Returns:
             None
         """
         await self._http_client.request(
-            "directories/{directory}".format(directory=directory),
+            "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )

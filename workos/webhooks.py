@@ -1,6 +1,6 @@
 from typing import Optional, Protocol, Union
-from pydantic import TypeAdapter
 from workos.resources.webhooks import Webhook
+from workos.typing.webhooks import WebhookTypeAdapter
 from workos.utils.request_helper import RequestHelper
 from workos.utils.validation import WEBHOOKS_MODULE, validate_settings
 import hmac
@@ -8,7 +8,6 @@ import time
 import hashlib
 
 WebhookPayload = Union[bytes, bytearray]
-WebhookTypeAdapter: TypeAdapter[Webhook] = TypeAdapter(Webhook)
 
 
 class WebhooksModule(Protocol):

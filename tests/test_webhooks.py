@@ -83,12 +83,13 @@ class TestWebhooks(object):
         self, mock_event_body, mock_header, mock_secret
     ):
         try:
-            self.webhooks.verify_event(
+            webhook = self.webhooks.verify_event(
                 mock_event_body.encode("utf-8"),
                 mock_header,
                 mock_secret,
                 99999999999999,
             )
+            assert type(webhook).__name__ == "ConnectionActivatedWebhook"
         except BaseException:
             pytest.fail(
                 "There was an error in validating the webhook with the expected values"

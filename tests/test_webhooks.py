@@ -1,11 +1,6 @@
-import datetime
 import json
-from os import error
 from workos.webhooks import Webhooks
-from requests import Response
-import time
 import pytest
-import workos
 from workos.webhooks import Webhooks
 from workos.utils.request_helper import RESPONSE_TYPE_CODE
 
@@ -38,6 +33,14 @@ class TestWebhooks(object):
     @pytest.fixture
     def mock_sig_hash(self):
         return "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea259"
+
+    @pytest.fixture
+    def mock_unknown_webhook_body(self):
+        return '{"id":"event_01J44T8116Q5M0RYCFA6KWNXN9","data":{"id":"meow_123","name":"Meow Corp","object":"kitten","status":"cuteness","created_at":"2021-06-25T19:07:33.155Z","updated_at":"2021-06-25T19:07:33.155Z"},"event":"kitten.created","created_at":"2021-06-25T19:07:33.155Z"}'
+
+    @pytest.fixture
+    def mock_unknown_webhook_header(self):
+        return "t=1722443701539, v1=f82f88dd60d5bc8a803686a27f83ce148b8c37c54490c52b77d00d62da891f1b"
 
     def test_unable_to_extract_timestamp(
         self, mock_event_body, mock_header_no_timestamp, mock_secret
@@ -80,12 +83,13 @@ class TestWebhooks(object):
         self, mock_event_body, mock_header, mock_secret
     ):
         try:
-            self.webhooks.verify_event(
+            webhook = self.webhooks.verify_event(
                 mock_event_body.encode("utf-8"),
                 mock_header,
                 mock_secret,
                 99999999999999,
             )
+            assert type(webhook).__name__ == "ConnectionActivatedWebhook"
         except BaseException:
             pytest.fail(
                 "There was an error in validating the webhook with the expected values"
@@ -105,3 +109,15 @@ class TestWebhooks(object):
             "Signature hash does not match the expected signature hash for payload"
             in str(err.value)
         )
+
+    def test_unrecognized_webhook_type_returns_untyped_webhook(
+        self, mock_unknown_webhook_body, mock_unknown_webhook_header, mock_secret
+    ):
+        result = self.webhooks.verify_event(
+            mock_unknown_webhook_body.encode("utf-8"),
+            mock_unknown_webhook_header,
+            mock_secret,
+            99999999999999,
+        )
+        assert type(result).__name__ == "UntypedWebhook"
+        assert result.dict() == json.loads(mock_unknown_webhook_body)

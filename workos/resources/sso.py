@@ -1,9 +1,8 @@
 from typing import Literal, Sequence, Union
-
 from workos.resources.workos_model import WorkOSModel
+from workos.sso import ConnectionType
 from workos.types.sso.connection import Connection
 from workos.typing.literals import LiteralOrUntyped
-from workos.utils.connection_types import ConnectionType
 
 
 class Profile(WorkOSModel):
@@ -39,11 +38,3 @@ class ConnectionWithDomains(Connection):
     """Representation of a Connection Response as returned by WorkOS through the SSO feature."""
 
     domains: Sequence[ConnectionDomain]
-
-
-SsoProviderType = Literal[
-    "AppleOAuth",
-    "GitHubOAuth",
-    "GoogleOAuth",
-    "MicrosoftOAuth",
-]

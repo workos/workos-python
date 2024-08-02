@@ -1,6 +1,7 @@
 from typing import Generic, Literal, TypeVar, Union
 from typing_extensions import Annotated
 from pydantic import Field
+from workos.events import EventType
 from workos.resources.directory_sync import DirectoryGroup
 from workos.resources.user_management import OrganizationMembership, User
 from workos.resources.workos_model import WorkOSModel
@@ -45,50 +46,7 @@ from workos.types.user_management.email_verification_common import (
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
 from workos.types.user_management.password_reset_common import PasswordResetCommon
-from workos.typing.literals import LiteralOrUntyped
 
-EventType = Literal[
-    "authentication.email_verification_succeeded",
-    "authentication.magic_auth_failed",
-    "authentication.magic_auth_succeeded",
-    "authentication.mfa_succeeded",
-    "authentication.oauth_succeeded",
-    "authentication.password_failed",
-    "authentication.password_succeeded",
-    "authentication.sso_succeeded",
-    "connection.activated",
-    "connection.deactivated",
-    "connection.deleted",
-    "dsync.activated",
-    "dsync.deleted",
-    "dsync.group.created",
-    "dsync.group.deleted",
-    "dsync.group.updated",
-    "dsync.user.created",
-    "dsync.user.deleted",
-    "dsync.user.updated",
-    "dsync.group.user_added",
-    "dsync.group.user_removed",
-    "email_verification.created",
-    "invitation.created",
-    "magic_auth.created",
-    "organization.created",
-    "organization.deleted",
-    "organization.updated",
-    "organization_domain.verification_failed",
-    "organization_domain.verified",
-    "organization_membership.created",
-    "organization_membership.deleted",
-    "organization_membership.updated",
-    "password_reset.created",
-    "role.created",
-    "role.deleted",
-    "role.updated",
-    "session.created",
-    "user.created",
-    "user.deleted",
-    "user.updated",
-]
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
     "EventPayload",

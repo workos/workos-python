@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Protocol, Sequence
+from typing import Literal, Optional, Protocol, Sequence
 from typing_extensions import TypedDict
 import workos
 from workos.utils.http_client import SyncHTTPClient
@@ -25,13 +25,13 @@ class DomainDataInput(TypedDict):
 
 
 class OrganizationListFilters(ListArgs, total=False):
-    domains: Optional[List[str]]
+    domains: Optional[Sequence[str]]
 
 
 class OrganizationsModule(Protocol):
     def list_organizations(
         self,
-        domains: Optional[List[str]] = None,
+        domains: Optional[Sequence[str]] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -45,7 +45,7 @@ class OrganizationsModule(Protocol):
     def create_organization(
         self,
         name: str,
-        domain_data: Optional[List[DomainDataInput]] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
     ) -> Organization: ...
 
@@ -53,7 +53,7 @@ class OrganizationsModule(Protocol):
         self,
         organization_id: str,
         name: str,
-        domain_data: Optional[List[DomainDataInput]] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
     ) -> Organization: ...
 
     def delete_organization(self, organization_id: str) -> None: ...
@@ -69,7 +69,7 @@ class Organizations(OrganizationsModule):
 
     def list_organizations(
         self,
-        domains: Optional[List[str]] = None,
+        domains: Optional[Sequence[str]] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,

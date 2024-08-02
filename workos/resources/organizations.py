@@ -1,6 +1,4 @@
-from typing import Literal, Optional
-from typing_extensions import TypedDict
-from workos.resources.workos_model import WorkOSModel
+from typing import Optional
 from workos.types.organizations.organization_common import OrganizationCommon
 
 

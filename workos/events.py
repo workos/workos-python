@@ -1,4 +1,4 @@
-from typing import List, Optional, Protocol, Union
+from typing import Optional, Protocol, Sequence, Union
 
 import workos
 from workos.typing.sync_or_async import SyncOrAsync
@@ -16,7 +16,7 @@ from workos.resources.list import (
 
 
 class EventsListFilters(ListArgs, total=False):
-    events: List[EventType]
+    events: Sequence[EventType]
     organization_id: Optional[str]
     range_start: Optional[str]
     range_end: Optional[str]
@@ -31,7 +31,7 @@ EventsListResource = Union[
 class EventsModule(Protocol):
     def list_events(
         self,
-        events: List[EventType],
+        events: Sequence[EventType],
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         organization_id: Optional[str] = None,
         after: Optional[str] = None,
@@ -51,7 +51,7 @@ class Events(EventsModule):
 
     def list_events(
         self,
-        events: List[EventType],
+        events: Sequence[EventType],
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         organization_id: Optional[str] = None,
         after: Optional[str] = None,
@@ -105,7 +105,7 @@ class AsyncEvents(EventsModule):
 
     async def list_events(
         self,
-        events: List[EventType],
+        events: Sequence[EventType],
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         organization_id: Optional[str] = None,
         after: Optional[str] = None,

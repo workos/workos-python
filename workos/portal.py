@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Protocol, TypeGuard, get_args
+from typing import Literal, Optional, Protocol
 import workos
 from workos.resources.portal import PortalLink
 from workos.utils.http_client import SyncHTTPClient

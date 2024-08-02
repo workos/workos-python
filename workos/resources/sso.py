@@ -1,4 +1,4 @@
-from typing import List, Literal, Union
+from typing import Literal, Sequence, Union
 
 from workos.resources.workos_model import WorkOSModel
 from workos.types.sso.connection import Connection
@@ -18,7 +18,7 @@ class Profile(WorkOSModel):
     first_name: Union[str, None]
     last_name: Union[str, None]
     idp_id: str
-    groups: Union[List[str], None]
+    groups: Union[Sequence[str], None]
     raw_attributes: dict
 
 
@@ -38,7 +38,7 @@ class ConnectionDomain(WorkOSModel):
 class ConnectionWithDomains(Connection):
     """Representation of a Connection Response as returned by WorkOS through the SSO feature."""
 
-    domains: List[ConnectionDomain]
+    domains: Sequence[ConnectionDomain]
 
 
 SsoProviderType = Literal[

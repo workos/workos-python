@@ -1,5 +1,4 @@
 import pytest
-
 from workos import async_client, client
 from workos.exceptions import ConfigurationException
 

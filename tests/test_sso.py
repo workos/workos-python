@@ -1,8 +1,6 @@
 import json
-
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
-
 from tests.utils.fixtures.mock_profile import MockProfile
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 import workos

@@ -621,6 +621,28 @@ class TestUserManagement(object):
             "response_type": RESPONSE_TYPE_CODE,
         }
 
+    def test_authorization_url_has_expected_query_params_with_code_challenge(self):
+        connection_id = "connection_123"
+        redirect_uri = "https://localhost/auth/callback"
+        code_challenge = json.dumps({"code_challenge": "code_challenge_for_pkce"})
+
+        authorization_url = self.user_management.get_authorization_url(
+            connection_id=connection_id,
+            code_challenge=code_challenge,
+            redirect_uri=redirect_uri,
+        )
+
+        parsed_url = urlparse(authorization_url)
+
+        assert dict(parse_qsl(parsed_url.query)) == {
+            "code_challenge": code_challenge,
+            "code_challenge_method": "S256",
+            "client_id": workos.client_id,
+            "redirect_uri": redirect_uri,
+            "connection_id": connection_id,
+            "response_type": RESPONSE_TYPE_CODE,
+        }
+
     def test_authenticate_with_password(
         self, capture_and_mock_request, mock_auth_response
     ):
@@ -653,6 +675,7 @@ class TestUserManagement(object):
 
     def test_authenticate_with_code(self, capture_and_mock_request, mock_auth_response):
         code = "test_code"
+        code_verifier = "test_code_verifier"
         user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
         ip_address = "192.0.0.1"
 
@@ -660,6 +683,7 @@ class TestUserManagement(object):
 
         response = self.user_management.authenticate_with_code(
             code=code,
+            code_verifier=code_verifier,
             user_agent=user_agent,
             ip_address=ip_address,
         )
@@ -670,6 +694,7 @@ class TestUserManagement(object):
         assert response["access_token"] == "access_token_12345"
         assert response["refresh_token"] == "refresh_token_12345"
         assert request["json"]["code"] == code
+        assert request["json"]["code_verifier"] == code_verifier
         assert request["json"]["user_agent"] == user_agent
         assert request["json"]["ip_address"] == ip_address
         assert request["json"]["client_id"] == "client_b27needthisforssotemxo"

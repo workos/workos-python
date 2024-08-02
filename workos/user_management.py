@@ -19,6 +19,7 @@ from workos.resources.user_management import (
     Invitation,
     MagicAuth,
     OrganizationMembership,
+    OrganizationMembershipStatus,
     PasswordReset,
     RefreshTokenAuthenticationResponse,
     User,
@@ -66,7 +67,6 @@ PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
 
 
 PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
-OrganizationMembershipStatus = Literal["active", "inactive", "pending"]
 UserManagementProviderType = Literal[
     "authkit", "AppleOAuth", "GitHubOAuth", "GoogleOAuth", "MicrosoftOAuth"
 ]

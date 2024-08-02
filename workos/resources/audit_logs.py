@@ -1,6 +1,4 @@
-from typing import Literal, Optional, Sequence, TypedDict
-from typing_extensions import NotRequired
-
+from typing import Literal, Optional
 from workos.resources.workos_model import WorkOSModel
 
 AuditLogExportState = Literal["error", "pending", "ready"]

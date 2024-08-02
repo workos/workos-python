@@ -2,9 +2,8 @@ from datetime import datetime
 
 import pytest
 
-from workos.audit_logs import AuditLogs
+from workos.audit_logs import AuditLogEvent, AuditLogs
 from workos.exceptions import AuthenticationException, BadRequestException
-from workos.resources.audit_logs import AuditLogEvent
 from workos.utils.http_client import SyncHTTPClient
 
 

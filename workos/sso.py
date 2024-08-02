@@ -3,7 +3,12 @@ import workos
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
-from workos.resources.sso import ConnectionWithDomains, Profile, ProfileAndToken
+from workos.resources.sso import (
+    ConnectionType,
+    ConnectionWithDomains,
+    Profile,
+    ProfileAndToken,
+)
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     RESPONSE_TYPE_CODE,
@@ -27,42 +32,6 @@ TOKEN_PATH = "sso/token"
 PROFILE_PATH = "sso/profile"
 
 OAUTH_GRANT_TYPE = "authorization_code"
-ConnectionType = Literal[
-    "ADFSSAML",
-    "AdpOidc",
-    "AppleOAuth",
-    "Auth0SAML",
-    "AzureSAML",
-    "CasSAML",
-    "CloudflareSAML",
-    "ClassLinkSAML",
-    "CyberArkSAML",
-    "DuoSAML",
-    "GenericOIDC",
-    "GenericSAML",
-    "GitHubOAuth",
-    "GoogleOAuth",
-    "GoogleSAML",
-    "JumpCloudSAML",
-    "KeycloakSAML",
-    "LastPassSAML",
-    "LoginGovOidc",
-    "MagicLink",
-    "MicrosoftOAuth",
-    "MiniOrangeSAML",
-    "NetIqSAML",
-    "OktaSAML",
-    "OneLoginSAML",
-    "OracleSAML",
-    "PingFederateSAML",
-    "PingOneSAML",
-    "RipplingSAML",
-    "SalesforceSAML",
-    "ShibbolethGenericSAML",
-    "ShibbolethSAML",
-    "SimpleSamlPhpSAML",
-    "VMwareSAML",
-]
 
 SsoProviderType = Literal[
     "AppleOAuth",

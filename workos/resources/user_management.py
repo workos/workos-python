@@ -9,7 +9,9 @@ from workos.types.user_management.impersonator import Impersonator
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
 from workos.types.user_management.password_reset_common import PasswordResetCommon
-from workos.user_management import OrganizationMembershipStatus
+
+
+OrganizationMembershipStatus = Literal["active", "inactive", "pending"]
 
 AuthenticationMethod = Literal[
     "SSO",

@@ -233,7 +233,7 @@ class Organizations(WorkOSListResource):
     def update_organization(
         self,
         organization,
-        name,
+        name=None,
         allow_profiles_outside_organization=None,
         domains=None,
         domain_data=None,
@@ -243,7 +243,7 @@ class Organizations(WorkOSListResource):
 
         Args:
             organization(str) - Organization's unique identifier.
-            name (str) - A unique, descriptive name for the organization.
+            name (str) - A unique, descriptive name for the organization. (Optional)
             allow_profiles_outside_organization (boolean) - [Deprecated] Whether Connections
                 within the Organization allow profiles that are outside of the Organization's
                 configured User Email Domains. (Optional)

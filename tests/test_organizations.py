@@ -248,7 +248,6 @@ class TestOrganizations(object):
 
         updated_organization = self.organizations.update_organization(
             organization="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            name="Example Organization",
             domain_data=[{"domain": "example.io", "state": "verified"}],
             allow_profiles_outside_organization=True,
         )
@@ -275,7 +274,6 @@ class TestOrganizations(object):
         ):
             updated_organization = self.organizations.update_organization(
                 organization="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                name="Example Organization",
                 domains=["example.io"],
                 allow_profiles_outside_organization=True,
             )

@@ -9,9 +9,7 @@ from workos.types.user_management.impersonator import Impersonator
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
 from workos.types.user_management.password_reset_common import PasswordResetCommon
-
-
-PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
+from workos.user_management import OrganizationMembershipStatus
 
 AuthenticationMethod = Literal[
     "SSO",
@@ -85,9 +83,6 @@ class PasswordReset(PasswordResetCommon):
 
 class OrganizationMembershipRole(TypedDict):
     slug: str
-
-
-OrganizationMembershipStatus = Literal["active", "inactive", "pending"]
 
 
 class OrganizationMembership(WorkOSModel):

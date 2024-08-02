@@ -124,7 +124,7 @@ class TestDirectorySync(DirectorySyncFixtures):
             http_client=self.http_client, status_code=200, response_dict=mock_users
         )
 
-        users = self.directory_sync.list_users(directory="directory_id")
+        users = self.directory_sync.list_users(directory_id="directory_id")
 
         assert list_data_to_dicts(users.data) == mock_users["data"]
 
@@ -144,7 +144,7 @@ class TestDirectorySync(DirectorySyncFixtures):
             http_client=self.http_client, status_code=200, response_dict=mock_groups
         )
 
-        groups = self.directory_sync.list_groups(directory="directory_id")
+        groups = self.directory_sync.list_groups(directory_id="directory_id")
 
         assert list_data_to_dicts(groups.data) == mock_groups["data"]
 
@@ -153,7 +153,7 @@ class TestDirectorySync(DirectorySyncFixtures):
             http_client=self.http_client, status_code=200, response_dict=mock_groups
         )
 
-        groups = self.directory_sync.list_groups(user="directory_usr_id")
+        groups = self.directory_sync.list_groups(user_id="directory_usr_id")
 
         assert list_data_to_dicts(groups.data) == mock_groups["data"]
 
@@ -164,7 +164,7 @@ class TestDirectorySync(DirectorySyncFixtures):
             response_dict=mock_user,
         )
 
-        user = self.directory_sync.get_user(user="directory_usr_id")
+        user = self.directory_sync.get_user(user_id="directory_usr_id")
 
         assert user.dict() == mock_user
 
@@ -176,7 +176,7 @@ class TestDirectorySync(DirectorySyncFixtures):
         )
 
         group = self.directory_sync.get_group(
-            group="directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE"
+            group_id="directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE"
         )
 
         assert group.dict() == mock_group
@@ -201,7 +201,7 @@ class TestDirectorySync(DirectorySyncFixtures):
             response_dict=mock_directory,
         )
 
-        directory = self.directory_sync.get_directory(directory="directory_id")
+        directory = self.directory_sync.get_directory(directory_id="directory_id")
 
         assert directory.dict() == api_directory_to_sdk(mock_directory)
 
@@ -212,7 +212,7 @@ class TestDirectorySync(DirectorySyncFixtures):
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
-        response = self.directory_sync.delete_directory(directory="directory_id")
+        response = self.directory_sync.delete_directory(directory_id="directory_id")
 
         assert response is None
 
@@ -354,7 +354,7 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
             http_client=self.http_client, status_code=200, response_dict=mock_users
         )
 
-        users = await self.directory_sync.list_users(directory="directory_id")
+        users = await self.directory_sync.list_users(directory_id="directory_id")
 
         assert list_data_to_dicts(users.data) == mock_users["data"]
 
@@ -365,7 +365,7 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
             http_client=self.http_client, status_code=200, response_dict=mock_users
         )
 
-        users = await self.directory_sync.list_users(group="directory_grp_id")
+        users = await self.directory_sync.list_users(group_id="directory_grp_id")
 
         assert list_data_to_dicts(users.data) == mock_users["data"]
 
@@ -376,7 +376,7 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
             http_client=self.http_client, status_code=200, response_dict=mock_groups
         )
 
-        groups = await self.directory_sync.list_groups(directory="directory_id")
+        groups = await self.directory_sync.list_groups(directory_id="directory_id")
 
         assert list_data_to_dicts(groups.data) == mock_groups["data"]
 
@@ -387,7 +387,7 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
             http_client=self.http_client, status_code=200, response_dict=mock_groups
         )
 
-        groups = await self.directory_sync.list_groups(user="directory_usr_id")
+        groups = await self.directory_sync.list_groups(user_id="directory_usr_id")
 
         assert list_data_to_dicts(groups.data) == mock_groups["data"]
 
@@ -398,7 +398,7 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
             response_dict=mock_user,
         )
 
-        user = await self.directory_sync.get_user(user="directory_usr_id")
+        user = await self.directory_sync.get_user(user_id="directory_usr_id")
 
         assert user.dict() == mock_user
 
@@ -410,7 +410,7 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         )
 
         group = await self.directory_sync.get_group(
-            group="directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE"
+            group_id="directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE"
         )
 
         assert group.dict() == mock_group
@@ -437,7 +437,7 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
             response_dict=mock_directory,
         )
 
-        directory = await self.directory_sync.get_directory(directory="directory_id")
+        directory = await self.directory_sync.get_directory(directory_id="directory_id")
 
         assert directory.dict() == api_directory_to_sdk(mock_directory)
 
@@ -448,7 +448,9 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
-        response = await self.directory_sync.delete_directory(directory="directory_id")
+        response = await self.directory_sync.delete_directory(
+            directory_id="directory_id"
+        )
 
         assert response is None
 

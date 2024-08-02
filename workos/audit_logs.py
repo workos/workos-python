@@ -1,4 +1,4 @@
-from typing import List, Optional, Protocol
+from typing import Optional, Protocol, Sequence
 
 import workos
 from workos.resources.audit_logs import AuditLogEvent, AuditLogExport
@@ -23,10 +23,10 @@ class AuditLogsModule(Protocol):
         organization_id: str,
         range_start: str,
         range_end: str,
-        actions: Optional[List[str]] = None,
-        targets: Optional[List[str]] = None,
-        actor_names: Optional[List[str]] = None,
-        actor_ids: Optional[List[str]] = None,
+        actions: Optional[Sequence[str]] = None,
+        targets: Optional[Sequence[str]] = None,
+        actor_names: Optional[Sequence[str]] = None,
+        actor_ids: Optional[Sequence[str]] = None,
     ) -> AuditLogExport: ...
 
     def get_export(self, audit_log_export_id: str) -> AuditLogExport: ...
@@ -73,10 +73,10 @@ class AuditLogs(AuditLogsModule):
         organization_id: str,
         range_start: str,
         range_end: str,
-        actions: Optional[List[str]] = None,
-        targets: Optional[List[str]] = None,
-        actor_names: Optional[List[str]] = None,
-        actor_ids: Optional[List[str]] = None,
+        actions: Optional[Sequence[str]] = None,
+        targets: Optional[Sequence[str]] = None,
+        actor_names: Optional[Sequence[str]] = None,
+        actor_ids: Optional[Sequence[str]] = None,
     ) -> AuditLogExport:
         """Trigger the creation of an export of audit logs.
 

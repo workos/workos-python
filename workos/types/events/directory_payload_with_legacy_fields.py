@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import Literal, Sequence
 from workos.resources.workos_model import WorkOSModel
 from workos.types.events.directory_payload import DirectoryPayload
 
@@ -10,5 +10,5 @@ class MinimalOrganizationDomain(WorkOSModel):
 
 
 class DirectoryPayloadWithLegacyFields(DirectoryPayload):
-    domains: List[MinimalOrganizationDomain]
+    domains: Sequence[MinimalOrganizationDomain]
     external_key: str

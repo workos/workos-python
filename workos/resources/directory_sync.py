@@ -1,4 +1,4 @@
-from typing import List, Optional, Literal
+from typing import Optional, Literal, Sequence
 from workos.resources.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_state import DirectoryState
 from workos.types.directory_sync.directory_user import DirectoryUser
@@ -59,4 +59,4 @@ class DirectoryGroup(WorkOSModel):
 class DirectoryUserWithGroups(DirectoryUser):
     """Representation of a Directory User as returned by WorkOS through the Directory Sync feature."""
 
-    groups: List[DirectoryGroup]
+    groups: Sequence[DirectoryGroup]

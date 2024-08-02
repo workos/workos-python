@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, TypedDict
+from typing import Literal, Optional, Sequence, TypedDict
 from typing_extensions import NotRequired
 
 from workos.resources.workos_model import WorkOSModel
@@ -47,6 +47,6 @@ class AuditLogEvent(TypedDict):
     version: NotRequired[int]
     occurred_at: str  # ISO-8601 datetime of when an event occurred
     actor: AuditLogEventActor
-    targets: List[AuditLogEventTarget]
+    targets: Sequence[AuditLogEventTarget]
     context: AuditLogEventContext
     metadata: NotRequired[dict]

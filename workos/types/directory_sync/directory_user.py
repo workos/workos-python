@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional
+from typing import Literal, Optional, Sequence
 
 from workos.resources.workos_model import WorkOSModel
 
@@ -25,7 +25,7 @@ class DirectoryUser(WorkOSModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     job_title: Optional[str] = None
-    emails: List[DirectoryUserEmail]
+    emails: Sequence[DirectoryUserEmail]
     username: Optional[str] = None
     state: DirectoryUserState
     custom_attributes: dict

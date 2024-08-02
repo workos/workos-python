@@ -3,8 +3,8 @@ from typing import (
     AsyncIterator,
     Awaitable,
     Dict,
-    List,
     Literal,
+    Sequence,
     TypeVar,
     Generic,
     Callable,
@@ -57,7 +57,7 @@ ListMetadataType = TypeVar("ListMetadataType", ListAfterMetadata, ListMetadata)
 
 class ListPage(WorkOSModel, Generic[ListableResource]):
     object: Literal["list"]
-    data: List[ListableResource]
+    data: Sequence[ListableResource]
     list_metadata: ListMetadata
 
 
@@ -76,7 +76,7 @@ class BaseWorkOsListResource(
     Generic[ListableResource, ListAndFilterParams, ListMetadataType],
 ):
     object: Literal["list"]
-    data: List[ListableResource]
+    data: Sequence[ListableResource]
     list_metadata: ListMetadataType
 
     list_method: Callable = Field(exclude=True)

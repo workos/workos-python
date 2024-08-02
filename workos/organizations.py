@@ -1,4 +1,5 @@
-from typing import List, Optional, Protocol
+from typing import Literal, Optional, Protocol, Sequence
+from typing_extensions import TypedDict
 import workos
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
@@ -12,21 +13,25 @@ from workos.utils.request_helper import (
 from workos.utils.validation import ORGANIZATIONS_MODULE, validate_settings
 from workos.resources.organizations import (
     Organization,
-    DomainDataInput,
 )
 from workos.resources.list import ListMetadata, ListPage, WorkOsListResource, ListArgs
 
 ORGANIZATIONS_PATH = "organizations"
 
 
+class DomainDataInput(TypedDict):
+    domain: str
+    state: Literal["verified", "pending"]
+
+
 class OrganizationListFilters(ListArgs, total=False):
-    domains: Optional[List[str]]
+    domains: Optional[Sequence[str]]
 
 
 class OrganizationsModule(Protocol):
     def list_organizations(
         self,
-        domains: Optional[List[str]] = None,
+        domains: Optional[Sequence[str]] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -40,7 +45,7 @@ class OrganizationsModule(Protocol):
     def create_organization(
         self,
         name: str,
-        domain_data: Optional[List[DomainDataInput]] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
     ) -> Organization: ...
 
@@ -48,7 +53,7 @@ class OrganizationsModule(Protocol):
         self,
         organization_id: str,
         name: str,
-        domain_data: Optional[List[DomainDataInput]] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
     ) -> Organization: ...
 
     def delete_organization(self, organization_id: str) -> None: ...
@@ -64,7 +69,7 @@ class Organizations(OrganizationsModule):
 
     def list_organizations(
         self,
-        domains: Optional[List[str]] = None,
+        domains: Optional[Sequence[str]] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -137,7 +142,7 @@ class Organizations(OrganizationsModule):
     def create_organization(
         self,
         name: str,
-        domain_data: Optional[List[DomainDataInput]] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
     ) -> Organization:
         """Create an organization"""
@@ -165,7 +170,7 @@ class Organizations(OrganizationsModule):
         self,
         organization_id: str,
         name: str,
-        domain_data: Optional[List[DomainDataInput]] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
     ) -> Organization:
         params = {
             "name": name,

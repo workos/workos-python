@@ -1,13 +1,13 @@
-from typing import Optional, Protocol
-
+from typing import Literal, Optional, Protocol
 import workos
-from workos.resources.portal import PortalLink, PortalLinkIntent
+from workos.resources.portal import PortalLink
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
 from workos.utils.validation import PORTAL_MODULE, validate_settings
 
 
 PORTAL_GENERATE_PATH = "portal/generate_link"
+PortalLinkIntent = Literal["audit_logs", "dsync", "log_streams", "sso"]
 
 
 class PortalModule(Protocol):

@@ -8,8 +8,3 @@ class Organization(OrganizationCommon):
     allow_profiles_outside_organization: bool
     domains: list
     lookup_key: Optional[str] = None
-
-
-class DomainDataInput(TypedDict):
-    domain: str
-    state: Literal["verified", "pending"]

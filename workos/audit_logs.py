@@ -1,5 +1,5 @@
-from typing import NotRequired, Optional, Protocol, Sequence
-from typing_extensions import TypedDict
+from typing import Optional, Protocol, Sequence
+from typing_extensions import TypedDict, NotRequired
 
 import workos
 from workos.resources.audit_logs import AuditLogExport

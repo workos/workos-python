@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Sequence, Union
+from typing import Literal, Optional, Sequence
 from workos.resources.workos_model import WorkOSModel
 from workos.types.sso.connection import Connection, ConnectionType
 from workos.typing.literals import LiteralOrUntyped

@@ -1,10 +1,10 @@
-from typing import Literal, Union
+from typing import Literal, Optional
 from workos.resources.workos_model import WorkOSModel
 
 
 class AuthenticationResultCommon(WorkOSModel):
-    ip_address: Union[str, None]
-    user_agent: Union[str, None]
+    ip_address: Optional[str] = None
+    user_agent: Optional[str] = None
     email: str
     created_at: str
 
@@ -58,4 +58,4 @@ class AuthenticationPasswordSucceededPayload(AuthenticationResultSucceeded):
 
 class AuthenticationSsoSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["sso"]
-    user_id: Union[str, None]
+    user_id: Optional[str] = None

@@ -17,7 +17,6 @@ class Profile(WorkOSModel):
     last_name: Optional[str] = None
     idp_id: str
     groups: Optional[Sequence[str]] = None
-    raw_attributes: dict
 
 
 class ProfileAndToken(WorkOSModel):

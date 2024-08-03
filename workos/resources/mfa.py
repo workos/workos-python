@@ -45,14 +45,14 @@ class AuthenticationFactorTotp(AuthenticationFactorBase):
     """Representation of a MFA Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     type: TotpAuthenticationFactorType
-    totp: Union[TotpFactor, ExtendedTotpFactor, None]
+    totp: Union[TotpFactor, ExtendedTotpFactor, None] = None
 
 
 class AuthenticationFactorSms(AuthenticationFactorBase):
     """Representation of a SMS Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     type: SmsAuthenticationFactorType
-    sms: Union[SmsFactor, None]
+    sms: Union[SmsFactor, None] = None
 
 
 AuthenticationFactor = Union[AuthenticationFactorTotp, AuthenticationFactorSms]

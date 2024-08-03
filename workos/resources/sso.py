@@ -16,7 +16,7 @@ class Profile(WorkOSModel):
     first_name: Union[str, None]
     last_name: Union[str, None]
     idp_id: str
-    groups: Union[Sequence[str], None]
+    groups: Union[Sequence[str], None] = None
     raw_attributes: dict
 
 

@@ -7,9 +7,6 @@ TotpAuthenticationFactorType = Literal["totp"]
 AuthenticationFactorType = Literal[
     "generic_otp", SmsAuthenticationFactorType, TotpAuthenticationFactorType
 ]
-EnrollAuthenticationFactorType = Literal[
-    SmsAuthenticationFactorType, TotpAuthenticationFactorType
-]
 
 
 class TotpFactor(WorkOSModel):

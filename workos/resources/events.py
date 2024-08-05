@@ -45,7 +45,6 @@ from workos.types.user_management.email_verification_common import (
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
 from workos.types.user_management.password_reset_common import PasswordResetCommon
-from workos.typing.literals import LiteralOrUntyped
 
 EventType = Literal[
     "authentication.email_verification_succeeded",
@@ -89,6 +88,7 @@ EventType = Literal[
     "user.deleted",
     "user.updated",
 ]
+
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
 EventPayload = TypeVar(
     "EventPayload",

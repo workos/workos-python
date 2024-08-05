@@ -1,16 +1,14 @@
-from typing import Optional, Protocol, Union
-
+from typing import Literal, Optional, Protocol, Union
 import workos
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.resources.sso import (
+    ConnectionType,
     ConnectionWithDomains,
     Profile,
     ProfileAndToken,
-    SsoProviderType,
 )
-from workos.utils.connection_types import ConnectionType
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     RESPONSE_TYPE_CODE,
@@ -34,6 +32,13 @@ TOKEN_PATH = "sso/token"
 PROFILE_PATH = "sso/profile"
 
 OAUTH_GRANT_TYPE = "authorization_code"
+
+SsoProviderType = Literal[
+    "AppleOAuth",
+    "GitHubOAuth",
+    "GoogleOAuth",
+    "MicrosoftOAuth",
+]
 
 
 class ConnectionsListFilters(ListArgs, total=False):

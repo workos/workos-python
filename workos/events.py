@@ -1,4 +1,4 @@
-from typing import Optional, Protocol, Sequence, Union
+from typing import Literal, Optional, Protocol, Sequence, Union
 
 import workos
 from workos.typing.sync_or_async import SyncOrAsync

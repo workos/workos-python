@@ -1,4 +1,4 @@
-from typing import Optional, Protocol
+from typing import Literal, Optional, Protocol
 
 import workos
 from workos.utils.http_client import SyncHTTPClient
@@ -15,8 +15,13 @@ from workos.resources.mfa import (
     AuthenticationFactor,
     AuthenticationFactorSms,
     AuthenticationFactorTotp,
-    EnrollAuthenticationFactorType,
+    SmsAuthenticationFactorType,
+    TotpAuthenticationFactorType,
 )
+
+EnrollAuthenticationFactorType = Literal[
+    SmsAuthenticationFactorType, TotpAuthenticationFactorType
+]
 
 
 class MFAModule(Protocol):

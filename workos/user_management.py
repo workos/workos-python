@@ -1,4 +1,4 @@
-from typing import Optional, Protocol, Set, Union
+from typing import Literal, Optional, Protocol, Set, Union
 
 import workos
 from workos.resources.list import (
@@ -20,14 +20,12 @@ from workos.resources.user_management import (
     MagicAuth,
     OrganizationMembership,
     OrganizationMembershipStatus,
-    PasswordHashType,
     PasswordReset,
     RefreshTokenAuthenticationResponse,
     User,
 )
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
-from workos.utils.um_provider_types import UserManagementProviderType
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     RESPONSE_TYPE_CODE,
@@ -66,6 +64,12 @@ INVITATION_DETAIL_BY_TOKEN_PATH = "user_management/invitations/by_token/{0}"
 INVITATION_REVOKE_PATH = "user_management/invitations/{0}/revoke"
 PASSWORD_RESET_PATH = "user_management/password_reset"
 PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
+
+
+PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
+UserManagementProviderType = Literal[
+    "authkit", "AppleOAuth", "GitHubOAuth", "GoogleOAuth", "MicrosoftOAuth"
+]
 
 
 class UsersListFilters(ListArgs, total=False):

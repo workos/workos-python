@@ -1,4 +1,3 @@
-from typing import Literal
 from workos.resources.sso import ConnectionWithDomains
 
 

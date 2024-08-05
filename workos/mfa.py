@@ -13,8 +13,10 @@ from workos.resources.mfa import (
     AuthenticationChallenge,
     AuthenticationChallengeVerificationResponse,
     AuthenticationFactor,
+    AuthenticationFactorExtended,
     AuthenticationFactorSms,
     AuthenticationFactorTotp,
+    AuthenticationFactorTotpExtended,
     SmsAuthenticationFactorType,
     TotpAuthenticationFactorType,
 )
@@ -31,7 +33,7 @@ class MFAModule(Protocol):
         totp_issuer: Optional[str] = None,
         totp_user: Optional[str] = None,
         phone_number: Optional[str] = None,
-    ) -> AuthenticationFactor: ...
+    ) -> AuthenticationFactorExtended: ...
 
     def get_factor(self, authentication_factor_id: str) -> AuthenticationFactor: ...
 
@@ -61,7 +63,7 @@ class Mfa(MFAModule):
         totp_issuer: Optional[str] = None,
         totp_user: Optional[str] = None,
         phone_number: Optional[str] = None,
-    ) -> AuthenticationFactor:
+    ) -> AuthenticationFactorExtended:
         """
         Defines the type of MFA authorization factor to be used. Possible values are sms or totp.
 
@@ -99,7 +101,7 @@ class Mfa(MFAModule):
         )
 
         if type == "totp":
-            return AuthenticationFactorTotp.model_validate(response)
+            return AuthenticationFactorTotpExtended.model_validate(response)
 
         return AuthenticationFactorSms.model_validate(response)
 

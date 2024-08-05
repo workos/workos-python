@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Protocol, Set, Union
+from typing import Literal, Optional, Protocol, Set, cast
 
 import workos
 from workos.resources.list import (
@@ -23,7 +23,18 @@ from workos.resources.user_management import (
     RefreshTokenAuthenticationResponse,
     User,
 )
-from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
+from workos.types.user_management.authenticate_with_common import (
+    AuthenticateWithCodeParameters,
+    AuthenticateWithEmailVerificationParameters,
+    AuthenticateWithMagicAuthParameters,
+    AuthenticateWithOrganizationSelectionParameters,
+    AuthenticateWithParameters,
+    AuthenticateWithPasswordParameters,
+    AuthenticateWithRefreshTokenParameters,
+    AuthenticateWithTotpParameters,
+)
+from workos.typing.sync_or_async import SyncOrAsync
+from workos.utils.http_client import HTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
@@ -32,9 +43,10 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_GET,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_PUT,
+    QueryParameters,
     RequestHelper,
 )
-from workos.utils.validation import validate_settings, USER_MANAGEMENT_MODULE
+from workos.utils.validation import Module, validate_settings
 
 USER_PATH = "user_management/users"
 USER_DETAIL_PATH = "user_management/users/{0}"
@@ -92,8 +104,23 @@ class AuthenticationFactorsListFilters(ListArgs, total=False):
     user_id: str
 
 
+UsersListResource = WorkOsListResource[User, UsersListFilters, ListMetadata]
+
+OrganizationMembershipsListResource = WorkOsListResource[
+    OrganizationMembership, OrganizationMembershipsListFilters, ListMetadata
+]
+
+AuthenticationFactorsListResource = WorkOsListResource[
+    AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
+]
+
+InvitationsListResource = WorkOsListResource[
+    Invitation, InvitationsListFilters, ListMetadata
+]
+
+
 class UserManagementModule(Protocol):
-    _http_client: Union[SyncHTTPClient, AsyncHTTPClient]
+    _http_client: HTTPClient
 
     def get_user(self, user_id: str) -> User: ...
 
@@ -105,7 +132,7 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[User, UsersListFilters, ListMetadata]: ...
+    ) -> SyncOrAsync[UsersListResource]: ...
 
     def create_user(
         self,
@@ -152,9 +179,7 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[
-        OrganizationMembership, OrganizationMembershipsListFilters, ListMetadata
-    ]: ...
+    ) -> SyncOrAsync[OrganizationMembershipsListResource]: ...
 
     def delete_organization_membership(
         self, organization_membership_id: str
@@ -204,7 +229,7 @@ class UserManagementModule(Protocol):
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
-        params = {
+        params: QueryParameters = {
             "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
@@ -235,7 +260,9 @@ class UserManagementModule(Protocol):
             base_url=self._http_client.base_url, path=USER_AUTHORIZATION_PATH, **params
         )
 
-    def _authenticate_with(self, payload) -> AuthenticationResponse: ...
+    def _authenticate_with(
+        self, payload: AuthenticateWithParameters
+    ) -> AuthenticationResponse: ...
 
     def authenticate_with_password(
         self,
@@ -281,8 +308,8 @@ class UserManagementModule(Protocol):
 
     def authenticate_with_organization_selection(
         self,
-        organization_id,
-        pending_authentication_token,
+        organization_id: str,
+        pending_authentication_token: str,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> AuthenticationResponse: ...
@@ -355,9 +382,7 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[
-        AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
-    ]: ...
+    ) -> SyncOrAsync[AuthenticationFactorsListResource]: ...
 
     def get_invitation(self, invitation_id: str) -> Invitation: ...
 
@@ -371,7 +396,7 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Invitation, InvitationsListFilters, ListMetadata]: ...
+    ) -> SyncOrAsync[InvitationsListResource]: ...
 
     def send_invitation(
         self,
@@ -382,7 +407,7 @@ class UserManagementModule(Protocol):
         role_slug: Optional[str] = None,
     ) -> Invitation: ...
 
-    def revoke_invitation(self, invitation_id) -> Invitation: ...
+    def revoke_invitation(self, invitation_id: str) -> Invitation: ...
 
 
 class UserManagement(UserManagementModule):
@@ -390,7 +415,7 @@ class UserManagement(UserManagementModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(USER_MANAGEMENT_MODULE)
+    @validate_settings(Module.USER_MANAGEMENT)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -730,7 +755,9 @@ class UserManagement(UserManagementModule):
 
         return OrganizationMembership.model_validate(response)
 
-    def _authenticate_with(self, payload) -> AuthenticationResponse:
+    def _authenticate_with(
+        self, payload: AuthenticateWithParameters
+    ) -> AuthenticationResponse:
         params = {
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
@@ -764,7 +791,7 @@ class UserManagement(UserManagementModule):
             AuthenticationResponse: Authentication response from WorkOS.
         """
 
-        payload = {
+        payload: AuthenticateWithPasswordParameters = {
             "email": email,
             "password": password,
             "grant_type": "password",
@@ -796,7 +823,7 @@ class UserManagement(UserManagementModule):
                 [organization_id] (str): The Organization the user selected to sign in for, if applicable.
         """
 
-        payload = {
+        payload: AuthenticateWithCodeParameters = {
             "code": code,
             "grant_type": "authorization_code",
             "ip_address": ip_address,
@@ -827,7 +854,7 @@ class UserManagement(UserManagementModule):
             AuthenticationResponse: Authentication response from WorkOS.
         """
 
-        payload = {
+        payload: AuthenticateWithMagicAuthParameters = {
             "code": code,
             "email": email,
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
@@ -857,9 +884,7 @@ class UserManagement(UserManagementModule):
             AuthenticationResponse: Authentication response from WorkOS.
         """
 
-        payload = {
-            "client_id": workos.client_id,
-            "client_secret": workos.api_key,
+        payload: AuthenticateWithEmailVerificationParameters = {
             "code": code,
             "pending_authentication_token": pending_authentication_token,
             "grant_type": "urn:workos:oauth:grant-type:email-verification:code",
@@ -890,7 +915,7 @@ class UserManagement(UserManagementModule):
             AuthenticationResponse: Authentication response from WorkOS.
         """
 
-        payload = {
+        payload: AuthenticateWithTotpParameters = {
             "code": code,
             "authentication_challenge_id": authentication_challenge_id,
             "pending_authentication_token": pending_authentication_token,
@@ -920,9 +945,7 @@ class UserManagement(UserManagementModule):
             AuthenticationResponse: Authentication response from WorkOS.
         """
 
-        payload = {
-            "client_id": workos.client_id,
-            "client_secret": workos.api_key,
+        payload: AuthenticateWithOrganizationSelectionParameters = {
             "organization_id": organization_id,
             "pending_authentication_token": pending_authentication_token,
             "grant_type": "urn:workos:oauth:grant-type:organization-selection",
@@ -951,9 +974,9 @@ class UserManagement(UserManagementModule):
             RefreshTokenAuthenticationResponse: Refresh Token Authentication response from WorkOS.
         """
 
-        payload = {
-            "client_id": workos.client_id,
-            "client_secret": workos.api_key,
+        payload: AuthenticateWithRefreshTokenParameters = {
+            "client_id": cast(str, workos.client_id),
+            "client_secret": cast(str, workos.api_key),
             "refresh_token": refresh_token,
             "organization_id": organization_id,
             "grant_type": "refresh_token",
@@ -1185,9 +1208,7 @@ class UserManagement(UserManagementModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[
-        AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
-    ]:
+    ) -> AuthenticationFactorsListResource:
         """Lists the Auth Factors for a user.
 
         Kwargs:
@@ -1272,7 +1293,7 @@ class UserManagement(UserManagementModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Invitation, InvitationsListFilters, ListMetadata]:
+    ) -> InvitationsListResource:
         """Get a list of all of your existing invitations matching the criteria specified.
 
         Kwargs:

@@ -1,11 +1,11 @@
-from typing import Optional, Protocol, Union
-from workos.resources.webhooks import Webhook
-from workos.typing.webhooks import WebhookTypeAdapter
-from workos.utils.request_helper import RequestHelper
-from workos.utils.validation import WEBHOOKS_MODULE, validate_settings
+import hashlib
 import hmac
 import time
 import hashlib
+from typing import Optional, Protocol, Union
+from workos.resources.webhooks import Webhook
+from workos.typing.webhooks import WebhookTypeAdapter
+from workos.utils.validation import Module, validate_settings
 
 WebhookPayload = Union[bytes, bytearray]
 
@@ -27,23 +27,17 @@ class WebhooksModule(Protocol):
         tolerance: Optional[int] = None,
     ) -> None: ...
 
-    def constant_time_compare(self, val1, val2) -> bool: ...
+    def constant_time_compare(self, val1: str, val2: str) -> bool: ...
 
-    def check_timestamp_range(self, time, max_range) -> None: ...
+    def check_timestamp_range(self, time: float, max_range: float) -> None: ...
 
 
 class Webhooks(WebhooksModule):
     """Offers methods through the WorkOS Webhooks service."""
 
-    @validate_settings(WEBHOOKS_MODULE)
-    def __init__(self):
+    @validate_settings(Module.WEBHOOKS)
+    def __init__(self) -> None:
         pass
-
-    @property
-    def request_helper(self):
-        if not getattr(self, "_request_helper", None):
-            self._request_helper = RequestHelper()
-        return self._request_helper
 
     DEFAULT_TOLERANCE = 180
 
@@ -75,7 +69,7 @@ class Webhooks(WebhooksModule):
 
         issued_timestamp = issued_timestamp[2:]
         signature_hash = signature_hash[3:]
-        max_seconds_since_issued = tolerance
+        max_seconds_since_issued = tolerance or Webhooks.DEFAULT_TOLERANCE
         current_time = time.time()
         timestamp_in_seconds = int(issued_timestamp) / 1000
         seconds_since_issued = current_time - timestamp_in_seconds
@@ -103,17 +97,21 @@ class Webhooks(WebhooksModule):
                 "Signature hash does not match the expected signature hash for payload"
             )
 
-    def constant_time_compare(self, val1, val2):
+    def constant_time_compare(self, val1: str, val2: str) -> bool:
         if len(val1) != len(val2):
             return False
+
         result = 0
         for x, y in zip(val1, val2):
             result |= ord(x) ^ ord(y)
             if result != 0:
                 return False
+
         if result == 0:
             return True
 
-    def check_timestamp_range(self, time, max_range):
+        return False
+
+    def check_timestamp_range(self, time: float, max_range: float) -> None:
         if time > max_range:
             raise ValueError("Timestamp outside the tolerance zone")

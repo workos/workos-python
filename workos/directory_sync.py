@@ -1,4 +1,5 @@
 from typing import Optional, Protocol
+
 import workos
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
@@ -8,7 +9,7 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
 )
-from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
+from workos.utils.validation import Module, validate_settings
 from workos.resources.directory_sync import (
     DirectoryGroup,
     Directory,
@@ -94,8 +95,8 @@ class DirectorySync(DirectorySyncModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(DIRECTORY_SYNC_MODULE)
-    def __init__(self, http_client: SyncHTTPClient):
+    @validate_settings(Module.DIRECTORY_SYNC)
+    def __init__(self, http_client: SyncHTTPClient) -> None:
         self._http_client = http_client
 
     def list_users(
@@ -316,7 +317,7 @@ class AsyncDirectorySync(DirectorySyncModule):
 
     _http_client: AsyncHTTPClient
 
-    @validate_settings(DIRECTORY_SYNC_MODULE)
+    @validate_settings(Module.DIRECTORY_SYNC)
     def __init__(self, http_client: AsyncHTTPClient):
         self._http_client = http_client
 

@@ -1,10 +1,11 @@
 from typing import Literal, Optional, Protocol, Union
+
 import workos
+from workos.types.sso.connection import ConnectionType
 from workos.typing.sync_or_async import SyncOrAsync
-from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
+from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.resources.sso import (
-    ConnectionType,
     ConnectionWithDomains,
     Profile,
     ProfileAndToken,
@@ -15,9 +16,10 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_POST,
+    QueryParameters,
     RequestHelper,
 )
-from workos.utils.validation import SSO_MODULE, validate_settings
+from workos.utils.validation import Module, validate_settings
 from workos.resources.list import (
     ListArgs,
     ListMetadata,
@@ -51,7 +53,7 @@ ConnectionsListResource = WorkOsListResource[
 
 
 class SSOModule(Protocol):
-    _http_client: Union[SyncHTTPClient, AsyncHTTPClient]
+    _http_client: HTTPClient
 
     def get_authorization_url(
         self,
@@ -79,7 +81,7 @@ class SSOModule(Protocol):
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
-        params = {
+        params: QueryParameters = {
             "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
@@ -134,7 +136,7 @@ class SSO(SSOModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(SSO_MODULE)
+    @validate_settings(Module.SSO)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -263,7 +265,7 @@ class AsyncSSO(SSOModule):
 
     _http_client: AsyncHTTPClient
 
-    @validate_settings(SSO_MODULE)
+    @validate_settings(Module.SSO)
     def __init__(self, http_client: AsyncHTTPClient):
         self._http_client = http_client
 

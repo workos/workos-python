@@ -1,9 +1,11 @@
 from pydantic import BaseModel, Field
 from typing import (
+    Any,
     AsyncIterator,
     Dict,
     Literal,
     Sequence,
+    Tuple,
     TypeVar,
     Generic,
     Callable,
@@ -24,6 +26,7 @@ from workos.resources.organizations import Organization
 from workos.resources.sso import ConnectionWithDomains
 from workos.resources.user_management import Invitation, OrganizationMembership, User
 from workos.resources.workos_model import WorkOSModel
+from workos.typing.sync_or_async import SyncOrAsync
 
 
 ListableResource = TypeVar(
@@ -77,10 +80,15 @@ class WorkOsListResource(
     data: Sequence[ListableResource]
     list_metadata: ListMetadataType
 
-    list_method: Callable = Field(exclude=True)
+    list_method: Callable[
+        ...,
+        "SyncOrAsync[WorkOsListResource[ListableResource, ListAndFilterParams, ListMetadataType]]",
+    ] = Field(exclude=True)
     list_args: ListAndFilterParams = Field(exclude=True)
 
-    def _parse_params(self):
+    def _parse_params(
+        self,
+    ) -> Tuple[Dict[str, Union[int, str, None]], Dict[str, Any]]:
         fixed_pagination_params = cast(
             # Type hints consider this a mismatch because it assume the dictionary is dict[str, int]
             Dict[str, Union[int, str, None]],

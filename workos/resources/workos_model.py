@@ -1,5 +1,7 @@
+from typing import Any, Dict, Optional, Set, TypeAlias, Union
 from typing_extensions import override
 from pydantic import BaseModel
+from pydantic.main import IncEx
 
 
 class WorkOSModel(BaseModel):
@@ -7,13 +9,13 @@ class WorkOSModel(BaseModel):
     def dict(
         self,
         *,
-        include=None,
-        exclude=None,
-        by_alias=False,
-        exclude_unset=False,
-        exclude_defaults=False,
-        exclude_none=False
-    ):
+        include: Optional[IncEx] = None,
+        exclude: Optional[IncEx] = None,
+        by_alias: bool = False,
+        exclude_unset: bool = False,
+        exclude_defaults: bool = False,
+        exclude_none: bool = False
+    ) -> Dict[str, Any]:
         return self.model_dump(
             include=include,
             exclude=exclude,

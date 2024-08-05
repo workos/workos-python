@@ -71,6 +71,21 @@ class TestMfa(object):
         }
 
     @pytest.fixture
+    def mock_get_factor_response_totp(self):
+        return {
+            "object": "authentication_factor",
+            "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+            "created_at": "2022-02-15T15:14:19.392Z",
+            "updated_at": "2022-02-15T15:14:19.392Z",
+            "type": "totp",
+            "totp": {
+                "issuer": "FooCorp",
+                "user": "test@example.com",
+            },
+            "user_id": None,
+        }
+
+    @pytest.fixture
     def mock_challenge_factor_response(self):
         return {
             "object": "authentication_challenge",
@@ -152,13 +167,13 @@ class TestMfa(object):
         assert enroll_factor.dict() == mock_enroll_factor_response_totp
 
     def test_get_factor_totp_success(
-        self, mock_enroll_factor_response_totp, mock_http_client_with_response
+        self, mock_get_factor_response_totp, mock_http_client_with_response
     ):
         mock_http_client_with_response(
-            self.http_client, mock_enroll_factor_response_totp, 200
+            self.http_client, mock_get_factor_response_totp, 200
         )
-        response = self.mfa.get_factor(mock_enroll_factor_response_totp["id"])
-        assert response.dict() == mock_enroll_factor_response_totp
+        response = self.mfa.get_factor(mock_get_factor_response_totp["id"])
+        assert response.dict() == mock_get_factor_response_totp
 
     def test_get_factor_sms_success(
         self, mock_enroll_factor_response_sms, mock_http_client_with_response

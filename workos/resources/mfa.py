@@ -9,14 +9,7 @@ AuthenticationFactorType = Literal[
 ]
 
 
-class TotpFactor(WorkOSModel):
-    """Representation of a TOTP factor as returned in events."""
-
-    issuer: str
-    user: str
-
-
-class ExtendedTotpFactor(TotpFactor):
+class ExtendedTotpFactor(WorkOSModel):
     """Representation of a TOTP factor as returned by the API."""
 
     issuer: str

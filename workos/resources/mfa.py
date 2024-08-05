@@ -10,14 +10,14 @@ AuthenticationFactorType = Literal[
 
 
 class TotpFactor(WorkOSModel):
-    """Representation of a TOTP factor as returned in events."""
+    """Representation of a TOTP factor when returned in list resources and sessions."""
 
     issuer: str
     user: str
 
 
 class ExtendedTotpFactor(TotpFactor):
-    """Representation of a TOTP factor as returned by the API."""
+    """Representation of a TOTP factor when returned when enrolling an authentication factor."""
 
     qr_code: str
     secret: str
@@ -43,17 +43,27 @@ class AuthenticationFactorTotp(AuthenticationFactorBase):
     """Representation of a MFA Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     type: TotpAuthenticationFactorType
-    totp: Union[TotpFactor, ExtendedTotpFactor, None] = None
+    totp: TotpFactor
+
+
+class AuthenticationFactorTotpExtended(AuthenticationFactorBase):
+    """Representation of a MFA Authentication Factor Response when enrolling an authentication factor."""
+
+    type: TotpAuthenticationFactorType
+    totp: ExtendedTotpFactor
 
 
 class AuthenticationFactorSms(AuthenticationFactorBase):
     """Representation of a SMS Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     type: SmsAuthenticationFactorType
-    sms: Union[SmsFactor, None] = None
+    sms: SmsFactor
 
 
 AuthenticationFactor = Union[AuthenticationFactorTotp, AuthenticationFactorSms]
+AuthenticationFactorExtended = Union[
+    AuthenticationFactorTotpExtended, AuthenticationFactorSms
+]
 
 
 class AuthenticationChallenge(WorkOSModel):
@@ -71,7 +81,7 @@ class AuthenticationChallenge(WorkOSModel):
 class AuthenticationFactorTotpAndChallengeResponse(WorkOSModel):
     """Representation of an authentication factor and authentication challenge response as returned by WorkOS through User Management features."""
 
-    authentication_factor: AuthenticationFactorTotp
+    authentication_factor: AuthenticationFactorTotpExtended
     authentication_challenge: AuthenticationChallenge
 
 

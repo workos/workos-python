@@ -1,4 +1,4 @@
-from typing import Literal, Sequence, Union
+from typing import Literal, Optional, Sequence, Union
 from workos.resources.workos_model import WorkOSModel
 from workos.types.sso.connection import Connection, ConnectionType
 from workos.typing.literals import LiteralOrUntyped
@@ -11,12 +11,12 @@ class Profile(WorkOSModel):
     id: str
     connection_id: str
     connection_type: LiteralOrUntyped[ConnectionType]
-    organization_id: Union[str, None]
+    organization_id: Optional[str] = None
     email: str
-    first_name: Union[str, None]
-    last_name: Union[str, None]
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     idp_id: str
-    groups: Union[Sequence[str], None]
+    groups: Optional[Sequence[str]] = None
     raw_attributes: dict
 
 

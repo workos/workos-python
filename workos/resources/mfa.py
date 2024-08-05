@@ -9,11 +9,16 @@ AuthenticationFactorType = Literal[
 ]
 
 
-class ExtendedTotpFactor(WorkOSModel):
-    """Representation of a TOTP factor as returned by the API."""
+class TotpFactor(WorkOSModel):
+    """Representation of a TOTP factor as returned in events."""
 
     issuer: str
     user: str
+
+
+class ExtendedTotpFactor(TotpFactor):
+    """Representation of a TOTP factor as returned by the API."""
+
     qr_code: str
     secret: str
     uri: str
@@ -38,14 +43,14 @@ class AuthenticationFactorTotp(AuthenticationFactorBase):
     """Representation of a MFA Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     type: TotpAuthenticationFactorType
-    totp: ExtendedTotpFactor
+    totp: Union[TotpFactor, ExtendedTotpFactor, None] = None
 
 
 class AuthenticationFactorSms(AuthenticationFactorBase):
     """Representation of a SMS Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     type: SmsAuthenticationFactorType
-    sms: SmsFactor
+    sms: Union[SmsFactor, None] = None
 
 
 AuthenticationFactor = Union[AuthenticationFactorTotp, AuthenticationFactorSms]

@@ -1,8 +1,6 @@
-import abc
 from pydantic import BaseModel, Field
 from typing import (
     AsyncIterator,
-    Awaitable,
     Dict,
     Literal,
     Sequence,
@@ -71,7 +69,7 @@ class ListArgs(TypedDict, total=False):
 ListAndFilterParams = TypeVar("ListAndFilterParams", bound=ListArgs)
 
 
-class BaseWorkOsListResource(
+class WorkOsListResource(
     WorkOSModel,
     Generic[ListableResource, ListAndFilterParams, ListMetadataType],
 ):
@@ -102,17 +100,15 @@ class BaseWorkOsListResource(
 
         return fixed_pagination_params, filter_params
 
-    @abc.abstractmethod
-    def auto_paging_iter(
-        self,
-    ) -> Union[AsyncIterator[ListableResource], Iterator[ListableResource]]: ...
-
-
-class WorkOsListResource(
-    BaseWorkOsListResource,
-    Generic[ListableResource, ListAndFilterParams, ListMetadataType],
-):
-    def auto_paging_iter(self) -> Iterator[ListableResource]:
+    # Pydantic uses a custom `__iter__` method to support casting BaseModels
+    # to dictionaries. e.g. dict(model).
+    # As we want to support `for item in page`, this is inherently incompatible
+    # with the default pydantic behaviour. It is not possible to support both
+    # use cases at once. Fortunately, this is not a big deal as all other pydantic
+    # methods should continue to work as expected as there is an alternative method
+    # to cast a model to a dictionary, model.dict(), which is used internally
+    # by pydantic.
+    def __iter__(self) -> Iterator[ListableResource]:  # type: ignore
         next_page: WorkOsListResource[
             ListableResource, ListAndFilterParams, ListMetadataType
         ]
@@ -135,12 +131,7 @@ class WorkOsListResource(
             yield self.data[index]
             index += 1
 
-
-class AsyncWorkOsListResource(
-    BaseWorkOsListResource,
-    Generic[ListableResource, ListAndFilterParams, ListMetadataType],
-):
-    async def auto_paging_iter(self) -> AsyncIterator[ListableResource]:
+    async def __aiter__(self) -> AsyncIterator[ListableResource]:
         next_page: WorkOsListResource[
             ListableResource, ListAndFilterParams, ListMetadataType
         ]
@@ -162,9 +153,3 @@ class AsyncWorkOsListResource(
                     return
             yield self.data[index]
             index += 1
-
-
-SyncOrAsyncListResource = Union[
-    Awaitable[AsyncWorkOsListResource],
-    WorkOsListResource,
-]

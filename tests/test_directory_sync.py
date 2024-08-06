@@ -1,5 +1,6 @@
 import pytest
 
+from tests.conftest import test_sync_auto_pagination
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.directory_sync import AsyncDirectorySync, DirectorySync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
@@ -248,92 +249,30 @@ class TestDirectorySync(DirectorySyncFixtures):
         assert me == None
 
     def test_list_directories_auto_pagination(
-        self,
-        mock_directories_multiple_data_pages,
-        mock_pagination_request_for_http_client,
+        self, mock_directories_multiple_data_pages, test_sync_auto_pagination
     ):
-        mock_pagination_request_for_http_client(
+        test_sync_auto_pagination(
             http_client=self.http_client,
-            data_list=mock_directories_multiple_data_pages,
-            status_code=200,
-        )
-
-        directories = self.directory_sync.list_directories()
-        all_directories = []
-
-        for directory in directories.auto_paging_iter():
-            all_directories.append(directory)
-
-        assert len(list(all_directories)) == len(mock_directories_multiple_data_pages)
-        assert (list_data_to_dicts(all_directories)) == api_directories_to_sdk(
-            mock_directories_multiple_data_pages
+            list_function=self.directory_sync.list_directories,
+            expected_all_page_data=mock_directories_multiple_data_pages,
         )
 
     def test_directory_users_auto_pagination(
-        self,
-        mock_directory_users_multiple_data_pages,
-        mock_pagination_request_for_http_client,
+        self, mock_directory_users_multiple_data_pages, test_sync_auto_pagination
     ):
-        mock_pagination_request_for_http_client(
+        test_sync_auto_pagination(
             http_client=self.http_client,
-            data_list=mock_directory_users_multiple_data_pages,
-            status_code=200,
+            list_function=self.directory_sync.list_users,
+            expected_all_page_data=mock_directory_users_multiple_data_pages,
         )
-
-        users = self.directory_sync.list_users()
-        all_users = []
-
-        for user in users.auto_paging_iter():
-            all_users.append(user)
-
-        assert len(list(all_users)) == len(mock_directory_users_multiple_data_pages)
-        assert (
-            list_data_to_dicts(all_users)
-        ) == mock_directory_users_multiple_data_pages
 
     def test_directory_user_groups_auto_pagination(
-        self,
-        mock_directory_groups_multiple_data_pages,
-        mock_pagination_request_for_http_client,
+        self, mock_directory_groups_multiple_data_pages, test_sync_auto_pagination
     ):
-        mock_pagination_request_for_http_client(
+        test_sync_auto_pagination(
             http_client=self.http_client,
-            data_list=mock_directory_groups_multiple_data_pages,
-            status_code=200,
-        )
-
-        groups = self.directory_sync.list_groups()
-        all_groups = []
-
-        for group in groups.auto_paging_iter():
-            all_groups.append(group)
-
-        assert len(list(all_groups)) == len(mock_directory_groups_multiple_data_pages)
-        assert (
-            list_data_to_dicts(all_groups)
-        ) == mock_directory_groups_multiple_data_pages
-
-    def test_auto_pagination_honors_limit(
-        self,
-        mock_directories_multiple_data_pages,
-        mock_pagination_request_for_http_client,
-    ):
-        # TODO: This does not actually test anything about the limit.
-        mock_pagination_request_for_http_client(
-            http_client=self.http_client,
-            data_list=mock_directories_multiple_data_pages,
-            status_code=200,
-        )
-
-        directories = self.directory_sync.list_directories()
-        all_directories = []
-
-        for directory in directories.auto_paging_iter():
-            all_directories.append(directory)
-
-        assert len(list(all_directories)) == len(mock_directories_multiple_data_pages)
-        assert (list_data_to_dicts(all_directories)) == api_directories_to_sdk(
-            mock_directories_multiple_data_pages
+            list_function=self.directory_sync.list_groups,
+            expected_all_page_data=mock_directory_groups_multiple_data_pages,
         )
 
 
@@ -499,7 +438,7 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         directories = await self.directory_sync.list_directories()
         all_directories = []
 
-        async for directory in directories.auto_paging_iter():
+        async for directory in directories:
             all_directories.append(directory)
 
         assert len(list(all_directories)) == len(mock_directories_multiple_data_pages)
@@ -521,7 +460,7 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         users = await self.directory_sync.list_users()
         all_users = []
 
-        async for user in users.auto_paging_iter():
+        async for user in users:
             all_users.append(user)
 
         assert len(list(all_users)) == len(mock_directory_users_multiple_data_pages)
@@ -543,33 +482,10 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         groups = await self.directory_sync.list_groups()
         all_groups = []
 
-        async for group in groups.auto_paging_iter():
+        async for group in groups:
             all_groups.append(group)
 
         assert len(list(all_groups)) == len(mock_directory_groups_multiple_data_pages)
         assert (
             list_data_to_dicts(all_groups)
         ) == mock_directory_groups_multiple_data_pages
-
-    async def test_auto_pagination_honors_limit(
-        self,
-        mock_directories_multiple_data_pages,
-        mock_pagination_request_for_http_client,
-    ):
-        # TODO: This does not actually test anything about the limit.
-        mock_pagination_request_for_http_client(
-            http_client=self.http_client,
-            data_list=mock_directories_multiple_data_pages,
-            status_code=200,
-        )
-
-        directories = await self.directory_sync.list_directories()
-        all_directories = []
-
-        async for directory in directories.auto_paging_iter():
-            all_directories.append(directory)
-
-        assert len(list(all_directories)) == len(mock_directories_multiple_data_pages)
-        assert (list_data_to_dicts(all_directories)) == api_directories_to_sdk(
-            mock_directories_multiple_data_pages
-        )

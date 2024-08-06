@@ -181,7 +181,7 @@ class TestOrganizations(object):
         all_organizations = []
         organizations = self.organizations.list_organizations()
 
-        for org in organizations.auto_paging_iter():
+        for org in organizations:
             all_organizations.append(org)
 
         assert len(list(all_organizations)) == 10

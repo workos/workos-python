@@ -144,7 +144,7 @@ def test_sync_auto_pagination(
         results = list_function(**list_function_params or {})
         all_results = []
 
-        for result in results.auto_paging_iter():
+        for result in results:
             all_results.append(result)
 
         assert len(list(all_results)) == len(expected_all_page_data)

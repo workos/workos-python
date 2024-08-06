@@ -5,7 +5,6 @@ from workos.resources.list import (
     ListArgs,
     ListMetadata,
     ListPage,
-    SyncOrAsyncListResource,
     WorkOsListResource,
 )
 from workos.resources.mfa import (
@@ -106,7 +105,7 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource: ...
+    ) -> WorkOsListResource[User, UsersListFilters, ListMetadata]: ...
 
     def create_user(
         self,
@@ -153,7 +152,9 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource: ...
+    ) -> WorkOsListResource[
+        OrganizationMembership, OrganizationMembershipsListFilters, ListMetadata
+    ]: ...
 
     def delete_organization_membership(
         self, organization_membership_id: str
@@ -354,7 +355,9 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource: ...
+    ) -> WorkOsListResource[
+        AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
+    ]: ...
 
     def get_invitation(self, invitation_id: str) -> Invitation: ...
 
@@ -368,7 +371,7 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource: ...
+    ) -> WorkOsListResource[Invitation, InvitationsListFilters, ListMetadata]: ...
 
     def send_invitation(
         self,

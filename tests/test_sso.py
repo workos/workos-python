@@ -323,7 +323,7 @@ class TestSSO(SSOFixtures):
         connections = self.sso.list_connections()
         all_connections = []
 
-        for connection in connections.auto_paging_iter():
+        for connection in connections:
             all_connections.append(connection)
 
         assert len(list(all_connections)) == len(mock_connections_multiple_data_pages)
@@ -448,7 +448,7 @@ class TestAsyncSSO(SSOFixtures):
         connections = await self.sso.list_connections()
         all_connections = []
 
-        async for connection in connections.auto_paging_iter():
+        async for connection in connections:
             all_connections.append(connection)
 
         assert len(list(all_connections)) == len(mock_connections_multiple_data_pages)

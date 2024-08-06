@@ -28,6 +28,11 @@ class OrganizationListFilters(ListArgs, total=False):
     domains: Optional[Sequence[str]]
 
 
+OrganizationsListResource = WorkOsListResource[
+    Organization, OrganizationListFilters, ListMetadata
+]
+
+
 class OrganizationsModule(Protocol):
     def list_organizations(
         self,
@@ -36,7 +41,7 @@ class OrganizationsModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Organization, OrganizationListFilters, ListMetadata]: ...
+    ) -> OrganizationsListResource: ...
 
     def get_organization(self, organization_id: str) -> Organization: ...
 
@@ -74,7 +79,7 @@ class Organizations(OrganizationsModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Organization, OrganizationListFilters, ListMetadata]:
+    ) -> OrganizationsListResource:
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
         Kwargs:

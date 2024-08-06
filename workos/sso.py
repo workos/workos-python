@@ -19,11 +19,9 @@ from workos.utils.request_helper import (
 )
 from workos.utils.validation import SSO_MODULE, validate_settings
 from workos.resources.list import (
-    AsyncWorkOsListResource,
     ListArgs,
     ListMetadata,
     ListPage,
-    SyncOrAsyncListResource,
     WorkOsListResource,
 )
 
@@ -45,6 +43,11 @@ class ConnectionsListFilters(ListArgs, total=False):
     connection_type: Optional[ConnectionType]
     domain: Optional[str]
     organization_id: Optional[str]
+
+
+ConnectionsListResource = WorkOsListResource[
+    ConnectionWithDomains, ConnectionsListFilters, ListMetadata
+]
 
 
 class SSOModule(Protocol):
@@ -121,7 +124,7 @@ class SSOModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource: ...
+    ) -> SyncOrAsync[ConnectionsListResource]: ...
 
     def delete_connection(self, connection: str) -> SyncOrAsync[None]: ...
 
@@ -202,9 +205,7 @@ class SSO(SSOModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[
-        ConnectionWithDomains, ConnectionsListFilters, ListMetadata
-    ]:
+    ) -> ConnectionsListResource:
         """Gets details for existing Connections.
 
         Args:
@@ -333,9 +334,7 @@ class AsyncSSO(SSOModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AsyncWorkOsListResource[
-        ConnectionWithDomains, ConnectionsListFilters, ListMetadata
-    ]:
+    ) -> ConnectionsListResource:
         """Gets details for existing Connections.
 
         Args:
@@ -367,7 +366,7 @@ class AsyncSSO(SSOModule):
             token=workos.api_key,
         )
 
-        return AsyncWorkOsListResource[
+        return WorkOsListResource[
             ConnectionWithDomains, ConnectionsListFilters, ListMetadata
         ](
             list_method=self.list_connections,

@@ -14,14 +14,7 @@ from workos.resources.directory_sync import (
     Directory,
     DirectoryUserWithGroups,
 )
-from workos.resources.list import (
-    ListArgs,
-    ListMetadata,
-    ListPage,
-    AsyncWorkOsListResource,
-    SyncOrAsyncListResource,
-    WorkOsListResource,
-)
+from workos.resources.list import ListArgs, ListMetadata, ListPage, WorkOsListResource
 
 
 class DirectoryListFilters(ListArgs, total=False):
@@ -43,6 +36,19 @@ class DirectoryGroupListFilters(ListArgs, total=False):
     directory: Optional[str]
 
 
+DirectoryUsersListResource = WorkOsListResource[
+    DirectoryUserWithGroups, DirectoryUserListFilters, ListMetadata
+]
+
+DirectoryGroupsListResource = WorkOsListResource[
+    DirectoryGroup, DirectoryGroupListFilters, ListMetadata
+]
+
+DirectoriesListResource = WorkOsListResource[
+    Directory, DirectoryListFilters, ListMetadata
+]
+
+
 class DirectorySyncModule(Protocol):
     def list_users(
         self,
@@ -52,7 +58,7 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource: ...
+    ) -> SyncOrAsync[DirectoryUsersListResource]: ...
 
     def list_groups(
         self,
@@ -62,7 +68,7 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource: ...
+    ) -> SyncOrAsync[DirectoryGroupsListResource]: ...
 
     def get_user(self, user: str) -> SyncOrAsync[DirectoryUserWithGroups]: ...
 
@@ -78,7 +84,7 @@ class DirectorySyncModule(Protocol):
         after: Optional[str] = None,
         organization_id: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsyncListResource: ...
+    ) -> SyncOrAsync[DirectoriesListResource]: ...
 
     def delete_directory(self, directory: str) -> SyncOrAsync[None]: ...
 
@@ -100,9 +106,7 @@ class DirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[
-        DirectoryUserWithGroups, DirectoryUserListFilters, ListMetadata
-    ]:
+    ) -> DirectoryUsersListResource:
         """Gets a list of provisioned Users for a Directory.
 
         Note, either 'directory' or 'group' must be provided.
@@ -152,7 +156,7 @@ class DirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[DirectoryGroup, DirectoryGroupListFilters, ListMetadata]:
+    ) -> DirectoryGroupsListResource:
         """Gets a list of provisioned Groups for a Directory .
 
         Note, either 'directory_id' or 'user_id' must be provided.
@@ -255,7 +259,7 @@ class DirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         organization_id: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Directory, DirectoryListFilters, ListMetadata]:
+    ) -> DirectoriesListResource:
         """Gets details for existing Directories.
 
         Args:
@@ -324,9 +328,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AsyncWorkOsListResource[
-        DirectoryUserWithGroups, DirectoryUserListFilters, ListMetadata
-    ]:
+    ) -> DirectoryUsersListResource:
         """Gets a list of provisioned Users for a Directory.
 
         Note, either 'directory_id' or 'group_id' must be provided.
@@ -362,7 +364,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             token=workos.api_key,
         )
 
-        return AsyncWorkOsListResource(
+        return WorkOsListResource(
             list_method=self.list_users,
             list_args=list_params,
             **ListPage[DirectoryUserWithGroups](**response).model_dump(),
@@ -376,9 +378,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AsyncWorkOsListResource[
-        DirectoryGroup, DirectoryGroupListFilters, ListMetadata
-    ]:
+    ) -> DirectoryGroupsListResource:
         """Gets a list of provisioned Groups for a Directory .
 
         Note, either 'directory_id' or 'user_id' must be provided.
@@ -412,7 +412,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             token=workos.api_key,
         )
 
-        return AsyncWorkOsListResource[
+        return WorkOsListResource[
             DirectoryGroup, DirectoryGroupListFilters, ListMetadata
         ](
             list_method=self.list_groups,
@@ -480,7 +480,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         organization_id: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AsyncWorkOsListResource[Directory, DirectoryListFilters, ListMetadata]:
+    ) -> DirectoriesListResource:
         """Gets details for existing Directories.
 
         Args:
@@ -511,7 +511,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             params=list_params,
             token=workos.api_key,
         )
-        return AsyncWorkOsListResource[Directory, DirectoryListFilters, ListMetadata](
+        return WorkOsListResource[Directory, DirectoryListFilters, ListMetadata](
             list_method=self.list_directories,
             list_args=list_params,
             **ListPage[Directory](**response).model_dump(),

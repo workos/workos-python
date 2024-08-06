@@ -1,5 +1,6 @@
 from enum import Enum
-from typing import Callable, Dict, List, ParamSpec
+from typing import Callable, Dict, List
+from typing_extensions import ParamSpec
 
 import workos
 from workos.exceptions import ConfigurationException

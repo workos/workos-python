@@ -5,21 +5,24 @@ from typing_extensions import Annotated
 
 ApiDirectoryState = Literal[
     "active",
-    "unlinked",
+    "inactive",
     "validating",
     "deleting",
     "invalid_credentials",
 ]
 
 
-def convert_linked_to_active(value: Any, info: ValidationInfo) -> Any:
-    if isinstance(value, str) and value == "linked":
-        return "active"
-    else:
-        return value
+def convert_legacy_directory_state(value: Any, info: ValidationInfo) -> Any:
+    if isinstance(value, str):
+        if value == "linked":
+            return "active"
+        elif value == "unlinked":
+            return "inactive"
+
+    return value
 
 
 DirectoryState = Annotated[
     ApiDirectoryState,
-    BeforeValidator(convert_linked_to_active),
+    BeforeValidator(convert_legacy_directory_state),
 ]

@@ -23,7 +23,7 @@ DEFAULT_REQUEST_TIMEOUT = 25
 
 ParamsType = Optional[Mapping[str, Any]]
 HeadersType = Optional[Dict[str, str]]
-ResponseJson = Dict[Any, Any]
+ResponseJson = Mapping[Any, Any]
 
 
 class PreparedRequest(TypedDict):
@@ -59,7 +59,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         return self._base_url.format(path)
 
     def _build_headers(
-        self, custom_headers: Union[Dict[str, str], None], token: Optional[str] = None
+        self, custom_headers: Union[HeadersType, None], token: Optional[str] = None
     ) -> httpx.Headers:
         if custom_headers is None:
             custom_headers = {}

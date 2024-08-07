@@ -1,4 +1,4 @@
-from typing import Any, Dict, Literal, Optional, Sequence
+from typing import Any, Literal, Mapping, Optional, Sequence
 from workos.resources.workos_model import WorkOSModel
 from workos.types.sso.connection import Connection, ConnectionType
 from workos.typing.literals import LiteralOrUntyped
@@ -17,7 +17,7 @@ class Profile(WorkOSModel):
     last_name: Optional[str] = None
     idp_id: str
     groups: Optional[Sequence[str]] = None
-    raw_attributes: Dict[str, Any]
+    raw_attributes: Mapping[str, Any]
 
 
 class ProfileAndToken(WorkOSModel):

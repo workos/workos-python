@@ -53,7 +53,7 @@ class Events(EventsModule):
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> WorkOsListResource[Event, EventsListFilters, ListAfterMetadata]:
+    ) -> EventsListResource:
         """Gets a list of Events .
         Kwargs:
             events (list): Filter to only return events of particular types. (Optional)
@@ -107,7 +107,7 @@ class AsyncEvents(EventsModule):
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> AsyncWorkOsListResource[Event, EventsListFilters, ListAfterMetadata]:
+    ) -> EventsListResource:
         """Gets a list of Events .
         Kwargs:
             events (list): Filter to only return events of particular types. (Optional)

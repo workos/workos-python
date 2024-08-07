@@ -59,5 +59,6 @@ AuthenticateWithParameters = Union[
     AuthenticateWithEmailVerificationParameters,
     AuthenticateWithTotpParameters,
     AuthenticateWithOrganizationSelectionParameters,
-    # AuthenticateWithRefreshTokenParameters is purposely omitted due to its divergent response typing
+    # AuthenticateWithRefreshTokenParameters is purposely omitted from this union because
+    # it doesn't use the authenticate_with() method due to its divergent response typing
 ]

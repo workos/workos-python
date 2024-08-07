@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Literal, Sequence
+from typing import Any, Mapping, Optional, Literal, Sequence
 from workos.resources.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_state import DirectoryState
 from workos.types.directory_sync.directory_user import DirectoryUser
@@ -51,7 +51,7 @@ class DirectoryGroup(WorkOSModel):
     name: str
     directory_id: str
     organization_id: str
-    raw_attributes: Dict[str, Any]
+    raw_attributes: Mapping[str, Any]
     created_at: str
     updated_at: str
 

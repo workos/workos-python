@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Callable, Dict, List
+from typing import Callable, Dict, Set, TypedDict
 from typing_extensions import ParamSpec
 
 import workos
@@ -19,17 +19,17 @@ class Module(Enum):
     USER_MANAGEMENT = "UserManagement"
 
 
-REQUIRED_SETTINGS_FOR_MODULE: Dict[Module, List[str]] = {
-    Module.AUDIT_LOGS: ["api_key"],
-    Module.DIRECTORY_SYNC: ["api_key"],
-    Module.EVENTS: ["api_key"],
-    Module.ORGANIZATIONS: ["api_key"],
-    Module.PASSWORDLESS: ["api_key"],
-    Module.PORTAL: ["api_key"],
-    Module.SSO: ["api_key", "client_id"],
-    Module.WEBHOOKS: ["api_key"],
-    Module.MFA: ["api_key"],
-    Module.USER_MANAGEMENT: ["client_id", "api_key"],
+REQUIRED_SETTINGS_FOR_MODULE: Dict[Module, Set[str]] = {
+    Module.AUDIT_LOGS: {"api_key"},
+    Module.DIRECTORY_SYNC: {"api_key"},
+    Module.EVENTS: {"api_key"},
+    Module.ORGANIZATIONS: {"api_key"},
+    Module.PASSWORDLESS: {"api_key"},
+    Module.PORTAL: {"api_key"},
+    Module.SSO: {"api_key", "client_id"},
+    Module.WEBHOOKS: {"api_key"},
+    Module.MFA: {"api_key"},
+    Module.USER_MANAGEMENT: {"client_id", "api_key"},
 }
 
 

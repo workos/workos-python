@@ -6,6 +6,7 @@ from workos.exceptions import ConfigurationException
 AUDIT_LOGS_MODULE = "AuditLogs"
 DIRECTORY_SYNC_MODULE = "DirectorySync"
 EVENTS_MODULE = "Events"
+FGA_MODULE = "FGA"
 ORGANIZATIONS_MODULE = "Organizations"
 PASSWORDLESS_MODULE = "Passwordless"
 PORTAL_MODULE = "Portal"
@@ -23,6 +24,9 @@ REQUIRED_SETTINGS_FOR_MODULE = {
     ],
     EVENTS_MODULE: [
         "api_key",
+    ],
+    FGA_MODULE: [
+        "api_key"
     ],
     ORGANIZATIONS_MODULE: [
         "api_key",

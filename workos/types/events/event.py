@@ -1,9 +1,8 @@
-from typing import Generic, Literal, TypeVar, Union
-from typing_extensions import Annotated
+from typing import Literal, Union
 from pydantic import Field
-from workos.types.directory_sync import DirectoryGroup
+from typing_extensions import Annotated
 from workos.resources.user_management import OrganizationMembership, User
-from workos.resources.workos_model import WorkOSModel
+from workos.types.directory_sync.directory_group import DirectoryGroup
 from workos.types.directory_sync.directory_user import DirectoryUser
 from workos.types.events.authentication_payload import (
     AuthenticationEmailVerificationSucceededPayload,
@@ -31,6 +30,7 @@ from workos.types.events.directory_payload_with_legacy_fields import (
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
+from workos.types.events.event_model import EventModel
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
@@ -45,95 +45,6 @@ from workos.types.user_management.email_verification_common import (
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
 from workos.types.user_management.password_reset_common import PasswordResetCommon
-
-EventType = Literal[
-    "authentication.email_verification_succeeded",
-    "authentication.magic_auth_failed",
-    "authentication.magic_auth_succeeded",
-    "authentication.mfa_succeeded",
-    "authentication.oauth_succeeded",
-    "authentication.password_failed",
-    "authentication.password_succeeded",
-    "authentication.sso_succeeded",
-    "connection.activated",
-    "connection.deactivated",
-    "connection.deleted",
-    "dsync.activated",
-    "dsync.deleted",
-    "dsync.group.created",
-    "dsync.group.deleted",
-    "dsync.group.updated",
-    "dsync.user.created",
-    "dsync.user.deleted",
-    "dsync.user.updated",
-    "dsync.group.user_added",
-    "dsync.group.user_removed",
-    "email_verification.created",
-    "invitation.created",
-    "magic_auth.created",
-    "organization.created",
-    "organization.deleted",
-    "organization.updated",
-    "organization_domain.verification_failed",
-    "organization_domain.verified",
-    "organization_membership.created",
-    "organization_membership.deleted",
-    "organization_membership.updated",
-    "password_reset.created",
-    "role.created",
-    "role.deleted",
-    "role.updated",
-    "session.created",
-    "user.created",
-    "user.deleted",
-    "user.updated",
-]
-
-EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)
-EventPayload = TypeVar(
-    "EventPayload",
-    AuthenticationEmailVerificationSucceededPayload,
-    AuthenticationMagicAuthFailedPayload,
-    AuthenticationMagicAuthSucceededPayload,
-    AuthenticationMfaSucceededPayload,
-    AuthenticationOauthSucceededPayload,
-    AuthenticationPasswordFailedPayload,
-    AuthenticationPasswordSucceededPayload,
-    AuthenticationSsoSucceededPayload,
-    Connection,
-    ConnectionPayloadWithLegacyFields,
-    DirectoryPayload,
-    DirectoryPayloadWithLegacyFields,
-    DirectoryGroup,
-    DirectoryGroupWithPreviousAttributes,
-    DirectoryUser,
-    DirectoryUserWithPreviousAttributes,
-    DirectoryGroupMembershipPayload,
-    EmailVerificationCommon,
-    InvitationCommon,
-    MagicAuthCommon,
-    OrganizationCommon,
-    OrganizationDomain,
-    OrganizationDomainVerificationFailedPayload,
-    OrganizationMembership,
-    PasswordResetCommon,
-    Role,
-    SessionCreatedPayload,
-    User,
-)
-
-
-class EventModel(WorkOSModel, Generic[EventPayload]):
-    # TODO: fix these docs
-    """Representation of an Event returned from the Events API or via Webhook.
-    Attributes:
-        OBJECT_FIELDS (list): List of fields an Event is comprised of.
-    """
-
-    id: str
-    object: Literal["event"]
-    data: EventPayload
-    created_at: str
 
 
 class AuthenticationEmailVerificationSucceededEvent(

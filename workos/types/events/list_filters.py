@@ -1,5 +1,5 @@
 from typing import Optional, Sequence
-from workos.resources.events import EventType
+from workos.types.events import EventType
 from workos.resources.list import ListArgs
 
 

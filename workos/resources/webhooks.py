@@ -2,7 +2,7 @@ from typing import Generic, Literal, Union
 from pydantic import Field
 from typing_extensions import Annotated
 from workos.types.directory_sync import DirectoryGroup
-from workos.resources.events import EventPayload
+from workos.types.events import EventPayload
 from workos.resources.user_management import OrganizationMembership, User
 from workos.resources.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_user import DirectoryUser

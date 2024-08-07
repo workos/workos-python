@@ -155,7 +155,7 @@ class Organizations(OrganizationsModule):
         if idempotency_key:
             headers["idempotency-key"] = idempotency_key
 
-        params = {
+        json = {
             "name": name,
             "domain_data": domain_data,
             "idempotency_key": idempotency_key,
@@ -164,7 +164,7 @@ class Organizations(OrganizationsModule):
         response = self._http_client.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             headers=headers,
             token=workos.api_key,
         )
@@ -177,7 +177,7 @@ class Organizations(OrganizationsModule):
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
     ) -> Organization:
-        params = {
+        json = {
             "name": name,
             "domain_data": domain_data,
         }
@@ -185,7 +185,7 @@ class Organizations(OrganizationsModule):
         response = self._http_client.request(
             f"organizations/{organization_id}",
             method=REQUEST_METHOD_PUT,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 

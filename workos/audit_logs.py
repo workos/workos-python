@@ -90,7 +90,7 @@ class AuditLogs(AuditLogsModule):
             event (AuditLogEvent) - An AuditLogEvent object
             idempotency_key (str) - Optional idempotency key
         """
-        payload = {"organization_id": organization_id, "event": event}
+        json = {"organization_id": organization_id, "event": event}
 
         headers = {}
         if idempotency_key:
@@ -99,7 +99,7 @@ class AuditLogs(AuditLogsModule):
         self._http_client.request(
             EVENTS_PATH,
             method=REQUEST_METHOD_POST,
-            params=payload,
+            json=json,
             headers=headers,
             token=workos.api_key,
         )
@@ -128,7 +128,7 @@ class AuditLogs(AuditLogsModule):
             AuditLogExport: Object that describes the audit log export
         """
 
-        payload = {
+        json = {
             "actions": actions,
             "actor_ids": actor_ids,
             "actor_names": actor_names,
@@ -141,7 +141,7 @@ class AuditLogs(AuditLogsModule):
         response = self._http_client.request(
             EXPORTS_PATH,
             method=REQUEST_METHOD_POST,
-            params=payload,
+            json=json,
             token=workos.api_key,
         )
 

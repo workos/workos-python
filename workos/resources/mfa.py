@@ -1,9 +1,10 @@
 from typing import Literal, Optional, Union
 from workos.resources.workos_model import WorkOSModel
+from workos.types.mfa.enroll_authentication_factor import (
+    SmsAuthenticationFactorType,
+    TotpAuthenticationFactorType,
+)
 
-
-SmsAuthenticationFactorType = Literal["sms"]
-TotpAuthenticationFactorType = Literal["totp"]
 AuthenticationFactorType = Literal[
     "generic_otp", SmsAuthenticationFactorType, TotpAuthenticationFactorType
 ]

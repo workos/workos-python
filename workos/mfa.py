@@ -1,6 +1,9 @@
 from typing import Literal, Optional, Protocol
 
 import workos
+from workos.types.mfa.enroll_authentication_factor import (
+    EnrollAuthenticationFactorType,
+)
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import (
     REQUEST_METHOD_POST,
@@ -17,13 +20,7 @@ from workos.resources.mfa import (
     AuthenticationFactorSms,
     AuthenticationFactorTotp,
     AuthenticationFactorTotpExtended,
-    SmsAuthenticationFactorType,
-    TotpAuthenticationFactorType,
 )
-
-EnrollAuthenticationFactorType = Literal[
-    SmsAuthenticationFactorType, TotpAuthenticationFactorType
-]
 
 
 class MFAModule(Protocol):

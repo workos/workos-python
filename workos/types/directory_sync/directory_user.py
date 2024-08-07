@@ -1,6 +1,7 @@
 from typing import Any, Dict, Literal, Optional, Sequence, Union
 
 from workos.resources.workos_model import WorkOSModel
+from workos.types.directory_sync.directory_group import DirectoryGroup
 
 
 DirectoryUserState = Literal["active", "inactive"]
@@ -36,3 +37,9 @@ class DirectoryUser(WorkOSModel):
 
     def primary_email(self) -> Union[DirectoryUserEmail, None]:
         return next((email for email in self.emails if email.primary), None)
+
+
+class DirectoryUserWithGroups(DirectoryUser):
+    """Representation of a Directory User as returned by WorkOS through the Directory Sync feature."""
+
+    groups: Sequence[DirectoryGroup]

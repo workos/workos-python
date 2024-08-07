@@ -17,7 +17,7 @@ from typing import (
     cast,
 )
 from typing_extensions import Required, TypedDict
-from workos.resources.directory_sync import (
+from workos.types.directory_sync import (
     Directory,
     DirectoryGroup,
     DirectoryUserWithGroups,

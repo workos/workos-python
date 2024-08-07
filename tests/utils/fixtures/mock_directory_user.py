@@ -1,6 +1,6 @@
 import datetime
 
-from workos.resources.directory_sync import DirectoryUserWithGroups
+from workos.types.directory_sync import DirectoryUserWithGroups
 from workos.types.directory_sync.directory_user import DirectoryUserEmail, InlineRole
 
 

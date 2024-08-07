@@ -15,7 +15,7 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_GET,
 )
 from workos.utils.validation import Module, validate_settings
-from workos.resources.directory_sync import (
+from workos.types.directory_sync import (
     DirectoryGroup,
     Directory,
     DirectoryUserWithGroups,

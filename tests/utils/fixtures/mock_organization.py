@@ -1,6 +1,6 @@
 import datetime
 
-from workos.resources.organizations import Organization
+from workos.types.organizations import Organization
 from workos.types.organizations.organization_domain import OrganizationDomain
 
 

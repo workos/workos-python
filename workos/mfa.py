@@ -11,7 +11,7 @@ from workos.utils.request_helper import (
     RequestHelper,
 )
 from workos.utils.validation import Module, validate_settings
-from workos.resources.mfa import (
+from workos.types.mfa import (
     AuthenticationChallenge,
     AuthenticationChallengeVerificationResponse,
     AuthenticationFactor,

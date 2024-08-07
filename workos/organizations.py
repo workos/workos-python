@@ -13,7 +13,7 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_PUT,
 )
 from workos.utils.validation import Module, validate_settings
-from workos.resources.organizations import (
+from workos.types.organizations import (
     Organization,
 )
 from workos.types.list_resource import (

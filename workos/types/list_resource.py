@@ -23,8 +23,8 @@ from workos.types.directory_sync import (
     DirectoryUserWithGroups,
 )
 from workos.types.events import Event
-from workos.resources.mfa import AuthenticationFactor
-from workos.resources.organizations import Organization
+from workos.types.mfa import AuthenticationFactor
+from workos.types.organizations import Organization
 from workos.resources.sso import ConnectionWithDomains
 from workos.resources.user_management import Invitation, OrganizationMembership, User
 from workos.resources.workos_model import WorkOSModel

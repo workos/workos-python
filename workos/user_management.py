@@ -6,7 +6,7 @@ from workos.types.list_resource import (
     ListPage,
     WorkOsListResource,
 )
-from workos.resources.mfa import (
+from workos.types.mfa import (
     AuthenticationFactor,
     AuthenticationFactorTotpAndChallengeResponse,
     AuthenticationFactorType,

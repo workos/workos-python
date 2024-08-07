@@ -134,6 +134,10 @@ class WorkOsListResource(
         while True:
             if index >= len(self.data):
                 if after is not None:
+                    # TODO: Fix type hinting for list_method to support both sync and async
+                    # We use a union to support both sync and async methods,
+                    # but when we get to the particular implementation, it
+                    # doesn't know which one it is. It's safe, but should be fixed.
                     next_page = self.list_method(
                         after=after, **fixed_pagination_params, **filter_params
                     )  # type: ignore
@@ -157,6 +161,10 @@ class WorkOsListResource(
         while True:
             if index >= len(self.data):
                 if after is not None:
+                    # TODO: Fix type hinting for list_method to support both sync and async
+                    # We use a union to support both sync and async methods,
+                    # but when we get to the particular implementation, it
+                    # doesn't know which one it is. It's safe, but should be fixed.
                     next_page = await self.list_method(
                         after=after, **fixed_pagination_params, **filter_params
                     )  # type: ignore

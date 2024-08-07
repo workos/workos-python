@@ -130,7 +130,7 @@ def test_sync_auto_pagination(
     mock_pagination_request_for_http_client,
 ):
     def inner(
-        http_client: HTTPClient,
+        http_client: SyncHTTPClient,
         list_function: Callable[[], WorkOsListResource],
         expected_all_page_data: dict,
         list_function_params: Optional[Mapping[str, Any]] = None,

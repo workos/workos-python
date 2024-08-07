@@ -7,7 +7,7 @@ from workos.organizations import OrganizationsModule
 from workos.passwordless import PasswordlessModule
 from workos.portal import PortalModule
 from workos.sso import AsyncSSO
-from workos.user_management import UserManagementModule
+from workos.user_management import AsyncUserManagement
 from workos.utils.http_client import AsyncHTTPClient
 from workos.webhooks import WebhooksModule
 
@@ -25,7 +25,7 @@ class AsyncClient(BaseClient):
     _passwordless: PasswordlessModule
     _portal: PortalModule
     _sso: AsyncSSO
-    _user_management: UserManagementModule
+    _user_management: AsyncUserManagement
     _webhooks: WebhooksModule
 
     def __init__(self, base_url: str, version: str, timeout: int):
@@ -84,7 +84,7 @@ class AsyncClient(BaseClient):
         raise NotImplementedError("MFA APIs are not yet supported in the async client.")
 
     @property
-    def user_management(self) -> UserManagementModule:
-        raise NotImplementedError(
-            "User Management APIs are not yet supported in the async client."
-        )
+    def user_management(self) -> AsyncUserManagement:
+        if not getattr(self, "_user_management", None):
+            self._user_management = AsyncUserManagement(self._http_client)
+        return self._user_management

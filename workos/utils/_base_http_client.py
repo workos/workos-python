@@ -204,6 +204,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
 
     @property
     def user_agent(self) -> str:
+        # TODO: Include sync/async in user agent
         return "WorkOS Python/{} Python SDK/{}".format(
             platform.python_version(),
             self._version,

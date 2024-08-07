@@ -1,5 +1,5 @@
 from workos.types.directory_sync import DirectoryGroup
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_user import DirectoryUser
 
 

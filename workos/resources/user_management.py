@@ -1,7 +1,7 @@
 from typing import Literal, Optional
 from typing_extensions import TypedDict
 
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 from workos.types.user_management.email_verification_common import (
     EmailVerificationCommon,
 )

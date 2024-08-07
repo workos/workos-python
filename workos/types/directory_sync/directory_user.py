@@ -1,6 +1,6 @@
 from typing import Any, Dict, Literal, Optional, Sequence, Union
 
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_group import DirectoryGroup
 
 

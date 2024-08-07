@@ -1,5 +1,5 @@
 from typing import Any, Literal, Mapping
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 
 
 class DirectoryGroup(WorkOSModel):

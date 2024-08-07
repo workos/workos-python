@@ -1,5 +1,5 @@
 from typing import Literal, Optional
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 from workos.typing.literals import LiteralOrUntyped
 
 InvitationState = Literal["accepted", "expired", "pending", "revoked"]

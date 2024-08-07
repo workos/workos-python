@@ -1,6 +1,6 @@
 from typing import Literal
 from workos.types.directory_sync import DirectoryType
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_state import DirectoryState
 from workos.typing.literals import LiteralOrUntyped
 

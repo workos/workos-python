@@ -1,5 +1,5 @@
 from typing import Any, Literal, Mapping, Optional, Sequence
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 from workos.types.sso.connection import Connection, ConnectionType
 from workos.typing.literals import LiteralOrUntyped
 

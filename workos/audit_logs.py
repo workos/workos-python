@@ -1,7 +1,7 @@
 from typing import Optional, Protocol, Sequence
 
 import workos
-from workos.resources.audit_logs import AuditLogExport
+from workos.types.audit_logs import AuditLogExport
 from workos.types.audit_logs.audit_log_event import AuditLogEvent
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_GET, REQUEST_METHOD_POST

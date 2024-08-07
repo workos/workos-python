@@ -1,9 +1,11 @@
 from typing import Literal, Optional, Union
+
 from workos.resources.workos_model import WorkOSModel
 from workos.types.mfa.enroll_authentication_factor_type import (
     SmsAuthenticationFactorType,
     TotpAuthenticationFactorType,
 )
+
 
 AuthenticationFactorType = Literal[
     "generic_otp", SmsAuthenticationFactorType, TotpAuthenticationFactorType
@@ -65,29 +67,3 @@ AuthenticationFactor = Union[AuthenticationFactorTotp, AuthenticationFactorSms]
 AuthenticationFactorExtended = Union[
     AuthenticationFactorTotpExtended, AuthenticationFactorSms
 ]
-
-
-class AuthenticationChallenge(WorkOSModel):
-    """Representation of a MFA Challenge Response as returned by WorkOS through the MFA feature."""
-
-    object: Literal["authentication_challenge"]
-    id: str
-    created_at: str
-    updated_at: str
-    expires_at: Optional[str] = None
-    code: Optional[str] = None
-    authentication_factor_id: str
-
-
-class AuthenticationFactorTotpAndChallengeResponse(WorkOSModel):
-    """Representation of an authentication factor and authentication challenge response as returned by WorkOS through User Management features."""
-
-    authentication_factor: AuthenticationFactorTotpExtended
-    authentication_challenge: AuthenticationChallenge
-
-
-class AuthenticationChallengeVerificationResponse(WorkOSModel):
-    """Representation of a WorkOS MFA Challenge Verification Response."""
-
-    challenge: AuthenticationChallenge
-    valid: bool

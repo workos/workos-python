@@ -1,4 +1,4 @@
-from workos.resources.sso import ConnectionWithDomains
+from workos.types.sso import ConnectionWithDomains
 
 
 class ConnectionPayloadWithLegacyFields(ConnectionWithDomains):

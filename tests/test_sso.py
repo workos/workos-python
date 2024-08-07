@@ -5,7 +5,7 @@ from tests.utils.fixtures.mock_profile import MockProfile
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 import workos
 from workos.sso import SSO, AsyncSSO, SsoProviderType
-from workos.resources.sso import Profile
+from workos.types.sso import Profile
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.request_helper import RESPONSE_TYPE_CODE
 from tests.utils.fixtures.mock_connection import MockConnection

@@ -1,6 +1,6 @@
 from typing import Any, Literal, Mapping, Optional, Sequence
+from workos.types.sso.connection import ConnectionType
 from workos.types.workos_model import WorkOSModel
-from workos.types.sso.connection import Connection, ConnectionType
 from workos.typing.literals import LiteralOrUntyped
 
 
@@ -25,15 +25,3 @@ class ProfileAndToken(WorkOSModel):
 
     access_token: str
     profile: Profile
-
-
-class ConnectionDomain(WorkOSModel):
-    object: Literal["connection_domain"]
-    id: str
-    domain: str
-
-
-class ConnectionWithDomains(Connection):
-    """Representation of a Connection Response as returned by WorkOS through the SSO feature."""
-
-    domains: Sequence[ConnectionDomain]

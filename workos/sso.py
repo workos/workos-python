@@ -5,7 +5,7 @@ from workos.types.sso.sso_provider_type import SsoProviderType
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
-from workos.resources.sso import (
+from workos.types.sso import (
     ConnectionWithDomains,
     Profile,
     ProfileAndToken,

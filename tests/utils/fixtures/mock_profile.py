@@ -1,4 +1,4 @@
-from workos.resources.sso import Profile
+from workos.types.sso import Profile
 
 
 class MockProfile(Profile):

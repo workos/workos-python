@@ -1,5 +1,5 @@
 import datetime
-from workos.resources.sso import ConnectionDomain, ConnectionWithDomains
+from workos.types.sso import ConnectionDomain, ConnectionWithDomains
 
 
 class MockConnection(ConnectionWithDomains):

@@ -38,6 +38,9 @@ class PreparedRequest(TypedDict):
 
 class BaseHTTPClient(Generic[_HttpxClientT]):
     _client: _HttpxClientT
+
+    _api_key: str
+    _client_id: str
     _base_url: str
     _version: str
     _timeout: int
@@ -45,11 +48,15 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     def __init__(
         self,
         *,
+        api_key: str,
         base_url: str,
+        client_id: str,
         version: str,
         timeout: Optional[int] = DEFAULT_REQUEST_TIMEOUT,
     ) -> None:
+        self._api_key = api_key
         self.base_url = base_url
+        self._client_id = client_id
         self._version = version
         self._timeout = DEFAULT_REQUEST_TIMEOUT if timeout is None else timeout
 
@@ -60,16 +67,21 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         return self._base_url.format(path)
 
     def _build_headers(
-        self, custom_headers: Union[HeadersType, None], token: Optional[str] = None
+        self,
+        *,
+        custom_headers: Union[HeadersType, None],
+        exclude_default_auth_headers: bool = False,
     ) -> httpx.Headers:
         if custom_headers is None:
             custom_headers = {}
 
-        if token:
-            custom_headers["Authorization"] = "Bearer {}".format(token)
+        default_headers = {
+            **self.default_headers,
+            **({} if exclude_default_auth_headers else self.auth_headers),
+        }
 
         # httpx.Headers is case-insensitive while dictionaries are not.
-        return httpx.Headers({**self.default_headers, **custom_headers})
+        return httpx.Headers({**default_headers, **custom_headers})
 
     def _maybe_raise_error_by_status_code(
         self, response: httpx.Response, response_json: Union[ResponseJson, None]
@@ -106,7 +118,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         params: ParamsType = None,
         json: JsonType = None,
         headers: HeadersType = None,
-        token: Optional[str] = None,
+        exclude_default_auth_headers: bool = False,
     ) -> PreparedRequest:
         """Executes a request against the WorkOS API.
 
@@ -123,7 +135,10 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             dict: Response from WorkOS
         """
         url = self._generate_api_url(path)
-        parsed_headers = self._build_headers(headers, token)
+        parsed_headers = self._build_headers(
+            custom_headers=headers,
+            exclude_default_auth_headers=exclude_default_auth_headers,
+        )
         parsed_method = REQUEST_METHOD_GET if method is None else method
         bodyless_http_method = parsed_method.lower() in [
             REQUEST_METHOD_DELETE,
@@ -184,6 +199,10 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         ).url.__str__()
 
     @property
+    def api_key(self) -> str:
+        return self._api_key
+
+    @property
     def base_url(self) -> str:
         return self._base_url
 
@@ -195,6 +214,19 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             base_api_url (str): Base URL for api requests
         """
         self._base_url = "{}{{}}".format(self._enforce_trailing_slash(url))
+
+    @property
+    def client_id(self) -> str:
+        return self._client_id
+
+    @property
+    def auth_headers(self) -> Dict[str, str]:
+        return self.auth_header_from_token(self._api_key)
+
+    def auth_header_from_token(self, token: str) -> Dict[str, str]:
+        return {
+            "Authorization": f"Bearer {token }",
+        }
 
     @property
     def default_headers(self) -> Dict[str, str]:

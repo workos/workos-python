@@ -1,9 +1,7 @@
 import pytest
 
-from tests.conftest import test_sync_auto_pagination
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.directory_sync import AsyncDirectorySync, DirectorySync
-from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from tests.utils.fixtures.mock_directory import MockDirectory
 from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
 from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
@@ -112,10 +110,8 @@ class DirectorySyncFixtures:
 
 class TestDirectorySync(DirectorySyncFixtures):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key, set_client_id):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.directory_sync = DirectorySync(http_client=self.http_client)
 
     def test_list_users_with_directory(
@@ -279,11 +275,8 @@ class TestDirectorySync(DirectorySyncFixtures):
 @pytest.mark.asyncio
 class TestAsyncDirectorySync(DirectorySyncFixtures):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key, set_client_id):
-        self.http_client = AsyncHTTPClient(
-            base_url="https://api.workos.test",
-            version="test",
-        )
+    def setup(self, async_http_client_for_test):
+        self.http_client = async_http_client_for_test
         self.directory_sync = AsyncDirectorySync(http_client=self.http_client)
 
     async def test_list_users_with_directory(

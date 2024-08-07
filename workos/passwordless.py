@@ -1,10 +1,9 @@
 from typing import Literal, Optional, Protocol
-import workos
+
 from workos.types.passwordless.passwordless_session_type import PasswordlessSessionType
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
 from workos.types.passwordless.passwordless_session import PasswordlessSession
-from workos.utils.validation import Module, validate_settings
 
 
 class PasswordlessModule(Protocol):
@@ -26,7 +25,6 @@ class Passwordless(PasswordlessModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(Module.PASSWORDLESS)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -69,10 +67,7 @@ class Passwordless(PasswordlessModule):
         }
 
         response = self._http_client.request(
-            "passwordless/sessions",
-            method=REQUEST_METHOD_POST,
-            json=json,
-            token=workos.api_key,
+            "passwordless/sessions", method=REQUEST_METHOD_POST, json=json
         )
 
         return PasswordlessSession.model_validate(response)
@@ -90,7 +85,6 @@ class Passwordless(PasswordlessModule):
         self._http_client.request(
             "passwordless/sessions/{session_id}/send".format(session_id=session_id),
             method=REQUEST_METHOD_POST,
-            token=workos.api_key,
         )
 
         return True

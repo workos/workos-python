@@ -1,6 +1,6 @@
 import asyncio
 from types import TracebackType
-from typing import Any, Dict, Optional, Type, Union
+from typing import Optional, Type, Union
 from typing_extensions import Self
 
 import httpx
@@ -31,13 +31,17 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
     def __init__(
         self,
         *,
+        api_key: str,
         base_url: str,
+        client_id: str,
         version: str,
         timeout: Optional[int] = None,
         transport: Optional[httpx.BaseTransport] = httpx.HTTPTransport(),
     ) -> None:
         super().__init__(
+            api_key=api_key,
             base_url=base_url,
+            client_id=client_id,
             version=version,
             timeout=timeout,
         )
@@ -96,12 +100,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             ResponseJson: Response from WorkOS
         """
         prepared_request_parameters = self._prepare_request(
-            path=path,
-            method=method,
-            params=params,
-            json=json,
-            headers=headers,
-            token=token,
+            path=path, method=method, params=params, json=json, headers=headers
         )
         response = self._client.request(**prepared_request_parameters)
         return self._handle_response(response)
@@ -120,16 +119,23 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
 
     _client: httpx.AsyncClient
 
+    _api_key: str
+    _client_id: str
+
     def __init__(
         self,
         *,
         base_url: str,
+        api_key: str,
+        client_id: str,
         version: str,
         timeout: Optional[int] = None,
         transport: Optional[httpx.AsyncBaseTransport] = httpx.AsyncHTTPTransport(),
     ) -> None:
         super().__init__(
             base_url=base_url,
+            api_key=api_key,
+            client_id=client_id,
             version=version,
             timeout=timeout,
         )
@@ -168,7 +174,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         params: ParamsType = None,
         json: JsonType = None,
         headers: HeadersType = None,
-        token: Optional[str] = None,
+        exclude_default_auth_headers: bool = False,
     ) -> ResponseJson:
         """Executes a request against the WorkOS API.
 
@@ -190,7 +196,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             params=params,
             json=json,
             headers=headers,
-            token=token,
+            exclude_default_auth_headers=exclude_default_auth_headers,
         )
         response = await self._client.request(**prepared_request_parameters)
         return self._handle_response(response)

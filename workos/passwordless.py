@@ -1,12 +1,11 @@
 from typing import Literal, Optional, Protocol
 
 import workos
+from workos.types.passwordless.passwordless_session import PasswordlessSessionType
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
 from workos.resources.passwordless import PasswordlessSession
 from workos.utils.validation import Module, validate_settings
-
-PasswordlessSessionType = Literal["MagicLink"]
 
 
 class PasswordlessModule(Protocol):

@@ -1,6 +1,6 @@
 from typing import Optional, Sequence
 from workos.types.events import EventType
-from workos.resources.list import ListArgs
+from workos.types.list_resource import ListArgs
 
 
 class EventsListFilters(ListArgs, total=False):

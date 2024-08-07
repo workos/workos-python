@@ -16,7 +16,12 @@ from workos.utils.validation import Module, validate_settings
 from workos.resources.organizations import (
     Organization,
 )
-from workos.resources.list import ListMetadata, ListPage, WorkOsListResource, ListArgs
+from workos.types.list_resource import (
+    ListMetadata,
+    ListPage,
+    WorkOsListResource,
+    ListArgs,
+)
 
 ORGANIZATIONS_PATH = "organizations"
 

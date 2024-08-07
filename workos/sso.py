@@ -20,7 +20,7 @@ from workos.utils.request_helper import (
     RequestHelper,
 )
 from workos.utils.validation import Module, validate_settings
-from workos.resources.list import (
+from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
     ListPage,

@@ -1,5 +1,5 @@
 from typing import Optional
-from workos.resources.list import ListArgs
+from workos.types.list_resource import ListArgs
 
 
 class UsersListFilters(ListArgs, total=False):

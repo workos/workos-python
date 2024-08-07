@@ -7,7 +7,7 @@ from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT, REQUEST_MET
 from workos.types.events import Event, EventType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.validation import Module, validate_settings
-from workos.resources.list import (
+from workos.types.list_resource import (
     ListAfterMetadata,
     ListPage,
     WorkOsListResource,

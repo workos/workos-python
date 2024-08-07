@@ -1,5 +1,5 @@
 from typing import Optional, Sequence
-from workos.resources.list import ListArgs
+from workos.types.list_resource import ListArgs
 
 
 class OrganizationListFilters(ListArgs, total=False):

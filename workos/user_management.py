@@ -1,6 +1,6 @@
 from typing import Optional, Protocol, Set, cast
 import workos
-from workos.resources.list import (
+from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
     ListPage,

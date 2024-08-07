@@ -20,7 +20,12 @@ from workos.types.directory_sync import (
     Directory,
     DirectoryUserWithGroups,
 )
-from workos.resources.list import ListArgs, ListMetadata, ListPage, WorkOsListResource
+from workos.types.list_resource import (
+    ListArgs,
+    ListMetadata,
+    ListPage,
+    WorkOsListResource,
+)
 
 DirectoryUsersListResource = WorkOsListResource[
     DirectoryUserWithGroups, DirectoryUserListFilters, ListMetadata

@@ -5,7 +5,7 @@ from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT, REQUEST_METHOD_GET
 from workos.resources.events import Event, EventType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
-from workos.utils.validation import EVENTS_MODULE, validate_settings
+from workos.utils.validation import Module, validate_settings
 from workos.resources.list import (
     ListAfterMetadata,
     ListArgs,
@@ -41,7 +41,7 @@ class Events(EventsModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(EVENTS_MODULE)
+    @validate_settings(Module.EVENTS)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -95,7 +95,7 @@ class AsyncEvents(EventsModule):
 
     _http_client: AsyncHTTPClient
 
-    @validate_settings(EVENTS_MODULE)
+    @validate_settings(Module.EVENTS)
     def __init__(self, http_client: AsyncHTTPClient):
         self._http_client = http_client
 

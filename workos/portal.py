@@ -3,7 +3,7 @@ import workos
 from workos.resources.portal import PortalLink
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
-from workos.utils.validation import PORTAL_MODULE, validate_settings
+from workos.utils.validation import Module, validate_settings
 
 
 PORTAL_GENERATE_PATH = "portal/generate_link"
@@ -24,7 +24,7 @@ class Portal(PortalModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(PORTAL_MODULE)
+    @validate_settings(Module.PORTAL)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 

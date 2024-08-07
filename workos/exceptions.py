@@ -1,3 +1,8 @@
+from typing import Any, Mapping, Optional
+
+import httpx
+
+
 class ConfigurationException(Exception):
     pass
 
@@ -6,14 +11,14 @@ class ConfigurationException(Exception):
 class BaseRequestException(Exception):
     def __init__(
         self,
-        response,
-        message=None,
-        error=None,
-        errors=None,
-        error_description=None,
-        code=None,
-        pending_authentication_token=None,
-    ):
+        response: httpx.Response,
+        message: Optional[str] = None,
+        error: Optional[str] = None,
+        errors: Optional[Mapping[str, Any]] = None,
+        error_description: Optional[str] = None,
+        code: Optional[str] = None,
+        pending_authentication_token: Optional[str] = None,
+    ) -> None:
         super(BaseRequestException, self).__init__(message)
 
         self.message = message
@@ -24,7 +29,7 @@ class BaseRequestException(Exception):
         self.pending_authentication_token = pending_authentication_token
         self.extract_and_set_response_related_data(response)
 
-    def extract_and_set_response_related_data(self, response):
+    def extract_and_set_response_related_data(self, response: httpx.Response) -> None:
         self.response = response
 
         try:
@@ -48,7 +53,7 @@ class BaseRequestException(Exception):
         headers = response.headers
         self.request_id = headers.get("X-Request-ID")
 
-    def __str__(self):
+    def __str__(self) -> str:
         message = self.message or "No message"
         exception = "(message=%s" % message
 

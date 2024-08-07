@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from workos.utils.http_client import BaseHTTPClient
+from workos.utils.http_client import HTTPClient
 from workos.audit_logs import AuditLogsModule
 from workos.directory_sync import DirectorySyncModule
 from workos.events import EventsModule
@@ -16,7 +16,7 @@ from workos.webhooks import WebhooksModule
 class BaseClient(Protocol):
     """Base client for accessing the WorkOS feature set."""
 
-    _http_client: BaseHTTPClient
+    _http_client: HTTPClient
 
     @property
     def audit_logs(self) -> AuditLogsModule: ...

@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Sequence
+from typing import Any, Dict, Literal, Optional, Sequence, Union
 
 from workos.resources.workos_model import WorkOSModel
 
@@ -28,11 +28,11 @@ class DirectoryUser(WorkOSModel):
     emails: Sequence[DirectoryUserEmail]
     username: Optional[str] = None
     state: DirectoryUserState
-    custom_attributes: dict
-    raw_attributes: dict
+    custom_attributes: Dict[str, Any]
+    raw_attributes: Dict[str, Any]
     created_at: str
     updated_at: str
     role: Optional[InlineRole] = None
 
-    def primary_email(self):
+    def primary_email(self) -> Union[DirectoryUserEmail, None]:
         return next((email for email in self.emails if email.primary), None)

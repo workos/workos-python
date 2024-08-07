@@ -1,52 +1,46 @@
-from functools import wraps
+from enum import Enum
+from typing import Callable, Dict, Set, TypedDict
+from typing_extensions import ParamSpec
 
 import workos
 from workos.exceptions import ConfigurationException
 
-AUDIT_LOGS_MODULE = "AuditLogs"
-DIRECTORY_SYNC_MODULE = "DirectorySync"
-EVENTS_MODULE = "Events"
-ORGANIZATIONS_MODULE = "Organizations"
-PASSWORDLESS_MODULE = "Passwordless"
-PORTAL_MODULE = "Portal"
-SSO_MODULE = "SSO"
-WEBHOOKS_MODULE = "Webhooks"
-MFA_MODULE = "MFA"
-USER_MANAGEMENT_MODULE = "UserManagement"
 
-REQUIRED_SETTINGS_FOR_MODULE = {
-    AUDIT_LOGS_MODULE: [
-        "api_key",
-    ],
-    DIRECTORY_SYNC_MODULE: [
-        "api_key",
-    ],
-    EVENTS_MODULE: [
-        "api_key",
-    ],
-    ORGANIZATIONS_MODULE: [
-        "api_key",
-    ],
-    PASSWORDLESS_MODULE: [
-        "api_key",
-    ],
-    PORTAL_MODULE: [
-        "api_key",
-    ],
-    SSO_MODULE: [
-        "api_key",
-        "client_id",
-    ],
-    WEBHOOKS_MODULE: ["api_key"],
-    MFA_MODULE: ["api_key"],
-    USER_MANAGEMENT_MODULE: ["client_id", "api_key"],
+class Module(Enum):
+    AUDIT_LOGS = "AuditLogs"
+    DIRECTORY_SYNC = "DirectorySync"
+    EVENTS = "Events"
+    ORGANIZATIONS = "Organizations"
+    PASSWORDLESS = "Passwordless"
+    PORTAL = "Portal"
+    SSO = "SSO"
+    WEBHOOKS = "Webhooks"
+    MFA = "MFA"
+    USER_MANAGEMENT = "UserManagement"
+
+
+REQUIRED_SETTINGS_FOR_MODULE: Dict[Module, Set[str]] = {
+    Module.AUDIT_LOGS: {"api_key"},
+    Module.DIRECTORY_SYNC: {"api_key"},
+    Module.EVENTS: {"api_key"},
+    Module.ORGANIZATIONS: {"api_key"},
+    Module.PASSWORDLESS: {"api_key"},
+    Module.PORTAL: {"api_key"},
+    Module.SSO: {"api_key", "client_id"},
+    Module.WEBHOOKS: {"api_key"},
+    Module.MFA: {"api_key"},
+    Module.USER_MANAGEMENT: {"client_id", "api_key"},
 }
 
 
-def validate_settings(module_name):
-    def decorator(fn):
-        @wraps(fn)
-        def wrapper(*args, **kwargs):
+P = ParamSpec("P")
+
+
+def validate_settings(
+    module_name: Module,
+) -> Callable[[Callable[P, None]], Callable[P, None]]:
+    def decorator(fn: Callable[P, None], /) -> Callable[P, None]:
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> None:
             missing_settings = []
 
             for setting in REQUIRED_SETTINGS_FOR_MODULE[module_name]:

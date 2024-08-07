@@ -1,9 +1,16 @@
 import asyncio
-from typing import Mapping, Optional
+from types import TracebackType
+from typing import Any, Dict, Optional, Type, Union
+from typing_extensions import Self
 
 import httpx
 
-from workos.utils._base_http_client import BaseHTTPClient
+from workos.utils._base_http_client import (
+    BaseHTTPClient,
+    HeadersType,
+    ParamsType,
+    ResponseJson,
+)
 from workos.utils.request_helper import REQUEST_METHOD_GET
 
 
@@ -53,14 +60,14 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         if hasattr(self, "_client"):
             self._client.close()
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(
         self,
-        exc_type,
-        exc,
-        exc_tb,
+        exc_type: Optional[Type[BaseException]],
+        exc: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
     ) -> None:
         self.close()
 
@@ -68,10 +75,10 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         self,
         path: str,
         method: Optional[str] = REQUEST_METHOD_GET,
-        params: Optional[Mapping] = None,
-        headers: Optional[dict] = None,
+        params: ParamsType = None,
+        headers: HeadersType = None,
         token: Optional[str] = None,
-    ) -> dict:
+    ) -> ResponseJson:
         """Executes a request against the WorkOS API.
 
         Args:
@@ -135,14 +142,14 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         """
         await self._client.aclose()
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> Self:
         return self
 
     async def __aexit__(
         self,
-        exc_type,
-        exc,
-        exc_tb,
+        exc_type: Optional[Type[BaseException]],
+        exc: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
     ) -> None:
         await self.close()
 
@@ -150,10 +157,10 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         self,
         path: str,
         method: Optional[str] = REQUEST_METHOD_GET,
-        params: Optional[Mapping] = None,
-        headers: Optional[dict] = None,
+        params: ParamsType = None,
+        headers: HeadersType = None,
         token: Optional[str] = None,
-    ) -> dict:
+    ) -> ResponseJson:
         """Executes a request against the WorkOS API.
 
         Args:
@@ -172,3 +179,6 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         )
         response = await self._client.request(**prepared_request_parameters)
         return self._handle_response(response)
+
+
+HTTPClient = Union[AsyncHTTPClient, SyncHTTPClient]

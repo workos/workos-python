@@ -10,7 +10,7 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_POST,
     REQUEST_METHOD_PUT,
 )
-from workos.utils.validation import ORGANIZATIONS_MODULE, validate_settings
+from workos.utils.validation import Module, validate_settings
 from workos.resources.organizations import (
     Organization,
 )
@@ -68,7 +68,7 @@ class Organizations(OrganizationsModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(ORGANIZATIONS_MODULE)
+    @validate_settings(Module.ORGANIZATIONS)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 

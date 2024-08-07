@@ -40,7 +40,7 @@ jobs:
 
       - name: Type Check
         run: |
-          mypy
+          mypy --strict
 
       - name: Test
         run: python -m pytest

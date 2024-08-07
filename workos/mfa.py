@@ -1,7 +1,6 @@
-from typing import Literal, Optional, Protocol
-
+from typing import Optional, Protocol
 import workos
-from workos.types.mfa.enroll_authentication_factor import (
+from workos.types.mfa.enroll_authentication_factor_type import (
     EnrollAuthenticationFactorType,
 )
 from workos.utils.http_client import SyncHTTPClient

@@ -1,7 +1,6 @@
 from typing import Literal, Optional, Protocol
-
 import workos
-from workos.types.passwordless.passwordless_session import PasswordlessSessionType
+from workos.types.passwordless.passwordless_session_type import PasswordlessSessionType
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
 from workos.resources.passwordless import PasswordlessSession

@@ -1,6 +1,6 @@
 from typing import Literal, Optional, Union
 from workos.resources.workos_model import WorkOSModel
-from workos.types.mfa.enroll_authentication_factor import (
+from workos.types.mfa.enroll_authentication_factor_type import (
     SmsAuthenticationFactorType,
     TotpAuthenticationFactorType,
 )

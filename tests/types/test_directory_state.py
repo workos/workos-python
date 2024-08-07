@@ -21,25 +21,14 @@ class TestDirectoryState:
         assert directory_state_type_adapter.validate_python("unlinked") == "inactive"
         assert directory_state_type_adapter.validate_python("inactive") == "inactive"
 
+    @pytest.mark.parametrize(
+        "type_value", ["foo", None, 5, {"definitely": "not a state"}]
+    )
     def test_invalid_values_returns_validation_error(
-        self, directory_state_type_adapter
+        self, directory_state_type_adapter, type_value
     ):
         try:
-            directory_state_type_adapter.validate_python("foo")
-        except ValidationError as e:
-            assert e.errors()[0]["type"] == "literal_error"
-
-        try:
-            directory_state_type_adapter.validate_python(None)
-        except ValidationError as e:
-            assert e.errors()[0]["type"] == "literal_error"
-
-        try:
-            directory_state_type_adapter.validate_python(5)
-        except ValidationError as e:
-            assert e.errors()[0]["type"] == "literal_error"
-
-        try:
-            directory_state_type_adapter.validate_python({"definitely": "not a state"})
+            directory_state_type_adapter.validate_python(type_value)
+            pytest.fail(f"Expected ValidationError for: {type_value}")
         except ValidationError as e:
             assert e.errors()[0]["type"] == "literal_error"

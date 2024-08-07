@@ -8,7 +8,7 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_GET,
     RequestHelper,
 )
-from workos.utils.validation import MFA_MODULE, validate_settings
+from workos.utils.validation import Module, validate_settings
 from workos.resources.mfa import (
     AuthenticationChallenge,
     AuthenticationChallengeVerificationResponse,
@@ -53,7 +53,7 @@ class Mfa(MFAModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(MFA_MODULE)
+    @validate_settings(Module.MFA)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 

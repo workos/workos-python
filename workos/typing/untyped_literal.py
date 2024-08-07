@@ -4,7 +4,7 @@ from pydantic import GetCoreSchemaHandler
 
 
 class UntypedLiteral(str):
-    def __new__(cls, value: str):
+    def __new__(cls, value: str) -> "UntypedLiteral":
         return super().__new__(cls, f"Untyped[{value}]")
 
     @classmethod

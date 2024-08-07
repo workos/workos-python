@@ -34,6 +34,10 @@ class TestOrganizations(object):
                     "domain": "example.io",
                     "object": "organization_domain",
                     "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
+                    "state": "verified",
+                    "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                    "verification_strategy": "dns",
+                    "verification_token": "token",
                 }
             ],
         }
@@ -147,13 +151,15 @@ class TestOrganizations(object):
 
         assert updated_organization.id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert updated_organization.name == "Example Organization"
-        assert updated_organization.domains == [
-            {
-                "domain": "example.io",
-                "object": "organization_domain",
-                "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
-            }
-        ]
+        assert updated_organization.domains[0].dict() == {
+            "domain": "example.io",
+            "object": "organization_domain",
+            "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
+            "state": "verified",
+            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            "verification_strategy": "dns",
+            "verification_token": "token",
+        }
 
     def test_delete_organization(self, setup, mock_http_client_with_response):
         mock_http_client_with_response(

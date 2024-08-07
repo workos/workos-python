@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Protocol, Set, Union
+from typing import Literal, Optional, Protocol, Set, cast
 
 import workos
 from workos.resources.list import (
@@ -23,7 +23,18 @@ from workos.resources.user_management import (
     RefreshTokenAuthenticationResponse,
     User,
 )
-from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
+from workos.types.user_management.authenticate_with_common import (
+    AuthenticateWithCodeParameters,
+    AuthenticateWithEmailVerificationParameters,
+    AuthenticateWithMagicAuthParameters,
+    AuthenticateWithOrganizationSelectionParameters,
+    AuthenticateWithParameters,
+    AuthenticateWithPasswordParameters,
+    AuthenticateWithRefreshTokenParameters,
+    AuthenticateWithTotpParameters,
+)
+from workos.typing.sync_or_async import SyncOrAsync
+from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
@@ -32,9 +43,10 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_GET,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_PUT,
+    QueryParameters,
     RequestHelper,
 )
-from workos.utils.validation import validate_settings, USER_MANAGEMENT_MODULE
+from workos.utils.validation import Module, validate_settings
 
 USER_PATH = "user_management/users"
 USER_DETAIL_PATH = "user_management/users/{0}"
@@ -92,10 +104,25 @@ class AuthenticationFactorsListFilters(ListArgs, total=False):
     user_id: str
 
 
-class UserManagementModule(Protocol):
-    _http_client: Union[SyncHTTPClient, AsyncHTTPClient]
+UsersListResource = WorkOsListResource[User, UsersListFilters, ListMetadata]
 
-    def get_user(self, user_id: str) -> User: ...
+OrganizationMembershipsListResource = WorkOsListResource[
+    OrganizationMembership, OrganizationMembershipsListFilters, ListMetadata
+]
+
+AuthenticationFactorsListResource = WorkOsListResource[
+    AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
+]
+
+InvitationsListResource = WorkOsListResource[
+    Invitation, InvitationsListFilters, ListMetadata
+]
+
+
+class UserManagementModule(Protocol):
+    _http_client: HTTPClient
+
+    def get_user(self, user_id: str) -> SyncOrAsync[User]: ...
 
     def list_users(
         self,
@@ -105,7 +132,7 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[User, UsersListFilters, ListMetadata]: ...
+    ) -> SyncOrAsync[UsersListResource]: ...
 
     def create_user(
         self,
@@ -116,7 +143,7 @@ class UserManagementModule(Protocol):
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
-    ) -> User: ...
+    ) -> SyncOrAsync[User]: ...
 
     def update_user(
         self,
@@ -127,21 +154,21 @@ class UserManagementModule(Protocol):
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
         password_hash_type: Optional[PasswordHashType] = None,
-    ) -> User: ...
+    ) -> SyncOrAsync[User]: ...
 
-    def delete_user(self, user_id: str) -> None: ...
+    def delete_user(self, user_id: str) -> SyncOrAsync[None]: ...
 
     def create_organization_membership(
         self, user_id: str, organization_id: str, role_slug: Optional[str] = None
-    ) -> OrganizationMembership: ...
+    ) -> SyncOrAsync[OrganizationMembership]: ...
 
     def update_organization_membership(
         self, organization_membership_id: str, role_slug: Optional[str] = None
-    ) -> OrganizationMembership: ...
+    ) -> SyncOrAsync[OrganizationMembership]: ...
 
     def get_organization_membership(
         self, organization_membership_id: str
-    ) -> OrganizationMembership: ...
+    ) -> SyncOrAsync[OrganizationMembership]: ...
 
     def list_organization_memberships(
         self,
@@ -152,21 +179,19 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[
-        OrganizationMembership, OrganizationMembershipsListFilters, ListMetadata
-    ]: ...
+    ) -> SyncOrAsync[OrganizationMembershipsListResource]: ...
 
     def delete_organization_membership(
         self, organization_membership_id: str
-    ) -> None: ...
+    ) -> SyncOrAsync[None]: ...
 
     def deactivate_organization_membership(
         self, organization_membership_id: str
-    ) -> OrganizationMembership: ...
+    ) -> SyncOrAsync[OrganizationMembership]: ...
 
     def reactivate_organization_membership(
         self, organization_membership_id: str
-    ) -> OrganizationMembership: ...
+    ) -> SyncOrAsync[OrganizationMembership]: ...
 
     def get_authorization_url(
         self,
@@ -204,7 +229,7 @@ class UserManagementModule(Protocol):
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
-        params = {
+        params: QueryParameters = {
             "client_id": workos.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
@@ -235,7 +260,9 @@ class UserManagementModule(Protocol):
             base_url=self._http_client.base_url, path=USER_AUTHORIZATION_PATH, **params
         )
 
-    def _authenticate_with(self, payload) -> AuthenticationResponse: ...
+    def _authenticate_with(
+        self, payload: AuthenticateWithParameters
+    ) -> SyncOrAsync[AuthenticationResponse]: ...
 
     def authenticate_with_password(
         self,
@@ -243,7 +270,7 @@ class UserManagementModule(Protocol):
         password: str,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> AuthenticationResponse: ...
+    ) -> SyncOrAsync[AuthenticationResponse]: ...
 
     def authenticate_with_code(
         self,
@@ -251,7 +278,7 @@ class UserManagementModule(Protocol):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> AuthenticationResponse: ...
+    ) -> SyncOrAsync[AuthenticationResponse]: ...
 
     def authenticate_with_magic_auth(
         self,
@@ -260,7 +287,7 @@ class UserManagementModule(Protocol):
         link_authorization_code: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> AuthenticationResponse: ...
+    ) -> SyncOrAsync[AuthenticationResponse]: ...
 
     def authenticate_with_email_verification(
         self,
@@ -268,7 +295,7 @@ class UserManagementModule(Protocol):
         pending_authentication_token: str,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> AuthenticationResponse: ...
+    ) -> SyncOrAsync[AuthenticationResponse]: ...
 
     def authenticate_with_totp(
         self,
@@ -277,15 +304,15 @@ class UserManagementModule(Protocol):
         pending_authentication_token: str,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> AuthenticationResponse: ...
+    ) -> SyncOrAsync[AuthenticationResponse]: ...
 
     def authenticate_with_organization_selection(
         self,
-        organization_id,
-        pending_authentication_token,
+        organization_id: str,
+        pending_authentication_token: str,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> AuthenticationResponse: ...
+    ) -> SyncOrAsync[AuthenticationResponse]: ...
 
     def authenticate_with_refresh_token(
         self,
@@ -293,7 +320,7 @@ class UserManagementModule(Protocol):
         organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> RefreshTokenAuthenticationResponse: ...
+    ) -> SyncOrAsync[RefreshTokenAuthenticationResponse]: ...
 
     def get_jwks_url(self) -> str:
         """Get the public key that is used for verifying access tokens.
@@ -319,25 +346,27 @@ class UserManagementModule(Protocol):
             session_id,
         )
 
-    def get_password_reset(self, password_reset_id: str) -> PasswordReset: ...
+    def get_password_reset(
+        self, password_reset_id: str
+    ) -> SyncOrAsync[PasswordReset]: ...
 
-    def create_password_reset(self, email: str) -> PasswordReset: ...
+    def create_password_reset(self, email: str) -> SyncOrAsync[PasswordReset]: ...
 
-    def reset_password(self, token: str, new_password: str) -> User: ...
+    def reset_password(self, token: str, new_password: str) -> SyncOrAsync[User]: ...
 
     def get_email_verification(
         self, email_verification_id: str
-    ) -> EmailVerification: ...
+    ) -> SyncOrAsync[EmailVerification]: ...
 
-    def send_verification_email(self, user_id: str) -> User: ...
+    def send_verification_email(self, user_id: str) -> SyncOrAsync[User]: ...
 
-    def verify_email(self, user_id: str, code: str) -> User: ...
+    def verify_email(self, user_id: str, code: str) -> SyncOrAsync[User]: ...
 
-    def get_magic_auth(self, magic_auth_id: str) -> MagicAuth: ...
+    def get_magic_auth(self, magic_auth_id: str) -> SyncOrAsync[MagicAuth]: ...
 
     def create_magic_auth(
         self, email: str, invitation_token: Optional[str] = None
-    ) -> MagicAuth: ...
+    ) -> SyncOrAsync[MagicAuth]: ...
 
     def enroll_auth_factor(
         self,
@@ -346,7 +375,7 @@ class UserManagementModule(Protocol):
         totp_issuer: Optional[str] = None,
         totp_user: Optional[str] = None,
         totp_secret: Optional[str] = None,
-    ) -> AuthenticationFactorTotpAndChallengeResponse: ...
+    ) -> SyncOrAsync[AuthenticationFactorTotpAndChallengeResponse]: ...
 
     def list_auth_factors(
         self,
@@ -355,13 +384,13 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[
-        AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
-    ]: ...
+    ) -> SyncOrAsync[AuthenticationFactorsListResource]: ...
 
-    def get_invitation(self, invitation_id: str) -> Invitation: ...
+    def get_invitation(self, invitation_id: str) -> SyncOrAsync[Invitation]: ...
 
-    def find_invitation_by_token(self, invitation_token: str) -> Invitation: ...
+    def find_invitation_by_token(
+        self, invitation_token: str
+    ) -> SyncOrAsync[Invitation]: ...
 
     def list_invitations(
         self,
@@ -371,7 +400,7 @@ class UserManagementModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Invitation, InvitationsListFilters, ListMetadata]: ...
+    ) -> SyncOrAsync[InvitationsListResource]: ...
 
     def send_invitation(
         self,
@@ -380,9 +409,9 @@ class UserManagementModule(Protocol):
         expires_in_days: Optional[int] = None,
         inviter_user_id: Optional[str] = None,
         role_slug: Optional[str] = None,
-    ) -> Invitation: ...
+    ) -> SyncOrAsync[Invitation]: ...
 
-    def revoke_invitation(self, invitation_id) -> Invitation: ...
+    def revoke_invitation(self, invitation_id: str) -> SyncOrAsync[Invitation]: ...
 
 
 class UserManagement(UserManagementModule):
@@ -390,7 +419,7 @@ class UserManagement(UserManagementModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(USER_MANAGEMENT_MODULE)
+    @validate_settings(Module.USER_MANAGEMENT)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -418,7 +447,7 @@ class UserManagement(UserManagementModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[User, UsersListFilters, ListMetadata]:
+    ) -> UsersListResource:
         """Get a list of all of your existing users matching the criteria specified.
 
         Kwargs:
@@ -449,7 +478,7 @@ class UserManagement(UserManagementModule):
             token=workos.api_key,
         )
 
-        return WorkOsListResource[User, UsersListFilters, ListMetadata](
+        return UsersListResource(
             list_method=self.list_users,
             list_args=params,
             **ListPage[User](**response).model_dump(),
@@ -637,9 +666,7 @@ class UserManagement(UserManagementModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[
-        OrganizationMembership, OrganizationMembershipsListFilters, ListMetadata
-    ]:
+    ) -> OrganizationMembershipsListResource:
         """Get a list of all of your existing organization memberships matching the criteria specified.
 
         Kwargs:
@@ -672,11 +699,7 @@ class UserManagement(UserManagementModule):
             token=workos.api_key,
         )
 
-        return WorkOsListResource[
-            OrganizationMembership,
-            OrganizationMembershipsListFilters,
-            ListMetadata,
-        ](
+        return OrganizationMembershipsListResource(
             list_method=self.list_organization_memberships,
             list_args=params,
             **ListPage[OrganizationMembership](**response).model_dump(),
@@ -730,7 +753,9 @@ class UserManagement(UserManagementModule):
 
         return OrganizationMembership.model_validate(response)
 
-    def _authenticate_with(self, payload) -> AuthenticationResponse:
+    def _authenticate_with(
+        self, payload: AuthenticateWithParameters
+    ) -> AuthenticationResponse:
         params = {
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
@@ -764,7 +789,7 @@ class UserManagement(UserManagementModule):
             AuthenticationResponse: Authentication response from WorkOS.
         """
 
-        payload = {
+        payload: AuthenticateWithPasswordParameters = {
             "email": email,
             "password": password,
             "grant_type": "password",
@@ -796,7 +821,7 @@ class UserManagement(UserManagementModule):
                 [organization_id] (str): The Organization the user selected to sign in for, if applicable.
         """
 
-        payload = {
+        payload: AuthenticateWithCodeParameters = {
             "code": code,
             "grant_type": "authorization_code",
             "ip_address": ip_address,
@@ -827,7 +852,7 @@ class UserManagement(UserManagementModule):
             AuthenticationResponse: Authentication response from WorkOS.
         """
 
-        payload = {
+        payload: AuthenticateWithMagicAuthParameters = {
             "code": code,
             "email": email,
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
@@ -857,9 +882,7 @@ class UserManagement(UserManagementModule):
             AuthenticationResponse: Authentication response from WorkOS.
         """
 
-        payload = {
-            "client_id": workos.client_id,
-            "client_secret": workos.api_key,
+        payload: AuthenticateWithEmailVerificationParameters = {
             "code": code,
             "pending_authentication_token": pending_authentication_token,
             "grant_type": "urn:workos:oauth:grant-type:email-verification:code",
@@ -890,7 +913,7 @@ class UserManagement(UserManagementModule):
             AuthenticationResponse: Authentication response from WorkOS.
         """
 
-        payload = {
+        payload: AuthenticateWithTotpParameters = {
             "code": code,
             "authentication_challenge_id": authentication_challenge_id,
             "pending_authentication_token": pending_authentication_token,
@@ -920,9 +943,7 @@ class UserManagement(UserManagementModule):
             AuthenticationResponse: Authentication response from WorkOS.
         """
 
-        payload = {
-            "client_id": workos.client_id,
-            "client_secret": workos.api_key,
+        payload: AuthenticateWithOrganizationSelectionParameters = {
             "organization_id": organization_id,
             "pending_authentication_token": pending_authentication_token,
             "grant_type": "urn:workos:oauth:grant-type:organization-selection",
@@ -951,9 +972,9 @@ class UserManagement(UserManagementModule):
             RefreshTokenAuthenticationResponse: Refresh Token Authentication response from WorkOS.
         """
 
-        payload = {
-            "client_id": workos.client_id,
-            "client_secret": workos.api_key,
+        payload: AuthenticateWithRefreshTokenParameters = {
+            "client_id": cast(str, workos.client_id),
+            "client_secret": cast(str, workos.api_key),
             "refresh_token": refresh_token,
             "organization_id": organization_id,
             "grant_type": "refresh_token",
@@ -1185,9 +1206,7 @@ class UserManagement(UserManagementModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[
-        AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
-    ]:
+    ) -> AuthenticationFactorsListResource:
         """Lists the Auth Factors for a user.
 
         Kwargs:
@@ -1220,9 +1239,7 @@ class UserManagement(UserManagementModule):
             "user_id": user_id,
         }
 
-        return WorkOsListResource[
-            AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
-        ](
+        return AuthenticationFactorsListResource(
             list_method=self.list_auth_factors,
             list_args=list_args,
             **ListPage[AuthenticationFactor](**response).model_dump(),
@@ -1272,7 +1289,7 @@ class UserManagement(UserManagementModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> WorkOsListResource[Invitation, InvitationsListFilters, ListMetadata]:
+    ) -> InvitationsListResource:
         """Get a list of all of your existing invitations matching the criteria specified.
 
         Kwargs:
@@ -1303,7 +1320,7 @@ class UserManagement(UserManagementModule):
             token=workos.api_key,
         )
 
-        return WorkOsListResource[Invitation, InvitationsListFilters, ListMetadata](
+        return InvitationsListResource(
             list_method=self.list_invitations,
             list_args=params,
             **ListPage[Invitation](**response).model_dump(),
@@ -1358,6 +1375,979 @@ class UserManagement(UserManagementModule):
         """
 
         response = self._http_client.request(
+            INVITATION_REVOKE_PATH.format(invitation_id),
+            method=REQUEST_METHOD_POST,
+            token=workos.api_key,
+        )
+
+        return Invitation.model_validate(response)
+
+
+class AsyncUserManagement(UserManagementModule):
+    """Offers methods for using the WorkOS User Management API."""
+
+    _http_client: AsyncHTTPClient
+
+    @validate_settings(Module.USER_MANAGEMENT)
+    def __init__(self, http_client: AsyncHTTPClient):
+        self._http_client = http_client
+
+    async def get_user(self, user_id: str) -> User:
+        """Get the details of an existing user.
+
+        Args:
+            user_id (str) - User unique identifier
+        Returns:
+            User: User response from WorkOS.
+        """
+        response = await self._http_client.request(
+            USER_DETAIL_PATH.format(user_id),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        return User.model_validate(response)
+
+    async def list_users(
+        self,
+        email: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> UsersListResource:
+        """Get a list of all of your existing users matching the criteria specified.
+
+        Kwargs:
+            email (str): Filter Users by their email. (Optional)
+            organization_id (str): Filter Users by the organization they are members of. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided User ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided User ID. (Optional)
+            order (PaginationOrder): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
+
+        Returns:
+            dict: Users response from WorkOS.
+        """
+
+        params: UsersListFilters = {
+            "email": email,
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            USER_PATH,
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return UsersListResource(
+            list_method=self.list_users,
+            list_args=params,
+            **ListPage[User](**response).model_dump(),
+        )
+
+    async def create_user(
+        self,
+        email: str,
+        password: Optional[str] = None,
+        password_hash: Optional[str] = None,
+        password_hash_type: Optional[PasswordHashType] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        email_verified: Optional[bool] = None,
+    ) -> User:
+        """Create a new user.
+
+        Args:
+            email (str) - The email address of the user.
+            password (str) - The password to set for the user. (Optional)
+            password_hash (str) - The hashed password to set for the user. Mutually exclusive with password. (Optional)
+            password_hash_type (str) - The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
+            first_name (str) - The user's first name. (Optional)
+            last_name (str) - The user's last name. (Optional)
+            email_verified (bool) - Whether the user's email address was previously verified. (Optional)
+
+        Returns:
+            User: Created User response from WorkOS.
+        """
+        params = {
+            "email": email,
+            "password": password,
+            "password_hash": password_hash,
+            "password_hash_type": password_hash_type,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email_verified": email_verified or False,
+        }
+
+        response = await self._http_client.request(
+            USER_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return User.model_validate(response)
+
+    async def update_user(
+        self,
+        user_id: str,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        email_verified: Optional[bool] = None,
+        password: Optional[str] = None,
+        password_hash: Optional[str] = None,
+        password_hash_type: Optional[PasswordHashType] = None,
+    ) -> User:
+        """Update user attributes.
+
+        Args:
+            user_id (str) - The User unique identifier
+            first_name (str) - The user's first name. (Optional)
+            last_name (str) - The user's last name. (Optional)
+            email_verified (bool) - Whether the user's email address was previously verified. (Optional)
+            password (str) - The password to set for the user. (Optional)
+            password_hash (str) - The hashed password to set for the user, used when migrating from another user store. Mutually exclusive with password. (Optional)
+            password_hash_type (str) - The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
+
+        Returns:
+            User: Updated User response from WorkOS.
+        """
+        params = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "email_verified": email_verified,
+            "password": password,
+            "password_hash": password_hash,
+            "password_hash_type": password_hash_type,
+        }
+
+        response = await self._http_client.request(
+            USER_DETAIL_PATH.format(user_id),
+            method=REQUEST_METHOD_PUT,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return User.model_validate(response)
+
+    async def delete_user(self, user_id: str) -> None:
+        """Delete an existing user.
+
+        Args:
+            user_id (str) -  User unique identifier
+        """
+        await self._http_client.request(
+            USER_DETAIL_PATH.format(user_id),
+            method=REQUEST_METHOD_DELETE,
+            token=workos.api_key,
+        )
+
+    async def create_organization_membership(
+        self, user_id: str, organization_id: str, role_slug: Optional[str] = None
+    ) -> OrganizationMembership:
+        """Create a new OrganizationMembership for the given Organization and User.
+
+        Args:
+            user_id: The Unique ID of the User.
+            organization_id: The Unique ID of the Organization to which the user belongs to.
+            role_slug: The Unique Slug of the Role to which to grant to this membership.
+                If no slug is passed in, the default role will be granted.(Optional)
+
+        Returns:
+            OrganizationMembership: Created OrganizationMembership response from WorkOS.
+        """
+
+        params = {
+            "user_id": user_id,
+            "organization_id": organization_id,
+            "role_slug": role_slug,
+        }
+
+        response = await self._http_client.request(
+            ORGANIZATION_MEMBERSHIP_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return OrganizationMembership.model_validate(response)
+
+    async def update_organization_membership(
+        self, organization_membership_id: str, role_slug: Optional[str] = None
+    ) -> OrganizationMembership:
+        """Updates an OrganizationMembership for the given id.
+
+        Args:
+            organization_membership_id (str) -  The unique ID of the Organization Membership.
+            role_slug: The Unique Slug of the Role to which to grant to this membership.
+                If no slug is passed in, it will not be changed (Optional)
+
+        Returns:
+            OrganizationMembership: Updated OrganizationMembership response from WorkOS.
+        """
+
+        params = {
+            "role_slug": role_slug,
+        }
+
+        response = await self._http_client.request(
+            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=REQUEST_METHOD_PUT,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return OrganizationMembership.model_validate(response)
+
+    async def get_organization_membership(
+        self, organization_membership_id: str
+    ) -> OrganizationMembership:
+        """Get the details of an organization membership.
+
+        Args:
+            organization_membership_id (str) -  The unique ID of the Organization Membership.
+        Returns:
+            OrganizationMembership: OrganizationMembership response from WorkOS.
+        """
+
+        response = await self._http_client.request(
+            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        return OrganizationMembership.model_validate(response)
+
+    async def list_organization_memberships(
+        self,
+        user_id: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        statuses: Optional[Set[OrganizationMembershipStatus]] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> OrganizationMembershipsListResource:
+        """Get a list of all of your existing organization memberships matching the criteria specified.
+
+        Kwargs:
+            user_id (str): Filter Organization Memberships by user. (Optional)
+            organization_id (str): Filter Organization Memberships by organization. (Optional)
+            statuses (list): Filter Organization Memberships by status. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Organization Membership ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Organization Membership ID. (Optional)
+            order (Order): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
+
+        Returns:
+            WorkOsListResource: Organization Memberships response from WorkOS.
+        """
+
+        params: OrganizationMembershipsListFilters = {
+            "user_id": user_id,
+            "organization_id": organization_id,
+            "statuses": ",".join(statuses) if statuses else None,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            ORGANIZATION_MEMBERSHIP_PATH,
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return OrganizationMembershipsListResource(
+            list_method=self.list_organization_memberships,
+            list_args=params,
+            **ListPage[OrganizationMembership](**response).model_dump(),
+        )
+
+    async def delete_organization_membership(
+        self, organization_membership_id: str
+    ) -> None:
+        """Delete an existing organization membership.
+
+        Args:
+            organization_membership_id (str) -  The unique ID of the Organization Membership.
+        """
+        await self._http_client.request(
+            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=REQUEST_METHOD_DELETE,
+            token=workos.api_key,
+        )
+
+    async def deactivate_organization_membership(
+        self, organization_membership_id: str
+    ) -> OrganizationMembership:
+        """Deactivate an organization membership.
+
+        Args:
+            organization_membership_id (str) -  The unique ID of the Organization Membership.
+        Returns:
+            OrganizationMembership: OrganizationMembership response from WorkOS.
+        """
+        response = await self._http_client.request(
+            ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH.format(organization_membership_id),
+            method=REQUEST_METHOD_PUT,
+            token=workos.api_key,
+        )
+
+        return OrganizationMembership.model_validate(response)
+
+    async def reactivate_organization_membership(
+        self, organization_membership_id: str
+    ) -> OrganizationMembership:
+        """Reactivates an organization membership.
+
+        Args:
+            organization_membership_id (str) -  The unique ID of the Organization Membership.
+        Returns:
+            OrganizationMembership: OrganizationMembership response from WorkOS.
+        """
+        response = await self._http_client.request(
+            ORGANIZATION_MEMBERSHIP_REACTIVATE_PATH.format(organization_membership_id),
+            method=REQUEST_METHOD_PUT,
+            token=workos.api_key,
+        )
+
+        return OrganizationMembership.model_validate(response)
+
+    async def _authenticate_with(
+        self, payload: AuthenticateWithParameters
+    ) -> AuthenticationResponse:
+        params = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            **payload,
+        }
+
+        response = await self._http_client.request(
+            USER_AUTHENTICATE_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+        )
+
+        return AuthenticationResponse.model_validate(response)
+
+    async def authenticate_with_password(
+        self,
+        email: str,
+        password: str,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+    ) -> AuthenticationResponse:
+        """Authenticates a user with email and password.
+
+        Kwargs:
+            email (str): The email address of the user.
+            password (str): The password of the user.
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            AuthenticationResponse: Authentication response from WorkOS.
+        """
+
+        payload: AuthenticateWithPasswordParameters = {
+            "email": email,
+            "password": password,
+            "grant_type": "password",
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+        }
+
+        return await self._authenticate_with(payload)
+
+    async def authenticate_with_code(
+        self,
+        code: str,
+        code_verifier: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+    ) -> AuthenticationResponse:
+        """Authenticates an OAuth user or a user that is logging in through SSO.
+
+        Kwargs:
+            code (str): The authorization value which was passed back as a query parameter in the callback to the Redirect URI.
+            code_verifier (str): The randomly generated string used to derive the code challenge that was passed to the authorization
+                url as part of the PKCE flow. This parameter is required when the client secret is not present. (Optional)
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            (dict): Authentication response from WorkOS.
+                [user] (dict): User response from WorkOS
+                [organization_id] (str): The Organization the user selected to sign in for, if applicable.
+        """
+
+        payload: AuthenticateWithCodeParameters = {
+            "code": code,
+            "grant_type": "authorization_code",
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+            "code_verifier": code_verifier,
+        }
+
+        return await self._authenticate_with(payload)
+
+    async def authenticate_with_magic_auth(
+        self,
+        code: str,
+        email: str,
+        link_authorization_code: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+    ) -> AuthenticationResponse:
+        """Authenticates a user by verifying a one-time code sent to the user's email address by the Magic Auth Send Code endpoint.
+
+        Kwargs:
+            code (str): The one-time code that was emailed to the user.
+            email (str): The email of the User who will be authenticated.
+            link_authorization_code (str): An authorization code used in a previous authenticate request that resulted in an existing user error response. (Optional)
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            AuthenticationResponse: Authentication response from WorkOS.
+        """
+
+        payload: AuthenticateWithMagicAuthParameters = {
+            "code": code,
+            "email": email,
+            "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
+            "link_authorization_code": link_authorization_code,
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+        }
+
+        return await self._authenticate_with(payload)
+
+    async def authenticate_with_email_verification(
+        self,
+        code: str,
+        pending_authentication_token: str,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+    ) -> AuthenticationResponse:
+        """Authenticates a user that requires email verification by verifying a one-time code sent to the user's email address and the pending authentication token.
+
+        Kwargs:
+            code (str): The one-time code that was emailed to the user.
+            pending_authentication_token (str): The token returned from an authentication attempt due to an unverified email address.
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            AuthenticationResponse: Authentication response from WorkOS.
+        """
+
+        payload: AuthenticateWithEmailVerificationParameters = {
+            "code": code,
+            "pending_authentication_token": pending_authentication_token,
+            "grant_type": "urn:workos:oauth:grant-type:email-verification:code",
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+        }
+
+        return await self._authenticate_with(payload)
+
+    async def authenticate_with_totp(
+        self,
+        code: str,
+        authentication_challenge_id: str,
+        pending_authentication_token: str,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+    ) -> AuthenticationResponse:
+        """Authenticates a user that has MFA enrolled by verifying the TOTP code, the Challenge from the Factor, and the pending authentication token.
+
+        Kwargs:
+            code (str): The time-based-one-time-password generated by the Factor that was challenged.
+            authentication_challenge_id (str): The unique ID of the authentication Challenge created for the TOTP Factor for which the user is enrolled.
+            pending_authentication_token (str): The token returned from a failed authentication attempt due to MFA challenge.
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            AuthenticationResponse: Authentication response from WorkOS.
+        """
+
+        payload: AuthenticateWithTotpParameters = {
+            "code": code,
+            "authentication_challenge_id": authentication_challenge_id,
+            "pending_authentication_token": pending_authentication_token,
+            "grant_type": "urn:workos:oauth:grant-type:mfa-totp",
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+        }
+
+        return await self._authenticate_with(payload)
+
+    async def authenticate_with_organization_selection(
+        self,
+        organization_id: str,
+        pending_authentication_token: str,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+    ) -> AuthenticationResponse:
+        """Authenticates a user that is a member of multiple organizations by verifying the organization ID and the pending authentication token.
+
+        Kwargs:
+            organization_id (str): The time-based-one-time-password generated by the Factor that was challenged.
+            pending_authentication_token (str): The token returned from a failed authentication attempt due to organization selection being required.
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            AuthenticationResponse: Authentication response from WorkOS.
+        """
+
+        payload: AuthenticateWithOrganizationSelectionParameters = {
+            "organization_id": organization_id,
+            "pending_authentication_token": pending_authentication_token,
+            "grant_type": "urn:workos:oauth:grant-type:organization-selection",
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+        }
+
+        return await self._authenticate_with(payload)
+
+    async def authenticate_with_refresh_token(
+        self,
+        refresh_token: str,
+        organization_id: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+    ) -> RefreshTokenAuthenticationResponse:
+        """Authenticates a user with a refresh token.
+
+        Kwargs:
+            refresh_token (str): The token associated to the user.
+            organization_id (str): The organization to issue the new access token for. (Optional)
+            ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
+            user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+
+        Returns:
+            RefreshTokenAuthenticationResponse: Refresh Token Authentication response from WorkOS.
+        """
+
+        payload = {
+            "client_id": workos.client_id,
+            "client_secret": workos.api_key,
+            "refresh_token": refresh_token,
+            "organization_id": organization_id,
+            "grant_type": "refresh_token",
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+        }
+
+        response = await self._http_client.request(
+            USER_AUTHENTICATE_PATH,
+            method=REQUEST_METHOD_POST,
+            params=payload,
+        )
+
+        return RefreshTokenAuthenticationResponse.model_validate(response)
+
+    async def get_password_reset(self, password_reset_id: str) -> PasswordReset:
+        """Get the details of a password reset object.
+
+        Args:
+            password_reset_id (str) -  The unique ID of the password reset object.
+
+        Returns:
+            PasswordReset: PasswordReset response from WorkOS.
+        """
+
+        response = await self._http_client.request(
+            PASSWORD_RESET_DETAIL_PATH.format(password_reset_id),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        return PasswordReset.model_validate(response)
+
+    async def create_password_reset(self, email: str) -> PasswordReset:
+        """Creates a password reset token that can be sent to a user's email to reset the password.
+
+        Args:
+            email: The email address of the user.
+
+        Returns:
+            dict: PasswordReset response from WorkOS.
+        """
+
+        params = {
+            "email": email,
+        }
+
+        response = await self._http_client.request(
+            PASSWORD_RESET_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return PasswordReset.model_validate(response)
+
+    async def reset_password(self, token: str, new_password: str) -> User:
+        """Resets user password using token that was sent to the user.
+
+        Kwargs:
+            token (str): The reset token emailed to the user.
+            new_password (str): The new password to be set for the user.
+
+        Returns:
+            User: User response from WorkOS.
+        """
+
+        payload = {
+            "token": token,
+            "new_password": new_password,
+        }
+
+        response = await self._http_client.request(
+            USER_RESET_PASSWORD_PATH,
+            method=REQUEST_METHOD_POST,
+            params=payload,
+            token=workos.api_key,
+        )
+
+        return User.model_validate(response["user"])
+
+    async def get_email_verification(
+        self, email_verification_id: str
+    ) -> EmailVerification:
+        """Get the details of an email verification object.
+
+        Args:
+            email_verification_id (str) -  The unique ID of the email verification object.
+
+        Returns:
+            EmailVerification: EmailVerification response from WorkOS.
+        """
+
+        response = await self._http_client.request(
+            EMAIL_VERIFICATION_DETAIL_PATH.format(email_verification_id),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        return EmailVerification.model_validate(response)
+
+    async def send_verification_email(self, user_id: str) -> User:
+        """Sends a verification email to the provided user.
+
+        Kwargs:
+            user_id (str): The unique ID of the User whose email address will be verified.
+
+        Returns:
+            User: User response from WorkOS.
+        """
+
+        response = await self._http_client.request(
+            USER_SEND_VERIFICATION_EMAIL_PATH.format(user_id),
+            method=REQUEST_METHOD_POST,
+            token=workos.api_key,
+        )
+
+        return User.model_validate(response["user"])
+
+    async def verify_email(self, user_id: str, code: str) -> User:
+        """Verifies user email using one-time code that was sent to the user.
+
+        Kwargs:
+            user_id (str): The unique ID of the User whose email address will be verified.
+            code (str): The one-time code emailed to the user.
+
+        Returns:
+            User: User response from WorkOS.
+        """
+
+        payload = {
+            "code": code,
+        }
+
+        response = await self._http_client.request(
+            USER_VERIFY_EMAIL_CODE_PATH.format(user_id),
+            method=REQUEST_METHOD_POST,
+            params=payload,
+            token=workos.api_key,
+        )
+
+        return User.model_validate(response["user"])
+
+    async def get_magic_auth(self, magic_auth_id: str) -> MagicAuth:
+        """Get the details of a Magic Auth object.
+
+        Args:
+            magic_auth_id (str) -  The unique ID of the Magic Auth object.
+
+        Returns:
+            MagicAuth: MagicAuth response from WorkOS.
+        """
+
+        response = await self._http_client.request(
+            MAGIC_AUTH_DETAIL_PATH.format(magic_auth_id),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        return MagicAuth.model_validate(response)
+
+    async def create_magic_auth(
+        self,
+        email: str,
+        invitation_token: Optional[str] = None,
+    ) -> MagicAuth:
+        """Creates a Magic Auth code challenge that can be sent to a user's email for authentication.
+
+        Args:
+            email: The email address of the user.
+            invitation_token: The token of an Invitation, if required. (Optional)
+
+        Returns:
+            dict: MagicAuth response from WorkOS.
+        """
+
+        params = {
+            "email": email,
+            "invitation_token": invitation_token,
+        }
+
+        response = await self._http_client.request(
+            MAGIC_AUTH_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return MagicAuth.model_validate(response)
+
+    async def enroll_auth_factor(
+        self,
+        user_id: str,
+        type: AuthenticationFactorType,
+        totp_issuer: Optional[str] = None,
+        totp_user: Optional[str] = None,
+        totp_secret: Optional[str] = None,
+    ) -> AuthenticationFactorTotpAndChallengeResponse:
+        """Enrolls a user in a new auth factor.
+
+        Kwargs:
+            user_id (str): The unique ID of the User to be enrolled in the auth factor.
+            type (str): The type of factor to enroll (Only option available is 'totp').
+            totp_issuer (str): Name of the Organization (Optional)
+            totp_user (str): Email of user (Optional)
+            totp_secret (str): The secret key for the TOTP factor. Generated if not provided. (Optional)
+
+        Returns: AuthenticationFactorTotpAndChallengeResponse
+        """
+
+        payload = {
+            "type": type,
+            "totp_issuer": totp_issuer,
+            "totp_user": totp_user,
+            "totp_secret": totp_secret,
+        }
+
+        response = await self._http_client.request(
+            USER_AUTH_FACTORS_PATH.format(user_id),
+            method=REQUEST_METHOD_POST,
+            params=payload,
+            token=workos.api_key,
+        )
+
+        return AuthenticationFactorTotpAndChallengeResponse.model_validate(response)
+
+    async def list_auth_factors(
+        self,
+        user_id: str,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> AuthenticationFactorsListResource:
+        """Lists the Auth Factors for a user.
+
+        Kwargs:
+            user_id (str): The unique ID of the User to list the auth factors for.
+
+        Returns:
+            WorkOsListResource: List of Authentication Factors for a User from WorkOS.
+        """
+
+        params: ListArgs = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            USER_AUTH_FACTORS_PATH.format(user_id),
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
+        )
+
+        # We don't spread params on this dict to make mypy happy
+        list_args: AuthenticationFactorsListFilters = {
+            "limit": limit or DEFAULT_LIST_RESPONSE_LIMIT,
+            "before": before,
+            "after": after,
+            "order": order,
+            "user_id": user_id,
+        }
+
+        return AuthenticationFactorsListResource(
+            list_method=self.list_auth_factors,
+            list_args=list_args,
+            **ListPage[AuthenticationFactor](**response).model_dump(),
+        )
+
+    async def get_invitation(self, invitation_id: str) -> Invitation:
+        """Get the details of an invitation.
+
+        Args:
+            invitation_id (str) -  The unique ID of the Invitation.
+
+        Returns:
+            Invitation: Invitation response from WorkOS.
+        """
+
+        response = await self._http_client.request(
+            INVITATION_DETAIL_PATH.format(invitation_id),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        return Invitation.model_validate(response)
+
+    async def find_invitation_by_token(self, invitation_token: str) -> Invitation:
+        """Get the details of an invitation.
+
+        Args:
+            invitation_token (str) -  The token of the Invitation.
+
+        Returns:
+            Invitation: Invitation response from WorkOS.
+        """
+
+        response = await self._http_client.request(
+            INVITATION_DETAIL_BY_TOKEN_PATH.format(invitation_token),
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+        )
+
+        return Invitation.model_validate(response)
+
+    async def list_invitations(
+        self,
+        email: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> InvitationsListResource:
+        """Get a list of all of your existing invitations matching the criteria specified.
+
+        Kwargs:
+            email (str): Filter Invitations by email. (Optional)
+            organization_id (str): Filter Invitations by organization. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Invitation ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Invitation ID. (Optional)
+            order (Order): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
+
+        Returns:
+            WorkOsListResource: Invitations list response from WorkOS.
+        """
+
+        params: InvitationsListFilters = {
+            "email": email,
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            INVITATION_PATH,
+            method=REQUEST_METHOD_GET,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return InvitationsListResource(
+            list_method=self.list_invitations,
+            list_args=params,
+            **ListPage[Invitation](**response).model_dump(),
+        )
+
+    async def send_invitation(
+        self,
+        email: str,
+        organization_id: Optional[str] = None,
+        expires_in_days: Optional[int] = None,
+        inviter_user_id: Optional[str] = None,
+        role_slug: Optional[str] = None,
+    ) -> Invitation:
+        """Sends an Invitation to a recipient.
+
+        Args:
+            email: The email address of the recipient.
+            organization_id: The ID of the Organization to which the recipient is being invited. (Optional)
+            expires_in_days: The number of days the invitations will be valid for. Must be between 1 and 30, defaults to 7 if not specified. (Optional)
+            inviter_user_id: The ID of the User sending the invitation. (Optional)
+            role_slug: The unique slug of the Role to give the Membership once the invite is accepted (Optional)
+
+        Returns:
+            dict: Sent Invitation response from WorkOS.
+        """
+
+        params = {
+            "email": email,
+            "organization_id": organization_id,
+            "expires_in_days": expires_in_days,
+            "inviter_user_id": inviter_user_id,
+            "role_slug": role_slug,
+        }
+
+        response = await self._http_client.request(
+            INVITATION_PATH,
+            method=REQUEST_METHOD_POST,
+            params=params,
+            token=workos.api_key,
+        )
+
+        return Invitation.model_validate(response)
+
+    async def revoke_invitation(self, invitation_id: str) -> Invitation:
+        """Revokes an existing Invitation.
+
+        Args:
+            invitation_id (str) -  The unique ID of the Invitation.
+
+        Returns:
+            Invitation: Invitation response from WorkOS.
+        """
+
+        response = await self._http_client.request(
             INVITATION_REVOKE_PATH.format(invitation_id),
             method=REQUEST_METHOD_POST,
             token=workos.api_key,

@@ -1,9 +1,13 @@
 from pydantic import BaseModel, Field
 from typing import (
+    Any,
+    Awaitable,
     AsyncIterator,
     Dict,
     Literal,
+    Mapping,
     Sequence,
+    Tuple,
     TypeVar,
     Generic,
     Callable,
@@ -24,7 +28,6 @@ from workos.resources.organizations import Organization
 from workos.resources.sso import ConnectionWithDomains
 from workos.resources.user_management import Invitation, OrganizationMembership, User
 from workos.resources.workos_model import WorkOSModel
-
 
 ListableResource = TypeVar(
     # add all possible generics of List Resource
@@ -77,10 +80,22 @@ class WorkOsListResource(
     data: Sequence[ListableResource]
     list_metadata: ListMetadataType
 
-    list_method: Callable = Field(exclude=True)
+    # TODO: Fix type hinting for list_method to support both sync and async
+    list_method: Union[
+        Callable[
+            ...,
+            "WorkOsListResource[ListableResource, ListAndFilterParams, ListMetadataType]",
+        ],
+        Callable[
+            ...,
+            "Awaitable[WorkOsListResource[ListableResource, ListAndFilterParams, ListMetadataType]]",
+        ],
+    ] = Field(exclude=True)
     list_args: ListAndFilterParams = Field(exclude=True)
 
-    def _parse_params(self):
+    def _parse_params(
+        self,
+    ) -> Tuple[Dict[str, Union[int, str, None]], Mapping[str, Any]]:
         fixed_pagination_params = cast(
             # Type hints consider this a mismatch because it assume the dictionary is dict[str, int]
             Dict[str, Union[int, str, None]],
@@ -119,9 +134,13 @@ class WorkOsListResource(
         while True:
             if index >= len(self.data):
                 if after is not None:
+                    # TODO: Fix type hinting for list_method to support both sync and async
+                    # We use a union to support both sync and async methods,
+                    # but when we get to the particular implementation, it
+                    # doesn't know which one it is. It's safe, but should be fixed.
                     next_page = self.list_method(
                         after=after, **fixed_pagination_params, **filter_params
-                    )
+                    )  # type: ignore
                     self.data = next_page.data
                     after = next_page.list_metadata.after
                     index = 0
@@ -142,9 +161,13 @@ class WorkOsListResource(
         while True:
             if index >= len(self.data):
                 if after is not None:
+                    # TODO: Fix type hinting for list_method to support both sync and async
+                    # We use a union to support both sync and async methods,
+                    # but when we get to the particular implementation, it
+                    # doesn't know which one it is. It's safe, but should be fixed.
                     next_page = await self.list_method(
                         after=after, **fixed_pagination_params, **filter_params
-                    )
+                    )  # type: ignore
                     self.data = next_page.data
                     after = next_page.list_metadata.after
                     index = 0

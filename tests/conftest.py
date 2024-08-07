@@ -7,7 +7,7 @@ import pytest
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 import workos
 from workos.resources.list import WorkOsListResource
-from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
+from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 
 
 @pytest.fixture
@@ -28,7 +28,7 @@ def set_api_key_and_client_id(set_api_key, set_client_id):
 @pytest.fixture
 def mock_http_client_with_response(monkeypatch):
     def inner(
-        http_client: Union[SyncHTTPClient, AsyncHTTPClient],
+        http_client: HTTPClient,
         response_dict: Optional[dict] = None,
         status_code: int = 200,
         headers: Optional[Mapping[str, str]] = None,
@@ -49,7 +49,7 @@ def mock_http_client_with_response(monkeypatch):
 @pytest.fixture
 def capture_and_mock_http_client_request(monkeypatch):
     def inner(
-        http_client: Union[SyncHTTPClient, AsyncHTTPClient],
+        http_client: HTTPClient,
         response_dict: Optional[dict] = None,
         status_code: int = 200,
         headers: Optional[Mapping[str, str]] = None,
@@ -82,7 +82,7 @@ def mock_pagination_request_for_http_client(monkeypatch):
     # Mocking pagination correctly requires us to index into a list of data
     # and correctly set the before and after metadata in the response.
     def inner(
-        http_client: Union[SyncHTTPClient, AsyncHTTPClient],
+        http_client: HTTPClient,
         data_list: list,
         status_code: int = 200,
         headers: Optional[Mapping[str, str]] = None,
@@ -130,7 +130,7 @@ def test_sync_auto_pagination(
     mock_pagination_request_for_http_client,
 ):
     def inner(
-        http_client: Union[SyncHTTPClient, AsyncHTTPClient],
+        http_client: SyncHTTPClient,
         list_function: Callable[[], WorkOsListResource],
         expected_all_page_data: dict,
         list_function_params: Optional[Mapping[str, Any]] = None,

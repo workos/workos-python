@@ -1,16 +1,9 @@
 import platform
-from typing import (
-    cast,
-    Dict,
-    Generic,
-    Mapping,
-    Optional,
-    TypeVar,
-    Union,
-)
+from typing import Any, Mapping, cast, Dict, Generic, Optional, TypeVar, Union
 from typing_extensions import NotRequired, TypedDict
 
 import httpx
+from httpx._types import QueryParamTypes, RequestData
 
 from workos.exceptions import (
     ServerException,
@@ -28,12 +21,17 @@ _HttpxClientT = TypeVar("_HttpxClientT", bound=Union[httpx.Client, httpx.AsyncCl
 DEFAULT_REQUEST_TIMEOUT = 25
 
 
+ParamsType = Optional[Mapping[str, Any]]
+HeadersType = Optional[Dict[str, str]]
+ResponseJson = Mapping[Any, Any]
+
+
 class PreparedRequest(TypedDict):
     method: str
     url: str
     headers: httpx.Headers
-    params: NotRequired[Union[Mapping, None]]
-    json: NotRequired[Union[Mapping, None]]
+    params: NotRequired[Optional[QueryParamTypes]]
+    json: NotRequired[Optional[RequestData]]
     timeout: int
 
 
@@ -61,7 +59,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         return self._base_url.format(path)
 
     def _build_headers(
-        self, custom_headers: Union[dict, None], token: Optional[str] = None
+        self, custom_headers: Union[HeadersType, None], token: Optional[str] = None
     ) -> httpx.Headers:
         if custom_headers is None:
             custom_headers = {}
@@ -73,7 +71,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         return httpx.Headers({**self.default_headers, **custom_headers})
 
     def _maybe_raise_error_by_status_code(
-        self, response: httpx.Response, response_json: Union[dict, None]
+        self, response: httpx.Response, response_json: Union[ResponseJson, None]
     ) -> None:
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:
@@ -104,8 +102,8 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         self,
         path: str,
         method: Optional[str] = REQUEST_METHOD_GET,
-        params: Optional[Mapping] = None,
-        headers: Optional[dict] = None,
+        params: ParamsType = None,
+        headers: HeadersType = None,
         token: Optional[str] = None,
     ) -> PreparedRequest:
         """Executes a request against the WorkOS API.
@@ -156,7 +154,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
                 "timeout": self.timeout,
             }
 
-    def _handle_response(self, response: httpx.Response) -> dict:
+    def _handle_response(self, response: httpx.Response) -> ResponseJson:
         response_json = None
         content_type = (
             response.headers.get("content-type")
@@ -169,16 +167,15 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             except ValueError:
                 raise ServerException(response)
 
-        # type: ignore
         self._maybe_raise_error_by_status_code(response, response_json)
 
-        return cast(Dict, response_json)
+        return cast(ResponseJson, response_json)
 
     def build_request_url(
         self,
         url: str,
         method: Optional[str] = REQUEST_METHOD_GET,
-        params: Optional[Mapping] = None,
+        params: Optional[QueryParamTypes] = None,
     ) -> str:
         return self._client.build_request(
             method=method or REQUEST_METHOD_GET, url=url, params=params
@@ -207,6 +204,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
 
     @property
     def user_agent(self) -> str:
+        # TODO: Include sync/async in user agent
         return "WorkOS Python/{} Python SDK/{}".format(
             platform.python_version(),
             self._version,

@@ -4,6 +4,7 @@ from typing_extensions import Annotated
 from workos.types.directory_sync import DirectoryGroup
 from workos.types.events import EventPayload
 from workos.resources.user_management import OrganizationMembership, User
+from workos.types.webhooks.webhook_model import WebhookModel
 from workos.types.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_user import DirectoryUser
 from workos.types.events.authentication_payload import (
@@ -46,17 +47,6 @@ from workos.types.user_management.email_verification_common import (
 from workos.types.user_management.invitation_common import InvitationCommon
 from workos.types.user_management.magic_auth_common import MagicAuthCommon
 from workos.types.user_management.password_reset_common import PasswordResetCommon
-
-
-class WebhookModel(WorkOSModel, Generic[EventPayload]):
-    """Representation of an Webhook delivered via Webhook.
-    Attributes:
-        OBJECT_FIELDS (list): List of fields an Webhook is comprised of.
-    """
-
-    id: str
-    data: EventPayload
-    created_at: str
 
 
 class AuthenticationEmailVerificationSucceededWebhook(

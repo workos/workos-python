@@ -1,6 +1,11 @@
 from typing import Optional, Protocol
 
 import workos
+from workos.types.directory_sync.list_filters import (
+    DirectoryGroupListFilters,
+    DirectoryListFilters,
+    DirectoryUserListFilters,
+)
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
@@ -16,26 +21,6 @@ from workos.resources.directory_sync import (
     DirectoryUserWithGroups,
 )
 from workos.resources.list import ListArgs, ListMetadata, ListPage, WorkOsListResource
-
-
-class DirectoryListFilters(ListArgs, total=False):
-    search: Optional[str]
-    organization_id: Optional[str]
-    domain: Optional[str]
-
-
-class DirectoryUserListFilters(
-    ListArgs,
-    total=False,
-):
-    group: Optional[str]
-    directory: Optional[str]
-
-
-class DirectoryGroupListFilters(ListArgs, total=False):
-    user: Optional[str]
-    directory: Optional[str]
-
 
 DirectoryUsersListResource = WorkOsListResource[
     DirectoryUserWithGroups, DirectoryUserListFilters, ListMetadata

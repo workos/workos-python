@@ -1,5 +1,5 @@
 from typing import Generic, Literal, TypeVar
-from workos.resources.user_management import OrganizationMembership, User
+from workos.types.user_management import OrganizationMembership, User
 from workos.types.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_group import DirectoryGroup
 from workos.types.directory_sync.directory_user import DirectoryUser
@@ -37,12 +37,12 @@ from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organizations.organization_domain import OrganizationDomain
 from workos.types.roles.role import Role
 from workos.types.sso.connection import Connection
-from workos.types.user_management.email_verification_common import (
+from workos.types.user_management.email_verification import (
     EmailVerificationCommon,
 )
-from workos.types.user_management.invitation_common import InvitationCommon
-from workos.types.user_management.magic_auth_common import MagicAuthCommon
-from workos.types.user_management.password_reset_common import PasswordResetCommon
+from workos.types.user_management.invitation import InvitationCommon
+from workos.types.user_management.magic_auth import MagicAuthCommon
+from workos.types.user_management.password_reset import PasswordResetCommon
 
 
 EventPayload = TypeVar(

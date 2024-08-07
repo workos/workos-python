@@ -1,6 +1,6 @@
 import datetime
 
-from workos.resources.user_management import EmailVerification
+from workos.types.user_management import EmailVerification
 
 
 class MockEmailVerification(EmailVerification):

@@ -17,3 +17,10 @@ class InvitationCommon(WorkOSModel):
     inviter_user_id: Optional[str] = None
     created_at: str
     updated_at: str
+
+
+class Invitation(InvitationCommon):
+    """Representation of a WorkOS Invitation as returned."""
+
+    token: str
+    accept_invitation_url: str

@@ -26,7 +26,7 @@ from workos.types.events import Event
 from workos.types.mfa import AuthenticationFactor
 from workos.types.organizations import Organization
 from workos.types.sso import ConnectionWithDomains
-from workos.resources.user_management import Invitation, OrganizationMembership, User
+from workos.types.user_management import Invitation, OrganizationMembership, User
 from workos.types.workos_model import WorkOSModel
 
 ListableResource = TypeVar(

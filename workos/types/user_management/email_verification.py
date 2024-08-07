@@ -10,3 +10,9 @@ class EmailVerificationCommon(WorkOSModel):
     expires_at: str
     created_at: str
     updated_at: str
+
+
+class EmailVerification(EmailVerificationCommon):
+    """Representation of a WorkOS EmailVerification object."""
+
+    code: str

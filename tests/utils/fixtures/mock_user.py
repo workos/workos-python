@@ -1,6 +1,6 @@
 import datetime
 
-from workos.resources.user_management import User
+from workos.types.user_management import User
 
 
 class MockUser(User):

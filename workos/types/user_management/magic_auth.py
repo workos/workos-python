@@ -10,3 +10,9 @@ class MagicAuthCommon(WorkOSModel):
     expires_at: str
     created_at: str
     updated_at: str
+
+
+class MagicAuth(MagicAuthCommon):
+    """Representation of a WorkOS MagicAuth object."""
+
+    code: str

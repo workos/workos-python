@@ -11,7 +11,7 @@ from workos.types.mfa import (
     AuthenticationFactorTotpAndChallengeResponse,
     AuthenticationFactorType,
 )
-from workos.resources.user_management import (
+from workos.types.user_management import (
     AuthenticationResponse,
     EmailVerification,
     Invitation,

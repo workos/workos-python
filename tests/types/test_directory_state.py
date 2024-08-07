@@ -1,4 +1,3 @@
-from math import e
 import pytest
 from pydantic import TypeAdapter, ValidationError
 from workos.types.directory_sync.directory_state import DirectoryState

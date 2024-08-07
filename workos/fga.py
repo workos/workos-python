@@ -8,7 +8,7 @@ from workos.utils.http_client import SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder, Order
 from workos.utils.request_helper import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST, REQUEST_METHOD_PUT, \
     REQUEST_METHOD_DELETE
-from workos.utils.validation import validate_settings, FGA_MODULE
+from workos.utils.validation import validate_settings, Module
 
 DEFAULT_RESPONSE_LIMIT = 10
 
@@ -115,7 +115,7 @@ class FGAModule(Protocol):
 class FGA(FGAModule):
     _http_client: SyncHTTPClient
 
-    @validate_settings(FGA_MODULE)
+    @validate_settings(Module.FGA)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 

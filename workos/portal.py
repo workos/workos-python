@@ -1,6 +1,6 @@
 from typing import Literal, Optional, Protocol
 import workos
-from workos.resources.portal import PortalLink
+from workos.types.portal.portal_link import PortalLink
 from workos.types.portal.portal_link_intent import PortalLinkIntent
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST

@@ -2,12 +2,11 @@ import hashlib
 import hmac
 import time
 import hashlib
-from typing import Optional, Protocol, Union
+from typing import Optional, Protocol
 from workos.resources.webhooks import Webhook
+from workos.types.webhooks.webhook_payload import WebhookPayload
 from workos.typing.webhooks import WebhookTypeAdapter
 from workos.utils.validation import Module, validate_settings
-
-WebhookPayload = Union[bytes, bytearray]
 
 
 class WebhooksModule(Protocol):

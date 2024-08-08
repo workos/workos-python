@@ -32,7 +32,6 @@ class BaseClient(Protocol):
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> None:
-        print("_http_client", "ehere")
         api_key = api_key or os.getenv("WORKOS_API_KEY")
         if api_key is None:
             raise ValueError(

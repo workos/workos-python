@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Protocol
+from typing import Optional, Protocol
 import workos
 from workos.types.portal.portal_link import PortalLink
 from workos.types.portal.portal_link_intent import PortalLinkIntent
@@ -13,6 +13,7 @@ PORTAL_GENERATE_PATH = "portal/generate_link"
 class PortalModule(Protocol):
     def generate_link(
         self,
+        *,
         intent: PortalLinkIntent,
         organization_id: str,
         return_url: Optional[str] = None,
@@ -30,6 +31,7 @@ class Portal(PortalModule):
 
     def generate_link(
         self,
+        *,
         intent: PortalLinkIntent,
         organization_id: str,
         return_url: Optional[str] = None,

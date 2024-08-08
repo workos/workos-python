@@ -50,6 +50,7 @@ class SSOModule(Protocol):
 
     def get_authorization_url(
         self,
+        *,
         redirect_uri: str,
         domain_hint: Optional[str] = None,
         login_hint: Optional[str] = None,
@@ -112,6 +113,7 @@ class SSOModule(Protocol):
 
     def list_connections(
         self,
+        *,
         connection_type: Optional[ConnectionType] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
@@ -193,6 +195,7 @@ class SSO(SSOModule):
 
     def list_connections(
         self,
+        *,
         connection_type: Optional[ConnectionType] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
@@ -322,6 +325,7 @@ class AsyncSSO(SSOModule):
 
     async def list_connections(
         self,
+        *,
         connection_type: Optional[ConnectionType] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,

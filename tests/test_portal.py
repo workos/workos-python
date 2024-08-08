@@ -19,7 +19,9 @@ class TestPortal(object):
     def test_generate_link_sso(self, mock_portal_link, mock_http_client_with_response):
         mock_http_client_with_response(self.http_client, mock_portal_link, 201)
 
-        response = self.portal.generate_link("sso", "org_01EHQMYV6MBK39QC5PZXHY59C3")
+        response = self.portal.generate_link(
+            intent="sso", organization_id="org_01EHQMYV6MBK39QC5PZXHY59C3"
+        )
 
         assert response.link == "https://id.workos.com/portal/launch?secret=secret"
 
@@ -28,7 +30,9 @@ class TestPortal(object):
     ):
         mock_http_client_with_response(self.http_client, mock_portal_link, 201)
 
-        response = self.portal.generate_link("dsync", "org_01EHQMYV6MBK39QC5PZXHY59C3")
+        response = self.portal.generate_link(
+            intent="dsync", organization_id="org_01EHQMYV6MBK39QC5PZXHY59C3"
+        )
 
         assert response.link == "https://id.workos.com/portal/launch?secret=secret"
 
@@ -38,7 +42,7 @@ class TestPortal(object):
         mock_http_client_with_response(self.http_client, mock_portal_link, 201)
 
         response = self.portal.generate_link(
-            "audit_logs", "org_01EHQMYV6MBK39QC5PZXHY59C3"
+            intent="audit_logs", organization_id="org_01EHQMYV6MBK39QC5PZXHY59C3"
         )
 
         assert response.link == "https://id.workos.com/portal/launch?secret=secret"
@@ -49,7 +53,7 @@ class TestPortal(object):
         mock_http_client_with_response(self.http_client, mock_portal_link, 201)
 
         response = self.portal.generate_link(
-            "log_streams", "org_01EHQMYV6MBK39QC5PZXHY59C3"
+            intent="log_streams", organization_id="org_01EHQMYV6MBK39QC5PZXHY59C3"
         )
 
         assert response.link == "https://id.workos.com/portal/launch?secret=secret"

@@ -25,6 +25,7 @@ from workos.types.mfa import (
 class MFAModule(Protocol):
     def enroll_factor(
         self,
+        *,
         type: EnrollAuthenticationFactorType,
         totp_issuer: Optional[str] = None,
         totp_user: Optional[str] = None,
@@ -36,11 +37,11 @@ class MFAModule(Protocol):
     def delete_factor(self, authentication_factor_id: str) -> None: ...
 
     def challenge_factor(
-        self, authentication_factor_id: str, sms_template: Optional[str] = None
+        self, *, authentication_factor_id: str, sms_template: Optional[str] = None
     ) -> AuthenticationChallenge: ...
 
     def verify_challenge(
-        self, authentication_challenge_id: str, code: str
+        self, *, authentication_challenge_id: str, code: str
     ) -> AuthenticationChallengeVerificationResponse: ...
 
 
@@ -55,6 +56,7 @@ class Mfa(MFAModule):
 
     def enroll_factor(
         self,
+        *,
         type: EnrollAuthenticationFactorType,
         totp_issuer: Optional[str] = None,
         totp_user: Optional[str] = None,
@@ -146,6 +148,7 @@ class Mfa(MFAModule):
 
     def challenge_factor(
         self,
+        *,
         authentication_factor_id: str,
         sms_template: Optional[str] = None,
     ) -> AuthenticationChallenge:
@@ -175,7 +178,7 @@ class Mfa(MFAModule):
         return AuthenticationChallenge.model_validate(response)
 
     def verify_challenge(
-        self, authentication_challenge_id: str, code: str
+        self, *, authentication_challenge_id: str, code: str
     ) -> AuthenticationChallengeVerificationResponse:
         """
         Verifies the one time password provided by the end-user.

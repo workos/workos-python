@@ -20,6 +20,7 @@ EventsListResource = WorkOsListResource[Event, EventsListFilters, ListAfterMetad
 class EventsModule(Protocol):
     def list_events(
         self,
+        *,
         events: Sequence[EventType],
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         organization_id: Optional[str] = None,
@@ -40,6 +41,7 @@ class Events(EventsModule):
 
     def list_events(
         self,
+        *,
         events: Sequence[EventType],
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         organization_id: Optional[str] = None,
@@ -94,6 +96,7 @@ class AsyncEvents(EventsModule):
 
     async def list_events(
         self,
+        *,
         events: Sequence[EventType],
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         organization_id: Optional[str] = None,

@@ -14,6 +14,7 @@ EXPORTS_PATH = "audit_logs/exports"
 class AuditLogsModule(Protocol):
     def create_event(
         self,
+        *,
         organization_id: str,
         event: AuditLogEvent,
         idempotency_key: Optional[str] = None,
@@ -21,6 +22,7 @@ class AuditLogsModule(Protocol):
 
     def create_export(
         self,
+        *,
         organization_id: str,
         range_start: str,
         range_end: str,
@@ -44,6 +46,7 @@ class AuditLogs(AuditLogsModule):
 
     def create_event(
         self,
+        *,
         organization_id: str,
         event: AuditLogEvent,
         idempotency_key: Optional[str] = None,
@@ -71,6 +74,7 @@ class AuditLogs(AuditLogsModule):
 
     def create_export(
         self,
+        *,
         organization_id: str,
         range_start: str,
         range_end: str,

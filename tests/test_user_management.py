@@ -365,7 +365,7 @@ class TestUserManagement(UserManagementFixtures):
             "password": "password",
         }
         user = self.user_management.update_user(
-            "user_01H7ZGXFP5C6BBQY6Z7277ZCT0", **params
+            user_id="user_01H7ZGXFP5C6BBQY6Z7277ZCT0", **params
         )
 
         assert request_kwargs["url"].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")

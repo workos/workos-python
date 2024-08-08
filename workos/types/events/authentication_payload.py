@@ -6,7 +6,6 @@ class AuthenticationResultCommon(WorkOSModel):
     ip_address: Optional[str] = None
     user_agent: Optional[str] = None
     email: str
-    created_at: str
 
 
 class AuthenticationResultSucceeded(AuthenticationResultCommon):

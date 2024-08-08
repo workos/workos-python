@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Protocol
+from typing import Optional, Protocol, Type
 
 from workos.__about__ import __version__
 from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
@@ -32,7 +32,7 @@ class BaseClient(Protocol):
         client_id: Optional[str],
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
-        http_client_cls: type[HTTPClient],
+        http_client_cls: Type[HTTPClient],
     ) -> None:
         api_key = api_key or os.getenv("WORKOS_API_KEY")
         if api_key is None:

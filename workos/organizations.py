@@ -34,6 +34,7 @@ OrganizationsListResource = WorkOsListResource[
 class OrganizationsModule(Protocol):
     def list_organizations(
         self,
+        *,
         domains: Optional[Sequence[str]] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -47,6 +48,7 @@ class OrganizationsModule(Protocol):
 
     def create_organization(
         self,
+        *,
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
@@ -54,6 +56,7 @@ class OrganizationsModule(Protocol):
 
     def update_organization(
         self,
+        *,
         organization_id: str,
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
@@ -72,6 +75,7 @@ class Organizations(OrganizationsModule):
 
     def list_organizations(
         self,
+        *,
         domains: Optional[Sequence[str]] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -144,6 +148,7 @@ class Organizations(OrganizationsModule):
 
     def create_organization(
         self,
+        *,
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
@@ -171,6 +176,7 @@ class Organizations(OrganizationsModule):
 
     def update_organization(
         self,
+        *,
         organization_id: str,
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,

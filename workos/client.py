@@ -28,7 +28,7 @@ class SyncClient(BaseClient):
     _user_management: UserManagement
     _webhooks: Webhooks
 
-    def __init__(self, base_url: str, version: str, timeout: int):
+    def __init__(self, *, base_url: str, version: str, timeout: int):
         self._http_client = SyncHTTPClient(
             base_url=base_url, version=version, timeout=timeout
         )

@@ -108,6 +108,7 @@ class UserManagementModule(Protocol):
 
     def list_users(
         self,
+        *,
         email: Optional[str] = None,
         organization_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
@@ -118,6 +119,7 @@ class UserManagementModule(Protocol):
 
     def create_user(
         self,
+        *,
         email: str,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
@@ -129,6 +131,7 @@ class UserManagementModule(Protocol):
 
     def update_user(
         self,
+        *,
         user_id: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
@@ -141,11 +144,11 @@ class UserManagementModule(Protocol):
     def delete_user(self, user_id: str) -> SyncOrAsync[None]: ...
 
     def create_organization_membership(
-        self, user_id: str, organization_id: str, role_slug: Optional[str] = None
+        self, *, user_id: str, organization_id: str, role_slug: Optional[str] = None
     ) -> SyncOrAsync[OrganizationMembership]: ...
 
     def update_organization_membership(
-        self, organization_membership_id: str, role_slug: Optional[str] = None
+        self, *, organization_membership_id: str, role_slug: Optional[str] = None
     ) -> SyncOrAsync[OrganizationMembership]: ...
 
     def get_organization_membership(
@@ -154,6 +157,7 @@ class UserManagementModule(Protocol):
 
     def list_organization_memberships(
         self,
+        *,
         user_id: Optional[str] = None,
         organization_id: Optional[str] = None,
         statuses: Optional[Set[OrganizationMembershipStatus]] = None,
@@ -177,6 +181,7 @@ class UserManagementModule(Protocol):
 
     def get_authorization_url(
         self,
+        *,
         redirect_uri: str,
         domain_hint: Optional[str] = None,
         login_hint: Optional[str] = None,
@@ -248,6 +253,7 @@ class UserManagementModule(Protocol):
 
     def authenticate_with_password(
         self,
+        *,
         email: str,
         password: str,
         ip_address: Optional[str] = None,
@@ -256,6 +262,7 @@ class UserManagementModule(Protocol):
 
     def authenticate_with_code(
         self,
+        *,
         code: str,
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
@@ -264,6 +271,7 @@ class UserManagementModule(Protocol):
 
     def authenticate_with_magic_auth(
         self,
+        *,
         code: str,
         email: str,
         link_authorization_code: Optional[str] = None,
@@ -273,6 +281,7 @@ class UserManagementModule(Protocol):
 
     def authenticate_with_email_verification(
         self,
+        *,
         code: str,
         pending_authentication_token: str,
         ip_address: Optional[str] = None,
@@ -281,6 +290,7 @@ class UserManagementModule(Protocol):
 
     def authenticate_with_totp(
         self,
+        *,
         code: str,
         authentication_challenge_id: str,
         pending_authentication_token: str,
@@ -290,6 +300,7 @@ class UserManagementModule(Protocol):
 
     def authenticate_with_organization_selection(
         self,
+        *,
         organization_id: str,
         pending_authentication_token: str,
         ip_address: Optional[str] = None,
@@ -298,6 +309,7 @@ class UserManagementModule(Protocol):
 
     def authenticate_with_refresh_token(
         self,
+        *,
         refresh_token: str,
         organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
@@ -334,7 +346,7 @@ class UserManagementModule(Protocol):
 
     def create_password_reset(self, email: str) -> SyncOrAsync[PasswordReset]: ...
 
-    def reset_password(self, token: str, new_password: str) -> SyncOrAsync[User]: ...
+    def reset_password(self, *, token: str, new_password: str) -> SyncOrAsync[User]: ...
 
     def get_email_verification(
         self, email_verification_id: str
@@ -342,16 +354,17 @@ class UserManagementModule(Protocol):
 
     def send_verification_email(self, user_id: str) -> SyncOrAsync[User]: ...
 
-    def verify_email(self, user_id: str, code: str) -> SyncOrAsync[User]: ...
+    def verify_email(self, *, user_id: str, code: str) -> SyncOrAsync[User]: ...
 
     def get_magic_auth(self, magic_auth_id: str) -> SyncOrAsync[MagicAuth]: ...
 
     def create_magic_auth(
-        self, email: str, invitation_token: Optional[str] = None
+        self, *, email: str, invitation_token: Optional[str] = None
     ) -> SyncOrAsync[MagicAuth]: ...
 
     def enroll_auth_factor(
         self,
+        *,
         user_id: str,
         type: AuthenticationFactorType,
         totp_issuer: Optional[str] = None,
@@ -361,6 +374,7 @@ class UserManagementModule(Protocol):
 
     def list_auth_factors(
         self,
+        *,
         user_id: str,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -376,6 +390,7 @@ class UserManagementModule(Protocol):
 
     def list_invitations(
         self,
+        *,
         email: Optional[str] = None,
         organization_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
@@ -386,6 +401,7 @@ class UserManagementModule(Protocol):
 
     def send_invitation(
         self,
+        *,
         email: str,
         organization_id: Optional[str] = None,
         expires_in_days: Optional[int] = None,
@@ -423,6 +439,7 @@ class UserManagement(UserManagementModule):
 
     def list_users(
         self,
+        *,
         email: Optional[str] = None,
         organization_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
@@ -468,6 +485,7 @@ class UserManagement(UserManagementModule):
 
     def create_user(
         self,
+        *,
         email: str,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
@@ -511,6 +529,7 @@ class UserManagement(UserManagementModule):
 
     def update_user(
         self,
+        *,
         user_id: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
@@ -564,7 +583,7 @@ class UserManagement(UserManagementModule):
         )
 
     def create_organization_membership(
-        self, user_id: str, organization_id: str, role_slug: Optional[str] = None
+        self, *, user_id: str, organization_id: str, role_slug: Optional[str] = None
     ) -> OrganizationMembership:
         """Create a new OrganizationMembership for the given Organization and User.
 
@@ -594,7 +613,7 @@ class UserManagement(UserManagementModule):
         return OrganizationMembership.model_validate(response)
 
     def update_organization_membership(
-        self, organization_membership_id: str, role_slug: Optional[str] = None
+        self, *, organization_membership_id: str, role_slug: Optional[str] = None
     ) -> OrganizationMembership:
         """Updates an OrganizationMembership for the given id.
 
@@ -641,6 +660,7 @@ class UserManagement(UserManagementModule):
 
     def list_organization_memberships(
         self,
+        *,
         user_id: Optional[str] = None,
         organization_id: Optional[str] = None,
         statuses: Optional[Set[OrganizationMembershipStatus]] = None,
@@ -754,6 +774,7 @@ class UserManagement(UserManagementModule):
 
     def authenticate_with_password(
         self,
+        *,
         email: str,
         password: str,
         ip_address: Optional[str] = None,
@@ -783,6 +804,7 @@ class UserManagement(UserManagementModule):
 
     def authenticate_with_code(
         self,
+        *,
         code: str,
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
@@ -815,6 +837,7 @@ class UserManagement(UserManagementModule):
 
     def authenticate_with_magic_auth(
         self,
+        *,
         code: str,
         email: str,
         link_authorization_code: Optional[str] = None,
@@ -847,6 +870,7 @@ class UserManagement(UserManagementModule):
 
     def authenticate_with_email_verification(
         self,
+        *,
         code: str,
         pending_authentication_token: str,
         ip_address: Optional[str] = None,
@@ -876,6 +900,7 @@ class UserManagement(UserManagementModule):
 
     def authenticate_with_totp(
         self,
+        *,
         code: str,
         authentication_challenge_id: str,
         pending_authentication_token: str,
@@ -908,6 +933,7 @@ class UserManagement(UserManagementModule):
 
     def authenticate_with_organization_selection(
         self,
+        *,
         organization_id: str,
         pending_authentication_token: str,
         ip_address: Optional[str] = None,
@@ -937,6 +963,7 @@ class UserManagement(UserManagementModule):
 
     def authenticate_with_refresh_token(
         self,
+        *,
         refresh_token: str,
         organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
@@ -1013,7 +1040,7 @@ class UserManagement(UserManagementModule):
 
         return PasswordReset.model_validate(response)
 
-    def reset_password(self, token: str, new_password: str) -> User:
+    def reset_password(self, *, token: str, new_password: str) -> User:
         """Resets user password using token that was sent to the user.
 
         Kwargs:
@@ -1074,7 +1101,7 @@ class UserManagement(UserManagementModule):
 
         return User.model_validate(response["user"])
 
-    def verify_email(self, user_id: str, code: str) -> User:
+    def verify_email(self, *, user_id: str, code: str) -> User:
         """Verifies user email using one-time code that was sent to the user.
 
         Kwargs:
@@ -1118,6 +1145,7 @@ class UserManagement(UserManagementModule):
 
     def create_magic_auth(
         self,
+        *,
         email: str,
         invitation_token: Optional[str] = None,
     ) -> MagicAuth:
@@ -1147,6 +1175,7 @@ class UserManagement(UserManagementModule):
 
     def enroll_auth_factor(
         self,
+        *,
         user_id: str,
         type: AuthenticationFactorType,
         totp_issuer: Optional[str] = None,
@@ -1183,6 +1212,7 @@ class UserManagement(UserManagementModule):
 
     def list_auth_factors(
         self,
+        *,
         user_id: str,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -1265,6 +1295,7 @@ class UserManagement(UserManagementModule):
 
     def list_invitations(
         self,
+        *,
         email: Optional[str] = None,
         organization_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
@@ -1310,6 +1341,7 @@ class UserManagement(UserManagementModule):
 
     def send_invitation(
         self,
+        *,
         email: str,
         organization_id: Optional[str] = None,
         expires_in_days: Optional[int] = None,

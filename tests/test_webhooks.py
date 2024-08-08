@@ -66,14 +66,14 @@ class TestWebhooks(object):
         assert "Timestamp outside the tolerance zone" in str(err.value)
 
     def test_sig_hash_does_not_match_expected_sig_length(self, mock_sig_hash):
-        result = self.webhooks.constant_time_compare(
+        result = self.webhooks._constant_time_compare(
             mock_sig_hash,
             "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea25",
         )
         assert result == False
 
     def test_sig_hash_does_not_match_expected_sig_value(self, mock_sig_hash):
-        result = self.webhooks.constant_time_compare(
+        result = self.webhooks._constant_time_compare(
             mock_sig_hash,
             "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea252",
         )

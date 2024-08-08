@@ -12,6 +12,7 @@ from workos.utils.validation import Module, validate_settings
 class WebhooksModule(Protocol):
     def verify_event(
         self,
+        *,
         payload: WebhookPayload,
         sig_header: str,
         secret: str,
@@ -20,15 +21,16 @@ class WebhooksModule(Protocol):
 
     def verify_header(
         self,
+        *,
         event_body: WebhookPayload,
         event_signature: str,
         secret: str,
         tolerance: Optional[int] = None,
     ) -> None: ...
 
-    def constant_time_compare(self, val1: str, val2: str) -> bool: ...
+    def _constant_time_compare(self, val1: str, val2: str) -> bool: ...
 
-    def check_timestamp_range(self, time: float, max_range: float) -> None: ...
+    def _check_timestamp_range(self, time: float, max_range: float) -> None: ...
 
 
 class Webhooks(WebhooksModule):
@@ -42,16 +44,24 @@ class Webhooks(WebhooksModule):
 
     def verify_event(
         self,
+        *,
         payload: WebhookPayload,
         sig_header: str,
         secret: str,
         tolerance: Optional[int] = DEFAULT_TOLERANCE,
     ) -> Webhook:
-        Webhooks.verify_header(self, payload, sig_header, secret, tolerance)
+        Webhooks.verify_header(
+            self,
+            event_body=payload,
+            event_signature=sig_header,
+            secret=secret,
+            tolerance=tolerance,
+        )
         return WebhookTypeAdapter.validate_json(payload)
 
     def verify_header(
         self,
+        *,
         event_body: WebhookPayload,
         event_signature: str,
         secret: str,
@@ -74,7 +84,7 @@ class Webhooks(WebhooksModule):
         seconds_since_issued = current_time - timestamp_in_seconds
 
         # Check that the webhook timestamp is within the acceptable range
-        Webhooks.check_timestamp_range(
+        Webhooks._check_timestamp_range(
             self, seconds_since_issued, max_seconds_since_issued
         )
 
@@ -88,7 +98,7 @@ class Webhooks(WebhooksModule):
 
         # Use constant time comparison function to ensure the sig hash matches
         # the expected sig value
-        secure_compare = Webhooks.constant_time_compare(
+        secure_compare = Webhooks._constant_time_compare(
             self, signature_hash, expected_signature
         )
         if not secure_compare:
@@ -96,7 +106,7 @@ class Webhooks(WebhooksModule):
                 "Signature hash does not match the expected signature hash for payload"
             )
 
-    def constant_time_compare(self, val1: str, val2: str) -> bool:
+    def _constant_time_compare(self, val1: str, val2: str) -> bool:
         if len(val1) != len(val2):
             return False
 
@@ -111,6 +121,6 @@ class Webhooks(WebhooksModule):
 
         return False
 
-    def check_timestamp_range(self, time: float, max_range: float) -> None:
+    def _check_timestamp_range(self, time: float, max_range: float) -> None:
         if time > max_range:
             raise ValueError("Timestamp outside the tolerance zone")

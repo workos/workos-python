@@ -28,7 +28,7 @@ class AsyncClient(BaseClient):
     _user_management: AsyncUserManagement
     _webhooks: WebhooksModule
 
-    def __init__(self, base_url: str, version: str, timeout: int):
+    def __init__(self, *, base_url: str, version: str, timeout: int):
         self._http_client = AsyncHTTPClient(
             base_url=base_url, version=version, timeout=timeout
         )

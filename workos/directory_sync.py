@@ -21,7 +21,6 @@ from workos.types.directory_sync import (
     DirectoryUserWithGroups,
 )
 from workos.types.list_resource import (
-    ListArgs,
     ListMetadata,
     ListPage,
     WorkOsListResource,
@@ -43,8 +42,9 @@ DirectoriesListResource = WorkOsListResource[
 class DirectorySyncModule(Protocol):
     def list_users(
         self,
+        *,
         directory_id: Optional[str] = None,
-        group: Optional[str] = None,
+        group_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -53,8 +53,9 @@ class DirectorySyncModule(Protocol):
 
     def list_groups(
         self,
+        *,
         directory_id: Optional[str] = None,
-        user: Optional[str] = None,
+        user_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -69,6 +70,7 @@ class DirectorySyncModule(Protocol):
 
     def list_directories(
         self,
+        *,
         search: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -91,8 +93,9 @@ class DirectorySync(DirectorySyncModule):
 
     def list_users(
         self,
+        *,
         directory_id: Optional[str] = None,
-        group: Optional[str] = None,
+        group_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -121,8 +124,8 @@ class DirectorySync(DirectorySyncModule):
             "order": order,
         }
 
-        if group is not None:
-            list_params["group"] = group
+        if group_id is not None:
+            list_params["group"] = group_id
         if directory_id is not None:
             list_params["directory"] = directory_id
 
@@ -141,6 +144,7 @@ class DirectorySync(DirectorySyncModule):
 
     def list_groups(
         self,
+        *,
         directory_id: Optional[str] = None,
         user_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
@@ -244,6 +248,7 @@ class DirectorySync(DirectorySyncModule):
 
     def list_directories(
         self,
+        *,
         search: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -313,6 +318,7 @@ class AsyncDirectorySync(DirectorySyncModule):
 
     async def list_users(
         self,
+        *,
         directory_id: Optional[str] = None,
         group_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
@@ -363,6 +369,7 @@ class AsyncDirectorySync(DirectorySyncModule):
 
     async def list_groups(
         self,
+        *,
         directory_id: Optional[str] = None,
         user_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
@@ -465,6 +472,7 @@ class AsyncDirectorySync(DirectorySyncModule):
 
     async def list_directories(
         self,
+        *,
         search: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,

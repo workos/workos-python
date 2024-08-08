@@ -10,6 +10,7 @@ from workos.utils.validation import Module, validate_settings
 class PasswordlessModule(Protocol):
     def create_session(
         self,
+        *,
         email: str,
         type: PasswordlessSessionType,
         redirect_uri: Optional[str] = None,
@@ -31,6 +32,7 @@ class Passwordless(PasswordlessModule):
 
     def create_session(
         self,
+        *,
         email: str,
         type: PasswordlessSessionType,
         redirect_uri: Optional[str] = None,

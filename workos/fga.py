@@ -20,7 +20,7 @@ from workos.types.list_resource import (
     WorkOsListResource,
 )
 from workos.utils.http_client import SyncHTTPClient
-from workos.utils.pagination_order import Order, PaginationOrder
+from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request_helper import (
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
@@ -47,7 +47,7 @@ class FGAModule(Protocol):
         resource_type: Optional[str] = None,
         search: Optional[str] = None,
         limit: int = DEFAULT_RESPONSE_LIMIT,
-        order: PaginationOrder = Order.Desc.value,
+        order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
     ) -> ResourceListResource: ...
@@ -71,7 +71,7 @@ class FGAModule(Protocol):
     def list_resource_types(
         self,
         limit: int = DEFAULT_RESPONSE_LIMIT,
-        order: PaginationOrder = Order.Desc.value,
+        order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
     ) -> WorkOsListResource[ResourceType, ListArgs, ListMetadata]: ...
@@ -85,7 +85,7 @@ class FGAModule(Protocol):
         subject_id: Optional[str] = None,
         subject_relation: Optional[str] = None,
         limit: int = DEFAULT_RESPONSE_LIMIT,
-        order: PaginationOrder = Order.Desc.value,
+        order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
         warrant_token: Optional[str] = None,
@@ -150,7 +150,7 @@ class FGA(FGAModule):
         resource_type: Optional[str] = None,
         search: Optional[str] = None,
         limit: int = DEFAULT_RESPONSE_LIMIT,
-        order: PaginationOrder = Order.Desc.value,
+        order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
     ) -> ResourceListResource:
@@ -244,7 +244,7 @@ class FGA(FGAModule):
     def list_resource_types(
         self,
         limit: int = DEFAULT_RESPONSE_LIMIT,
-        order: PaginationOrder = Order.Desc.value,
+        order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
     ) -> WorkOsListResource[ResourceType, ListArgs, ListMetadata]:
@@ -278,7 +278,7 @@ class FGA(FGAModule):
         subject_id: Optional[str] = None,
         subject_relation: Optional[str] = None,
         limit: int = DEFAULT_RESPONSE_LIMIT,
-        order: PaginationOrder = Order.Desc.value,
+        order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
         warrant_token: Optional[str] = None,

@@ -283,7 +283,7 @@ class TestFGA:
                     },
                 },
             ],
-            "list_metadata": {"after": "{{ orderASCLimit3.list_metadata.after }}"},
+            "list_metadata": {"after": "after_token"},
         }
 
     def test_list_resource_types(

@@ -8,6 +8,7 @@ import httpx
 from workos.utils._base_http_client import (
     BaseHTTPClient,
     HeadersType,
+    JsonType,
     ParamsType,
     ResponseJson,
 )
@@ -76,6 +77,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         path: str,
         method: Optional[str] = REQUEST_METHOD_GET,
         params: ParamsType = None,
+        json: JsonType = None,
         headers: HeadersType = None,
         token: Optional[str] = None,
     ) -> ResponseJson:
@@ -86,16 +88,22 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
 
         Kwargs:
             method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
-            params (dict): Query params or body payload to be added to the request
+            params (ParamsType): Query params to be added to the request
+            json (JsonType): Body payload to be added to the request
             token (str): Bearer token
 
         Returns:
-            dict: Response from WorkOS
+            ResponseJson: Response from WorkOS
         """
-        prepared_request_params = self._prepare_request(
-            path=path, method=method, params=params, headers=headers, token=token
+        prepared_request_parameters = self._prepare_request(
+            path=path,
+            method=method,
+            params=params,
+            json=json,
+            headers=headers,
+            token=token,
         )
-        response = self._client.request(**prepared_request_params)
+        response = self._client.request(**prepared_request_parameters)
         return self._handle_response(response)
 
 
@@ -158,6 +166,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         path: str,
         method: Optional[str] = REQUEST_METHOD_GET,
         params: ParamsType = None,
+        json: JsonType = None,
         headers: HeadersType = None,
         token: Optional[str] = None,
     ) -> ResponseJson:
@@ -168,14 +177,20 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
 
         Kwargs:
             method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
-            params (dict): Query params or body payload to be added to the request
+            params (ParamsType): Query params to be added to the request
+            json (JsonType): Body payload to be added to the request
             token (str): Bearer token
 
         Returns:
-            dict: Response from WorkOS
+            ResponseJson: Response from WorkOS
         """
         prepared_request_parameters = self._prepare_request(
-            path=path, method=method, params=params, headers=headers, token=token
+            path=path,
+            method=method,
+            params=params,
+            json=json,
+            headers=headers,
+            token=token,
         )
         response = await self._client.request(**prepared_request_parameters)
         return self._handle_response(response)

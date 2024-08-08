@@ -1,6 +1,6 @@
 import datetime
 
-from workos.resources.directory_sync import Directory
+from workos.types.directory_sync import Directory
 
 
 class MockDirectory(Directory):

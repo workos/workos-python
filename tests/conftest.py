@@ -6,7 +6,7 @@ import pytest
 
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 import workos
-from workos.resources.list import WorkOsListResource
+from workos.types.list_resource import WorkOsListResource
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 
 

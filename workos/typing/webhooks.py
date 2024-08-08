@@ -1,8 +1,8 @@
 from typing import Any, Dict, Union
 from typing_extensions import Annotated
 from pydantic import Field, TypeAdapter
-from workos.resources.webhooks import Webhook
-from workos.resources.workos_model import WorkOSModel
+from workos.types.webhooks.webhook import Webhook
+from workos.types.workos_model import WorkOSModel
 
 
 # Fall back to untyped Webhook if the event type is not recognized

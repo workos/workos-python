@@ -1,6 +1,6 @@
 import datetime
 
-from workos.resources.user_management import PasswordReset
+from workos.types.user_management import PasswordReset
 
 
 class MockPasswordReset(PasswordReset):

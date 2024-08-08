@@ -1,4 +1,4 @@
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 
 
 class PortalLink(WorkOSModel):

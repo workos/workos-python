@@ -1,6 +1,6 @@
 import datetime
 
-from workos.resources.user_management import MagicAuth
+from workos.types.user_management import MagicAuth
 
 
 class MockMagicAuth(MagicAuth):

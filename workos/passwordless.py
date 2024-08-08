@@ -1,12 +1,10 @@
 from typing import Literal, Optional, Protocol
-
 import workos
+from workos.types.passwordless.passwordless_session_type import PasswordlessSessionType
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
-from workos.resources.passwordless import PasswordlessSession
+from workos.types.passwordless.passwordless_session import PasswordlessSession
 from workos.utils.validation import Module, validate_settings
-
-PasswordlessSessionType = Literal["MagicLink"]
 
 
 class PasswordlessModule(Protocol):
@@ -60,7 +58,7 @@ class Passwordless(PasswordlessModule):
             PasswordlessSession
         """
 
-        params = {
+        json = {
             "email": email,
             "type": type,
             "expires_in": expires_in,
@@ -71,7 +69,7 @@ class Passwordless(PasswordlessModule):
         response = self._http_client.request(
             "passwordless/sessions",
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 

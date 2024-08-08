@@ -1,5 +1,6 @@
-from typing import Literal
-from workos.resources.workos_model import WorkOSModel
+from typing import Literal, Sequence
+from workos.types.sso.connection_domain import ConnectionDomain
+from workos.types.workos_model import WorkOSModel
 from workos.typing.literals import LiteralOrUntyped
 
 ConnectionState = Literal[
@@ -53,3 +54,9 @@ class Connection(WorkOSModel):
     state: LiteralOrUntyped[ConnectionState]
     created_at: str
     updated_at: str
+
+
+class ConnectionWithDomains(Connection):
+    """Representation of a Connection Response as returned by WorkOS through the SSO feature."""
+
+    domains: Sequence[ConnectionDomain]

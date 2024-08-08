@@ -1,13 +1,13 @@
 from typing import Literal, Optional, Protocol
 import workos
-from workos.resources.portal import PortalLink
+from workos.types.portal.portal_link import PortalLink
+from workos.types.portal.portal_link_intent import PortalLinkIntent
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
 from workos.utils.validation import Module, validate_settings
 
 
 PORTAL_GENERATE_PATH = "portal/generate_link"
-PortalLinkIntent = Literal["audit_logs", "dsync", "log_streams", "sso"]
 
 
 class PortalModule(Protocol):
@@ -48,7 +48,7 @@ class Portal(PortalModule):
         Returns:
             PortalLink: PortalLink object with URL to redirect a User to to access an Admin Portal session
         """
-        params = {
+        json = {
             "intent": intent,
             "organization": organization_id,
             "return_url": return_url,
@@ -57,7 +57,7 @@ class Portal(PortalModule):
         response = self._http_client.request(
             PORTAL_GENERATE_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 

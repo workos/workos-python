@@ -1,6 +1,6 @@
 import datetime
 
-from workos.resources.mfa import AuthenticationFactorTotp, ExtendedTotpFactor
+from workos.types.mfa import AuthenticationFactorTotp, ExtendedTotpFactor
 
 
 class MockAuthenticationFactorTotp(AuthenticationFactorTotp):

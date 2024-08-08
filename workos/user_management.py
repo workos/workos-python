@@ -1,18 +1,17 @@
-from typing import Literal, Optional, Protocol, Set, cast
-
+from typing import Optional, Protocol, Set, cast
 import workos
-from workos.resources.list import (
+from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
     ListPage,
     WorkOsListResource,
 )
-from workos.resources.mfa import (
+from workos.types.mfa import (
     AuthenticationFactor,
     AuthenticationFactorTotpAndChallengeResponse,
     AuthenticationFactorType,
 )
-from workos.resources.user_management import (
+from workos.types.user_management import (
     AuthenticationResponse,
     EmailVerification,
     Invitation,
@@ -32,6 +31,16 @@ from workos.types.user_management.authenticate_with_common import (
     AuthenticateWithPasswordParameters,
     AuthenticateWithRefreshTokenParameters,
     AuthenticateWithTotpParameters,
+)
+from workos.types.user_management.list_filters import (
+    AuthenticationFactorsListFilters,
+    InvitationsListFilters,
+    OrganizationMembershipsListFilters,
+    UsersListFilters,
+)
+from workos.types.user_management.password_hash_type import PasswordHashType
+from workos.types.user_management.user_management_provider_type import (
+    UserManagementProviderType,
 )
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
@@ -75,33 +84,6 @@ INVITATION_DETAIL_BY_TOKEN_PATH = "user_management/invitations/by_token/{0}"
 INVITATION_REVOKE_PATH = "user_management/invitations/{0}/revoke"
 PASSWORD_RESET_PATH = "user_management/password_reset"
 PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
-
-
-PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
-UserManagementProviderType = Literal[
-    "authkit", "AppleOAuth", "GitHubOAuth", "GoogleOAuth", "MicrosoftOAuth"
-]
-
-
-class UsersListFilters(ListArgs, total=False):
-    email: Optional[str]
-    organization_id: Optional[str]
-
-
-class InvitationsListFilters(ListArgs, total=False):
-    email: Optional[str]
-    organization_id: Optional[str]
-
-
-class OrganizationMembershipsListFilters(ListArgs, total=False):
-    user_id: Optional[str]
-    organization_id: Optional[str]
-    # A set of statuses that's concatenated into a comma-separated string
-    statuses: Optional[str]
-
-
-class AuthenticationFactorsListFilters(ListArgs, total=False):
-    user_id: str
 
 
 UsersListResource = WorkOsListResource[User, UsersListFilters, ListMetadata]
@@ -551,7 +533,7 @@ class UserManagement(UserManagementModule):
         Returns:
             User: Updated User response from WorkOS.
         """
-        params = {
+        json = {
             "first_name": first_name,
             "last_name": last_name,
             "email_verified": email_verified,
@@ -563,7 +545,7 @@ class UserManagement(UserManagementModule):
         response = self._http_client.request(
             USER_DETAIL_PATH.format(user_id),
             method=REQUEST_METHOD_PUT,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -625,14 +607,14 @@ class UserManagement(UserManagementModule):
             OrganizationMembership: Updated OrganizationMembership response from WorkOS.
         """
 
-        params = {
+        json = {
             "role_slug": role_slug,
         }
 
         response = self._http_client.request(
             ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
             method=REQUEST_METHOD_PUT,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -756,7 +738,7 @@ class UserManagement(UserManagementModule):
     def _authenticate_with(
         self, payload: AuthenticateWithParameters
     ) -> AuthenticationResponse:
-        params = {
+        json = {
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
             **payload,
@@ -765,7 +747,7 @@ class UserManagement(UserManagementModule):
         response = self._http_client.request(
             USER_AUTHENTICATE_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
         )
 
         return AuthenticationResponse.model_validate(response)
@@ -972,7 +954,7 @@ class UserManagement(UserManagementModule):
             RefreshTokenAuthenticationResponse: Refresh Token Authentication response from WorkOS.
         """
 
-        payload: AuthenticateWithRefreshTokenParameters = {
+        json: AuthenticateWithRefreshTokenParameters = {
             "client_id": cast(str, workos.client_id),
             "client_secret": cast(str, workos.api_key),
             "refresh_token": refresh_token,
@@ -985,7 +967,7 @@ class UserManagement(UserManagementModule):
         response = self._http_client.request(
             USER_AUTHENTICATE_PATH,
             method=REQUEST_METHOD_POST,
-            params=payload,
+            json=json,
         )
 
         return RefreshTokenAuthenticationResponse.model_validate(response)
@@ -1018,14 +1000,14 @@ class UserManagement(UserManagementModule):
             dict: PasswordReset response from WorkOS.
         """
 
-        params = {
+        json = {
             "email": email,
         }
 
         response = self._http_client.request(
             PASSWORD_RESET_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -1042,7 +1024,7 @@ class UserManagement(UserManagementModule):
             User: User response from WorkOS.
         """
 
-        payload = {
+        json = {
             "token": token,
             "new_password": new_password,
         }
@@ -1050,7 +1032,7 @@ class UserManagement(UserManagementModule):
         response = self._http_client.request(
             USER_RESET_PASSWORD_PATH,
             method=REQUEST_METHOD_POST,
-            params=payload,
+            json=json,
             token=workos.api_key,
         )
 
@@ -1103,14 +1085,14 @@ class UserManagement(UserManagementModule):
             User: User response from WorkOS.
         """
 
-        payload = {
+        json = {
             "code": code,
         }
 
         response = self._http_client.request(
             USER_VERIFY_EMAIL_CODE_PATH.format(user_id),
             method=REQUEST_METHOD_POST,
-            params=payload,
+            json=json,
             token=workos.api_key,
         )
 
@@ -1149,7 +1131,7 @@ class UserManagement(UserManagementModule):
             dict: MagicAuth response from WorkOS.
         """
 
-        params = {
+        json = {
             "email": email,
             "invitation_token": invitation_token,
         }
@@ -1157,7 +1139,7 @@ class UserManagement(UserManagementModule):
         response = self._http_client.request(
             MAGIC_AUTH_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -1183,7 +1165,7 @@ class UserManagement(UserManagementModule):
         Returns: AuthenticationFactorTotpAndChallengeResponse
         """
 
-        payload = {
+        json = {
             "type": type,
             "totp_issuer": totp_issuer,
             "totp_user": totp_user,
@@ -1193,7 +1175,7 @@ class UserManagement(UserManagementModule):
         response = self._http_client.request(
             USER_AUTH_FACTORS_PATH.format(user_id),
             method=REQUEST_METHOD_POST,
-            params=payload,
+            json=json,
             token=workos.api_key,
         )
 
@@ -1347,7 +1329,7 @@ class UserManagement(UserManagementModule):
             dict: Sent Invitation response from WorkOS.
         """
 
-        params = {
+        json = {
             "email": email,
             "organization_id": organization_id,
             "expires_in_days": expires_in_days,
@@ -1358,7 +1340,7 @@ class UserManagement(UserManagementModule):
         response = self._http_client.request(
             INVITATION_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -1477,7 +1459,7 @@ class AsyncUserManagement(UserManagementModule):
         Returns:
             User: Created User response from WorkOS.
         """
-        params = {
+        json = {
             "email": email,
             "password": password,
             "password_hash": password_hash,
@@ -1490,7 +1472,7 @@ class AsyncUserManagement(UserManagementModule):
         response = await self._http_client.request(
             USER_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -1520,7 +1502,7 @@ class AsyncUserManagement(UserManagementModule):
         Returns:
             User: Updated User response from WorkOS.
         """
-        params = {
+        json = {
             "first_name": first_name,
             "last_name": last_name,
             "email_verified": email_verified,
@@ -1532,7 +1514,7 @@ class AsyncUserManagement(UserManagementModule):
         response = await self._http_client.request(
             USER_DETAIL_PATH.format(user_id),
             method=REQUEST_METHOD_PUT,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -1565,7 +1547,7 @@ class AsyncUserManagement(UserManagementModule):
             OrganizationMembership: Created OrganizationMembership response from WorkOS.
         """
 
-        params = {
+        json = {
             "user_id": user_id,
             "organization_id": organization_id,
             "role_slug": role_slug,
@@ -1574,7 +1556,7 @@ class AsyncUserManagement(UserManagementModule):
         response = await self._http_client.request(
             ORGANIZATION_MEMBERSHIP_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -1594,14 +1576,14 @@ class AsyncUserManagement(UserManagementModule):
             OrganizationMembership: Updated OrganizationMembership response from WorkOS.
         """
 
-        params = {
+        json = {
             "role_slug": role_slug,
         }
 
         response = await self._http_client.request(
             ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
             method=REQUEST_METHOD_PUT,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -1727,7 +1709,7 @@ class AsyncUserManagement(UserManagementModule):
     async def _authenticate_with(
         self, payload: AuthenticateWithParameters
     ) -> AuthenticationResponse:
-        params = {
+        json = {
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
             **payload,
@@ -1736,7 +1718,7 @@ class AsyncUserManagement(UserManagementModule):
         response = await self._http_client.request(
             USER_AUTHENTICATE_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
         )
 
         return AuthenticationResponse.model_validate(response)
@@ -1943,7 +1925,7 @@ class AsyncUserManagement(UserManagementModule):
             RefreshTokenAuthenticationResponse: Refresh Token Authentication response from WorkOS.
         """
 
-        payload = {
+        json = {
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
             "refresh_token": refresh_token,
@@ -1956,7 +1938,7 @@ class AsyncUserManagement(UserManagementModule):
         response = await self._http_client.request(
             USER_AUTHENTICATE_PATH,
             method=REQUEST_METHOD_POST,
-            params=payload,
+            json=json,
         )
 
         return RefreshTokenAuthenticationResponse.model_validate(response)
@@ -1989,14 +1971,14 @@ class AsyncUserManagement(UserManagementModule):
             dict: PasswordReset response from WorkOS.
         """
 
-        params = {
+        json = {
             "email": email,
         }
 
         response = await self._http_client.request(
             PASSWORD_RESET_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -2013,7 +1995,7 @@ class AsyncUserManagement(UserManagementModule):
             User: User response from WorkOS.
         """
 
-        payload = {
+        json = {
             "token": token,
             "new_password": new_password,
         }
@@ -2021,7 +2003,7 @@ class AsyncUserManagement(UserManagementModule):
         response = await self._http_client.request(
             USER_RESET_PASSWORD_PATH,
             method=REQUEST_METHOD_POST,
-            params=payload,
+            json=json,
             token=workos.api_key,
         )
 
@@ -2076,14 +2058,14 @@ class AsyncUserManagement(UserManagementModule):
             User: User response from WorkOS.
         """
 
-        payload = {
+        json = {
             "code": code,
         }
 
         response = await self._http_client.request(
             USER_VERIFY_EMAIL_CODE_PATH.format(user_id),
             method=REQUEST_METHOD_POST,
-            params=payload,
+            json=json,
             token=workos.api_key,
         )
 
@@ -2122,7 +2104,7 @@ class AsyncUserManagement(UserManagementModule):
             dict: MagicAuth response from WorkOS.
         """
 
-        params = {
+        json = {
             "email": email,
             "invitation_token": invitation_token,
         }
@@ -2130,7 +2112,7 @@ class AsyncUserManagement(UserManagementModule):
         response = await self._http_client.request(
             MAGIC_AUTH_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -2156,7 +2138,7 @@ class AsyncUserManagement(UserManagementModule):
         Returns: AuthenticationFactorTotpAndChallengeResponse
         """
 
-        payload = {
+        json = {
             "type": type,
             "totp_issuer": totp_issuer,
             "totp_user": totp_user,
@@ -2166,7 +2148,7 @@ class AsyncUserManagement(UserManagementModule):
         response = await self._http_client.request(
             USER_AUTH_FACTORS_PATH.format(user_id),
             method=REQUEST_METHOD_POST,
-            params=payload,
+            json=json,
             token=workos.api_key,
         )
 
@@ -2320,7 +2302,7 @@ class AsyncUserManagement(UserManagementModule):
             dict: Sent Invitation response from WorkOS.
         """
 
-        params = {
+        json = {
             "email": email,
             "organization_id": organization_id,
             "expires_in_days": expires_in_days,
@@ -2331,7 +2313,7 @@ class AsyncUserManagement(UserManagementModule):
         response = await self._http_client.request(
             INVITATION_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 

@@ -17,17 +17,17 @@ from typing import (
     cast,
 )
 from typing_extensions import Required, TypedDict
-from workos.resources.directory_sync import (
+from workos.types.directory_sync import (
     Directory,
     DirectoryGroup,
     DirectoryUserWithGroups,
 )
-from workos.resources.events import Event
-from workos.resources.mfa import AuthenticationFactor
-from workos.resources.organizations import Organization
-from workos.resources.sso import ConnectionWithDomains
-from workos.resources.user_management import Invitation, OrganizationMembership, User
-from workos.resources.workos_model import WorkOSModel
+from workos.types.events import Event
+from workos.types.mfa import AuthenticationFactor
+from workos.types.organizations import Organization
+from workos.types.sso import ConnectionWithDomains
+from workos.types.user_management import Invitation, OrganizationMembership, User
+from workos.types.workos_model import WorkOSModel
 
 ListableResource = TypeVar(
     # add all possible generics of List Resource

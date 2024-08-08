@@ -1,9 +1,9 @@
 import platform
-from typing import Any, Mapping, cast, Dict, Generic, Optional, TypeVar, Union
+from typing import Any, List, Mapping, cast, Dict, Generic, Optional, TypeVar, Union
 from typing_extensions import NotRequired, TypedDict
 
 import httpx
-from httpx._types import QueryParamTypes, RequestData
+from httpx._types import QueryParamTypes
 
 from workos.exceptions import (
     ServerException,
@@ -23,6 +23,7 @@ DEFAULT_REQUEST_TIMEOUT = 25
 
 ParamsType = Optional[Mapping[str, Any]]
 HeadersType = Optional[Dict[str, str]]
+JsonType = Optional[Union[Mapping[str, Any], List[Any]]]
 ResponseJson = Mapping[Any, Any]
 
 
@@ -31,7 +32,7 @@ class PreparedRequest(TypedDict):
     url: str
     headers: httpx.Headers
     params: NotRequired[Optional[QueryParamTypes]]
-    json: NotRequired[Optional[RequestData]]
+    json: NotRequired[JsonType]
     timeout: int
 
 
@@ -103,6 +104,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         path: str,
         method: Optional[str] = REQUEST_METHOD_GET,
         params: ParamsType = None,
+        json: JsonType = None,
         headers: HeadersType = None,
         token: Optional[str] = None,
     ) -> PreparedRequest:
@@ -128,13 +130,12 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             REQUEST_METHOD_GET,
         ]
 
+        if bodyless_http_method and json is not None:
+            raise ValueError(f"Cannot send a body with a {parsed_method} request")
+
         # Remove any parameters that are None
         if params is not None:
-            params = (
-                {k: v for k, v in params.items() if v is not None}
-                if bodyless_http_method
-                else params
-            )
+            params = {k: v for k, v in params.items() if v is not None}
 
         # We'll spread these return values onto the HTTP client request method
         if bodyless_http_method:
@@ -150,7 +151,8 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
                 "method": parsed_method,
                 "url": url,
                 "headers": parsed_headers,
-                "json": params,
+                "params": params,
+                "json": json,
                 "timeout": self.timeout,
             }
 

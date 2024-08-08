@@ -1,4 +1,4 @@
-from typing import NotRequired, TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 from workos.types.audit_logs.audit_log_metadata import AuditLogMetadata
 

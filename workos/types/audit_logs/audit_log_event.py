@@ -1,4 +1,4 @@
-from typing import NotRequired, Sequence, TypedDict
+from typing_extensions import NotRequired, Sequence, TypedDict
 
 from workos.types.audit_logs.audit_log_event_actor import AuditLogEventActor
 from workos.types.audit_logs.audit_log_event_context import AuditLogEventContext

@@ -1,4 +1,4 @@
-from typing import NotRequired, TypedDict
+from typing_extensions import NotRequired, TypedDict
 
 
 class AuditLogEventContext(TypedDict):

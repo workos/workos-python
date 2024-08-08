@@ -6,7 +6,6 @@ class AuthenticationResultCommon(WorkOSModel):
     ip_address: Optional[str] = None
     user_agent: Optional[str] = None
     email: str
-    created_at: str
 
 
 class AuthenticationResultSucceeded(AuthenticationResultCommon):
@@ -43,7 +42,7 @@ class AuthenticationMfaSucceededPayload(AuthenticationResultSucceeded):
 
 
 class AuthenticationOauthSucceededPayload(AuthenticationResultSucceeded):
-    type: Literal["oath"]
+    type: Literal["oauth"]
     user_id: str
 
 

@@ -1,4 +1,6 @@
-from typing import Literal, TypedDict
+from typing import Literal
+from typing_extensions import TypedDict
+
 from workos.types.workos_model import WorkOSModel
 
 OrganizationMembershipStatus = Literal["active", "inactive", "pending"]

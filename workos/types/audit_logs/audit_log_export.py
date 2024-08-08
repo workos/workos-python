@@ -1,8 +1,9 @@
-from typing import Any, Literal, Mapping, Optional
-from workos.resources.workos_model import WorkOSModel
+from typing import Literal, Optional
+
+from workos.types.workos_model import WorkOSModel
+
 
 AuditLogExportState = Literal["error", "pending", "ready"]
-AuditLogMetadata = Mapping[str, Any]
 
 
 class AuditLogExport(WorkOSModel):

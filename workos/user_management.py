@@ -1,18 +1,17 @@
-from typing import Literal, Optional, Protocol, Set, cast
-
+from typing import Optional, Protocol, Set, cast
 import workos
-from workos.resources.list import (
+from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
     ListPage,
     WorkOsListResource,
 )
-from workos.resources.mfa import (
+from workos.types.mfa import (
     AuthenticationFactor,
     AuthenticationFactorTotpAndChallengeResponse,
     AuthenticationFactorType,
 )
-from workos.resources.user_management import (
+from workos.types.user_management import (
     AuthenticationResponse,
     EmailVerification,
     Invitation,
@@ -32,6 +31,16 @@ from workos.types.user_management.authenticate_with_common import (
     AuthenticateWithPasswordParameters,
     AuthenticateWithRefreshTokenParameters,
     AuthenticateWithTotpParameters,
+)
+from workos.types.user_management.list_filters import (
+    AuthenticationFactorsListFilters,
+    InvitationsListFilters,
+    OrganizationMembershipsListFilters,
+    UsersListFilters,
+)
+from workos.types.user_management.password_hash_type import PasswordHashType
+from workos.types.user_management.user_management_provider_type import (
+    UserManagementProviderType,
 )
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
@@ -75,33 +84,6 @@ INVITATION_DETAIL_BY_TOKEN_PATH = "user_management/invitations/by_token/{0}"
 INVITATION_REVOKE_PATH = "user_management/invitations/{0}/revoke"
 PASSWORD_RESET_PATH = "user_management/password_reset"
 PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
-
-
-PasswordHashType = Literal["bcrypt", "firebase-scrypt", "ssha"]
-UserManagementProviderType = Literal[
-    "authkit", "AppleOAuth", "GitHubOAuth", "GoogleOAuth", "MicrosoftOAuth"
-]
-
-
-class UsersListFilters(ListArgs, total=False):
-    email: Optional[str]
-    organization_id: Optional[str]
-
-
-class InvitationsListFilters(ListArgs, total=False):
-    email: Optional[str]
-    organization_id: Optional[str]
-
-
-class OrganizationMembershipsListFilters(ListArgs, total=False):
-    user_id: Optional[str]
-    organization_id: Optional[str]
-    # A set of statuses that's concatenated into a comma-separated string
-    statuses: Optional[str]
-
-
-class AuthenticationFactorsListFilters(ListArgs, total=False):
-    user_id: str
 
 
 UsersListResource = WorkOsListResource[User, UsersListFilters, ListMetadata]

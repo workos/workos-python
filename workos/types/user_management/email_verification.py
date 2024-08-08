@@ -1,5 +1,5 @@
 from typing import Literal
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 
 
 class EmailVerificationCommon(WorkOSModel):
@@ -10,3 +10,9 @@ class EmailVerificationCommon(WorkOSModel):
     expires_at: str
     created_at: str
     updated_at: str
+
+
+class EmailVerification(EmailVerificationCommon):
+    """Representation of a WorkOS EmailVerification object."""
+
+    code: str

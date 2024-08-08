@@ -1,24 +1,17 @@
 from typing import Optional, Protocol, Sequence
 
 import workos
+from workos.types.events.list_filters import EventsListFilters
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT, REQUEST_METHOD_GET
-from workos.resources.events import Event, EventType
+from workos.types.events import Event, EventType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.validation import Module, validate_settings
-from workos.resources.list import (
+from workos.types.list_resource import (
     ListAfterMetadata,
-    ListArgs,
     ListPage,
     WorkOsListResource,
 )
-
-
-class EventsListFilters(ListArgs, total=False):
-    events: Sequence[EventType]
-    organization_id: Optional[str]
-    range_start: Optional[str]
-    range_end: Optional[str]
 
 
 EventsListResource = WorkOsListResource[Event, EventsListFilters, ListAfterMetadata]

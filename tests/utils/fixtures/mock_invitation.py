@@ -1,6 +1,6 @@
 import datetime
 
-from workos.resources.user_management import Invitation
+from workos.types.user_management import Invitation
 
 
 class MockInvitation(Invitation):

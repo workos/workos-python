@@ -1,5 +1,5 @@
 from typing import Literal, Optional, Sequence
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 
 
 class Role(WorkOSModel):

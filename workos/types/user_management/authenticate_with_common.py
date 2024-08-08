@@ -1,4 +1,5 @@
-from typing import Literal, TypedDict, Union
+from typing import Literal, Union
+from typing_extensions import TypedDict
 
 
 class AuthenticateWithBaseParameters(TypedDict):

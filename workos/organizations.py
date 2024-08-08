@@ -1,6 +1,8 @@
 from typing import Literal, Optional, Protocol, Sequence
 from typing_extensions import TypedDict
 import workos
+from workos.types.organizations.domain_data_input import DomainDataInput
+from workos.types.organizations.list_filters import OrganizationListFilters
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request_helper import (
@@ -11,21 +13,17 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_PUT,
 )
 from workos.utils.validation import Module, validate_settings
-from workos.resources.organizations import (
+from workos.types.organizations import (
     Organization,
 )
-from workos.resources.list import ListMetadata, ListPage, WorkOsListResource, ListArgs
+from workos.types.list_resource import (
+    ListMetadata,
+    ListPage,
+    WorkOsListResource,
+    ListArgs,
+)
 
 ORGANIZATIONS_PATH = "organizations"
-
-
-class DomainDataInput(TypedDict):
-    domain: str
-    state: Literal["verified", "pending"]
-
-
-class OrganizationListFilters(ListArgs, total=False):
-    domains: Optional[Sequence[str]]
 
 
 OrganizationsListResource = WorkOsListResource[

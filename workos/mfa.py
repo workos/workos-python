@@ -1,6 +1,8 @@
-from typing import Literal, Optional, Protocol
-
+from typing import Optional, Protocol
 import workos
+from workos.types.mfa.enroll_authentication_factor_type import (
+    EnrollAuthenticationFactorType,
+)
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import (
     REQUEST_METHOD_POST,
@@ -9,7 +11,7 @@ from workos.utils.request_helper import (
     RequestHelper,
 )
 from workos.utils.validation import Module, validate_settings
-from workos.resources.mfa import (
+from workos.types.mfa import (
     AuthenticationChallenge,
     AuthenticationChallengeVerificationResponse,
     AuthenticationFactor,
@@ -17,13 +19,7 @@ from workos.resources.mfa import (
     AuthenticationFactorSms,
     AuthenticationFactorTotp,
     AuthenticationFactorTotpExtended,
-    SmsAuthenticationFactorType,
-    TotpAuthenticationFactorType,
 )
-
-EnrollAuthenticationFactorType = Literal[
-    SmsAuthenticationFactorType, TotpAuthenticationFactorType
-]
 
 
 class MFAModule(Protocol):

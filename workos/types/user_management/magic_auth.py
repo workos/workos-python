@@ -1,5 +1,5 @@
 from typing import Literal
-from workos.resources.workos_model import WorkOSModel
+from workos.types.workos_model import WorkOSModel
 
 
 class MagicAuthCommon(WorkOSModel):
@@ -10,3 +10,9 @@ class MagicAuthCommon(WorkOSModel):
     expires_at: str
     created_at: str
     updated_at: str
+
+
+class MagicAuth(MagicAuthCommon):
+    """Representation of a WorkOS MagicAuth object."""
+
+    code: str

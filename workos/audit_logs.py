@@ -1,49 +1,14 @@
-from typing import Dict, Optional, Protocol, Sequence
-from typing_extensions import TypedDict, NotRequired
+from typing import Optional, Protocol, Sequence
 
 import workos
-from workos.resources.audit_logs import AuditLogExport, AuditLogMetadata
+from workos.types.audit_logs import AuditLogExport
+from workos.types.audit_logs.audit_log_event import AuditLogEvent
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_GET, REQUEST_METHOD_POST
 from workos.utils.validation import Module, validate_settings
 
 EVENTS_PATH = "audit_logs/events"
 EXPORTS_PATH = "audit_logs/exports"
-
-
-class AuditLogEventTarget(TypedDict):
-    """Describes the entity that was targeted by the event."""
-
-    id: str
-    metadata: NotRequired[AuditLogMetadata]
-    name: NotRequired[str]
-    type: str
-
-
-class AuditLogEventActor(TypedDict):
-    """Describes the entity that generated the event."""
-
-    id: str
-    metadata: NotRequired[AuditLogMetadata]
-    name: NotRequired[str]
-    type: str
-
-
-class AuditLogEventContext(TypedDict):
-    """Attributes of audit log event context."""
-
-    location: str
-    user_agent: NotRequired[str]
-
-
-class AuditLogEvent(TypedDict):
-    action: str
-    version: NotRequired[int]
-    occurred_at: str  # ISO-8601 datetime of when an event occurred
-    actor: AuditLogEventActor
-    targets: Sequence[AuditLogEventTarget]
-    context: AuditLogEventContext
-    metadata: NotRequired[AuditLogMetadata]
 
 
 class AuditLogsModule(Protocol):

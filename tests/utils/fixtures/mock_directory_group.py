@@ -1,6 +1,6 @@
 import datetime
 
-from workos.resources.directory_sync import DirectoryGroup
+from workos.types.directory_sync import DirectoryGroup
 
 
 class MockDirectoryGroup(DirectoryGroup):

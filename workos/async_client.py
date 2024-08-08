@@ -20,6 +20,13 @@ class AsyncClient(BaseClient):
 
     _http_client: AsyncHTTPClient
 
+    # Python 3.11+ is smart enough to know these attributes exist from the parent class,
+    # but older versions do not so we redeclare them here.
+    _api_key: str
+    _base_api_url: str
+    _client_id: str
+    _request_timeout: int
+
     def __init__(
         self,
         *,

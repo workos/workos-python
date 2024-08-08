@@ -6,8 +6,13 @@ from workos.resources.fga import Resource, ResourceType, Warrant, WriteWarrantRe
 from workos.resources.list import ListArgs, ListMetadata, WorkOsListResource, ListPage
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder, Order
-from workos.utils.request_helper import RequestHelper, REQUEST_METHOD_GET, REQUEST_METHOD_POST, REQUEST_METHOD_PUT, \
-    REQUEST_METHOD_DELETE
+from workos.utils.request_helper import (
+    RequestHelper,
+    REQUEST_METHOD_GET,
+    REQUEST_METHOD_POST,
+    REQUEST_METHOD_PUT,
+    REQUEST_METHOD_DELETE,
+)
 from workos.utils.validation import validate_settings, Module
 
 DEFAULT_RESPONSE_LIMIT = 10
@@ -23,13 +28,9 @@ class ResourceListFilters(ListArgs, total=False):
     search: Optional[str]
 
 
-ResourceListResource = WorkOsListResource[
-    Resource, ResourceListFilters, ListMetadata
-]
+ResourceListResource = WorkOsListResource[Resource, ResourceListFilters, ListMetadata]
 
-ResourceTypeListResource = WorkOsListResource[
-    Resource, ListArgs, ListMetadata
-]
+ResourceTypeListResource = WorkOsListResource[Resource, ListArgs, ListMetadata]
 
 
 class WarrantListFilters(ListArgs, total=False):
@@ -42,73 +43,71 @@ class WarrantListFilters(ListArgs, total=False):
     warrant_token: Optional[str]
 
 
-WarrantListResource = WorkOsListResource[
-    Warrant, WarrantListFilters, ListMetadata
-]
+WarrantListResource = WorkOsListResource[Warrant, WarrantListFilters, ListMetadata]
 
 
 class FGAModule(Protocol):
-    def get_resource(self, resource_type: str,resource_id: str) -> Resource: ...
+    def get_resource(self, resource_type: str, resource_id: str) -> Resource: ...
 
     def list_resources(
-            self,
-            resource_type: Optional[str] = None,
-            search: Optional[str] = None,
-            limit: int = DEFAULT_RESPONSE_LIMIT,
-            order: PaginationOrder = Order.Desc.value,
-            before: Optional[str] = None,
-            after: Optional[str] = None,
+        self,
+        resource_type: Optional[str] = None,
+        search: Optional[str] = None,
+        limit: int = DEFAULT_RESPONSE_LIMIT,
+        order: PaginationOrder = Order.Desc.value,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
     ) -> ResourceListResource: ...
 
     def create_resource(
-            self,
-            resource_type: str,
-            resource_id: str,
-            meta: Dict[str, Any],
+        self,
+        resource_type: str,
+        resource_id: str,
+        meta: Dict[str, Any],
     ) -> Resource: ...
 
     def update_resource(
-            self,
-            resource_type: str,
-            resource_id: str,
-            meta: Dict[str, Any],
+        self,
+        resource_type: str,
+        resource_id: str,
+        meta: Dict[str, Any],
     ) -> Resource: ...
 
     def delete_resource(self, resource_type: str, resource_id: str) -> None: ...
 
     def list_resource_types(
-            self,
-            limit: int = DEFAULT_RESPONSE_LIMIT,
-            order: PaginationOrder = Order.Desc.value,
-            before: Optional[str] = None,
-            after: Optional[str] = None,
+        self,
+        limit: int = DEFAULT_RESPONSE_LIMIT,
+        order: PaginationOrder = Order.Desc.value,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
     ) -> WorkOsListResource[ResourceType, ListArgs, ListMetadata]: ...
 
     def list_warrants(
-            self,
-            resource_type: Optional[str] = None,
-            resource_id: Optional[str] = None,
-            relation: Optional[str] = None,
-            subject_type: Optional[str] = None,
-            subject_id: Optional[str] = None,
-            subject_relation: Optional[str] = None,
-            limit: int = DEFAULT_RESPONSE_LIMIT,
-            order: PaginationOrder = Order.Desc.value,
-            before: Optional[str] = None,
-            after: Optional[str] = None,
-            warrant_token: Optional[str] = None,
+        self,
+        resource_type: Optional[str] = None,
+        resource_id: Optional[str] = None,
+        relation: Optional[str] = None,
+        subject_type: Optional[str] = None,
+        subject_id: Optional[str] = None,
+        subject_relation: Optional[str] = None,
+        limit: int = DEFAULT_RESPONSE_LIMIT,
+        order: PaginationOrder = Order.Desc.value,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        warrant_token: Optional[str] = None,
     ) -> WorkOsListResource[Warrant, WarrantListFilters, ListMetadata]: ...
 
     def write_warrant(
-            self,
-            op: WarrantWriteOperation,
-            resource_type: str,
-            resource_id: str,
-            relation: str,
-            subject_type: str,
-            subject_id: str,
-            subject_relation: Optional[str] = None,
-            policy: Optional[str] = None,
+        self,
+        op: WarrantWriteOperation,
+        resource_type: str,
+        resource_id: str,
+        relation: str,
+        subject_type: str,
+        subject_id: str,
+        subject_relation: Optional[str] = None,
+        policy: Optional[str] = None,
     ) -> WriteWarrantResponse: ...
 
 
@@ -120,18 +119,20 @@ class FGA(FGAModule):
         self._http_client = http_client
 
     def get_resource(
-            self,
-            resource_type: str,
-            resource_id: str,
+        self,
+        resource_type: str,
+        resource_id: str,
     ) -> Resource:
         if not resource_type or not resource_id:
-            raise ValueError("Incomplete arguments: 'resource_type' and 'resource_id' are required arguments")
+            raise ValueError(
+                "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
+            )
 
         response = self._http_client.request(
             RequestHelper.build_parameterized_url(
                 "fga/v1/resources/{resource_type}/{resource_id}",
                 resource_type=resource_type,
-                resource_id=resource_id
+                resource_id=resource_id,
             ),
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
@@ -140,13 +141,13 @@ class FGA(FGAModule):
         return Resource.model_validate(response)
 
     def list_resources(
-            self,
-            resource_type: Optional[str] = None,
-            search: Optional[str] = None,
-            limit: int = DEFAULT_RESPONSE_LIMIT,
-            order: PaginationOrder = Order.Desc.value,
-            before: Optional[str] = None,
-            after: Optional[str] = None,
+        self,
+        resource_type: Optional[str] = None,
+        search: Optional[str] = None,
+        limit: int = DEFAULT_RESPONSE_LIMIT,
+        order: PaginationOrder = Order.Desc.value,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
     ) -> ResourceListResource:
 
         list_params: ResourceListFilters = {
@@ -155,14 +156,14 @@ class FGA(FGAModule):
             "limit": limit,
             "order": order,
             "before": before,
-            "after": after
+            "after": after,
         }
 
         response = self._http_client.request(
             "fga/v1/resources",
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
-            params=list_params
+            params=list_params,
         )
 
         return WorkOsListResource[Resource, ResourceListFilters, ListMetadata](
@@ -172,13 +173,15 @@ class FGA(FGAModule):
         )
 
     def create_resource(
-            self,
-            resource_type: str,
-            resource_id: str,
-            meta: Optional[Dict[str, Any]] = None,
+        self,
+        resource_type: str,
+        resource_id: str,
+        meta: Optional[Dict[str, Any]] = None,
     ) -> Resource:
         if not resource_type or not resource_id:
-            raise ValueError("Incomplete arguments: 'resource_type' and 'resource_id' are required arguments")
+            raise ValueError(
+                "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
+            )
 
         response = self._http_client.request(
             "fga/v1/resources",
@@ -187,70 +190,67 @@ class FGA(FGAModule):
             params={
                 "resource_type": resource_type,
                 "resource_id": resource_id,
-                "meta": meta
-            }
+                "meta": meta,
+            },
         )
 
         return Resource.model_validate(response)
 
     def update_resource(
-            self,
-            resource_type: str,
-            resource_id: str,
-            meta: Optional[Dict[str, Any]] = None,
+        self,
+        resource_type: str,
+        resource_id: str,
+        meta: Optional[Dict[str, Any]] = None,
     ) -> Resource:
         if not resource_type or not resource_id:
-            raise ValueError("Incomplete arguments: 'resource_type' and 'resource_id' are required arguments")
+            raise ValueError(
+                "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
+            )
 
         response = self._http_client.request(
             RequestHelper.build_parameterized_url(
                 "fga/v1/resources/{resource_type}/{resource_id}",
                 resource_type=resource_type,
-                resource_id=resource_id
+                resource_id=resource_id,
             ),
             method=REQUEST_METHOD_PUT,
             token=workos.api_key,
-            params={
-                "meta": meta
-            }
+            params={"meta": meta},
         )
 
         return Resource.model_validate(response)
 
     def delete_resource(self, resource_type: str, resource_id: str) -> None:
         if not resource_type or not resource_id:
-            raise ValueError("Incomplete arguments: 'resource_type' and 'resource_id' are required arguments")
+            raise ValueError(
+                "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
+            )
 
         self._http_client.request(
             RequestHelper.build_parameterized_url(
                 "fga/v1/resources/{resource_type}/{resource_id}",
                 resource_type=resource_type,
-                resource_id=resource_id
+                resource_id=resource_id,
             ),
             method=REQUEST_METHOD_DELETE,
             token=workos.api_key,
         )
 
     def list_resource_types(
-            self,
-            limit: int = DEFAULT_RESPONSE_LIMIT,
-            order: PaginationOrder = Order.Desc.value,
-            before: Optional[str] = None,
-            after: Optional[str] = None,
+        self,
+        limit: int = DEFAULT_RESPONSE_LIMIT,
+        order: PaginationOrder = Order.Desc.value,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
     ) -> WorkOsListResource[ResourceType, ListArgs, ListMetadata]:
 
-        list_params = {
-            "limit": limit,
-            "order": order,
-            "before": before,
-            "after": after
-        }
+        list_params = {"limit": limit, "order": order, "before": before, "after": after}
 
         response = self._http_client.request(
             "fga/v1/resource-types",
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
-            params=list_params
+            params=list_params,
         )
 
         return WorkOsListResource[ResourceType, ListArgs, ListMetadata](
@@ -260,18 +260,18 @@ class FGA(FGAModule):
         )
 
     def list_warrants(
-            self,
-            resource_type: Optional[str] = None,
-            resource_id: Optional[str] = None,
-            relation: Optional[str] = None,
-            subject_type: Optional[str] = None,
-            subject_id: Optional[str] = None,
-            subject_relation: Optional[str] = None,
-            limit: int = DEFAULT_RESPONSE_LIMIT,
-            order: PaginationOrder = Order.Desc.value,
-            before: Optional[str] = None,
-            after: Optional[str] = None,
-            warrant_token: Optional[str] = None,
+        self,
+        resource_type: Optional[str] = None,
+        resource_id: Optional[str] = None,
+        relation: Optional[str] = None,
+        subject_type: Optional[str] = None,
+        subject_id: Optional[str] = None,
+        subject_relation: Optional[str] = None,
+        limit: int = DEFAULT_RESPONSE_LIMIT,
+        order: PaginationOrder = Order.Desc.value,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        warrant_token: Optional[str] = None,
     ) -> WorkOsListResource[Warrant, WarrantListFilters, ListMetadata]:
         list_params = {
             "resource_type": resource_type,
@@ -291,13 +291,10 @@ class FGA(FGAModule):
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
             params=list_params,
-            headers={"Warrant-Token": warrant_token}
+            headers={"Warrant-Token": warrant_token},
         )
 
-        next_list_args = {
-            **list_params,
-            "warrant_token": warrant_token
-        }
+        next_list_args = {**list_params, "warrant_token": warrant_token}
 
         return WorkOsListResource[Warrant, WarrantListFilters, ListMetadata](
             list_method=self.list_resources,
@@ -306,15 +303,15 @@ class FGA(FGAModule):
         )
 
     def write_warrant(
-            self,
-            op: WarrantWriteOperation,
-            resource_type: str,
-            resource_id: str,
-            relation: str,
-            subject_type: str,
-            subject_id: str,
-            subject_relation: Optional[str] = None,
-            policy: Optional[str] = None,
+        self,
+        op: WarrantWriteOperation,
+        resource_type: str,
+        resource_id: str,
+        relation: str,
+        subject_type: str,
+        subject_id: str,
+        subject_relation: Optional[str] = None,
+        policy: Optional[str] = None,
     ) -> WriteWarrantResponse:
         params = {
             "op": op.value,
@@ -324,14 +321,14 @@ class FGA(FGAModule):
             "subject_type": subject_type,
             "subject_id": subject_id,
             "subject_relation": subject_relation,
-            "policy": policy
+            "policy": policy,
         }
 
         response = self._http_client.request(
             "fga/v1/warrants",
             method=REQUEST_METHOD_POST,
             token=workos.api_key,
-            params=params
+            params=params,
         )
 
         return WriteWarrantResponse.model_validate(response)

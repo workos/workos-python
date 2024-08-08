@@ -21,6 +21,7 @@ class SyncClient(BaseClient):
     _audit_logs: AuditLogs
     _directory_sync: DirectorySync
     _events: Events
+    _fga: FGA
     _mfa: Mfa
     _organizations: Organizations
     _passwordless: Passwordless

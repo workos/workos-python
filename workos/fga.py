@@ -2,8 +2,13 @@ from enum import Enum
 from typing import Protocol, Optional, Any, Dict
 
 import workos
-from workos.resources.fga import Resource, ResourceType, Warrant, WriteWarrantResponse
-from workos.resources.list import ListArgs, ListMetadata, WorkOsListResource, ListPage
+from workos.types.fga import Resource, ResourceType, Warrant, WriteWarrantResponse
+from workos.types.list_resource import (
+    ListArgs,
+    ListMetadata,
+    WorkOsListResource,
+    ListPage,
+)
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder, Order
 from workos.utils.request_helper import (
@@ -244,7 +249,12 @@ class FGA(FGAModule):
         after: Optional[str] = None,
     ) -> WorkOsListResource[ResourceType, ListArgs, ListMetadata]:
 
-        list_params = {"limit": limit, "order": order, "before": before, "after": after}
+        list_params: ListArgs = {
+            "limit": limit,
+            "order": order,
+            "before": before,
+            "after": after,
+        }
 
         response = self._http_client.request(
             "fga/v1/resource-types",
@@ -254,7 +264,7 @@ class FGA(FGAModule):
         )
 
         return WorkOsListResource[ResourceType, ListArgs, ListMetadata](
-            list_method=self.list_resources,
+            list_method=self.list_resource_types,
             list_args=list_params,
             **ListPage[ResourceType](**response).model_dump(),
         )
@@ -273,7 +283,7 @@ class FGA(FGAModule):
         after: Optional[str] = None,
         warrant_token: Optional[str] = None,
     ) -> WorkOsListResource[Warrant, WarrantListFilters, ListMetadata]:
-        list_params = {
+        list_params: WarrantListFilters = {
             "resource_type": resource_type,
             "resource_id": resource_id,
             "relation": relation,
@@ -291,14 +301,15 @@ class FGA(FGAModule):
             method=REQUEST_METHOD_GET,
             token=workos.api_key,
             params=list_params,
-            headers={"Warrant-Token": warrant_token},
+            headers={"Warrant-Token": warrant_token} if warrant_token else None,
         )
 
-        next_list_args = {**list_params, "warrant_token": warrant_token}
+        # A workaround to add warrant_token to the list_args for the ListResource iterator
+        list_params["warrant_token"] = warrant_token
 
         return WorkOsListResource[Warrant, WarrantListFilters, ListMetadata](
-            list_method=self.list_resources,
-            list_args=next_list_args,
+            list_method=self.list_warrants,
+            list_args=list_params,
             **ListPage[Warrant](**response).model_dump(),
         )
 

@@ -42,7 +42,7 @@ class AuthenticationMfaSucceededPayload(AuthenticationResultSucceeded):
 
 
 class AuthenticationOauthSucceededPayload(AuthenticationResultSucceeded):
-    type: Literal["oath"]
+    type: Literal["oauth"]
     user_id: str
 
 

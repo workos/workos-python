@@ -134,7 +134,7 @@ class TestDirectorySync(DirectorySyncFixtures):
             http_client=self.http_client, status_code=200, response_dict=mock_users
         )
 
-        users = self.directory_sync.list_users(group="directory_grp_id")
+        users = self.directory_sync.list_users(group_id="directory_grp_id")
 
         assert list_data_to_dicts(users.data) == mock_users["data"]
 

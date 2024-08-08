@@ -76,7 +76,9 @@ class TestAuditLogs:
             )
 
             response = self.audit_logs.create_event(
-                organization_id, event, "test_123456"
+                organization_id=organization_id,
+                event=event,
+                idempotency_key="test_123456",
             )
 
             assert request_kwargs["json"] == {
@@ -97,7 +99,9 @@ class TestAuditLogs:
             )
 
             response = self.audit_logs.create_event(
-                organization_id, mock_audit_log_event, idempotency_key
+                organization_id=organization_id,
+                event=mock_audit_log_event,
+                idempotency_key=idempotency_key,
             )
 
             assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
@@ -116,7 +120,9 @@ class TestAuditLogs:
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.create_event(organization_id, mock_audit_log_event)
+                self.audit_logs.create_event(
+                    organization_id=organization_id, event=mock_audit_log_event
+                )
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )
@@ -138,7 +144,9 @@ class TestAuditLogs:
             )
 
             with pytest.raises(BadRequestException) as excinfo:
-                self.audit_logs.create_event(organization_id, mock_audit_log_event)
+                self.audit_logs.create_event(
+                    organization_id=organization_id, event=mock_audit_log_event
+                )
                 assert excinfo.code == "invalid_audit_log"
                 assert excinfo.errors == ["error in a field"]
                 assert (
@@ -165,7 +173,9 @@ class TestAuditLogs:
             mock_http_client_with_response(self.http_client, expected_payload, 201)
 
             response = self.audit_logs.create_export(
-                organization_id, range_start, range_end
+                organization_id=organization_id,
+                range_start=range_start,
+                range_end=range_end,
             )
 
             assert response.dict() == expected_payload
@@ -216,7 +226,11 @@ class TestAuditLogs:
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.create_export(organization_id, range_start, range_end)
+                self.audit_logs.create_export(
+                    organization_id=organization_id,
+                    range_start=range_start,
+                    range_end=range_end,
+                )
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )

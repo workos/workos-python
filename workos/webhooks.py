@@ -14,7 +14,7 @@ class WebhooksModule(Protocol):
         self,
         *,
         payload: WebhookPayload,
-        sig_header: str,
+        event_signature: str,
         secret: str,
         tolerance: Optional[int] = None,
     ) -> Webhook: ...
@@ -46,14 +46,14 @@ class Webhooks(WebhooksModule):
         self,
         *,
         payload: WebhookPayload,
-        sig_header: str,
+        event_signature: str,
         secret: str,
         tolerance: Optional[int] = DEFAULT_TOLERANCE,
     ) -> Webhook:
         Webhooks.verify_header(
             self,
             event_body=payload,
-            event_signature=sig_header,
+            event_signature=event_signature,
             secret=secret,
             tolerance=tolerance,
         )

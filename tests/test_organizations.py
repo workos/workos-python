@@ -1,7 +1,5 @@
 import datetime
-
 import pytest
-
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.organizations import Organizations
 from tests.utils.fixtures.mock_organization import MockOrganization

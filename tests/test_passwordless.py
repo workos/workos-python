@@ -1,5 +1,4 @@
 import pytest
-
 from workos.passwordless import Passwordless
 from workos.utils.http_client import SyncHTTPClient
 

@@ -47,10 +47,10 @@ class TestWebhooks(object):
     ):
         with pytest.raises(ValueError) as err:
             self.webhooks.verify_event(
-                mock_event_body.encode("utf-8"),
-                mock_header_no_timestamp,
-                mock_secret,
-                180,
+                payload=mock_event_body.encode("utf-8"),
+                event_signature=mock_header_no_timestamp,
+                secret=mock_secret,
+                tolerance=180,
             )
         assert "Unable to extract timestamp and signature hash from header" in str(
             err.value
@@ -61,7 +61,10 @@ class TestWebhooks(object):
     ):
         with pytest.raises(ValueError) as err:
             self.webhooks.verify_event(
-                mock_event_body.encode("utf-8"), mock_header, mock_secret, 0
+                payload=mock_event_body.encode("utf-8"),
+                event_signature=mock_header,
+                secret=mock_secret,
+                tolerance=0,
             )
         assert "Timestamp outside the tolerance zone" in str(err.value)
 
@@ -84,10 +87,10 @@ class TestWebhooks(object):
     ):
         try:
             webhook = self.webhooks.verify_event(
-                mock_event_body.encode("utf-8"),
-                mock_header,
-                mock_secret,
-                99999999999999,
+                payload=mock_event_body.encode("utf-8"),
+                event_signature=mock_header,
+                secret=mock_secret,
+                tolerance=99999999999999,
             )
             assert type(webhook).__name__ == "ConnectionActivatedWebhook"
         except BaseException:
@@ -100,10 +103,10 @@ class TestWebhooks(object):
     ):
         with pytest.raises(ValueError) as err:
             self.webhooks.verify_header(
-                mock_event_body.encode("utf-8"),
-                mock_header,
-                mock_bad_secret,
-                99999999999999,
+                event_body=mock_event_body.encode("utf-8"),
+                event_signature=mock_header,
+                secret=mock_bad_secret,
+                tolerance=99999999999999,
             )
         assert (
             "Signature hash does not match the expected signature hash for payload"
@@ -114,10 +117,10 @@ class TestWebhooks(object):
         self, mock_unknown_webhook_body, mock_unknown_webhook_header, mock_secret
     ):
         result = self.webhooks.verify_event(
-            mock_unknown_webhook_body.encode("utf-8"),
-            mock_unknown_webhook_header,
-            mock_secret,
-            99999999999999,
+            payload=mock_unknown_webhook_body.encode("utf-8"),
+            event_signature=mock_unknown_webhook_header,
+            secret=mock_secret,
+            tolerance=99999999999999,
         )
         assert type(result).__name__ == "UntypedWebhook"
         assert result.dict() == json.loads(mock_unknown_webhook_body)

@@ -1,6 +1,5 @@
 from workos.mfa import Mfa
 import pytest
-
 from workos.utils.http_client import SyncHTTPClient
 
 
@@ -152,7 +151,7 @@ class TestMfa(object):
         mock_http_client_with_response(
             self.http_client, mock_enroll_factor_response_sms, 200
         )
-        enroll_factor = self.mfa.enroll_factor("sms", None, None, "9204448888")
+        enroll_factor = self.mfa.enroll_factor(type="sms", phone_number="9204448888")
         assert enroll_factor.dict() == mock_enroll_factor_response_sms
 
     def test_enroll_factor_totp_success(
@@ -162,7 +161,7 @@ class TestMfa(object):
             self.http_client, mock_enroll_factor_response_totp, 200
         )
         enroll_factor = self.mfa.enroll_factor(
-            "totp", totp_issuer="testissuer", totp_user="testuser"
+            type="totp", totp_issuer="testissuer", totp_user="testuser"
         )
         assert enroll_factor.dict() == mock_enroll_factor_response_totp
 
@@ -196,7 +195,7 @@ class TestMfa(object):
             self.http_client, mock_challenge_factor_response, 200
         )
         challenge_factor = self.mfa.challenge_factor(
-            "auth_factor_01FXNWW32G7F3MG8MYK5D1HJJM"
+            authentication_factor_id="auth_factor_01FXNWW32G7F3MG8MYK5D1HJJM"
         )
         assert challenge_factor.dict() == mock_challenge_factor_response
 
@@ -207,6 +206,7 @@ class TestMfa(object):
             self.http_client, mock_verify_challenge_response, 200
         )
         verify_challenge = self.mfa.verify_challenge(
-            "auth_challenge_01FXNXH8Y2K3YVWJ10P139A6DT", "093647"
+            authentication_challenge_id="auth_challenge_01FXNXH8Y2K3YVWJ10P139A6DT",
+            code="093647",
         )
         assert verify_challenge.dict() == mock_verify_challenge_response

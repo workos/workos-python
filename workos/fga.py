@@ -1,52 +1,40 @@
-from enum import Enum
-from typing import Protocol, Optional, Any, Dict
+from typing import Any, Dict, List, Optional, Protocol
 
 import workos
-from workos.types.fga import Resource, ResourceType, Warrant, WriteWarrantResponse
+from workos.types.fga import (
+    CheckOperation,
+    CheckResponse,
+    Resource,
+    ResourceType,
+    Warrant,
+    WarrantCheck,
+    WarrantWrite,
+    WarrantWriteOperation,
+    WriteWarrantResponse,
+)
+from workos.types.fga.list_filters import ResourceListFilters, WarrantListFilters
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
-    WorkOsListResource,
     ListPage,
+    WorkOsListResource,
 )
 from workos.utils.http_client import SyncHTTPClient
-from workos.utils.pagination_order import PaginationOrder, Order
+from workos.utils.pagination_order import Order, PaginationOrder
 from workos.utils.request_helper import (
-    RequestHelper,
+    REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_POST,
     REQUEST_METHOD_PUT,
-    REQUEST_METHOD_DELETE,
+    RequestHelper,
 )
-from workos.utils.validation import validate_settings, Module
+from workos.utils.validation import Module, validate_settings
 
 DEFAULT_RESPONSE_LIMIT = 10
-
-
-class WarrantWriteOperation(Enum):
-    CREATE = "create"
-    DELETE = "delete"
-
-
-class ResourceListFilters(ListArgs, total=False):
-    resource_type: Optional[str]
-    search: Optional[str]
-
 
 ResourceListResource = WorkOsListResource[Resource, ResourceListFilters, ListMetadata]
 
 ResourceTypeListResource = WorkOsListResource[Resource, ListArgs, ListMetadata]
-
-
-class WarrantListFilters(ListArgs, total=False):
-    resource_type: Optional[str]
-    resource_id: Optional[str]
-    relation: Optional[str]
-    subject_type: Optional[str]
-    subject_id: Optional[str]
-    subject_relation: Optional[str]
-    warrant_token: Optional[str]
-
 
 WarrantListResource = WorkOsListResource[Warrant, WarrantListFilters, ListMetadata]
 
@@ -114,6 +102,18 @@ class FGAModule(Protocol):
         subject_relation: Optional[str] = None,
         policy: Optional[str] = None,
     ) -> WriteWarrantResponse: ...
+
+    def batch_write_warrants(
+        self, batch: List[WarrantWrite]
+    ) -> WriteWarrantResponse: ...
+
+    def check(
+        self,
+        checks: List[WarrantCheck],
+        op: Optional[CheckOperation] = None,
+        debug: bool = False,
+        warrant_token: Optional[str] = None,
+    ) -> CheckResponse: ...
 
 
 class FGA(FGAModule):
@@ -192,7 +192,7 @@ class FGA(FGAModule):
             "fga/v1/resources",
             method=REQUEST_METHOD_POST,
             token=workos.api_key,
-            params={
+            json={
                 "resource_type": resource_type,
                 "resource_id": resource_id,
                 "meta": meta,
@@ -220,7 +220,7 @@ class FGA(FGAModule):
             ),
             method=REQUEST_METHOD_PUT,
             token=workos.api_key,
-            params={"meta": meta},
+            json={"meta": meta},
         )
 
         return Resource.model_validate(response)
@@ -325,7 +325,7 @@ class FGA(FGAModule):
         policy: Optional[str] = None,
     ) -> WriteWarrantResponse:
         params = {
-            "op": op.value,
+            "op": op,
             "resource_type": resource_type,
             "resource_id": resource_id,
             "relation": relation,
@@ -339,19 +339,46 @@ class FGA(FGAModule):
             "fga/v1/warrants",
             method=REQUEST_METHOD_POST,
             token=workos.api_key,
-            params=params,
+            json=params,
         )
 
         return WriteWarrantResponse.model_validate(response)
 
-    def batch_write_warrants(self):
-        raise NotImplementedError
+    def batch_write_warrants(self, batch: List[WarrantWrite]) -> WriteWarrantResponse:
+        if not batch:
+            raise ValueError("Incomplete arguments: No batch warrant writes provided")
 
-    def check(self):
-        raise NotImplementedError
+        response = self._http_client.request(
+            "fga/v1/warrants",
+            method=REQUEST_METHOD_POST,
+            token=workos.api_key,
+            json=[warrant.dict() for warrant in batch],
+        )
 
-    def check_batch(self):
-        raise NotImplementedError
+        return WriteWarrantResponse.model_validate(response)
 
-    def query(self):
-        raise NotImplementedError
+    def check(
+        self,
+        checks: List[WarrantCheck],
+        op: Optional[CheckOperation] = None,
+        debug: bool = False,
+        warrant_token: Optional[str] = None,
+    ) -> CheckResponse:
+        if not checks:
+            raise ValueError("Incomplete arguments: No checks provided")
+
+        body = {
+            "checks": [check.dict() for check in checks],
+            "op": op,
+            "debug": debug,
+        }
+
+        response = self._http_client.request(
+            "fga/v1/check",
+            method=REQUEST_METHOD_POST,
+            token=workos.api_key,
+            json=body,
+            headers={"Warrant-Token": warrant_token} if warrant_token else None,
+        )
+
+        return CheckResponse.model_validate(response)

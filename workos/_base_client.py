@@ -1,6 +1,7 @@
 import os
 from typing import Optional, Protocol
 
+from workos.__about__ import __version__
 from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
 from workos.utils.http_client import HTTPClient
 from workos.audit_logs import AuditLogsModule
@@ -19,7 +20,7 @@ class BaseClient(Protocol):
     """Base client for accessing the WorkOS feature set."""
 
     _api_key: str
-    _base_api_url: str
+    _base_url: str
     _client_id: str
     _request_timeout: int
     _http_client: HTTPClient
@@ -31,6 +32,7 @@ class BaseClient(Protocol):
         client_id: Optional[str],
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
+        http_client_cls: type[HTTPClient],
     ) -> None:
         api_key = api_key or os.getenv("WORKOS_API_KEY")
         if api_key is None:
@@ -48,7 +50,7 @@ class BaseClient(Protocol):
 
         self._client_id = client_id
 
-        self._base_api_url = (
+        self._base_url = (
             base_url
             if base_url
             else os.getenv("WORKOS_BASE_URL", "https://api.workos.com/")
@@ -57,6 +59,14 @@ class BaseClient(Protocol):
             request_timeout
             if request_timeout
             else int(os.getenv("WORKOS_REQUEST_TIMEOUT", DEFAULT_REQUEST_TIMEOUT))
+        )
+
+        self._http_client = http_client_cls(
+            api_key=self._api_key,
+            base_url=self._base_url,
+            client_id=self._client_id,
+            version=__version__,
+            timeout=self._request_timeout,
         )
 
     @property

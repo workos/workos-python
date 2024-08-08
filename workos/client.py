@@ -1,6 +1,5 @@
 from typing import Optional
 
-from workos.__about__ import __version__
 from workos._base_client import BaseClient
 from workos.audit_logs import AuditLogs
 from workos.directory_sync import DirectorySync
@@ -20,13 +19,6 @@ class SyncClient(BaseClient):
 
     _http_client: SyncHTTPClient
 
-    # Python 3.11+ is smart enough to know these attributes exist from the parent class,
-    # but older versions do not so we redeclare them here.
-    _api_key: str
-    _base_api_url: str
-    _client_id: str
-    _request_timeout: int
-
     def __init__(
         self,
         *,
@@ -40,13 +32,7 @@ class SyncClient(BaseClient):
             client_id=client_id,
             base_url=base_url,
             request_timeout=request_timeout,
-        )
-        self._http_client = SyncHTTPClient(
-            api_key=self._api_key,
-            base_url=self._base_api_url,
-            client_id=self._client_id,
-            version=__version__,
-            timeout=self._request_timeout,
+            http_client_cls=SyncHTTPClient,
         )
 
     @property

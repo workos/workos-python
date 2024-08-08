@@ -76,7 +76,7 @@ class Mfa(MFAModule):
         Returns: AuthenticationFactor
         """
 
-        params = {
+        json = {
             "type": type,
             "totp_issuer": totp_issuer,
             "totp_user": totp_user,
@@ -96,7 +96,7 @@ class Mfa(MFAModule):
         response = self._http_client.request(
             "auth/factors/enroll",
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -163,7 +163,7 @@ class Mfa(MFAModule):
         Returns: Dict containing the authentication challenge factor details.
         """
 
-        params = {
+        json = {
             "sms_template": sms_template,
         }
 
@@ -172,7 +172,7 @@ class Mfa(MFAModule):
                 "auth/factors/{factor_id}/challenge", factor_id=authentication_factor_id
             ),
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 
@@ -191,7 +191,7 @@ class Mfa(MFAModule):
         Returns: AuthenticationChallengeVerificationResponse containing the challenge factor details.
         """
 
-        params = {
+        json = {
             "code": code,
         }
 
@@ -201,7 +201,7 @@ class Mfa(MFAModule):
                 challenge_id=authentication_challenge_id,
             ),
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 

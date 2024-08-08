@@ -168,7 +168,7 @@ class SSO(SSOModule):
         Returns:
             ProfileAndToken: WorkOSProfileAndToken object representing the User
         """
-        params = {
+        json = {
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
             "code": code,
@@ -176,7 +176,7 @@ class SSO(SSOModule):
         }
 
         response = self._http_client.request(
-            TOKEN_PATH, method=REQUEST_METHOD_POST, params=params
+            TOKEN_PATH, method=REQUEST_METHOD_POST, json=json
         )
 
         return ProfileAndToken.model_validate(response)
@@ -297,7 +297,7 @@ class AsyncSSO(SSOModule):
         Returns:
             ProfileAndToken: WorkOSProfileAndToken object representing the User
         """
-        params = {
+        json = {
             "client_id": workos.client_id,
             "client_secret": workos.api_key,
             "code": code,
@@ -305,7 +305,7 @@ class AsyncSSO(SSOModule):
         }
 
         response = await self._http_client.request(
-            TOKEN_PATH, method=REQUEST_METHOD_POST, params=params
+            TOKEN_PATH, method=REQUEST_METHOD_POST, json=json
         )
 
         return ProfileAndToken.model_validate(response)

@@ -48,7 +48,7 @@ class Portal(PortalModule):
         Returns:
             PortalLink: PortalLink object with URL to redirect a User to to access an Admin Portal session
         """
-        params = {
+        json = {
             "intent": intent,
             "organization": organization_id,
             "return_url": return_url,
@@ -57,7 +57,7 @@ class Portal(PortalModule):
         response = self._http_client.request(
             PORTAL_GENERATE_PATH,
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 

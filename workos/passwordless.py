@@ -60,7 +60,7 @@ class Passwordless(PasswordlessModule):
             PasswordlessSession
         """
 
-        params = {
+        json = {
             "email": email,
             "type": type,
             "expires_in": expires_in,
@@ -71,7 +71,7 @@ class Passwordless(PasswordlessModule):
         response = self._http_client.request(
             "passwordless/sessions",
             method=REQUEST_METHOD_POST,
-            params=params,
+            json=json,
             token=workos.api_key,
         )
 

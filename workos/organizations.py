@@ -1,5 +1,4 @@
-from typing import Literal, Optional, Protocol, Sequence
-from typing_extensions import TypedDict
+from typing import Optional, Protocol, Sequence
 import workos
 from workos.types.organizations.domain_data_input import DomainDataInput
 from workos.types.organizations.list_filters import OrganizationListFilters

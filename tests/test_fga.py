@@ -369,7 +369,7 @@ class TestFGA:
                         resource_type="role",
                         resource_id="senior-accountant",
                         relation="member",
-                    )
+                    ),
                 ),
                 WarrantWrite(
                     op=WarrantWriteOperations.CREATE.value,
@@ -379,7 +379,7 @@ class TestFGA:
                     subject=Subject(
                         resource_type="user",
                         resource_id="user-b",
-                    )
+                    ),
                 ),
             ]
         )

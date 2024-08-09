@@ -14,7 +14,7 @@ from workos.utils.http_client import AsyncHTTPClient
 from workos.webhooks import WebhooksModule
 
 
-class AsyncClient(BaseClient):
+class AsyncClient(BaseClient[AsyncHTTPClient]):
     """Client for a convenient way to access the WorkOS feature set."""
 
     _http_client: AsyncHTTPClient

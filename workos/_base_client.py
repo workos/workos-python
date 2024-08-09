@@ -1,5 +1,6 @@
+from abc import abstractmethod
 import os
-from typing import Optional, Protocol, Type
+from typing import Generic, Optional, Type, TypeVar
 
 from workos.__about__ import __version__
 from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
@@ -16,7 +17,10 @@ from workos.user_management import UserManagementModule
 from workos.webhooks import WebhooksModule
 
 
-class BaseClient(Protocol):
+HTTPClientType = TypeVar("HTTPClientType", bound=HTTPClient)
+
+
+class BaseClient(Generic[HTTPClientType]):
     """Base client for accessing the WorkOS feature set."""
 
     _api_key: str
@@ -32,7 +36,7 @@ class BaseClient(Protocol):
         client_id: Optional[str],
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
-        http_client_cls: Type[HTTPClient],
+        http_client_cls: Type[HTTPClientType],
     ) -> None:
         api_key = api_key or os.getenv("WORKOS_API_KEY")
         if api_key is None:
@@ -70,31 +74,41 @@ class BaseClient(Protocol):
         )
 
     @property
+    @abstractmethod
     def audit_logs(self) -> AuditLogsModule: ...
 
     @property
+    @abstractmethod
     def directory_sync(self) -> DirectorySyncModule: ...
 
     @property
+    @abstractmethod
     def events(self) -> EventsModule: ...
 
     @property
+    @abstractmethod
     def mfa(self) -> MFAModule: ...
 
     @property
+    @abstractmethod
     def organizations(self) -> OrganizationsModule: ...
 
     @property
+    @abstractmethod
     def passwordless(self) -> PasswordlessModule: ...
 
     @property
+    @abstractmethod
     def portal(self) -> PortalModule: ...
 
     @property
+    @abstractmethod
     def sso(self) -> SSOModule: ...
 
     @property
+    @abstractmethod
     def user_management(self) -> UserManagementModule: ...
 
     @property
+    @abstractmethod
     def webhooks(self) -> WebhooksModule: ...

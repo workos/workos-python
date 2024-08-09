@@ -14,7 +14,7 @@ from workos.user_management import UserManagement
 from workos.utils.http_client import SyncHTTPClient
 
 
-class SyncClient(BaseClient):
+class SyncClient(BaseClient[SyncHTTPClient]):
     """Client for a convenient way to access the WorkOS feature set."""
 
     _http_client: SyncHTTPClient

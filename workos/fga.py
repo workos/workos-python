@@ -40,10 +40,11 @@ WarrantListResource = WorkOsListResource[Warrant, WarrantListFilters, ListMetada
 
 
 class FGAModule(Protocol):
-    def get_resource(self, resource_type: str, resource_id: str) -> Resource: ...
+    def get_resource(self, *, resource_type: str, resource_id: str) -> Resource: ...
 
     def list_resources(
         self,
+        *,
         resource_type: Optional[str] = None,
         search: Optional[str] = None,
         limit: int = DEFAULT_RESPONSE_LIMIT,
@@ -54,6 +55,7 @@ class FGAModule(Protocol):
 
     def create_resource(
         self,
+        *,
         resource_type: str,
         resource_id: str,
         meta: Dict[str, Any],
@@ -61,15 +63,17 @@ class FGAModule(Protocol):
 
     def update_resource(
         self,
+        *,
         resource_type: str,
         resource_id: str,
         meta: Dict[str, Any],
     ) -> Resource: ...
 
-    def delete_resource(self, resource_type: str, resource_id: str) -> None: ...
+    def delete_resource(self, *, resource_type: str, resource_id: str) -> None: ...
 
     def list_resource_types(
         self,
+        *,
         limit: int = DEFAULT_RESPONSE_LIMIT,
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
@@ -78,12 +82,13 @@ class FGAModule(Protocol):
 
     def list_warrants(
         self,
-        resource_type: Optional[str] = None,
-        resource_id: Optional[str] = None,
-        relation: Optional[str] = None,
+        *,
         subject_type: Optional[str] = None,
         subject_id: Optional[str] = None,
         subject_relation: Optional[str] = None,
+        relation: Optional[str] = None,
+        resource_type: Optional[str] = None,
+        resource_id: Optional[str] = None,
         limit: int = DEFAULT_RESPONSE_LIMIT,
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
@@ -93,22 +98,24 @@ class FGAModule(Protocol):
 
     def write_warrant(
         self,
+        *,
         op: WarrantWriteOperation,
-        resource_type: str,
-        resource_id: str,
-        relation: str,
         subject_type: str,
         subject_id: str,
         subject_relation: Optional[str] = None,
+        relation: str,
+        resource_type: str,
+        resource_id: str,
         policy: Optional[str] = None,
     ) -> WriteWarrantResponse: ...
 
     def batch_write_warrants(
-        self, batch: List[WarrantWrite]
+        self, *, batch: List[WarrantWrite]
     ) -> WriteWarrantResponse: ...
 
     def check(
         self,
+        *,
         checks: List[WarrantCheck],
         op: Optional[CheckOperation] = None,
         debug: bool = False,
@@ -125,6 +132,7 @@ class FGA(FGAModule):
 
     def get_resource(
         self,
+        *,
         resource_type: str,
         resource_id: str,
     ) -> Resource:
@@ -147,6 +155,7 @@ class FGA(FGAModule):
 
     def list_resources(
         self,
+        *,
         resource_type: Optional[str] = None,
         search: Optional[str] = None,
         limit: int = DEFAULT_RESPONSE_LIMIT,
@@ -179,6 +188,7 @@ class FGA(FGAModule):
 
     def create_resource(
         self,
+        *,
         resource_type: str,
         resource_id: str,
         meta: Optional[Dict[str, Any]] = None,
@@ -203,6 +213,7 @@ class FGA(FGAModule):
 
     def update_resource(
         self,
+        *,
         resource_type: str,
         resource_id: str,
         meta: Optional[Dict[str, Any]] = None,
@@ -225,7 +236,7 @@ class FGA(FGAModule):
 
         return Resource.model_validate(response)
 
-    def delete_resource(self, resource_type: str, resource_id: str) -> None:
+    def delete_resource(self, *, resource_type: str, resource_id: str) -> None:
         if not resource_type or not resource_id:
             raise ValueError(
                 "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
@@ -243,6 +254,7 @@ class FGA(FGAModule):
 
     def list_resource_types(
         self,
+        *,
         limit: int = DEFAULT_RESPONSE_LIMIT,
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
@@ -271,12 +283,13 @@ class FGA(FGAModule):
 
     def list_warrants(
         self,
-        resource_type: Optional[str] = None,
-        resource_id: Optional[str] = None,
-        relation: Optional[str] = None,
+        *,
         subject_type: Optional[str] = None,
         subject_id: Optional[str] = None,
         subject_relation: Optional[str] = None,
+        relation: Optional[str] = None,
+        resource_type: Optional[str] = None,
+        resource_id: Optional[str] = None,
         limit: int = DEFAULT_RESPONSE_LIMIT,
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
@@ -315,13 +328,14 @@ class FGA(FGAModule):
 
     def write_warrant(
         self,
+        *,
         op: WarrantWriteOperation,
-        resource_type: str,
-        resource_id: str,
-        relation: str,
         subject_type: str,
         subject_id: str,
         subject_relation: Optional[str] = None,
+        relation: str,
+        resource_type: str,
+        resource_id: str,
         policy: Optional[str] = None,
     ) -> WriteWarrantResponse:
         params = {
@@ -346,7 +360,9 @@ class FGA(FGAModule):
 
         return WriteWarrantResponse.model_validate(response)
 
-    def batch_write_warrants(self, batch: List[WarrantWrite]) -> WriteWarrantResponse:
+    def batch_write_warrants(
+        self, *, batch: List[WarrantWrite]
+    ) -> WriteWarrantResponse:
         if not batch:
             raise ValueError("Incomplete arguments: No batch warrant writes provided")
 
@@ -361,6 +377,7 @@ class FGA(FGAModule):
 
     def check(
         self,
+        *,
         checks: List[WarrantCheck],
         op: Optional[CheckOperation] = None,
         debug: bool = False,

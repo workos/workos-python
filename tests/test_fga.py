@@ -342,12 +342,12 @@ class TestFGA:
 
         response = self.fga.write_warrant(
             op=WarrantWriteOperations.CREATE.value,
-            resource_type="permission",
-            resource_id="view-balance-sheet",
-            relation="member",
             subject_type="role",
             subject_id="senior-accountant",
             subject_relation="member",
+            relation="member",
+            resource_type="permission",
+            resource_id="view-balance-sheet",
         )
         assert response.dict(exclude_none=True) == mock_write_warrant_response
 

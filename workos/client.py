@@ -1,6 +1,7 @@
 from workos._base_client import BaseClient
 from workos.audit_logs import AuditLogs
 from workos.directory_sync import DirectorySync
+from workos.fga import FGA
 from workos.organizations import Organizations
 from workos.passwordless import Passwordless
 from workos.portal import Portal
@@ -20,6 +21,7 @@ class SyncClient(BaseClient):
     _audit_logs: AuditLogs
     _directory_sync: DirectorySync
     _events: Events
+    _fga: FGA
     _mfa: Mfa
     _organizations: Organizations
     _passwordless: Passwordless
@@ -56,6 +58,12 @@ class SyncClient(BaseClient):
         if not getattr(self, "_events", None):
             self._events = Events(self._http_client)
         return self._events
+
+    @property
+    def fga(self) -> FGA:
+        if not getattr(self, "_fga", None):
+            self._fga = FGA(self._http_client)
+        return self._fga
 
     @property
     def organizations(self) -> Organizations:

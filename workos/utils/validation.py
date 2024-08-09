@@ -10,6 +10,7 @@ class Module(Enum):
     AUDIT_LOGS = "AuditLogs"
     DIRECTORY_SYNC = "DirectorySync"
     EVENTS = "Events"
+    FGA = "FGA"
     ORGANIZATIONS = "Organizations"
     PASSWORDLESS = "Passwordless"
     PORTAL = "Portal"
@@ -23,6 +24,7 @@ REQUIRED_SETTINGS_FOR_MODULE: Dict[Module, Set[str]] = {
     Module.AUDIT_LOGS: {"api_key"},
     Module.DIRECTORY_SYNC: {"api_key"},
     Module.EVENTS: {"api_key"},
+    Module.FGA: {"api_key"},
     Module.ORGANIZATIONS: {"api_key"},
     Module.PASSWORDLESS: {"api_key"},
     Module.PORTAL: {"api_key"},

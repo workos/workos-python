@@ -35,7 +35,5 @@ class WarrantWrite(WorkOSModel):
     resource_type: str
     resource_id: str
     relation: str
-    subject_type: str
-    subject_id: str
-    subject_relation: Optional[str] = None
+    subject: Subject
     policy: Optional[str] = None

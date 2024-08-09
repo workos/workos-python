@@ -329,9 +329,11 @@ class FGA(FGAModule):
             "resource_type": resource_type,
             "resource_id": resource_id,
             "relation": relation,
-            "subject_type": subject_type,
-            "subject_id": subject_id,
-            "subject_relation": subject_relation,
+            "subject": {
+                "resource_type": subject_type,
+                "resource_id": subject_id,
+                "relation": subject_relation,
+            },
             "policy": policy,
         }
 

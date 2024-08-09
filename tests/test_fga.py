@@ -365,17 +365,21 @@ class TestFGA:
                     resource_type="permission",
                     resource_id="view-balance-sheet",
                     relation="member",
-                    subject_type="role",
-                    subject_id="senior-accountant",
-                    subject_relation="member",
+                    subject=Subject(
+                        resource_type="role",
+                        resource_id="senior-accountant",
+                        relation="member",
+                    )
                 ),
                 WarrantWrite(
                     op=WarrantWriteOperations.CREATE.value,
                     resource_type="permission",
                     resource_id="balance-sheet:edit",
                     relation="member",
-                    subject_type="user",
-                    subject_id="user-b",
+                    subject=Subject(
+                        resource_type="user",
+                        resource_id="user-b",
+                    )
                 ),
             ]
         )

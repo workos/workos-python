@@ -31,7 +31,9 @@ class TestSyncHTTPClient(object):
             return httpx.Response(200, json={"message": "Success!"})
 
         self.http_client = SyncHTTPClient(
+            api_key="sk_test",
             base_url="https://api.workos.test",
+            client_id="client_b27needthisforssotemxo",
             version="test",
             transport=httpx.MockTransport(handler),
         )
@@ -72,7 +74,7 @@ class TestSyncHTTPClient(object):
                     "accept": "application/json",
                     "content-type": "application/json",
                     "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
-                    "authorization": "Bearer test",
+                    "authorization": "Bearer sk_test",
                 }
             ),
             params={"test_param": "test_value"},
@@ -110,7 +112,7 @@ class TestSyncHTTPClient(object):
                     "accept": "application/json",
                     "content-type": "application/json",
                     "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
-                    "authorization": "Bearer test",
+                    "authorization": "Bearer sk_test",
                 }
             ),
             params=None,
@@ -153,7 +155,7 @@ class TestSyncHTTPClient(object):
                     "accept": "application/json",
                     "content-type": "application/json",
                     "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
-                    "authorization": "Bearer test",
+                    "authorization": "Bearer sk_test",
                 }
             ),
             params={"test_param": "test_param_value"},

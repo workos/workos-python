@@ -1,14 +1,11 @@
 import pytest
 from workos.passwordless import Passwordless
-from workos.utils.http_client import SyncHTTPClient
 
 
 class TestPasswordless:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key_and_client_id):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.passwordless = Passwordless(http_client=self.http_client)
 
     @pytest.fixture

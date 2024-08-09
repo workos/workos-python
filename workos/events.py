@@ -1,12 +1,10 @@
 from typing import Optional, Protocol, Sequence
 
-import workos
 from workos.types.events.list_filters import EventsListFilters
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT, REQUEST_METHOD_GET
 from workos.types.events import Event, EventType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
-from workos.utils.validation import Module, validate_settings
 from workos.types.list_resource import (
     ListAfterMetadata,
     ListPage,
@@ -35,7 +33,6 @@ class Events(EventsModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(Module.EVENTS)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -73,10 +70,7 @@ class Events(EventsModule):
         }
 
         response = self._http_client.request(
-            "events",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
+            "events", method=REQUEST_METHOD_GET, params=params
         )
         return WorkOsListResource[Event, EventsListFilters, ListAfterMetadata](
             list_method=self.list_events,
@@ -90,7 +84,6 @@ class AsyncEvents(EventsModule):
 
     _http_client: AsyncHTTPClient
 
-    @validate_settings(Module.EVENTS)
     def __init__(self, http_client: AsyncHTTPClient):
         self._http_client = http_client
 
@@ -127,10 +120,7 @@ class AsyncEvents(EventsModule):
         }
 
         response = await self._http_client.request(
-            "events",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
+            "events", method=REQUEST_METHOD_GET, params=params
         )
 
         return WorkOsListResource[Event, EventsListFilters, ListAfterMetadata](

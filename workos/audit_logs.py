@@ -1,11 +1,9 @@
 from typing import Optional, Protocol, Sequence
 
-import workos
 from workos.types.audit_logs import AuditLogExport
 from workos.types.audit_logs.audit_log_event import AuditLogEvent
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_GET, REQUEST_METHOD_POST
-from workos.utils.validation import Module, validate_settings
 
 EVENTS_PATH = "audit_logs/events"
 EXPORTS_PATH = "audit_logs/exports"
@@ -40,7 +38,6 @@ class AuditLogs(AuditLogsModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(Module.AUDIT_LOGS)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -65,11 +62,7 @@ class AuditLogs(AuditLogsModule):
             headers["idempotency-key"] = idempotency_key
 
         self._http_client.request(
-            EVENTS_PATH,
-            method=REQUEST_METHOD_POST,
-            json=json,
-            headers=headers,
-            token=workos.api_key,
+            EVENTS_PATH, method=REQUEST_METHOD_POST, json=json, headers=headers
         )
 
     def create_export(
@@ -108,10 +101,7 @@ class AuditLogs(AuditLogsModule):
         }
 
         response = self._http_client.request(
-            EXPORTS_PATH,
-            method=REQUEST_METHOD_POST,
-            json=json,
-            token=workos.api_key,
+            EXPORTS_PATH, method=REQUEST_METHOD_POST, json=json
         )
 
         return AuditLogExport.model_validate(response)
@@ -126,7 +116,6 @@ class AuditLogs(AuditLogsModule):
         response = self._http_client.request(
             "{0}/{1}".format(EXPORTS_PATH, audit_log_export_id),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         return AuditLogExport.model_validate(response)

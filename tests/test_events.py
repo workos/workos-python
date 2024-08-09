@@ -2,15 +2,12 @@ import pytest
 
 from tests.utils.fixtures.mock_event import MockEvent
 from workos.events import AsyncEvents, Events
-from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 
 
 class TestEvents(object):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key, set_client_id):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.events = Events(http_client=self.http_client)
 
     @pytest.fixture
@@ -40,10 +37,8 @@ class TestEvents(object):
 @pytest.mark.asyncio
 class TestAsyncEvents(object):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key, set_client_id):
-        self.http_client = AsyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, async_http_client_for_test):
+        self.http_client = async_http_client_for_test
         self.events = AsyncEvents(http_client=self.http_client)
 
     @pytest.fixture

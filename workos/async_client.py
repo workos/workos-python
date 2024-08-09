@@ -1,3 +1,5 @@
+from typing import Optional
+
 from workos._base_client import BaseClient
 from workos.audit_logs import AuditLogsModule
 from workos.directory_sync import AsyncDirectorySync
@@ -12,25 +14,25 @@ from workos.utils.http_client import AsyncHTTPClient
 from workos.webhooks import WebhooksModule
 
 
-class AsyncClient(BaseClient):
+class AsyncClient(BaseClient[AsyncHTTPClient]):
     """Client for a convenient way to access the WorkOS feature set."""
 
     _http_client: AsyncHTTPClient
 
-    _audit_logs: AuditLogsModule
-    _directory_sync: AsyncDirectorySync
-    _events: AsyncEvents
-    _mfa: MFAModule
-    _organizations: OrganizationsModule
-    _passwordless: PasswordlessModule
-    _portal: PortalModule
-    _sso: AsyncSSO
-    _user_management: AsyncUserManagement
-    _webhooks: WebhooksModule
-
-    def __init__(self, *, base_url: str, version: str, timeout: int):
-        self._http_client = AsyncHTTPClient(
-            base_url=base_url, version=version, timeout=timeout
+    def __init__(
+        self,
+        *,
+        api_key: Optional[str] = None,
+        client_id: Optional[str] = None,
+        base_url: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ):
+        super().__init__(
+            api_key=api_key,
+            client_id=client_id,
+            base_url=base_url,
+            request_timeout=request_timeout,
+            http_client_cls=AsyncHTTPClient,
         )
 
     @property

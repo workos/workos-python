@@ -1,13 +1,11 @@
 import json
-from workos.webhooks import Webhooks
 import pytest
 from workos.webhooks import Webhooks
-from workos.utils.request_helper import RESPONSE_TYPE_CODE
 
 
 class TestWebhooks(object):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
+    def setup(self):
         self.webhooks = Webhooks()
 
     @pytest.fixture

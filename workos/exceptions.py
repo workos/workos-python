@@ -3,10 +3,6 @@ from typing import Any, Mapping, Optional
 import httpx
 
 
-class ConfigurationException(Exception):
-    pass
-
-
 # Request related exceptions
 class BaseRequestException(Exception):
     def __init__(

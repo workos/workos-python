@@ -1,6 +1,5 @@
 from typing import Optional, Protocol
 
-import workos
 from workos.types.directory_sync.list_filters import (
     DirectoryGroupListFilters,
     DirectoryListFilters,
@@ -14,7 +13,6 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
 )
-from workos.utils.validation import Module, validate_settings
 from workos.types.directory_sync import (
     DirectoryGroup,
     Directory,
@@ -87,7 +85,6 @@ class DirectorySync(DirectorySyncModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(Module.DIRECTORY_SYNC)
     def __init__(self, http_client: SyncHTTPClient) -> None:
         self._http_client = http_client
 
@@ -133,7 +130,6 @@ class DirectorySync(DirectorySyncModule):
             "directory_users",
             method=REQUEST_METHOD_GET,
             params=list_params,
-            token=workos.api_key,
         )
 
         return WorkOsListResource(
@@ -183,7 +179,6 @@ class DirectorySync(DirectorySyncModule):
             "directory_groups",
             method=REQUEST_METHOD_GET,
             params=list_params,
-            token=workos.api_key,
         )
 
         return WorkOsListResource[
@@ -206,7 +201,6 @@ class DirectorySync(DirectorySyncModule):
         response = self._http_client.request(
             "directory_users/{user}".format(user=user_id),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         return DirectoryUserWithGroups.model_validate(response)
@@ -223,7 +217,6 @@ class DirectorySync(DirectorySyncModule):
         response = self._http_client.request(
             "directory_groups/{group}".format(group=group_id),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
         return DirectoryGroup.model_validate(response)
 
@@ -241,7 +234,6 @@ class DirectorySync(DirectorySyncModule):
         response = self._http_client.request(
             "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         return Directory.model_validate(response)
@@ -283,7 +275,6 @@ class DirectorySync(DirectorySyncModule):
             "directories",
             method=REQUEST_METHOD_GET,
             params=list_params,
-            token=workos.api_key,
         )
         return WorkOsListResource[Directory, DirectoryListFilters, ListMetadata](
             list_method=self.list_directories,
@@ -303,7 +294,6 @@ class DirectorySync(DirectorySyncModule):
         self._http_client.request(
             "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
         )
 
 
@@ -312,7 +302,6 @@ class AsyncDirectorySync(DirectorySyncModule):
 
     _http_client: AsyncHTTPClient
 
-    @validate_settings(Module.DIRECTORY_SYNC)
     def __init__(self, http_client: AsyncHTTPClient):
         self._http_client = http_client
 
@@ -358,7 +347,6 @@ class AsyncDirectorySync(DirectorySyncModule):
             "directory_users",
             method=REQUEST_METHOD_GET,
             params=list_params,
-            token=workos.api_key,
         )
 
         return WorkOsListResource(
@@ -407,7 +395,6 @@ class AsyncDirectorySync(DirectorySyncModule):
             "directory_groups",
             method=REQUEST_METHOD_GET,
             params=list_params,
-            token=workos.api_key,
         )
 
         return WorkOsListResource[
@@ -430,7 +417,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         response = await self._http_client.request(
             "directory_users/{user}".format(user=user_id),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         return DirectoryUserWithGroups.model_validate(response)
@@ -447,7 +433,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         response = await self._http_client.request(
             "directory_groups/{group}".format(group=group_id),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
         return DirectoryGroup.model_validate(response)
 
@@ -465,7 +450,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         response = await self._http_client.request(
             "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         return Directory.model_validate(response)
@@ -508,7 +492,6 @@ class AsyncDirectorySync(DirectorySyncModule):
             "directories",
             method=REQUEST_METHOD_GET,
             params=list_params,
-            token=workos.api_key,
         )
         return WorkOsListResource[Directory, DirectoryListFilters, ListMetadata](
             list_method=self.list_directories,
@@ -528,5 +511,4 @@ class AsyncDirectorySync(DirectorySyncModule):
         await self._http_client.request(
             "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
         )

@@ -1,5 +1,5 @@
 from typing import Optional, Protocol, Sequence
-import workos
+
 from workos.types.organizations.domain_data_input import DomainDataInput
 from workos.types.organizations.list_filters import OrganizationListFilters
 from workos.utils.http_client import SyncHTTPClient
@@ -11,16 +11,8 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_POST,
     REQUEST_METHOD_PUT,
 )
-from workos.utils.validation import Module, validate_settings
-from workos.types.organizations import (
-    Organization,
-)
-from workos.types.list_resource import (
-    ListMetadata,
-    ListPage,
-    WorkOsListResource,
-    ListArgs,
-)
+from workos.types.organizations import Organization
+from workos.types.list_resource import ListMetadata, ListPage, WorkOsListResource
 
 ORGANIZATIONS_PATH = "organizations"
 
@@ -68,7 +60,6 @@ class Organizations(OrganizationsModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(Module.ORGANIZATIONS)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -106,7 +97,6 @@ class Organizations(OrganizationsModule):
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_GET,
             params=list_params,
-            token=workos.api_key,
         )
 
         return WorkOsListResource[Organization, OrganizationListFilters, ListMetadata](
@@ -123,9 +113,7 @@ class Organizations(OrganizationsModule):
             Organization: Organization response from WorkOS
         """
         response = self._http_client.request(
-            f"organizations/{organization_id}",
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
+            f"organizations/{organization_id}", method=REQUEST_METHOD_GET
         )
 
         return Organization.model_validate(response)
@@ -140,7 +128,6 @@ class Organizations(OrganizationsModule):
         response = self._http_client.request(
             "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         return Organization.model_validate(response)
@@ -168,7 +155,6 @@ class Organizations(OrganizationsModule):
             method=REQUEST_METHOD_POST,
             json=json,
             headers=headers,
-            token=workos.api_key,
         )
 
         return Organization.model_validate(response)
@@ -186,10 +172,7 @@ class Organizations(OrganizationsModule):
         }
 
         response = self._http_client.request(
-            f"organizations/{organization_id}",
-            method=REQUEST_METHOD_PUT,
-            json=json,
-            token=workos.api_key,
+            f"organizations/{organization_id}", method=REQUEST_METHOD_PUT, json=json
         )
 
         return Organization.model_validate(response)
@@ -203,5 +186,4 @@ class Organizations(OrganizationsModule):
         self._http_client.request(
             f"organizations/{organization_id}",
             method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
         )

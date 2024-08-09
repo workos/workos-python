@@ -6,7 +6,6 @@ from typing import Optional, Protocol
 from workos.types.webhooks.webhook import Webhook
 from workos.types.webhooks.webhook_payload import WebhookPayload
 from workos.typing.webhooks import WebhookTypeAdapter
-from workos.utils.validation import Module, validate_settings
 
 
 class WebhooksModule(Protocol):
@@ -35,10 +34,6 @@ class WebhooksModule(Protocol):
 
 class Webhooks(WebhooksModule):
     """Offers methods through the WorkOS Webhooks service."""
-
-    @validate_settings(Module.WEBHOOKS)
-    def __init__(self) -> None:
-        pass
 
     DEFAULT_TOLERANCE = 180
 

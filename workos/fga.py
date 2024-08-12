@@ -11,7 +11,8 @@ from workos.types.fga import (
     WarrantWrite,
     WarrantWriteOperation,
     WriteWarrantResponse,
-    WarrantQueryResult, CheckOperations,
+    WarrantQueryResult,
+    CheckOperations,
 )
 from workos.types.fga.list_filters import (
     ResourceListFilters,

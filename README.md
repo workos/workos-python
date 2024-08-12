@@ -25,13 +25,24 @@ python setup.py install
 
 ## Configuration
 
-The package will need to be configured with your [api key](https://dashboard.workos.com/api-keys) at a minimum and [client id](https://dashboard.workos.com/sso/configuration) if you plan on using SSO:
+The package will need to be configured with your [api key and client ID](https://dashboard.workos.com/api-keys).
 
 ```python
-import workos
+from workos import WorkOSClient
 
-workos.api_key = "sk_1234"
-workos.client_id = "client_1234"
+workos_client = WorkOSClient(
+    api_key="sk_1234", client_id="client_1234"
+)
+```
+
+The SDK also provides asyncio support for some SDK methods, via the async client:
+
+```python
+from workos import AsyncWorkOSClient
+
+async_workos_client = AsyncWorkOSClient(
+    api_key="sk_1234", client_id="client_1234"
+)
 ```
 
 ## SDK Versioning

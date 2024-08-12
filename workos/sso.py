@@ -19,7 +19,7 @@ from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
     ListPage,
-    WorkOsListResource,
+    WorkOSListResource,
 )
 
 AUTHORIZATION_PATH = "sso/authorize"
@@ -35,7 +35,7 @@ class ConnectionsListFilters(ListArgs, total=False):
     organization_id: Optional[str]
 
 
-ConnectionsListResource = WorkOsListResource[
+ConnectionsListResource = WorkOSListResource[
     ConnectionWithDomains, ConnectionsListFilters, ListMetadata
 ]
 
@@ -235,7 +235,7 @@ class SSO(SSOModule):
             params=params,
         )
 
-        return WorkOsListResource[
+        return WorkOSListResource[
             ConnectionWithDomains, ConnectionsListFilters, ListMetadata
         ](
             list_method=self.list_connections,
@@ -364,7 +364,7 @@ class AsyncSSO(SSOModule):
             "connections", method=REQUEST_METHOD_GET, params=params
         )
 
-        return WorkOsListResource[
+        return WorkOSListResource[
             ConnectionWithDomains, ConnectionsListFilters, ListMetadata
         ](
             list_method=self.list_connections,

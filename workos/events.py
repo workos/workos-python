@@ -5,14 +5,10 @@ from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT, REQUEST_METHOD_GET
 from workos.types.events import Event, EventType
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
-from workos.types.list_resource import (
-    ListAfterMetadata,
-    ListPage,
-    WorkOsListResource,
-)
+from workos.types.list_resource import ListAfterMetadata, ListPage, WorkOSListResource
 
 
-EventsListResource = WorkOsListResource[Event, EventsListFilters, ListAfterMetadata]
+EventsListResource = WorkOSListResource[Event, EventsListFilters, ListAfterMetadata]
 
 
 class EventsModule(Protocol):
@@ -72,7 +68,7 @@ class Events(EventsModule):
         response = self._http_client.request(
             "events", method=REQUEST_METHOD_GET, params=params
         )
-        return WorkOsListResource[Event, EventsListFilters, ListAfterMetadata](
+        return WorkOSListResource[Event, EventsListFilters, ListAfterMetadata](
             list_method=self.list_events,
             list_args=params,
             **ListPage[Event](**response).model_dump(exclude_unset=True),
@@ -123,7 +119,7 @@ class AsyncEvents(EventsModule):
             "events", method=REQUEST_METHOD_GET, params=params
         )
 
-        return WorkOsListResource[Event, EventsListFilters, ListAfterMetadata](
+        return WorkOSListResource[Event, EventsListFilters, ListAfterMetadata](
             list_method=self.list_events,
             list_args=params,
             **ListPage[Event](**response).model_dump(exclude_unset=True),

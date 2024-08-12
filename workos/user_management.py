@@ -1,10 +1,10 @@
-from typing import Optional, Protocol, Set
+from typing import Optional, Protocol, Set, Type
 from workos._client_configuration import ClientConfiguration
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
     ListPage,
-    WorkOsListResource,
+    WorkOSListResource,
 )
 from workos.types.mfa import (
     AuthenticationFactor,
@@ -31,6 +31,10 @@ from workos.types.user_management.authenticate_with_common import (
     AuthenticateWithPasswordParameters,
     AuthenticateWithRefreshTokenParameters,
     AuthenticateWithTotpParameters,
+)
+from workos.types.user_management.authentication_response import (
+    AuthKitAuthenticationResponse,
+    AuthenticationResponseType,
 )
 from workos.types.user_management.list_filters import (
     AuthenticationFactorsListFilters,
@@ -85,17 +89,17 @@ PASSWORD_RESET_PATH = "user_management/password_reset"
 PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
 
 
-UsersListResource = WorkOsListResource[User, UsersListFilters, ListMetadata]
+UsersListResource = WorkOSListResource[User, UsersListFilters, ListMetadata]
 
-OrganizationMembershipsListResource = WorkOsListResource[
+OrganizationMembershipsListResource = WorkOSListResource[
     OrganizationMembership, OrganizationMembershipsListFilters, ListMetadata
 ]
 
-AuthenticationFactorsListResource = WorkOsListResource[
+AuthenticationFactorsListResource = WorkOSListResource[
     AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
 ]
 
-InvitationsListResource = WorkOsListResource[
+InvitationsListResource = WorkOSListResource[
     Invitation, InvitationsListFilters, ListMetadata
 ]
 
@@ -249,8 +253,10 @@ class UserManagementModule(Protocol):
         )
 
     def _authenticate_with(
-        self, payload: AuthenticateWithParameters
-    ) -> SyncOrAsync[AuthenticationResponse]: ...
+        self,
+        payload: AuthenticateWithParameters,
+        response_model: Type[AuthenticationResponseType],
+    ) -> SyncOrAsync[AuthenticationResponseType]: ...
 
     def authenticate_with_password(
         self,
@@ -664,7 +670,7 @@ class UserManagement(UserManagementModule):
             order (Order): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
 
         Returns:
-            WorkOsListResource: Organization Memberships response from WorkOS.
+            WorkOSListResource: Organization Memberships response from WorkOS.
         """
 
         params: OrganizationMembershipsListFilters = {
@@ -733,8 +739,10 @@ class UserManagement(UserManagementModule):
         return OrganizationMembership.model_validate(response)
 
     def _authenticate_with(
-        self, payload: AuthenticateWithParameters
-    ) -> AuthenticationResponse:
+        self,
+        payload: AuthenticateWithParameters,
+        response_model: Type[AuthenticationResponseType],
+    ) -> AuthenticationResponseType:
         json = {
             "client_id": self._http_client.client_id,
             "client_secret": self._http_client.api_key,
@@ -747,7 +755,7 @@ class UserManagement(UserManagementModule):
             json=json,
         )
 
-        return AuthenticationResponse.model_validate(response)
+        return response_model.model_validate(response)
 
     def authenticate_with_password(
         self,
@@ -777,7 +785,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(payload, response_model=AuthenticationResponse)
 
     def authenticate_with_code(
         self,
@@ -786,7 +794,7 @@ class UserManagement(UserManagementModule):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> AuthenticationResponse:
+    ) -> AuthKitAuthenticationResponse:
         """Authenticates an OAuth user or a user that is logging in through SSO.
 
         Kwargs:
@@ -810,7 +818,9 @@ class UserManagement(UserManagementModule):
             "code_verifier": code_verifier,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(
+            payload, response_model=AuthKitAuthenticationResponse
+        )
 
     def authenticate_with_magic_auth(
         self,
@@ -843,7 +853,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(payload, response_model=AuthenticationResponse)
 
     def authenticate_with_email_verification(
         self,
@@ -873,7 +883,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(payload, response_model=AuthenticationResponse)
 
     def authenticate_with_totp(
         self,
@@ -906,7 +916,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(payload, response_model=AuthenticationResponse)
 
     def authenticate_with_organization_selection(
         self,
@@ -936,7 +946,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(payload, response_model=AuthenticationResponse)
 
     def authenticate_with_refresh_token(
         self,
@@ -958,9 +968,7 @@ class UserManagement(UserManagementModule):
             RefreshTokenAuthenticationResponse: Refresh Token Authentication response from WorkOS.
         """
 
-        json: AuthenticateWithRefreshTokenParameters = {
-            "client_id": self._http_client.client_id,
-            "client_secret": self._http_client.api_key,
+        payload: AuthenticateWithRefreshTokenParameters = {
             "refresh_token": refresh_token,
             "organization_id": organization_id,
             "grant_type": "refresh_token",
@@ -968,11 +976,9 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        response = self._http_client.request(
-            USER_AUTHENTICATE_PATH, method=REQUEST_METHOD_POST, json=json
+        return self._authenticate_with(
+            payload, response_model=RefreshTokenAuthenticationResponse
         )
-
-        return RefreshTokenAuthenticationResponse.model_validate(response)
 
     def get_password_reset(self, password_reset_id: str) -> PasswordReset:
         """Get the details of a password reset object.
@@ -1184,7 +1190,7 @@ class UserManagement(UserManagementModule):
             user_id (str): The unique ID of the User to list the auth factors for.
 
         Returns:
-            WorkOsListResource: List of Authentication Factors for a User from WorkOS.
+            WorkOSListResource: List of Authentication Factors for a User from WorkOS.
         """
 
         params: ListArgs = {
@@ -1270,7 +1276,7 @@ class UserManagement(UserManagementModule):
             order (Order): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
 
         Returns:
-            WorkOsListResource: Invitations list response from WorkOS.
+            WorkOSListResource: Invitations list response from WorkOS.
         """
 
         params: InvitationsListFilters = {
@@ -1598,7 +1604,7 @@ class AsyncUserManagement(UserManagementModule):
             order (Order): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
 
         Returns:
-            WorkOsListResource: Organization Memberships response from WorkOS.
+            WorkOSListResource: Organization Memberships response from WorkOS.
         """
 
         params: OrganizationMembershipsListFilters = {
@@ -1669,8 +1675,10 @@ class AsyncUserManagement(UserManagementModule):
         return OrganizationMembership.model_validate(response)
 
     async def _authenticate_with(
-        self, payload: AuthenticateWithParameters
-    ) -> AuthenticationResponse:
+        self,
+        payload: AuthenticateWithParameters,
+        response_model: Type[AuthenticationResponseType],
+    ) -> AuthenticationResponseType:
         json = {
             "client_id": self._http_client.client_id,
             "client_secret": self._http_client.api_key,
@@ -1683,7 +1691,7 @@ class AsyncUserManagement(UserManagementModule):
             json=json,
         )
 
-        return AuthenticationResponse.model_validate(response)
+        return response_model.model_validate(response)
 
     async def authenticate_with_password(
         self,
@@ -1713,7 +1721,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthenticationResponse
+        )
 
     async def authenticate_with_code(
         self,
@@ -1722,7 +1732,7 @@ class AsyncUserManagement(UserManagementModule):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> AuthenticationResponse:
+    ) -> AuthKitAuthenticationResponse:
         """Authenticates an OAuth user or a user that is logging in through SSO.
 
         Kwargs:
@@ -1746,7 +1756,9 @@ class AsyncUserManagement(UserManagementModule):
             "code_verifier": code_verifier,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthKitAuthenticationResponse
+        )
 
     async def authenticate_with_magic_auth(
         self,
@@ -1779,7 +1791,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthenticationResponse
+        )
 
     async def authenticate_with_email_verification(
         self,
@@ -1809,7 +1823,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthenticationResponse
+        )
 
     async def authenticate_with_totp(
         self,
@@ -1842,7 +1858,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthenticationResponse
+        )
 
     async def authenticate_with_organization_selection(
         self,
@@ -1872,7 +1890,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthenticationResponse
+        )
 
     async def authenticate_with_refresh_token(
         self,
@@ -1894,9 +1914,7 @@ class AsyncUserManagement(UserManagementModule):
             RefreshTokenAuthenticationResponse: Refresh Token Authentication response from WorkOS.
         """
 
-        json = {
-            "client_id": self._http_client.client_id,
-            "client_secret": self._http_client.api_key,
+        payload: AuthenticateWithRefreshTokenParameters = {
             "refresh_token": refresh_token,
             "organization_id": organization_id,
             "grant_type": "refresh_token",
@@ -1904,13 +1922,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        response = await self._http_client.request(
-            USER_AUTHENTICATE_PATH,
-            method=REQUEST_METHOD_POST,
-            json=json,
+        return await self._authenticate_with(
+            payload, response_model=RefreshTokenAuthenticationResponse
         )
-
-        return RefreshTokenAuthenticationResponse.model_validate(response)
 
     async def get_password_reset(self, password_reset_id: str) -> PasswordReset:
         """Get the details of a password reset object.
@@ -2124,7 +2138,7 @@ class AsyncUserManagement(UserManagementModule):
             user_id (str): The unique ID of the User to list the auth factors for.
 
         Returns:
-            WorkOsListResource: List of Authentication Factors for a User from WorkOS.
+            WorkOSListResource: List of Authentication Factors for a User from WorkOS.
         """
 
         params: ListArgs = {
@@ -2209,7 +2223,7 @@ class AsyncUserManagement(UserManagementModule):
             order (Order): Sort records in either ascending or descending order by created_at timestamp: "asc" or "desc" (Optional)
 
         Returns:
-            WorkOsListResource: Invitations list response from WorkOS.
+            WorkOSListResource: Invitations list response from WorkOS.
         """
 
         params: InvitationsListFilters = {

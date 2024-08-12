@@ -83,7 +83,6 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         params: ParamsType = None,
         json: JsonType = None,
         headers: HeadersType = None,
-        token: Optional[str] = None,
     ) -> ResponseJson:
         """Executes a request against the WorkOS API.
 

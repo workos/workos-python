@@ -1,6 +1,4 @@
 from typing import Any, Dict, List, Optional, Protocol
-
-import workos
 from workos.types.fga import (
     CheckOperation,
     CheckResponse,
@@ -28,7 +26,6 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_PUT,
     RequestHelper,
 )
-from workos.utils.validation import Module, validate_settings
 
 DEFAULT_RESPONSE_LIMIT = 10
 
@@ -119,7 +116,6 @@ class FGAModule(Protocol):
 class FGA(FGAModule):
     _http_client: SyncHTTPClient
 
-    @validate_settings(Module.FGA)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -140,7 +136,6 @@ class FGA(FGAModule):
                 resource_id=resource_id,
             ),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         return Resource.model_validate(response)
@@ -167,7 +162,6 @@ class FGA(FGAModule):
         response = self._http_client.request(
             "fga/v1/resources",
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
             params=list_params,
         )
 
@@ -191,7 +185,6 @@ class FGA(FGAModule):
         response = self._http_client.request(
             "fga/v1/resources",
             method=REQUEST_METHOD_POST,
-            token=workos.api_key,
             json={
                 "resource_type": resource_type,
                 "resource_id": resource_id,
@@ -219,7 +212,6 @@ class FGA(FGAModule):
                 resource_id=resource_id,
             ),
             method=REQUEST_METHOD_PUT,
-            token=workos.api_key,
             json={"meta": meta},
         )
 
@@ -238,7 +230,6 @@ class FGA(FGAModule):
                 resource_id=resource_id,
             ),
             method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
         )
 
     def list_resource_types(
@@ -259,7 +250,6 @@ class FGA(FGAModule):
         response = self._http_client.request(
             "fga/v1/resource-types",
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
             params=list_params,
         )
 
@@ -299,7 +289,6 @@ class FGA(FGAModule):
         response = self._http_client.request(
             "fga/v1/warrants",
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
             params=list_params,
             headers={"Warrant-Token": warrant_token} if warrant_token else None,
         )
@@ -338,7 +327,6 @@ class FGA(FGAModule):
         response = self._http_client.request(
             "fga/v1/warrants",
             method=REQUEST_METHOD_POST,
-            token=workos.api_key,
             json=params,
         )
 
@@ -351,7 +339,6 @@ class FGA(FGAModule):
         response = self._http_client.request(
             "fga/v1/warrants",
             method=REQUEST_METHOD_POST,
-            token=workos.api_key,
             json=[warrant.dict() for warrant in batch],
         )
 
@@ -376,7 +363,6 @@ class FGA(FGAModule):
         response = self._http_client.request(
             "fga/v1/check",
             method=REQUEST_METHOD_POST,
-            token=workos.api_key,
             json=body,
             headers={"Warrant-Token": warrant_token} if warrant_token else None,
         )

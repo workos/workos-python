@@ -3,6 +3,7 @@ import os
 from typing import Generic, Optional, Type, TypeVar
 
 from workos.__about__ import __version__
+from workos.fga import FGAModule
 from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
 from workos.utils.http_client import HTTPClient
 from workos.audit_logs import AuditLogsModule
@@ -84,6 +85,10 @@ class BaseClient(Generic[HTTPClientType]):
     @property
     @abstractmethod
     def events(self) -> EventsModule: ...
+
+    @property
+    @abstractmethod
+    def fga(self) -> FGAModule: ...
 
     @property
     @abstractmethod

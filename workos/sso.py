@@ -138,9 +138,7 @@ class SSO(SSOModule):
         Returns:
             Profile
         """
-        response = self._http_client.request(
-            PROFILE_PATH, method=REQUEST_METHOD_GET, token=access_token
-        )
+        response = self._http_client.request(PROFILE_PATH, method=REQUEST_METHOD_GET)
 
         return Profile.model_validate(response)
 

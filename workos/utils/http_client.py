@@ -1,7 +1,9 @@
 import asyncio
 from types import TracebackType
 from typing import Optional, Type, Union
-from typing_extensions import Self  # type: ignore shadowed import, Self was added to typing in 3.11
+
+# Self was added to typing in Python 3.11
+from typing_extensions import Self
 
 import httpx
 

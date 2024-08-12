@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Literal, Optional
+from typing import Literal, Optional, Dict, Any
 
 from workos.types.workos_model import WorkOSModel
 
@@ -35,7 +35,14 @@ class WarrantWrite(WorkOSModel):
     resource_type: str
     resource_id: str
     relation: str
-    subject_type: str
-    subject_id: str
-    subject_relation: Optional[str] = None
+    subject: Subject
     policy: Optional[str] = None
+
+
+class WarrantQueryResult(WorkOSModel):
+    resource_type: str
+    resource_id: str
+    relation: str
+    warrant: Warrant
+    is_implicit: bool
+    meta: Optional[Dict[str, Any]] = None

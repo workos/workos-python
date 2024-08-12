@@ -4,6 +4,7 @@ from workos._base_client import BaseClient
 from workos.audit_logs import AuditLogsModule
 from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
+from workos.fga import FGAModule
 from workos.mfa import MFAModule
 from workos.organizations import OrganizationsModule
 from workos.passwordless import PasswordlessModule
@@ -58,6 +59,10 @@ class AsyncClient(BaseClient[AsyncHTTPClient]):
         if not getattr(self, "_events", None):
             self._events = AsyncEvents(self._http_client)
         return self._events
+
+    @property
+    def fga(self) -> FGAModule:
+        raise NotImplementedError("FGA APIs are not yet supported in the async client.")
 
     @property
     def organizations(self) -> OrganizationsModule:

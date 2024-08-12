@@ -14,15 +14,12 @@ from workos.types.fga import (
     WarrantWrite,
     WarrantWriteOperations,
 )
-from workos.utils.http_client import SyncHTTPClient
 
 
 class TestValidation:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.fga = FGA(http_client=self.http_client)
 
     def test_get_resource_no_resources(self):
@@ -64,10 +61,8 @@ class TestValidation:
 
 class TestErrorHandling:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.fga = FGA(http_client=self.http_client)
 
     @pytest.fixture
@@ -110,10 +105,8 @@ class TestErrorHandling:
 
 class TestFGA:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.fga = FGA(http_client=self.http_client)
 
     @pytest.fixture
@@ -342,12 +335,12 @@ class TestFGA:
 
         response = self.fga.write_warrant(
             op=WarrantWriteOperations.CREATE.value,
-            resource_type="permission",
-            resource_id="view-balance-sheet",
-            relation="member",
             subject_type="role",
             subject_id="senior-accountant",
             subject_relation="member",
+            relation="member",
+            resource_type="permission",
+            resource_id="view-balance-sheet",
         )
         assert response.dict(exclude_none=True) == mock_write_warrant_response
 
@@ -365,17 +358,21 @@ class TestFGA:
                     resource_type="permission",
                     resource_id="view-balance-sheet",
                     relation="member",
-                    subject_type="role",
-                    subject_id="senior-accountant",
-                    subject_relation="member",
+                    subject=Subject(
+                        resource_type="role",
+                        resource_id="senior-accountant",
+                        relation="member",
+                    ),
                 ),
                 WarrantWrite(
                     op=WarrantWriteOperations.CREATE.value,
                     resource_type="permission",
                     resource_id="balance-sheet:edit",
                     relation="member",
-                    subject_type="user",
-                    subject_id="user-b",
+                    subject=Subject(
+                        resource_type="user",
+                        resource_id="user-b",
+                    ),
                 ),
             ]
         )
@@ -463,3 +460,79 @@ class TestFGA:
             debug=True,
         )
         assert response.dict(exclude_none=True) == mock_check_response_with_debug_info
+
+    @pytest.fixture
+    def mock_batch_check_response(self):
+        return [
+            {"result": "authorized", "is_implicit": True},
+            {"result": "not_authorized", "is_implicit": True},
+        ]
+
+    def test_check_batch(
+        self, mock_batch_check_response, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(self.http_client, mock_batch_check_response, 200)
+
+        response = self.fga.check_batch(
+            checks=[
+                WarrantCheck(
+                    resource_type="schedule",
+                    resource_id="schedule-A1",
+                    relation="viewer",
+                    subject=Subject(resource_type="user", resource_id="user-A"),
+                ),
+                WarrantCheck(
+                    resource_type="schedule",
+                    resource_id="schedule-A1",
+                    relation="editor",
+                    subject=Subject(resource_type="user", resource_id="user-B"),
+                ),
+            ]
+        )
+
+        assert [
+            r.dict(exclude_none=True) for r in response
+        ] == mock_batch_check_response
+
+    @pytest.fixture
+    def mock_query_response(self):
+        return {
+            "object": "list",
+            "data": [
+                {
+                    "resource_type": "user",
+                    "resource_id": "richard",
+                    "relation": "member",
+                    "warrant": {
+                        "resource_type": "role",
+                        "resource_id": "developer",
+                        "relation": "member",
+                        "subject": {"resource_type": "user", "resource_id": "richard"},
+                    },
+                    "is_implicit": True,
+                },
+                {
+                    "resource_type": "user",
+                    "resource_id": "tom",
+                    "relation": "member",
+                    "warrant": {
+                        "resource_type": "role",
+                        "resource_id": "manager",
+                        "relation": "member",
+                        "subject": {"resource_type": "user", "resource_id": "tom"},
+                    },
+                    "is_implicit": True,
+                },
+            ],
+            "list_metadata": {},
+        }
+
+    def test_query(self, mock_query_response, mock_http_client_with_response):
+        mock_http_client_with_response(self.http_client, mock_query_response, 200)
+
+        response = self.fga.query(
+            q="select member of type user for permission:view-docs",
+            order="asc",
+            warrant_token="warrant_token",
+        )
+        assert response.dict(exclude_none=True) == mock_query_response

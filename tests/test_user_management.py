@@ -10,11 +10,8 @@ from tests.utils.fixtures.mock_magic_auth import MockMagicAuth
 from tests.utils.fixtures.mock_organization_membership import MockOrganizationMembership
 from tests.utils.fixtures.mock_password_reset import MockPasswordReset
 from tests.utils.fixtures.mock_user import MockUser
-
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
-import workos
 from workos.user_management import AsyncUserManagement, UserManagement
-from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.request_helper import RESPONSE_TYPE_CODE
 
 
@@ -145,10 +142,8 @@ class UserManagementFixtures:
 
 class TestUserManagementBase(UserManagementFixtures):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key, set_client_id):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.user_management = UserManagement(http_client=self.http_client)
 
     def test_authorization_url_throws_value_error_with_missing_connection_organization_and_provider(
@@ -170,7 +165,7 @@ class TestUserManagementBase(UserManagementFixtures):
         assert parsed_url.path == "/user_management/authorize"
         assert dict(parse_qsl(str(parsed_url.query))) == {
             "connection_id": connection_id,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
@@ -187,7 +182,7 @@ class TestUserManagementBase(UserManagementFixtures):
         assert parsed_url.path == "/user_management/authorize"
         assert dict(parse_qsl(str(parsed_url.query))) == {
             "organization_id": organization_id,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
@@ -203,7 +198,7 @@ class TestUserManagementBase(UserManagementFixtures):
         assert parsed_url.path == "/user_management/authorize"
         assert dict(parse_qsl(str(parsed_url.query))) == {
             "provider": provider,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
@@ -223,7 +218,7 @@ class TestUserManagementBase(UserManagementFixtures):
         assert parsed_url.path == "/user_management/authorize"
         assert dict(parse_qsl(str(parsed_url.query))) == {
             "domain_hint": domain_hint,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": redirect_uri,
             "connection_id": connection_id,
             "response_type": RESPONSE_TYPE_CODE,
@@ -244,7 +239,7 @@ class TestUserManagementBase(UserManagementFixtures):
         assert parsed_url.path == "/user_management/authorize"
         assert dict(parse_qsl(str(parsed_url.query))) == {
             "login_hint": login_hint,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": redirect_uri,
             "connection_id": connection_id,
             "response_type": RESPONSE_TYPE_CODE,
@@ -265,7 +260,7 @@ class TestUserManagementBase(UserManagementFixtures):
         assert parsed_url.path == "/user_management/authorize"
         assert dict(parse_qsl(str(parsed_url.query))) == {
             "state": state,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": redirect_uri,
             "connection_id": connection_id,
             "response_type": RESPONSE_TYPE_CODE,
@@ -287,21 +282,24 @@ class TestUserManagementBase(UserManagementFixtures):
         assert dict(parse_qsl(str(parsed_url.query))) == {
             "code_challenge": code_challenge,
             "code_challenge_method": "S256",
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": redirect_uri,
             "connection_id": connection_id,
             "response_type": RESPONSE_TYPE_CODE,
         }
 
     def test_get_jwks_url(self):
-        expected = "%ssso/jwks/%s" % (workos.base_api_url, workos.client_id)
+        expected = "%ssso/jwks/%s" % (
+            self.http_client.base_url,
+            self.http_client.client_id,
+        )
         result = self.user_management.get_jwks_url()
 
         assert expected == result
 
     def test_get_logout_url(self):
         expected = "%suser_management/sessions/logout?session_id=%s" % (
-            workos.base_api_url,
+            self.http_client.base_url,
             "session_123",
         )
         result = self.user_management.get_logout_url("session_123")
@@ -311,10 +309,8 @@ class TestUserManagementBase(UserManagementFixtures):
 
 class TestUserManagement(UserManagementFixtures):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key, set_client_id):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.user_management = UserManagement(http_client=self.http_client)
 
     def test_get_user(self, mock_user, capture_and_mock_http_client_request):
@@ -948,10 +944,8 @@ class TestUserManagement(UserManagementFixtures):
 @pytest.mark.asyncio
 class TestAsyncUserManagement(UserManagementFixtures):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key, set_client_id):
-        self.http_client = AsyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, async_http_client_for_test):
+        self.http_client = async_http_client_for_test
         self.user_management = AsyncUserManagement(http_client=self.http_client)
 
     async def test_get_user(self, mock_user, capture_and_mock_http_client_request):

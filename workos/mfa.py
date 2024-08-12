@@ -1,5 +1,5 @@
 from typing import Optional, Protocol
-import workos
+
 from workos.types.mfa.enroll_authentication_factor_type import (
     EnrollAuthenticationFactorType,
 )
@@ -10,7 +10,6 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_GET,
     RequestHelper,
 )
-from workos.utils.validation import Module, validate_settings
 from workos.types.mfa import (
     AuthenticationChallenge,
     AuthenticationChallengeVerificationResponse,
@@ -50,7 +49,6 @@ class Mfa(MFAModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(Module.MFA)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -92,10 +90,7 @@ class Mfa(MFAModule):
             )
 
         response = self._http_client.request(
-            "auth/factors/enroll",
-            method=REQUEST_METHOD_POST,
-            json=json,
-            token=workos.api_key,
+            "auth/factors/enroll", method=REQUEST_METHOD_POST, json=json
         )
 
         if type == "totp":
@@ -119,7 +114,6 @@ class Mfa(MFAModule):
                 authentication_factor_id=authentication_factor_id,
             ),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         if response["type"] == "totp":
@@ -143,7 +137,6 @@ class Mfa(MFAModule):
                 authentication_factor_id=authentication_factor_id,
             ),
             method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
         )
 
     def challenge_factor(
@@ -172,7 +165,6 @@ class Mfa(MFAModule):
             ),
             method=REQUEST_METHOD_POST,
             json=json,
-            token=workos.api_key,
         )
 
         return AuthenticationChallenge.model_validate(response)
@@ -201,7 +193,6 @@ class Mfa(MFAModule):
             ),
             method=REQUEST_METHOD_POST,
             json=json,
-            token=workos.api_key,
         )
 
         return AuthenticationChallengeVerificationResponse.model_validate(response)

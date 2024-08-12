@@ -1,15 +1,10 @@
 from typing import Optional, Protocol
-import workos
 from workos.types.sso.connection import ConnectionType
 from workos.types.sso.sso_provider_type import SsoProviderType
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
-from workos.types.sso import (
-    ConnectionWithDomains,
-    Profile,
-    ProfileAndToken,
-)
+from workos.types.sso import ConnectionWithDomains, Profile, ProfileAndToken
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     RESPONSE_TYPE_CODE,
@@ -19,7 +14,6 @@ from workos.utils.request_helper import (
     QueryParameters,
     RequestHelper,
 )
-from workos.utils.validation import Module, validate_settings
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -76,7 +70,7 @@ class SSOModule(Protocol):
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
         params: QueryParameters = {
-            "client_id": workos.client_id,
+            "client_id": self._http_client.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
@@ -131,7 +125,6 @@ class SSO(SSOModule):
 
     _http_client: SyncHTTPClient
 
-    @validate_settings(Module.SSO)
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
@@ -164,8 +157,8 @@ class SSO(SSOModule):
             ProfileAndToken: WorkOSProfileAndToken object representing the User
         """
         json = {
-            "client_id": workos.client_id,
-            "client_secret": workos.api_key,
+            "client_id": self._http_client.client_id,
+            "client_secret": self._http_client.api_key,
             "code": code,
             "grant_type": OAUTH_GRANT_TYPE,
         }
@@ -188,7 +181,6 @@ class SSO(SSOModule):
         response = self._http_client.request(
             f"connections/{connection_id}",
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         return ConnectionWithDomains.model_validate(response)
@@ -232,7 +224,6 @@ class SSO(SSOModule):
             "connections",
             method=REQUEST_METHOD_GET,
             params=params,
-            token=workos.api_key,
         )
 
         return WorkOsListResource[
@@ -250,9 +241,7 @@ class SSO(SSOModule):
             connection (str): Connection unique identifier
         """
         self._http_client.request(
-            f"connections/{connection_id}",
-            method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
+            f"connections/{connection_id}", method=REQUEST_METHOD_DELETE
         )
 
 
@@ -261,7 +250,6 @@ class AsyncSSO(SSOModule):
 
     _http_client: AsyncHTTPClient
 
-    @validate_settings(Module.SSO)
     def __init__(self, http_client: AsyncHTTPClient):
         self._http_client = http_client
 
@@ -276,7 +264,10 @@ class AsyncSSO(SSOModule):
             Profile
         """
         response = await self._http_client.request(
-            PROFILE_PATH, method=REQUEST_METHOD_GET, token=access_token
+            PROFILE_PATH,
+            method=REQUEST_METHOD_GET,
+            headers={**self._http_client.auth_header_from_token(access_token)},
+            exclude_default_auth_headers=True,
         )
 
         return Profile.model_validate(response)
@@ -294,8 +285,8 @@ class AsyncSSO(SSOModule):
             ProfileAndToken: WorkOSProfileAndToken object representing the User
         """
         json = {
-            "client_id": workos.client_id,
-            "client_secret": workos.api_key,
+            "client_id": self._http_client.client_id,
+            "client_secret": self._http_client.api_key,
             "code": code,
             "grant_type": OAUTH_GRANT_TYPE,
         }
@@ -318,7 +309,6 @@ class AsyncSSO(SSOModule):
         response = await self._http_client.request(
             f"connections/{connection_id}",
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         return ConnectionWithDomains.model_validate(response)
@@ -359,10 +349,7 @@ class AsyncSSO(SSOModule):
         }
 
         response = await self._http_client.request(
-            "connections",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
+            "connections", method=REQUEST_METHOD_GET, params=params
         )
 
         return WorkOsListResource[
@@ -382,5 +369,4 @@ class AsyncSSO(SSOModule):
         await self._http_client.request(
             f"connections/{connection_id}",
             method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
         )

@@ -1,7 +1,7 @@
 import asyncio
 from types import TracebackType
 from typing import Optional, Type, Union
-from typing_extensions import Self
+from typing_extensions import Self  # type: ignore shadowed import, Self was added to typing in 3.11
 
 import httpx
 
@@ -83,7 +83,6 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         params: ParamsType = None,
         json: JsonType = None,
         headers: HeadersType = None,
-        token: Optional[str] = None,
     ) -> ResponseJson:
         """Executes a request against the WorkOS API.
 
@@ -94,7 +93,6 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
             params (ParamsType): Query params to be added to the request
             json (JsonType): Body payload to be added to the request
-            token (str): Bearer token
 
         Returns:
             ResponseJson: Response from WorkOS
@@ -185,7 +183,6 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
             params (ParamsType): Query params to be added to the request
             json (JsonType): Body payload to be added to the request
-            token (str): Bearer token
 
         Returns:
             ResponseJson: Response from WorkOS

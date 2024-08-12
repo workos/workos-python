@@ -11,7 +11,7 @@ from workos.types.fga import (
     WarrantWrite,
     WarrantWriteOperation,
     WriteWarrantResponse,
-    WarrantQueryResult,
+    WarrantQueryResult, CheckOperations,
 )
 from workos.types.fga.list_filters import (
     ResourceListFilters,
@@ -572,6 +572,7 @@ class FGA(FGAModule):
 
         body = {
             "checks": [check.dict() for check in checks],
+            "op": CheckOperations.BATCH.value,
             "debug": debug,
         }
 

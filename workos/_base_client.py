@@ -1,6 +1,6 @@
 from abc import abstractmethod
 import os
-from typing import Generic, Optional, Protocol, Type, TypeVar
+from typing import Optional, Protocol
 
 from workos.__about__ import __version__
 from workos.fga import FGAModule
@@ -18,24 +18,22 @@ from workos.user_management import UserManagementModule
 from workos.webhooks import WebhooksModule
 
 
-HTTPClientType = TypeVar("HTTPClientType", bound=HTTPClient)
-
-
 class ClientConfiguration(Protocol):
     @property
     def base_url(self) -> str: ...
     @property
     def client_id(self) -> str: ...
+    @property
+    def request_timeout(self) -> int: ...
 
 
-class BaseClient(Generic[HTTPClientType], ClientConfiguration):
+class BaseClient(ClientConfiguration):
     """Base client for accessing the WorkOS feature set."""
 
     _api_key: str
     _base_url: str
     _client_id: str
     _request_timeout: int
-    _http_client: HTTPClient
 
     def __init__(
         self,
@@ -44,7 +42,6 @@ class BaseClient(Generic[HTTPClientType], ClientConfiguration):
         client_id: Optional[str],
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
-        http_client_cls: Type[HTTPClientType],
     ) -> None:
         api_key = api_key or os.getenv("WORKOS_API_KEY")
         if api_key is None:
@@ -71,14 +68,6 @@ class BaseClient(Generic[HTTPClientType], ClientConfiguration):
             request_timeout
             if request_timeout
             else int(os.getenv("WORKOS_REQUEST_TIMEOUT", DEFAULT_REQUEST_TIMEOUT))
-        )
-
-        self._http_client = http_client_cls(
-            api_key=self._api_key,
-            base_url=self._base_url,
-            client_id=self._client_id,
-            version=__version__,
-            timeout=self._request_timeout,
         )
 
     @property
@@ -132,3 +121,7 @@ class BaseClient(Generic[HTTPClientType], ClientConfiguration):
     @property
     def client_id(self) -> str:
         return self._client_id
+
+    @property
+    def request_timeout(self) -> int:
+        return self._request_timeout

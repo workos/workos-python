@@ -1,4 +1,7 @@
 from typing import Optional, Protocol, Set
+
+from httpx._client import Client
+from workos._base_client import ClientConfiguration
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -100,7 +103,7 @@ InvitationsListResource = WorkOsListResource[
 
 
 class UserManagementModule(Protocol):
-    _http_client: HTTPClient
+    _client_configuration: ClientConfiguration
 
     def get_user(self, user_id: str) -> SyncOrAsync[User]: ...
 
@@ -215,7 +218,7 @@ class UserManagementModule(Protocol):
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
         params: QueryParameters = {
-            "client_id": self._http_client.client_id,
+            "client_id": self._client_configuration.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
@@ -242,7 +245,9 @@ class UserManagementModule(Protocol):
             params["code_challenge_method"] = "S256"
 
         return RequestHelper.build_url_with_query_params(
-            base_url=self._http_client.base_url, path=USER_AUTHORIZATION_PATH, **params
+            base_url=self._client_configuration.base_url,
+            path=USER_AUTHORIZATION_PATH,
+            **params,
         )
 
     def _authenticate_with(
@@ -321,7 +326,7 @@ class UserManagementModule(Protocol):
             (str): The public JWKS URL.
         """
 
-        return f"{self._http_client.base_url}sso/jwks/{self._http_client.client_id}"
+        return f"{self._client_configuration.base_url}sso/jwks/{self._client_configuration.client_id}"
 
     def get_logout_url(self, session_id: str) -> str:
         """Get the URL for ending the session and redirecting the user
@@ -333,7 +338,7 @@ class UserManagementModule(Protocol):
             (str): URL to redirect the user to to end the session.
         """
 
-        return f"{self._http_client.base_url}user_management/sessions/logout?session_id={session_id}"
+        return f"{self._client_configuration.base_url}user_management/sessions/logout?session_id={session_id}"
 
     def get_password_reset(
         self, password_reset_id: str
@@ -412,7 +417,10 @@ class UserManagement(UserManagementModule):
 
     _http_client: SyncHTTPClient
 
-    def __init__(self, http_client: SyncHTTPClient):
+    def __init__(
+        self, http_client: SyncHTTPClient, client_configuration: ClientConfiguration
+    ):
+        self._client_configuration = client_configuration
         self._http_client = http_client
 
     def get_user(self, user_id: str) -> User:
@@ -1344,7 +1352,10 @@ class AsyncUserManagement(UserManagementModule):
 
     _http_client: AsyncHTTPClient
 
-    def __init__(self, http_client: AsyncHTTPClient):
+    def __init__(
+        self, http_client: AsyncHTTPClient, client_configuration: ClientConfiguration
+    ):
+        self._client_configuration = client_configuration
         self._http_client = http_client
 
     async def get_user(self, user_id: str) -> User:
@@ -1363,6 +1374,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def list_users(
         self,
+        *,
         email: Optional[str] = None,
         organization_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
@@ -1405,6 +1417,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def create_user(
         self,
+        *,
         email: str,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
@@ -1445,6 +1458,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def update_user(
         self,
+        *,
         user_id: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
@@ -1493,7 +1507,7 @@ class AsyncUserManagement(UserManagementModule):
         )
 
     async def create_organization_membership(
-        self, user_id: str, organization_id: str, role_slug: Optional[str] = None
+        self, *, user_id: str, organization_id: str, role_slug: Optional[str] = None
     ) -> OrganizationMembership:
         """Create a new OrganizationMembership for the given Organization and User.
 
@@ -1520,7 +1534,7 @@ class AsyncUserManagement(UserManagementModule):
         return OrganizationMembership.model_validate(response)
 
     async def update_organization_membership(
-        self, organization_membership_id: str, role_slug: Optional[str] = None
+        self, *, organization_membership_id: str, role_slug: Optional[str] = None
     ) -> OrganizationMembership:
         """Updates an OrganizationMembership for the given id.
 
@@ -1565,6 +1579,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def list_organization_memberships(
         self,
+        *,
         user_id: Optional[str] = None,
         organization_id: Optional[str] = None,
         statuses: Optional[Set[OrganizationMembershipStatus]] = None,
@@ -1674,6 +1689,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def authenticate_with_password(
         self,
+        *,
         email: str,
         password: str,
         ip_address: Optional[str] = None,
@@ -1703,6 +1719,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def authenticate_with_code(
         self,
+        *,
         code: str,
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
@@ -1735,6 +1752,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def authenticate_with_magic_auth(
         self,
+        *,
         code: str,
         email: str,
         link_authorization_code: Optional[str] = None,
@@ -1767,6 +1785,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def authenticate_with_email_verification(
         self,
+        *,
         code: str,
         pending_authentication_token: str,
         ip_address: Optional[str] = None,
@@ -1796,6 +1815,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def authenticate_with_totp(
         self,
+        *,
         code: str,
         authentication_challenge_id: str,
         pending_authentication_token: str,
@@ -1828,6 +1848,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def authenticate_with_organization_selection(
         self,
+        *,
         organization_id: str,
         pending_authentication_token: str,
         ip_address: Optional[str] = None,
@@ -1857,6 +1878,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def authenticate_with_refresh_token(
         self,
+        *,
         refresh_token: str,
         organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
@@ -1929,7 +1951,7 @@ class AsyncUserManagement(UserManagementModule):
 
         return PasswordReset.model_validate(response)
 
-    async def reset_password(self, token: str, new_password: str) -> User:
+    async def reset_password(self, *, token: str, new_password: str) -> User:
         """Resets user password using token that was sent to the user.
 
         Kwargs:
@@ -1987,7 +2009,7 @@ class AsyncUserManagement(UserManagementModule):
 
         return User.model_validate(response["user"])
 
-    async def verify_email(self, user_id: str, code: str) -> User:
+    async def verify_email(self, *, user_id: str, code: str) -> User:
         """Verifies user email using one-time code that was sent to the user.
 
         Kwargs:
@@ -2028,6 +2050,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def create_magic_auth(
         self,
+        *,
         email: str,
         invitation_token: Optional[str] = None,
     ) -> MagicAuth:
@@ -2054,6 +2077,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def enroll_auth_factor(
         self,
+        *,
         user_id: str,
         type: AuthenticationFactorType,
         totp_issuer: Optional[str] = None,
@@ -2089,6 +2113,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def list_auth_factors(
         self,
+        *,
         user_id: str,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
@@ -2167,6 +2192,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def list_invitations(
         self,
+        *,
         email: Optional[str] = None,
         organization_id: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
@@ -2209,6 +2235,7 @@ class AsyncUserManagement(UserManagementModule):
 
     async def send_invitation(
         self,
+        *,
         email: str,
         organization_id: Optional[str] = None,
         expires_in_days: Optional[int] = None,

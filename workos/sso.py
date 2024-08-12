@@ -41,7 +41,7 @@ ConnectionsListResource = WorkOsListResource[
 
 
 class SSOModule(Protocol):
-    client_configuration: ClientConfiguration
+    _client_configuration: ClientConfiguration
 
     def get_authorization_url(
         self,
@@ -71,7 +71,7 @@ class SSOModule(Protocol):
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
         params: QueryParameters = {
-            "client_id": self.client_configuration.client_id,
+            "client_id": self._client_configuration.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
@@ -95,7 +95,7 @@ class SSOModule(Protocol):
             params["state"] = state
 
         return RequestHelper.build_url_with_query_params(
-            base_url=self.client_configuration.base_url,
+            base_url=self._client_configuration.base_url,
             path=AUTHORIZATION_PATH,
             **params,
         )
@@ -128,8 +128,10 @@ class SSO(SSOModule):
 
     _http_client: SyncHTTPClient
 
-    def __init__(self, http_client: SyncHTTPClient):
-        self.client_configuration = http_client
+    def __init__(
+        self, http_client: SyncHTTPClient, client_configuration: ClientConfiguration
+    ):
+        self._client_configuration = client_configuration
         self._http_client = http_client
 
     def get_profile(self, access_token: str) -> Profile:
@@ -257,8 +259,10 @@ class AsyncSSO(SSOModule):
 
     _http_client: AsyncHTTPClient
 
-    def __init__(self, http_client: AsyncHTTPClient):
-        self.client_configuration = http_client
+    def __init__(
+        self, http_client: AsyncHTTPClient, client_configuration: ClientConfiguration
+    ):
+        self._client_configuration = client_configuration
         self._http_client = http_client
 
     async def get_profile(self, access_token: str) -> Profile:

@@ -1,5 +1,5 @@
 from typing import Optional
-
+from workos.__about__ import __version__
 from workos._base_client import BaseClient
 from workos.audit_logs import AuditLogsModule
 from workos.directory_sync import AsyncDirectorySync
@@ -15,7 +15,7 @@ from workos.utils.http_client import AsyncHTTPClient
 from workos.webhooks import WebhooksModule
 
 
-class AsyncClient(BaseClient[AsyncHTTPClient]):
+class AsyncClient(BaseClient):
     """Client for a convenient way to access the WorkOS feature set."""
 
     _http_client: AsyncHTTPClient
@@ -33,13 +33,21 @@ class AsyncClient(BaseClient[AsyncHTTPClient]):
             client_id=client_id,
             base_url=base_url,
             request_timeout=request_timeout,
-            http_client_cls=AsyncHTTPClient,
+        )
+        self._http_client = AsyncHTTPClient(
+            api_key=self._api_key,
+            base_url=self._base_url,
+            client_id=self._client_id,
+            version=__version__,
+            timeout=self.request_timeout,
         )
 
     @property
     def sso(self) -> AsyncSSO:
         if not getattr(self, "_sso", None):
-            self._sso = AsyncSSO(self._http_client)
+            self._sso = AsyncSSO(
+                http_client=self._http_client, client_configuration=self
+            )
         return self._sso
 
     @property
@@ -93,5 +101,7 @@ class AsyncClient(BaseClient[AsyncHTTPClient]):
     @property
     def user_management(self) -> AsyncUserManagement:
         if not getattr(self, "_user_management", None):
-            self._user_management = AsyncUserManagement(self._http_client)
+            self._user_management = AsyncUserManagement(
+                http_client=self._http_client, client_configuration=self
+            )
         return self._user_management

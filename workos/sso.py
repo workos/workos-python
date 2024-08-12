@@ -1,4 +1,5 @@
 from typing import Optional, Protocol
+from workos._base_client import ClientConfiguration
 from workos.types.sso.connection import ConnectionType
 from workos.types.sso.sso_provider_type import SsoProviderType
 from workos.typing.sync_or_async import SyncOrAsync
@@ -40,7 +41,7 @@ ConnectionsListResource = WorkOsListResource[
 
 
 class SSOModule(Protocol):
-    _http_client: HTTPClient
+    client_configuration: ClientConfiguration
 
     def get_authorization_url(
         self,
@@ -70,7 +71,7 @@ class SSOModule(Protocol):
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
         params: QueryParameters = {
-            "client_id": self._http_client.client_id,
+            "client_id": self.client_configuration.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
@@ -94,10 +95,12 @@ class SSOModule(Protocol):
             params["state"] = state
 
         return RequestHelper.build_url_with_query_params(
-            base_url=self._http_client.base_url, path=AUTHORIZATION_PATH, **params
+            base_url=self.client_configuration.base_url,
+            path=AUTHORIZATION_PATH,
+            **params,
         )
 
-    def get_profile(self, accessToken: str) -> SyncOrAsync[Profile]: ...
+    def get_profile(self, access_token: str) -> SyncOrAsync[Profile]: ...
 
     def get_profile_and_token(self, code: str) -> SyncOrAsync[ProfileAndToken]: ...
 
@@ -117,7 +120,7 @@ class SSOModule(Protocol):
         order: PaginationOrder = "desc",
     ) -> SyncOrAsync[ConnectionsListResource]: ...
 
-    def delete_connection(self, connection: str) -> SyncOrAsync[None]: ...
+    def delete_connection(self, connection_id: str) -> SyncOrAsync[None]: ...
 
 
 class SSO(SSOModule):
@@ -126,6 +129,7 @@ class SSO(SSOModule):
     _http_client: SyncHTTPClient
 
     def __init__(self, http_client: SyncHTTPClient):
+        self.client_configuration = http_client
         self._http_client = http_client
 
     def get_profile(self, access_token: str) -> Profile:
@@ -138,7 +142,12 @@ class SSO(SSOModule):
         Returns:
             Profile
         """
-        response = self._http_client.request(PROFILE_PATH, method=REQUEST_METHOD_GET)
+        response = self._http_client.request(
+            PROFILE_PATH,
+            method=REQUEST_METHOD_GET,
+            headers={**self._http_client.auth_header_from_token(access_token)},
+            exclude_default_auth_headers=True,
+        )
 
         return Profile.model_validate(response)
 
@@ -249,6 +258,7 @@ class AsyncSSO(SSOModule):
     _http_client: AsyncHTTPClient
 
     def __init__(self, http_client: AsyncHTTPClient):
+        self.client_configuration = http_client
         self._http_client = http_client
 
     async def get_profile(self, access_token: str) -> Profile:

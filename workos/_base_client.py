@@ -1,6 +1,6 @@
 from abc import abstractmethod
 import os
-from typing import Generic, Optional, Type, TypeVar
+from typing import Generic, Optional, Protocol, Type, TypeVar
 
 from workos.__about__ import __version__
 from workos.fga import FGAModule
@@ -21,7 +21,14 @@ from workos.webhooks import WebhooksModule
 HTTPClientType = TypeVar("HTTPClientType", bound=HTTPClient)
 
 
-class BaseClient(Generic[HTTPClientType]):
+class ClientConfiguration(Protocol):
+    @property
+    def base_url(self) -> str: ...
+    @property
+    def client_id(self) -> str: ...
+
+
+class BaseClient(Generic[HTTPClientType], ClientConfiguration):
     """Base client for accessing the WorkOS feature set."""
 
     _api_key: str
@@ -117,3 +124,11 @@ class BaseClient(Generic[HTTPClientType]):
     @property
     @abstractmethod
     def webhooks(self) -> WebhooksModule: ...
+
+    @property
+    def base_url(self) -> str:
+        return self._base_url
+
+    @property
+    def client_id(self) -> str:
+        return self._client_id

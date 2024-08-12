@@ -85,6 +85,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         params: ParamsType = None,
         json: JsonType = None,
         headers: HeadersType = None,
+        exclude_default_auth_headers: bool = False,
     ) -> ResponseJson:
         """Executes a request against the WorkOS API.
 
@@ -100,7 +101,12 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             ResponseJson: Response from WorkOS
         """
         prepared_request_parameters = self._prepare_request(
-            path=path, method=method, params=params, json=json, headers=headers
+            path=path,
+            method=method,
+            params=params,
+            json=json,
+            headers=headers,
+            exclude_default_auth_headers=exclude_default_auth_headers,
         )
         response = self._client.request(**prepared_request_parameters)
         return self._handle_response(response)

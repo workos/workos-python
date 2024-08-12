@@ -467,3 +467,79 @@ class TestFGA:
             debug=True,
         )
         assert response.dict(exclude_none=True) == mock_check_response_with_debug_info
+
+    @pytest.fixture
+    def mock_batch_check_response(self):
+        return [
+            {"result": "authorized", "is_implicit": True},
+            {"result": "not_authorized", "is_implicit": True},
+        ]
+
+    def test_check_batch(
+        self, mock_batch_check_response, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(self.http_client, mock_batch_check_response, 200)
+
+        response = self.fga.check_batch(
+            checks=[
+                WarrantCheck(
+                    resource_type="schedule",
+                    resource_id="schedule-A1",
+                    relation="viewer",
+                    subject=Subject(resource_type="user", resource_id="user-A"),
+                ),
+                WarrantCheck(
+                    resource_type="schedule",
+                    resource_id="schedule-A1",
+                    relation="editor",
+                    subject=Subject(resource_type="user", resource_id="user-B"),
+                ),
+            ]
+        )
+
+        assert [
+            r.dict(exclude_none=True) for r in response
+        ] == mock_batch_check_response
+
+    @pytest.fixture
+    def mock_query_response(self):
+        return {
+            "object": "list",
+            "data": [
+                {
+                    "resource_type": "user",
+                    "resource_id": "richard",
+                    "relation": "member",
+                    "warrant": {
+                        "resource_type": "role",
+                        "resource_id": "developer",
+                        "relation": "member",
+                        "subject": {"resource_type": "user", "resource_id": "richard"},
+                    },
+                    "is_implicit": True,
+                },
+                {
+                    "resource_type": "user",
+                    "resource_id": "tom",
+                    "relation": "member",
+                    "warrant": {
+                        "resource_type": "role",
+                        "resource_id": "manager",
+                        "relation": "member",
+                        "subject": {"resource_type": "user", "resource_id": "tom"},
+                    },
+                    "is_implicit": True,
+                },
+            ],
+            "list_metadata": {},
+        }
+
+    def test_query(self, mock_query_response, mock_http_client_with_response):
+        mock_http_client_with_response(self.http_client, mock_query_response, 200)
+
+        response = self.fga.query(
+            q="select member of type user for permission:view-docs",
+            order="asc",
+            warrant_token="warrant_token",
+        )
+        assert response.dict(exclude_none=True) == mock_query_response

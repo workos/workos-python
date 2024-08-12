@@ -11,8 +11,13 @@ from workos.types.fga import (
     WarrantWrite,
     WarrantWriteOperation,
     WriteWarrantResponse,
+    WarrantQueryResult,
 )
-from workos.types.fga.list_filters import ResourceListFilters, WarrantListFilters
+from workos.types.fga.list_filters import (
+    ResourceListFilters,
+    WarrantListFilters,
+    QueryListFilters,
+)
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -37,6 +42,10 @@ ResourceListResource = WorkOsListResource[Resource, ResourceListFilters, ListMet
 ResourceTypeListResource = WorkOsListResource[Resource, ListArgs, ListMetadata]
 
 WarrantListResource = WorkOsListResource[Warrant, WarrantListFilters, ListMetadata]
+
+QueryListResource = WorkOsListResource[
+    WarrantQueryResult, QueryListFilters, ListMetadata
+]
 
 
 class FGAModule(Protocol):
@@ -121,6 +130,26 @@ class FGAModule(Protocol):
         debug: bool = False,
         warrant_token: Optional[str] = None,
     ) -> CheckResponse: ...
+
+    def check_batch(
+        self,
+        *,
+        checks: List[WarrantCheck],
+        debug: bool = False,
+        warrant_token: Optional[str] = None,
+    ) -> List[CheckResponse]: ...
+
+    def query(
+        self,
+        *,
+        q: str,
+        limit: int = DEFAULT_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        context: Optional[Dict[str, Any]] = None,
+        warrant_token: Optional[str] = None,
+    ) -> WorkOsListResource[WarrantQueryResult, QueryListFilters, ListMetadata]: ...
 
 
 class FGA(FGAModule):
@@ -401,3 +430,65 @@ class FGA(FGAModule):
         )
 
         return CheckResponse.model_validate(response)
+
+    def check_batch(
+        self,
+        *,
+        checks: List[WarrantCheck],
+        debug: bool = False,
+        warrant_token: Optional[str] = None,
+    ) -> List[CheckResponse]:
+        if not checks:
+            raise ValueError("Incomplete arguments: No checks provided")
+
+        body = {
+            "checks": [check.dict() for check in checks],
+            "debug": debug,
+        }
+
+        response = self._http_client.request(
+            "fga/v1/check",
+            method=REQUEST_METHOD_POST,
+            token=workos.api_key,
+            json=body,
+            headers={"Warrant-Token": warrant_token} if warrant_token else None,
+        )
+
+        return [CheckResponse.model_validate(check) for check in response]
+
+    def query(
+        self,
+        *,
+        q: str,
+        limit: int = DEFAULT_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        context: Optional[Dict[str, Any]] = None,
+        warrant_token: Optional[str] = None,
+    ) -> WorkOsListResource[WarrantQueryResult, QueryListFilters, ListMetadata]:
+        list_params: QueryListFilters = {
+            "q": q,
+            "limit": limit,
+            "order": order,
+            "before": before,
+            "after": after,
+            "context": context,
+        }
+
+        response = self._http_client.request(
+            "fga/v1/query",
+            method=REQUEST_METHOD_GET,
+            token=workos.api_key,
+            params=list_params,
+            headers={"Warrant-Token": warrant_token} if warrant_token else None,
+        )
+
+        # A workaround to add warrant_token to the list_args for the ListResource iterator
+        list_params["warrant_token"] = warrant_token
+
+        return WorkOsListResource[WarrantQueryResult, QueryListFilters, ListMetadata](
+            list_method=self.query,
+            list_args=list_params,
+            **ListPage[WarrantQueryResult](**response).model_dump(),
+        )

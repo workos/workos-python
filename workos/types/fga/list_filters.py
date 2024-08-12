@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict, Any
 
 from workos.types.list_resource import ListArgs
 
@@ -15,4 +15,10 @@ class WarrantListFilters(ListArgs, total=False):
     subject_type: Optional[str]
     subject_id: Optional[str]
     subject_relation: Optional[str]
+    warrant_token: Optional[str]
+
+
+class QueryListFilters(ListArgs, total=False):
+    q: Optional[str]
+    context: Optional[Dict[str, Any]]
     warrant_token: Optional[str]

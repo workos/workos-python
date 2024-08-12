@@ -14,15 +14,12 @@ from workos.types.fga import (
     WarrantWrite,
     WarrantWriteOperations,
 )
-from workos.utils.http_client import SyncHTTPClient
 
 
 class TestValidation:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.fga = FGA(http_client=self.http_client)
 
     def test_get_resource_no_resources(self):
@@ -64,10 +61,8 @@ class TestValidation:
 
 class TestErrorHandling:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.fga = FGA(http_client=self.http_client)
 
     @pytest.fixture
@@ -110,10 +105,8 @@ class TestErrorHandling:
 
 class TestFGA:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.fga = FGA(http_client=self.http_client)
 
     @pytest.fixture

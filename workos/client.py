@@ -1,4 +1,3 @@
-from calendar import c
 from typing import Optional
 from workos.__about__ import __version__
 from workos._base_client import BaseClient

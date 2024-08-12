@@ -1,6 +1,5 @@
 from typing import Optional, Protocol, Set
 
-from httpx._client import Client
 from workos._base_client import ClientConfiguration
 from workos.types.list_resource import (
     ListArgs,

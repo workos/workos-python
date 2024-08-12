@@ -19,7 +19,9 @@ class TestAsyncHTTPClient(object):
             return httpx.Response(200, json={"message": "Success!"})
 
         self.http_client = AsyncHTTPClient(
+            api_key="sk_test",
             base_url="https://api.workos.test",
+            client_id="client_b27needthisforssotemxo",
             version="test",
             transport=httpx.MockTransport(handler),
         )
@@ -46,10 +48,7 @@ class TestAsyncHTTPClient(object):
         )
 
         response = await self.http_client.request(
-            "events",
-            method=method,
-            params={"test_param": "test_value"},
-            token="test",
+            "events", method=method, params={"test_param": "test_value"}
         )
 
         self.http_client._client.request.assert_called_with(
@@ -60,7 +59,7 @@ class TestAsyncHTTPClient(object):
                     "accept": "application/json",
                     "content-type": "application/json",
                     "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
-                    "authorization": "Bearer test",
+                    "authorization": "Bearer sk_test",
                 }
             ),
             params={"test_param": "test_value"},
@@ -87,7 +86,7 @@ class TestAsyncHTTPClient(object):
         )
 
         response = await self.http_client.request(
-            "events", method=method, json={"test_param": "test_value"}, token="test"
+            "events", method=method, json={"test_param": "test_value"}
         )
 
         self.http_client._client.request.assert_called_with(
@@ -98,7 +97,7 @@ class TestAsyncHTTPClient(object):
                     "accept": "application/json",
                     "content-type": "application/json",
                     "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
-                    "authorization": "Bearer test",
+                    "authorization": "Bearer sk_test",
                 }
             ),
             params=None,
@@ -130,7 +129,6 @@ class TestAsyncHTTPClient(object):
             method=method,
             params={"test_param": "test_param_value"},
             json={"test_json": "test_json_value"},
-            token="test",
         )
 
         self.http_client._client.request.assert_called_with(
@@ -141,7 +139,7 @@ class TestAsyncHTTPClient(object):
                     "accept": "application/json",
                     "content-type": "application/json",
                     "user-agent": f"WorkOS Python/{python_version()} Python SDK/test",
-                    "authorization": "Bearer test",
+                    "authorization": "Bearer sk_test",
                 }
             ),
             params={"test_param": "test_param_value"},

@@ -1,28 +1,32 @@
-from typing import Any, Callable, Mapping, Optional, Union
+from typing import Any, Callable, Mapping, Optional
 from unittest.mock import AsyncMock, MagicMock
 
 import httpx
 import pytest
 
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
-import workos
 from workos.types.list_resource import WorkOsListResource
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 
 
 @pytest.fixture
-def set_api_key(monkeypatch):
-    monkeypatch.setattr(workos, "api_key", "sk_test")
+def sync_http_client_for_test():
+    return SyncHTTPClient(
+        api_key="sk_test",
+        base_url="https://api.workos.test",
+        client_id="client_b27needthisforssotemxo",
+        version="test",
+    )
 
 
 @pytest.fixture
-def set_client_id(monkeypatch):
-    monkeypatch.setattr(workos, "client_id", "client_b27needthisforssotemxo")
-
-
-@pytest.fixture
-def set_api_key_and_client_id(set_api_key, set_client_id):
-    pass
+def async_http_client_for_test():
+    return AsyncHTTPClient(
+        api_key="sk_test",
+        base_url="https://api.workos.test",
+        client_id="client_b27needthisforssotemxo",
+        version="test",
+    )
 
 
 @pytest.fixture

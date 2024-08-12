@@ -1,3 +1,5 @@
+from typing import Optional
+
 from workos._base_client import BaseClient
 from workos.audit_logs import AuditLogs
 from workos.directory_sync import DirectorySync
@@ -13,26 +15,25 @@ from workos.user_management import UserManagement
 from workos.utils.http_client import SyncHTTPClient
 
 
-class SyncClient(BaseClient):
+class SyncClient(BaseClient[SyncHTTPClient]):
     """Client for a convenient way to access the WorkOS feature set."""
 
     _http_client: SyncHTTPClient
 
-    _audit_logs: AuditLogs
-    _directory_sync: DirectorySync
-    _events: Events
-    _fga: FGA
-    _mfa: Mfa
-    _organizations: Organizations
-    _passwordless: Passwordless
-    _portal: Portal
-    _sso: SSO
-    _user_management: UserManagement
-    _webhooks: Webhooks
-
-    def __init__(self, *, base_url: str, version: str, timeout: int):
-        self._http_client = SyncHTTPClient(
-            base_url=base_url, version=version, timeout=timeout
+    def __init__(
+        self,
+        *,
+        api_key: Optional[str] = None,
+        client_id: Optional[str] = None,
+        base_url: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ):
+        super().__init__(
+            api_key=api_key,
+            client_id=client_id,
+            base_url=base_url,
+            request_timeout=request_timeout,
+            http_client_cls=SyncHTTPClient,
         )
 
     @property

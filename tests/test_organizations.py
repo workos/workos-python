@@ -3,15 +3,12 @@ import pytest
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.organizations import Organizations
 from tests.utils.fixtures.mock_organization import MockOrganization
-from workos.utils.http_client import SyncHTTPClient
 
 
 class TestOrganizations(object):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.organizations = Organizations(http_client=self.http_client)
 
     @pytest.fixture

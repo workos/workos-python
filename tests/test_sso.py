@@ -3,12 +3,10 @@ from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
 from tests.utils.fixtures.mock_profile import MockProfile
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
-import workos
+from tests.utils.fixtures.mock_connection import MockConnection
 from workos.sso import SSO, AsyncSSO, SsoProviderType
 from workos.types.sso import Profile
-from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.request_helper import RESPONSE_TYPE_CODE
-from tests.utils.fixtures.mock_connection import MockConnection
 
 
 class SSOFixtures:
@@ -51,10 +49,8 @@ class TestSSOBase(SSOFixtures):
     provider: SsoProviderType
 
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key_and_client_id):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.sso = SSO(http_client=self.http_client)
         self.provider = "GoogleOAuth"
         self.customer_domain = "workos.com"
@@ -85,7 +81,7 @@ class TestSSOBase(SSOFixtures):
         assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "provider": self.provider,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.authorization_state,
@@ -104,7 +100,7 @@ class TestSSOBase(SSOFixtures):
         assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "domain_hint": self.customer_domain,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": self.redirect_uri,
             "connection": self.connection_id,
             "response_type": RESPONSE_TYPE_CODE,
@@ -124,7 +120,7 @@ class TestSSOBase(SSOFixtures):
         assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "login_hint": self.login_hint,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": self.redirect_uri,
             "connection": self.connection_id,
             "response_type": RESPONSE_TYPE_CODE,
@@ -143,7 +139,7 @@ class TestSSOBase(SSOFixtures):
         assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "connection": self.connection_id,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.authorization_state,
@@ -165,7 +161,7 @@ class TestSSOBase(SSOFixtures):
         assert dict(parse_qsl(parsed_url.query)) == {
             "organization": self.organization_id,
             "provider": self.provider,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.authorization_state,
@@ -183,7 +179,7 @@ class TestSSOBase(SSOFixtures):
         assert parsed_url.path == "/sso/authorize"
         assert dict(parse_qsl(parsed_url.query)) == {
             "organization": self.organization_id,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.authorization_state,
@@ -205,7 +201,7 @@ class TestSSOBase(SSOFixtures):
         assert dict(parse_qsl(parsed_url.query)) == {
             "organization": self.organization_id,
             "provider": self.provider,
-            "client_id": workos.client_id,
+            "client_id": self.http_client.client_id,
             "redirect_uri": self.redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
             "state": self.authorization_state,
@@ -216,10 +212,8 @@ class TestSSO(SSOFixtures):
     provider: SsoProviderType
 
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key_and_client_id):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.sso = SSO(http_client=self.http_client)
         self.provider = "GoogleOAuth"
         self.customer_domain = "workos.com"
@@ -337,10 +331,8 @@ class TestAsyncSSO(SSOFixtures):
     provider: SsoProviderType
 
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key_and_client_id):
-        self.http_client = AsyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, async_http_client_for_test):
+        self.http_client = async_http_client_for_test
         self.sso = AsyncSSO(http_client=self.http_client)
         self.provider = "GoogleOAuth"
         self.customer_domain = "workos.com"

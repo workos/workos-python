@@ -220,10 +220,10 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         return self._client_id
 
     @property
-    def auth_headers(self) -> Dict[str, str]:
+    def auth_headers(self) -> Mapping[str, str]:
         return self.auth_header_from_token(self._api_key)
 
-    def auth_header_from_token(self, token: str) -> Dict[str, str]:
+    def auth_header_from_token(self, token: str) -> Mapping[str, str]:
         return {
             "Authorization": f"Bearer {token }",
         }

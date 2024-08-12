@@ -266,7 +266,7 @@ class AsyncSSO(SSOModule):
         response = await self._http_client.request(
             PROFILE_PATH,
             method=REQUEST_METHOD_GET,
-            headers=self._http_client.auth_header_from_token(access_token),
+            headers={**self._http_client.auth_header_from_token(access_token)},
             exclude_default_auth_headers=True,
         )
 

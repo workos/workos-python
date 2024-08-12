@@ -49,7 +49,7 @@ class OrganizationsModule(Protocol):
         self,
         *,
         organization_id: str,
-        name: str,
+        name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
     ) -> Organization: ...
 
@@ -163,7 +163,7 @@ class Organizations(OrganizationsModule):
         self,
         *,
         organization_id: str,
-        name: str,
+        name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
     ) -> Organization:
         """Update an organization

@@ -166,6 +166,18 @@ class Organizations(OrganizationsModule):
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
     ) -> Organization:
+        """Update an organization
+        Args:
+            organization(str) - Organization's unique identifier.
+            name (str) - A unique, descriptive name for the organization. (Optional)
+            allow_profiles_outside_organization (boolean) - [Deprecated] Whether Connections
+                within the Organization allow profiles that are outside of the Organization's
+                configured User Email Domains. (Optional)
+            domains (list) - [Deprecated] Use domain_data instead. List of domains that belong to the organization. (Optional)
+            domain_data (Sequence[DomainDataInput]) - List of domains that belong to the organization. (Optional)
+        Returns:
+            Organization: Updated Organization response from WorkOS.
+        """
         json = {
             "name": name,
             "domain_data": domain_data,

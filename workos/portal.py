@@ -2,7 +2,7 @@ from typing import Optional, Protocol
 from workos.types.portal.portal_link import PortalLink
 from workos.types.portal.portal_link_intent import PortalLinkIntent
 from workos.utils.http_client import SyncHTTPClient
-from workos.utils.request_helper import REQUEST_METHOD_POST
+from workos.utils.request_helper import RequestMethod
 
 
 PORTAL_GENERATE_PATH = "portal/generate_link"
@@ -54,7 +54,7 @@ class Portal(PortalModule):
             "success_url": success_url,
         }
         response = self._http_client.request(
-            PORTAL_GENERATE_PATH, method=REQUEST_METHOD_POST, json=json
+            path=PORTAL_GENERATE_PATH, method=RequestMethod.POST, json=json
         )
 
         return PortalLink.model_validate(response)

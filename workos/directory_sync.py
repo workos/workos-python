@@ -8,11 +8,7 @@ from workos.types.directory_sync.list_filters import (
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
-from workos.utils.request_helper import (
-    DEFAULT_LIST_RESPONSE_LIMIT,
-    REQUEST_METHOD_DELETE,
-    REQUEST_METHOD_GET,
-)
+from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT, RequestMethod
 from workos.types.directory_sync import (
     DirectoryGroup,
     Directory,
@@ -21,18 +17,18 @@ from workos.types.directory_sync import (
 from workos.types.list_resource import (
     ListMetadata,
     ListPage,
-    WorkOsListResource,
+    WorkOSListResource,
 )
 
-DirectoryUsersListResource = WorkOsListResource[
+DirectoryUsersListResource = WorkOSListResource[
     DirectoryUserWithGroups, DirectoryUserListFilters, ListMetadata
 ]
 
-DirectoryGroupsListResource = WorkOsListResource[
+DirectoryGroupsListResource = WorkOSListResource[
     DirectoryGroup, DirectoryGroupListFilters, ListMetadata
 ]
 
-DirectoriesListResource = WorkOsListResource[
+DirectoriesListResource = WorkOSListResource[
     Directory, DirectoryListFilters, ListMetadata
 ]
 
@@ -127,12 +123,12 @@ class DirectorySync(DirectorySyncModule):
             list_params["directory"] = directory_id
 
         response = self._http_client.request(
-            "directory_users",
-            method=REQUEST_METHOD_GET,
+            path="directory_users",
+            method=RequestMethod.GET,
             params=list_params,
         )
 
-        return WorkOsListResource(
+        return WorkOSListResource(
             list_method=self.list_users,
             list_args=list_params,
             **ListPage[DirectoryUserWithGroups](**response).model_dump(),
@@ -176,12 +172,12 @@ class DirectorySync(DirectorySyncModule):
             list_params["directory"] = directory_id
 
         response = self._http_client.request(
-            "directory_groups",
-            method=REQUEST_METHOD_GET,
+            path="directory_groups",
+            method=RequestMethod.GET,
             params=list_params,
         )
 
-        return WorkOsListResource[
+        return WorkOSListResource[
             DirectoryGroup, DirectoryGroupListFilters, ListMetadata
         ](
             list_method=self.list_groups,
@@ -199,8 +195,8 @@ class DirectorySync(DirectorySyncModule):
             dict: Directory User response from WorkOS.
         """
         response = self._http_client.request(
-            "directory_users/{user}".format(user=user_id),
-            method=REQUEST_METHOD_GET,
+            path="directory_users/{user}".format(user=user_id),
+            method=RequestMethod.GET,
         )
 
         return DirectoryUserWithGroups.model_validate(response)
@@ -215,8 +211,8 @@ class DirectorySync(DirectorySyncModule):
             dict: Directory Group response from WorkOS.
         """
         response = self._http_client.request(
-            "directory_groups/{group}".format(group=group_id),
-            method=REQUEST_METHOD_GET,
+            path="directory_groups/{group}".format(group=group_id),
+            method=RequestMethod.GET,
         )
         return DirectoryGroup.model_validate(response)
 
@@ -232,8 +228,8 @@ class DirectorySync(DirectorySyncModule):
         """
 
         response = self._http_client.request(
-            "directories/{directory}".format(directory=directory_id),
-            method=REQUEST_METHOD_GET,
+            path="directories/{directory}".format(directory=directory_id),
+            method=RequestMethod.GET,
         )
 
         return Directory.model_validate(response)
@@ -272,11 +268,11 @@ class DirectorySync(DirectorySyncModule):
         }
 
         response = self._http_client.request(
-            "directories",
-            method=REQUEST_METHOD_GET,
+            path="directories",
+            method=RequestMethod.GET,
             params=list_params,
         )
-        return WorkOsListResource[Directory, DirectoryListFilters, ListMetadata](
+        return WorkOSListResource[Directory, DirectoryListFilters, ListMetadata](
             list_method=self.list_directories,
             list_args=list_params,
             **ListPage[Directory](**response).model_dump(),
@@ -292,8 +288,8 @@ class DirectorySync(DirectorySyncModule):
             None
         """
         self._http_client.request(
-            "directories/{directory}".format(directory=directory_id),
-            method=REQUEST_METHOD_DELETE,
+            path="directories/{directory}".format(directory=directory_id),
+            method=RequestMethod.DELETE,
         )
 
 
@@ -344,12 +340,12 @@ class AsyncDirectorySync(DirectorySyncModule):
             list_params["directory"] = directory_id
 
         response = await self._http_client.request(
-            "directory_users",
-            method=REQUEST_METHOD_GET,
+            path="directory_users",
+            method=RequestMethod.GET,
             params=list_params,
         )
 
-        return WorkOsListResource(
+        return WorkOSListResource(
             list_method=self.list_users,
             list_args=list_params,
             **ListPage[DirectoryUserWithGroups](**response).model_dump(),
@@ -392,12 +388,12 @@ class AsyncDirectorySync(DirectorySyncModule):
             list_params["directory"] = directory_id
 
         response = await self._http_client.request(
-            "directory_groups",
-            method=REQUEST_METHOD_GET,
+            path="directory_groups",
+            method=RequestMethod.GET,
             params=list_params,
         )
 
-        return WorkOsListResource[
+        return WorkOSListResource[
             DirectoryGroup, DirectoryGroupListFilters, ListMetadata
         ](
             list_method=self.list_groups,
@@ -415,8 +411,8 @@ class AsyncDirectorySync(DirectorySyncModule):
             dict: Directory User response from WorkOS.
         """
         response = await self._http_client.request(
-            "directory_users/{user}".format(user=user_id),
-            method=REQUEST_METHOD_GET,
+            path="directory_users/{user}".format(user=user_id),
+            method=RequestMethod.GET,
         )
 
         return DirectoryUserWithGroups.model_validate(response)
@@ -431,8 +427,8 @@ class AsyncDirectorySync(DirectorySyncModule):
             dict: Directory Group response from WorkOS.
         """
         response = await self._http_client.request(
-            "directory_groups/{group}".format(group=group_id),
-            method=REQUEST_METHOD_GET,
+            path="directory_groups/{group}".format(group=group_id),
+            method=RequestMethod.GET,
         )
         return DirectoryGroup.model_validate(response)
 
@@ -448,8 +444,8 @@ class AsyncDirectorySync(DirectorySyncModule):
         """
 
         response = await self._http_client.request(
-            "directories/{directory}".format(directory=directory_id),
-            method=REQUEST_METHOD_GET,
+            path="directories/{directory}".format(directory=directory_id),
+            method=RequestMethod.GET,
         )
 
         return Directory.model_validate(response)
@@ -489,11 +485,11 @@ class AsyncDirectorySync(DirectorySyncModule):
         }
 
         response = await self._http_client.request(
-            "directories",
-            method=REQUEST_METHOD_GET,
+            path="directories",
+            method=RequestMethod.GET,
             params=list_params,
         )
-        return WorkOsListResource[Directory, DirectoryListFilters, ListMetadata](
+        return WorkOSListResource[Directory, DirectoryListFilters, ListMetadata](
             list_method=self.list_directories,
             list_args=list_params,
             **ListPage[Directory](**response).model_dump(),
@@ -509,6 +505,6 @@ class AsyncDirectorySync(DirectorySyncModule):
             None
         """
         await self._http_client.request(
-            "directories/{directory}".format(directory=directory_id),
-            method=REQUEST_METHOD_DELETE,
+            path="directories/{directory}".format(directory=directory_id),
+            method=RequestMethod.DELETE,
         )

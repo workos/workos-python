@@ -1,6 +1,6 @@
 import asyncio
 from types import TracebackType
-from typing import Optional, Type, Union
+from typing import Optional, Type, Union, override
 
 # Self was added to typing in Python 3.11
 from typing_extensions import Self
@@ -14,7 +14,7 @@ from workos.utils._base_http_client import (
     ParamsType,
     ResponseJson,
 )
-from workos.utils.request_helper import REQUEST_METHOD_GET
+from workos.utils.request_helper import RequestMethod
 
 
 class SyncHttpxClientWrapper(httpx.Client):
@@ -78,10 +78,12 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
     ) -> None:
         self.close()
 
+    @override
     def request(
         self,
+        *,
         path: str,
-        method: Optional[str] = REQUEST_METHOD_GET,
+        method: Optional[RequestMethod] = RequestMethod.GET,
         params: ParamsType = None,
         json: JsonType = None,
         headers: HeadersType = None,
@@ -93,7 +95,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             path (str): Path for the api request that'd be appended to the base API URL
 
         Kwargs:
-            method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
+            method (Optional[RequestMethod]): One of the supported methods as defined by the RequestMethod enumeration
             params (ParamsType): Query params to be added to the request
             json (JsonType): Body payload to be added to the request
 
@@ -173,10 +175,12 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
     ) -> None:
         await self.close()
 
+    @override
     async def request(
         self,
+        *,
         path: str,
-        method: Optional[str] = REQUEST_METHOD_GET,
+        method: Optional[RequestMethod] = RequestMethod.GET,
         params: ParamsType = None,
         json: JsonType = None,
         headers: HeadersType = None,
@@ -188,7 +192,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             path (str): Path for the api request that'd be appended to the base API URL
 
         Kwargs:
-            method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
+            method (Optional[RequestMethod]): One of the supported methods as defined by the RequestMethod enumeration
             params (ParamsType): Query params to be added to the request
             json (JsonType): Body payload to be added to the request
 

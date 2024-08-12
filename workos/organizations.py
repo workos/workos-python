@@ -4,20 +4,14 @@ from workos.types.organizations.domain_data_input import DomainDataInput
 from workos.types.organizations.list_filters import OrganizationListFilters
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
-from workos.utils.request_helper import (
-    DEFAULT_LIST_RESPONSE_LIMIT,
-    REQUEST_METHOD_DELETE,
-    REQUEST_METHOD_GET,
-    REQUEST_METHOD_POST,
-    REQUEST_METHOD_PUT,
-)
+from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT, RequestMethod
 from workos.types.organizations import Organization
-from workos.types.list_resource import ListMetadata, ListPage, WorkOsListResource
+from workos.types.list_resource import ListMetadata, ListPage, WorkOSListResource
 
 ORGANIZATIONS_PATH = "organizations"
 
 
-OrganizationsListResource = WorkOsListResource[
+OrganizationsListResource = WorkOSListResource[
     Organization, OrganizationListFilters, ListMetadata
 ]
 
@@ -94,12 +88,12 @@ class Organizations(OrganizationsModule):
         }
 
         response = self._http_client.request(
-            ORGANIZATIONS_PATH,
-            method=REQUEST_METHOD_GET,
+            path=ORGANIZATIONS_PATH,
+            method=RequestMethod.GET,
             params=list_params,
         )
 
-        return WorkOsListResource[Organization, OrganizationListFilters, ListMetadata](
+        return WorkOSListResource[Organization, OrganizationListFilters, ListMetadata](
             list_method=self.list_organizations,
             list_args=list_params,
             **ListPage[Organization](**response).model_dump(),
@@ -113,7 +107,7 @@ class Organizations(OrganizationsModule):
             Organization: Organization response from WorkOS
         """
         response = self._http_client.request(
-            f"organizations/{organization_id}", method=REQUEST_METHOD_GET
+            path=f"organizations/{organization_id}", method=RequestMethod.GET
         )
 
         return Organization.model_validate(response)
@@ -126,8 +120,10 @@ class Organizations(OrganizationsModule):
             dict: Organization response from WorkOS
         """
         response = self._http_client.request(
-            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
-            method=REQUEST_METHOD_GET,
+            path="organizations/by_lookup_key/{lookup_key}".format(
+                lookup_key=lookup_key
+            ),
+            method=RequestMethod.GET,
         )
 
         return Organization.model_validate(response)
@@ -151,8 +147,8 @@ class Organizations(OrganizationsModule):
         }
 
         response = self._http_client.request(
-            ORGANIZATIONS_PATH,
-            method=REQUEST_METHOD_POST,
+            path=ORGANIZATIONS_PATH,
+            method=RequestMethod.POST,
             json=json,
             headers=headers,
         )
@@ -184,7 +180,7 @@ class Organizations(OrganizationsModule):
         }
 
         response = self._http_client.request(
-            f"organizations/{organization_id}", method=REQUEST_METHOD_PUT, json=json
+            path=f"organizations/{organization_id}", method=RequestMethod.PUT, json=json
         )
 
         return Organization.model_validate(response)
@@ -196,6 +192,6 @@ class Organizations(OrganizationsModule):
             organization_id (str): Organization unique identifier
         """
         self._http_client.request(
-            f"organizations/{organization_id}",
-            method=REQUEST_METHOD_DELETE,
+            path=f"organizations/{organization_id}",
+            method=RequestMethod.DELETE,
         )

@@ -77,7 +77,7 @@ class ListArgs(TypedDict, total=False):
 ListAndFilterParams = TypeVar("ListAndFilterParams", bound=ListArgs)
 
 
-class WorkOsListResource(
+class WorkOSListResource(
     WorkOSModel,
     Generic[ListableResource, ListAndFilterParams, ListMetadataType],
 ):
@@ -89,11 +89,11 @@ class WorkOsListResource(
     list_method: Union[
         Callable[
             ...,
-            "WorkOsListResource[ListableResource, ListAndFilterParams, ListMetadataType]",
+            "WorkOSListResource[ListableResource, ListAndFilterParams, ListMetadataType]",
         ],
         Callable[
             ...,
-            "Awaitable[WorkOsListResource[ListableResource, ListAndFilterParams, ListMetadataType]]",
+            "Awaitable[WorkOSListResource[ListableResource, ListAndFilterParams, ListMetadataType]]",
         ],
     ] = Field(exclude=True)
     list_args: ListAndFilterParams = Field(exclude=True)
@@ -129,7 +129,7 @@ class WorkOsListResource(
     # to cast a model to a dictionary, model.dict(), which is used internally
     # by pydantic.
     def __iter__(self) -> Iterator[ListableResource]:  # type: ignore
-        next_page: WorkOsListResource[
+        next_page: WorkOSListResource[
             ListableResource, ListAndFilterParams, ListMetadataType
         ]
         after = self.list_metadata.after
@@ -156,7 +156,7 @@ class WorkOsListResource(
             index += 1
 
     async def __aiter__(self) -> AsyncIterator[ListableResource]:
-        next_page: WorkOsListResource[
+        next_page: WorkOSListResource[
             ListableResource, ListAndFilterParams, ListMetadataType
         ]
         after = self.list_metadata.after

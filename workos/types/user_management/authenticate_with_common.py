@@ -46,8 +46,6 @@ class AuthenticateWithOrganizationSelectionParameters(AuthenticateWithBaseParame
 
 
 class AuthenticateWithRefreshTokenParameters(AuthenticateWithBaseParameters):
-    client_id: str
-    client_secret: str
     refresh_token: str
     organization_id: Union[str, None]
     grant_type: Literal["refresh_token"]
@@ -60,6 +58,5 @@ AuthenticateWithParameters = Union[
     AuthenticateWithEmailVerificationParameters,
     AuthenticateWithTotpParameters,
     AuthenticateWithOrganizationSelectionParameters,
-    # AuthenticateWithRefreshTokenParameters is purposely omitted from this union because
-    # it doesn't use the authenticate_with() method due to its divergent response typing
+    AuthenticateWithRefreshTokenParameters,
 ]

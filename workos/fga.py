@@ -23,27 +23,21 @@ from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
     ListPage,
-    WorkOsListResource,
+    WorkOSListResource,
 )
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
-from workos.utils.request_helper import (
-    REQUEST_METHOD_DELETE,
-    REQUEST_METHOD_GET,
-    REQUEST_METHOD_POST,
-    REQUEST_METHOD_PUT,
-    RequestHelper,
-)
+from workos.utils.request_helper import RequestMethod, RequestHelper
 
 DEFAULT_RESPONSE_LIMIT = 10
 
-ResourceListResource = WorkOsListResource[Resource, ResourceListFilters, ListMetadata]
+ResourceListResource = WorkOSListResource[Resource, ResourceListFilters, ListMetadata]
 
-ResourceTypeListResource = WorkOsListResource[ResourceType, ListArgs, ListMetadata]
+ResourceTypeListResource = WorkOSListResource[Resource, ListArgs, ListMetadata]
 
-WarrantListResource = WorkOsListResource[Warrant, WarrantListFilters, ListMetadata]
+WarrantListResource = WorkOSListResource[Warrant, WarrantListFilters, ListMetadata]
 
-QueryListResource = WorkOsListResource[
+QueryListResource = WorkOSListResource[
     WarrantQueryResult, QueryListFilters, ListMetadata
 ]
 
@@ -180,12 +174,12 @@ class FGA(FGAModule):
             )
 
         response = self._http_client.request(
-            RequestHelper.build_parameterized_url(
-                "fga/v1/resources/{resource_type}/{resource_id}",
+            path=RequestHelper.build_parameterized_path(
+                path="fga/v1/resources/{resource_type}/{resource_id}",
                 resource_type=resource_type,
                 resource_id=resource_id,
             ),
-            method=REQUEST_METHOD_GET,
+            method=RequestMethod.GET,
         )
 
         return Resource.model_validate(response)
@@ -224,12 +218,10 @@ class FGA(FGAModule):
         }
 
         response = self._http_client.request(
-            "fga/v1/resources",
-            method=REQUEST_METHOD_GET,
-            params=list_params,
+            path="fga/v1/resources", method=RequestMethod.GET, params=list_params
         )
 
-        return WorkOsListResource[Resource, ResourceListFilters, ListMetadata](
+        return WorkOSListResource[Resource, ResourceListFilters, ListMetadata](
             list_method=self.list_resources,
             list_args=list_params,
             **ListPage[Resource](**response).model_dump(),
@@ -258,8 +250,8 @@ class FGA(FGAModule):
             )
 
         response = self._http_client.request(
-            "fga/v1/resources",
-            method=REQUEST_METHOD_POST,
+            path="fga/v1/resources",
+            method=RequestMethod.POST,
             json={
                 "resource_type": resource_type,
                 "resource_id": resource_id,
@@ -292,12 +284,12 @@ class FGA(FGAModule):
             )
 
         response = self._http_client.request(
-            RequestHelper.build_parameterized_url(
-                "fga/v1/resources/{resource_type}/{resource_id}",
+            path=RequestHelper.build_parameterized_path(
+                path="fga/v1/resources/{resource_type}/{resource_id}",
                 resource_type=resource_type,
                 resource_id=resource_id,
             ),
-            method=REQUEST_METHOD_PUT,
+            method=RequestMethod.PUT,
             json={"meta": meta},
         )
 
@@ -318,12 +310,12 @@ class FGA(FGAModule):
             )
 
         self._http_client.request(
-            RequestHelper.build_parameterized_url(
-                "fga/v1/resources/{resource_type}/{resource_id}",
+            path=RequestHelper.build_parameterized_path(
+                path="fga/v1/resources/{resource_type}/{resource_id}",
                 resource_type=resource_type,
                 resource_id=resource_id,
             ),
-            method=REQUEST_METHOD_DELETE,
+            method=RequestMethod.DELETE,
         )
 
     def list_resource_types(
@@ -354,12 +346,10 @@ class FGA(FGAModule):
         }
 
         response = self._http_client.request(
-            "fga/v1/resource-types",
-            method=REQUEST_METHOD_GET,
-            params=list_params,
+            path="fga/v1/resource-types", method=RequestMethod.GET, params=list_params
         )
 
-        return WorkOsListResource[ResourceType, ListArgs, ListMetadata](
+        return ResourceTypeListResource(
             list_method=self.list_resource_types,
             list_args=list_params,
             **ListPage[ResourceType](**response).model_dump(),
@@ -413,8 +403,8 @@ class FGA(FGAModule):
         }
 
         response = self._http_client.request(
-            "fga/v1/warrants",
-            method=REQUEST_METHOD_GET,
+            path="fga/v1/warrants",
+            method=RequestMethod.GET,
             params=list_params,
             headers={"Warrant-Token": warrant_token} if warrant_token else None,
         )
@@ -422,7 +412,7 @@ class FGA(FGAModule):
         # A workaround to add warrant_token to the list_args for the ListResource iterator
         list_params["warrant_token"] = warrant_token
 
-        return WorkOsListResource[Warrant, WarrantListFilters, ListMetadata](
+        return WorkOSListResource[Warrant, WarrantListFilters, ListMetadata](
             list_method=self.list_warrants,
             list_args=list_params,
             **ListPage[Warrant](**response).model_dump(),
@@ -470,9 +460,7 @@ class FGA(FGAModule):
         }
 
         response = self._http_client.request(
-            "fga/v1/warrants",
-            method=REQUEST_METHOD_POST,
-            json=params,
+            path="fga/v1/warrants", method=RequestMethod.POST, json=params
         )
 
         return WriteWarrantResponse.model_validate(response)
@@ -493,8 +481,8 @@ class FGA(FGAModule):
             raise ValueError("Incomplete arguments: No batch warrant writes provided")
 
         response = self._http_client.request(
-            "fga/v1/warrants",
-            method=REQUEST_METHOD_POST,
+            path="fga/v1/warrants",
+            method=RequestMethod.POST,
             json=[warrant.dict() for warrant in batch],
         )
 
@@ -530,8 +518,8 @@ class FGA(FGAModule):
         }
 
         response = self._http_client.request(
-            "fga/v1/check",
-            method=REQUEST_METHOD_POST,
+            path="fga/v1/check",
+            method=RequestMethod.POST,
             json=body,
             headers={"Warrant-Token": warrant_token} if warrant_token else None,
         )
@@ -566,8 +554,8 @@ class FGA(FGAModule):
         }
 
         response = self._http_client.request(
-            "fga/v1/check",
-            method=REQUEST_METHOD_POST,
+            path="fga/v1/check",
+            method=RequestMethod.POST,
             json=body,
             headers={"Warrant-Token": warrant_token} if warrant_token else None,
         )
@@ -610,8 +598,8 @@ class FGA(FGAModule):
         }
 
         response = self._http_client.request(
-            "fga/v1/query",
-            method=REQUEST_METHOD_GET,
+            path="fga/v1/query",
+            method=RequestMethod.GET,
             params=list_params,
             headers={"Warrant-Token": warrant_token} if warrant_token else None,
         )
@@ -619,7 +607,7 @@ class FGA(FGAModule):
         # A workaround to add warrant_token to the list_args for the ListResource iterator
         list_params["warrant_token"] = warrant_token
 
-        return WorkOsListResource[WarrantQueryResult, QueryListFilters, ListMetadata](
+        return WorkOSListResource[WarrantQueryResult, QueryListFilters, ListMetadata](
             list_method=self.query,
             list_args=list_params,
             **ListPage[WarrantQueryResult](**response).model_dump(),

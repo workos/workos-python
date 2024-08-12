@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 import platform
 from typing import Any, List, Mapping, cast, Dict, Generic, Optional, TypeVar, Union
 from typing_extensions import NotRequired, TypedDict
@@ -12,7 +13,8 @@ from workos.exceptions import (
     NotFoundException,
     BadRequestException,
 )
-from workos.utils.request_helper import REQUEST_METHOD_DELETE, REQUEST_METHOD_GET
+from workos.typing.sync_or_async import SyncOrAsync
+from workos.utils.request_helper import RequestMethod
 
 
 _HttpxClientT = TypeVar("_HttpxClientT", bound=Union[httpx.Client, httpx.AsyncClient])
@@ -36,7 +38,7 @@ class PreparedRequest(TypedDict):
     timeout: int
 
 
-class BaseHTTPClient(Generic[_HttpxClientT]):
+class BaseHTTPClient(Generic[_HttpxClientT], metaclass=ABCMeta):
     _client: _HttpxClientT
 
     _api_key: str
@@ -112,7 +114,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     def _prepare_request(
         self,
         path: str,
-        method: Optional[str] = REQUEST_METHOD_GET,
+        method: Optional[RequestMethod] = RequestMethod.GET,
         params: ParamsType = None,
         json: JsonType = None,
         headers: HeadersType = None,
@@ -124,10 +126,10 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             path (str): Path for the api request that'd be appended to the base API URL
 
         Kwargs:
-            method Optional[str]: One of the supported methods as defined by the REQUEST_METHOD_X constants
-            params Optional[dict]: Query params or body payload to be added to the request
-            headers Optional[dict]: Custom headers to be added to the request
-            token Optional[str]: Bearer token
+            method (RequestMethod): One of the supported methods as defined by the RequestMethod enumeration
+            params Optional[ParamsType]: Query params or body payload to be added to the request
+            headers Optional[JsonType]: Custom headers to be added to the request
+            exclude_default_auth_headers Optional[bool]: Whether or not to exclude the default auth headers in the request
 
         Returns:
             dict: Response from WorkOS
@@ -137,10 +139,10 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             custom_headers=headers,
             exclude_default_auth_headers=exclude_default_auth_headers,
         )
-        parsed_method = REQUEST_METHOD_GET if method is None else method
-        bodyless_http_method = parsed_method.lower() in [
-            REQUEST_METHOD_DELETE,
-            REQUEST_METHOD_GET,
+        parsed_method = RequestMethod.GET if method is None else method
+        bodyless_http_method = parsed_method in [
+            RequestMethod.GET,
+            RequestMethod.DELETE,
         ]
 
         if bodyless_http_method and json is not None:
@@ -153,7 +155,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         # We'll spread these return values onto the HTTP client request method
         if bodyless_http_method:
             return {
-                "method": parsed_method,
+                "method": parsed_method.value,
                 "url": url,
                 "headers": parsed_headers,
                 "params": params,
@@ -161,7 +163,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             }
         else:
             return {
-                "method": parsed_method,
+                "method": parsed_method.value,
                 "url": url,
                 "headers": parsed_headers,
                 "params": params,
@@ -189,12 +191,24 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     def build_request_url(
         self,
         url: str,
-        method: Optional[str] = REQUEST_METHOD_GET,
+        method: Optional[RequestMethod] = RequestMethod.GET,
         params: Optional[QueryParamTypes] = None,
     ) -> str:
         return self._client.build_request(
-            method=method or REQUEST_METHOD_GET, url=url, params=params
+            method=(method or RequestMethod.GET).value, url=url, params=params
         ).url.__str__()
+
+    @abstractmethod
+    def request(
+        self,
+        *,
+        path: str,
+        method: Optional[RequestMethod] = RequestMethod.GET,
+        params: ParamsType = None,
+        json: JsonType = None,
+        headers: HeadersType = None,
+        exclude_default_auth_headers: bool = False,
+    ) -> SyncOrAsync[ResponseJson]: ...
 
     @property
     def api_key(self) -> str:

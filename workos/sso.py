@@ -9,17 +9,15 @@ from workos.types.sso import ConnectionWithDomains, Profile, ProfileAndToken
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     RESPONSE_TYPE_CODE,
-    REQUEST_METHOD_DELETE,
-    REQUEST_METHOD_GET,
-    REQUEST_METHOD_POST,
     QueryParameters,
     RequestHelper,
+    RequestMethod,
 )
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
     ListPage,
-    WorkOsListResource,
+    WorkOSListResource,
 )
 
 AUTHORIZATION_PATH = "sso/authorize"
@@ -35,7 +33,7 @@ class ConnectionsListFilters(ListArgs, total=False):
     organization_id: Optional[str]
 
 
-ConnectionsListResource = WorkOsListResource[
+ConnectionsListResource = WorkOSListResource[
     ConnectionWithDomains, ConnectionsListFilters, ListMetadata
 ]
 
@@ -145,8 +143,8 @@ class SSO(SSOModule):
             Profile
         """
         response = self._http_client.request(
-            PROFILE_PATH,
-            method=REQUEST_METHOD_GET,
+            path=PROFILE_PATH,
+            method=RequestMethod.GET,
             headers={**self._http_client.auth_header_from_token(access_token)},
             exclude_default_auth_headers=True,
         )
@@ -173,7 +171,7 @@ class SSO(SSOModule):
         }
 
         response = self._http_client.request(
-            TOKEN_PATH, method=REQUEST_METHOD_POST, json=json
+            path=TOKEN_PATH, method=RequestMethod.POST, json=json
         )
 
         return ProfileAndToken.model_validate(response)
@@ -188,8 +186,8 @@ class SSO(SSOModule):
             dict: Connection response from WorkOS.
         """
         response = self._http_client.request(
-            f"connections/{connection_id}",
-            method=REQUEST_METHOD_GET,
+            path=f"connections/{connection_id}",
+            method=RequestMethod.GET,
         )
 
         return ConnectionWithDomains.model_validate(response)
@@ -230,12 +228,12 @@ class SSO(SSOModule):
         }
 
         response = self._http_client.request(
-            "connections",
-            method=REQUEST_METHOD_GET,
+            path="connections",
+            method=RequestMethod.GET,
             params=params,
         )
 
-        return WorkOsListResource[
+        return WorkOSListResource[
             ConnectionWithDomains, ConnectionsListFilters, ListMetadata
         ](
             list_method=self.list_connections,
@@ -250,7 +248,7 @@ class SSO(SSOModule):
             connection (str): Connection unique identifier
         """
         self._http_client.request(
-            f"connections/{connection_id}", method=REQUEST_METHOD_DELETE
+            path=f"connections/{connection_id}", method=RequestMethod.DELETE
         )
 
 
@@ -276,8 +274,8 @@ class AsyncSSO(SSOModule):
             Profile
         """
         response = await self._http_client.request(
-            PROFILE_PATH,
-            method=REQUEST_METHOD_GET,
+            path=PROFILE_PATH,
+            method=RequestMethod.GET,
             headers={**self._http_client.auth_header_from_token(access_token)},
             exclude_default_auth_headers=True,
         )
@@ -304,7 +302,7 @@ class AsyncSSO(SSOModule):
         }
 
         response = await self._http_client.request(
-            TOKEN_PATH, method=REQUEST_METHOD_POST, json=json
+            path=TOKEN_PATH, method=RequestMethod.POST, json=json
         )
 
         return ProfileAndToken.model_validate(response)
@@ -319,8 +317,8 @@ class AsyncSSO(SSOModule):
             dict: Connection response from WorkOS.
         """
         response = await self._http_client.request(
-            f"connections/{connection_id}",
-            method=REQUEST_METHOD_GET,
+            path=f"connections/{connection_id}",
+            method=RequestMethod.GET,
         )
 
         return ConnectionWithDomains.model_validate(response)
@@ -361,10 +359,10 @@ class AsyncSSO(SSOModule):
         }
 
         response = await self._http_client.request(
-            "connections", method=REQUEST_METHOD_GET, params=params
+            path="connections", method=RequestMethod.GET, params=params
         )
 
-        return WorkOsListResource[
+        return WorkOSListResource[
             ConnectionWithDomains, ConnectionsListFilters, ListMetadata
         ](
             list_method=self.list_connections,
@@ -379,6 +377,5 @@ class AsyncSSO(SSOModule):
             connection (str): Connection unique identifier
         """
         await self._http_client.request(
-            f"connections/{connection_id}",
-            method=REQUEST_METHOD_DELETE,
+            path=f"connections/{connection_id}", method=RequestMethod.DELETE
         )

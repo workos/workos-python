@@ -139,7 +139,7 @@ class TestSyncHTTPClient(object):
         )
 
         response = self.http_client.request(
-            "events",
+            path="events",
             method=method,
             params={"test_param": "test_param_value"},
             json={"test_json": "test_json_value"},

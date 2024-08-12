@@ -4,12 +4,7 @@ from workos.types.mfa.enroll_authentication_factor_type import (
     EnrollAuthenticationFactorType,
 )
 from workos.utils.http_client import SyncHTTPClient
-from workos.utils.request_helper import (
-    REQUEST_METHOD_POST,
-    REQUEST_METHOD_DELETE,
-    REQUEST_METHOD_GET,
-    RequestHelper,
-)
+from workos.utils.request_helper import RequestMethod, RequestHelper
 from workos.types.mfa import (
     AuthenticationChallenge,
     AuthenticationChallengeVerificationResponse,
@@ -90,7 +85,7 @@ class Mfa(MFAModule):
             )
 
         response = self._http_client.request(
-            "auth/factors/enroll", method=REQUEST_METHOD_POST, json=json
+            path="auth/factors/enroll", method=RequestMethod.POST, json=json
         )
 
         if type == "totp":
@@ -109,11 +104,11 @@ class Mfa(MFAModule):
         """
 
         response = self._http_client.request(
-            RequestHelper.build_parameterized_url(
-                "auth/factors/{authentication_factor_id}",
+            path=RequestHelper.build_parameterized_path(
+                path="auth/factors/{authentication_factor_id}",
                 authentication_factor_id=authentication_factor_id,
             ),
-            method=REQUEST_METHOD_GET,
+            method=RequestMethod.GET,
         )
 
         if response["type"] == "totp":
@@ -132,11 +127,11 @@ class Mfa(MFAModule):
         """
 
         self._http_client.request(
-            RequestHelper.build_parameterized_url(
-                "auth/factors/{authentication_factor_id}",
+            path=RequestHelper.build_parameterized_path(
+                path="auth/factors/{authentication_factor_id}",
                 authentication_factor_id=authentication_factor_id,
             ),
-            method=REQUEST_METHOD_DELETE,
+            method=RequestMethod.DELETE,
         )
 
     def challenge_factor(
@@ -160,10 +155,11 @@ class Mfa(MFAModule):
         }
 
         response = self._http_client.request(
-            RequestHelper.build_parameterized_url(
-                "auth/factors/{factor_id}/challenge", factor_id=authentication_factor_id
+            path=RequestHelper.build_parameterized_path(
+                path="auth/factors/{factor_id}/challenge",
+                factor_id=authentication_factor_id,
             ),
-            method=REQUEST_METHOD_POST,
+            method=RequestMethod.POST,
             json=json,
         )
 
@@ -187,11 +183,11 @@ class Mfa(MFAModule):
         }
 
         response = self._http_client.request(
-            RequestHelper.build_parameterized_url(
-                "auth/challenges/{challenge_id}/verify",
+            path=RequestHelper.build_parameterized_path(
+                path="auth/challenges/{challenge_id}/verify",
                 challenge_id=authentication_challenge_id,
             ),
-            method=REQUEST_METHOD_POST,
+            method=RequestMethod.POST,
             json=json,
         )
 

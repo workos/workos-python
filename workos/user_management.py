@@ -1,10 +1,10 @@
-from typing import Optional, Protocol, Set
+from typing import Optional, Protocol, Set, Type
 from workos._client_configuration import ClientConfiguration
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
     ListPage,
-    WorkOsListResource,
+    WorkOSListResource,
 )
 from workos.types.mfa import (
     AuthenticationFactor,
@@ -32,6 +32,10 @@ from workos.types.user_management.authenticate_with_common import (
     AuthenticateWithRefreshTokenParameters,
     AuthenticateWithTotpParameters,
 )
+from workos.types.user_management.authentication_response import (
+    AuthKitAuthenticationResponse,
+    AuthenticationResponseType,
+)
 from workos.types.user_management.list_filters import (
     AuthenticationFactorsListFilters,
     InvitationsListFilters,
@@ -48,12 +52,9 @@ from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     RESPONSE_TYPE_CODE,
-    REQUEST_METHOD_POST,
-    REQUEST_METHOD_GET,
-    REQUEST_METHOD_DELETE,
-    REQUEST_METHOD_PUT,
     QueryParameters,
     RequestHelper,
+    RequestMethod,
 )
 
 USER_PATH = "user_management/users"
@@ -85,17 +86,17 @@ PASSWORD_RESET_PATH = "user_management/password_reset"
 PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
 
 
-UsersListResource = WorkOsListResource[User, UsersListFilters, ListMetadata]
+UsersListResource = WorkOSListResource[User, UsersListFilters, ListMetadata]
 
-OrganizationMembershipsListResource = WorkOsListResource[
+OrganizationMembershipsListResource = WorkOSListResource[
     OrganizationMembership, OrganizationMembershipsListFilters, ListMetadata
 ]
 
-AuthenticationFactorsListResource = WorkOsListResource[
+AuthenticationFactorsListResource = WorkOSListResource[
     AuthenticationFactor, AuthenticationFactorsListFilters, ListMetadata
 ]
 
-InvitationsListResource = WorkOsListResource[
+InvitationsListResource = WorkOSListResource[
     Invitation, InvitationsListFilters, ListMetadata
 ]
 
@@ -249,8 +250,10 @@ class UserManagementModule(Protocol):
         )
 
     def _authenticate_with(
-        self, payload: AuthenticateWithParameters
-    ) -> SyncOrAsync[AuthenticationResponse]: ...
+        self,
+        payload: AuthenticateWithParameters,
+        response_model: Type[AuthenticationResponseType],
+    ) -> SyncOrAsync[AuthenticationResponseType]: ...
 
     def authenticate_with_password(
         self,
@@ -430,7 +433,7 @@ class UserManagement(UserManagementModule):
             User: User response from WorkOS.
         """
         response = self._http_client.request(
-            USER_DETAIL_PATH.format(user_id), method=REQUEST_METHOD_GET
+            path=USER_DETAIL_PATH.format(user_id), method=RequestMethod.GET
         )
 
         return User.model_validate(response)
@@ -469,7 +472,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            USER_PATH, method=REQUEST_METHOD_GET, params=params
+            path=USER_PATH, method=RequestMethod.GET, params=params
         )
 
         return UsersListResource(
@@ -514,7 +517,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            USER_PATH, method=REQUEST_METHOD_POST, params=params
+            path=USER_PATH, method=RequestMethod.POST, params=params
         )
 
         return User.model_validate(response)
@@ -554,7 +557,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            USER_DETAIL_PATH.format(user_id), method=REQUEST_METHOD_PUT, json=json
+            path=USER_DETAIL_PATH.format(user_id), method=RequestMethod.PUT, json=json
         )
 
         return User.model_validate(response)
@@ -566,8 +569,8 @@ class UserManagement(UserManagementModule):
             user_id (str) -  User unique identifier
         """
         self._http_client.request(
-            USER_DETAIL_PATH.format(user_id),
-            method=REQUEST_METHOD_DELETE,
+            path=USER_DETAIL_PATH.format(user_id),
+            method=RequestMethod.DELETE,
         )
 
     def create_organization_membership(
@@ -592,7 +595,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_PATH, method=REQUEST_METHOD_POST, params=params
+            path=ORGANIZATION_MEMBERSHIP_PATH, method=RequestMethod.POST, params=params
         )
 
         return OrganizationMembership.model_validate(response)
@@ -616,8 +619,8 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_PUT,
+            path=ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=RequestMethod.PUT,
             json=json,
         )
 
@@ -635,8 +638,8 @@ class UserManagement(UserManagementModule):
         """
 
         response = self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_GET,
+            path=ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=RequestMethod.GET,
         )
 
         return OrganizationMembership.model_validate(response)
@@ -678,7 +681,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_PATH, method=REQUEST_METHOD_GET, params=params
+            path=ORGANIZATION_MEMBERSHIP_PATH, method=RequestMethod.GET, params=params
         )
 
         return OrganizationMembershipsListResource(
@@ -694,8 +697,8 @@ class UserManagement(UserManagementModule):
             organization_membership_id (str) -  The unique ID of the Organization Membership.
         """
         self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_DELETE,
+            path=ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=RequestMethod.DELETE,
         )
 
     def deactivate_organization_membership(
@@ -709,8 +712,10 @@ class UserManagement(UserManagementModule):
             OrganizationMembership: OrganizationMembership response from WorkOS.
         """
         response = self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_PUT,
+            path=ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH.format(
+                organization_membership_id
+            ),
+            method=RequestMethod.PUT,
         )
 
         return OrganizationMembership.model_validate(response)
@@ -726,15 +731,19 @@ class UserManagement(UserManagementModule):
             OrganizationMembership: OrganizationMembership response from WorkOS.
         """
         response = self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_REACTIVATE_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_PUT,
+            path=ORGANIZATION_MEMBERSHIP_REACTIVATE_PATH.format(
+                organization_membership_id
+            ),
+            method=RequestMethod.PUT,
         )
 
         return OrganizationMembership.model_validate(response)
 
     def _authenticate_with(
-        self, payload: AuthenticateWithParameters
-    ) -> AuthenticationResponse:
+        self,
+        payload: AuthenticateWithParameters,
+        response_model: Type[AuthenticationResponseType],
+    ) -> AuthenticationResponseType:
         json = {
             "client_id": self._http_client.client_id,
             "client_secret": self._http_client.api_key,
@@ -742,12 +751,12 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            USER_AUTHENTICATE_PATH,
-            method=REQUEST_METHOD_POST,
+            path=USER_AUTHENTICATE_PATH,
+            method=RequestMethod.POST,
             json=json,
         )
 
-        return AuthenticationResponse.model_validate(response)
+        return response_model.model_validate(response)
 
     def authenticate_with_password(
         self,
@@ -777,7 +786,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(payload, response_model=AuthenticationResponse)
 
     def authenticate_with_code(
         self,
@@ -786,7 +795,7 @@ class UserManagement(UserManagementModule):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> AuthenticationResponse:
+    ) -> AuthKitAuthenticationResponse:
         """Authenticates an OAuth user or a user that is logging in through SSO.
 
         Kwargs:
@@ -810,7 +819,9 @@ class UserManagement(UserManagementModule):
             "code_verifier": code_verifier,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(
+            payload, response_model=AuthKitAuthenticationResponse
+        )
 
     def authenticate_with_magic_auth(
         self,
@@ -843,7 +854,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(payload, response_model=AuthenticationResponse)
 
     def authenticate_with_email_verification(
         self,
@@ -873,7 +884,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(payload, response_model=AuthenticationResponse)
 
     def authenticate_with_totp(
         self,
@@ -906,7 +917,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(payload, response_model=AuthenticationResponse)
 
     def authenticate_with_organization_selection(
         self,
@@ -936,7 +947,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return self._authenticate_with(payload)
+        return self._authenticate_with(payload, response_model=AuthenticationResponse)
 
     def authenticate_with_refresh_token(
         self,
@@ -958,9 +969,7 @@ class UserManagement(UserManagementModule):
             RefreshTokenAuthenticationResponse: Refresh Token Authentication response from WorkOS.
         """
 
-        json: AuthenticateWithRefreshTokenParameters = {
-            "client_id": self._http_client.client_id,
-            "client_secret": self._http_client.api_key,
+        payload: AuthenticateWithRefreshTokenParameters = {
             "refresh_token": refresh_token,
             "organization_id": organization_id,
             "grant_type": "refresh_token",
@@ -968,11 +977,9 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        response = self._http_client.request(
-            USER_AUTHENTICATE_PATH, method=REQUEST_METHOD_POST, json=json
+        return self._authenticate_with(
+            payload, response_model=RefreshTokenAuthenticationResponse
         )
-
-        return RefreshTokenAuthenticationResponse.model_validate(response)
 
     def get_password_reset(self, password_reset_id: str) -> PasswordReset:
         """Get the details of a password reset object.
@@ -985,8 +992,8 @@ class UserManagement(UserManagementModule):
         """
 
         response = self._http_client.request(
-            PASSWORD_RESET_DETAIL_PATH.format(password_reset_id),
-            method=REQUEST_METHOD_GET,
+            path=PASSWORD_RESET_DETAIL_PATH.format(password_reset_id),
+            method=RequestMethod.GET,
         )
 
         return PasswordReset.model_validate(response)
@@ -1006,7 +1013,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            PASSWORD_RESET_PATH, method=REQUEST_METHOD_POST, json=json
+            path=PASSWORD_RESET_PATH, method=RequestMethod.POST, json=json
         )
 
         return PasswordReset.model_validate(response)
@@ -1028,7 +1035,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            USER_RESET_PASSWORD_PATH, method=REQUEST_METHOD_POST, json=json
+            path=USER_RESET_PASSWORD_PATH, method=RequestMethod.POST, json=json
         )
 
         return User.model_validate(response["user"])
@@ -1044,8 +1051,8 @@ class UserManagement(UserManagementModule):
         """
 
         response = self._http_client.request(
-            EMAIL_VERIFICATION_DETAIL_PATH.format(email_verification_id),
-            method=REQUEST_METHOD_GET,
+            path=EMAIL_VERIFICATION_DETAIL_PATH.format(email_verification_id),
+            method=RequestMethod.GET,
         )
 
         return EmailVerification.model_validate(response)
@@ -1061,8 +1068,8 @@ class UserManagement(UserManagementModule):
         """
 
         response = self._http_client.request(
-            USER_SEND_VERIFICATION_EMAIL_PATH.format(user_id),
-            method=REQUEST_METHOD_POST,
+            path=USER_SEND_VERIFICATION_EMAIL_PATH.format(user_id),
+            method=RequestMethod.POST,
         )
 
         return User.model_validate(response["user"])
@@ -1083,8 +1090,8 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            USER_VERIFY_EMAIL_CODE_PATH.format(user_id),
-            method=REQUEST_METHOD_POST,
+            path=USER_VERIFY_EMAIL_CODE_PATH.format(user_id),
+            method=RequestMethod.POST,
             json=json,
         )
 
@@ -1101,7 +1108,7 @@ class UserManagement(UserManagementModule):
         """
 
         response = self._http_client.request(
-            MAGIC_AUTH_DETAIL_PATH.format(magic_auth_id), method=REQUEST_METHOD_GET
+            path=MAGIC_AUTH_DETAIL_PATH.format(magic_auth_id), method=RequestMethod.GET
         )
 
         return MagicAuth.model_validate(response)
@@ -1128,7 +1135,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            MAGIC_AUTH_PATH, method=REQUEST_METHOD_POST, json=json
+            path=MAGIC_AUTH_PATH, method=RequestMethod.POST, json=json
         )
 
         return MagicAuth.model_validate(response)
@@ -1162,8 +1169,8 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            USER_AUTH_FACTORS_PATH.format(user_id),
-            method=REQUEST_METHOD_POST,
+            path=USER_AUTH_FACTORS_PATH.format(user_id),
+            method=RequestMethod.POST,
             json=json,
         )
 
@@ -1195,8 +1202,8 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            USER_AUTH_FACTORS_PATH.format(user_id),
-            method=REQUEST_METHOD_GET,
+            path=USER_AUTH_FACTORS_PATH.format(user_id),
+            method=RequestMethod.GET,
             params=params,
         )
 
@@ -1226,8 +1233,8 @@ class UserManagement(UserManagementModule):
         """
 
         response = self._http_client.request(
-            INVITATION_DETAIL_PATH.format(invitation_id),
-            method=REQUEST_METHOD_GET,
+            path=INVITATION_DETAIL_PATH.format(invitation_id),
+            method=RequestMethod.GET,
         )
 
         return Invitation.model_validate(response)
@@ -1243,8 +1250,8 @@ class UserManagement(UserManagementModule):
         """
 
         response = self._http_client.request(
-            INVITATION_DETAIL_BY_TOKEN_PATH.format(invitation_token),
-            method=REQUEST_METHOD_GET,
+            path=INVITATION_DETAIL_BY_TOKEN_PATH.format(invitation_token),
+            method=RequestMethod.GET,
         )
 
         return Invitation.model_validate(response)
@@ -1283,7 +1290,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            INVITATION_PATH, method=REQUEST_METHOD_GET, params=params
+            path=INVITATION_PATH, method=RequestMethod.GET, params=params
         )
 
         return InvitationsListResource(
@@ -1323,7 +1330,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            INVITATION_PATH, method=REQUEST_METHOD_POST, json=json
+            path=INVITATION_PATH, method=RequestMethod.POST, json=json
         )
 
         return Invitation.model_validate(response)
@@ -1339,7 +1346,7 @@ class UserManagement(UserManagementModule):
         """
 
         response = self._http_client.request(
-            INVITATION_REVOKE_PATH.format(invitation_id), method=REQUEST_METHOD_POST
+            path=INVITATION_REVOKE_PATH.format(invitation_id), method=RequestMethod.POST
         )
 
         return Invitation.model_validate(response)
@@ -1365,7 +1372,7 @@ class AsyncUserManagement(UserManagementModule):
             User: User response from WorkOS.
         """
         response = await self._http_client.request(
-            USER_DETAIL_PATH.format(user_id), method=REQUEST_METHOD_GET
+            path=USER_DETAIL_PATH.format(user_id), method=RequestMethod.GET
         )
 
         return User.model_validate(response)
@@ -1404,7 +1411,7 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            USER_PATH, method=REQUEST_METHOD_GET, params=params
+            path=USER_PATH, method=RequestMethod.GET, params=params
         )
 
         return UsersListResource(
@@ -1449,7 +1456,7 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            USER_PATH, method=REQUEST_METHOD_POST, json=json
+            path=USER_PATH, method=RequestMethod.POST, json=json
         )
 
         return User.model_validate(response)
@@ -1489,7 +1496,7 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            USER_DETAIL_PATH.format(user_id), method=REQUEST_METHOD_PUT, json=json
+            path=USER_DETAIL_PATH.format(user_id), method=RequestMethod.PUT, json=json
         )
 
         return User.model_validate(response)
@@ -1501,7 +1508,7 @@ class AsyncUserManagement(UserManagementModule):
             user_id (str) -  User unique identifier
         """
         await self._http_client.request(
-            USER_DETAIL_PATH.format(user_id), method=REQUEST_METHOD_DELETE
+            path=USER_DETAIL_PATH.format(user_id), method=RequestMethod.DELETE
         )
 
     async def create_organization_membership(
@@ -1526,7 +1533,7 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_PATH, method=REQUEST_METHOD_POST, json=json
+            path=ORGANIZATION_MEMBERSHIP_PATH, method=RequestMethod.POST, json=json
         )
 
         return OrganizationMembership.model_validate(response)
@@ -1550,8 +1557,8 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_PUT,
+            path=ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=RequestMethod.PUT,
             json=json,
         )
 
@@ -1569,8 +1576,8 @@ class AsyncUserManagement(UserManagementModule):
         """
 
         response = await self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_GET,
+            path=ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=RequestMethod.GET,
         )
 
         return OrganizationMembership.model_validate(response)
@@ -1612,7 +1619,7 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_PATH, method=REQUEST_METHOD_GET, params=params
+            path=ORGANIZATION_MEMBERSHIP_PATH, method=RequestMethod.GET, params=params
         )
 
         return OrganizationMembershipsListResource(
@@ -1630,8 +1637,8 @@ class AsyncUserManagement(UserManagementModule):
             organization_membership_id (str) -  The unique ID of the Organization Membership.
         """
         await self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_DELETE,
+            path=ORGANIZATION_MEMBERSHIP_DETAIL_PATH.format(organization_membership_id),
+            method=RequestMethod.DELETE,
         )
 
     async def deactivate_organization_membership(
@@ -1645,8 +1652,10 @@ class AsyncUserManagement(UserManagementModule):
             OrganizationMembership: OrganizationMembership response from WorkOS.
         """
         response = await self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_PUT,
+            path=ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH.format(
+                organization_membership_id
+            ),
+            method=RequestMethod.PUT,
         )
 
         return OrganizationMembership.model_validate(response)
@@ -1662,15 +1671,19 @@ class AsyncUserManagement(UserManagementModule):
             OrganizationMembership: OrganizationMembership response from WorkOS.
         """
         response = await self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_REACTIVATE_PATH.format(organization_membership_id),
-            method=REQUEST_METHOD_PUT,
+            path=ORGANIZATION_MEMBERSHIP_REACTIVATE_PATH.format(
+                organization_membership_id
+            ),
+            method=RequestMethod.PUT,
         )
 
         return OrganizationMembership.model_validate(response)
 
     async def _authenticate_with(
-        self, payload: AuthenticateWithParameters
-    ) -> AuthenticationResponse:
+        self,
+        payload: AuthenticateWithParameters,
+        response_model: Type[AuthenticationResponseType],
+    ) -> AuthenticationResponseType:
         json = {
             "client_id": self._http_client.client_id,
             "client_secret": self._http_client.api_key,
@@ -1678,12 +1691,12 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            USER_AUTHENTICATE_PATH,
-            method=REQUEST_METHOD_POST,
+            path=USER_AUTHENTICATE_PATH,
+            method=RequestMethod.POST,
             json=json,
         )
 
-        return AuthenticationResponse.model_validate(response)
+        return response_model.model_validate(response)
 
     async def authenticate_with_password(
         self,
@@ -1713,7 +1726,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthenticationResponse
+        )
 
     async def authenticate_with_code(
         self,
@@ -1722,7 +1737,7 @@ class AsyncUserManagement(UserManagementModule):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-    ) -> AuthenticationResponse:
+    ) -> AuthKitAuthenticationResponse:
         """Authenticates an OAuth user or a user that is logging in through SSO.
 
         Kwargs:
@@ -1746,7 +1761,9 @@ class AsyncUserManagement(UserManagementModule):
             "code_verifier": code_verifier,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthKitAuthenticationResponse
+        )
 
     async def authenticate_with_magic_auth(
         self,
@@ -1779,7 +1796,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthenticationResponse
+        )
 
     async def authenticate_with_email_verification(
         self,
@@ -1809,7 +1828,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthenticationResponse
+        )
 
     async def authenticate_with_totp(
         self,
@@ -1842,7 +1863,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthenticationResponse
+        )
 
     async def authenticate_with_organization_selection(
         self,
@@ -1872,7 +1895,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        return await self._authenticate_with(payload)
+        return await self._authenticate_with(
+            payload, response_model=AuthenticationResponse
+        )
 
     async def authenticate_with_refresh_token(
         self,
@@ -1894,9 +1919,7 @@ class AsyncUserManagement(UserManagementModule):
             RefreshTokenAuthenticationResponse: Refresh Token Authentication response from WorkOS.
         """
 
-        json = {
-            "client_id": self._http_client.client_id,
-            "client_secret": self._http_client.api_key,
+        payload: AuthenticateWithRefreshTokenParameters = {
             "refresh_token": refresh_token,
             "organization_id": organization_id,
             "grant_type": "refresh_token",
@@ -1904,13 +1927,9 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
         }
 
-        response = await self._http_client.request(
-            USER_AUTHENTICATE_PATH,
-            method=REQUEST_METHOD_POST,
-            json=json,
+        return await self._authenticate_with(
+            payload, response_model=RefreshTokenAuthenticationResponse
         )
-
-        return RefreshTokenAuthenticationResponse.model_validate(response)
 
     async def get_password_reset(self, password_reset_id: str) -> PasswordReset:
         """Get the details of a password reset object.
@@ -1923,8 +1942,8 @@ class AsyncUserManagement(UserManagementModule):
         """
 
         response = await self._http_client.request(
-            PASSWORD_RESET_DETAIL_PATH.format(password_reset_id),
-            method=REQUEST_METHOD_GET,
+            path=PASSWORD_RESET_DETAIL_PATH.format(password_reset_id),
+            method=RequestMethod.GET,
         )
 
         return PasswordReset.model_validate(response)
@@ -1944,7 +1963,7 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            PASSWORD_RESET_PATH, method=REQUEST_METHOD_POST, json=json
+            path=PASSWORD_RESET_PATH, method=RequestMethod.POST, json=json
         )
 
         return PasswordReset.model_validate(response)
@@ -1966,7 +1985,7 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            USER_RESET_PASSWORD_PATH, method=REQUEST_METHOD_POST, json=json
+            path=USER_RESET_PASSWORD_PATH, method=RequestMethod.POST, json=json
         )
 
         return User.model_validate(response["user"])
@@ -1984,8 +2003,8 @@ class AsyncUserManagement(UserManagementModule):
         """
 
         response = await self._http_client.request(
-            EMAIL_VERIFICATION_DETAIL_PATH.format(email_verification_id),
-            method=REQUEST_METHOD_GET,
+            path=EMAIL_VERIFICATION_DETAIL_PATH.format(email_verification_id),
+            method=RequestMethod.GET,
         )
 
         return EmailVerification.model_validate(response)
@@ -2001,8 +2020,8 @@ class AsyncUserManagement(UserManagementModule):
         """
 
         response = await self._http_client.request(
-            USER_SEND_VERIFICATION_EMAIL_PATH.format(user_id),
-            method=REQUEST_METHOD_POST,
+            path=USER_SEND_VERIFICATION_EMAIL_PATH.format(user_id),
+            method=RequestMethod.POST,
         )
 
         return User.model_validate(response["user"])
@@ -2023,8 +2042,8 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            USER_VERIFY_EMAIL_CODE_PATH.format(user_id),
-            method=REQUEST_METHOD_POST,
+            path=USER_VERIFY_EMAIL_CODE_PATH.format(user_id),
+            method=RequestMethod.POST,
             json=json,
         )
 
@@ -2041,7 +2060,7 @@ class AsyncUserManagement(UserManagementModule):
         """
 
         response = await self._http_client.request(
-            MAGIC_AUTH_DETAIL_PATH.format(magic_auth_id), method=REQUEST_METHOD_GET
+            path=MAGIC_AUTH_DETAIL_PATH.format(magic_auth_id), method=RequestMethod.GET
         )
 
         return MagicAuth.model_validate(response)
@@ -2068,7 +2087,7 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            MAGIC_AUTH_PATH, method=REQUEST_METHOD_POST, json=json
+            path=MAGIC_AUTH_PATH, method=RequestMethod.POST, json=json
         )
 
         return MagicAuth.model_validate(response)
@@ -2102,8 +2121,8 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            USER_AUTH_FACTORS_PATH.format(user_id),
-            method=REQUEST_METHOD_POST,
+            path=USER_AUTH_FACTORS_PATH.format(user_id),
+            method=RequestMethod.POST,
             json=json,
         )
 
@@ -2135,8 +2154,8 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            USER_AUTH_FACTORS_PATH.format(user_id),
-            method=REQUEST_METHOD_GET,
+            path=USER_AUTH_FACTORS_PATH.format(user_id),
+            method=RequestMethod.GET,
             params=params,
         )
 
@@ -2166,7 +2185,7 @@ class AsyncUserManagement(UserManagementModule):
         """
 
         response = await self._http_client.request(
-            INVITATION_DETAIL_PATH.format(invitation_id), method=REQUEST_METHOD_GET
+            path=INVITATION_DETAIL_PATH.format(invitation_id), method=RequestMethod.GET
         )
 
         return Invitation.model_validate(response)
@@ -2182,8 +2201,8 @@ class AsyncUserManagement(UserManagementModule):
         """
 
         response = await self._http_client.request(
-            INVITATION_DETAIL_BY_TOKEN_PATH.format(invitation_token),
-            method=REQUEST_METHOD_GET,
+            path=INVITATION_DETAIL_BY_TOKEN_PATH.format(invitation_token),
+            method=RequestMethod.GET,
         )
 
         return Invitation.model_validate(response)
@@ -2222,7 +2241,7 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            INVITATION_PATH, method=REQUEST_METHOD_GET, params=params
+            path=INVITATION_PATH, method=RequestMethod.GET, params=params
         )
 
         return InvitationsListResource(
@@ -2262,7 +2281,7 @@ class AsyncUserManagement(UserManagementModule):
         }
 
         response = await self._http_client.request(
-            INVITATION_PATH, method=REQUEST_METHOD_POST, json=json
+            path=INVITATION_PATH, method=RequestMethod.POST, json=json
         )
 
         return Invitation.model_validate(response)
@@ -2278,7 +2297,7 @@ class AsyncUserManagement(UserManagementModule):
         """
 
         response = await self._http_client.request(
-            INVITATION_REVOKE_PATH.format(invitation_id), method=REQUEST_METHOD_POST
+            path=INVITATION_REVOKE_PATH.format(invitation_id), method=RequestMethod.POST
         )
 
         return Invitation.model_validate(response)

@@ -19,10 +19,8 @@ from workos.utils.http_client import SyncHTTPClient
 
 class TestValidation:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.fga = FGA(http_client=self.http_client)
 
     def test_get_resource_no_resources(self):
@@ -64,10 +62,8 @@ class TestValidation:
 
 class TestErrorHandling:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.fga = FGA(http_client=self.http_client)
 
     @pytest.fixture
@@ -110,10 +106,8 @@ class TestErrorHandling:
 
 class TestFGA:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.http_client = SyncHTTPClient(
-            base_url="https://api.workos.test", version="test"
-        )
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
         self.fga = FGA(http_client=self.http_client)
 
     @pytest.fixture
@@ -131,11 +125,11 @@ class TestFGA:
         mock_http_client_with_response(
             self.http_client, mock_get_resource_response, 200
         )
-        enroll_factor = self.fga.get_resource(
+        resource = self.fga.get_resource(
             resource_type=mock_get_resource_response["resource_type"],
             resource_id=mock_get_resource_response["resource_id"],
         )
-        assert enroll_factor.dict(exclude_none=True) == mock_get_resource_response
+        assert resource.dict(exclude_none=True) == mock_get_resource_response
 
     @pytest.fixture
     def mock_list_resources_response(self):

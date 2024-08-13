@@ -1,6 +1,5 @@
 from typing import Optional, Protocol, Set
-
-from workos._base_client import ClientConfiguration
+from workos._client_configuration import ClientConfiguration
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,

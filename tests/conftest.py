@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 import httpx
 import pytest
 
+from tests.utils.client_configuration import ClientConfiguration
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.types.list_resource import WorkOsListResource
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
@@ -13,7 +14,7 @@ from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 def sync_http_client_for_test():
     return SyncHTTPClient(
         api_key="sk_test",
-        base_url="https://api.workos.test",
+        base_url="https://api.workos.test/",
         client_id="client_b27needthisforssotemxo",
         version="test",
     )
@@ -23,7 +24,7 @@ def sync_http_client_for_test():
 def async_http_client_for_test():
     return AsyncHTTPClient(
         api_key="sk_test",
-        base_url="https://api.workos.test",
+        base_url="https://api.workos.test/",
         client_id="client_b27needthisforssotemxo",
         version="test",
     )

@@ -1,8 +1,8 @@
 from abc import abstractmethod
 import os
-from typing import Optional, Protocol
-
+from typing import Optional
 from workos.__about__ import __version__
+from workos._client_configuration import ClientConfiguration
 from workos.fga import FGAModule
 from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
 from workos.utils.http_client import HTTPClient
@@ -16,15 +16,6 @@ from workos.portal import PortalModule
 from workos.sso import SSOModule
 from workos.user_management import UserManagementModule
 from workos.webhooks import WebhooksModule
-
-
-class ClientConfiguration(Protocol):
-    @property
-    def base_url(self) -> str: ...
-    @property
-    def client_id(self) -> str: ...
-    @property
-    def request_timeout(self) -> int: ...
 
 
 class BaseClient(ClientConfiguration):
@@ -59,10 +50,12 @@ class BaseClient(ClientConfiguration):
 
         self._client_id = client_id
 
-        self.base_url = (
-            base_url
-            if base_url
-            else os.getenv("WORKOS_BASE_URL", "https://api.workos.com/")
+        self._base_url = self._enforce_trailing_slash(
+            url=(
+                base_url
+                if base_url
+                else os.getenv("WORKOS_BASE_URL", "https://api.workos.com/")
+            )
         )
 
         self._request_timeout = (
@@ -121,15 +114,6 @@ class BaseClient(ClientConfiguration):
     @property
     def base_url(self) -> str:
         return self._base_url
-
-    @base_url.setter
-    def base_url(self, url: str) -> None:
-        """Creates an accessible template for constructing the URL for an API request.
-
-        Args:
-            base_api_url (str): Base URL for api requests
-        """
-        self._base_url = "{}{{}}".format(self._enforce_trailing_slash(url))
 
     @property
     def client_id(self) -> str:

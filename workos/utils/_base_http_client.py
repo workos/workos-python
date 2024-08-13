@@ -55,7 +55,8 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         timeout: Optional[int] = DEFAULT_REQUEST_TIMEOUT,
     ) -> None:
         self._api_key = api_key
-        self._base_url = base_url
+        # Template for constructing the URL for an API request
+        self._base_url = "{}{{}}".format(base_url)
         self._client_id = client_id
         self._version = version
         self._timeout = DEFAULT_REQUEST_TIMEOUT if timeout is None else timeout

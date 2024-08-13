@@ -1,5 +1,5 @@
 from typing import Optional, Protocol
-from workos._base_client import ClientConfiguration
+from workos._client_configuration import ClientConfiguration
 from workos.types.sso.connection import ConnectionType
 from workos.types.sso.sso_provider_type import SsoProviderType
 from workos.typing.sync_or_async import SyncOrAsync

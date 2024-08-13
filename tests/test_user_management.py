@@ -1,4 +1,5 @@
 import json
+from os import sync
 
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
@@ -11,6 +12,10 @@ from tests.utils.fixtures.mock_organization_membership import MockOrganizationMe
 from tests.utils.fixtures.mock_password_reset import MockPasswordReset
 from tests.utils.fixtures.mock_user import MockUser
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
+from tests.utils.client_configuration import (
+    ClientConfiguration,
+    client_configuration_for_http_client,
+)
 from workos.user_management import AsyncUserManagement, UserManagement
 from workos.utils.request_helper import RESPONSE_TYPE_CODE
 
@@ -144,7 +149,12 @@ class TestUserManagementBase(UserManagementFixtures):
     @pytest.fixture(autouse=True)
     def setup(self, sync_http_client_for_test):
         self.http_client = sync_http_client_for_test
-        self.user_management = UserManagement(http_client=self.http_client)
+        self.user_management = UserManagement(
+            http_client=self.http_client,
+            client_configuration=client_configuration_for_http_client(
+                sync_http_client_for_test
+            ),
+        )
 
     def test_authorization_url_throws_value_error_with_missing_connection_organization_and_provider(
         self,
@@ -311,7 +321,12 @@ class TestUserManagement(UserManagementFixtures):
     @pytest.fixture(autouse=True)
     def setup(self, sync_http_client_for_test):
         self.http_client = sync_http_client_for_test
-        self.user_management = UserManagement(http_client=self.http_client)
+        self.user_management = UserManagement(
+            http_client=self.http_client,
+            client_configuration=client_configuration_for_http_client(
+                sync_http_client_for_test
+            ),
+        )
 
     def test_get_user(self, mock_user, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(
@@ -946,7 +961,12 @@ class TestAsyncUserManagement(UserManagementFixtures):
     @pytest.fixture(autouse=True)
     def setup(self, async_http_client_for_test):
         self.http_client = async_http_client_for_test
-        self.user_management = AsyncUserManagement(http_client=self.http_client)
+        self.user_management = AsyncUserManagement(
+            http_client=self.http_client,
+            client_configuration=client_configuration_for_http_client(
+                async_http_client_for_test
+            ),
+        )
 
     async def test_get_user(self, mock_user, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(
@@ -1005,7 +1025,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
             "password": "password",
         }
         user = await self.user_management.update_user(
-            "user_01H7ZGXFP5C6BBQY6Z7277ZCT0", **params
+            user_id="user_01H7ZGXFP5C6BBQY6Z7277ZCT0", **params
         )
 
         assert request_kwargs["url"].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")

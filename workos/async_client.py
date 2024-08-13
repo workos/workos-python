@@ -36,7 +36,7 @@ class AsyncClient(BaseClient):
         )
         self._http_client = AsyncHTTPClient(
             api_key=self._api_key,
-            base_url=self._base_url,
+            base_url=self.base_url,
             client_id=self._client_id,
             version=__version__,
             timeout=self.request_timeout,

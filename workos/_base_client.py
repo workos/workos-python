@@ -59,11 +59,12 @@ class BaseClient(ClientConfiguration):
 
         self._client_id = client_id
 
-        self._base_url = (
+        self.base_url = (
             base_url
             if base_url
             else os.getenv("WORKOS_BASE_URL", "https://api.workos.com/")
         )
+
         self._request_timeout = (
             request_timeout
             if request_timeout
@@ -114,9 +115,21 @@ class BaseClient(ClientConfiguration):
     @abstractmethod
     def webhooks(self) -> WebhooksModule: ...
 
+    def _enforce_trailing_slash(self, url: str) -> str:
+        return url if url.endswith("/") else url + "/"
+
     @property
     def base_url(self) -> str:
         return self._base_url
+
+    @base_url.setter
+    def base_url(self, url: str) -> None:
+        """Creates an accessible template for constructing the URL for an API request.
+
+        Args:
+            base_api_url (str): Base URL for api requests
+        """
+        self._base_url = "{}{{}}".format(self._enforce_trailing_slash(url))
 
     @property
     def client_id(self) -> str:

@@ -55,13 +55,10 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         timeout: Optional[int] = DEFAULT_REQUEST_TIMEOUT,
     ) -> None:
         self._api_key = api_key
-        self.base_url = base_url
+        self._base_url = base_url
         self._client_id = client_id
         self._version = version
         self._timeout = DEFAULT_REQUEST_TIMEOUT if timeout is None else timeout
-
-    def _enforce_trailing_slash(self, url: str) -> str:
-        return url if url.endswith("/") else url + "/"
 
     def _generate_api_url(self, path: str) -> str:
         return self._base_url.format(path)
@@ -205,15 +202,6 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     @property
     def base_url(self) -> str:
         return self._base_url
-
-    @base_url.setter
-    def base_url(self, url: str) -> None:
-        """Creates an accessible template for constructing the URL for an API request.
-
-        Args:
-            base_api_url (str): Base URL for api requests
-        """
-        self._base_url = "{}{{}}".format(self._enforce_trailing_slash(url))
 
     @property
     def client_id(self) -> str:

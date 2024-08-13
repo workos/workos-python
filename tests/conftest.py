@@ -6,7 +6,7 @@ import pytest
 
 from tests.utils.client_configuration import ClientConfiguration
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
-from workos.types.list_resource import WorkOsListResource
+from workos.types.list_resource import WorkOSListResource
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 
 
@@ -136,7 +136,7 @@ def test_sync_auto_pagination(
 ):
     def inner(
         http_client: SyncHTTPClient,
-        list_function: Callable[[], WorkOsListResource],
+        list_function: Callable[[], WorkOSListResource],
         expected_all_page_data: dict,
         list_function_params: Optional[Mapping[str, Any]] = None,
     ):

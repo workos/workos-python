@@ -12,12 +12,12 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_PUT,
 )
 from workos.types.organizations import Organization
-from workos.types.list_resource import ListMetadata, ListPage, WorkOsListResource
+from workos.types.list_resource import ListMetadata, ListPage, WorkOSListResource
 
 ORGANIZATIONS_PATH = "organizations"
 
 
-OrganizationsListResource = WorkOsListResource[
+OrganizationsListResource = WorkOSListResource[
     Organization, OrganizationListFilters, ListMetadata
 ]
 
@@ -99,7 +99,7 @@ class Organizations(OrganizationsModule):
             params=list_params,
         )
 
-        return WorkOsListResource[Organization, OrganizationListFilters, ListMetadata](
+        return WorkOSListResource[Organization, OrganizationListFilters, ListMetadata](
             list_method=self.list_organizations,
             list_args=list_params,
             **ListPage[Organization](**response).model_dump(),

@@ -18,21 +18,17 @@ from workos.types.directory_sync import (
     Directory,
     DirectoryUserWithGroups,
 )
-from workos.types.list_resource import (
-    ListMetadata,
-    ListPage,
-    WorkOsListResource,
-)
+from workos.types.list_resource import ListMetadata, ListPage, WorkOSListResource
 
-DirectoryUsersListResource = WorkOsListResource[
+DirectoryUsersListResource = WorkOSListResource[
     DirectoryUserWithGroups, DirectoryUserListFilters, ListMetadata
 ]
 
-DirectoryGroupsListResource = WorkOsListResource[
+DirectoryGroupsListResource = WorkOSListResource[
     DirectoryGroup, DirectoryGroupListFilters, ListMetadata
 ]
 
-DirectoriesListResource = WorkOsListResource[
+DirectoriesListResource = WorkOSListResource[
     Directory, DirectoryListFilters, ListMetadata
 ]
 
@@ -132,7 +128,7 @@ class DirectorySync(DirectorySyncModule):
             params=list_params,
         )
 
-        return WorkOsListResource(
+        return WorkOSListResource(
             list_method=self.list_users,
             list_args=list_params,
             **ListPage[DirectoryUserWithGroups](**response).model_dump(),
@@ -181,7 +177,7 @@ class DirectorySync(DirectorySyncModule):
             params=list_params,
         )
 
-        return WorkOsListResource[
+        return WorkOSListResource[
             DirectoryGroup, DirectoryGroupListFilters, ListMetadata
         ](
             list_method=self.list_groups,
@@ -276,7 +272,7 @@ class DirectorySync(DirectorySyncModule):
             method=REQUEST_METHOD_GET,
             params=list_params,
         )
-        return WorkOsListResource[Directory, DirectoryListFilters, ListMetadata](
+        return WorkOSListResource[Directory, DirectoryListFilters, ListMetadata](
             list_method=self.list_directories,
             list_args=list_params,
             **ListPage[Directory](**response).model_dump(),
@@ -349,7 +345,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             params=list_params,
         )
 
-        return WorkOsListResource(
+        return WorkOSListResource(
             list_method=self.list_users,
             list_args=list_params,
             **ListPage[DirectoryUserWithGroups](**response).model_dump(),
@@ -397,7 +393,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             params=list_params,
         )
 
-        return WorkOsListResource[
+        return WorkOSListResource[
             DirectoryGroup, DirectoryGroupListFilters, ListMetadata
         ](
             list_method=self.list_groups,
@@ -493,7 +489,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             method=REQUEST_METHOD_GET,
             params=list_params,
         )
-        return WorkOsListResource[Directory, DirectoryListFilters, ListMetadata](
+        return WorkOSListResource[Directory, DirectoryListFilters, ListMetadata](
             list_method=self.list_directories,
             list_args=list_params,
             **ListPage[Directory](**response).model_dump(),

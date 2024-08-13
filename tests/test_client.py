@@ -65,7 +65,9 @@ class TestClient:
     def test_initialize_user_management(self, default_client):
         assert bool(default_client.user_management)
 
-    def test_enforce_trailing_slash_for_base_url(self, default_client):
+    def test_enforce_trailing_slash_for_base_url(
+        self,
+    ):
         client = WorkOSClient(
             api_key="sk_test",
             client_id="client_b27needthisforssotemxo",

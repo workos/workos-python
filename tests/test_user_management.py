@@ -13,7 +13,6 @@ from tests.utils.fixtures.mock_password_reset import MockPasswordReset
 from tests.utils.fixtures.mock_user import MockUser
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from tests.utils.client_configuration import (
-    ClientConfiguration,
     client_configuration_for_http_client,
 )
 from workos.user_management import AsyncUserManagement, UserManagement

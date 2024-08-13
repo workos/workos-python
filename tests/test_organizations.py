@@ -1,16 +1,11 @@
 import datetime
 import pytest
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
-from workos.organizations import Organizations
+from workos.organizations import AsyncOrganizations, Organizations
 from tests.utils.fixtures.mock_organization import MockOrganization
 
 
-class TestOrganizations(object):
-    @pytest.fixture(autouse=True)
-    def setup(self, sync_http_client_for_test):
-        self.http_client = sync_http_client_for_test
-        self.organizations = Organizations(http_client=self.http_client)
-
+class OrganizationFixtures:
     @pytest.fixture
     def mock_organization(self):
         return MockOrganization("org_01EHT88Z8J8795GZNQ4ZP1J81T").dict()
@@ -62,6 +57,13 @@ class TestOrganizations(object):
             MockOrganization(id=str(f"org_{i+1}")).dict() for i in range(40)
         ]
         return list_response_of(data=organizations_list)
+
+
+class TestOrganizations(OrganizationFixtures):
+    @pytest.fixture(autouse=True)
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
+        self.organizations = Organizations(http_client=self.http_client)
 
     def test_list_organizations(
         self, mock_organizations, mock_http_client_with_response
@@ -200,3 +202,142 @@ class TestOrganizations(object):
             list_function=self.organizations.list_organizations,
             expected_all_page_data=mock_organizations_multiple_data_pages["data"],
         )
+
+
+@pytest.mark.asyncio
+class TestAsyncOrganizations(OrganizationFixtures):
+    @pytest.fixture(autouse=True)
+    def setup(self, async_http_client_for_test):
+        self.http_client = async_http_client_for_test
+        self.organizations = AsyncOrganizations(http_client=self.http_client)
+
+    async def test_list_organizations(
+        self, mock_organizations, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(self.http_client, mock_organizations, 200)
+
+        organizations_response = await self.organizations.list_organizations()
+
+        def to_dict(x):
+            return x.dict()
+
+        assert (
+            list(map(to_dict, organizations_response.data))
+            == mock_organizations["data"]
+        )
+
+    async def test_get_organization(
+        self, mock_organization, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(self.http_client, mock_organization, 200)
+
+        organization = await self.organizations.get_organization(
+            organization_id="organization_id"
+        )
+
+        assert organization.dict() == mock_organization
+
+    async def test_get_organization_by_lookup_key(
+        self, mock_organization, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(self.http_client, mock_organization, 200)
+
+        organization = await self.organizations.get_organization_by_lookup_key(
+            lookup_key="test"
+        )
+
+        assert organization.dict() == mock_organization
+
+    async def test_create_organization_with_domain_data(
+        self, mock_organization, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(self.http_client, mock_organization, 201)
+
+        payload = {
+            "domain_data": [{"domain": "example.com", "state": "verified"}],
+            "name": "Test Organization",
+        }
+        organization = await self.organizations.create_organization(**payload)
+
+        assert organization.id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        assert organization.name == "Foo Corporation"
+
+    async def test_sends_idempotency_key(
+        self, mock_organization, capture_and_mock_http_client_request
+    ):
+        idempotency_key = "test_123456789"
+
+        payload = {
+            "domain_data": [{"domain": "example.com", "state": "verified"}],
+            "name": "Foo Corporation",
+        }
+
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization, 200
+        )
+
+        response = await self.organizations.create_organization(
+            **payload, idempotency_key=idempotency_key
+        )
+
+        assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
+        assert response.name == "Foo Corporation"
+
+    async def test_update_organization_with_domain_data(
+        self, mock_organization_updated, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(self.http_client, mock_organization_updated, 201)
+
+        updated_organization = await self.organizations.update_organization(
+            organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            name="Example Organization",
+            domain_data=[{"domain": "example.io", "state": "verified"}],
+        )
+
+        assert updated_organization.id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        assert updated_organization.name == "Example Organization"
+        assert updated_organization.domains[0].dict() == {
+            "domain": "example.io",
+            "object": "organization_domain",
+            "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
+            "state": "verified",
+            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            "verification_strategy": "dns",
+            "verification_token": "token",
+        }
+
+    async def test_delete_organization(self, setup, mock_http_client_with_response):
+        mock_http_client_with_response(
+            self.http_client,
+            202,
+            headers={"content-type": "text/plain; charset=utf-8"},
+        )
+
+        response = await self.organizations.delete_organization(
+            organization_id="connection_id"
+        )
+
+        assert response is None
+
+    async def test_list_organizations_auto_pagination_for_multiple_pages(
+        self,
+        mock_organizations_multiple_data_pages,
+        mock_pagination_request_for_http_client,
+    ):
+        mock_pagination_request_for_http_client(
+            http_client=self.http_client,
+            data_list=mock_organizations_multiple_data_pages["data"],
+            status_code=200,
+        )
+
+        all_organizations = []
+
+        async for organization in await self.organizations.list_organizations():
+            all_organizations.append(organization)
+
+        assert len(list(all_organizations)) == len(
+            mock_organizations_multiple_data_pages["data"]
+        )
+        assert (
+            list_data_to_dicts(all_organizations)
+        ) == mock_organizations_multiple_data_pages["data"]

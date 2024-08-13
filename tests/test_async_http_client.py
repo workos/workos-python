@@ -20,7 +20,7 @@ class TestAsyncHTTPClient(object):
 
         self.http_client = AsyncHTTPClient(
             api_key="sk_test",
-            base_url="https://api.workos.test",
+            base_url="https://api.workos.test/",
             client_id="client_b27needthisforssotemxo",
             version="test",
             transport=httpx.MockTransport(handler),

@@ -1,8 +1,8 @@
 from abc import abstractmethod
 import os
-from typing import Generic, Optional, Type, TypeVar
-
+from typing import Optional
 from workos.__about__ import __version__
+from workos._client_configuration import ClientConfiguration
 from workos.fga import FGAModule
 from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
 from workos.utils.http_client import HTTPClient
@@ -18,17 +18,13 @@ from workos.user_management import UserManagementModule
 from workos.webhooks import WebhooksModule
 
 
-HTTPClientType = TypeVar("HTTPClientType", bound=HTTPClient)
-
-
-class BaseClient(Generic[HTTPClientType]):
+class BaseClient(ClientConfiguration):
     """Base client for accessing the WorkOS feature set."""
 
     _api_key: str
     _base_url: str
     _client_id: str
     _request_timeout: int
-    _http_client: HTTPClient
 
     def __init__(
         self,
@@ -37,7 +33,6 @@ class BaseClient(Generic[HTTPClientType]):
         client_id: Optional[str],
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
-        http_client_cls: Type[HTTPClientType],
     ) -> None:
         api_key = api_key or os.getenv("WORKOS_API_KEY")
         if api_key is None:
@@ -55,23 +50,18 @@ class BaseClient(Generic[HTTPClientType]):
 
         self._client_id = client_id
 
-        self._base_url = (
-            base_url
-            if base_url
-            else os.getenv("WORKOS_BASE_URL", "https://api.workos.com/")
+        self._base_url = self._enforce_trailing_slash(
+            url=(
+                base_url
+                if base_url
+                else os.getenv("WORKOS_BASE_URL", "https://api.workos.com/")
+            )
         )
+
         self._request_timeout = (
             request_timeout
             if request_timeout
             else int(os.getenv("WORKOS_REQUEST_TIMEOUT", DEFAULT_REQUEST_TIMEOUT))
-        )
-
-        self._http_client = http_client_cls(
-            api_key=self._api_key,
-            base_url=self._base_url,
-            client_id=self._client_id,
-            version=__version__,
-            timeout=self._request_timeout,
         )
 
     @property
@@ -117,3 +107,18 @@ class BaseClient(Generic[HTTPClientType]):
     @property
     @abstractmethod
     def webhooks(self) -> WebhooksModule: ...
+
+    def _enforce_trailing_slash(self, url: str) -> str:
+        return url if url.endswith("/") else url + "/"
+
+    @property
+    def base_url(self) -> str:
+        return self._base_url
+
+    @property
+    def client_id(self) -> str:
+        return self._client_id
+
+    @property
+    def request_timeout(self) -> int:
+        return self._request_timeout

@@ -364,9 +364,7 @@ class FGA(FGAModule):
             params=list_params,
         )
 
-        return WorkOSListResource[
-            AuthorizationResource, AuthorizationResourceListFilters, ListMetadata
-        ](
+        return AuthorizationResourceListResource(
             list_method=self.list_resources,
             list_args=list_params,
             **ListPage[AuthorizationResource](**response).model_dump(),
@@ -456,7 +454,7 @@ class FGA(FGAModule):
             params=list_params,
         )
 
-        return WorkOSListResource[AuthorizationResourceType, ListArgs, ListMetadata](
+        return AuthorizationResourceTypeListResource(
             list_method=self.list_resource_types,
             list_args=list_params,
             **ListPage[AuthorizationResourceType](**response).model_dump(),
@@ -500,7 +498,7 @@ class FGA(FGAModule):
         # A workaround to add warrant_token to the list_args for the ListResource iterator
         list_params["warrant_token"] = warrant_token
 
-        return WorkOSListResource[Warrant, WarrantListFilters, ListMetadata](
+        return WarrantListResource(
             list_method=self.list_warrants,
             list_args=list_params,
             **ListPage[Warrant](**response).model_dump(),
@@ -634,9 +632,7 @@ class FGA(FGAModule):
         # A workaround to add warrant_token to the list_args for the ListResource iterator
         list_params["warrant_token"] = warrant_token
 
-        return WorkOSListResource[
-            WarrantQueryResult, WarrantQueryListFilters, ListMetadata
-        ](
+        return WarrantQueryListResource(
             list_method=self.query,
             list_args=list_params,
             **ListPage[WarrantQueryResult](**response).model_dump(),

@@ -297,7 +297,7 @@ class FGAModule(Protocol):
             order (str): The order in which to return resources.
             before (str): A cursor to return resources before. (Optional)
             after (str): A cursor to return resources after. (Optional)
-            context (dict): A dictionary containing additional context. (Optional)
+            context (Mapping): A dictionary containing additional context. (Optional)
             warrant_token (str): Optional token to specify desired read consistency. (Optional)
         Returns:
 

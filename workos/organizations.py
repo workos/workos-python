@@ -79,7 +79,16 @@ class OrganizationsModule(Protocol):
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
     ) -> SyncOrAsync[Organization]:
-        """Create an organization"""
+        """Create an organization
+
+        Kwargs:
+            name (str): A descriptive name for the organization. (Optional)
+            domain_data (Sequence[DomainDataInput]): List of domains that belong to the organization. (Optional)
+            idempotency_key (str): Key to guarantee idempotency across requests. (Optional)
+
+        Returns:
+            Organization: Updated Organization response from WorkOS.
+        """
         ...
 
     def update_organization(
@@ -94,7 +103,6 @@ class OrganizationsModule(Protocol):
         Kwargs:
             organization (str): Organization's unique identifier.
             name (str): A descriptive name for the organization. (Optional)
-            domains (list): [Deprecated] Use domain_data instead. List of domains that belong to the organization. (Optional)
             domain_data (Sequence[DomainDataInput]): List of domains that belong to the organization. (Optional)
 
         Returns:

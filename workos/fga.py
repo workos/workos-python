@@ -248,7 +248,7 @@ class FGAModule(Protocol):
         """
         Check a warrant.
 
-        Args:
+        Kwargs:
             checks (Sequence[WarrantCheck]): A list of WarrantCheck objects.
             op (CheckOperation): The operation to perform. (Optional)
             debug (bool): Whether to return debug information including a decision tree. (Optional)
@@ -268,7 +268,7 @@ class FGAModule(Protocol):
         """
         Check a batch of warrants.
 
-        Args:
+        Kwargs:
             checks (Sequence[WarrantCheck]): A list of WarrantCheck objects.
             debug (bool): Whether to return debug information including a decision tree. (Optional)
             warrant_token (str): Optional token to specify desired read consistency. (Optional)
@@ -291,7 +291,7 @@ class FGAModule(Protocol):
         """
         Query for warrants.
 
-        Args:
+        Kwargs:
             q (str): The query string.
             order (Literal["asc","desc"]): Sort warrant resources in either ascending or descending (default) order. (Optional)
             order (str): The order in which to return resources.

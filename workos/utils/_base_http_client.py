@@ -1,5 +1,16 @@
 import platform
-from typing import Any, List, Mapping, cast, Dict, Generic, Optional, TypeVar, Union
+from typing import (
+    Any,
+    List,
+    Mapping,
+    Sequence,
+    cast,
+    Dict,
+    Generic,
+    Optional,
+    TypeVar,
+    Union,
+)
 from typing_extensions import NotRequired, TypedDict
 
 import httpx
@@ -23,7 +34,7 @@ DEFAULT_REQUEST_TIMEOUT = 25
 
 ParamsType = Optional[Mapping[str, Any]]
 HeadersType = Optional[Dict[str, str]]
-JsonType = Optional[Union[Mapping[str, Any], List[Any]]]
+JsonType = Optional[Union[Mapping[str, Any], Sequence[Any]]]
 ResponseJson = Mapping[Any, Any]
 
 

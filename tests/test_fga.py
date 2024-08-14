@@ -8,11 +8,9 @@ from workos.exceptions import (
 )
 from workos.fga import FGA
 from workos.types.fga import (
-    CheckOperations,
     Subject,
-    WarrantCheck,
+    WarrantCheckInput,
     WarrantWrite,
-    WarrantWriteOperations,
 )
 
 
@@ -56,7 +54,7 @@ class TestValidation:
 
     def test_check_no_checks(self):
         with pytest.raises(ValueError):
-            self.fga.check(op=CheckOperations.ANY_OF.value, checks=[])
+            self.fga.check(op="any_of", checks=[])
 
 
 class TestErrorHandling:
@@ -334,7 +332,7 @@ class TestFGA:
         )
 
         response = self.fga.write_warrant(
-            op=WarrantWriteOperations.CREATE.value,
+            op="create",
             subject_type="role",
             subject_id="senior-accountant",
             subject_relation="member",
@@ -354,7 +352,7 @@ class TestFGA:
         response = self.fga.batch_write_warrants(
             batch=[
                 WarrantWrite(
-                    op=WarrantWriteOperations.CREATE.value,
+                    op="create",
                     resource_type="permission",
                     resource_id="view-balance-sheet",
                     relation="member",
@@ -365,7 +363,7 @@ class TestFGA:
                     ),
                 ),
                 WarrantWrite(
-                    op=WarrantWriteOperations.CREATE.value,
+                    op="create",
                     resource_type="permission",
                     resource_id="balance-sheet:edit",
                     relation="member",
@@ -388,9 +386,9 @@ class TestFGA:
         )
 
         response = self.fga.check(
-            op=CheckOperations.ANY_OF.value,
+            op="any_of",
             checks=[
-                WarrantCheck(
+                WarrantCheckInput(
                     resource_type="schedule",
                     resource_id="schedule-A1",
                     relation="viewer",
@@ -447,9 +445,9 @@ class TestFGA:
         )
 
         response = self.fga.check(
-            op=CheckOperations.ANY_OF.value,
+            op="any_of",
             checks=[
-                WarrantCheck(
+                WarrantCheckInput(
                     resource_type="report",
                     resource_id="report-a",
                     relation="editor",
@@ -475,13 +473,13 @@ class TestFGA:
 
         response = self.fga.check_batch(
             checks=[
-                WarrantCheck(
+                WarrantCheckInput(
                     resource_type="schedule",
                     resource_id="schedule-A1",
                     relation="viewer",
                     subject=Subject(resource_type="user", resource_id="user-A"),
                 ),
-                WarrantCheck(
+                WarrantCheckInput(
                     resource_type="schedule",
                     resource_id="schedule-A1",
                     relation="editor",

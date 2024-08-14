@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Mapping, Optional
 
 from workos.types.workos_model import WorkOSModel
 
@@ -6,5 +6,5 @@ from workos.types.workos_model import WorkOSModel
 class Resource(WorkOSModel):
     resource_type: str
     resource_id: str
-    meta: Optional[Dict[str, Any]] = None
+    meta: Optional[Mapping[str, Any]] = None
     created_at: Optional[str] = None

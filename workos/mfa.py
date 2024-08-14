@@ -22,6 +22,8 @@ from workos.types.mfa import (
 
 
 class MFAModule(Protocol):
+    """Offers methods through the WorkOS MFA service."""
+
     def enroll_factor(
         self,
         *,
@@ -29,19 +31,74 @@ class MFAModule(Protocol):
         totp_issuer: Optional[str] = None,
         totp_user: Optional[str] = None,
         phone_number: Optional[str] = None,
-    ) -> AuthenticationFactorExtended: ...
+    ) -> AuthenticationFactorExtended:
+        """
+        Defines the type of MFA authorization factor to be used. Possible values are sms or totp.
 
-    def get_factor(self, authentication_factor_id: str) -> AuthenticationFactor: ...
+        Kwargs:
+            type (str): The type of factor to be enrolled (sms or totp).
+            totp_issuer (str): Name of the Organization. Required when type is totp, ignored otherwise.
+            totp_user (str): email of user. Required when type is totp, ignored otherwise.
+            phone_number (str): phone number of the user. (Optional)
 
-    def delete_factor(self, authentication_factor_id: str) -> None: ...
+        Returns:
+            AuthenticationFactor:
+        """
+        ...
+
+    def get_factor(self, authentication_factor_id: str) -> AuthenticationFactor:
+        """
+        Returns an authorization factor from its ID.
+
+        Args:
+            authentication_factor_id (str): The ID of the factor to be obtained.
+
+        Returns:
+            AuthenticationFactor: AuthenticationFactor response from WorkOS.
+        """
+        ...
+
+    def delete_factor(self, authentication_factor_id: str) -> None:
+        """
+        Deletes an MFA authorization factor.
+
+        Args:
+            authentication_factor_id (str): The ID of the authorization factor to be deleted.
+
+        Returns:
+            None
+        """
+        ...
 
     def challenge_factor(
         self, *, authentication_factor_id: str, sms_template: Optional[str] = None
-    ) -> AuthenticationChallenge: ...
+    ) -> AuthenticationChallenge:
+        """
+        Initiates the authentication process for the newly created MFA authorization factor, referred to as a challenge.
+
+        Kwargs:
+            authentication_factor_id (str): ID of the authorization factor
+            sms_template (str): Optional parameter to customize the message for sms type factors. Must include "{{code}}" if used. (Optional)
+
+        Returns:
+            AuthenticationChallenge: AuthenticationChallenge response from WorkOS.
+        """
+        ...
 
     def verify_challenge(
         self, *, authentication_challenge_id: str, code: str
-    ) -> AuthenticationChallengeVerificationResponse: ...
+    ) -> AuthenticationChallengeVerificationResponse:
+        """
+        Verifies the one time password provided by the end-user.
+
+        Kwargs:
+            authentication_challenge_id (str): The ID of the authentication challenge that provided the user the verification code.
+            code (str): The verification code sent to and provided by the end user.
+
+        Returns:
+            AuthenticationChallengeVerificationResponse: AuthenticationChallengeVerificationResponse response from WorkOS.
+        """
+        ...
 
 
 class Mfa(MFAModule):
@@ -60,18 +117,6 @@ class Mfa(MFAModule):
         totp_user: Optional[str] = None,
         phone_number: Optional[str] = None,
     ) -> AuthenticationFactorExtended:
-        """
-        Defines the type of MFA authorization factor to be used. Possible values are sms or totp.
-
-        Kwargs:
-            type (str) - The type of factor to be enrolled (sms or totp)
-            totp_issuer (str) - Name of the Organization
-            totp_user (str) - email of user
-            phone_number (str) - phone number of the user
-
-        Returns: AuthenticationFactor
-        """
-
         json = {
             "type": type,
             "totp_issuer": totp_issuer,
@@ -99,15 +144,6 @@ class Mfa(MFAModule):
         return AuthenticationFactorSms.model_validate(response)
 
     def get_factor(self, authentication_factor_id: str) -> AuthenticationFactor:
-        """
-        Returns an authorization factor from its ID.
-
-        Kwargs:
-            authentication_factor_id (str) - The ID of the factor to be obtained.
-
-        Returns: Dict containing the authentication factor information.
-        """
-
         response = self._http_client.request(
             RequestHelper.build_parameterized_url(
                 "auth/factors/{authentication_factor_id}",
@@ -122,15 +158,6 @@ class Mfa(MFAModule):
         return AuthenticationFactorSms.model_validate(response)
 
     def delete_factor(self, authentication_factor_id: str) -> None:
-        """
-        Deletes an MFA authorization factor.
-
-        Kwargs:
-            authentication_factor_id (str) - The ID of the authorization factor to be deleted.
-
-        Returns: Does not provide a response.
-        """
-
         self._http_client.request(
             RequestHelper.build_parameterized_url(
                 "auth/factors/{authentication_factor_id}",
@@ -145,16 +172,6 @@ class Mfa(MFAModule):
         authentication_factor_id: str,
         sms_template: Optional[str] = None,
     ) -> AuthenticationChallenge:
-        """
-        Initiates the authentication process for the newly created MFA authorization factor, referred to as a challenge.
-
-        Kwargs:
-            authentication_factor_id (str) - ID of the authorization factor
-            sms_template (str) - Optional parameter to customize the message for sms type factors. Must include "{{code}}" if used.
-
-        Returns: Dict containing the authentication challenge factor details.
-        """
-
         json = {
             "sms_template": sms_template,
         }
@@ -172,16 +189,6 @@ class Mfa(MFAModule):
     def verify_challenge(
         self, *, authentication_challenge_id: str, code: str
     ) -> AuthenticationChallengeVerificationResponse:
-        """
-        Verifies the one time password provided by the end-user.
-
-        Kwargs:
-            authentication_challenge_id (str) - The ID of the authentication challenge that provided the user the verification code.
-            code (str) - The verification code sent to and provided by the end user.
-
-        Returns: AuthenticationChallengeVerificationResponse containing the challenge factor details.
-        """
-
         json = {
             "code": code,
         }

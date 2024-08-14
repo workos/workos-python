@@ -34,6 +34,8 @@ DirectoriesListResource = WorkOSListResource[
 
 
 class DirectorySyncModule(Protocol):
+    """Offers methods through the WorkOS Directory Sync service."""
+
     def list_users(
         self,
         *,
@@ -43,7 +45,23 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[DirectoryUsersListResource]: ...
+    ) -> SyncOrAsync[DirectoryUsersListResource]:
+        """Gets a list of provisioned Users for a Directory.
+
+        Note, either 'directory_id' or 'group_id' must be provided.
+
+        Kwargs:
+            directory_id (str): Directory unique identifier. (Optional)
+            group_id (str): Directory Group unique identifier. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
+
+        Returns:
+            DirectoryUsersListResource: Directory Users response from WorkOS.
+        """
+        ...
 
     def list_groups(
         self,
@@ -54,13 +72,23 @@ class DirectorySyncModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[DirectoryGroupsListResource]: ...
+    ) -> SyncOrAsync[DirectoryGroupsListResource]:
+        """Gets a list of provisioned Groups for a Directory .
 
-    def get_user(self, user_id: str) -> SyncOrAsync[DirectoryUserWithGroups]: ...
+        Note, either 'directory_id' or 'user_id' must be provided.
 
-    def get_group(self, group_id: str) -> SyncOrAsync[DirectoryGroup]: ...
+        Kwargs:
+            directory_id (str): Directory unique identifier. (Optional)
+            user_id (str): Directory User unique identifier. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
 
-    def get_directory(self, directory_id: str) -> SyncOrAsync[Directory]: ...
+        Returns:
+            DirectoryGroupsListResource: Directory Groups response from WorkOS.
+        """
+        ...
 
     def list_directories(
         self,
@@ -71,14 +99,68 @@ class DirectorySyncModule(Protocol):
         after: Optional[str] = None,
         organization_id: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[DirectoriesListResource]: ...
+    ) -> SyncOrAsync[DirectoriesListResource]:
+        """Gets details for existing Directories.
 
-    def delete_directory(self, directory_id: str) -> SyncOrAsync[None]: ...
+        Kwargs:
+            organization_id: ID of an Organization (Optional)
+            search (str): Searchable text for a Directory. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
+
+        Returns:
+            DirectoriesListResource: Directories response from WorkOS.
+        """
+        ...
+
+    def get_user(self, user_id: str) -> SyncOrAsync[DirectoryUserWithGroups]:
+        """Gets details for a single provisioned Directory User.
+
+        Args:
+            user_id (str): Directory User unique identifier.
+
+        Returns:
+            DirectoryUserWithGroups: Directory User response from WorkOS.
+        """
+        ...
+
+    def get_group(self, group_id: str) -> SyncOrAsync[DirectoryGroup]:
+        """Gets details for a single provisioned Directory Group.
+
+        Args:
+            group_id (str): Directory Group unique identifier.
+
+        Returns:
+            DirectoryGroup: Directory Group response from WorkOS.
+        """
+        ...
+
+    def get_directory(self, directory_id: str) -> SyncOrAsync[Directory]:
+        """Gets details for a single Directory
+
+        Args:
+            directory_id (str): Directory unique identifier.
+
+        Returns:
+            Directory: Directory response from WorkOS
+        """
+        ...
+
+    def delete_directory(self, directory_id: str) -> SyncOrAsync[None]:
+        """Delete one existing Directory.
+
+        Args:
+            directory_id (str): Directory unique identifier.
+
+        Returns:
+            None
+        """
+        ...
 
 
 class DirectorySync(DirectorySyncModule):
-    """Offers methods through the WorkOS Directory Sync service."""
-
     _http_client: SyncHTTPClient
 
     def __init__(self, http_client: SyncHTTPClient) -> None:
@@ -94,21 +176,6 @@ class DirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> DirectoryUsersListResource:
-        """Gets a list of provisioned Users for a Directory.
-
-        Note, either 'directory' or 'group' must be provided.
-
-        Args:
-            directory_id (str): Directory unique identifier.
-            group (str): Directory Group unique identifier.
-            limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided Directory ID.
-            after (str): Pagination cursor to receive records after a provided Directory ID.
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Directory Users response from WorkOS.
-        """
 
         list_params: DirectoryUserListFilters = {
             "limit": limit,
@@ -144,21 +211,6 @@ class DirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> DirectoryGroupsListResource:
-        """Gets a list of provisioned Groups for a Directory .
-
-        Note, either 'directory_id' or 'user_id' must be provided.
-
-        Args:
-            directory_id (str): Directory unique identifier.
-            user_id (str): Directory User unique identifier.
-            limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided Directory ID.
-            after (str): Pagination cursor to receive records after a provided Directory ID.
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Directory Groups response from WorkOS.
-        """
         list_params: DirectoryGroupListFilters = {
             "limit": limit,
             "before": before,
@@ -186,14 +238,6 @@ class DirectorySync(DirectorySyncModule):
         )
 
     def get_user(self, user_id: str) -> DirectoryUserWithGroups:
-        """Gets details for a single provisioned Directory User.
-
-        Args:
-            user_id (str): Directory User unique identifier.
-
-        Returns:
-            dict: Directory User response from WorkOS.
-        """
         response = self._http_client.request(
             "directory_users/{user}".format(user=user_id),
             method=REQUEST_METHOD_GET,
@@ -202,14 +246,6 @@ class DirectorySync(DirectorySyncModule):
         return DirectoryUserWithGroups.model_validate(response)
 
     def get_group(self, group_id: str) -> DirectoryGroup:
-        """Gets details for a single provisioned Directory Group.
-
-        Args:
-            group_id (str): Directory Group unique identifier.
-
-        Returns:
-            dict: Directory Group response from WorkOS.
-        """
         response = self._http_client.request(
             "directory_groups/{group}".format(group=group_id),
             method=REQUEST_METHOD_GET,
@@ -217,16 +253,6 @@ class DirectorySync(DirectorySyncModule):
         return DirectoryGroup.model_validate(response)
 
     def get_directory(self, directory_id: str) -> Directory:
-        """Gets details for a single Directory
-
-        Args:
-            directory_id (str): Directory unique identifier.
-
-        Returns:
-            dict: Directory response from WorkOS
-
-        """
-
         response = self._http_client.request(
             "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_GET,
@@ -244,20 +270,6 @@ class DirectorySync(DirectorySyncModule):
         organization_id: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> DirectoriesListResource:
-        """Gets details for existing Directories.
-
-        Args:
-            organization_id: ID of an Organization (Optional)
-            search (str): Searchable text for a Directory. (Optional)
-            limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Directories response from WorkOS.
-        """
-
         list_params: DirectoryListFilters = {
             "limit": limit,
             "before": before,
@@ -279,14 +291,6 @@ class DirectorySync(DirectorySyncModule):
         )
 
     def delete_directory(self, directory_id: str) -> None:
-        """Delete one existing Directory.
-
-        Args:
-            directory_id (str): The ID of the directory to be deleted. (Required)
-
-        Returns:
-            None
-        """
         self._http_client.request(
             "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_DELETE,
@@ -311,21 +315,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> DirectoryUsersListResource:
-        """Gets a list of provisioned Users for a Directory.
-
-        Note, either 'directory_id' or 'group_id' must be provided.
-
-        Args:
-            directory_id (str): Directory unique identifier.
-            group_id (str): Directory Group unique identifier.
-            limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided Directory ID.
-            after (str): Pagination cursor to receive records after a provided Directory ID.
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Directory Users response from WorkOS.
-        """
 
         list_params: DirectoryUserListFilters = {
             "limit": limit,
@@ -361,21 +350,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> DirectoryGroupsListResource:
-        """Gets a list of provisioned Groups for a Directory .
-
-        Note, either 'directory_id' or 'user_id' must be provided.
-
-        Args:
-            directory_id (str): Directory unique identifier.
-            user_id (str): Directory User unique identifier.
-            limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided Directory ID.
-            after (str): Pagination cursor to receive records after a provided Directory ID.
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Directory Groups response from WorkOS.
-        """
         list_params: DirectoryGroupListFilters = {
             "limit": limit,
             "before": before,
@@ -402,14 +376,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         )
 
     async def get_user(self, user_id: str) -> DirectoryUserWithGroups:
-        """Gets details for a single provisioned Directory User.
-
-        Args:
-            user_id (str): Directory User unique identifier.
-
-        Returns:
-            dict: Directory User response from WorkOS.
-        """
         response = await self._http_client.request(
             "directory_users/{user}".format(user=user_id),
             method=REQUEST_METHOD_GET,
@@ -418,14 +384,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         return DirectoryUserWithGroups.model_validate(response)
 
     async def get_group(self, group_id: str) -> DirectoryGroup:
-        """Gets details for a single provisioned Directory Group.
-
-        Args:
-            group_id (str): Directory Group unique identifier.
-
-        Returns:
-            dict: Directory Group response from WorkOS.
-        """
         response = await self._http_client.request(
             "directory_groups/{group}".format(group=group_id),
             method=REQUEST_METHOD_GET,
@@ -433,16 +391,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         return DirectoryGroup.model_validate(response)
 
     async def get_directory(self, directory_id: str) -> Directory:
-        """Gets details for a single Directory
-
-        Args:
-            directory_id (str): Directory unique identifier.
-
-        Returns:
-            dict: Directory response from WorkOS
-
-        """
-
         response = await self._http_client.request(
             "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_GET,
@@ -460,21 +408,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         organization_id: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> DirectoriesListResource:
-        """Gets details for existing Directories.
-
-        Args:
-            domain (str): Domain of a Directory. (Optional)
-            organization_id: ID of an Organization (Optional)
-            search (str): Searchable text for a Directory. (Optional)
-            limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Directories response from WorkOS.
-        """
-
         list_params: DirectoryListFilters = {
             "organization_id": organization_id,
             "search": search,
@@ -496,14 +429,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         )
 
     async def delete_directory(self, directory_id: str) -> None:
-        """Delete one existing Directory.
-
-        Args:
-            directory_id (str): The ID of the directory to be deleted. (Required)
-
-        Returns:
-            None
-        """
         await self._http_client.request(
             "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_DELETE,

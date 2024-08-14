@@ -41,6 +41,8 @@ ConnectionsListResource = WorkOSListResource[
 
 
 class SSOModule(Protocol):
+    """Offers methods to assist in authenticating through the WorkOS SSO service."""
+
     _client_configuration: ClientConfiguration
 
     def get_authorization_url(
@@ -60,12 +62,12 @@ class SSOModule(Protocol):
         WorkOS.
 
         Kwargs:
-            redirect_uri (str) - A valid redirect URI, as specified on WorkOS
-            state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
+            redirect_uri (str) : A valid redirect URI, as specified on WorkOS
+            state (str) : An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
             back as a query parameter
-            provider (SSOProviderType) - Authentication service provider descriptor
-            connection_id (string) - Unique identifier for a WorkOS Connection
-            organization_id (string) - Unique identifier for a WorkOS Organization
+            provider (SSOProviderType) : Authentication service provider descriptor
+            connection_id (string) : Unique identifier for a WorkOS Connection
+            organization_id (string) : Unique identifier for a WorkOS Organization
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
@@ -100,13 +102,42 @@ class SSOModule(Protocol):
             **params,
         )
 
-    def get_profile(self, access_token: str) -> SyncOrAsync[Profile]: ...
+    def get_profile(self, access_token: str) -> SyncOrAsync[Profile]:
+        """
+        Verify that SSO has been completed successfully and retrieve the identity of the user.
 
-    def get_profile_and_token(self, code: str) -> SyncOrAsync[ProfileAndToken]: ...
+        Args:
+            access_token (str): The token used to authenticate the API call
 
-    def get_connection(
-        self, connection_id: str
-    ) -> SyncOrAsync[ConnectionWithDomains]: ...
+        Returns:
+            Profile
+        """
+        ...
+
+    def get_profile_and_token(self, code: str) -> SyncOrAsync[ProfileAndToken]:
+        """Get the profile of an authenticated User
+
+        Once authenticated, using the code returned having followed the authorization URL,
+        get the WorkOS profile of the User.
+
+        Args:
+            code (str): Code returned by WorkOS on completion of OAuth 2.0 workflow.
+
+        Returns:
+            ProfileAndToken: WorkOSProfileAndToken object representing the User.
+        """
+        ...
+
+    def get_connection(self, connection_id: str) -> SyncOrAsync[ConnectionWithDomains]:
+        """Gets details for a single Connection
+
+        Args:
+            connection (str): Connection unique identifier
+
+        Returns:
+            ConnectionWithDomains: Connection response from WorkOS.
+        """
+        ...
 
     def list_connections(
         self,
@@ -118,14 +149,35 @@ class SSOModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[ConnectionsListResource]: ...
+    ) -> SyncOrAsync[ConnectionsListResource]:
+        """Gets details for existing Connections.
 
-    def delete_connection(self, connection_id: str) -> SyncOrAsync[None]: ...
+        Kwargs:
+            connection_type (ConnectionType): Authentication service provider descriptor. (Optional)
+            domain (str): Domain of a Connection. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Connection ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Connection ID. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
+
+        Returns:
+            ConnectionsListResource: Connections response from WorkOS.
+        """
+        ...
+
+    def delete_connection(self, connection_id: str) -> SyncOrAsync[None]:
+        """Deletes a single Connection
+
+        Args:
+            connection (str): Connection unique identifier
+
+        Returns:
+            None
+        """
+        ...
 
 
 class SSO(SSOModule):
-    """Offers methods to assist in authenticating through the WorkOS SSO service."""
-
     _http_client: SyncHTTPClient
 
     def __init__(
@@ -135,15 +187,6 @@ class SSO(SSOModule):
         self._http_client = http_client
 
     def get_profile(self, access_token: str) -> Profile:
-        """
-        Verify that SSO has been completed successfully and retrieve the identity of the user.
-
-        Args:
-            accessToken (str): the token used to authenticate the API call
-
-        Returns:
-            Profile
-        """
         response = self._http_client.request(
             PROFILE_PATH,
             method=REQUEST_METHOD_GET,
@@ -154,17 +197,6 @@ class SSO(SSOModule):
         return Profile.model_validate(response)
 
     def get_profile_and_token(self, code: str) -> ProfileAndToken:
-        """Get the profile of an authenticated User
-
-        Once authenticated, using the code returned having followed the authorization URL,
-        get the WorkOS profile of the User.
-
-        Args:
-            code (str): Code returned by WorkOS on completion of OAuth 2.0 workflow
-
-        Returns:
-            ProfileAndToken: WorkOSProfileAndToken object representing the User
-        """
         json = {
             "client_id": self._http_client.client_id,
             "client_secret": self._http_client.api_key,
@@ -179,14 +211,6 @@ class SSO(SSOModule):
         return ProfileAndToken.model_validate(response)
 
     def get_connection(self, connection_id: str) -> ConnectionWithDomains:
-        """Gets details for a single Connection
-
-        Args:
-            connection (str): Connection unique identifier
-
-        Returns:
-            dict: Connection response from WorkOS.
-        """
         response = self._http_client.request(
             f"connections/{connection_id}",
             method=REQUEST_METHOD_GET,
@@ -205,20 +229,6 @@ class SSO(SSOModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> ConnectionsListResource:
-        """Gets details for existing Connections.
-
-        Args:
-            connection_type (ConnectionType): Authentication service provider descriptor. (Optional)
-            domain (str): Domain of a Connection. (Optional)
-            limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided Connection ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided Connection ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Connections response from WorkOS.
-        """
-
         params: ConnectionsListFilters = {
             "connection_type": connection_type,
             "domain": domain,
@@ -244,19 +254,12 @@ class SSO(SSOModule):
         )
 
     def delete_connection(self, connection_id: str) -> None:
-        """Deletes a single Connection
-
-        Args:
-            connection (str): Connection unique identifier
-        """
         self._http_client.request(
             f"connections/{connection_id}", method=REQUEST_METHOD_DELETE
         )
 
 
 class AsyncSSO(SSOModule):
-    """Offers methods to assist in authenticating through the WorkOS SSO service."""
-
     _http_client: AsyncHTTPClient
 
     def __init__(
@@ -266,15 +269,6 @@ class AsyncSSO(SSOModule):
         self._http_client = http_client
 
     async def get_profile(self, access_token: str) -> Profile:
-        """
-        Verify that SSO has been completed successfully and retrieve the identity of the user.
-
-        Args:
-            accessToken (str): the token used to authenticate the API call
-
-        Returns:
-            Profile
-        """
         response = await self._http_client.request(
             PROFILE_PATH,
             method=REQUEST_METHOD_GET,
@@ -285,17 +279,6 @@ class AsyncSSO(SSOModule):
         return Profile.model_validate(response)
 
     async def get_profile_and_token(self, code: str) -> ProfileAndToken:
-        """Get the profile of an authenticated User
-
-        Once authenticated, using the code returned having followed the authorization URL,
-        get the WorkOS profile of the User.
-
-        Args:
-            code (str): Code returned by WorkOS on completion of OAuth 2.0 workflow
-
-        Returns:
-            ProfileAndToken: WorkOSProfileAndToken object representing the User
-        """
         json = {
             "client_id": self._http_client.client_id,
             "client_secret": self._http_client.api_key,
@@ -310,14 +293,6 @@ class AsyncSSO(SSOModule):
         return ProfileAndToken.model_validate(response)
 
     async def get_connection(self, connection_id: str) -> ConnectionWithDomains:
-        """Gets details for a single Connection
-
-        Args:
-            connection (str): Connection unique identifier
-
-        Returns:
-            dict: Connection response from WorkOS.
-        """
         response = await self._http_client.request(
             f"connections/{connection_id}",
             method=REQUEST_METHOD_GET,
@@ -336,20 +311,6 @@ class AsyncSSO(SSOModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> ConnectionsListResource:
-        """Gets details for existing Connections.
-
-        Args:
-            connection_type (ConnectionType): Authentication service provider descriptor. (Optional)
-            domain (str): Domain of a Connection. (Optional)
-            limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided Connection ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided Connection ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Connections response from WorkOS.
-        """
-
         params: ConnectionsListFilters = {
             "connection_type": connection_type,
             "domain": domain,
@@ -373,11 +334,6 @@ class AsyncSSO(SSOModule):
         )
 
     async def delete_connection(self, connection_id: str) -> None:
-        """Deletes a single Connection
-
-        Args:
-            connection (str): Connection unique identifier
-        """
         await self._http_client.request(
             f"connections/{connection_id}",
             method=REQUEST_METHOD_DELETE,

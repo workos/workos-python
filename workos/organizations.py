@@ -23,6 +23,8 @@ OrganizationsListResource = WorkOSListResource[
 
 
 class OrganizationsModule(Protocol):
+    """Offers methods through the WorkOS Organizations service."""
+
     def list_organizations(
         self,
         *,
@@ -31,11 +33,41 @@ class OrganizationsModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> OrganizationsListResource: ...
+    ) -> OrganizationsListResource:
+        """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
-    def get_organization(self, organization_id: str) -> Organization: ...
+        Kwargs:
+            domains (list): Filter organizations to only return those that are associated with the provided domains. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Organization ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Organization ID. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
 
-    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization: ...
+        Returns:
+            OrganizationsListResource: Organizations list response from WorkOS.
+        """
+        ...
+
+    def get_organization(self, organization_id: str) -> Organization:
+        """Gets details for a single Organization
+
+        Args:
+            organization_id (str): Organization's unique identifier
+        Returns:
+            Organization: Organization response from WorkOS
+        """
+        ...
+
+    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
+        """Gets details for a single Organization by lookup key
+
+        Args:
+            lookup_key (str): Organization's lookup key
+
+        Returns:
+            Organization: Organization response from WorkOS
+        """
+        ...
 
     def create_organization(
         self,
@@ -51,9 +83,30 @@ class OrganizationsModule(Protocol):
         organization_id: str,
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
-    ) -> Organization: ...
+    ) -> Organization:
+        """Update an organization
 
-    def delete_organization(self, organization_id: str) -> None: ...
+        Kwargs:
+            organization (str): Organization's unique identifier.
+            name (str): A descriptive name for the organization. (Optional)
+            domains (list): [Deprecated] Use domain_data instead. List of domains that belong to the organization. (Optional)
+            domain_data (Sequence[DomainDataInput]): List of domains that belong to the organization. (Optional)
+
+        Returns:
+            Organization: Updated Organization response from WorkOS.
+        """
+        ...
+
+    def delete_organization(self, organization_id: str) -> None:
+        """Deletes a single Organization
+
+        Args:
+            organization_id (str): Organization unique identifier
+
+        Returns:
+            None
+        """
+        ...
 
 
 class Organizations(OrganizationsModule):
@@ -72,19 +125,6 @@ class Organizations(OrganizationsModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> OrganizationsListResource:
-        """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
-
-        Kwargs:
-            domains (list): Filter organizations to only return those that are associated with the provided domains. (Optional)
-            limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided Organization ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided Organization ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Organizations response from WorkOS.
-        """
-
         list_params: OrganizationListFilters = {
             "limit": limit,
             "before": before,
@@ -106,12 +146,6 @@ class Organizations(OrganizationsModule):
         )
 
     def get_organization(self, organization_id: str) -> Organization:
-        """Gets details for a single Organization
-        Args:
-            organization_id (str): Organization's unique identifier
-        Returns:
-            Organization: Organization response from WorkOS
-        """
         response = self._http_client.request(
             f"organizations/{organization_id}", method=REQUEST_METHOD_GET
         )
@@ -119,12 +153,6 @@ class Organizations(OrganizationsModule):
         return Organization.model_validate(response)
 
     def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
-        """Gets details for a single Organization by lookup key
-        Args:
-            lookup_key (str): Organization's lookup key
-        Returns:
-            dict: Organization response from WorkOS
-        """
         response = self._http_client.request(
             "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
             method=REQUEST_METHOD_GET,
@@ -166,18 +194,6 @@ class Organizations(OrganizationsModule):
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
     ) -> Organization:
-        """Update an organization
-        Args:
-            organization(str) - Organization's unique identifier.
-            name (str) - A unique, descriptive name for the organization. (Optional)
-            allow_profiles_outside_organization (boolean) - [Deprecated] Whether Connections
-                within the Organization allow profiles that are outside of the Organization's
-                configured User Email Domains. (Optional)
-            domains (list) - [Deprecated] Use domain_data instead. List of domains that belong to the organization. (Optional)
-            domain_data (Sequence[DomainDataInput]) - List of domains that belong to the organization. (Optional)
-        Returns:
-            Organization: Updated Organization response from WorkOS.
-        """
         json = {
             "name": name,
             "domain_data": domain_data,
@@ -190,11 +206,6 @@ class Organizations(OrganizationsModule):
         return Organization.model_validate(response)
 
     def delete_organization(self, organization_id: str) -> None:
-        """Deletes a single Organization
-
-        Args:
-            organization_id (str): Organization unique identifier
-        """
         self._http_client.request(
             f"organizations/{organization_id}",
             method=REQUEST_METHOD_DELETE,

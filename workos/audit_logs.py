@@ -10,13 +10,25 @@ EXPORTS_PATH = "audit_logs/exports"
 
 
 class AuditLogsModule(Protocol):
+    """Offers methods through the WorkOS Audit Logs service."""
+
     def create_event(
         self,
         *,
         organization_id: str,
         event: AuditLogEvent,
         idempotency_key: Optional[str] = None,
-    ) -> None: ...
+    ) -> None:
+        """Create an Audit Logs event.
+
+        Kwargs:
+            organization_id (str): Organization's unique identifier.
+            event (AuditLogEvent): An AuditLogEvent object.
+            idempotency_key (str): Idempotency key. (Optional)
+        Returns:
+            None
+        """
+        ...
 
     def create_export(
         self,
@@ -28,14 +40,33 @@ class AuditLogsModule(Protocol):
         targets: Optional[Sequence[str]] = None,
         actor_names: Optional[Sequence[str]] = None,
         actor_ids: Optional[Sequence[str]] = None,
-    ) -> AuditLogExport: ...
+    ) -> AuditLogExport:
+        """Trigger the creation of an export of audit logs.
 
-    def get_export(self, audit_log_export_id: str) -> AuditLogExport: ...
+        Kwargs:
+            organization_id (str): Organization's unique identifier.
+            range_start (str): Start date of the date range filter.
+            range_end (str): End date of the date range filter.
+            actions (list): Optional list of actions to filter. (Optional)
+            actor_names (list): Optional list of actors to filter by name. (Optional)
+            targets (list): Optional list of targets to filter. (Optional)
+
+        Returns:
+            AuditLogExport: Object that describes the audit log export
+        """
+        ...
+
+    def get_export(self, audit_log_export_id: str) -> AuditLogExport:
+        """Retrieve an created export.
+        Args:
+            audit_log_export_id (str): Audit log export unique identifier.
+        Returns:
+            AuditLogExport: Object that describes the audit log export
+        """
+        ...
 
 
 class AuditLogs(AuditLogsModule):
-    """Offers methods through the WorkOS Audit Logs service."""
-
     _http_client: SyncHTTPClient
 
     def __init__(self, http_client: SyncHTTPClient):
@@ -48,13 +79,6 @@ class AuditLogs(AuditLogsModule):
         event: AuditLogEvent,
         idempotency_key: Optional[str] = None,
     ) -> None:
-        """Create an Audit Logs event.
-
-        Args:
-            organization (str) - Organization's unique identifier
-            event (AuditLogEvent) - An AuditLogEvent object
-            idempotency_key (str) - Optional idempotency key
-        """
         json = {"organization_id": organization_id, "event": event}
 
         headers = {}
@@ -76,20 +100,6 @@ class AuditLogs(AuditLogsModule):
         actor_names: Optional[Sequence[str]] = None,
         actor_ids: Optional[Sequence[str]] = None,
     ) -> AuditLogExport:
-        """Trigger the creation of an export of audit logs.
-
-        Args:
-            organization (str) - Organization's unique identifier
-            range_start (str) - Start date of the date range filter
-            range_end (str) - End date of the date range filter
-            actions (list) - Optional list of actions to filter
-            actors (list) - Optional list of actors to filter
-            targets (list) - Optional list of targets to filter
-
-        Returns:
-            AuditLogExport: Object that describes the audit log export
-        """
-
         json = {
             "actions": actions,
             "actor_ids": actor_ids,
@@ -107,12 +117,6 @@ class AuditLogs(AuditLogsModule):
         return AuditLogExport.model_validate(response)
 
     def get_export(self, audit_log_export_id: str) -> AuditLogExport:
-        """Retrieve an created export.
-
-        Returns:
-            AuditLogExport: Object that describes the audit log export
-        """
-
         response = self._http_client.request(
             "{0}/{1}".format(EXPORTS_PATH, audit_log_export_id),
             method=REQUEST_METHOD_GET,

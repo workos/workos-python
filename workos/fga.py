@@ -1,6 +1,4 @@
-from typing import Any, Dict, List, Optional, Protocol
-
-import workos
+from typing import Any, Mapping, Optional, Protocol, Sequence
 from workos.types.fga import (
     CheckOperation,
     CheckResponse,
@@ -49,7 +47,17 @@ QueryListResource = WorkOSListResource[
 
 
 class FGAModule(Protocol):
-    def get_resource(self, *, resource_type: str, resource_id: str) -> Resource: ...
+    def get_resource(self, *, resource_type: str, resource_id: str) -> Resource:
+        """
+        Get a warrant resource by its type and ID.
+
+        Kwargs:
+            resource_type (str): The type of the resource.
+            resource_id (str): A unique identifier for the resource.
+        Returns:
+            Resource: A resource object.
+        """
+        ...
 
     def list_resources(
         self,
@@ -60,25 +68,72 @@ class FGAModule(Protocol):
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
-    ) -> ResourceListResource: ...
+    ) -> ResourceListResource:
+        """
+        Gets a list of FGA resources.
+
+        Kwargs:
+            resource_type (str): The type of the resource. (Optional)
+            search (str): Searchable text for a Resource. (Optional)
+            limit (int): The maximum number of resources to return. (Optional)
+            order (Literal["asc","desc"]): Sort warrant resources in either ascending or descending (default) order. (Optional)
+            before (str): A cursor to return resources before. (Optional)
+            after (str): A cursor to return resources after. (Optional)
+        Returns:
+            ResourceListResource: A list of resources with built-in pagination iterator.
+        """
+        ...
 
     def create_resource(
         self,
         *,
         resource_type: str,
         resource_id: str,
-        meta: Dict[str, Any],
-    ) -> Resource: ...
+        meta: Optional[Mapping[str, Any]] = None,
+    ) -> Resource:
+        """
+        Create a new warrant resource.
+
+        Kwargs:
+            resource_type (str): The type of the resource.
+            resource_id (str): A unique identifier for the resource.
+            meta (Mapping): A dictionary containing additional information about this resource. (Optional)
+        Returns:
+            Resource: A resource object.
+        """
+        ...
 
     def update_resource(
         self,
         *,
         resource_type: str,
         resource_id: str,
-        meta: Dict[str, Any],
-    ) -> Resource: ...
+        meta: Optional[Mapping[str, Any]] = None,
+    ) -> Resource:
+        """
+        Updates an existing warrant resource.
 
-    def delete_resource(self, *, resource_type: str, resource_id: str) -> None: ...
+        Kwargs:
+            resource_type (str): The type of the resource.
+            resource_id (str): A unique identifier for the resource.
+            meta (Mapping): A dictionary containing additional information about this resource. (Optional)
+        Returns:
+            Resource: A resource object.
+        """
+        ...
+
+    def delete_resource(self, *, resource_type: str, resource_id: str) -> None:
+        """
+        Deletes a resource by its type and ID.
+
+        Kwargs:
+            resource_type (str): The type of the resource.
+            resource_id (str): A unique identifier for the resource.
+
+        Returns:
+            None
+        """
+        ...
 
     def list_resource_types(
         self,
@@ -87,7 +142,20 @@ class FGAModule(Protocol):
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
-    ) -> ResourceTypeListResource: ...
+    ) -> ResourceTypeListResource:
+        """
+        Gets a list of FGA resource types.
+
+        Kwargs:
+            limit (int): The maximum number of resources to return. (Optional)
+            order (Literal["asc","desc"]): Sort warrant resource types in either ascending or descending (default) order. (Optional)
+            before (str): A cursor to return resources before. (Optional)
+            after (str): A cursor to return resources after. (Optional)
+
+        Returns:
+            ResourceTypeListResource: A list of resource types with built-in pagination iterator.
+        """
+        ...
 
     def list_warrants(
         self,
@@ -103,7 +171,27 @@ class FGAModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         warrant_token: Optional[str] = None,
-    ) -> WarrantListResource: ...
+    ) -> WarrantListResource:
+        """
+        Gets a list of warrants.
+
+        Kwargs:
+            subject_type (str): The type of the subject. (Optional)
+            subject_id (str): The ID of the subject. (Optional)
+            subject_relation (str): The relation of the subject. (Optional)
+            relation (str): The relation of the warrant. (Optional)
+            resource_type (str): The type of the resource. (Optional)
+            resource_id (str): The ID of the resource. (Optional)
+            limit (int): The maximum number of resources to return. (Optional)
+            order (Literal["asc","desc"]): Sort warrants in either ascending or descending (default) order. (Optional)
+            before (str): A cursor to return resources before. (Optional)
+            after (str): A cursor to return resources after. (Optional)
+            warrant_token (str): The warrant token. (Optional)
+
+        Returns:
+            WarrantListResource: A list of warrants with built-in pagination iterator.
+        """
+        ...
 
     def write_warrant(
         self,
@@ -116,28 +204,78 @@ class FGAModule(Protocol):
         resource_type: str,
         resource_id: str,
         policy: Optional[str] = None,
-    ) -> WriteWarrantResponse: ...
+    ) -> WriteWarrantResponse:
+        """
+        Write a warrant.
+
+        Kwargs:
+            op (WarrantWriteOperation): The operation to perform.
+            subject_type (str): The type of the subject.
+            subject_id (str): The ID of the subject.
+            subject_relation (str): The relation of the subject. (Optional)
+            relation (str): The relation of the warrant.
+            resource_type (str): The type of the resource.
+            resource_id (str): The ID of the resource.
+            policy (str): The policy to apply. (Optional)
+
+        Returns:
+            WriteWarrantResponse: The warrant token.
+        """
+        ...
 
     def batch_write_warrants(
-        self, *, batch: List[WarrantWrite]
-    ) -> WriteWarrantResponse: ...
+        self, *, batch: Sequence[WarrantWrite]
+    ) -> WriteWarrantResponse:
+        """
+        Write a batch of warrants.
+
+        Args:
+            batch (Sequence[WarrantWrite]): A list of WarrantWrite objects.
+
+        Returns:
+            WriteWarrantResponse: The warrant token.
+        """
+        ...
 
     def check(
         self,
         *,
-        checks: List[WarrantCheck],
+        checks: Sequence[WarrantCheck],
         op: Optional[CheckOperation] = None,
         debug: bool = False,
         warrant_token: Optional[str] = None,
-    ) -> CheckResponse: ...
+    ) -> CheckResponse:
+        """
+        Check a warrant.
+
+        Kwargs:
+            checks (Sequence[WarrantCheck]): A list of WarrantCheck objects.
+            op (CheckOperation): The operation to perform. (Optional)
+            debug (bool): Whether to return debug information including a decision tree. (Optional)
+            warrant_token (str): Optional token to specify desired read consistency. (Optional)
+        Returns:
+            CheckResponse: A check response.
+        """
+        ...
 
     def check_batch(
         self,
         *,
-        checks: List[WarrantCheck],
+        checks: Sequence[WarrantCheck],
         debug: bool = False,
         warrant_token: Optional[str] = None,
-    ) -> List[CheckResponse]: ...
+    ) -> Sequence[CheckResponse]:
+        """
+        Check a batch of warrants.
+
+        Kwargs:
+            checks (Sequence[WarrantCheck]): A list of WarrantCheck objects.
+            debug (bool): Whether to return debug information including a decision tree. (Optional)
+            warrant_token (str): Optional token to specify desired read consistency. (Optional)
+        Returns:
+            Sequence[CheckResponse]: A list of check responses
+        """
+        ...
 
     def query(
         self,
@@ -147,9 +285,25 @@ class FGAModule(Protocol):
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[Mapping[str, Any]] = None,
         warrant_token: Optional[str] = None,
-    ) -> QueryListResource: ...
+    ) -> QueryListResource:
+        """
+        Query for warrants.
+
+        Kwargs:
+            q (str): The query string.
+            order (Literal["asc","desc"]): Sort warrant resources in either ascending or descending (default) order. (Optional)
+            order (str): The order in which to return resources.
+            before (str): A cursor to return resources before. (Optional)
+            after (str): A cursor to return resources after. (Optional)
+            context (Mapping): A dictionary containing additional context. (Optional)
+            warrant_token (str): Optional token to specify desired read consistency. (Optional)
+        Returns:
+
+            QueryListResource: A list of query results with built-in pagination iterator.
+        """
+        ...
 
 
 class FGA(FGAModule):
@@ -164,16 +318,6 @@ class FGA(FGAModule):
         resource_type: str,
         resource_id: str,
     ) -> Resource:
-        """
-        Get a resource by its type and ID.
-
-        Args:
-            resource_type (str): The type of the resource.
-            resource_id (str): A unique identifier for the resource.
-        Returns:
-            Resource: A resource object.
-        """
-
         if not resource_type or not resource_id:
             raise ValueError(
                 "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
@@ -200,20 +344,6 @@ class FGA(FGAModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
     ) -> ResourceListResource:
-        """
-        Gets a list of FGA resources.
-
-        Args:
-            resource_type (str): The type of the resource.
-            search (str): Searchable text for a Resource. Can be empty.
-            limit (int): The maximum number of resources to return.
-            order (str): The order in which to return resources.
-            before (str): A cursor to return resources before.
-            after (str): A cursor to return resources after.
-        Returns:
-            ResourceListResource: A list of resources with built-in pagination iterator.
-        """
-
         list_params: ResourceListFilters = {
             "resource_type": resource_type,
             "search": search,
@@ -240,18 +370,8 @@ class FGA(FGAModule):
         *,
         resource_type: str,
         resource_id: str,
-        meta: Optional[Dict[str, Any]] = None,
+        meta: Optional[Mapping[str, Any]] = None,
     ) -> Resource:
-        """
-        Create a new resource.
-        Args:
-            resource_type (str): The type of the resource.
-            resource_id (str): A unique identifier for the resource.
-            meta (dict): A dictionary containing additional information about this resource.
-        Returns:
-            Resource: A resource object.
-        """
-
         if not resource_type or not resource_id:
             raise ValueError(
                 "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
@@ -274,18 +394,8 @@ class FGA(FGAModule):
         *,
         resource_type: str,
         resource_id: str,
-        meta: Optional[Dict[str, Any]] = None,
+        meta: Optional[Mapping[str, Any]] = None,
     ) -> Resource:
-        """
-        Updates an existing Resource.
-        Args:
-            resource_type (str): The type of the resource.
-            resource_id (str): A unique identifier for the resource.
-            meta (dict): A dictionary containing additional information about this resource.
-        Returns:
-            Resource: A resource object.
-        """
-
         if not resource_type or not resource_id:
             raise ValueError(
                 "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
@@ -304,14 +414,6 @@ class FGA(FGAModule):
         return Resource.model_validate(response)
 
     def delete_resource(self, *, resource_type: str, resource_id: str) -> None:
-        """
-        Deletes a resource by its type and ID.
-
-        Args:
-            resource_type (str): The type of the resource.
-            resource_id (str): A unique identifier for the resource.
-        """
-
         if not resource_type or not resource_id:
             raise ValueError(
                 "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
@@ -334,18 +436,6 @@ class FGA(FGAModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
     ) -> ResourceTypeListResource:
-        """
-        Gets a list of FGA resource types.
-
-        Args:
-            limit (int): The maximum number of resources to return.
-            order (str): The order in which to return resources.
-            before (str): A cursor to return resources before.
-            after (str): A cursor to return resources after.
-        Returns:
-            ResourceTypeListResource: A list of resource types with built-in pagination iterator.
-        """
-
         list_params: ListArgs = {
             "limit": limit,
             "order": order,
@@ -380,25 +470,6 @@ class FGA(FGAModule):
         after: Optional[str] = None,
         warrant_token: Optional[str] = None,
     ) -> WarrantListResource:
-        """
-        Gets a list of warrants.
-
-        Args:
-            subject_type (str): The type of the subject.
-            subject_id (str): The ID of the subject.
-            subject_relation (str): The relation of the subject.
-            relation (str): The relation of the warrant.
-            resource_type (str): The type of the resource.
-            resource_id (str): The ID of the resource.
-            limit (int): The maximum number of resources to return.
-            order (str): The order in which to return resources.
-            before (str): A cursor to return resources before.
-            after (str): A cursor to return resources after.
-            warrant_token (str): The warrant token.
-        Returns:
-            WarrantListResource: A list of warrants with built-in pagination iterator.
-        """
-
         list_params: WarrantListFilters = {
             "resource_type": resource_type,
             "resource_id": resource_id,
@@ -440,22 +511,6 @@ class FGA(FGAModule):
         resource_id: str,
         policy: Optional[str] = None,
     ) -> WriteWarrantResponse:
-        """
-        Write a warrant.
-
-        Args:
-            op (str): The operation to perform ("create" or "delete").
-            subject_type (str): The type of the subject.
-            subject_id (str): The ID of the subject.
-            subject_relation (str): The relation of the subject.
-            relation (str): The relation of the warrant.
-            resource_type (str): The type of the resource.
-            resource_id (str): The ID of the resource.
-            policy (str): The policy to apply.
-        Returns:
-            WriteWarrantResponse: The warrant token.
-        """
-
         params = {
             "op": op,
             "resource_type": resource_type,
@@ -478,17 +533,8 @@ class FGA(FGAModule):
         return WriteWarrantResponse.model_validate(response)
 
     def batch_write_warrants(
-        self, *, batch: List[WarrantWrite]
+        self, *, batch: Sequence[WarrantWrite]
     ) -> WriteWarrantResponse:
-        """
-        Write a batch of warrants.
-
-        Args:
-            batch (list): A list of WarrantWrite objects.
-        Returns:
-            WriteWarrantResponse: The warrant token.
-        """
-
         if not batch:
             raise ValueError("Incomplete arguments: No batch warrant writes provided")
 
@@ -503,23 +549,11 @@ class FGA(FGAModule):
     def check(
         self,
         *,
-        checks: List[WarrantCheck],
+        checks: Sequence[WarrantCheck],
         op: Optional[CheckOperation] = None,
         debug: bool = False,
         warrant_token: Optional[str] = None,
     ) -> CheckResponse:
-        """
-        Check a warrant.
-
-        Args:
-            checks (list): A list of WarrantCheck objects.
-            op (str): The operation to perform ("create" or "delete").
-            debug (bool): Whether to return debug information including a decision tree.
-            warrant_token (str): Optional token to specify desired read consistency.
-        Returns:
-            CheckResponse: A check response.
-        """
-
         if not checks:
             raise ValueError("Incomplete arguments: No checks provided")
 
@@ -541,21 +575,10 @@ class FGA(FGAModule):
     def check_batch(
         self,
         *,
-        checks: List[WarrantCheck],
+        checks: Sequence[WarrantCheck],
         debug: bool = False,
         warrant_token: Optional[str] = None,
-    ) -> List[CheckResponse]:
-        """
-        Check a batch of warrants.
-
-        Args:
-            checks (list): A list of WarrantCheck objects.
-            debug (bool): Whether to return debug information including a decision tree.
-            warrant_token (str): Optional token to specify desired read consistency.
-        Returns:
-            list: A list of check responses
-        """
-
+    ) -> Sequence[CheckResponse]:
         if not checks:
             raise ValueError("Incomplete arguments: No checks provided")
 
@@ -582,24 +605,9 @@ class FGA(FGAModule):
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None,
+        context: Optional[Mapping[str, Any]] = None,
         warrant_token: Optional[str] = None,
     ) -> QueryListResource:
-        """
-        Query for warrants.
-
-        Args:
-            q (str): The query string.
-            limit (int): The maximum number of resources to return.
-            order (str): The order in which to return resources.
-            before (str): A cursor to return resources before.
-            after (str): A cursor to return resources after.
-            context (dict): A dictionary containing additional context.
-            warrant_token (str): Optional token to specify desired read consistency.
-        Returns:
-            QueryListResource: A list of query results with built-in pagination iterator.
-        """
-
         list_params: QueryListFilters = {
             "q": q,
             "limit": limit,

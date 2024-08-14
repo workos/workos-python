@@ -142,7 +142,6 @@ class TestOrganizations(OrganizationFixtures):
 
         updated_organization = self.organizations.update_organization(
             organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            name="Example Organization",
             domain_data=[{"domain": "example.io", "state": "verified"}],
         )
 
@@ -172,10 +171,7 @@ class TestOrganizations(OrganizationFixtures):
         assert response is None
 
     def test_list_organizations_auto_pagination_for_single_page(
-        self,
-        mock_organizations_single_page_response,
-        mock_organizations,
-        mock_http_client_with_response,
+        self, mock_organizations_single_page_response, mock_http_client_with_response
     ):
         mock_http_client_with_response(
             self.http_client, mock_organizations_single_page_response, 200

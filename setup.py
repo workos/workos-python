@@ -19,6 +19,7 @@ setup(
     description=about["__description__"],
     long_description=long_description,
     long_description_content_type="text/markdown",
+    package_data={"workos": ["py.typed"]},
     packages=find_packages(
         exclude=[
             "tests*",

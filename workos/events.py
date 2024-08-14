@@ -27,7 +27,7 @@ class EventsModule(Protocol):
         """Gets a list of Events.
 
         Kwargs:
-            events (Sequence(EventType)): Filter to only return events of particular types.
+            events (Sequence[EventType]): Filter to only return events of particular types.
             limit (int): Maximum number of records to return. (Optional)
             organization_id(str): Organization ID limits scope of events to a single organization. (Optional)
             after (str): Pagination cursor to receive records after a provided Event ID. (Optional)

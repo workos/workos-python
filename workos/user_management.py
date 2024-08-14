@@ -137,7 +137,7 @@ class UserManagementModule(Protocol):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided User ID. (Optional)
             after (str): Pagination cursor to receive records after a provided User ID. (Optional)
-            order ("asc"|"desc"): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
 
         Returns:
             UsersListResource: Users response from WorkOS.
@@ -267,11 +267,11 @@ class UserManagementModule(Protocol):
         Kwargs:
             user_id (str): Filter Organization Memberships by user. (Optional)
             organization_id (str): Filter Organization Memberships by organization. (Optional)
-            statuses (Sequence(OrganizationMembershipStatus)): Filter Organization Memberships by status. (Optional)
+            statuses (Sequence[OrganizationMembershipStatus]): Filter Organization Memberships by status. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Organization Membership ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Organization Membership ID. (Optional)
-            order ("asc"|"desc"): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
 
         Returns:
             OrganizationMembershipsListResource: Organization Memberships response from WorkOS.
@@ -699,7 +699,7 @@ class UserManagementModule(Protocol):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided AuthenticationFactor ID. (Optional)
             after (str): Pagination cursor to receive records after a provided AuthenticationFactor ID. (Optional)
-            order ("asc"|"desc"): Sort records in either ascending or descending order by created_at timestamp.(Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending order by created_at timestamp.(Optional)
         Returns:
             AuthenticationFactorsListResource: List of Authentication Factors for a User from WorkOS.
         """
@@ -747,7 +747,7 @@ class UserManagementModule(Protocol):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Invitation ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Invitation ID. (Optional)
-            order ("asc"|"desc"): Sort records in either ascending or descending order by created_at timestamp. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending order by created_at timestamp. (Optional)
 
         Returns:
             InvitationsListResource: Invitations list response from WorkOS.

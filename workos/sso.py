@@ -158,7 +158,7 @@ class SSOModule(Protocol):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Connection ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Connection ID. (Optional)
-            order ("asc"|"desc"): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
 
         Returns:
             ConnectionsListResource: Connections response from WorkOS.

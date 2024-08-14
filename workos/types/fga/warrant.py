@@ -1,5 +1,5 @@
-from enum import Enum
-from typing import Literal, Optional, Dict, Any
+from typing import Literal, Mapping, Optional, Any
+from typing_extensions import TypedDict
 
 from workos.types.workos_model import WorkOSModel
 
@@ -22,21 +22,16 @@ class WriteWarrantResponse(WorkOSModel):
     warrant_token: str
 
 
-class WarrantWriteOperations(Enum):
-    CREATE = "create"
-    DELETE = "delete"
-
-
 WarrantWriteOperation = Literal["create", "delete"]
 
 
-class WarrantWrite(WorkOSModel):
+class WarrantWrite(TypedDict, total=False):
     op: WarrantWriteOperation
     resource_type: str
     resource_id: str
     relation: str
     subject: Subject
-    policy: Optional[str] = None
+    policy: Optional[str]
 
 
 class WarrantQueryResult(WorkOSModel):
@@ -45,4 +40,4 @@ class WarrantQueryResult(WorkOSModel):
     relation: str
     warrant: Warrant
     is_implicit: bool
-    meta: Optional[Dict[str, Any]] = None
+    meta: Optional[Mapping[str, Any]] = None

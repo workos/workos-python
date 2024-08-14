@@ -5,12 +5,11 @@ from workos.types.fga import (
     Resource,
     ResourceType,
     Warrant,
-    WarrantCheck,
+    WarrantCheckInput,
     WarrantWrite,
     WarrantWriteOperation,
     WriteWarrantResponse,
     WarrantQueryResult,
-    CheckOperations,
 )
 from workos.types.fga.list_filters import (
     ResourceListFilters,
@@ -240,7 +239,7 @@ class FGAModule(Protocol):
     def check(
         self,
         *,
-        checks: Sequence[WarrantCheck],
+        checks: Sequence[WarrantCheckInput],
         op: Optional[CheckOperation] = None,
         debug: bool = False,
         warrant_token: Optional[str] = None,
@@ -261,7 +260,7 @@ class FGAModule(Protocol):
     def check_batch(
         self,
         *,
-        checks: Sequence[WarrantCheck],
+        checks: Sequence[WarrantCheckInput],
         debug: bool = False,
         warrant_token: Optional[str] = None,
     ) -> Sequence[CheckResponse]:
@@ -541,7 +540,7 @@ class FGA(FGAModule):
         response = self._http_client.request(
             "fga/v1/warrants",
             method=REQUEST_METHOD_POST,
-            json=[warrant.dict() for warrant in batch],
+            json=batch,
         )
 
         return WriteWarrantResponse.model_validate(response)
@@ -549,7 +548,7 @@ class FGA(FGAModule):
     def check(
         self,
         *,
-        checks: Sequence[WarrantCheck],
+        checks: Sequence[WarrantCheckInput],
         op: Optional[CheckOperation] = None,
         debug: bool = False,
         warrant_token: Optional[str] = None,
@@ -558,7 +557,7 @@ class FGA(FGAModule):
             raise ValueError("Incomplete arguments: No checks provided")
 
         body = {
-            "checks": [check.dict() for check in checks],
+            "checks": checks,
             "op": op,
             "debug": debug,
         }
@@ -575,7 +574,7 @@ class FGA(FGAModule):
     def check_batch(
         self,
         *,
-        checks: Sequence[WarrantCheck],
+        checks: Sequence[WarrantCheckInput],
         debug: bool = False,
         warrant_token: Optional[str] = None,
     ) -> Sequence[CheckResponse]:
@@ -583,8 +582,8 @@ class FGA(FGAModule):
             raise ValueError("Incomplete arguments: No checks provided")
 
         body = {
-            "checks": [check.dict() for check in checks],
-            "op": CheckOperations.BATCH.value,
+            "checks": checks,
+            "op": "batch",
             "debug": debug,
         }
 

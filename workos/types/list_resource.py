@@ -23,7 +23,12 @@ from workos.types.directory_sync import (
     DirectoryUserWithGroups,
 )
 from workos.types.events import Event
-from workos.types.fga import Warrant, Resource, ResourceType, WarrantQueryResult
+from workos.types.fga import (
+    Warrant,
+    AuthorizationResource,
+    AuthorizationResourceType,
+    WarrantQueryResult,
+)
 from workos.types.mfa import AuthenticationFactor
 from workos.types.organizations import Organization
 from workos.types.sso import ConnectionWithDomains
@@ -42,8 +47,8 @@ ListableResource = TypeVar(
     Invitation,
     Organization,
     OrganizationMembership,
-    Resource,
-    ResourceType,
+    AuthorizationResource,
+    AuthorizationResourceType,
     User,
     Warrant,
     WarrantQueryResult,

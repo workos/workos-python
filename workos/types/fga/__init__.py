@@ -1,4 +1,4 @@
 from .check import *
-from .resource_types import *
-from .resources import *
+from .authorization_resource_types import *
+from .authorization_resources import *
 from .warrant import *

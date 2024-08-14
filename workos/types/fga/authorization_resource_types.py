@@ -3,8 +3,7 @@ from typing import Any, Mapping, Optional
 from workos.types.workos_model import WorkOSModel
 
 
-class Resource(WorkOSModel):
-    resource_type: str
-    resource_id: str
-    meta: Optional[Mapping[str, Any]] = None
+class AuthorizationResourceType(WorkOSModel):
+    type: str
+    relations: Mapping[str, Any]
     created_at: Optional[str] = None

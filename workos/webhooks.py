@@ -9,14 +9,27 @@ from workos.typing.webhooks import WebhookTypeAdapter
 
 
 class WebhooksModule(Protocol):
+    """Offers methods through the WorkOS Webhooks service."""
+
     def verify_event(
         self,
         *,
-        payload: WebhookPayload,
+        event_body: WebhookPayload,
         event_signature: str,
         secret: str,
         tolerance: Optional[int] = None,
-    ) -> Webhook: ...
+    ) -> Webhook:
+        """Verify and deserialize the signature of a Webhook event.
+
+        Kwargs:
+            event_body (WebhookPayload): The Webhook body.
+            event_signature (str): The signature of the Webhook from the 'WorkOS-Signature' header.
+            secret (str): The secret for the webhook endpoint, you can find this in the WorkOS dashboard.
+            tolerance (int): The number of seconds the Webhook event is valid for. (Optional)
+        Returns:
+            Webhook: The deserialized Webhook.
+        """
+        ...
 
     def verify_header(
         self,
@@ -25,7 +38,18 @@ class WebhooksModule(Protocol):
         event_signature: str,
         secret: str,
         tolerance: Optional[int] = None,
-    ) -> None: ...
+    ) -> None:
+        """Verify the signature of a Webhook, raise ValueError if the signature can't be verified.
+
+        Kwargs:
+            event_body (WebhookPayload): The Webhook body.
+            event_signature (str): The signature of the Webhook from the 'WorkOS-Signature' header.
+            secret (str): The secret for the webhook endpoint, you can find this in the WorkOS dashboard.
+            tolerance (int): The number of seconds the Webhook event is valid for. (Optional)
+        Returns:
+            None
+        """
+        ...
 
     def _constant_time_compare(self, val1: str, val2: str) -> bool: ...
 
@@ -33,26 +57,24 @@ class WebhooksModule(Protocol):
 
 
 class Webhooks(WebhooksModule):
-    """Offers methods through the WorkOS Webhooks service."""
-
     DEFAULT_TOLERANCE = 180
 
     def verify_event(
         self,
         *,
-        payload: WebhookPayload,
+        event_body: WebhookPayload,
         event_signature: str,
         secret: str,
         tolerance: Optional[int] = DEFAULT_TOLERANCE,
     ) -> Webhook:
         Webhooks.verify_header(
             self,
-            event_body=payload,
+            event_body=event_body,
             event_signature=event_signature,
             secret=secret,
             tolerance=tolerance,
         )
-        return WebhookTypeAdapter.validate_json(payload)
+        return WebhookTypeAdapter.validate_json(event_body)
 
     def verify_header(
         self,

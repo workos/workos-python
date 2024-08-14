@@ -7,26 +7,7 @@ from workos.types.passwordless.passwordless_session import PasswordlessSession
 
 
 class PasswordlessModule(Protocol):
-    def create_session(
-        self,
-        *,
-        email: str,
-        type: PasswordlessSessionType,
-        redirect_uri: Optional[str] = None,
-        state: Optional[str] = None,
-        expires_in: Optional[int] = None,
-    ) -> PasswordlessSession: ...
-
-    def send_session(self, session_id: str) -> Literal[True]: ...
-
-
-class Passwordless(PasswordlessModule):
     """Offers methods through the WorkOS Passwordless service."""
-
-    _http_client: SyncHTTPClient
-
-    def __init__(self, http_client: SyncHTTPClient):
-        self._http_client = http_client
 
     def create_session(
         self,
@@ -41,23 +22,52 @@ class Passwordless(PasswordlessModule):
 
         Args:
             email (str): The email of the user to authenticate.
+            type (PasswordlessSessionType): The type of Passwordless Session to
+                create. Currently, the only supported value is 'MagicLink'.
             redirect_uri (str): Optional parameter to
                 specify the redirect endpoint which will handle the callback
                 from WorkOS. Defaults to the default Redirect URI in the
-                WorkOS dashboard.
+                WorkOS dashboard. (Optional)
             state (str): Optional parameter that the redirect
                 URI received from WorkOS will contain. The state parameter
                 can be used to encode arbitrary information to help
-                restore application state between redirects.
-            type (str): The type of Passwordless Session to
-                create. Currently, the only supported value is 'MagicLink'.
+                restore application state between redirects. (Optional)
             expires_in (int): The number of seconds the Passwordless Session should live before expiring.
-                This value must be between 900 (15 minutes) and 86400 (24 hours), inclusive.
+                This value must be between 900 (15 minutes) and 86400 (24 hours), inclusive. (Optional)
 
         Returns:
-            PasswordlessSession
+            PasswordlessSession: A passwordless session object.
         """
+        ...
 
+    def send_session(self, session_id: str) -> Literal[True]:
+        """Send a Passwordless Session via email.
+
+        Args:
+            session_id (str): The unique identifier of the Passwordless
+                Session to send an email for.
+
+        Returns:
+            boolean: Returns True
+        """
+        ...
+
+
+class Passwordless(PasswordlessModule):
+    _http_client: SyncHTTPClient
+
+    def __init__(self, http_client: SyncHTTPClient):
+        self._http_client = http_client
+
+    def create_session(
+        self,
+        *,
+        email: str,
+        type: PasswordlessSessionType,
+        redirect_uri: Optional[str] = None,
+        state: Optional[str] = None,
+        expires_in: Optional[int] = None,
+    ) -> PasswordlessSession:
         json = {
             "email": email,
             "type": type,
@@ -73,15 +83,6 @@ class Passwordless(PasswordlessModule):
         return PasswordlessSession.model_validate(response)
 
     def send_session(self, session_id: str) -> Literal[True]:
-        """Send a Passwordless Session via email.
-
-        Args:
-            session_id (str): The unique identifier of the Passwordless
-                Session to send an email for.
-
-        Returns:
-            boolean: Returns True
-        """
         self._http_client.request(
             "passwordless/sessions/{session_id}/send".format(session_id=session_id),
             method=REQUEST_METHOD_POST,

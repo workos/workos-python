@@ -16,7 +16,21 @@ class PortalModule(Protocol):
         organization_id: str,
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
-    ) -> PortalLink: ...
+    ) -> PortalLink:
+        """Generate a link to grant access to an organization's Admin Portal
+
+        Kwargs:
+            intent (PortalLinkIntent): The access scope for the generated Admin Portal link.
+            organization_id (string): The ID of the organization the Admin Portal link will be generated for.
+            return_url (str): The URL that the end user will be redirected to upon exiting the generated Admin Portal.
+                If none is provided, the default redirect link set in your WorkOS Dashboard will be used. (Optional)
+            success_url (str): The URL to which WorkOS will redirect users to upon successfully viewing Audit Logs,
+                setting up Log Streams, Single Sign On or Directory Sync. (Optional)
+
+        Returns:
+            PortalLink: PortalLink object with URL to redirect a User to to access an Admin Portal session.
+        """
+        ...
 
 
 class Portal(PortalModule):
@@ -34,19 +48,6 @@ class Portal(PortalModule):
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
     ) -> PortalLink:
-        """Generate a link to grant access to an organization's Admin Portal
-
-        Args:
-            intent (str): The access scope for the generated Admin Portal link. Valid values are: ["audit_logs", "dsync", "log_streams", "sso",]
-            organization_id (string): The ID of the organization the Admin Portal link will be generated for
-
-        Kwargs:
-            return_url (str): The URL that the end user will be redirected to upon exiting the generated Admin Portal. If none is provided, the default redirect link set in your WorkOS Dashboard will be used. (Optional)
-            success_url (str): The URL to which WorkOS will redirect users to upon successfully viewing Audit Logs, setting up Log Streams, Single Sign On or Directory Sync. (Optional)
-
-        Returns:
-            PortalLink: PortalLink object with URL to redirect a User to to access an Admin Portal session
-        """
         json = {
             "intent": intent,
             "organization": organization_id,

@@ -12,6 +12,8 @@ EventsListResource = WorkOSListResource[Event, EventsListFilters, ListAfterMetad
 
 
 class EventsModule(Protocol):
+    """Offers methods through the WorkOS Events service."""
+
     def list_events(
         self,
         *,
@@ -21,12 +23,24 @@ class EventsModule(Protocol):
         after: Optional[str] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
-    ) -> SyncOrAsync[EventsListResource]: ...
+    ) -> SyncOrAsync[EventsListResource]:
+        """Gets a list of Events.
+
+        Kwargs:
+            events (Sequence(EventType)): Filter to only return events of particular types.
+            limit (int): Maximum number of records to return. (Optional)
+            organization_id(str): Organization ID limits scope of events to a single organization. (Optional)
+            after (str): Pagination cursor to receive records after a provided Event ID. (Optional)
+            range_start (str): Date range start for stream of events. (Optional)
+            range_end (str): Date range end for stream of events. (Optional)
+
+        Returns:
+            EventsListResource: Events response from WorkOS.
+        """
+        ...
 
 
 class Events(EventsModule):
-    """Offers methods through the WorkOS Events service."""
-
     _http_client: SyncHTTPClient
 
     def __init__(self, http_client: SyncHTTPClient):
@@ -42,20 +56,6 @@ class Events(EventsModule):
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
     ) -> EventsListResource:
-        """Gets a list of Events .
-        Kwargs:
-            events (list): Filter to only return events of particular types. (Optional)
-            limit (int): Maximum number of records to return. (Optional)
-            organization_id(str): Organization ID limits scope of events to a single organization. (Optional)
-            after (str): Pagination cursor to receive records after a provided Event ID. (Optional)
-            range_start (str): Date range start for stream of events. (Optional)
-            range_end (str): Date range end for stream of events. (Optional)
-
-
-        Returns:
-            dict: Events response from WorkOS.
-        """
-
         params: EventsListFilters = {
             "events": events,
             "limit": limit,
@@ -76,8 +76,6 @@ class Events(EventsModule):
 
 
 class AsyncEvents(EventsModule):
-    """Offers methods through the WorkOS Events service."""
-
     _http_client: AsyncHTTPClient
 
     def __init__(self, http_client: AsyncHTTPClient):
@@ -93,19 +91,6 @@ class AsyncEvents(EventsModule):
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
     ) -> EventsListResource:
-        """Gets a list of Events .
-        Kwargs:
-            events (list): Filter to only return events of particular types. (Optional)
-            limit (int): Maximum number of records to return. (Optional)
-            organization_id(str): Organization ID limits scope of events to a single organization. (Optional)
-            after (str): Pagination cursor to receive records after a provided Event ID. (Optional)
-            range_start (str): Date range start for stream of events. (Optional)
-            range_end (str): Date range end for stream of events. (Optional)
-
-
-        Returns:
-            dict: Events response from WorkOS.
-        """
         params: EventsListFilters = {
             "events": events,
             "limit": limit,

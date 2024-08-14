@@ -45,7 +45,7 @@ class TestWebhooks(object):
     ):
         with pytest.raises(ValueError) as err:
             self.webhooks.verify_event(
-                payload=mock_event_body.encode("utf-8"),
+                event_body=mock_event_body.encode("utf-8"),
                 event_signature=mock_header_no_timestamp,
                 secret=mock_secret,
                 tolerance=180,
@@ -59,7 +59,7 @@ class TestWebhooks(object):
     ):
         with pytest.raises(ValueError) as err:
             self.webhooks.verify_event(
-                payload=mock_event_body.encode("utf-8"),
+                event_body=mock_event_body.encode("utf-8"),
                 event_signature=mock_header,
                 secret=mock_secret,
                 tolerance=0,
@@ -85,7 +85,7 @@ class TestWebhooks(object):
     ):
         try:
             webhook = self.webhooks.verify_event(
-                payload=mock_event_body.encode("utf-8"),
+                event_body=mock_event_body.encode("utf-8"),
                 event_signature=mock_header,
                 secret=mock_secret,
                 tolerance=99999999999999,
@@ -115,7 +115,7 @@ class TestWebhooks(object):
         self, mock_unknown_webhook_body, mock_unknown_webhook_header, mock_secret
     ):
         result = self.webhooks.verify_event(
-            payload=mock_unknown_webhook_body.encode("utf-8"),
+            event_body=mock_unknown_webhook_body.encode("utf-8"),
             event_signature=mock_unknown_webhook_header,
             secret=mock_secret,
             tolerance=99999999999999,

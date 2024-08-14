@@ -49,7 +49,7 @@ QueryListResource = WorkOSListResource[
 class FGAModule(Protocol):
     def get_resource(self, *, resource_type: str, resource_id: str) -> Resource:
         """
-        Get a resource by its type and ID.
+        Get a warrant resource by its type and ID.
 
         Kwargs:
             resource_type (str): The type of the resource.
@@ -76,7 +76,7 @@ class FGAModule(Protocol):
             resource_type (str): The type of the resource. (Optional)
             search (str): Searchable text for a Resource. (Optional)
             limit (int): The maximum number of resources to return. (Optional)
-            order (Literal["asc","desc"]): Sort resources in either ascending or descending (default) order by created_at timestamp. (Optional)
+            order (Literal["asc","desc"]): Sort warrant resources in either ascending or descending (default) order. (Optional)
             before (str): A cursor to return resources before. (Optional)
             after (str): A cursor to return resources after. (Optional)
         Returns:
@@ -92,12 +92,12 @@ class FGAModule(Protocol):
         meta: Optional[Mapping[str, Any]] = None,
     ) -> Resource:
         """
-        Create a new resource.
+        Create a new warrant resource.
 
         Kwargs:
             resource_type (str): The type of the resource.
             resource_id (str): A unique identifier for the resource.
-            meta (dict): A dictionary containing additional information about this resource. (Optional)
+            meta (Mapping): A dictionary containing additional information about this resource. (Optional)
         Returns:
             Resource: A resource object.
         """
@@ -111,12 +111,12 @@ class FGAModule(Protocol):
         meta: Optional[Mapping[str, Any]] = None,
     ) -> Resource:
         """
-        Updates an existing Resource.
+        Updates an existing warrant resource.
 
         Kwargs:
             resource_type (str): The type of the resource.
             resource_id (str): A unique identifier for the resource.
-            meta (dict): A dictionary containing additional information about this resource. (Optional)
+            meta (Mapping): A dictionary containing additional information about this resource. (Optional)
         Returns:
             Resource: A resource object.
         """
@@ -148,7 +148,7 @@ class FGAModule(Protocol):
 
         Kwargs:
             limit (int): The maximum number of resources to return. (Optional)
-            order (Literal["asc","desc"]): Sort resource types in either ascending or descending (default) order by created_at timestamp. (Optional)
+            order (Literal["asc","desc"]): Sort warrant resource types in either ascending or descending (default) order. (Optional)
             before (str): A cursor to return resources before. (Optional)
             after (str): A cursor to return resources after. (Optional)
 
@@ -183,7 +183,7 @@ class FGAModule(Protocol):
             resource_type (str): The type of the resource. (Optional)
             resource_id (str): The ID of the resource. (Optional)
             limit (int): The maximum number of resources to return. (Optional)
-            order (Literal["asc","desc"]): Sort warrants in either ascending or descending (default) order by created_at timestamp. (Optional)
+            order (Literal["asc","desc"]): Sort warrants in either ascending or descending (default) order. (Optional)
             before (str): A cursor to return resources before. (Optional)
             after (str): A cursor to return resources after. (Optional)
             warrant_token (str): The warrant token. (Optional)
@@ -209,7 +209,7 @@ class FGAModule(Protocol):
         Write a warrant.
 
         Kwargs:
-            op ("create"|"delete"): The operation to perform.
+            op (WarrantWriteOperation): The operation to perform.
             subject_type (str): The type of the subject.
             subject_id (str): The ID of the subject.
             subject_relation (str): The relation of the subject. (Optional)
@@ -250,7 +250,7 @@ class FGAModule(Protocol):
 
         Args:
             checks (Sequence[WarrantCheck]): A list of WarrantCheck objects.
-            op ("create"|"delete"): The operation to perform. (Optional)
+            op (CheckOperation): The operation to perform. (Optional)
             debug (bool): Whether to return debug information including a decision tree. (Optional)
             warrant_token (str): Optional token to specify desired read consistency. (Optional)
         Returns:
@@ -293,7 +293,7 @@ class FGAModule(Protocol):
 
         Args:
             q (str): The query string.
-            order (Literal["asc","desc"]): Sort authorization resources in either ascending or descending (default) order by created_at timestamp. (Optional)
+            order (Literal["asc","desc"]): Sort warrant resources in either ascending or descending (default) order. (Optional)
             order (str): The order in which to return resources.
             before (str): A cursor to return resources before. (Optional)
             after (str): A cursor to return resources after. (Optional)

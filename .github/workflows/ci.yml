@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - 'main'
+      - "main"
   pull_request: {}
 
 defaults:
@@ -17,13 +17,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.8', '3.9', '3.10', '3.11']
+        python: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-          cache: 'pip'
+          cache: "pip"
           cache-dependency-path: setup.py
 
       - name: Install dependencies
@@ -37,6 +37,9 @@ jobs:
         run: |
           flake8 . --extend-exclude .devbox --count --select=E9,F7,F82 --show-source --statistics
           flake8 . --extend-exclude .devbox --count --exit-zero --max-complexity=10 --statistics
+
+      - name: Type Check
+        run: mypy
 
       - name: Test
         run: python -m pytest

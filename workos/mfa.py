@@ -1,71 +1,130 @@
-from warnings import warn
-import workos
-from workos.utils.request import (
-    RequestHelper,
+from typing import Optional, Protocol
+
+from workos.types.mfa.enroll_authentication_factor_type import (
+    EnrollAuthenticationFactorType,
+)
+from workos.utils.http_client import SyncHTTPClient
+from workos.utils.request_helper import (
     REQUEST_METHOD_POST,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
+    RequestHelper,
 )
-from workos.utils.validation import MFA_MODULE, validate_settings
-from workos.resources.mfa import (
-    WorkOSAuthenticationFactorSms,
-    WorkOSAuthenticationFactorTotp,
-    WorkOSChallenge,
-    WorkOSChallengeVerification,
+from workos.types.mfa import (
+    AuthenticationChallenge,
+    AuthenticationChallengeVerificationResponse,
+    AuthenticationFactor,
+    AuthenticationFactorExtended,
+    AuthenticationFactorSms,
+    AuthenticationFactorTotp,
+    AuthenticationFactorTotpExtended,
 )
 
 
-class Mfa(object):
-    """Methods to assist in creating, challenging, and verifying Authentication Factors through the WorkOS MFA service."""
-
-    @validate_settings(MFA_MODULE)
-    def __init__(self):
-        pass
-
-    @property
-    def request_helper(self):
-        if not getattr(self, "_request_helper", None):
-            self._request_helper = RequestHelper()
-        return self._request_helper
+class MFAModule(Protocol):
+    """Offers methods through the WorkOS MFA service."""
 
     def enroll_factor(
         self,
-        type=None,
-        totp_issuer=None,
-        totp_user=None,
-        phone_number=None,
-    ):
+        *,
+        type: EnrollAuthenticationFactorType,
+        totp_issuer: Optional[str] = None,
+        totp_user: Optional[str] = None,
+        phone_number: Optional[str] = None,
+    ) -> AuthenticationFactorExtended:
         """
         Defines the type of MFA authorization factor to be used. Possible values are sms or totp.
 
         Kwargs:
-            type (str) - The type of factor to be enrolled (sms or totp)
-            totp_issuer (str) - Name of the Organization
-            totp_user (str) - email of user
-            phone_number (str) - phone number of the user
+            type (str): The type of factor to be enrolled (sms or totp).
+            totp_issuer (str): Name of the Organization. Required when type is totp, ignored otherwise.
+            totp_user (str): email of user. Required when type is totp, ignored otherwise.
+            phone_number (str): phone number of the user. (Optional)
 
-        Returns: Dict containing the authentication factor information.
+        Returns:
+            AuthenticationFactor:
         """
+        ...
 
-        params = {
+    def get_factor(self, authentication_factor_id: str) -> AuthenticationFactor:
+        """
+        Returns an authorization factor from its ID.
+
+        Args:
+            authentication_factor_id (str): The ID of the factor to be obtained.
+
+        Returns:
+            AuthenticationFactor: AuthenticationFactor response from WorkOS.
+        """
+        ...
+
+    def delete_factor(self, authentication_factor_id: str) -> None:
+        """
+        Deletes an MFA authorization factor.
+
+        Args:
+            authentication_factor_id (str): The ID of the authorization factor to be deleted.
+
+        Returns:
+            None
+        """
+        ...
+
+    def challenge_factor(
+        self, *, authentication_factor_id: str, sms_template: Optional[str] = None
+    ) -> AuthenticationChallenge:
+        """
+        Initiates the authentication process for the newly created MFA authorization factor, referred to as a challenge.
+
+        Kwargs:
+            authentication_factor_id (str): ID of the authorization factor
+            sms_template (str): Optional parameter to customize the message for sms type factors. Must include "{{code}}" if used. (Optional)
+
+        Returns:
+            AuthenticationChallenge: AuthenticationChallenge response from WorkOS.
+        """
+        ...
+
+    def verify_challenge(
+        self, *, authentication_challenge_id: str, code: str
+    ) -> AuthenticationChallengeVerificationResponse:
+        """
+        Verifies the one time password provided by the end-user.
+
+        Kwargs:
+            authentication_challenge_id (str): The ID of the authentication challenge that provided the user the verification code.
+            code (str): The verification code sent to and provided by the end user.
+
+        Returns:
+            AuthenticationChallengeVerificationResponse: AuthenticationChallengeVerificationResponse response from WorkOS.
+        """
+        ...
+
+
+class Mfa(MFAModule):
+    """Methods to assist in creating, challenging, and verifying Authentication Factors through the WorkOS MFA service."""
+
+    _http_client: SyncHTTPClient
+
+    def __init__(self, http_client: SyncHTTPClient):
+        self._http_client = http_client
+
+    def enroll_factor(
+        self,
+        *,
+        type: EnrollAuthenticationFactorType,
+        totp_issuer: Optional[str] = None,
+        totp_user: Optional[str] = None,
+        phone_number: Optional[str] = None,
+    ) -> AuthenticationFactorExtended:
+        json = {
             "type": type,
             "totp_issuer": totp_issuer,
             "totp_user": totp_user,
             "phone_number": phone_number,
         }
 
-        if type is None:
-            raise ValueError("Incomplete arguments. Need to specify a type of factor")
-
-        if type not in ["sms", "totp"]:
-            raise ValueError("Type parameter must be either 'sms' or 'totp'")
-
-        if (
-            type == "totp"
-            and totp_issuer is None
-            or type == "totp"
-            and totp_user is None
-        ):
+        if type == "totp" and (totp_issuer is None or totp_user is None):
             raise ValueError(
                 "Incomplete arguments. Need to specify both totp_issuer and totp_user when type is totp"
             )
@@ -75,168 +134,72 @@ class Mfa(object):
                 "Incomplete arguments. Need to specify phone_number when type is sms"
             )
 
-        response = self.request_helper.request(
-            "auth/factors/enroll",
-            method=REQUEST_METHOD_POST,
-            params=params,
-            token=workos.api_key,
+        response = self._http_client.request(
+            "auth/factors/enroll", method=REQUEST_METHOD_POST, json=json
         )
 
         if type == "totp":
-            return WorkOSAuthenticationFactorTotp.construct_from_response(
-                response
-            ).to_dict()
+            return AuthenticationFactorTotpExtended.model_validate(response)
 
-        return WorkOSAuthenticationFactorSms.construct_from_response(response).to_dict()
+        return AuthenticationFactorSms.model_validate(response)
 
-    def get_factor(
-        self,
-        authentication_factor_id=None,
-    ):
-        """
-        Returns an authorization factor from its ID.
-
-        Kwargs:
-            authentication_factor_id (str) - The ID of the factor to be obtained.
-
-        Returns: Dict containing the authentication factor information.
-        """
-
-        if authentication_factor_id is None:
-            raise ValueError("Incomplete arguments. Need to specify a factor ID")
-
-        response = self.request_helper.request(
-            self.request_helper.build_parameterized_url(
+    def get_factor(self, authentication_factor_id: str) -> AuthenticationFactor:
+        response = self._http_client.request(
+            RequestHelper.build_parameterized_url(
                 "auth/factors/{authentication_factor_id}",
                 authentication_factor_id=authentication_factor_id,
             ),
             method=REQUEST_METHOD_GET,
-            token=workos.api_key,
         )
 
         if response["type"] == "totp":
-            return WorkOSAuthenticationFactorTotp.construct_from_response(
-                response
-            ).to_dict()
+            return AuthenticationFactorTotp.model_validate(response)
 
-        return WorkOSAuthenticationFactorSms.construct_from_response(response).to_dict()
+        return AuthenticationFactorSms.model_validate(response)
 
-    def delete_factor(
-        self,
-        authentication_factor_id=None,
-    ):
-        """
-        Deletes an MFA authorization factor.
-
-        Kwargs:
-            authentication_factor_id (str) - The ID of the authorization factor to be deleted.
-
-        Returns: Does not provide a response.
-        """
-
-        if authentication_factor_id is None:
-            raise ValueError("Incomplete arguments. Need to specify a factor ID.")
-
-        return self.request_helper.request(
-            self.request_helper.build_parameterized_url(
+    def delete_factor(self, authentication_factor_id: str) -> None:
+        self._http_client.request(
+            RequestHelper.build_parameterized_url(
                 "auth/factors/{authentication_factor_id}",
                 authentication_factor_id=authentication_factor_id,
             ),
             method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
         )
 
     def challenge_factor(
         self,
-        authentication_factor_id=None,
-        sms_template=None,
-    ):
-        """
-        Initiates the authentication process for the newly created MFA authorization factor, referred to as a challenge.
-
-        Kwargs:
-            authentication_factor_id (str) - ID of the authorization factor
-            sms_template (str) - Optional parameter to customize the message for sms type factors. Must include "{{code}}" if used.
-
-        Returns: Dict containing the authentication challenge factor details.
-        """
-
-        params = {
+        *,
+        authentication_factor_id: str,
+        sms_template: Optional[str] = None,
+    ) -> AuthenticationChallenge:
+        json = {
             "sms_template": sms_template,
         }
 
-        if authentication_factor_id is None:
-            raise ValueError(
-                "Incomplete arguments: 'authentication_factor_id' is a required parameter"
-            )
-
-        response = self.request_helper.request(
-            self.request_helper.build_parameterized_url(
+        response = self._http_client.request(
+            RequestHelper.build_parameterized_url(
                 "auth/factors/{factor_id}/challenge", factor_id=authentication_factor_id
             ),
             method=REQUEST_METHOD_POST,
-            params=params,
-            token=workos.api_key,
+            json=json,
         )
 
-        return WorkOSChallenge.construct_from_response(response).to_dict()
-
-    def verify_factor(
-        self,
-        authentication_challenge_id=None,
-        code=None,
-    ):
-        """
-        Verifies the one time password provided by the end-user.
-
-        Deprecated: Please use `verify_challenge` instead.
-
-        Kwargs:
-            authentication_challenge_id (str) - The ID of the authentication challenge that provided the user the verification code.
-            code (str) - The verification code sent to and provided by the end user.
-
-        Returns: Dict containing the  challenge factor details.
-        """
-
-        warn(
-            "'verify_factor' is deprecated. Please use 'verify_challenge' instead.",
-            DeprecationWarning,
-        )
-
-        return self.verify_challenge(authentication_challenge_id, code)
+        return AuthenticationChallenge.model_validate(response)
 
     def verify_challenge(
-        self,
-        authentication_challenge_id=None,
-        code=None,
-    ):
-        """
-        Verifies the one time password provided by the end-user.
-
-        Kwargs:
-            authentication_challenge_id (str) - The ID of the authentication challenge that provided the user the verification code.
-            code (str) - The verification code sent to and provided by the end user.
-
-        Returns: Dict containing the  challenge factor details.
-        """
-
-        params = {
+        self, *, authentication_challenge_id: str, code: str
+    ) -> AuthenticationChallengeVerificationResponse:
+        json = {
             "code": code,
         }
 
-        if authentication_challenge_id is None or code is None:
-            raise ValueError(
-                "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
-            )
-
-        response = self.request_helper.request(
-            self.request_helper.build_parameterized_url(
+        response = self._http_client.request(
+            RequestHelper.build_parameterized_url(
                 "auth/challenges/{challenge_id}/verify",
                 challenge_id=authentication_challenge_id,
             ),
             method=REQUEST_METHOD_POST,
-            params=params,
-            token=workos.api_key,
+            json=json,
         )
 
-        return WorkOSChallengeVerification.construct_from_response(response).to_dict()
+        return AuthenticationChallengeVerificationResponse.model_validate(response)

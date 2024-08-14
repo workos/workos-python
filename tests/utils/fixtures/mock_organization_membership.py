@@ -1,23 +1,18 @@
 import datetime
-from workos.resources.base import WorkOSBaseResource
+
+from workos.types.user_management import OrganizationMembership
 
 
-class MockOrganizationMembership(WorkOSBaseResource):
+class MockOrganizationMembership(OrganizationMembership):
     def __init__(self, id):
-        self.id = id
-        self.user_id = "user_12345"
-        self.organization_id = "org_67890"
-        self.status = "active"
-        self.role = {"slug": "member"}
-        self.created_at = datetime.datetime.now()
-        self.updated_at = datetime.datetime.now()
-
-    OBJECT_FIELDS = [
-        "id",
-        "user_id",
-        "organization_id",
-        "status",
-        "role",
-        "created_at",
-        "updated_at",
-    ]
+        now = datetime.datetime.now().isoformat()
+        super().__init__(
+            object="organization_membership",
+            id=id,
+            user_id="user_12345",
+            organization_id="org_67890",
+            status="active",
+            role={"slug": "member"},
+            created_at=now,
+            updated_at=now,
+        )

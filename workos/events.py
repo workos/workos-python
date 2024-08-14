@@ -1,57 +1,62 @@
-from warnings import warn
-import workos
-from workos.utils.request import (
-    RequestHelper,
-    REQUEST_METHOD_GET,
-)
+from typing import Optional, Protocol, Sequence
 
-from workos.utils.validation import EVENTS_MODULE, validate_settings
-from workos.resources.list import WorkOSListResource
-
-RESPONSE_LIMIT = 10
+from workos.types.events.list_filters import EventsListFilters
+from workos.typing.sync_or_async import SyncOrAsync
+from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT, REQUEST_METHOD_GET
+from workos.types.events import Event, EventType
+from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
+from workos.types.list_resource import ListAfterMetadata, ListPage, WorkOSListResource
 
 
-class Events(WorkOSListResource):
+EventsListResource = WorkOSListResource[Event, EventsListFilters, ListAfterMetadata]
+
+
+class EventsModule(Protocol):
     """Offers methods through the WorkOS Events service."""
-
-    @validate_settings(EVENTS_MODULE)
-    def __init__(self):
-        pass
-
-    @property
-    def request_helper(self):
-        if not getattr(self, "_request_helper", None):
-            self._request_helper = RequestHelper()
-        return self._request_helper
 
     def list_events(
         self,
-        events=None,
-        limit=None,
-        organization_id=None,
-        after=None,
-        range_start=None,
-        range_end=None,
-    ):
-        """Gets a list of Events .
+        *,
+        events: Sequence[EventType],
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        organization_id: Optional[str] = None,
+        after: Optional[str] = None,
+        range_start: Optional[str] = None,
+        range_end: Optional[str] = None,
+    ) -> SyncOrAsync[EventsListResource]:
+        """Gets a list of Events.
+
         Kwargs:
-            events (list): Filter to only return events of particular types. (Optional)
+            events (Sequence[EventType]): Filter to only return events of particular types.
             limit (int): Maximum number of records to return. (Optional)
-            organization_id(str): Organization ID limits scope of events to a single organization. (Optional)
+            organization_id (str): Organization ID limits scope of events to a single organization. (Optional)
             after (str): Pagination cursor to receive records after a provided Event ID. (Optional)
             range_start (str): Date range start for stream of events. (Optional)
             range_end (str): Date range end for stream of events. (Optional)
 
-
         Returns:
-            dict: Events response from WorkOS.
+            EventsListResource: Events response from WorkOS.
         """
+        ...
 
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
 
-        params = {
+class Events(EventsModule):
+    _http_client: SyncHTTPClient
+
+    def __init__(self, http_client: SyncHTTPClient):
+        self._http_client = http_client
+
+    def list_events(
+        self,
+        *,
+        events: Sequence[EventType],
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        organization_id: Optional[str] = None,
+        after: Optional[str] = None,
+        range_start: Optional[str] = None,
+        range_end: Optional[str] = None,
+    ) -> EventsListResource:
+        params: EventsListFilters = {
             "events": events,
             "limit": limit,
             "after": after,
@@ -60,22 +65,47 @@ class Events(WorkOSListResource):
             "range_end": range_end,
         }
 
-        response = self.request_helper.request(
-            "events",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
+        response = self._http_client.request(
+            "events", method=REQUEST_METHOD_GET, params=params
+        )
+        return WorkOSListResource[Event, EventsListFilters, ListAfterMetadata](
+            list_method=self.list_events,
+            list_args=params,
+            **ListPage[Event](**response).model_dump(exclude_unset=True),
         )
 
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
 
-        response["metadata"] = {
-            "params": params,
-            "method": Events.list_events,
+class AsyncEvents(EventsModule):
+    _http_client: AsyncHTTPClient
+
+    def __init__(self, http_client: AsyncHTTPClient):
+        self._http_client = http_client
+
+    async def list_events(
+        self,
+        *,
+        events: Sequence[EventType],
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        organization_id: Optional[str] = None,
+        after: Optional[str] = None,
+        range_start: Optional[str] = None,
+        range_end: Optional[str] = None,
+    ) -> EventsListResource:
+        params: EventsListFilters = {
+            "events": events,
+            "limit": limit,
+            "after": after,
+            "organization_id": organization_id,
+            "range_start": range_start,
+            "range_end": range_end,
         }
 
-        return response
+        response = await self._http_client.request(
+            "events", method=REQUEST_METHOD_GET, params=params
+        )
+
+        return WorkOSListResource[Event, EventsListFilters, ListAfterMetadata](
+            list_method=self.list_events,
+            list_args=params,
+            **ListPage[Event](**response).model_dump(exclude_unset=True),
+        )

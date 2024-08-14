@@ -1,23 +1,26 @@
-from requests import Request
-from warnings import warn
-import workos
-from workos.utils.pagination_order import Order
-from workos.resources.sso import (
-    WorkOSProfile,
-    WorkOSProfileAndToken,
-    WorkOSConnection,
-)
-from workos.utils.connection_types import ConnectionType
-from workos.utils.sso_provider_types import SsoProviderType
-from workos.utils.request import (
-    RequestHelper,
+from typing import Optional, Protocol
+from workos._client_configuration import ClientConfiguration
+from workos.types.sso.connection import ConnectionType
+from workos.types.sso.sso_provider_type import SsoProviderType
+from workos.typing.sync_or_async import SyncOrAsync
+from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
+from workos.utils.pagination_order import PaginationOrder
+from workos.types.sso import ConnectionWithDomains, Profile, ProfileAndToken
+from workos.utils.request_helper import (
+    DEFAULT_LIST_RESPONSE_LIMIT,
     RESPONSE_TYPE_CODE,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_POST,
+    QueryParameters,
+    RequestHelper,
 )
-from workos.utils.validation import SSO_MODULE, validate_settings
-from workos.resources.list import WorkOSListResource
+from workos.types.list_resource import (
+    ListArgs,
+    ListMetadata,
+    ListPage,
+    WorkOSListResource,
+)
 
 AUTHORIZATION_PATH = "sso/authorize"
 TOKEN_PATH = "sso/token"
@@ -25,338 +28,313 @@ PROFILE_PATH = "sso/profile"
 
 OAUTH_GRANT_TYPE = "authorization_code"
 
-RESPONSE_LIMIT = 10
+
+class ConnectionsListFilters(ListArgs, total=False):
+    connection_type: Optional[ConnectionType]
+    domain: Optional[str]
+    organization_id: Optional[str]
 
 
-class SSO(WorkOSListResource):
+ConnectionsListResource = WorkOSListResource[
+    ConnectionWithDomains, ConnectionsListFilters, ListMetadata
+]
+
+
+class SSOModule(Protocol):
     """Offers methods to assist in authenticating through the WorkOS SSO service."""
 
-    @validate_settings(SSO_MODULE)
-    def __init__(self):
-        pass
-
-    @property
-    def request_helper(self):
-        if not getattr(self, "_request_helper", None):
-            self._request_helper = RequestHelper()
-        return self._request_helper
+    _client_configuration: ClientConfiguration
 
     def get_authorization_url(
         self,
-        domain=None,
-        domain_hint=None,
-        login_hint=None,
-        redirect_uri=None,
-        state=None,
-        provider=None,
-        connection=None,
-        organization=None,
-    ):
+        *,
+        redirect_uri: str,
+        domain_hint: Optional[str] = None,
+        login_hint: Optional[str] = None,
+        state: Optional[str] = None,
+        provider: Optional[SsoProviderType] = None,
+        connection_id: Optional[str] = None,
+        organization_id: Optional[str] = None,
+    ) -> str:
         """Generate an OAuth 2.0 authorization URL.
 
         The URL generated will redirect a User to the Identity Provider configured through
         WorkOS.
 
         Kwargs:
-            domain (str) - The domain a user is associated with, as configured on WorkOS
-            redirect_uri (str) - A valid redirect URI, as specified on WorkOS
-            state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
+            redirect_uri (str) : A valid redirect URI, as specified on WorkOS
+            state (str) : An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
             back as a query parameter
-            provider (SsoProviderType) - Authentication service provider descriptor
-            connection (string) - Unique identifier for a WorkOS Connection
-            organization (string) - Unique identifier for a WorkOS Organization
+            provider (SSOProviderType) : Authentication service provider descriptor
+            connection_id (string) : Unique identifier for a WorkOS Connection
+            organization_id (string) : Unique identifier for a WorkOS Organization
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
         """
-        params = {
-            "client_id": workos.client_id,
+        params: QueryParameters = {
+            "client_id": self._client_configuration.client_id,
             "redirect_uri": redirect_uri,
             "response_type": RESPONSE_TYPE_CODE,
         }
 
-        if (
-            domain is None
-            and provider is None
-            and connection is None
-            and organization is None
-        ):
+        if connection_id is None and organization_id is None and provider is None:
             raise ValueError(
-                "Incomplete arguments. Need to specify either a 'connection', 'organization', 'domain', or 'provider'"
+                "Incomplete arguments. Need to specify either a 'connection', 'organization', or 'provider'"
             )
         if provider is not None:
-            if not isinstance(provider, SsoProviderType):
-                raise ValueError("'provider' must be of type SsoProviderType")
-
-            params["provider"] = provider.value
-        if domain is not None:
-            warn(
-                "The 'domain' parameter for 'get_authorization_url' is deprecated. Please use 'organization' instead.",
-                DeprecationWarning,
-            )
-            params["domain"] = domain
+            params["provider"] = provider
         if domain_hint is not None:
             params["domain_hint"] = domain_hint
         if login_hint is not None:
             params["login_hint"] = login_hint
-        if connection is not None:
-            params["connection"] = connection
-        if organization is not None:
-            params["organization"] = organization
+        if connection_id is not None:
+            params["connection"] = connection_id
+        if organization_id is not None:
+            params["organization"] = organization_id
 
         if state is not None:
             params["state"] = state
 
-        if redirect_uri is None:
-            raise ValueError("Incomplete arguments. Need to specify a 'redirect_uri'.")
+        return RequestHelper.build_url_with_query_params(
+            base_url=self._client_configuration.base_url,
+            path=AUTHORIZATION_PATH,
+            **params,
+        )
 
-        prepared_request = Request(
-            "GET",
-            self.request_helper.generate_api_url(AUTHORIZATION_PATH),
-            params=params,
-        ).prepare()
-
-        return prepared_request.url
-
-    def get_profile(self, accessToken):
+    def get_profile(self, access_token: str) -> SyncOrAsync[Profile]:
         """
         Verify that SSO has been completed successfully and retrieve the identity of the user.
 
         Args:
-            accessToken (str): the token used to authenticate the API call
+            access_token (str): The token used to authenticate the API call
 
         Returns:
-            WorkOSProfile
+            Profile
         """
+        ...
 
-        token = accessToken
-
-        response = self.request_helper.request(
-            PROFILE_PATH, method=REQUEST_METHOD_GET, token=token
-        )
-
-        return WorkOSProfile.construct_from_response(response)
-
-    def get_profile_and_token(self, code):
+    def get_profile_and_token(self, code: str) -> SyncOrAsync[ProfileAndToken]:
         """Get the profile of an authenticated User
 
         Once authenticated, using the code returned having followed the authorization URL,
         get the WorkOS profile of the User.
 
         Args:
-            code (str): Code returned by WorkOS on completion of OAuth 2.0 workflow
+            code (str): Code returned by WorkOS on completion of OAuth 2.0 workflow.
 
         Returns:
-            WorkOSProfileAndToken: WorkOSProfileAndToken object representing the User
+            ProfileAndToken: WorkOSProfileAndToken object representing the User.
         """
-        params = {
-            "client_id": workos.client_id,
-            "client_secret": workos.api_key,
-            "code": code,
-            "grant_type": OAUTH_GRANT_TYPE,
-        }
+        ...
 
-        response = self.request_helper.request(
-            TOKEN_PATH, method=REQUEST_METHOD_POST, params=params
-        )
-
-        return WorkOSProfileAndToken.construct_from_response(response)
-
-    def get_connection(self, connection):
+    def get_connection(self, connection_id: str) -> SyncOrAsync[ConnectionWithDomains]:
         """Gets details for a single Connection
 
         Args:
             connection (str): Connection unique identifier
 
         Returns:
-            dict: Connection response from WorkOS.
+            ConnectionWithDomains: Connection response from WorkOS.
         """
-        response = self.request_helper.request(
-            "connections/{connection}".format(connection=connection),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
-
-        return WorkOSConnection.construct_from_response(response).to_dict()
+        ...
 
     def list_connections(
         self,
-        connection_type=None,
-        domain=None,
-        organization_id=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
-    ):
+        *,
+        connection_type: Optional[ConnectionType] = None,
+        domain: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[ConnectionsListResource]:
         """Gets details for existing Connections.
 
-        Args:
+        Kwargs:
             connection_type (ConnectionType): Authentication service provider descriptor. (Optional)
             domain (str): Domain of a Connection. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Connection ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Connection ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
 
         Returns:
-            dict: Connections response from WorkOS.
+            ConnectionsListResource: Connections response from WorkOS.
         """
-        warn(
-            "The 'list_connections' method is deprecated. Please use 'list_connections_v2' instead.",
-            DeprecationWarning,
-        )
+        ...
 
-        # This method used to accept `connection_type` as a string, so we try
-        # to convert strings to a `ConnectionType` to support existing callers.
-        #
-        # TODO: Remove support for string values of `ConnectionType` in the next
-        #       major version.
-        if connection_type is not None and isinstance(connection_type, str):
-            try:
-                connection_type = ConnectionType[connection_type]
-
-                warn(
-                    "Passing a string value as the 'connection_type' parameter for 'list_connections' is deprecated and will be removed in the next major version. Please pass a 'ConnectionType' instead.",
-                    DeprecationWarning,
-                )
-            except KeyError:
-                raise ValueError("'connection_type' must be a member of ConnectionType")
-
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
-            "connection_type": connection_type.value if connection_type else None,
-            "domain": domain,
-            "organization_id": organization_id,
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order or "desc",
-        }
-
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
-
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
-
-        response = self.request_helper.request(
-            "connections",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        response["metadata"] = {
-            "params": params,
-            "method": SSO.list_connections,
-        }
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        return response
-
-    def list_connections_v2(
-        self,
-        connection_type=None,
-        domain=None,
-        organization_id=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
-    ):
-        """Gets details for existing Connections.
-
-        Args:
-            connection_type (ConnectionType): Authentication service provider descriptor. (Optional)
-            domain (str): Domain of a Connection. (Optional)
-            limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided Connection ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided Connection ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Connections response from WorkOS.
-        """
-
-        # This method used to accept `connection_type` as a string, so we try
-        # to convert strings to a `ConnectionType` to support existing callers.
-        #
-        # TODO: Remove support for string values of `ConnectionType` in the next
-        #       major version.
-        if connection_type is not None and isinstance(connection_type, str):
-            try:
-                connection_type = ConnectionType[connection_type]
-
-                warn(
-                    "Passing a string value as the 'connection_type' parameter for 'list_connections' is deprecated and will be removed in the next major version. Please pass a 'ConnectionType' instead.",
-                    DeprecationWarning,
-                )
-            except KeyError:
-                raise ValueError("'connection_type' must be a member of ConnectionType")
-
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
-            "connection_type": connection_type.value if connection_type else None,
-            "domain": domain,
-            "organization_id": organization_id,
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order or "desc",
-        }
-
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
-
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
-
-        response = self.request_helper.request(
-            "connections",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        response["metadata"] = {
-            "params": params,
-            "method": SSO.list_connections_v2,
-        }
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        return self.construct_from_response(response)
-
-    def delete_connection(self, connection):
+    def delete_connection(self, connection_id: str) -> SyncOrAsync[None]:
         """Deletes a single Connection
 
         Args:
             connection (str): Connection unique identifier
+
+        Returns:
+            None
         """
-        return self.request_helper.request(
-            "connections/{connection}".format(connection=connection),
+        ...
+
+
+class SSO(SSOModule):
+    _http_client: SyncHTTPClient
+
+    def __init__(
+        self, http_client: SyncHTTPClient, client_configuration: ClientConfiguration
+    ):
+        self._client_configuration = client_configuration
+        self._http_client = http_client
+
+    def get_profile(self, access_token: str) -> Profile:
+        response = self._http_client.request(
+            PROFILE_PATH,
+            method=REQUEST_METHOD_GET,
+            headers={**self._http_client.auth_header_from_token(access_token)},
+            exclude_default_auth_headers=True,
+        )
+
+        return Profile.model_validate(response)
+
+    def get_profile_and_token(self, code: str) -> ProfileAndToken:
+        json = {
+            "client_id": self._http_client.client_id,
+            "client_secret": self._http_client.api_key,
+            "code": code,
+            "grant_type": OAUTH_GRANT_TYPE,
+        }
+
+        response = self._http_client.request(
+            TOKEN_PATH, method=REQUEST_METHOD_POST, json=json
+        )
+
+        return ProfileAndToken.model_validate(response)
+
+    def get_connection(self, connection_id: str) -> ConnectionWithDomains:
+        response = self._http_client.request(
+            f"connections/{connection_id}",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return ConnectionWithDomains.model_validate(response)
+
+    def list_connections(
+        self,
+        *,
+        connection_type: Optional[ConnectionType] = None,
+        domain: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> ConnectionsListResource:
+        params: ConnectionsListFilters = {
+            "connection_type": connection_type,
+            "domain": domain,
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = self._http_client.request(
+            "connections",
+            method=REQUEST_METHOD_GET,
+            params=params,
+        )
+
+        return WorkOSListResource[
+            ConnectionWithDomains, ConnectionsListFilters, ListMetadata
+        ](
+            list_method=self.list_connections,
+            list_args=params,
+            **ListPage[ConnectionWithDomains](**response).model_dump(),
+        )
+
+    def delete_connection(self, connection_id: str) -> None:
+        self._http_client.request(
+            f"connections/{connection_id}", method=REQUEST_METHOD_DELETE
+        )
+
+
+class AsyncSSO(SSOModule):
+    _http_client: AsyncHTTPClient
+
+    def __init__(
+        self, http_client: AsyncHTTPClient, client_configuration: ClientConfiguration
+    ):
+        self._client_configuration = client_configuration
+        self._http_client = http_client
+
+    async def get_profile(self, access_token: str) -> Profile:
+        response = await self._http_client.request(
+            PROFILE_PATH,
+            method=REQUEST_METHOD_GET,
+            headers={**self._http_client.auth_header_from_token(access_token)},
+            exclude_default_auth_headers=True,
+        )
+
+        return Profile.model_validate(response)
+
+    async def get_profile_and_token(self, code: str) -> ProfileAndToken:
+        json = {
+            "client_id": self._http_client.client_id,
+            "client_secret": self._http_client.api_key,
+            "code": code,
+            "grant_type": OAUTH_GRANT_TYPE,
+        }
+
+        response = await self._http_client.request(
+            TOKEN_PATH, method=REQUEST_METHOD_POST, json=json
+        )
+
+        return ProfileAndToken.model_validate(response)
+
+    async def get_connection(self, connection_id: str) -> ConnectionWithDomains:
+        response = await self._http_client.request(
+            f"connections/{connection_id}",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return ConnectionWithDomains.model_validate(response)
+
+    async def list_connections(
+        self,
+        *,
+        connection_type: Optional[ConnectionType] = None,
+        domain: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> ConnectionsListResource:
+        params: ConnectionsListFilters = {
+            "connection_type": connection_type,
+            "domain": domain,
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            "connections", method=REQUEST_METHOD_GET, params=params
+        )
+
+        return WorkOSListResource[
+            ConnectionWithDomains, ConnectionsListFilters, ListMetadata
+        ](
+            list_method=self.list_connections,
+            list_args=params,
+            **ListPage[ConnectionWithDomains](**response).model_dump(),
+        )
+
+    async def delete_connection(self, connection_id: str) -> None:
+        await self._http_client.request(
+            f"connections/{connection_id}",
             method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
         )

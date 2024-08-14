@@ -4,8 +4,9 @@ import pytest
 
 class TestMfa(object):
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.mfa = Mfa()
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
+        self.mfa = Mfa(http_client=self.http_client)
 
     @pytest.fixture
     def mock_enroll_factor_no_type(self):
@@ -44,6 +45,7 @@ class TestMfa(object):
             "updated_at": "2022-02-15T15:14:19.392Z",
             "type": "sms",
             "sms": {"phone_number": "+19204703484"},
+            "user_id": None,
         }
 
     @pytest.fixture
@@ -55,10 +57,28 @@ class TestMfa(object):
             "updated_at": "2022-02-15T15:14:19.392Z",
             "type": "totp",
             "totp": {
+                "issuer": "FooCorp",
+                "user": "test@example.com",
                 "qr_code": "data:image/png;base64,{base64EncodedPng}",
                 "secret": "NAGCCFS3EYRB422HNAKAKY3XDUORMSRF",
                 "uri": "otpauth://totp/FooCorp:alan.turing@foo-corp.com?secret=NAGCCFS3EYRB422HNAKAKY3XDUORMSRF&issuer=FooCorp",
             },
+            "user_id": None,
+        }
+
+    @pytest.fixture
+    def mock_get_factor_response_totp(self):
+        return {
+            "object": "authentication_factor",
+            "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+            "created_at": "2022-02-15T15:14:19.392Z",
+            "updated_at": "2022-02-15T15:14:19.392Z",
+            "type": "totp",
+            "totp": {
+                "issuer": "FooCorp",
+                "user": "test@example.com",
+            },
+            "user_id": None,
         }
 
     @pytest.fixture
@@ -70,6 +90,7 @@ class TestMfa(object):
             "updated_at": "2022-02-15T15:26:53.274Z",
             "expires_at": "2022-02-15T15:36:53.279Z",
             "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+            "code": None,
         }
 
     @pytest.fixture
@@ -82,21 +103,10 @@ class TestMfa(object):
                 "updated_at": "2022-02-15T15:26:53.274Z",
                 "expires_at": "2022-02-15T15:36:53.279Z",
                 "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+                "code": None,
             },
-            "valid": "true",
+            "valid": True,
         }
-
-    def test_enroll_factor_no_type(self, mock_enroll_factor_no_type):
-        with pytest.raises(ValueError) as err:
-            self.mfa.enroll_factor(type=mock_enroll_factor_no_type)
-        assert "Incomplete arguments. Need to specify a type of factor" in str(
-            err.value
-        )
-
-    def test_enroll_factor_incorrect_type(self, mock_enroll_factor_incorrect_type):
-        with pytest.raises(ValueError) as err:
-            self.mfa.enroll_factor(type=mock_enroll_factor_incorrect_type)
-        assert "Type parameter must be either 'sms' or 'totp'" in str(err.value)
 
     def test_enroll_factor_totp_no_issuer(self, mock_enroll_factor_totp_payload):
         with pytest.raises(ValueError) as err:
@@ -133,122 +143,67 @@ class TestMfa(object):
         )
 
     def test_enroll_factor_sms_success(
-        self, mock_enroll_factor_response_sms, mock_request_method
+        self, mock_enroll_factor_response_sms, mock_http_client_with_response
     ):
-        mock_request_method("post", mock_enroll_factor_response_sms, 200)
-        enroll_factor = self.mfa.enroll_factor("sms", None, None, 9204448888)
-        assert enroll_factor == mock_enroll_factor_response_sms
+        mock_http_client_with_response(
+            self.http_client, mock_enroll_factor_response_sms, 200
+        )
+        enroll_factor = self.mfa.enroll_factor(type="sms", phone_number="9204448888")
+        assert enroll_factor.dict() == mock_enroll_factor_response_sms
 
     def test_enroll_factor_totp_success(
-        self, mock_enroll_factor_response_totp, mock_request_method
+        self, mock_enroll_factor_response_totp, mock_http_client_with_response
     ):
-        mock_request_method("post", mock_enroll_factor_response_totp, 200)
-        enroll_factor = self.mfa.enroll_factor(
-            "totp", "testytest", "berniesanders", None
+        mock_http_client_with_response(
+            self.http_client, mock_enroll_factor_response_totp, 200
         )
-        assert enroll_factor == mock_enroll_factor_response_totp
-
-    def test_get_factor_no_id(self):
-        with pytest.raises(ValueError) as err:
-            self.mfa.delete_factor(authentication_factor_id=None)
-        assert "Incomplete arguments. Need to specify a factor ID." in str(err.value)
+        enroll_factor = self.mfa.enroll_factor(
+            type="totp", totp_issuer="testissuer", totp_user="testuser"
+        )
+        assert enroll_factor.dict() == mock_enroll_factor_response_totp
 
     def test_get_factor_totp_success(
-        self, mock_enroll_factor_response_totp, mock_request_method
+        self, mock_get_factor_response_totp, mock_http_client_with_response
     ):
-        mock_request_method("get", mock_enroll_factor_response_totp, 200)
-        response = self.mfa.get_factor(mock_enroll_factor_response_totp["id"])
-        assert response == mock_enroll_factor_response_totp
+        mock_http_client_with_response(
+            self.http_client, mock_get_factor_response_totp, 200
+        )
+        response = self.mfa.get_factor(mock_get_factor_response_totp["id"])
+        assert response.dict() == mock_get_factor_response_totp
 
     def test_get_factor_sms_success(
-        self, mock_enroll_factor_response_sms, mock_request_method
+        self, mock_enroll_factor_response_sms, mock_http_client_with_response
     ):
-        mock_request_method("get", mock_enroll_factor_response_sms, 200)
+        mock_http_client_with_response(
+            self.http_client, mock_enroll_factor_response_sms, 200
+        )
         response = self.mfa.get_factor(mock_enroll_factor_response_sms["id"])
-        assert response == mock_enroll_factor_response_sms
+        assert response.dict() == mock_enroll_factor_response_sms
 
-    def test_delete_factor_no_id(self):
-        with pytest.raises(ValueError) as err:
-            self.mfa.delete_factor(authentication_factor_id=None)
-        assert "Incomplete arguments. Need to specify a factor ID." in str(err.value)
-
-    def test_delete_factor_success(self, mock_request_method):
-        mock_request_method("delete", None, 200)
+    def test_delete_factor_success(self, mock_http_client_with_response):
+        mock_http_client_with_response(self.http_client, None, 200)
         response = self.mfa.delete_factor("auth_factor_01FZ4TS14D1PHFNZ9GF6YD8M1F")
         assert response == None
 
-    def test_challenge_factor_no_id(self, mock_challenge_factor_payload):
-        with pytest.raises(ValueError) as err:
-            self.mfa.challenge_factor(
-                authentication_factor_id=None,
-                sms_template=mock_challenge_factor_payload[1],
-            )
-        assert (
-            "Incomplete arguments: 'authentication_factor_id' is a required parameter"
-            in str(err.value)
-        )
-
     def test_challenge_success(
-        self, mock_challenge_factor_response, mock_request_method
+        self, mock_challenge_factor_response, mock_http_client_with_response
     ):
-        mock_request_method("post", mock_challenge_factor_response, 200)
+        mock_http_client_with_response(
+            self.http_client, mock_challenge_factor_response, 200
+        )
         challenge_factor = self.mfa.challenge_factor(
-            "auth_factor_01FXNWW32G7F3MG8MYK5D1HJJM"
+            authentication_factor_id="auth_factor_01FXNWW32G7F3MG8MYK5D1HJJM"
         )
-        assert challenge_factor == mock_challenge_factor_response
+        assert challenge_factor.dict() == mock_challenge_factor_response
 
-    def test_verify_factor_no_id(self, mock_verify_challenge_payload):
-        with pytest.raises(ValueError) as err:
-            self.mfa.verify_factor(
-                authentication_challenge_id=None, code=mock_verify_challenge_payload[1]
-            )
-        assert (
-            "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
-            in str(err.value)
-        )
-
-    def test_verify_factor_no_code(self, mock_verify_challenge_payload):
-        with pytest.raises(ValueError) as err:
-            self.mfa.verify_factor(
-                authentication_challenge_id=mock_verify_challenge_payload[0], code=None
-            )
-        assert (
-            "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
-            in str(err.value)
-        )
-
-    def test_verify_factor_success(
-        self, mock_verify_challenge_response, mock_request_method
+    def test_verify_success(
+        self, mock_verify_challenge_response, mock_http_client_with_response
     ):
-        mock_request_method("post", mock_verify_challenge_response, 200)
-        verify_factor = self.mfa.verify_factor(
-            "auth_challenge_01FXNXH8Y2K3YVWJ10P139A6DT", "093647"
+        mock_http_client_with_response(
+            self.http_client, mock_verify_challenge_response, 200
         )
-        assert verify_factor == mock_verify_challenge_response
-
-    def test_verify_challenge_no_id(self, mock_verify_challenge_payload):
-        with pytest.raises(ValueError) as err:
-            self.mfa.verify_challenge(
-                authentication_challenge_id=None, code=mock_verify_challenge_payload[1]
-            )
-            assert (
-                "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
-                in str(err.value)
-            )
-
-    def test_verify_challenge_no_code(self, mock_verify_challenge_payload):
-        with pytest.raises(ValueError) as err:
-            self.mfa.verify_challenge(
-                authentication_challenge_id=mock_verify_challenge_payload[0], code=None
-            )
-            assert (
-                "Incomplete arguments: 'authentication_challenge_id' and 'code' are required parameters"
-                in str(err.value)
-            )
-
-    def test_verify_success(self, mock_verify_challenge_response, mock_request_method):
-        mock_request_method("post", mock_verify_challenge_response, 200)
         verify_challenge = self.mfa.verify_challenge(
-            "auth_challenge_01FXNXH8Y2K3YVWJ10P139A6DT", "093647"
+            authentication_challenge_id="auth_challenge_01FXNXH8Y2K3YVWJ10P139A6DT",
+            code="093647",
         )
-        assert verify_challenge == mock_verify_challenge_response
+        assert verify_challenge.dict() == mock_verify_challenge_response

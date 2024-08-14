@@ -1,27 +1,49 @@
 from datetime import datetime
-import json
-from requests import Response
 
 import pytest
 
-import workos
-from workos.audit_logs import AuditLogs
+from workos.audit_logs import AuditLogEvent, AuditLogs
 from workos.exceptions import AuthenticationException, BadRequestException
-from workos.resources.audit_logs_export import WorkOSAuditLogExport
 
 
 class _TestSetup:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key):
-        self.audit_logs = AuditLogs()
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
+        self.audit_logs = AuditLogs(http_client=self.http_client)
+
+    @pytest.fixture
+    def mock_audit_log_event(self) -> AuditLogEvent:
+        return {
+            "action": "document.updated",
+            "occurred_at": datetime.now().isoformat(),
+            "actor": {
+                "id": "user_1",
+                "name": "Jon Smith",
+                "type": "user",
+            },
+            "targets": [
+                {
+                    "id": "document_39127",
+                    "type": "document",
+                },
+            ],
+            "context": {
+                "location": "192.0.0.8",
+                "user_agent": "Firefox",
+            },
+            "metadata": {
+                "successful": True,
+            },
+        }
 
 
 class TestAuditLogs:
     class TestCreateEvent(_TestSetup):
-        def test_succeeds(self, capture_and_mock_request):
+        def test_succeeds(self, capture_and_mock_http_client_request):
             organization_id = "org_123456789"
 
-            event = {
+            event: AuditLogEvent = {
                 "action": "document.updated",
                 "occurred_at": datetime.now().isoformat(),
                 "actor": {
@@ -44,10 +66,16 @@ class TestAuditLogs:
                 },
             }
 
-            _, request_kwargs = capture_and_mock_request("post", {"success": True}, 200)
+            request_kwargs = capture_and_mock_http_client_request(
+                http_client=self.http_client,
+                response_dict={"success": True},
+                status_code=200,
+            )
 
             response = self.audit_logs.create_event(
-                organization_id, event, "test_123456"
+                organization_id=organization_id,
+                event=event,
+                idempotency_key="test_123456",
             )
 
             assert request_kwargs["json"] == {
@@ -56,66 +84,54 @@ class TestAuditLogs:
             }
             assert response is None
 
-        def test_sends_idempotency_key(self, capture_and_mock_request):
+        def test_sends_idempotency_key(
+            self, mock_audit_log_event, capture_and_mock_http_client_request
+        ):
             idempotency_key = "test_123456789"
 
             organization_id = "org_123456789"
 
-            event = {
-                "action": "document.updated",
-                "occurred_at": datetime.now().isoformat(),
-                "actor": {
-                    "id": "user_1",
-                    "name": "Jon Smith",
-                    "type": "user",
-                },
-                "targets": [
-                    {
-                        "id": "document_39127",
-                        "type": "document",
-                    },
-                ],
-                "context": {
-                    "location": "192.0.0.8",
-                    "user_agent": "Firefox",
-                },
-                "metadata": {
-                    "successful": True,
-                },
-            }
-
-            _, request_kwargs = capture_and_mock_request("post", {"success": True}, 200)
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, {"success": True}, 200
+            )
 
             response = self.audit_logs.create_event(
-                organization_id, event, idempotency_key
+                organization_id=organization_id,
+                event=mock_audit_log_event,
+                idempotency_key=idempotency_key,
             )
 
             assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
             assert response is None
 
-        def test_throws_unauthorized_excpetion(self, mock_request_method):
+        def test_throws_unauthorized_exception(
+            self, mock_audit_log_event, mock_http_client_with_response
+        ):
             organization_id = "org_123456789"
-            event = {"any_event": "event"}
 
-            mock_request_method(
-                "post",
+            mock_http_client_with_response(
+                self.http_client,
                 {"message": "Unauthorized"},
                 401,
                 {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.create_event(organization_id, event)
+                self.audit_logs.create_event(
+                    organization_id=organization_id, event=mock_audit_log_event
+                )
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )
 
-        def test_throws_badrequest_excpetion(self, mock_request_method):
+        def test_throws_badrequest_excpetion(
+            self, mock_audit_log_event, mock_http_client_with_response
+        ):
             organization_id = "org_123456789"
             event = {"any_event": "any_event"}
 
-            mock_request_method(
-                "post",
+            mock_http_client_with_response(
+                self.http_client,
                 {
                     "message": "Audit Log could not be processed due to missing or incorrect data.",
                     "code": "invalid_audit_log",
@@ -125,7 +141,9 @@ class TestAuditLogs:
             )
 
             with pytest.raises(BadRequestException) as excinfo:
-                self.audit_logs.create_event(organization_id, event)
+                self.audit_logs.create_event(
+                    organization_id=organization_id, event=mock_audit_log_event
+                )
                 assert excinfo.code == "invalid_audit_log"
                 assert excinfo.errors == ["error in a field"]
                 assert (
@@ -134,39 +152,37 @@ class TestAuditLogs:
                 )
 
     class TestCreateExport(_TestSetup):
-        def test_succeeds(self, mock_request_method):
+        def test_succeeds(self, mock_http_client_with_response):
             organization_id = "org_123456789"
-            range_start = datetime.now().isoformat
-            range_end = datetime.now().isoformat
+            now = datetime.now().isoformat()
+            range_start = now
+            range_end = now
 
             expected_payload = {
                 "object": "audit_log_export",
                 "id": "audit_log_export_1234",
                 "state": "pending",
                 "url": None,
-                "created_at": datetime.now().isoformat,
-                "updated_at": datetime.now().isoformat,
+                "created_at": now,
+                "updated_at": now,
             }
 
-            mock_request_method("post", expected_payload, 201)
+            mock_http_client_with_response(self.http_client, expected_payload, 201)
 
             response = self.audit_logs.create_export(
-                organization_id, range_start, range_end
+                organization_id=organization_id,
+                range_start=range_start,
+                range_end=range_end,
             )
 
-            assert (
-                response.to_dict()
-                == WorkOSAuditLogExport.construct_from_response(
-                    expected_payload
-                ).to_dict()
-            )
+            assert response.dict() == expected_payload
 
-        def test_succeeds_with_additional_filters(self, mock_request_method):
+        def test_succeeds_with_additional_filters(self, mock_http_client_with_response):
+            now = datetime.now().isoformat()
             organization_id = "org_123456789"
-            range_start = datetime.now().isoformat
-            range_end = datetime.now().isoformat
+            range_start = now
+            range_end = now
             actions = ["foo", "bar"]
-            actors = ["Jon", "Smith"]
             actor_names = ["Jon", "Smith"]
             actor_ids = ["user_foo", "user_bar"]
             targets = ["user", "team"]
@@ -176,16 +192,15 @@ class TestAuditLogs:
                 "id": "audit_log_export_1234",
                 "state": "pending",
                 "url": None,
-                "created_at": datetime.now().isoformat,
-                "updated_at": datetime.now().isoformat,
+                "created_at": now,
+                "updated_at": now,
             }
 
-            mock_request_method("post", expected_payload, 201)
+            mock_http_client_with_response(self.http_client, expected_payload, 201)
 
             response = self.audit_logs.create_export(
                 actions=actions,
-                actors=actors,
-                organization=organization_id,
+                organization_id=organization_id,
                 range_end=range_end,
                 range_start=range_start,
                 targets=targets,
@@ -193,58 +208,53 @@ class TestAuditLogs:
                 actor_ids=actor_ids,
             )
 
-            assert (
-                response.to_dict()
-                == WorkOSAuditLogExport.construct_from_response(
-                    expected_payload
-                ).to_dict()
-            )
+            assert response.dict() == expected_payload
 
-        def test_throws_unauthorized_excpetion(self, mock_request_method):
+        def test_throws_unauthorized_excpetion(self, mock_http_client_with_response):
             organization_id = "org_123456789"
-            range_start = datetime.now().isoformat
-            range_end = datetime.now().isoformat
+            range_start = datetime.now().isoformat()
+            range_end = datetime.now().isoformat()
 
-            mock_request_method(
-                "post",
+            mock_http_client_with_response(
+                self.http_client,
                 {"message": "Unauthorized"},
                 401,
                 {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.create_export(organization_id, range_start, range_end)
+                self.audit_logs.create_export(
+                    organization_id=organization_id,
+                    range_start=range_start,
+                    range_end=range_end,
+                )
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )
 
     class TestGetExport(_TestSetup):
-        def test_succeeds(self, mock_request_method):
+        def test_succeeds(self, mock_http_client_with_response):
+            now = datetime.now().isoformat()
             expected_payload = {
                 "object": "audit_log_export",
                 "id": "audit_log_export_1234",
                 "state": "pending",
                 "url": None,
-                "created_at": datetime.now().isoformat,
-                "updated_at": datetime.now().isoformat,
+                "created_at": now,
+                "updated_at": now,
             }
 
-            mock_request_method("get", expected_payload, 200)
+            mock_http_client_with_response(self.http_client, expected_payload, 200)
 
             response = self.audit_logs.get_export(
                 expected_payload["id"],
             )
 
-            assert (
-                response.to_dict()
-                == WorkOSAuditLogExport.construct_from_response(
-                    expected_payload
-                ).to_dict()
-            )
+            assert response.dict() == expected_payload
 
-        def test_throws_unauthorized_excpetion(self, mock_request_method):
-            mock_request_method(
-                "get",
+        def test_throws_unauthorized_excpetion(self, mock_http_client_with_response):
+            mock_http_client_with_response(
+                self.http_client,
                 {"message": "Unauthorized"},
                 401,
                 {"X-Request-ID": "a-request-id"},

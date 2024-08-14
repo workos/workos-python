@@ -1,540 +1,435 @@
-from warnings import warn
-import workos
-from workos.utils.pagination_order import Order
-from workos.utils.request import (
-    RequestHelper,
+from typing import Optional, Protocol
+
+from workos.types.directory_sync.list_filters import (
+    DirectoryGroupListFilters,
+    DirectoryListFilters,
+    DirectoryUserListFilters,
+)
+from workos.typing.sync_or_async import SyncOrAsync
+from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
+from workos.utils.pagination_order import PaginationOrder
+from workos.utils.request_helper import (
+    DEFAULT_LIST_RESPONSE_LIMIT,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
 )
-
-from workos.utils.validation import DIRECTORY_SYNC_MODULE, validate_settings
-from workos.resources.directory_sync import (
-    WorkOSDirectoryGroup,
-    WorkOSDirectory,
-    WorkOSDirectoryUser,
+from workos.types.directory_sync import (
+    DirectoryGroup,
+    Directory,
+    DirectoryUserWithGroups,
 )
-from workos.resources.list import WorkOSListResource
+from workos.types.list_resource import ListMetadata, ListPage, WorkOSListResource
+
+DirectoryUsersListResource = WorkOSListResource[
+    DirectoryUserWithGroups, DirectoryUserListFilters, ListMetadata
+]
+
+DirectoryGroupsListResource = WorkOSListResource[
+    DirectoryGroup, DirectoryGroupListFilters, ListMetadata
+]
+
+DirectoriesListResource = WorkOSListResource[
+    Directory, DirectoryListFilters, ListMetadata
+]
 
 
-RESPONSE_LIMIT = 10
-
-
-class DirectorySync(WorkOSListResource):
+class DirectorySyncModule(Protocol):
     """Offers methods through the WorkOS Directory Sync service."""
-
-    @validate_settings(DIRECTORY_SYNC_MODULE)
-    def __init__(self):
-        pass
-
-    @property
-    def request_helper(self):
-        if not getattr(self, "_request_helper", None):
-            self._request_helper = RequestHelper()
-        return self._request_helper
 
     def list_users(
         self,
-        directory=None,
-        group=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
-    ):
+        *,
+        directory_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[DirectoryUsersListResource]:
         """Gets a list of provisioned Users for a Directory.
 
-        Note, either 'directory' or 'group' must be provided.
+        Note, either 'directory_id' or 'group_id' must be provided.
 
-        Args:
-            directory (str): Directory unique identifier.
-            group (str): Directory Group unique identifier.
-            limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided Directory ID.
-            after (str): Pagination cursor to receive records after a provided Directory ID.
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Directory Users response from WorkOS.
-        """
-        warn(
-            "The 'list_users' method is deprecated. Please use 'list_users_v2' instead.",
-            DeprecationWarning,
-        )
-
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order or "desc",
-        }
-
-        if group is not None:
-            params["group"] = group
-        if directory is not None:
-            params["directory"] = directory
-
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
-
-        response = self.request_helper.request(
-            "directory_users",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        response["metadata"] = {
-            "params": params,
-            "method": DirectorySync.list_users,
-        }
-
-        return response
-
-    def list_users_v2(
-        self,
-        directory=None,
-        group=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
-    ):
-        """Gets a list of provisioned Users for a Directory.
-
-        Note, either 'directory' or 'group' must be provided.
-
-        Args:
-            directory (str): Directory unique identifier.
-            group (str): Directory Group unique identifier.
-            limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided Directory ID.
-            after (str): Pagination cursor to receive records after a provided Directory ID.
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
+        Kwargs:
+            directory_id (str): Directory unique identifier. (Optional)
+            group_id (str): Directory Group unique identifier. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
 
         Returns:
-            dict: Directory Users response from WorkOS.
+            DirectoryUsersListResource: Directory Users response from WorkOS.
         """
-
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order or "desc",
-        }
-
-        if group is not None:
-            params["group"] = group
-        if directory is not None:
-            params["directory"] = directory
-
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
-
-        response = self.request_helper.request(
-            "directory_users",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        response["metadata"] = {
-            "params": params,
-            "method": DirectorySync.list_users_v2,
-        }
-
-        return self.construct_from_response(response)
+        ...
 
     def list_groups(
         self,
-        directory=None,
-        user=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
-    ):
+        *,
+        directory_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[DirectoryGroupsListResource]:
         """Gets a list of provisioned Groups for a Directory .
 
-        Note, either 'directory' or 'user' must be provided.
+        Note, either 'directory_id' or 'user_id' must be provided.
 
-        Args:
-            directory (str): Directory unique identifier.
-            user (str): Directory User unique identifier.
-            limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided Directory ID.
-            after (str): Pagination cursor to receive records after a provided Directory ID.
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Directory Groups response from WorkOS.
-        """
-        warn(
-            "The 'list_groups' method is deprecated. Please use 'list_groups_v2' instead.",
-            DeprecationWarning,
-        )
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order or "desc",
-        }
-        if user is not None:
-            params["user"] = user
-        if directory is not None:
-            params["directory"] = directory
-
-            if order is not None:
-                if isinstance(order, Order):
-                    params["order"] = str(order.value)
-                elif order == "asc" or order == "desc":
-                    params["order"] = order
-                else:
-                    raise ValueError("Parameter order must be of enum type Order")
-
-        response = self.request_helper.request(
-            "directory_groups",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        response["metadata"] = {
-            "params": params,
-            "method": DirectorySync.list_groups,
-        }
-
-        return response
-
-    def list_groups_v2(
-        self,
-        directory=None,
-        user=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
-    ):
-        """Gets a list of provisioned Groups for a Directory .
-
-        Note, either 'directory' or 'user' must be provided.
-
-        Args:
-            directory (str): Directory unique identifier.
-            user (str): Directory User unique identifier.
-            limit (int): Maximum number of records to return.
-            before (str): Pagination cursor to receive records before a provided Directory ID.
-            after (str): Pagination cursor to receive records after a provided Directory ID.
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
+        Kwargs:
+            directory_id (str): Directory unique identifier. (Optional)
+            user_id (str): Directory User unique identifier. (Optional)
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
 
         Returns:
-            dict: Directory Groups response from WorkOS.
+            DirectoryGroupsListResource: Directory Groups response from WorkOS.
         """
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order or "desc",
-        }
-        if user is not None:
-            params["user"] = user
-        if directory is not None:
-            params["directory"] = directory
-
-            if order is not None:
-                if isinstance(order, Order):
-                    params["order"] = str(order.value)
-                elif order == "asc" or order == "desc":
-                    params["order"] = order
-                else:
-                    raise ValueError("Parameter order must be of enum type Order")
-
-        response = self.request_helper.request(
-            "directory_groups",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        response["metadata"] = {
-            "params": params,
-            "method": DirectorySync.list_groups_v2,
-        }
-
-        return self.construct_from_response(response)
-
-    def get_user(self, user):
-        """Gets details for a single provisioned Directory User.
-
-        Args:
-            user (str): Directory User unique identifier.
-
-        Returns:
-            dict: Directory User response from WorkOS.
-        """
-        response = self.request_helper.request(
-            "directory_users/{user}".format(user=user),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
-
-        return WorkOSDirectoryUser.construct_from_response(response).to_dict()
-
-    def get_group(self, group):
-        """Gets details for a single provisioned Directory Group.
-
-        Args:
-            group (str): Directory Group unique identifier.
-
-        Returns:
-            dict: Directory Group response from WorkOS.
-        """
-        response = self.request_helper.request(
-            "directory_groups/{group}".format(group=group),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
-
-        return WorkOSDirectoryGroup.construct_from_response(response).to_dict()
-
-    def get_directory(self, directory):
-        """Gets details for a single Directory
-
-        Args:
-            directory (str): Directory unique identifier.
-
-        Returns:
-            dict: Directory response from WorkOS
-
-        """
-
-        response = self.request_helper.request(
-            "directories/{directory}".format(directory=directory),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
-
-        return WorkOSDirectory.construct_from_response(response).to_dict()
+        ...
 
     def list_directories(
         self,
-        domain=None,
-        search=None,
-        limit=None,
-        before=None,
-        after=None,
-        organization=None,
-        order=None,
-    ):
+        *,
+        search: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[DirectoriesListResource]:
         """Gets details for existing Directories.
 
-        Args:
-            domain (str): Domain of a Directory. (Optional)
-            organization: ID of an Organization (Optional)
+        Kwargs:
+            organization_id: ID of an Organization (Optional)
             search (str): Searchable text for a Directory. (Optional)
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
 
         Returns:
-            dict: Directories response from WorkOS.
+            DirectoriesListResource: Directories response from WorkOS.
         """
-        warn(
-            "The 'list_directories' method is deprecated. Please use 'list_directories_v2' instead.",
-            DeprecationWarning,
-        )
+        ...
 
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
-            "domain": domain,
-            "organization_id": organization,
-            "search": search,
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order or "desc",
-        }
-
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
-
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
-
-        response = self.request_helper.request(
-            "directories",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        response["metadata"] = {
-            "params": params,
-            "method": DirectorySync.list_directories,
-        }
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        return response
-
-    def list_directories_v2(
-        self,
-        domain=None,
-        search=None,
-        limit=None,
-        before=None,
-        after=None,
-        organization=None,
-        order=None,
-    ):
-        """Gets details for existing Directories.
+    def get_user(self, user_id: str) -> SyncOrAsync[DirectoryUserWithGroups]:
+        """Gets details for a single provisioned Directory User.
 
         Args:
-            domain (str): Domain of a Directory. (Optional)
-            organization: ID of an Organization (Optional)
-            search (str): Searchable text for a Directory. (Optional)
-            limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided Directory ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided Directory ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
+            user_id (str): Directory User unique identifier.
 
         Returns:
-            dict: Directories response from WorkOS.
+            DirectoryUserWithGroups: Directory User response from WorkOS.
         """
+        ...
 
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
+    def get_group(self, group_id: str) -> SyncOrAsync[DirectoryGroup]:
+        """Gets details for a single provisioned Directory Group.
 
-        params = {
-            "domain": domain,
-            "organization_id": organization,
-            "search": search,
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order or "desc",
-        }
+        Args:
+            group_id (str): Directory Group unique identifier.
 
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
+        Returns:
+            DirectoryGroup: Directory Group response from WorkOS.
+        """
+        ...
 
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
-
-        response = self.request_helper.request(
-            "directories",
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        response["metadata"] = {
-            "params": params,
-            "method": DirectorySync.list_directories_v2,
-        }
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        return self.construct_from_response(response)
-
-    def get_directory(self, directory):
+    def get_directory(self, directory_id: str) -> SyncOrAsync[Directory]:
         """Gets details for a single Directory
 
         Args:
-            directory (str): Directory unique identifier.
+            directory_id (str): Directory unique identifier.
 
         Returns:
-            dict: Directory response from WorkOS
-
+            Directory: Directory response from WorkOS
         """
+        ...
 
-        response = self.request_helper.request(
-            "directories/{directory}".format(directory=directory),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
-
-        return WorkOSDirectory.construct_from_response(response).to_dict()
-
-    def delete_directory(self, directory):
+    def delete_directory(self, directory_id: str) -> SyncOrAsync[None]:
         """Delete one existing Directory.
 
         Args:
-            directory (str): The ID of the directory to be deleted. (Required)
+            directory_id (str): Directory unique identifier.
 
         Returns:
-            dict: Directories response from WorkOS.
+            None
         """
-        return self.request_helper.request(
-            "directories/{directory}".format(directory=directory),
+        ...
+
+
+class DirectorySync(DirectorySyncModule):
+    _http_client: SyncHTTPClient
+
+    def __init__(self, http_client: SyncHTTPClient) -> None:
+        self._http_client = http_client
+
+    def list_users(
+        self,
+        *,
+        directory_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> DirectoryUsersListResource:
+
+        list_params: DirectoryUserListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        if group_id is not None:
+            list_params["group"] = group_id
+        if directory_id is not None:
+            list_params["directory"] = directory_id
+
+        response = self._http_client.request(
+            "directory_users",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource(
+            list_method=self.list_users,
+            list_args=list_params,
+            **ListPage[DirectoryUserWithGroups](**response).model_dump(),
+        )
+
+    def list_groups(
+        self,
+        *,
+        directory_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> DirectoryGroupsListResource:
+        list_params: DirectoryGroupListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        if user_id is not None:
+            list_params["user"] = user_id
+        if directory_id is not None:
+            list_params["directory"] = directory_id
+
+        response = self._http_client.request(
+            "directory_groups",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[
+            DirectoryGroup, DirectoryGroupListFilters, ListMetadata
+        ](
+            list_method=self.list_groups,
+            list_args=list_params,
+            **ListPage[DirectoryGroup](**response).model_dump(),
+        )
+
+    def get_user(self, user_id: str) -> DirectoryUserWithGroups:
+        response = self._http_client.request(
+            "directory_users/{user}".format(user=user_id),
+            method=REQUEST_METHOD_GET,
+        )
+
+        return DirectoryUserWithGroups.model_validate(response)
+
+    def get_group(self, group_id: str) -> DirectoryGroup:
+        response = self._http_client.request(
+            "directory_groups/{group}".format(group=group_id),
+            method=REQUEST_METHOD_GET,
+        )
+        return DirectoryGroup.model_validate(response)
+
+    def get_directory(self, directory_id: str) -> Directory:
+        response = self._http_client.request(
+            "directories/{directory}".format(directory=directory_id),
+            method=REQUEST_METHOD_GET,
+        )
+
+        return Directory.model_validate(response)
+
+    def list_directories(
+        self,
+        *,
+        search: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> DirectoriesListResource:
+        list_params: DirectoryListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+            "organization_id": organization_id,
+            "search": search,
+        }
+
+        response = self._http_client.request(
+            "directories",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+        return WorkOSListResource[Directory, DirectoryListFilters, ListMetadata](
+            list_method=self.list_directories,
+            list_args=list_params,
+            **ListPage[Directory](**response).model_dump(),
+        )
+
+    def delete_directory(self, directory_id: str) -> None:
+        self._http_client.request(
+            "directories/{directory}".format(directory=directory_id),
             method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
+        )
+
+
+class AsyncDirectorySync(DirectorySyncModule):
+    """Offers methods through the WorkOS Directory Sync service."""
+
+    _http_client: AsyncHTTPClient
+
+    def __init__(self, http_client: AsyncHTTPClient):
+        self._http_client = http_client
+
+    async def list_users(
+        self,
+        *,
+        directory_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> DirectoryUsersListResource:
+
+        list_params: DirectoryUserListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        if group_id is not None:
+            list_params["group"] = group_id
+        if directory_id is not None:
+            list_params["directory"] = directory_id
+
+        response = await self._http_client.request(
+            "directory_users",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource(
+            list_method=self.list_users,
+            list_args=list_params,
+            **ListPage[DirectoryUserWithGroups](**response).model_dump(),
+        )
+
+    async def list_groups(
+        self,
+        *,
+        directory_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> DirectoryGroupsListResource:
+        list_params: DirectoryGroupListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+        if user_id is not None:
+            list_params["user"] = user_id
+        if directory_id is not None:
+            list_params["directory"] = directory_id
+
+        response = await self._http_client.request(
+            "directory_groups",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[
+            DirectoryGroup, DirectoryGroupListFilters, ListMetadata
+        ](
+            list_method=self.list_groups,
+            list_args=list_params,
+            **ListPage[DirectoryGroup](**response).model_dump(),
+        )
+
+    async def get_user(self, user_id: str) -> DirectoryUserWithGroups:
+        response = await self._http_client.request(
+            "directory_users/{user}".format(user=user_id),
+            method=REQUEST_METHOD_GET,
+        )
+
+        return DirectoryUserWithGroups.model_validate(response)
+
+    async def get_group(self, group_id: str) -> DirectoryGroup:
+        response = await self._http_client.request(
+            "directory_groups/{group}".format(group=group_id),
+            method=REQUEST_METHOD_GET,
+        )
+        return DirectoryGroup.model_validate(response)
+
+    async def get_directory(self, directory_id: str) -> Directory:
+        response = await self._http_client.request(
+            "directories/{directory}".format(directory=directory_id),
+            method=REQUEST_METHOD_GET,
+        )
+
+        return Directory.model_validate(response)
+
+    async def list_directories(
+        self,
+        *,
+        search: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> DirectoriesListResource:
+        list_params: DirectoryListFilters = {
+            "organization_id": organization_id,
+            "search": search,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            "directories",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+        return WorkOSListResource[Directory, DirectoryListFilters, ListMetadata](
+            list_method=self.list_directories,
+            list_args=list_params,
+            **ListPage[Directory](**response).model_dump(),
+        )
+
+    async def delete_directory(self, directory_id: str) -> None:
+        await self._http_client.request(
+            "directories/{directory}".format(directory=directory_id),
+            method=REQUEST_METHOD_DELETE,
         )

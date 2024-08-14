@@ -1,16 +1,12 @@
-import json
-from requests import Response
-
 import pytest
-
-import workos
 from workos.passwordless import Passwordless
 
 
-class TestPasswordless(object):
+class TestPasswordless:
     @pytest.fixture(autouse=True)
-    def setup(self, set_api_key_and_client_id):
-        self.passwordless = Passwordless()
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
+        self.passwordless = Passwordless(http_client=self.http_client)
 
     @pytest.fixture
     def mock_passwordless_session(self):
@@ -23,24 +19,24 @@ class TestPasswordless(object):
         }
 
     def test_create_session_succeeds(
-        self, mock_passwordless_session, mock_request_method
+        self, mock_passwordless_session, mock_http_client_with_response
     ):
-        mock_request_method("post", mock_passwordless_session, 201)
+        mock_http_client_with_response(self.http_client, mock_passwordless_session, 201)
 
         session_options = {
             "email": "demo@workos-okta.com",
             "type": "MagicLink",
             "expires_in": 300,
         }
-        passwordless_session = self.passwordless.create_session(session_options)
+        passwordless_session = self.passwordless.create_session(**session_options)
 
-        assert passwordless_session == mock_passwordless_session
+        assert passwordless_session.dict() == mock_passwordless_session
 
-    def test_get_send_session_succeeds(self, mock_request_method):
+    def test_get_send_session_succeeds(self, mock_http_client_with_response):
         response = {
             "success": True,
         }
-        mock_request_method("post", response, 200)
+        mock_http_client_with_response(self.http_client, response, 200)
 
         response = self.passwordless.send_session(
             "passwordless_session_01EHDAK2BFGWCSZXP9HGZ3VK8C"

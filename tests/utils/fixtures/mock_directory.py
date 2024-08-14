@@ -1,26 +1,20 @@
 import datetime
-from workos.resources.base import WorkOSBaseResource
+
+from workos.types.directory_sync import Directory
 
 
-class MockDirectory(WorkOSBaseResource):
+class MockDirectory(Directory):
     def __init__(self, id):
-        self.object = "directory"
-        self.id = id
-        self.domain = "crashlanding.com"
-        self.name = "Ri Jeong Hyeok"
-        self.state = None
-        self.type = "gsuite_directory"
-        self.created_at = datetime.datetime.now()
-        self.updated_at = datetime.datetime.now()
-
-    OBJECT_FIELDS = [
-        "object",
-        "id",
-        "domain",
-        "name",
-        "organization_id",
-        "state",
-        "type",
-        "created_at",
-        "updated_at",
-    ]
+        now = datetime.datetime.now().isoformat()
+        super().__init__(
+            object="directory",
+            id=id,
+            organization_id="organization_id",
+            external_key="ext_123",
+            domain="somefakedomain.com",
+            name="Some fake name",
+            state="active",
+            type="gsuite directory",
+            created_at=now,
+            updated_at=now,
+        )

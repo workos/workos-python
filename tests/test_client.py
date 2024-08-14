@@ -1,126 +1,120 @@
+from http import client
+import os
 import pytest
-
-from workos import client
-from workos.exceptions import ConfigurationException
+from workos import AsyncWorkOSClient, WorkOSClient
 
 
-class TestClient(object):
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        client._audit_logs = None
-        client._directory_sync = None
-        client._organizations = None
-        client._passwordless = None
-        client._portal = None
-        client._sso = None
-        client._user_management = None
-
-    def test_initialize_sso(self, set_api_key_and_client_id):
-        assert bool(client.sso)
-
-    def test_initialize_audit_logs(self, set_api_key):
-        assert bool(client.audit_logs)
-
-    def test_initialize_directory_sync(self, set_api_key):
-        assert bool(client.directory_sync)
-
-    def test_initialize_organizations(self, set_api_key):
-        assert bool(client.organizations)
-
-    def test_initialize_passwordless(self, set_api_key):
-        assert bool(client.passwordless)
-
-    def test_initialize_portal(self, set_api_key):
-        assert bool(client.portal)
-
-    def test_initialize_user_management(self, set_api_key, set_client_id):
-        assert bool(client.user_management)
-
-    def test_initialize_sso_missing_api_key(self, set_client_id):
-        with pytest.raises(ConfigurationException) as ex:
-            client.sso
-
-        message = str(ex)
-
-        assert "api_key" in message
-        assert "client_id" not in message
-
-    def test_initialize_sso_missing_client_id(self, set_api_key):
-        with pytest.raises(ConfigurationException) as ex:
-            client.sso
-
-        message = str(ex)
-
-        assert "client_id" in message
-        assert "api_key" not in message
-
-    def test_initialize_sso_missing_api_key_and_client_id(self):
-        with pytest.raises(ConfigurationException) as ex:
-            client.sso
-
-        message = str(ex)
-
-        assert all(
-            setting in message
-            for setting in (
-                "api_key",
-                "client_id",
-            )
+class TestClient:
+    @pytest.fixture
+    def default_client(self):
+        return WorkOSClient(
+            api_key="sk_test", client_id="client_b27needthisforssotemxo"
         )
 
-    def test_initialize_directory_sync_missing_api_key(self):
-        with pytest.raises(ConfigurationException) as ex:
-            client.directory_sync
+    def test_client_without_api_key(self):
+        with pytest.raises(ValueError) as error:
+            WorkOSClient(client_id="client_b27needthisforssotemxo")
 
-        message = str(ex)
+        assert (
+            "WorkOS API key must be provided when instantiating the client or via the WORKOS_API_KEY environment variable."
+            == str(error.value)
+        )
 
-        assert "api_key" in message
+    def test_client_without_client_id(self):
+        with pytest.raises(ValueError) as error:
+            WorkOSClient(api_key="sk_test")
 
-    def test_initialize_organizations_missing_api_key(self):
-        with pytest.raises(ConfigurationException) as ex:
-            client.organizations
+        assert (
+            "WorkOS client ID must be provided when instantiating the client or via the WORKOS_CLIENT_ID environment variable."
+            == str(error.value)
+        )
 
-        message = str(ex)
+    def test_client_with_api_key_and_client_id_environment_variables(self):
+        os.environ["WORKOS_API_KEY"] = "sk_test"
+        os.environ["WORKOS_CLIENT_ID"] = "client_b27needthisforssotemxo"
 
-        assert "api_key" in message
+        assert bool(WorkOSClient())
 
-    def test_initialize_passwordless_missing_api_key(self):
-        with pytest.raises(ConfigurationException) as ex:
-            client.passwordless
+        os.environ.pop("WORKOS_API_KEY")
+        os.environ.pop("WORKOS_CLIENT_ID")
 
-        message = str(ex)
+    def test_initialize_sso(self, default_client):
+        assert bool(default_client.sso)
 
-        assert "api_key" in message
+    def test_initialize_audit_logs(self, default_client):
+        assert bool(default_client.audit_logs)
 
-    def test_initialize_portal_missing_api_key(self):
-        with pytest.raises(ConfigurationException) as ex:
-            client.portal
+    def test_initialize_directory_sync(self, default_client):
+        assert bool(default_client.directory_sync)
 
-        message = str(ex)
+    def test_initialize_events(self, default_client):
+        assert bool(default_client.events)
 
-        assert "api_key" in message
+    def test_initialize_mfa(self, default_client):
+        assert bool(default_client.mfa)
 
-    def test_initialize_user_management_missing_client_id(self, set_api_key):
-        with pytest.raises(ConfigurationException) as ex:
-            client.user_management
+    def test_initialize_organizations(self, default_client):
+        assert bool(default_client.organizations)
 
-        message = str(ex)
+    def test_initialize_passwordless(self, default_client):
+        assert bool(default_client.passwordless)
 
-        assert "client_id" in message
+    def test_initialize_portal(self, default_client):
+        assert bool(default_client.portal)
 
-    def test_initialize_user_management_missing_api_key(self, set_client_id):
-        with pytest.raises(ConfigurationException) as ex:
-            client.user_management
+    def test_initialize_user_management(self, default_client):
+        assert bool(default_client.user_management)
 
-        message = str(ex)
+    def test_enforce_trailing_slash_for_base_url(
+        self,
+    ):
+        client = WorkOSClient(
+            api_key="sk_test",
+            client_id="client_b27needthisforssotemxo",
+            base_url="https://api.workos.com",
+        )
+        assert client.base_url == "https://api.workos.com/"
 
-        assert "api_key" in message
 
-    def test_initialize_user_management_missing_api_key_and_client_id(self):
-        with pytest.raises(ConfigurationException) as ex:
-            client.user_management
+class TestAsyncClient:
+    @pytest.fixture
+    def default_client(self):
+        return AsyncWorkOSClient(
+            api_key="sk_test", client_id="client_b27needthisforssotemxo"
+        )
 
-        message = str(ex)
+    def test_client_without_api_key(self):
+        with pytest.raises(ValueError) as error:
+            AsyncWorkOSClient(client_id="client_b27needthisforssotemxo")
 
-        assert "api_key" in message
-        assert "client_id" in message
+        assert (
+            "WorkOS API key must be provided when instantiating the client or via the WORKOS_API_KEY environment variable."
+            == str(error.value)
+        )
+
+    def test_client_without_client_id(self):
+        with pytest.raises(ValueError) as error:
+            AsyncWorkOSClient(api_key="sk_test")
+
+        assert (
+            "WorkOS client ID must be provided when instantiating the client or via the WORKOS_CLIENT_ID environment variable."
+            == str(error.value)
+        )
+
+    def test_client_with_api_key_and_client_id_environment_variables(self):
+        os.environ["WORKOS_API_KEY"] = "sk_test"
+        os.environ["WORKOS_CLIENT_ID"] = "client_b27needthisforssotemxo"
+
+        assert bool(AsyncWorkOSClient())
+
+        os.environ.pop("WORKOS_API_KEY")
+        os.environ.pop("WORKOS_CLIENT_ID")
+
+    def test_initialize_directory_sync(self, default_client):
+        assert bool(default_client.directory_sync)
+
+    def test_initialize_events(self, default_client):
+        assert bool(default_client.events)
+
+    def test_initialize_sso(self, default_client):
+        assert bool(default_client.sso)

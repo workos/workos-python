@@ -1,19 +1,29 @@
 import datetime
-from workos.resources.base import WorkOSBaseResource
+
+from workos.types.events import DirectoryActivatedEvent
+from workos.types.events.directory_payload_with_legacy_fields import (
+    DirectoryPayloadWithLegacyFields,
+)
 
 
-class MockEvent(WorkOSBaseResource):
+class MockEvent(DirectoryActivatedEvent):
     def __init__(self, id):
-        self.object = "event"
-        self.id = id
-        self.event = "dsync.user.created"
-        self.data = {"id": "event_01234ABCD", "organization_id": "org_1234"}
-        self.created_at = datetime.datetime.now()
-
-    OBJECT_FIELDS = [
-        "object",
-        "id",
-        "event",
-        "data",
-        "created_at",
-    ]
+        now = datetime.datetime.now().isoformat()
+        super().__init__(
+            object="event",
+            id=id,
+            event="dsync.activated",
+            data=DirectoryPayloadWithLegacyFields(
+                object="directory",
+                id="dir_1234",
+                organization_id="organization_id",
+                external_key="ext_123",
+                domains=[],
+                name="Some fake name",
+                state="active",
+                type="gsuite directory",
+                created_at=now,
+                updated_at=now,
+            ),
+            created_at=now,
+        )

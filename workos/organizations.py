@@ -1,40 +1,40 @@
-from warnings import warn
-import workos
-from workos.utils.pagination_order import Order
-from workos.utils.request import (
-    RequestHelper,
+from typing import Optional, Protocol, Sequence
+
+from workos.types.organizations.domain_data_input import DomainDataInput
+from workos.types.organizations.list_filters import OrganizationListFilters
+from workos.typing.sync_or_async import SyncOrAsync
+from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
+from workos.utils.pagination_order import PaginationOrder
+from workos.utils.request_helper import (
+    DEFAULT_LIST_RESPONSE_LIMIT,
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_POST,
     REQUEST_METHOD_PUT,
 )
-from workos.utils.validation import ORGANIZATIONS_MODULE, validate_settings
-from workos.resources.organizations import WorkOSOrganization
-from workos.resources.list import WorkOSListResource
+from workos.types.organizations import Organization
+from workos.types.list_resource import ListMetadata, ListPage, WorkOSListResource
 
 ORGANIZATIONS_PATH = "organizations"
-RESPONSE_LIMIT = 10
 
 
-class Organizations(WorkOSListResource):
-    @validate_settings(ORGANIZATIONS_MODULE)
-    def __init__(self):
-        pass
+OrganizationsListResource = WorkOSListResource[
+    Organization, OrganizationListFilters, ListMetadata
+]
 
-    @property
-    def request_helper(self):
-        if not getattr(self, "_request_helper", None):
-            self._request_helper = RequestHelper()
-        return self._request_helper
+
+class OrganizationsModule(Protocol):
+    """Offers methods through the WorkOS Organizations service."""
 
     def list_organizations(
         self,
-        domains=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
-    ):
+        *,
+        domains: Optional[Sequence[str]] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[OrganizationsListResource]:
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
         Kwargs:
@@ -42,262 +42,285 @@ class Organizations(WorkOSListResource):
             limit (int): Maximum number of records to return. (Optional)
             before (str): Pagination cursor to receive records before a provided Organization ID. (Optional)
             after (str): Pagination cursor to receive records after a provided Organization ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
 
         Returns:
-            dict: Organizations response from WorkOS.
+            OrganizationsListResource: Organizations list response from WorkOS.
         """
-        warn(
-            "The 'list_organizations' method is deprecated. Please use 'list_organizations_v2' instead.",
-            DeprecationWarning,
-        )
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
+        ...
 
-        params = {
-            "domains": domains,
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order or "desc",
-        }
-
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
-
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
-
-        response = self.request_helper.request(
-            ORGANIZATIONS_PATH,
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        response["metadata"] = {
-            "params": params,
-            "method": Organizations.list_organizations,
-        }
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        return response
-
-    def list_organizations_v2(
-        self,
-        domains=None,
-        limit=None,
-        before=None,
-        after=None,
-        order=None,
-    ):
-        """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
-
-        Kwargs:
-            domains (list): Filter organizations to only return those that are associated with the provided domains. (Optional)
-            limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided Organization ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided Organization ID. (Optional)
-            order (Order): Sort records in either ascending or descending order by created_at timestamp.
-
-        Returns:
-            dict: Organizations response from WorkOS.
-        """
-
-        if limit is None:
-            limit = RESPONSE_LIMIT
-            default_limit = True
-
-        params = {
-            "domains": domains,
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order or "desc",
-        }
-
-        if order is not None:
-            if isinstance(order, Order):
-                params["order"] = str(order.value)
-
-            elif order == "asc" or order == "desc":
-                params["order"] = order
-            else:
-                raise ValueError("Parameter order must be of enum type Order")
-
-        response = self.request_helper.request(
-            ORGANIZATIONS_PATH,
-            method=REQUEST_METHOD_GET,
-            params=params,
-            token=workos.api_key,
-        )
-
-        response["metadata"] = {
-            "params": params,
-            "method": Organizations.list_organizations_v2,
-        }
-
-        if "default_limit" in locals():
-            if "metadata" in response and "params" in response["metadata"]:
-                response["metadata"]["params"]["default_limit"] = default_limit
-            else:
-                response["metadata"] = {"params": {"default_limit": default_limit}}
-
-        return self.construct_from_response(response)
-
-    def get_organization(self, organization):
+    def get_organization(self, organization_id: str) -> SyncOrAsync[Organization]:
         """Gets details for a single Organization
+
         Args:
-            organization (str): Organization's unique identifier
+            organization_id (str): Organization's unique identifier
         Returns:
-            dict: Organization response from WorkOS
+            Organization: Organization response from WorkOS
         """
-        response = self.request_helper.request(
-            "organizations/{organization}".format(organization=organization),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
+        ...
 
-        return WorkOSOrganization.construct_from_response(response).to_dict()
-
-    def get_organization_by_lookup_key(self, lookup_key):
+    def get_organization_by_lookup_key(
+        self, lookup_key: str
+    ) -> SyncOrAsync[Organization]:
         """Gets details for a single Organization by lookup key
+
         Args:
             lookup_key (str): Organization's lookup key
+
         Returns:
-            dict: Organization response from WorkOS
+            Organization: Organization response from WorkOS
         """
-        response = self.request_helper.request(
-            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
-            method=REQUEST_METHOD_GET,
-            token=workos.api_key,
-        )
+        ...
 
-        return WorkOSOrganization.construct_from_response(response).to_dict()
-
-    def create_organization(self, organization, idempotency_key=None):
+    def create_organization(
+        self,
+        *,
+        name: str,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
+        idempotency_key: Optional[str] = None,
+    ) -> SyncOrAsync[Organization]:
         """Create an organization
 
-        Args:
-            organization (dict) - An organization object
-                organization[name] (str) - A unique, descriptive name for the organization
-                organization[allow_profiles_outside_organization] (boolean) - [Deprecated] Whether Connections
-                    within the Organization allow profiles that are outside of the Organization's
-                    configured User Email Domains. (Optional)
-                organization[domains] (list[dict]) - [Deprecated] Use domain_data instead. List of domains that
-                    belong to the organization. (Optional)
-                organization[domain_data] (list[dict]) - List of domains that belong to the organization.
-                    organization[domain_data][][domain] - The domain of the organization.
-                    organization[domain_data][][state] - The state of the domain: either 'verified' or 'pending'.
-            idempotency_key (str) - Idempotency key for creating an organization. (Optional)
+        Kwargs:
+            name (str): A descriptive name for the organization. (Optional)
+            domain_data (Sequence[DomainDataInput]): List of domains that belong to the organization. (Optional)
+            idempotency_key (str): Key to guarantee idempotency across requests. (Optional)
 
         Returns:
-            dict: Created Organization response from WorkOS.
+            Organization: Updated Organization response from WorkOS.
         """
+        ...
+
+    def update_organization(
+        self,
+        *,
+        organization_id: str,
+        name: Optional[str] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
+    ) -> SyncOrAsync[Organization]:
+        """Update an organization
+
+        Kwargs:
+            organization (str): Organization's unique identifier.
+            name (str): A descriptive name for the organization. (Optional)
+            domain_data (Sequence[DomainDataInput]): List of domains that belong to the organization. (Optional)
+
+        Returns:
+            Organization: Updated Organization response from WorkOS.
+        """
+        ...
+
+    def delete_organization(self, organization_id: str) -> SyncOrAsync[None]:
+        """Deletes a single Organization
+
+        Args:
+            organization_id (str): Organization unique identifier
+
+        Returns:
+            None
+        """
+        ...
+
+
+class Organizations(OrganizationsModule):
+
+    _http_client: SyncHTTPClient
+
+    def __init__(self, http_client: SyncHTTPClient):
+        self._http_client = http_client
+
+    def list_organizations(
+        self,
+        *,
+        domains: Optional[Sequence[str]] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> OrganizationsListResource:
+        list_params: OrganizationListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+            "domains": domains,
+        }
+
+        response = self._http_client.request(
+            ORGANIZATIONS_PATH,
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[Organization, OrganizationListFilters, ListMetadata](
+            list_method=self.list_organizations,
+            list_args=list_params,
+            **ListPage[Organization](**response).model_dump(),
+        )
+
+    def get_organization(self, organization_id: str) -> Organization:
+        response = self._http_client.request(
+            f"organizations/{organization_id}", method=REQUEST_METHOD_GET
+        )
+
+        return Organization.model_validate(response)
+
+    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
+        response = self._http_client.request(
+            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            method=REQUEST_METHOD_GET,
+        )
+
+        return Organization.model_validate(response)
+
+    def create_organization(
+        self,
+        *,
+        name: str,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
+        idempotency_key: Optional[str] = None,
+    ) -> Organization:
         headers = {}
         if idempotency_key:
             headers["idempotency-key"] = idempotency_key
 
-        if "domains" in organization:
-            warn(
-                "The 'domains' parameter for 'create_organization' is deprecated. Please use 'domain_data' instead.",
-                DeprecationWarning,
-            )
+        json = {
+            "name": name,
+            "domain_data": domain_data,
+            "idempotency_key": idempotency_key,
+        }
 
-        if "allow_profiles_outside_organization" in organization:
-            warn(
-                "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "
-                "If you need to allow sign-ins from any email domain, contact support@workos.com.",
-                DeprecationWarning,
-            )
-
-        response = self.request_helper.request(
+        response = self._http_client.request(
             ORGANIZATIONS_PATH,
             method=REQUEST_METHOD_POST,
-            params=organization,
+            json=json,
             headers=headers,
-            token=workos.api_key,
         )
 
-        return WorkOSOrganization.construct_from_response(response).to_dict()
+        return Organization.model_validate(response)
 
     def update_organization(
         self,
-        organization,
-        name=None,
-        allow_profiles_outside_organization=None,
-        domains=None,
-        domain_data=None,
-        lookup_key=None,
-    ):
-        """Update an organization
+        *,
+        organization_id: str,
+        name: Optional[str] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
+    ) -> Organization:
+        json = {
+            "name": name,
+            "domain_data": domain_data,
+        }
 
-        Args:
-            organization(str) - Organization's unique identifier.
-            name (str) - A unique, descriptive name for the organization. (Optional)
-            allow_profiles_outside_organization (boolean) - [Deprecated] Whether Connections
-                within the Organization allow profiles that are outside of the Organization's
-                configured User Email Domains. (Optional)
-            domains (list) - [Deprecated] Use domain_data instead. List of domains that belong to the organization. (Optional)
-            domain_data (list[dict]) - List of domains that belong to the organization. (Optional)
-                domain_data[][domain] - The domain of the organization.
-                domain_data[][state] - The state of the domain: either 'verified' or 'pending'.
-
-        Returns:
-            dict: Updated Organization response from WorkOS.
-        """
-
-        params = {"name": name}
-
-        if domains is not None:
-            warn(
-                "The 'domains' parameter for 'update_organization' is deprecated. Please use 'domain_data' instead.",
-                DeprecationWarning,
-            )
-            params["domains"] = domains
-
-        if allow_profiles_outside_organization is not None:
-            warn(
-                "The `allow_profiles_outside_organization` parameter for `create_orgnaization` is deprecated. "
-                "If you need to allow sign-ins from any email domain, contact support@workos.com.",
-                DeprecationWarning,
-            )
-            params[
-                "allow_profiles_outside_organization"
-            ] = allow_profiles_outside_organization
-
-        if domain_data is not None:
-            params["domain_data"] = domain_data
-
-        if lookup_key is not None:
-            params["lookup_key"] = lookup_key
-
-        response = self.request_helper.request(
-            "organizations/{organization}".format(organization=organization),
-            method=REQUEST_METHOD_PUT,
-            params=params,
-            token=workos.api_key,
+        response = self._http_client.request(
+            f"organizations/{organization_id}", method=REQUEST_METHOD_PUT, json=json
         )
 
-        return WorkOSOrganization.construct_from_response(response).to_dict()
+        return Organization.model_validate(response)
 
-    def delete_organization(self, organization):
-        """Deletes a single Organization
-
-        Args:
-            organization (str): Organization unique identifier
-        """
-        return self.request_helper.request(
-            "organizations/{organization}".format(organization=organization),
+    def delete_organization(self, organization_id: str) -> None:
+        self._http_client.request(
+            f"organizations/{organization_id}",
             method=REQUEST_METHOD_DELETE,
-            token=workos.api_key,
+        )
+
+
+class AsyncOrganizations(OrganizationsModule):
+
+    _http_client: AsyncHTTPClient
+
+    def __init__(self, http_client: AsyncHTTPClient):
+        self._http_client = http_client
+
+    async def list_organizations(
+        self,
+        *,
+        domains: Optional[Sequence[str]] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> OrganizationsListResource:
+        list_params: OrganizationListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+            "domains": domains,
+        }
+
+        response = await self._http_client.request(
+            ORGANIZATIONS_PATH,
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[Organization, OrganizationListFilters, ListMetadata](
+            list_method=self.list_organizations,
+            list_args=list_params,
+            **ListPage[Organization](**response).model_dump(),
+        )
+
+    async def get_organization(self, organization_id: str) -> Organization:
+        response = await self._http_client.request(
+            f"organizations/{organization_id}", method=REQUEST_METHOD_GET
+        )
+
+        return Organization.model_validate(response)
+
+    async def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
+        response = await self._http_client.request(
+            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            method=REQUEST_METHOD_GET,
+        )
+
+        return Organization.model_validate(response)
+
+    async def create_organization(
+        self,
+        *,
+        name: str,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
+        idempotency_key: Optional[str] = None,
+    ) -> Organization:
+        headers = {}
+        if idempotency_key:
+            headers["idempotency-key"] = idempotency_key
+
+        json = {
+            "name": name,
+            "domain_data": domain_data,
+            "idempotency_key": idempotency_key,
+        }
+
+        response = await self._http_client.request(
+            ORGANIZATIONS_PATH,
+            method=REQUEST_METHOD_POST,
+            json=json,
+            headers=headers,
+        )
+
+        return Organization.model_validate(response)
+
+    async def update_organization(
+        self,
+        *,
+        organization_id: str,
+        name: Optional[str] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
+    ) -> Organization:
+        json = {
+            "name": name,
+            "domain_data": domain_data,
+        }
+
+        response = await self._http_client.request(
+            f"organizations/{organization_id}", method=REQUEST_METHOD_PUT, json=json
+        )
+
+        return Organization.model_validate(response)
+
+    async def delete_organization(self, organization_id: str) -> None:
+        await self._http_client.request(
+            f"organizations/{organization_id}",
+            method=REQUEST_METHOD_DELETE,
         )

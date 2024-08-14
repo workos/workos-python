@@ -1,30 +1,25 @@
 import datetime
-from workos.resources.base import WorkOSBaseResource
+
+from workos.types.organizations import Organization
+from workos.types.organizations.organization_domain import OrganizationDomain
 
 
-class MockOrganization(WorkOSBaseResource):
+class MockOrganization(Organization):
     def __init__(self, id):
-        self.id = id
-        self.object = "organization"
-        self.name = "Foo Corporation"
-        self.allow_profiles_outside_organization = False
-        self.created_at = datetime.datetime.now()
-        self.updated_at = datetime.datetime.now()
-        self.domains = [
-            {
-                "domain": "example.io",
-                "object": "organization_domain",
-                "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
-            }
-        ]
-
-    OBJECT_FIELDS = [
-        "id",
-        "object",
-        "name",
-        "allow_profiles_outside_organization",
-        "created_at",
-        "updated_at",
-        "domains",
-        "lookup_key",
-    ]
+        now = datetime.datetime.now().isoformat()
+        super().__init__(
+            object="organization",
+            id=id,
+            name="Foo Corporation",
+            allow_profiles_outside_organization=False,
+            created_at=now,
+            updated_at=now,
+            domains=[
+                OrganizationDomain(
+                    object="organization_domain",
+                    id="org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
+                    organization_id="org_12345",
+                    domain="example.io",
+                )
+            ],
+        )

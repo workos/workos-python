@@ -1,25 +1,23 @@
 import datetime
-from workos.resources.base import WorkOSBaseResource
+
+from workos.types.mfa import AuthenticationFactorTotp, ExtendedTotpFactor
 
 
-class MockAuthFactorTotp(WorkOSBaseResource):
+class MockAuthenticationFactorTotp(AuthenticationFactorTotp):
     def __init__(self, id):
-        self.object = "authentication_factor"
-        self.id = id
-        self.created_at = datetime.datetime.now()
-        self.updated_at = datetime.datetime.now()
-        self.type = "totp"
-        self.totp = {
-            "qr_code": "data:image/png;base64,{base64EncodedPng}",
-            "secret": "NAGCCFS3EYRB422HNAKAKY3XDUORMSRF",
-            "uri": "otpauth://totp/FooCorp:alan.turing@foo-corp.com?secret=NAGCCFS3EYRB422HNAKAKY3XDUORMSRF&issuer=FooCorp",
-        }
-
-    OBJECT_FIELDS = [
-        "object",
-        "id",
-        "created_at",
-        "updated_at",
-        "type",
-        "totp",
-    ]
+        now = datetime.datetime.now().isoformat()
+        super().__init__(
+            object="authentication_factor",
+            id=id,
+            created_at=now,
+            updated_at=now,
+            type="totp",
+            user_id="user_123",
+            totp=ExtendedTotpFactor(
+                issuer="FooCorp",
+                user="test@example.com",
+                qr_code="data:image/png;base64,{base64EncodedPng}",
+                secret="NAGCCFS3EYRB422HNAKAKY3XDUORMSRF",
+                uri="otpauth://totp/FooCorp:alan.turing@foo-corp.com?secret=NAGCCFS3EYRB422HNAKAKY3XDUORMSRF&issuer=FooCorp",
+            ),
+        )

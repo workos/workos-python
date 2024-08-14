@@ -3,7 +3,7 @@ from typing import Mapping, Optional, Any
 from workos.types.list_resource import ListArgs
 
 
-class ResourceListFilters(ListArgs, total=False):
+class AuthorizationResourceListFilters(ListArgs, total=False):
     resource_type: Optional[str]
     search: Optional[str]
 
@@ -18,7 +18,7 @@ class WarrantListFilters(ListArgs, total=False):
     warrant_token: Optional[str]
 
 
-class QueryListFilters(ListArgs, total=False):
+class WarrantQueryListFilters(ListArgs, total=False):
     q: Optional[str]
     context: Optional[Mapping[str, Any]]
     warrant_token: Optional[str]

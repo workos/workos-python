@@ -2,8 +2,8 @@ from typing import Any, Mapping, Optional, Protocol, Sequence
 from workos.types.fga import (
     CheckOperation,
     CheckResponse,
-    Resource,
-    ResourceType,
+    AuthorizationResource,
+    AuthorizationResourceType,
     Warrant,
     WarrantCheckInput,
     WarrantWrite,
@@ -12,9 +12,9 @@ from workos.types.fga import (
     WarrantQueryResult,
 )
 from workos.types.fga.list_filters import (
-    ResourceListFilters,
+    AuthorizationResourceListFilters,
     WarrantListFilters,
-    QueryListFilters,
+    WarrantQueryListFilters,
 )
 from workos.types.list_resource import (
     ListArgs,
@@ -34,19 +34,25 @@ from workos.utils.request_helper import (
 
 DEFAULT_RESPONSE_LIMIT = 10
 
-ResourceListResource = WorkOSListResource[Resource, ResourceListFilters, ListMetadata]
+AuthorizationResourceListResource = WorkOSListResource[
+    AuthorizationResource, AuthorizationResourceListFilters, ListMetadata
+]
 
-ResourceTypeListResource = WorkOSListResource[ResourceType, ListArgs, ListMetadata]
+AuthorizationResourceTypeListResource = WorkOSListResource[
+    AuthorizationResourceType, ListArgs, ListMetadata
+]
 
 WarrantListResource = WorkOSListResource[Warrant, WarrantListFilters, ListMetadata]
 
-QueryListResource = WorkOSListResource[
-    WarrantQueryResult, QueryListFilters, ListMetadata
+WarrantQueryListResource = WorkOSListResource[
+    WarrantQueryResult, WarrantQueryListFilters, ListMetadata
 ]
 
 
 class FGAModule(Protocol):
-    def get_resource(self, *, resource_type: str, resource_id: str) -> Resource:
+    def get_resource(
+        self, *, resource_type: str, resource_id: str
+    ) -> AuthorizationResource:
         """
         Get a warrant resource by its type and ID.
 
@@ -67,7 +73,7 @@ class FGAModule(Protocol):
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
-    ) -> ResourceListResource:
+    ) -> AuthorizationResourceListResource:
         """
         Gets a list of FGA resources.
 
@@ -79,7 +85,7 @@ class FGAModule(Protocol):
             before (str): A cursor to return resources before. (Optional)
             after (str): A cursor to return resources after. (Optional)
         Returns:
-            ResourceListResource: A list of resources with built-in pagination iterator.
+            AuthorizationResourceListResource: A list of resources with built-in pagination iterator.
         """
         ...
 
@@ -89,7 +95,7 @@ class FGAModule(Protocol):
         resource_type: str,
         resource_id: str,
         meta: Optional[Mapping[str, Any]] = None,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         """
         Create a new warrant resource.
 
@@ -98,7 +104,7 @@ class FGAModule(Protocol):
             resource_id (str): A unique identifier for the resource.
             meta (Mapping): A dictionary containing additional information about this resource. (Optional)
         Returns:
-            Resource: A resource object.
+            AuthorizationResource: A resource object.
         """
         ...
 
@@ -108,7 +114,7 @@ class FGAModule(Protocol):
         resource_type: str,
         resource_id: str,
         meta: Optional[Mapping[str, Any]] = None,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         """
         Updates an existing warrant resource.
 
@@ -117,7 +123,7 @@ class FGAModule(Protocol):
             resource_id (str): A unique identifier for the resource.
             meta (Mapping): A dictionary containing additional information about this resource. (Optional)
         Returns:
-            Resource: A resource object.
+            AuthorizationResource: A resource object.
         """
         ...
 
@@ -141,7 +147,7 @@ class FGAModule(Protocol):
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
-    ) -> ResourceTypeListResource:
+    ) -> AuthorizationResourceTypeListResource:
         """
         Gets a list of FGA resource types.
 
@@ -152,7 +158,7 @@ class FGAModule(Protocol):
             after (str): A cursor to return resources after. (Optional)
 
         Returns:
-            ResourceTypeListResource: A list of resource types with built-in pagination iterator.
+            AuthorizationResourceTypeListResource: A list of resource types with built-in pagination iterator.
         """
         ...
 
@@ -286,7 +292,7 @@ class FGAModule(Protocol):
         after: Optional[str] = None,
         context: Optional[Mapping[str, Any]] = None,
         warrant_token: Optional[str] = None,
-    ) -> QueryListResource:
+    ) -> WarrantQueryListResource:
         """
         Query for warrants.
 
@@ -316,7 +322,7 @@ class FGA(FGAModule):
         *,
         resource_type: str,
         resource_id: str,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         if not resource_type or not resource_id:
             raise ValueError(
                 "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
@@ -331,7 +337,7 @@ class FGA(FGAModule):
             method=REQUEST_METHOD_GET,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     def list_resources(
         self,
@@ -342,8 +348,8 @@ class FGA(FGAModule):
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
-    ) -> ResourceListResource:
-        list_params: ResourceListFilters = {
+    ) -> AuthorizationResourceListResource:
+        list_params: AuthorizationResourceListFilters = {
             "resource_type": resource_type,
             "search": search,
             "limit": limit,
@@ -358,10 +364,10 @@ class FGA(FGAModule):
             params=list_params,
         )
 
-        return WorkOSListResource[Resource, ResourceListFilters, ListMetadata](
+        return AuthorizationResourceListResource(
             list_method=self.list_resources,
             list_args=list_params,
-            **ListPage[Resource](**response).model_dump(),
+            **ListPage[AuthorizationResource](**response).model_dump(),
         )
 
     def create_resource(
@@ -370,7 +376,7 @@ class FGA(FGAModule):
         resource_type: str,
         resource_id: str,
         meta: Optional[Mapping[str, Any]] = None,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         if not resource_type or not resource_id:
             raise ValueError(
                 "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
@@ -386,7 +392,7 @@ class FGA(FGAModule):
             },
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     def update_resource(
         self,
@@ -394,7 +400,7 @@ class FGA(FGAModule):
         resource_type: str,
         resource_id: str,
         meta: Optional[Mapping[str, Any]] = None,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         if not resource_type or not resource_id:
             raise ValueError(
                 "Incomplete arguments: 'resource_type' and 'resource_id' are required arguments"
@@ -410,7 +416,7 @@ class FGA(FGAModule):
             json={"meta": meta},
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     def delete_resource(self, *, resource_type: str, resource_id: str) -> None:
         if not resource_type or not resource_id:
@@ -434,7 +440,7 @@ class FGA(FGAModule):
         order: PaginationOrder = "desc",
         before: Optional[str] = None,
         after: Optional[str] = None,
-    ) -> ResourceTypeListResource:
+    ) -> AuthorizationResourceTypeListResource:
         list_params: ListArgs = {
             "limit": limit,
             "order": order,
@@ -448,10 +454,10 @@ class FGA(FGAModule):
             params=list_params,
         )
 
-        return WorkOSListResource[ResourceType, ListArgs, ListMetadata](
+        return AuthorizationResourceTypeListResource(
             list_method=self.list_resource_types,
             list_args=list_params,
-            **ListPage[ResourceType](**response).model_dump(),
+            **ListPage[AuthorizationResourceType](**response).model_dump(),
         )
 
     def list_warrants(
@@ -492,7 +498,7 @@ class FGA(FGAModule):
         # A workaround to add warrant_token to the list_args for the ListResource iterator
         list_params["warrant_token"] = warrant_token
 
-        return WorkOSListResource[Warrant, WarrantListFilters, ListMetadata](
+        return WarrantListResource(
             list_method=self.list_warrants,
             list_args=list_params,
             **ListPage[Warrant](**response).model_dump(),
@@ -606,8 +612,8 @@ class FGA(FGAModule):
         after: Optional[str] = None,
         context: Optional[Mapping[str, Any]] = None,
         warrant_token: Optional[str] = None,
-    ) -> QueryListResource:
-        list_params: QueryListFilters = {
+    ) -> WarrantQueryListResource:
+        list_params: WarrantQueryListFilters = {
             "q": q,
             "limit": limit,
             "order": order,
@@ -626,7 +632,7 @@ class FGA(FGAModule):
         # A workaround to add warrant_token to the list_args for the ListResource iterator
         list_params["warrant_token"] = warrant_token
 
-        return WorkOSListResource[WarrantQueryResult, QueryListFilters, ListMetadata](
+        return WarrantQueryListResource(
             list_method=self.query,
             list_args=list_params,
             **ListPage[WarrantQueryResult](**response).model_dump(),

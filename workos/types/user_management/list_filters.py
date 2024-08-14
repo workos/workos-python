@@ -1,5 +1,8 @@
-from typing import Optional
+from typing import Optional, Sequence
 from workos.types.list_resource import ListArgs
+from workos.types.user_management.organization_membership import (
+    OrganizationMembershipStatus,
+)
 
 
 class UsersListFilters(ListArgs, total=False):
@@ -15,8 +18,7 @@ class InvitationsListFilters(ListArgs, total=False):
 class OrganizationMembershipsListFilters(ListArgs, total=False):
     user_id: Optional[str]
     organization_id: Optional[str]
-    # A set of statuses that's concatenated into a comma-separated string
-    statuses: Optional[str]
+    statuses: Optional[Sequence[OrganizationMembershipStatus]]
 
 
 class AuthenticationFactorsListFilters(ListArgs, total=False):

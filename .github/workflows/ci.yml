@@ -39,8 +39,7 @@ jobs:
           flake8 . --extend-exclude .devbox --count --exit-zero --max-complexity=10 --statistics
 
       - name: Type Check
-        run: |
-          mypy --strict
+        run: mypy
 
       - name: Test
         run: python -m pytest

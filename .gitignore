@@ -135,5 +135,5 @@ dmypy.json
 # macOS
 .DS_Store
 
-#Intellij
+# Intellij
 .idea/

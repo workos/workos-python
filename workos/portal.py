@@ -21,7 +21,7 @@ class PortalModule(Protocol):
 
         Kwargs:
             intent (PortalLinkIntent): The access scope for the generated Admin Portal link.
-            organization_id (string): The ID of the organization the Admin Portal link will be generated for.
+            organization_id (str): The ID of the organization the Admin Portal link will be generated for.
             return_url (str): The URL that the end user will be redirected to upon exiting the generated Admin Portal.
                 If none is provided, the default redirect link set in your WorkOS Dashboard will be used. (Optional)
             success_url (str): The URL to which WorkOS will redirect users to upon successfully viewing Audit Logs,

@@ -37,8 +37,8 @@ class MFAModule(Protocol):
 
         Kwargs:
             type (str): The type of factor to be enrolled (sms or totp).
-            totp_issuer (str): Name of the Organization. (Optional)
-            totp_user (str): email of user. (Optional)
+            totp_issuer (str): Name of the Organization. Required when type is totp, ignored otherwise.
+            totp_user (str): email of user. Required when type is totp, ignored otherwise.
             phone_number (str): phone number of the user. (Optional)
 
         Returns:

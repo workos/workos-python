@@ -44,11 +44,11 @@ class AuditLogsModule(Protocol):
         """Trigger the creation of an export of audit logs.
 
         Kwargs:
-            organization (str): Organization's unique identifier.
+            organization_id (str): Organization's unique identifier.
             range_start (str): Start date of the date range filter.
             range_end (str): End date of the date range filter.
             actions (list): Optional list of actions to filter. (Optional)
-            actors (list): Optional list of actors to filter. (Optional)
+            actor_names (list): Optional list of actors to filter by name. (Optional)
             targets (list): Optional list of targets to filter. (Optional)
 
         Returns:

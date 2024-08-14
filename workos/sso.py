@@ -62,12 +62,12 @@ class SSOModule(Protocol):
         WorkOS.
 
         Kwargs:
-            redirect_uri (str) - A valid redirect URI, as specified on WorkOS
-            state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
+            redirect_uri (str) : A valid redirect URI, as specified on WorkOS
+            state (str) : An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
             back as a query parameter
-            provider (SSOProviderType) - Authentication service provider descriptor
-            connection_id (string) - Unique identifier for a WorkOS Connection
-            organization_id (string) - Unique identifier for a WorkOS Organization
+            provider (SSOProviderType) : Authentication service provider descriptor
+            connection_id (string) : Unique identifier for a WorkOS Connection
+            organization_id (string) : Unique identifier for a WorkOS Organization
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS

@@ -113,7 +113,7 @@ class UserManagementModule(Protocol):
         """Get the details of an existing user.
 
         Args:
-            user_id (str) - User unique identifier
+            user_id (str): User unique identifier
         Returns:
             User: User response from WorkOS.
         """
@@ -158,13 +158,13 @@ class UserManagementModule(Protocol):
         """Create a new user.
 
         Kwargs:
-            email (str) - The email address of the user.
-            password (str) - The password to set for the user. (Optional)
-            password_hash (str) - The hashed password to set for the user. Mutually exclusive with password. (Optional)
-            password_hash_type (str) - The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
-            first_name (str) - The user's first name. (Optional)
-            last_name (str) - The user's last name. (Optional)
-            email_verified (bool) - Whether the user's email address was previously verified. (Optional)
+            email (str): The email address of the user.
+            password (str): The password to set for the user. (Optional)
+            password_hash (str): The hashed password to set for the user. Mutually exclusive with password. (Optional)
+            password_hash_type (str): The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
+            first_name (str): The user's first name. (Optional)
+            last_name (str): The user's last name. (Optional)
+            email_verified (bool): Whether the user's email address was previously verified. (Optional)
 
         Returns:
             User: Created User response from WorkOS.
@@ -185,13 +185,13 @@ class UserManagementModule(Protocol):
         """Update user attributes.
 
         Kwargs:
-            user_id (str) - The User unique identifier
-            first_name (str) - The user's first name. (Optional)
-            last_name (str) - The user's last name. (Optional)
-            email_verified (bool) - Whether the user's email address was previously verified. (Optional)
-            password (str) - The password to set for the user. (Optional)
-            password_hash (str) - The hashed password to set for the user, used when migrating from another user store. Mutually exclusive with password. (Optional)
-            password_hash_type (str) - The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
+            user_id (str): The User unique identifier
+            first_name (str): The user's first name. (Optional)
+            last_name (str): The user's last name. (Optional)
+            email_verified (bool): Whether the user's email address was previously verified. (Optional)
+            password (str): The password to set for the user. (Optional)
+            password_hash (str): The hashed password to set for the user, used when migrating from another user store. Mutually exclusive with password. (Optional)
+            password_hash_type (str): The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
 
         Returns:
             User: Updated User response from WorkOS.
@@ -202,7 +202,7 @@ class UserManagementModule(Protocol):
         """Delete an existing user.
 
         Args:
-            user_id (str) -  User unique identifier
+            user_id (str):  User unique identifier
         Returns:
             None
         """
@@ -230,7 +230,7 @@ class UserManagementModule(Protocol):
         """Updates an OrganizationMembership for the given id.
 
         Args:
-            organization_membership_id (str) -  The unique ID of the Organization Membership.
+            organization_membership_id (str):  The unique ID of the Organization Membership.
             role_slug: The Unique Slug of the Role to which to grant to this membership.
                 If no slug is passed in, it will not be changed (Optional)
 
@@ -245,7 +245,7 @@ class UserManagementModule(Protocol):
         """Get the details of an organization membership.
 
         Args:
-            organization_membership_id (str) -  The unique ID of the Organization Membership.
+            organization_membership_id (str):  The unique ID of the Organization Membership.
         Returns:
             OrganizationMembership: OrganizationMembership response from WorkOS.
         """
@@ -284,7 +284,7 @@ class UserManagementModule(Protocol):
         """Delete an existing organization membership.
 
         Args:
-            organization_membership_id (str) -  The unique ID of the Organization Membership.
+            organization_membership_id (str):  The unique ID of the Organization Membership.
         Returns:
             None
         """
@@ -296,7 +296,7 @@ class UserManagementModule(Protocol):
         """Deactivate an organization membership.
 
         Args:
-            organization_membership_id (str) -  The unique ID of the Organization Membership.
+            organization_membership_id (str):  The unique ID of the Organization Membership.
         Returns:
             OrganizationMembership: OrganizationMembership response from WorkOS.
         """
@@ -308,7 +308,7 @@ class UserManagementModule(Protocol):
         """Reactivates an organization membership.
 
         Args:
-            organization_membership_id (str) -  The unique ID of the Organization Membership.
+            organization_membership_id (str):  The unique ID of the Organization Membership.
         Returns:
             OrganizationMembership: OrganizationMembership response from WorkOS.
         """
@@ -332,21 +332,21 @@ class UserManagementModule(Protocol):
         WorkOS.
 
         Kwargs:
-            redirect_uri (str) - A Redirect URI to return an authorized user to.
-            connection_id (str) - The connection_id connection selector is used to initiate SSO for a Connection.
+            redirect_uri (str): A Redirect URI to return an authorized user to.
+            connection_id (str): The connection_id connection selector is used to initiate SSO for a Connection.
                 The value of this parameter should be a WorkOS Connection ID. (Optional)
-            organization_id (str) - The organization_id connection selector is used to initiate SSO for an Organization.
+            organization_id (str): The organization_id connection selector is used to initiate SSO for an Organization.
                 The value of this parameter should be a WorkOS Organization ID. (Optional)
-            provider (UserManagementProviderType) - The provider connection selector is used to initiate SSO using an OAuth-compatible provider.
+            provider (UserManagementProviderType): The provider connection selector is used to initiate SSO using an OAuth-compatible provider.
                 Currently, the supported values for provider are 'authkit', 'AppleOAuth', 'GitHubOAuth, 'GoogleOAuth', and 'MicrosoftOAuth'. (Optional)
-            domain_hint (str) - Can be used to pre-fill the domain field when initiating authentication with Microsoft OAuth,
+            domain_hint (str): Can be used to pre-fill the domain field when initiating authentication with Microsoft OAuth,
                 or with a GoogleSAML connection type. (Optional)
-            login_hint (str) - Can be used to pre-fill the username/email address field of the IdP sign-in page for the user,
+            login_hint (str): Can be used to pre-fill the username/email address field of the IdP sign-in page for the user,
                 if you know their username ahead of time. Currently, this parameter is supported for OAuth, OpenID Connect,
                 OktaSAML, and AzureSAML connection types. (Optional)
-            state (str) - An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
+            state (str): An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
                 back as a query parameter. (Optional)
-            code_challenge (str) - Code challenge is derived from the code verifier used for the PKCE flow. (Optional)
+            code_challenge (str): Code challenge is derived from the code verifier used for the PKCE flow. (Optional)
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
@@ -568,7 +568,7 @@ class UserManagementModule(Protocol):
         """Get the details of a password reset object.
 
         Args:
-            password_reset_id (str) -  The unique ID of the password reset object.
+            password_reset_id (str):  The unique ID of the password reset object.
 
         Returns:
             PasswordReset: PasswordReset response from WorkOS.
@@ -605,7 +605,7 @@ class UserManagementModule(Protocol):
         """Get the details of an email verification object.
 
         Args:
-            email_verification_id (str) -  The unique ID of the email verification object.
+            email_verification_id (str):  The unique ID of the email verification object.
 
         Returns:
             EmailVerification: EmailVerification response from WorkOS.
@@ -639,7 +639,7 @@ class UserManagementModule(Protocol):
         """Get the details of a Magic Auth object.
 
         Args:
-            magic_auth_id (str) -  The unique ID of the Magic Auth object.
+            magic_auth_id (str):  The unique ID of the Magic Auth object.
 
         Returns:
             MagicAuth: MagicAuth response from WorkOS.
@@ -781,7 +781,7 @@ class UserManagementModule(Protocol):
         """Revokes an existing Invitation.
 
         Args:
-            invitation_id (str) -  The unique ID of the Invitation.
+            invitation_id (str):  The unique ID of the Invitation.
 
         Returns:
             Invitation: Invitation response from WorkOS.

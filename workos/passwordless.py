@@ -20,7 +20,7 @@ class PasswordlessModule(Protocol):
     ) -> PasswordlessSession:
         """Create a Passwordless Session.
 
-        Args:
+        Kwargs:
             email (str): The email of the user to authenticate.
             type (PasswordlessSessionType): The type of Passwordless Session to
                 create. Currently, the only supported value is 'MagicLink'.

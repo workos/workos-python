@@ -29,7 +29,7 @@ class EventsModule(Protocol):
         Kwargs:
             events (Sequence[EventType]): Filter to only return events of particular types.
             limit (int): Maximum number of records to return. (Optional)
-            organization_id(str): Organization ID limits scope of events to a single organization. (Optional)
+            organization_id (str): Organization ID limits scope of events to a single organization. (Optional)
             after (str): Pagination cursor to receive records after a provided Event ID. (Optional)
             range_start (str): Date range start for stream of events. (Optional)
             range_end (str): Date range end for stream of events. (Optional)

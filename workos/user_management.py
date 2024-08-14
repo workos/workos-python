@@ -947,7 +947,7 @@ class UserManagement(UserManagementModule):
         params: OrganizationMembershipsListFilters = {
             "user_id": user_id,
             "organization_id": organization_id,
-            "statuses": ",".join(statuses) if statuses else None,
+            "statuses": statuses,
             "limit": limit,
             "before": before,
             "after": after,
@@ -1521,7 +1521,7 @@ class AsyncUserManagement(UserManagementModule):
         params: OrganizationMembershipsListFilters = {
             "user_id": user_id,
             "organization_id": organization_id,
-            "statuses": ",".join(statuses) if statuses else None,
+            "statuses": statuses,
             "limit": limit,
             "before": before,
             "after": after,

@@ -2,7 +2,8 @@ from typing import Optional, Protocol, Sequence
 
 from workos.types.organizations.domain_data_input import DomainDataInput
 from workos.types.organizations.list_filters import OrganizationListFilters
-from workos.utils.http_client import SyncHTTPClient
+from workos.typing.sync_or_async import SyncOrAsync
+from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
@@ -33,7 +34,7 @@ class OrganizationsModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> OrganizationsListResource:
+    ) -> SyncOrAsync[OrganizationsListResource]:
         """Retrieve a list of organizations that have connections configured within your WorkOS dashboard.
 
         Kwargs:
@@ -48,7 +49,7 @@ class OrganizationsModule(Protocol):
         """
         ...
 
-    def get_organization(self, organization_id: str) -> Organization:
+    def get_organization(self, organization_id: str) -> SyncOrAsync[Organization]:
         """Gets details for a single Organization
 
         Args:
@@ -58,7 +59,9 @@ class OrganizationsModule(Protocol):
         """
         ...
 
-    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
+    def get_organization_by_lookup_key(
+        self, lookup_key: str
+    ) -> SyncOrAsync[Organization]:
         """Gets details for a single Organization by lookup key
 
         Args:
@@ -75,7 +78,18 @@ class OrganizationsModule(Protocol):
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
-    ) -> Organization: ...
+    ) -> SyncOrAsync[Organization]:
+        """Create an organization
+
+        Kwargs:
+            name (str): A descriptive name for the organization. (Optional)
+            domain_data (Sequence[DomainDataInput]): List of domains that belong to the organization. (Optional)
+            idempotency_key (str): Key to guarantee idempotency across requests. (Optional)
+
+        Returns:
+            Organization: Updated Organization response from WorkOS.
+        """
+        ...
 
     def update_organization(
         self,
@@ -83,13 +97,12 @@ class OrganizationsModule(Protocol):
         organization_id: str,
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
-    ) -> Organization:
+    ) -> SyncOrAsync[Organization]:
         """Update an organization
 
         Kwargs:
             organization (str): Organization's unique identifier.
             name (str): A descriptive name for the organization. (Optional)
-            domains (list): [Deprecated] Use domain_data instead. List of domains that belong to the organization. (Optional)
             domain_data (Sequence[DomainDataInput]): List of domains that belong to the organization. (Optional)
 
         Returns:
@@ -97,7 +110,7 @@ class OrganizationsModule(Protocol):
         """
         ...
 
-    def delete_organization(self, organization_id: str) -> None:
+    def delete_organization(self, organization_id: str) -> SyncOrAsync[None]:
         """Deletes a single Organization
 
         Args:
@@ -167,7 +180,6 @@ class Organizations(OrganizationsModule):
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
     ) -> Organization:
-        """Create an organization"""
         headers = {}
         if idempotency_key:
             headers["idempotency-key"] = idempotency_key
@@ -207,6 +219,108 @@ class Organizations(OrganizationsModule):
 
     def delete_organization(self, organization_id: str) -> None:
         self._http_client.request(
+            f"organizations/{organization_id}",
+            method=REQUEST_METHOD_DELETE,
+        )
+
+
+class AsyncOrganizations(OrganizationsModule):
+
+    _http_client: AsyncHTTPClient
+
+    def __init__(self, http_client: AsyncHTTPClient):
+        self._http_client = http_client
+
+    async def list_organizations(
+        self,
+        *,
+        domains: Optional[Sequence[str]] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> OrganizationsListResource:
+        list_params: OrganizationListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+            "domains": domains,
+        }
+
+        response = await self._http_client.request(
+            ORGANIZATIONS_PATH,
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[Organization, OrganizationListFilters, ListMetadata](
+            list_method=self.list_organizations,
+            list_args=list_params,
+            **ListPage[Organization](**response).model_dump(),
+        )
+
+    async def get_organization(self, organization_id: str) -> Organization:
+        response = await self._http_client.request(
+            f"organizations/{organization_id}", method=REQUEST_METHOD_GET
+        )
+
+        return Organization.model_validate(response)
+
+    async def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
+        response = await self._http_client.request(
+            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            method=REQUEST_METHOD_GET,
+        )
+
+        return Organization.model_validate(response)
+
+    async def create_organization(
+        self,
+        *,
+        name: str,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
+        idempotency_key: Optional[str] = None,
+    ) -> Organization:
+        headers = {}
+        if idempotency_key:
+            headers["idempotency-key"] = idempotency_key
+
+        json = {
+            "name": name,
+            "domain_data": domain_data,
+            "idempotency_key": idempotency_key,
+        }
+
+        response = await self._http_client.request(
+            ORGANIZATIONS_PATH,
+            method=REQUEST_METHOD_POST,
+            json=json,
+            headers=headers,
+        )
+
+        return Organization.model_validate(response)
+
+    async def update_organization(
+        self,
+        *,
+        organization_id: str,
+        name: Optional[str] = None,
+        domain_data: Optional[Sequence[DomainDataInput]] = None,
+    ) -> Organization:
+        json = {
+            "name": name,
+            "domain_data": domain_data,
+        }
+
+        response = await self._http_client.request(
+            f"organizations/{organization_id}", method=REQUEST_METHOD_PUT, json=json
+        )
+
+        return Organization.model_validate(response)
+
+    async def delete_organization(self, organization_id: str) -> None:
+        await self._http_client.request(
             f"organizations/{organization_id}",
             method=REQUEST_METHOD_DELETE,
         )

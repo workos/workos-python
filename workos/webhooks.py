@@ -1,7 +1,6 @@
 import hashlib
 import hmac
 import time
-import hashlib
 from typing import Optional, Protocol
 from workos.types.webhooks.webhook import Webhook
 from workos.types.webhooks.webhook_payload import WebhookPayload

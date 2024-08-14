@@ -6,7 +6,7 @@ from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
 from workos.fga import FGAModule
 from workos.mfa import MFAModule
-from workos.organizations import OrganizationsModule
+from workos.organizations import AsyncOrganizations
 from workos.passwordless import PasswordlessModule
 from workos.portal import PortalModule
 from workos.sso import AsyncSSO
@@ -73,10 +73,10 @@ class AsyncClient(BaseClient):
         raise NotImplementedError("FGA APIs are not yet supported in the async client.")
 
     @property
-    def organizations(self) -> OrganizationsModule:
-        raise NotImplementedError(
-            "Organizations APIs are not yet supported in the async client."
-        )
+    def organizations(self) -> AsyncOrganizations:
+        if not getattr(self, "_organizations", None):
+            self._organizations = AsyncOrganizations(self._http_client)
+        return self._organizations
 
     @property
     def passwordless(self) -> PasswordlessModule:

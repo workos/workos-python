@@ -29,6 +29,7 @@ from workos.types.organizations import Organization
 from workos.types.sso import ConnectionWithDomains
 from workos.types.user_management import Invitation, OrganizationMembership, User
 from workos.types.workos_model import WorkOSModel
+from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT
 
 ListableResource = TypeVar(
     # add all possible generics of List Resource
@@ -99,13 +100,13 @@ class WorkOSListResource(
     list_args: ListAndFilterParams = Field(exclude=True)
 
     def _parse_params(
-        self,
+        self, limit_override: Optional[int] = None
     ) -> Tuple[Dict[str, Union[int, str, None]], Mapping[str, Any]]:
         fixed_pagination_params = cast(
             # Type hints consider this a mismatch because it assume the dictionary is dict[str, int]
             Dict[str, Union[int, str, None]],
             {
-                "limit": self.list_args["limit"],
+                "limit": limit_override or self.list_args["limit"],
             },
         )
         if "order" in self.list_args:
@@ -133,7 +134,10 @@ class WorkOSListResource(
             ListableResource, ListAndFilterParams, ListMetadataType
         ]
         after = self.list_metadata.after
-        fixed_pagination_params, filter_params = self._parse_params()
+        fixed_pagination_params, filter_params = self._parse_params(
+            # Singe we're auto-paginating, ignore the original limit and use the default
+            limit_override=DEFAULT_LIST_RESPONSE_LIMIT
+        )
         index: int = 0
 
         while True:

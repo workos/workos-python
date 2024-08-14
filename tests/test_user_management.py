@@ -1,5 +1,4 @@
 import json
-from os import sync
 
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest

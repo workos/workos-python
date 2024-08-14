@@ -214,7 +214,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
 
     def auth_header_from_token(self, token: str) -> Mapping[str, str]:
         return {
-            "Authorization": f"Bearer {token }",
+            "Authorization": f"Bearer {token}",
         }
 
     @property

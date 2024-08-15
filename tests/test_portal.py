@@ -85,7 +85,8 @@ class TestPortal(object):
         mock_http_client_with_response(self.http_client, mock_portal_link, 201)
 
         response = self.portal.generate_link(
-            intent="certificate_renewal", organization_id="org_01EHQMYV6MBK39QC5PZXHY59C3"
+            intent="certificate_renewal",
+            organization_id="org_01EHQMYV6MBK39QC5PZXHY59C3",
         )
 
         assert response.link == "https://id.workos.com/portal/launch?secret=secret"

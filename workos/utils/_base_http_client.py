@@ -1,7 +1,6 @@
 import platform
 from typing import (
     Any,
-    List,
     Mapping,
     Sequence,
     cast,
@@ -66,14 +65,13 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         timeout: Optional[int] = DEFAULT_REQUEST_TIMEOUT,
     ) -> None:
         self._api_key = api_key
-        # Template for constructing the URL for an API request
-        self._base_url = "{}{{}}".format(base_url)
+        self._base_url = base_url
         self._client_id = client_id
         self._version = version
         self._timeout = DEFAULT_REQUEST_TIMEOUT if timeout is None else timeout
 
     def _generate_api_url(self, path: str) -> str:
-        return self._base_url.format(path)
+        return f"{self._base_url}{path}"
 
     def _build_headers(
         self,

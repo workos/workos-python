@@ -1,7 +1,6 @@
 import json
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
-from tests.utils.client_configuration import client_configuration_for_http_client
 from tests.utils.fixtures.mock_profile import MockProfile
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from tests.utils.fixtures.mock_connection import MockConnection
@@ -50,13 +49,13 @@ class TestSSOBase(SSOFixtures):
     provider: SsoProviderType
 
     @pytest.fixture(autouse=True)
-    def setup(self, sync_http_client_for_test):
-        self.http_client = sync_http_client_for_test
+    def setup(self, sync_client_configuration_and_http_client_for_test):
+        client_configuration, http_client = (
+            sync_client_configuration_and_http_client_for_test
+        )
+        self.http_client = http_client
         self.sso = SSO(
-            http_client=self.http_client,
-            client_configuration=client_configuration_for_http_client(
-                sync_http_client_for_test
-            ),
+            http_client=self.http_client, client_configuration=client_configuration
         )
         self.provider = "GoogleOAuth"
         self.customer_domain = "workos.com"
@@ -218,13 +217,13 @@ class TestSSO(SSOFixtures):
     provider: SsoProviderType
 
     @pytest.fixture(autouse=True)
-    def setup(self, sync_http_client_for_test):
-        self.http_client = sync_http_client_for_test
+    def setup(self, sync_client_configuration_and_http_client_for_test):
+        client_configuration, http_client = (
+            sync_client_configuration_and_http_client_for_test
+        )
+        self.http_client = http_client
         self.sso = SSO(
-            http_client=self.http_client,
-            client_configuration=client_configuration_for_http_client(
-                sync_http_client_for_test
-            ),
+            http_client=self.http_client, client_configuration=client_configuration
         )
         self.provider = "GoogleOAuth"
         self.customer_domain = "workos.com"
@@ -342,13 +341,13 @@ class TestAsyncSSO(SSOFixtures):
     provider: SsoProviderType
 
     @pytest.fixture(autouse=True)
-    def setup(self, async_http_client_for_test):
-        self.http_client = async_http_client_for_test
+    def setup(self, async_client_configuration_and_http_client_for_test):
+        client_configuration, http_client = (
+            async_client_configuration_and_http_client_for_test
+        )
+        self.http_client = http_client
         self.sso = AsyncSSO(
-            http_client=self.http_client,
-            client_configuration=client_configuration_for_http_client(
-                async_http_client_for_test
-            ),
+            http_client=self.http_client, client_configuration=client_configuration
         )
         self.provider = "GoogleOAuth"
         self.customer_domain = "workos.com"

@@ -24,4 +24,4 @@ class RequestHelper:
     def build_url_with_query_params(
         cls, base_url: str, path: str, **params: QueryParameterValue
     ) -> str:
-        return base_url.format(path) + "?" + urllib.parse.urlencode(params)
+        return base_url + path + "?" + urllib.parse.urlencode(params)

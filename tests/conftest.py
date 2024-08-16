@@ -4,7 +4,6 @@ from unittest.mock import AsyncMock, MagicMock
 import httpx
 import pytest
 
-from tests.utils.client_configuration import ClientConfiguration
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.types.list_resource import WorkOSListResource
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient

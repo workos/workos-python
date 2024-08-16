@@ -1,6 +1,7 @@
 from typing import Literal, Optional
 
 from workos.types.workos_model import WorkOSModel
+from workos.typing.literals import LiteralOrUntyped
 
 
 AuditLogExportState = Literal["error", "pending", "ready"]
@@ -13,5 +14,5 @@ class AuditLogExport(WorkOSModel):
     id: str
     created_at: str
     updated_at: str
-    state: AuditLogExportState
+    state: LiteralOrUntyped[AuditLogExportState]
     url: Optional[str] = None

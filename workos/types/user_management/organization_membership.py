@@ -2,6 +2,7 @@ from typing import Literal
 from typing_extensions import TypedDict
 
 from workos.types.workos_model import WorkOSModel
+from workos.typing.literals import LiteralOrUntyped
 
 OrganizationMembershipStatus = Literal["active", "inactive", "pending"]
 
@@ -18,6 +19,6 @@ class OrganizationMembership(WorkOSModel):
     user_id: str
     organization_id: str
     role: OrganizationMembershipRole
-    status: OrganizationMembershipStatus
+    status: LiteralOrUntyped[OrganizationMembershipStatus]
     created_at: str
     updated_at: str

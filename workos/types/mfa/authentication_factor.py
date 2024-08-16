@@ -5,6 +5,7 @@ from workos.types.mfa.enroll_authentication_factor_type import (
     SmsAuthenticationFactorType,
     TotpAuthenticationFactorType,
 )
+from workos.typing.literals import LiteralOrUntyped
 
 
 AuthenticationFactorType = Literal[
@@ -38,7 +39,7 @@ class AuthenticationFactorBase(WorkOSModel):
     id: str
     created_at: str
     updated_at: str
-    type: AuthenticationFactorType
+    type: LiteralOrUntyped[AuthenticationFactorType]
     user_id: Optional[str] = None
 
 

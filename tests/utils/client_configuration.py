@@ -1,7 +1,6 @@
 from workos._client_configuration import (
     ClientConfiguration as ClientConfigurationProtocol,
 )
-from workos.utils._base_http_client import BaseHTTPClient
 
 
 class ClientConfiguration(ClientConfigurationProtocol):
@@ -21,13 +20,3 @@ class ClientConfiguration(ClientConfigurationProtocol):
     @property
     def request_timeout(self) -> int:
         return self._request_timeout
-
-
-def client_configuration_for_http_client(
-    http_client: BaseHTTPClient,
-) -> ClientConfiguration:
-    return ClientConfiguration(
-        base_url=http_client.base_url,
-        client_id=http_client.client_id,
-        request_timeout=http_client.timeout,
-    )

@@ -1,7 +1,6 @@
 import platform
 from typing import (
     Any,
-    List,
     Mapping,
     Sequence,
     cast,

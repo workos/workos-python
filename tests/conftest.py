@@ -4,8 +4,10 @@ from unittest.mock import AsyncMock, MagicMock
 import httpx
 import pytest
 
+from tests.utils.client_configuration import ClientConfiguration
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.types.list_resource import WorkOSListResource
+from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 
 
@@ -27,6 +29,44 @@ def async_http_client_for_test():
         client_id="client_b27needthisforssotemxo",
         version="test",
     )
+
+
+@pytest.fixture
+def sync_client_configuration_and_http_client_for_test():
+    base_url = "https://api.workos.test/"
+    client_id = "client_b27needthisforssotemxo"
+
+    client_configuration = ClientConfiguration(
+        base_url=base_url, client_id=client_id, request_timeout=DEFAULT_REQUEST_TIMEOUT
+    )
+
+    http_client = SyncHTTPClient(
+        api_key="sk_test",
+        base_url=base_url,
+        client_id=client_id,
+        version="test",
+    )
+
+    return client_configuration, http_client
+
+
+@pytest.fixture
+def async_client_configuration_and_http_client_for_test():
+    base_url = "https://api.workos.test/"
+    client_id = "client_b27needthisforssotemxo"
+
+    client_configuration = ClientConfiguration(
+        base_url=base_url, client_id=client_id, request_timeout=DEFAULT_REQUEST_TIMEOUT
+    )
+
+    http_client = AsyncHTTPClient(
+        api_key="sk_test",
+        base_url=base_url,
+        client_id=client_id,
+        version="test",
+    )
+
+    return client_configuration, http_client
 
 
 @pytest.fixture

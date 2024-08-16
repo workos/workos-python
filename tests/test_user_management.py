@@ -11,9 +11,6 @@ from tests.utils.fixtures.mock_organization_membership import MockOrganizationMe
 from tests.utils.fixtures.mock_password_reset import MockPasswordReset
 from tests.utils.fixtures.mock_user import MockUser
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
-from tests.utils.client_configuration import (
-    client_configuration_for_http_client,
-)
 from workos.user_management import AsyncUserManagement, UserManagement
 from workos.utils.request_helper import RESPONSE_TYPE_CODE
 
@@ -145,13 +142,13 @@ class UserManagementFixtures:
 
 class TestUserManagementBase(UserManagementFixtures):
     @pytest.fixture(autouse=True)
-    def setup(self, sync_http_client_for_test):
-        self.http_client = sync_http_client_for_test
+    def setup(self, sync_client_configuration_and_http_client_for_test):
+        client_configuration, http_client = (
+            sync_client_configuration_and_http_client_for_test
+        )
+        self.http_client = http_client
         self.user_management = UserManagement(
-            http_client=self.http_client,
-            client_configuration=client_configuration_for_http_client(
-                sync_http_client_for_test
-            ),
+            http_client=self.http_client, client_configuration=client_configuration
         )
 
     def test_authorization_url_throws_value_error_with_missing_connection_organization_and_provider(
@@ -317,13 +314,13 @@ class TestUserManagementBase(UserManagementFixtures):
 
 class TestUserManagement(UserManagementFixtures):
     @pytest.fixture(autouse=True)
-    def setup(self, sync_http_client_for_test):
-        self.http_client = sync_http_client_for_test
+    def setup(self, sync_client_configuration_and_http_client_for_test):
+        client_configuration, http_client = (
+            sync_client_configuration_and_http_client_for_test
+        )
+        self.http_client = http_client
         self.user_management = UserManagement(
-            http_client=self.http_client,
-            client_configuration=client_configuration_for_http_client(
-                sync_http_client_for_test
-            ),
+            http_client=self.http_client, client_configuration=client_configuration
         )
 
     def test_get_user(self, mock_user, capture_and_mock_http_client_request):
@@ -957,13 +954,13 @@ class TestUserManagement(UserManagementFixtures):
 @pytest.mark.asyncio
 class TestAsyncUserManagement(UserManagementFixtures):
     @pytest.fixture(autouse=True)
-    def setup(self, async_http_client_for_test):
-        self.http_client = async_http_client_for_test
+    def setup(self, async_client_configuration_and_http_client_for_test):
+        client_configuration, http_client = (
+            async_client_configuration_and_http_client_for_test
+        )
+        self.http_client = http_client
         self.user_management = AsyncUserManagement(
-            http_client=self.http_client,
-            client_configuration=client_configuration_for_http_client(
-                async_http_client_for_test
-            ),
+            http_client=self.http_client, client_configuration=client_configuration
         )
 
     async def test_get_user(self, mock_user, capture_and_mock_http_client_request):

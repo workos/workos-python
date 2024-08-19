@@ -235,55 +235,92 @@ class TestSSO(SSOFixtures):
         self.setup_completed = True
 
     def test_get_profile_and_token_returns_expected_profile_object(
-        self, mock_profile, mock_http_client_with_response
+        self, mock_profile, capture_and_mock_http_client_request
     ):
         response_dict = {
             "profile": mock_profile,
             "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
         }
 
-        mock_http_client_with_response(self.http_client, response_dict, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, response_dict, 200
+        )
 
         profile_and_token = self.sso.get_profile_and_token("123")
 
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.dict() == mock_profile
+        assert request_kwargs["url"].endswith("/sso/token")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "client_id": "client_b27needthisforssotemxo",
+            "client_secret": "sk_test",
+            "code": "123",
+            "grant_type": "authorization_code",
+        }
 
     def test_get_profile_and_token_without_first_name_or_last_name_returns_expected_profile_object(
-        self, mock_magic_link_profile, mock_http_client_with_response
+        self, mock_magic_link_profile, capture_and_mock_http_client_request
     ):
         response_dict = {
             "profile": mock_magic_link_profile,
             "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
         }
 
-        mock_http_client_with_response(self.http_client, response_dict, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, response_dict, 200
+        )
 
         profile_and_token = self.sso.get_profile_and_token("123")
 
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.dict() == mock_magic_link_profile
+        assert request_kwargs["url"].endswith("/sso/token")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "client_id": "client_b27needthisforssotemxo",
+            "client_secret": "sk_test",
+            "code": "123",
+            "grant_type": "authorization_code",
+        }
 
-    def test_get_profile(self, mock_profile, mock_http_client_with_response):
-        mock_http_client_with_response(self.http_client, mock_profile, 200)
+    def test_get_profile(self, mock_profile, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_profile, 200
+        )
 
         profile = self.sso.get_profile("123")
 
         assert profile.dict() == mock_profile
+        assert request_kwargs["url"].endswith("/sso/profile")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["headers"]["authorization"] == f"Bearer 123"
 
-    def test_get_connection(self, mock_connection, mock_http_client_with_response):
-        mock_http_client_with_response(self.http_client, mock_connection, 200)
+    def test_get_connection(
+        self, mock_connection, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_connection, 200
+        )
 
         connection = self.sso.get_connection(connection_id="connection_id")
 
         assert connection.dict() == mock_connection
+        assert request_kwargs["url"].endswith("/connections/connection_id")
+        assert request_kwargs["method"] == "get"
 
-    def test_list_connections(self, mock_connections, mock_http_client_with_response):
-        mock_http_client_with_response(self.http_client, mock_connections, 200)
+    def test_list_connections(
+        self, mock_connections, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_connections, 200
+        )
 
         connections = self.sso.list_connections()
 
         assert list_data_to_dicts(connections.data) == mock_connections["data"]
+        assert request_kwargs["url"].endswith("/connections")
+        assert request_kwargs["method"] == "get"
 
     def test_list_connections_with_connection_type(
         self, mock_connections, capture_and_mock_http_client_request
@@ -302,8 +339,8 @@ class TestSSO(SSOFixtures):
             "order": "desc",
         }
 
-    def test_delete_connection(self, mock_http_client_with_response):
-        mock_http_client_with_response(
+    def test_delete_connection(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client,
             status_code=204,
             headers={"content-type": "text/plain; charset=utf-8"},
@@ -311,14 +348,16 @@ class TestSSO(SSOFixtures):
 
         response = self.sso.delete_connection(connection_id="connection_id")
 
+        assert request_kwargs["url"].endswith("/connections/connection_id")
+        assert request_kwargs["method"] == "delete"
         assert response is None
 
     def test_list_connections_auto_pagination(
         self,
         mock_connections_multiple_data_pages,
-        mock_pagination_request_for_http_client,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
             data_list=mock_connections_multiple_data_pages,
             status_code=200,
@@ -334,6 +373,9 @@ class TestSSO(SSOFixtures):
         assert (
             list_data_to_dicts(all_connections)
         ) == mock_connections_multiple_data_pages
+        assert request_kwargs["url"].endswith("/connections")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {"after": "39", "limit": 10, "order": "desc"}
 
 
 @pytest.mark.asyncio
@@ -359,59 +401,94 @@ class TestAsyncSSO(SSOFixtures):
         self.setup_completed = True
 
     async def test_get_profile_and_token_returns_expected_profile_object(
-        self, mock_profile: Profile, mock_http_client_with_response
+        self, mock_profile: Profile, capture_and_mock_http_client_request
     ):
         response_dict = {
             "profile": mock_profile,
             "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
         }
 
-        mock_http_client_with_response(self.http_client, response_dict, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, response_dict, 200
+        )
 
         profile_and_token = await self.sso.get_profile_and_token("123")
 
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.dict() == mock_profile
+        assert request_kwargs["url"].endswith("/sso/token")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "client_id": "client_b27needthisforssotemxo",
+            "client_secret": "sk_test",
+            "code": "123",
+            "grant_type": "authorization_code",
+        }
 
     async def test_get_profile_and_token_without_first_name_or_last_name_returns_expected_profile_object(
-        self, mock_magic_link_profile, mock_http_client_with_response
+        self, mock_magic_link_profile, capture_and_mock_http_client_request
     ):
         response_dict = {
             "profile": mock_magic_link_profile,
             "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
         }
 
-        mock_http_client_with_response(self.http_client, response_dict, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, response_dict, 200
+        )
 
         profile_and_token = await self.sso.get_profile_and_token("123")
 
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.dict() == mock_magic_link_profile
+        assert request_kwargs["url"].endswith("/sso/token")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "client_id": "client_b27needthisforssotemxo",
+            "client_secret": "sk_test",
+            "code": "123",
+            "grant_type": "authorization_code",
+        }
 
-    async def test_get_profile(self, mock_profile, mock_http_client_with_response):
-        mock_http_client_with_response(self.http_client, mock_profile, 200)
+    async def test_get_profile(
+        self, mock_profile, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_profile, 200
+        )
 
         profile = await self.sso.get_profile("123")
 
         assert profile.dict() == mock_profile
+        assert request_kwargs["url"].endswith("/sso/profile")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["headers"]["authorization"] == f"Bearer 123"
 
     async def test_get_connection(
-        self, mock_connection, mock_http_client_with_response
+        self, mock_connection, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_connection, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_connection, 200
+        )
 
         connection = await self.sso.get_connection(connection_id="connection_id")
 
         assert connection.dict() == mock_connection
+        assert request_kwargs["url"].endswith("/connections/connection_id")
+        assert request_kwargs["method"] == "get"
 
     async def test_list_connections(
-        self, mock_connections, mock_http_client_with_response
+        self, mock_connections, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_connections, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_connections, 200
+        )
 
         connections = await self.sso.list_connections()
 
         assert list_data_to_dicts(connections.data) == mock_connections["data"]
+        assert request_kwargs["url"].endswith("/connections")
+        assert request_kwargs["method"] == "get"
 
     async def test_list_connections_with_connection_type(
         self, mock_connections, capture_and_mock_http_client_request
@@ -430,23 +507,25 @@ class TestAsyncSSO(SSOFixtures):
             "order": "desc",
         }
 
-    async def test_delete_connection(self, mock_http_client_with_response):
-        mock_http_client_with_response(
+    async def test_delete_connection(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client,
             status_code=204,
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
         response = await self.sso.delete_connection(connection_id="connection_id")
+        assert request_kwargs["url"].endswith("/connections/connection_id")
+        assert request_kwargs["method"] == "delete"
 
         assert response is None
 
     async def test_list_connections_auto_pagination(
         self,
         mock_connections_multiple_data_pages,
-        mock_pagination_request_for_http_client,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
             data_list=mock_connections_multiple_data_pages,
             status_code=200,
@@ -462,3 +541,6 @@ class TestAsyncSSO(SSOFixtures):
         assert (
             list_data_to_dicts(all_connections)
         ) == mock_connections_multiple_data_pages
+        assert request_kwargs["url"].endswith("/connections")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {"after": "39", "limit": 10, "order": "desc"}

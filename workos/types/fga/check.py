@@ -3,8 +3,7 @@ from typing import Any, Literal, Mapping, Optional, Sequence, TypedDict
 from workos.types.workos_model import WorkOSModel
 from workos.typing.literals import LiteralOrUntyped
 
-from .warrant import Subject
-
+from .warrant import Subject, SubjectInput
 
 CheckOperation = Literal["any_of", "all_of", "batch"]
 
@@ -13,8 +12,8 @@ class WarrantCheckInput(TypedDict, total=False):
     resource_type: str
     resource_id: str
     relation: str
-    subject: Subject
-    context: Optional[Mapping[str, Any]]
+    subject: SubjectInput
+    context: Optional[Mapping[str, Any]] = None
 
 
 class WarrantCheck(WorkOSModel):

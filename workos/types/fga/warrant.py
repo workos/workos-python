@@ -4,6 +4,12 @@ from typing_extensions import TypedDict
 from workos.types.workos_model import WorkOSModel
 
 
+class SubjectInput(TypedDict, total=False):
+    resource_type: str
+    resource_id: str
+    relation: Optional[str]
+
+
 class Subject(WorkOSModel):
     resource_type: str
     resource_id: str
@@ -30,7 +36,7 @@ class WarrantWrite(TypedDict, total=False):
     resource_type: str
     resource_id: str
     relation: str
-    subject: Subject
+    subject: SubjectInput
     policy: Optional[str]
 
 

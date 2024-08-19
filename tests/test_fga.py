@@ -8,9 +8,9 @@ from workos.exceptions import (
 )
 from workos.fga import FGA
 from workos.types.fga import (
-    Subject,
     WarrantCheckInput,
     WarrantWrite,
+    SubjectInput,
 )
 
 
@@ -356,7 +356,7 @@ class TestFGA:
                     resource_type="permission",
                     resource_id="view-balance-sheet",
                     relation="member",
-                    subject=Subject(
+                    subject=SubjectInput(
                         resource_type="role",
                         resource_id="senior-accountant",
                         relation="member",
@@ -367,7 +367,7 @@ class TestFGA:
                     resource_type="permission",
                     resource_id="balance-sheet:edit",
                     relation="member",
-                    subject=Subject(
+                    subject=SubjectInput(
                         resource_type="user",
                         resource_id="user-b",
                     ),
@@ -392,7 +392,7 @@ class TestFGA:
                     resource_type="schedule",
                     resource_id="schedule-A1",
                     relation="viewer",
-                    subject=Subject(resource_type="user", resource_id="user-A"),
+                    subject=SubjectInput(resource_type="user", resource_id="user-A"),
                 )
             ],
         )
@@ -451,7 +451,7 @@ class TestFGA:
                     resource_type="report",
                     resource_id="report-a",
                     relation="editor",
-                    subject=Subject(resource_type="user", resource_id="user-b"),
+                    subject=SubjectInput(resource_type="user", resource_id="user-b"),
                     context={"tenant": "tenant-b"},
                 )
             ],
@@ -477,13 +477,13 @@ class TestFGA:
                     resource_type="schedule",
                     resource_id="schedule-A1",
                     relation="viewer",
-                    subject=Subject(resource_type="user", resource_id="user-A"),
+                    subject=SubjectInput(resource_type="user", resource_id="user-A"),
                 ),
                 WarrantCheckInput(
                     resource_type="schedule",
                     resource_id="schedule-A1",
                     relation="editor",
-                    subject=Subject(resource_type="user", resource_id="user-B"),
+                    subject=SubjectInput(resource_type="user", resource_id="user-B"),
                 ),
             ]
         )

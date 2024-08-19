@@ -9,7 +9,8 @@ from workos.exceptions import (
 from workos.fga import FGA
 from workos.types.fga import (
     WarrantCheckInput,
-    WarrantWrite, SubjectInput,
+    WarrantWrite,
+    SubjectInput,
 )
 
 

@@ -1,5 +1,4 @@
 import json
-import re
 
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest

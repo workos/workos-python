@@ -11,6 +11,7 @@ from tests.utils.fixtures.mock_organization_membership import MockOrganizationMe
 from tests.utils.fixtures.mock_password_reset import MockPasswordReset
 from tests.utils.fixtures.mock_user import MockUser
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
+from workos.types.user_management.invitation import Invitation
 from workos.user_management import AsyncUserManagement, UserManagement
 from workos.utils.request_helper import RESPONSE_TYPE_CODE
 
@@ -328,11 +329,11 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_user, 200
         )
 
-        user = self.user_management.get_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        user = self.user_management.get_user(user_id=user_id)
 
-        assert request_kwargs["url"].endswith(
-            "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        )
+        assert request_kwargs["url"].endswith(f"user_management/users/{user_id}")
+        assert request_kwargs["method"] == "get"
         assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert user.profile_picture_url == "https://example.com/profile-picture.jpg"
 
@@ -345,8 +346,10 @@ class TestUserManagement(UserManagementFixtures):
             expected_all_page_data=mock_users_multiple_pages["data"],
         )
 
-    def test_create_user(self, mock_user, mock_http_client_with_response):
-        mock_http_client_with_response(self.http_client, mock_user, 201)
+    def test_create_user(self, mock_user, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_user, 201
+        )
 
         payload = {
             "email": "marcelina@foo-corp.com",
@@ -357,6 +360,8 @@ class TestUserManagement(UserManagementFixtures):
         }
         user = self.user_management.create_user(**payload)
 
+        assert request_kwargs["url"].endswith("user_management/users")
+        assert request_kwargs["json"] == payload
         assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_update_user(self, mock_user, capture_and_mock_http_client_request):
@@ -376,22 +381,26 @@ class TestUserManagement(UserManagementFixtures):
 
         assert request_kwargs["url"].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
         assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        assert request_kwargs["json"]["first_name"] == "Marcelina"
-        assert request_kwargs["json"]["last_name"] == "Hoeger"
-        assert request_kwargs["json"]["email_verified"] == True
-        assert request_kwargs["json"]["password"] == "password"
+        assert request_kwargs["method"] == "put"
+        assert request_kwargs["json"] == {
+            "first_name": "Marcelina",
+            "last_name": "Hoeger",
+            "email_verified": True,
+            "password": "password",
+        }
 
     def test_delete_user(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client, status_code=204
         )
 
-        user = self.user_management.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        response = self.user_management.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
 
         assert request_kwargs["url"].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         )
-        assert user is None
+        assert request_kwargs["method"] == "delete"
+        assert response is None
 
     def test_create_organization_membership(
         self, capture_and_mock_http_client_request, mock_organization_membership
@@ -409,6 +418,11 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships"
         )
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "user_id": user_id,
+            "organization_id": organization_id,
+        }
         assert organization_membership.user_id == user_id
         assert organization_membership.organization_id == organization_id
 
@@ -427,6 +441,8 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE"
         )
+        assert request_kwargs["method"] == "put"
+        assert request_kwargs["json"] == {"role_slug": "member"}
         assert organization_membership.id == "om_ABCDE"
         assert organization_membership.role == {"slug": "member"}
 
@@ -442,6 +458,7 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE"
         )
+        assert request_kwargs["method"] == "get"
         assert om.id == "om_ABCDE"
 
     def test_delete_organization_membership(self, capture_and_mock_http_client_request):
@@ -449,12 +466,13 @@ class TestUserManagement(UserManagementFixtures):
             http_client=self.http_client, status_code=200
         )
 
-        user = self.user_management.delete_organization_membership("om_ABCDE")
+        response = self.user_management.delete_organization_membership("om_ABCDE")
 
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE"
         )
-        assert user is None
+        assert request_kwargs["method"] == "delete"
+        assert response is None
 
     def test_list_organization_memberships_auto_pagination(
         self, mock_organization_memberships_multiple_pages, test_sync_auto_pagination
@@ -477,6 +495,7 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE/deactivate"
         )
+        assert request_kwargs["method"] == "put"
         assert om.id == "om_ABCDE"
 
     def test_reactivate_organization_membership(
@@ -491,6 +510,7 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE/reactivate"
         )
+        assert request_kwargs["method"] == "put"
         assert om.id == "om_ABCDE"
 
     def test_authenticate_with_password(
@@ -512,6 +532,7 @@ class TestUserManagement(UserManagementFixtures):
         response = self.user_management.authenticate_with_password(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -541,6 +562,7 @@ class TestUserManagement(UserManagementFixtures):
         response = self.user_management.authenticate_with_code(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -566,6 +588,7 @@ class TestUserManagement(UserManagementFixtures):
         response = self.user_management.authenticate_with_code(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.impersonator is not None
         assert response.impersonator.dict() == {
@@ -575,9 +598,6 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["json"] == {
             **params,
             **base_authentication_params,
-            "code_verifier": None,
-            "ip_address": None,
-            "user_agent": None,
             "grant_type": "authorization_code",
         }
 
@@ -601,6 +621,7 @@ class TestUserManagement(UserManagementFixtures):
         response = self.user_management.authenticate_with_magic_auth(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -609,7 +630,6 @@ class TestUserManagement(UserManagementFixtures):
             **params,
             **base_authentication_params,
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
-            "link_authorization_code": None,
         }
 
     def test_authenticate_with_email_verification(
@@ -632,6 +652,7 @@ class TestUserManagement(UserManagementFixtures):
         response = self.user_management.authenticate_with_email_verification(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -662,6 +683,7 @@ class TestUserManagement(UserManagementFixtures):
         response = self.user_management.authenticate_with_totp(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -693,6 +715,7 @@ class TestUserManagement(UserManagementFixtures):
         )
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -721,12 +744,12 @@ class TestUserManagement(UserManagementFixtures):
         response = self.user_management.authenticate_with_refresh_token(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.access_token == "access_token_12345"
         assert response.refresh_token == "refresh_token_12345"
         assert request_kwargs["json"] == {
             **params,
             **base_authentication_params,
-            "organization_id": None,
             "grant_type": "refresh_token",
         }
 
@@ -742,6 +765,7 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/password_reset/password_reset_ABCDE"
         )
+        assert request_kwargs["method"] == "get"
         assert password_reset.id == "password_reset_ABCDE"
 
     def test_create_password_reset(
@@ -755,10 +779,12 @@ class TestUserManagement(UserManagementFixtures):
         password_reset = self.user_management.create_password_reset(email=email)
 
         assert request_kwargs["url"].endswith("user_management/password_reset")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {"email": email}
         assert password_reset.email == email
 
     def test_reset_password(self, capture_and_mock_http_client_request, mock_user):
-        params = {
+        json = {
             "token": "token123",
             "new_password": "pass123",
         }
@@ -766,11 +792,12 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, {"user": mock_user}, 200
         )
 
-        response = self.user_management.reset_password(**params)
+        response = self.user_management.reset_password(**json)
 
         assert request_kwargs["url"].endswith("user_management/password_reset/confirm")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == json
         assert response.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        assert request_kwargs["json"] == params
 
     def test_get_email_verification(
         self, mock_email_verification, capture_and_mock_http_client_request
@@ -786,6 +813,7 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/email_verification/email_verification_ABCDE"
         )
+        assert request_kwargs["method"] == "get"
         assert email_verification.id == "email_verification_ABCDE"
 
     def test_send_verification_email(
@@ -802,6 +830,7 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/email_verification/send"
         )
+        assert request_kwargs["method"] == "post"
         assert response.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_verify_email(self, capture_and_mock_http_client_request, mock_user):
@@ -817,7 +846,8 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/email_verification/confirm"
         )
-        assert request_kwargs["json"]["code"] == code
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {"code": code}
         assert response.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     def test_get_magic_auth(
@@ -832,6 +862,7 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/magic_auth/magic_auth_ABCDE"
         )
+        assert request_kwargs["method"] == "get"
         assert magic_auth.id == "magic_auth_ABCDE"
 
     def test_create_magic_auth(
@@ -845,10 +876,12 @@ class TestUserManagement(UserManagementFixtures):
         magic_auth = self.user_management.create_magic_auth(email=email)
 
         assert request_kwargs["url"].endswith("user_management/magic_auth")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {"email": email}
         assert magic_auth.email == email
 
     def test_enroll_auth_factor(
-        self, mock_enroll_auth_factor_response, mock_http_client_with_response
+        self, mock_enroll_auth_factor_response, capture_and_mock_http_client_request
     ):
         user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         type = "totp"
@@ -856,7 +889,7 @@ class TestUserManagement(UserManagementFixtures):
         totp_user = "marcelina@foo-corp.com"
         totp_secret = "secret-test"
 
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client, mock_enroll_auth_factor_response, 200
         )
 
@@ -868,17 +901,44 @@ class TestUserManagement(UserManagementFixtures):
             totp_secret=totp_secret,
         )
 
+        assert request_kwargs["url"].endswith(
+            "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/auth_factors"
+        )
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "type": "totp",
+            "totp_issuer": "WorkOS",
+            "totp_user": "marcelina@foo-corp.com",
+            "totp_secret": "secret-test",
+        }
         assert enroll_auth_factor.dict() == mock_enroll_auth_factor_response
 
     def test_list_auth_factors_auto_pagination(
-        self, mock_auth_factors_multiple_pages, test_sync_auto_pagination
+        self,
+        mock_auth_factors_multiple_pages,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        test_sync_auto_pagination(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
-            list_function=self.user_management.list_auth_factors,
-            list_function_params={"user_id": "user_12345"},
-            expected_all_page_data=mock_auth_factors_multiple_pages["data"],
+            data_list=mock_auth_factors_multiple_pages["data"],
+            status_code=200,
         )
+
+        auth_factors = self.user_management.list_auth_factors(user_id="user_12345")
+        all_auth_factors = []
+
+        for auth_factor in auth_factors:
+            all_auth_factors.append(auth_factor)
+
+        assert len(all_auth_factors) == len(mock_auth_factors_multiple_pages["data"])
+        assert (
+            list_data_to_dicts(all_auth_factors)
+        ) == mock_auth_factors_multiple_pages["data"]
+        assert request_kwargs["url"].endswith(
+            "user_management/users/user_12345/auth_factors"
+        )
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {"after": "39", "limit": 10, "order": "desc"}
 
     def test_get_invitation(
         self, mock_invitation, capture_and_mock_http_client_request
@@ -892,6 +952,7 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/invitations/invitation_ABCDE"
         )
+        assert request_kwargs["method"] == "get"
         assert invitation.id == "invitation_ABCDE"
 
     def test_find_invitation_by_token(
@@ -908,6 +969,7 @@ class TestUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/invitations/by_token/Z1uX3RbwcIl5fIGJJJCXXisdI"
         )
+        assert request_kwargs["method"] == "get"
         assert invitation.token == "Z1uX3RbwcIl5fIGJJJCXXisdI"
 
     def test_list_invitations_auto_pagination(
@@ -934,6 +996,10 @@ class TestUserManagement(UserManagementFixtures):
         )
 
         assert request_kwargs["url"].endswith("user_management/invitations")
+        assert request_kwargs["json"] == {
+            "email": email,
+            "organization_id": organization_id,
+        }
         assert invitation.email == email
         assert invitation.organization_id == organization_id
 
@@ -944,11 +1010,13 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_invitation, 200
         )
 
-        self.user_management.revoke_invitation("invitation_ABCDE")
+        invitation = self.user_management.revoke_invitation("invitation_ABCDE")
 
         assert request_kwargs["url"].endswith(
             "user_management/invitations/invitation_ABCDE/revoke"
         )
+        assert request_kwargs["method"] == "post"
+        assert isinstance(invitation, Invitation)
 
 
 @pytest.mark.asyncio
@@ -968,18 +1036,20 @@ class TestAsyncUserManagement(UserManagementFixtures):
             self.http_client, mock_user, 200
         )
 
+        user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         user = await self.user_management.get_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
 
-        assert request_kwargs["url"].endswith(
-            "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        )
+        assert request_kwargs["url"].endswith(f"user_management/users/{user_id}")
+        assert request_kwargs["method"] == "get"
         assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert user.profile_picture_url == "https://example.com/profile-picture.jpg"
 
     async def test_list_users_auto_pagination(
-        self, mock_users_multiple_pages, mock_pagination_request_for_http_client
+        self,
+        mock_users_multiple_pages,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
             data_list=mock_users_multiple_pages["data"],
             status_code=200,
@@ -993,9 +1063,14 @@ class TestAsyncUserManagement(UserManagementFixtures):
 
         assert len(all_users) == len(mock_users_multiple_pages["data"])
         assert (list_data_to_dicts(all_users)) == mock_users_multiple_pages["data"]
+        assert request_kwargs["url"].endswith("user_management/users")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {"after": "39", "limit": 10, "order": "desc"}
 
-    async def test_create_user(self, mock_user, mock_http_client_with_response):
-        mock_http_client_with_response(self.http_client, mock_user, 201)
+    async def test_create_user(self, mock_user, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_user, 201
+        )
 
         payload = {
             "email": "marcelina@foo-corp.com",
@@ -1006,6 +1081,8 @@ class TestAsyncUserManagement(UserManagementFixtures):
         }
         user = await self.user_management.create_user(**payload)
 
+        assert request_kwargs["url"].endswith("user_management/users")
+        assert request_kwargs["json"] == payload
         assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     async def test_update_user(self, mock_user, capture_and_mock_http_client_request):
@@ -1025,22 +1102,28 @@ class TestAsyncUserManagement(UserManagementFixtures):
 
         assert request_kwargs["url"].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
         assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        assert request_kwargs["json"]["first_name"] == "Marcelina"
-        assert request_kwargs["json"]["last_name"] == "Hoeger"
-        assert request_kwargs["json"]["email_verified"] == True
-        assert request_kwargs["json"]["password"] == "password"
+        assert request_kwargs["method"] == "put"
+        assert request_kwargs["json"] == {
+            "first_name": "Marcelina",
+            "last_name": "Hoeger",
+            "email_verified": True,
+            "password": "password",
+        }
 
     async def test_delete_user(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client, status_code=204
         )
 
-        user = await self.user_management.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        response = await self.user_management.delete_user(
+            "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        )
 
         assert request_kwargs["url"].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         )
-        assert user is None
+        assert request_kwargs["method"] == "delete"
+        assert response is None
 
     async def test_create_organization_membership(
         self, capture_and_mock_http_client_request, mock_organization_membership
@@ -1060,6 +1143,11 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships"
         )
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "user_id": user_id,
+            "organization_id": organization_id,
+        }
         assert organization_membership.user_id == user_id
         assert organization_membership.organization_id == organization_id
 
@@ -1080,6 +1168,8 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE"
         )
+        assert request_kwargs["method"] == "put"
+        assert request_kwargs["json"] == {"role_slug": "member"}
         assert organization_membership.id == "om_ABCDE"
         assert organization_membership.role == {"slug": "member"}
 
@@ -1095,6 +1185,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE"
         )
+        assert request_kwargs["method"] == "get"
         assert om.id == "om_ABCDE"
 
     async def test_delete_organization_membership(
@@ -1104,19 +1195,20 @@ class TestAsyncUserManagement(UserManagementFixtures):
             http_client=self.http_client, status_code=200
         )
 
-        user = await self.user_management.delete_organization_membership("om_ABCDE")
+        response = await self.user_management.delete_organization_membership("om_ABCDE")
 
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE"
         )
-        assert user is None
+        assert request_kwargs["method"] == "delete"
+        assert response is None
 
     async def test_list_organization_memberships_auto_pagination(
         self,
         mock_organization_memberships_multiple_pages,
-        mock_pagination_request_for_http_client,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
             data_list=mock_organization_memberships_multiple_pages["data"],
             status_code=200,
@@ -1136,6 +1228,11 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert (
             list_data_to_dicts(all_organization_memberships)
         ) == mock_organization_memberships_multiple_pages["data"]
+        assert request_kwargs["url"].endswith(
+            "user_management/organization_memberships"
+        )
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {"after": "39", "limit": 10, "order": "desc"}
 
     async def test_deactivate_organization_membership(
         self, mock_organization_membership, capture_and_mock_http_client_request
@@ -1149,6 +1246,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE/deactivate"
         )
+        assert request_kwargs["method"] == "put"
         assert om.id == "om_ABCDE"
 
     async def test_reactivate_organization_membership(
@@ -1163,6 +1261,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE/reactivate"
         )
+        assert request_kwargs["method"] == "put"
         assert om.id == "om_ABCDE"
 
     async def test_authenticate_with_password(
@@ -1184,6 +1283,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         response = await self.user_management.authenticate_with_password(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -1213,6 +1313,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         response = await self.user_management.authenticate_with_code(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -1238,6 +1339,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         response = await self.user_management.authenticate_with_code(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.impersonator is not None
         assert response.impersonator.dict() == {
@@ -1247,9 +1349,6 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["json"] == {
             **params,
             **base_authentication_params,
-            "code_verifier": None,
-            "ip_address": None,
-            "user_agent": None,
             "grant_type": "authorization_code",
         }
 
@@ -1273,6 +1372,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         response = await self.user_management.authenticate_with_magic_auth(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -1281,7 +1381,6 @@ class TestAsyncUserManagement(UserManagementFixtures):
             **params,
             **base_authentication_params,
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
-            "link_authorization_code": None,
         }
 
     async def test_authenticate_with_email_verification(
@@ -1306,6 +1405,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         )
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -1336,6 +1436,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         response = await self.user_management.authenticate_with_totp(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -1367,6 +1468,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         )
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert response.organization_id == "org_12345"
         assert response.access_token == "access_token_12345"
@@ -1395,12 +1497,12 @@ class TestAsyncUserManagement(UserManagementFixtures):
         response = await self.user_management.authenticate_with_refresh_token(**params)
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
         assert response.access_token == "access_token_12345"
         assert response.refresh_token == "refresh_token_12345"
         assert request_kwargs["json"] == {
             **params,
             **base_authentication_params,
-            "organization_id": None,
             "grant_type": "refresh_token",
         }
 
@@ -1418,6 +1520,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/password_reset/password_reset_ABCDE"
         )
+        assert request_kwargs["method"] == "get"
         assert password_reset.id == "password_reset_ABCDE"
 
     async def test_create_password_reset(
@@ -1431,12 +1534,14 @@ class TestAsyncUserManagement(UserManagementFixtures):
         password_reset = await self.user_management.create_password_reset(email=email)
 
         assert request_kwargs["url"].endswith("user_management/password_reset")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {"email": email}
         assert password_reset.email == email
 
     async def test_reset_password(
         self, capture_and_mock_http_client_request, mock_user
     ):
-        params = {
+        json = {
             "token": "token123",
             "new_password": "pass123",
         }
@@ -1444,11 +1549,12 @@ class TestAsyncUserManagement(UserManagementFixtures):
             self.http_client, {"user": mock_user}, 200
         )
 
-        response = await self.user_management.reset_password(**params)
+        response = await self.user_management.reset_password(**json)
 
         assert request_kwargs["url"].endswith("user_management/password_reset/confirm")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == json
         assert response.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        assert request_kwargs["json"] == params
 
     async def test_get_email_verification(
         self, mock_email_verification, capture_and_mock_http_client_request
@@ -1464,6 +1570,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/email_verification/email_verification_ABCDE"
         )
+        assert request_kwargs["method"] == "get"
         assert email_verification.id == "email_verification_ABCDE"
 
     async def test_send_verification_email(
@@ -1480,6 +1587,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/email_verification/send"
         )
+        assert request_kwargs["method"] == "post"
         assert response.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     async def test_verify_email(self, capture_and_mock_http_client_request, mock_user):
@@ -1495,7 +1603,8 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/email_verification/confirm"
         )
-        assert request_kwargs["json"]["code"] == code
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {"code": code}
         assert response.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
 
     async def test_get_magic_auth(
@@ -1510,6 +1619,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/magic_auth/magic_auth_ABCDE"
         )
+        assert request_kwargs["method"] == "get"
         assert magic_auth.id == "magic_auth_ABCDE"
 
     async def test_create_magic_auth(
@@ -1523,10 +1633,12 @@ class TestAsyncUserManagement(UserManagementFixtures):
         magic_auth = await self.user_management.create_magic_auth(email=email)
 
         assert request_kwargs["url"].endswith("user_management/magic_auth")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {"email": email}
         assert magic_auth.email == email
 
     async def test_enroll_auth_factor(
-        self, mock_enroll_auth_factor_response, mock_http_client_with_response
+        self, mock_enroll_auth_factor_response, capture_and_mock_http_client_request
     ):
         user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         type = "totp"
@@ -1534,7 +1646,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         totp_user = "marcelina@foo-corp.com"
         totp_secret = "secret-test"
 
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client, mock_enroll_auth_factor_response, 200
         )
 
@@ -1546,31 +1658,46 @@ class TestAsyncUserManagement(UserManagementFixtures):
             totp_secret=totp_secret,
         )
 
+        assert request_kwargs["url"].endswith(
+            "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/auth_factors"
+        )
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "type": "totp",
+            "totp_issuer": "WorkOS",
+            "totp_user": "marcelina@foo-corp.com",
+            "totp_secret": "secret-test",
+        }
         assert enroll_auth_factor.dict() == mock_enroll_auth_factor_response
 
     async def test_list_auth_factors_auto_pagination(
-        self, mock_auth_factors_multiple_pages, mock_pagination_request_for_http_client
+        self,
+        mock_auth_factors_multiple_pages,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
             data_list=mock_auth_factors_multiple_pages["data"],
             status_code=200,
         )
 
-        authentication_factors = await self.user_management.list_auth_factors(
+        auth_factors = await self.user_management.list_auth_factors(
             user_id="user_12345"
         )
-        all_authentication_factors = []
+        all_auth_factors = []
 
-        async for authentication_factor in authentication_factors:
-            all_authentication_factors.append(authentication_factor)
+        async for auth_factor in auth_factors:
+            all_auth_factors.append(auth_factor)
 
-        assert len(all_authentication_factors) == len(
-            mock_auth_factors_multiple_pages["data"]
-        )
+        assert len(all_auth_factors) == len(mock_auth_factors_multiple_pages["data"])
         assert (
-            list_data_to_dicts(all_authentication_factors)
+            list_data_to_dicts(all_auth_factors)
         ) == mock_auth_factors_multiple_pages["data"]
+        assert request_kwargs["url"].endswith(
+            "user_management/users/user_12345/auth_factors"
+        )
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {"after": "39", "limit": 10, "order": "desc"}
 
     async def test_get_invitation(
         self, mock_invitation, capture_and_mock_http_client_request
@@ -1584,6 +1711,7 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/invitations/invitation_ABCDE"
         )
+        assert request_kwargs["method"] == "get"
         assert invitation.id == "invitation_ABCDE"
 
     async def test_find_invitation_by_token(
@@ -1600,12 +1728,15 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert request_kwargs["url"].endswith(
             "user_management/invitations/by_token/Z1uX3RbwcIl5fIGJJJCXXisdI"
         )
+        assert request_kwargs["method"] == "get"
         assert invitation.token == "Z1uX3RbwcIl5fIGJJJCXXisdI"
 
     async def test_list_invitations_auto_pagination(
-        self, mock_invitations_multiple_pages, mock_pagination_request_for_http_client
+        self,
+        mock_invitations_multiple_pages,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
             data_list=mock_invitations_multiple_pages["data"],
             status_code=200,
@@ -1621,6 +1752,9 @@ class TestAsyncUserManagement(UserManagementFixtures):
         assert (list_data_to_dicts(all_invitations)) == mock_invitations_multiple_pages[
             "data"
         ]
+        assert request_kwargs["url"].endswith("user_management/invitations")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {"after": "39", "limit": 10, "order": "desc"}
 
     async def test_send_invitation(
         self, capture_and_mock_http_client_request, mock_invitation
@@ -1636,6 +1770,10 @@ class TestAsyncUserManagement(UserManagementFixtures):
         )
 
         assert request_kwargs["url"].endswith("user_management/invitations")
+        assert request_kwargs["json"] == {
+            "email": email,
+            "organization_id": organization_id,
+        }
         assert invitation.email == email
         assert invitation.organization_id == organization_id
 
@@ -1646,8 +1784,10 @@ class TestAsyncUserManagement(UserManagementFixtures):
             self.http_client, mock_invitation, 200
         )
 
-        await self.user_management.revoke_invitation("invitation_ABCDE")
+        invitation = await self.user_management.revoke_invitation("invitation_ABCDE")
 
         assert request_kwargs["url"].endswith(
             "user_management/invitations/invitation_ABCDE/revoke"
         )
+        assert request_kwargs["method"] == "post"
+        assert isinstance(invitation, Invitation)

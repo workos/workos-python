@@ -9,6 +9,7 @@ from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.types.list_resource import WorkOSListResource
 from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
+from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT
 
 
 @pytest.fixture
@@ -122,7 +123,7 @@ def capture_and_mock_http_client_request(monkeypatch):
 
 
 @pytest.fixture
-def mock_pagination_request_for_http_client(monkeypatch):
+def capture_and_mock_pagination_request_for_http_client(monkeypatch):
     # Mocking pagination correctly requires us to index into a list of data
     # and correctly set the before and after metadata in the response.
     def inner(
@@ -131,10 +132,14 @@ def mock_pagination_request_for_http_client(monkeypatch):
         status_code: int = 200,
         headers: Optional[Mapping[str, str]] = None,
     ):
+        request_kwargs = {}
+
         # For convenient index lookup, store the list of object IDs.
         data_ids = list(map(lambda x: x["id"], data_list))
 
         def mock_function(*args, **kwargs):
+            request_kwargs.update(kwargs)
+
             params = kwargs.get("params") or {}
             request_after = params.get("after", None)
             limit = params.get("limit", 10)
@@ -166,20 +171,20 @@ def mock_pagination_request_for_http_client(monkeypatch):
 
         monkeypatch.setattr(http_client._client, "request", mock)
 
+        return request_kwargs
+
     return inner
 
 
 @pytest.fixture
-def test_sync_auto_pagination(
-    mock_pagination_request_for_http_client,
-):
+def test_sync_auto_pagination(capture_and_mock_pagination_request_for_http_client):
     def inner(
         http_client: SyncHTTPClient,
         list_function: Callable[[], WorkOSListResource],
         expected_all_page_data: dict,
         list_function_params: Optional[Mapping[str, Any]] = None,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=http_client,
             data_list=expected_all_page_data,
             status_code=200,
@@ -193,5 +198,15 @@ def test_sync_auto_pagination(
 
         assert len(list(all_results)) == len(expected_all_page_data)
         assert (list_data_to_dicts(all_results)) == expected_all_page_data
+        assert request_kwargs["method"] == "get"
+
+        # Validate parameters
+        assert "after" in request_kwargs["params"]
+        assert request_kwargs["params"]["limit"] == DEFAULT_LIST_RESPONSE_LIMIT
+        assert request_kwargs["params"]["order"] == "desc"
+
+        params = list_function_params or {}
+        for param in params:
+            assert request_kwargs["params"][param] == params[param]
 
     return inner

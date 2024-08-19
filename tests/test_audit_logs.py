@@ -78,6 +78,8 @@ class TestAuditLogs:
                 idempotency_key="test_123456",
             )
 
+            assert request_kwargs["url"].endswith("/audit_logs/events")
+            assert request_kwargs["method"] == "post"
             assert request_kwargs["json"] == {
                 "organization_id": organization_id,
                 "event": event,
@@ -177,7 +179,9 @@ class TestAuditLogs:
 
             assert response.dict() == expected_payload
 
-        def test_succeeds_with_additional_filters(self, mock_http_client_with_response):
+        def test_succeeds_with_additional_filters(
+            self, capture_and_mock_http_client_request
+        ):
             now = datetime.now().isoformat()
             organization_id = "org_123456789"
             range_start = now
@@ -196,7 +200,9 @@ class TestAuditLogs:
                 "updated_at": now,
             }
 
-            mock_http_client_with_response(self.http_client, expected_payload, 201)
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 201
+            )
 
             response = self.audit_logs.create_export(
                 actions=actions,
@@ -208,6 +214,17 @@ class TestAuditLogs:
                 actor_ids=actor_ids,
             )
 
+            assert request_kwargs["url"].endswith("/audit_logs/exports")
+            assert request_kwargs["method"] == "post"
+            assert request_kwargs["json"] == {
+                "actions": actions,
+                "organization_id": organization_id,
+                "range_end": range_end,
+                "range_start": range_start,
+                "targets": targets,
+                "actor_names": actor_names,
+                "actor_ids": actor_ids,
+            }
             assert response.dict() == expected_payload
 
         def test_throws_unauthorized_excpetion(self, mock_http_client_with_response):
@@ -233,7 +250,7 @@ class TestAuditLogs:
             )
 
     class TestGetExport(_TestSetup):
-        def test_succeeds(self, mock_http_client_with_response):
+        def test_succeeds(self, capture_and_mock_http_client_request):
             now = datetime.now().isoformat()
             expected_payload = {
                 "object": "audit_log_export",
@@ -244,12 +261,18 @@ class TestAuditLogs:
                 "updated_at": now,
             }
 
-            mock_http_client_with_response(self.http_client, expected_payload, 200)
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 200
+            )
 
             response = self.audit_logs.get_export(
                 expected_payload["id"],
             )
 
+            assert request_kwargs["url"].endswith(
+                "/audit_logs/exports/audit_log_export_1234"
+            )
+            assert request_kwargs["method"] == "get"
             assert response.dict() == expected_payload
 
         def test_throws_unauthorized_excpetion(self, mock_http_client_with_response):

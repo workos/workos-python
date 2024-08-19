@@ -115,58 +115,92 @@ class TestDirectorySync(DirectorySyncFixtures):
         self.directory_sync = DirectorySync(http_client=self.http_client)
 
     def test_list_users_with_directory(
-        self, mock_users, mock_http_client_with_response
+        self, mock_users, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client, status_code=200, response_dict=mock_users
         )
 
         users = self.directory_sync.list_users(directory_id="directory_id")
 
         assert list_data_to_dicts(users.data) == mock_users["data"]
+        assert request_kwargs["url"].endswith("/directory_users")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "directory": "directory_id",
+            "limit": 10,
+            "order": "desc",
+        }
 
-    def test_list_users_with_group(self, mock_users, mock_http_client_with_response):
-        mock_http_client_with_response(
+    def test_list_users_with_group(
+        self, mock_users, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client, status_code=200, response_dict=mock_users
         )
 
         users = self.directory_sync.list_users(group_id="directory_grp_id")
 
         assert list_data_to_dicts(users.data) == mock_users["data"]
+        assert request_kwargs["url"].endswith("/directory_users")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "group": "directory_grp_id",
+            "limit": 10,
+            "order": "desc",
+        }
 
     def test_list_groups_with_directory(
-        self, mock_groups, mock_http_client_with_response
+        self, mock_groups, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client, status_code=200, response_dict=mock_groups
         )
 
         groups = self.directory_sync.list_groups(directory_id="directory_id")
 
         assert list_data_to_dicts(groups.data) == mock_groups["data"]
+        assert request_kwargs["url"].endswith("/directory_groups")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "directory": "directory_id",
+            "limit": 10,
+            "order": "desc",
+        }
 
-    def test_list_groups_with_user(self, mock_groups, mock_http_client_with_response):
-        mock_http_client_with_response(
+    def test_list_groups_with_user(
+        self, mock_groups, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client, status_code=200, response_dict=mock_groups
         )
 
-        groups = self.directory_sync.list_groups(user_id="directory_usr_id")
+        groups = self.directory_sync.list_groups(user_id="directory_user_id")
 
         assert list_data_to_dicts(groups.data) == mock_groups["data"]
+        assert request_kwargs["url"].endswith("/directory_groups")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "user": "directory_user_id",
+            "limit": 10,
+            "order": "desc",
+        }
 
-    def test_get_user(self, mock_user, mock_http_client_with_response):
-        mock_http_client_with_response(
+    def test_get_user(self, mock_user, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=200,
             response_dict=mock_user,
         )
 
-        user = self.directory_sync.get_user(user_id="directory_usr_id")
+        user = self.directory_sync.get_user(user_id="directory_user_id")
 
         assert user.dict() == mock_user
+        assert request_kwargs["url"].endswith("/directory_users/directory_user_id")
+        assert request_kwargs["method"] == "get"
 
-    def test_get_group(self, mock_group, mock_http_client_with_response):
-        mock_http_client_with_response(
+    def test_get_group(self, mock_group, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=200,
             response_dict=mock_group,
@@ -177,9 +211,15 @@ class TestDirectorySync(DirectorySyncFixtures):
         )
 
         assert group.dict() == mock_group
+        assert request_kwargs["url"].endswith(
+            "/directory_groups/directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE"
+        )
+        assert request_kwargs["method"] == "get"
 
-    def test_list_directories(self, mock_directories, mock_http_client_with_response):
-        mock_http_client_with_response(
+    def test_list_directories(
+        self, mock_directories, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=200,
             response_dict=mock_directories,
@@ -190,9 +230,15 @@ class TestDirectorySync(DirectorySyncFixtures):
         assert list_data_to_dicts(directories.data) == api_directories_to_sdk(
             mock_directories["data"]
         )
+        assert request_kwargs["url"].endswith("/directories")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "limit": 10,
+            "order": "desc",
+        }
 
-    def test_get_directory(self, mock_directory, mock_http_client_with_response):
-        mock_http_client_with_response(
+    def test_get_directory(self, mock_directory, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=200,
             response_dict=mock_directory,
@@ -201,9 +247,11 @@ class TestDirectorySync(DirectorySyncFixtures):
         directory = self.directory_sync.get_directory(directory_id="directory_id")
 
         assert directory.dict() == api_directory_to_sdk(mock_directory)
+        assert request_kwargs["url"].endswith("/directories/directory_id")
+        assert request_kwargs["method"] == "get"
 
-    def test_delete_directory(self, mock_http_client_with_response):
-        mock_http_client_with_response(
+    def test_delete_directory(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=202,
             headers={"content-type": "text/plain; charset=utf-8"},
@@ -211,6 +259,8 @@ class TestDirectorySync(DirectorySyncFixtures):
 
         response = self.directory_sync.delete_directory(directory_id="directory_id")
 
+        assert request_kwargs["url"].endswith("/directories/directory_id")
+        assert request_kwargs["method"] == "delete"
         assert response is None
 
     def test_primary_email(
@@ -280,62 +330,92 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         self.directory_sync = AsyncDirectorySync(http_client=self.http_client)
 
     async def test_list_users_with_directory(
-        self, mock_users, mock_http_client_with_response
+        self, mock_users, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client, status_code=200, response_dict=mock_users
         )
 
         users = await self.directory_sync.list_users(directory_id="directory_id")
 
         assert list_data_to_dicts(users.data) == mock_users["data"]
+        assert request_kwargs["url"].endswith("/directory_users")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "directory": "directory_id",
+            "limit": 10,
+            "order": "desc",
+        }
 
     async def test_list_users_with_group(
-        self, mock_users, mock_http_client_with_response
+        self, mock_users, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client, status_code=200, response_dict=mock_users
         )
 
         users = await self.directory_sync.list_users(group_id="directory_grp_id")
 
         assert list_data_to_dicts(users.data) == mock_users["data"]
+        assert request_kwargs["url"].endswith("/directory_users")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "group": "directory_grp_id",
+            "limit": 10,
+            "order": "desc",
+        }
 
     async def test_list_groups_with_directory(
-        self, mock_groups, mock_http_client_with_response
+        self, mock_groups, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client, status_code=200, response_dict=mock_groups
         )
 
         groups = await self.directory_sync.list_groups(directory_id="directory_id")
 
         assert list_data_to_dicts(groups.data) == mock_groups["data"]
+        assert request_kwargs["url"].endswith("/directory_groups")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "directory": "directory_id",
+            "limit": 10,
+            "order": "desc",
+        }
 
     async def test_list_groups_with_user(
-        self, mock_groups, mock_http_client_with_response
+        self, mock_groups, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client, status_code=200, response_dict=mock_groups
         )
 
-        groups = await self.directory_sync.list_groups(user_id="directory_usr_id")
+        groups = await self.directory_sync.list_groups(user_id="directory_user_id")
 
         assert list_data_to_dicts(groups.data) == mock_groups["data"]
+        assert request_kwargs["url"].endswith("/directory_groups")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "user": "directory_user_id",
+            "limit": 10,
+            "order": "desc",
+        }
 
-    async def test_get_user(self, mock_user, mock_http_client_with_response):
-        mock_http_client_with_response(
+    async def test_get_user(self, mock_user, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=200,
             response_dict=mock_user,
         )
 
-        user = await self.directory_sync.get_user(user_id="directory_usr_id")
+        user = await self.directory_sync.get_user(user_id="directory_user_id")
 
         assert user.dict() == mock_user
+        assert request_kwargs["url"].endswith("/directory_users/directory_user_id")
+        assert request_kwargs["method"] == "get"
 
-    async def test_get_group(self, mock_group, mock_http_client_with_response):
-        mock_http_client_with_response(
+    async def test_get_group(self, mock_group, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=200,
             response_dict=mock_group,
@@ -346,11 +426,15 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         )
 
         assert group.dict() == mock_group
+        assert request_kwargs["url"].endswith(
+            "/directory_groups/directory_group_01FHGRYAQ6ERZXXXXXX1E01QFE"
+        )
+        assert request_kwargs["method"] == "get"
 
     async def test_list_directories(
-        self, mock_directories, mock_http_client_with_response
+        self, mock_directories, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=200,
             response_dict=mock_directories,
@@ -361,9 +445,17 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         assert list_data_to_dicts(directories.data) == api_directories_to_sdk(
             mock_directories["data"]
         )
+        assert request_kwargs["url"].endswith("/directories")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "limit": 10,
+            "order": "desc",
+        }
 
-    async def test_get_directory(self, mock_directory, mock_http_client_with_response):
-        mock_http_client_with_response(
+    async def test_get_directory(
+        self, mock_directory, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=200,
             response_dict=mock_directory,
@@ -372,9 +464,11 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         directory = await self.directory_sync.get_directory(directory_id="directory_id")
 
         assert directory.dict() == api_directory_to_sdk(mock_directory)
+        assert request_kwargs["url"].endswith("/directories/directory_id")
+        assert request_kwargs["method"] == "get"
 
-    async def test_delete_directory(self, mock_http_client_with_response):
-        mock_http_client_with_response(
+    async def test_delete_directory(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=202,
             headers={"content-type": "text/plain; charset=utf-8"},
@@ -384,6 +478,8 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
             directory_id="directory_id"
         )
 
+        assert request_kwargs["url"].endswith("/directories/directory_id")
+        assert request_kwargs["method"] == "delete"
         assert response is None
 
     async def test_primary_email(
@@ -420,9 +516,9 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
     async def test_list_directories_auto_pagination(
         self,
         mock_directories_multiple_data_pages,
-        mock_pagination_request_for_http_client,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
             data_list=mock_directories_multiple_data_pages,
             status_code=200,
@@ -438,13 +534,20 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         assert (list_data_to_dicts(all_directories)) == api_directories_to_sdk(
             mock_directories_multiple_data_pages
         )
+        assert request_kwargs["url"].endswith("/directories")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "after": "dir_39",
+            "limit": 10,
+            "order": "desc",
+        }
 
     async def test_directory_users_auto_pagination(
         self,
         mock_directory_users_multiple_data_pages,
-        mock_pagination_request_for_http_client,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
             data_list=mock_directory_users_multiple_data_pages,
             status_code=200,
@@ -460,13 +563,20 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         assert (
             list_data_to_dicts(all_users)
         ) == mock_directory_users_multiple_data_pages
+        assert request_kwargs["url"].endswith("/directory_users")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "after": "directory_user_39",
+            "limit": 10,
+            "order": "desc",
+        }
 
     async def test_directory_user_groups_auto_pagination(
         self,
         mock_directory_groups_multiple_data_pages,
-        mock_pagination_request_for_http_client,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
             data_list=mock_directory_groups_multiple_data_pages,
             status_code=200,
@@ -482,3 +592,10 @@ class TestAsyncDirectorySync(DirectorySyncFixtures):
         assert (
             list_data_to_dicts(all_groups)
         ) == mock_directory_groups_multiple_data_pages
+        assert request_kwargs["url"].endswith("/directory_groups")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "after": "directory_group_39",
+            "limit": 10,
+            "order": "desc",
+        }

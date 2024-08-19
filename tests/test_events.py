@@ -22,8 +22,8 @@ class TestEvents(object):
             },
         }
 
-    def test_list_events(self, mock_events, mock_http_client_with_response):
-        mock_http_client_with_response(
+    def test_list_events(self, mock_events, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=200,
             response_dict=mock_events,
@@ -31,6 +31,9 @@ class TestEvents(object):
 
         events = self.events.list_events(events=["dsync.activated"])
 
+        assert request_kwargs["url"].endswith("/events")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {"events": ["dsync.activated"], "limit": 10}
         assert events.dict() == mock_events
 
 
@@ -53,8 +56,8 @@ class TestAsyncEvents(object):
             },
         }
 
-    async def test_list_events(self, mock_events, mock_http_client_with_response):
-        mock_http_client_with_response(
+    async def test_list_events(self, mock_events, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             http_client=self.http_client,
             status_code=200,
             response_dict=mock_events,
@@ -62,4 +65,7 @@ class TestAsyncEvents(object):
 
         events = await self.events.list_events(events=["dsync.activated"])
 
+        assert request_kwargs["url"].endswith("/events")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {"events": ["dsync.activated"], "limit": 10}
         assert events.dict() == mock_events

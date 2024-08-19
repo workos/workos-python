@@ -66,44 +66,60 @@ class TestOrganizations(OrganizationFixtures):
         self.organizations = Organizations(http_client=self.http_client)
 
     def test_list_organizations(
-        self, mock_organizations, mock_http_client_with_response
+        self, mock_organizations, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_organizations, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organizations, 200
+        )
 
         organizations_response = self.organizations.list_organizations()
 
         def to_dict(x):
             return x.dict()
 
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/organizations")
         assert (
             list(map(to_dict, organizations_response.data))
             == mock_organizations["data"]
         )
 
-    def test_get_organization(self, mock_organization, mock_http_client_with_response):
-        mock_http_client_with_response(self.http_client, mock_organization, 200)
+    def test_get_organization(
+        self, mock_organization, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization, 200
+        )
 
         organization = self.organizations.get_organization(
             organization_id="organization_id"
         )
 
         assert organization.dict() == mock_organization
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/organizations/organization_id")
 
     def test_get_organization_by_lookup_key(
-        self, mock_organization, mock_http_client_with_response
+        self, mock_organization, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_organization, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization, 200
+        )
 
         organization = self.organizations.get_organization_by_lookup_key(
             lookup_key="test"
         )
 
         assert organization.dict() == mock_organization
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/organizations/by_lookup_key/test")
 
     def test_create_organization_with_domain_data(
-        self, mock_organization, mock_http_client_with_response
+        self, mock_organization, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_organization, 201)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization, 201
+        )
 
         payload = {
             "domain_data": [{"domain": "example.com", "state": "verified"}],
@@ -113,6 +129,9 @@ class TestOrganizations(OrganizationFixtures):
 
         assert organization.id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert organization.name == "Foo Corporation"
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith("/organizations")
+        assert request_kwargs["json"] == payload
 
     def test_sends_idempotency_key(
         self, mock_organization, capture_and_mock_http_client_request
@@ -136,15 +155,24 @@ class TestOrganizations(OrganizationFixtures):
         assert response.name == "Foo Corporation"
 
     def test_update_organization_with_domain_data(
-        self, mock_organization_updated, mock_http_client_with_response
+        self, mock_organization_updated, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_organization_updated, 201)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_updated, 201
+        )
 
         updated_organization = self.organizations.update_organization(
             organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
             domain_data=[{"domain": "example.io", "state": "verified"}],
         )
 
+        assert request_kwargs["url"].endswith(
+            "/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        )
+        assert request_kwargs["method"] == "put"
+        assert request_kwargs["json"] == {
+            "domain_data": [{"domain": "example.io", "state": "verified"}]
+        }
         assert updated_organization.id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert updated_organization.name == "Example Organization"
         assert updated_organization.domains[0].dict() == {
@@ -157,24 +185,28 @@ class TestOrganizations(OrganizationFixtures):
             "verification_token": "token",
         }
 
-    def test_delete_organization(self, setup, mock_http_client_with_response):
-        mock_http_client_with_response(
+    def test_delete_organization(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client,
             202,
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
         response = self.organizations.delete_organization(
-            organization_id="connection_id"
+            organization_id="organization_id"
         )
 
+        assert request_kwargs["url"].endswith("/organizations/organization_id")
+        assert request_kwargs["method"] == "delete"
         assert response is None
 
     def test_list_organizations_auto_pagination_for_single_page(
-        self, mock_organizations_single_page_response, mock_http_client_with_response
+        self,
+        mock_organizations_single_page_response,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_http_client_with_response(
-            self.http_client, mock_organizations_single_page_response, 200
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
+            self.http_client, mock_organizations_single_page_response["data"], 200
         )
 
         all_organizations = []
@@ -187,6 +219,13 @@ class TestOrganizations(OrganizationFixtures):
 
         organization_data = mock_organizations_single_page_response["data"]
         assert (list_data_to_dicts(all_organizations)) == organization_data
+        assert request_kwargs["url"].endswith("/organizations")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "after": "9",
+            "limit": 10,
+            "order": "desc",
+        }
 
     def test_list_organizations_auto_pagination_for_multiple_pages(
         self,
@@ -208,46 +247,60 @@ class TestAsyncOrganizations(OrganizationFixtures):
         self.organizations = AsyncOrganizations(http_client=self.http_client)
 
     async def test_list_organizations(
-        self, mock_organizations, mock_http_client_with_response
+        self, mock_organizations, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_organizations, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organizations, 200
+        )
 
         organizations_response = await self.organizations.list_organizations()
 
         def to_dict(x):
             return x.dict()
 
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/organizations")
         assert (
             list(map(to_dict, organizations_response.data))
             == mock_organizations["data"]
         )
 
     async def test_get_organization(
-        self, mock_organization, mock_http_client_with_response
+        self, mock_organization, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_organization, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization, 200
+        )
 
         organization = await self.organizations.get_organization(
             organization_id="organization_id"
         )
 
         assert organization.dict() == mock_organization
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/organizations/organization_id")
 
     async def test_get_organization_by_lookup_key(
-        self, mock_organization, mock_http_client_with_response
+        self, mock_organization, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_organization, 200)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization, 200
+        )
 
         organization = await self.organizations.get_organization_by_lookup_key(
             lookup_key="test"
         )
 
         assert organization.dict() == mock_organization
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/organizations/by_lookup_key/test")
 
     async def test_create_organization_with_domain_data(
-        self, mock_organization, mock_http_client_with_response
+        self, mock_organization, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_organization, 201)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization, 201
+        )
 
         payload = {
             "domain_data": [{"domain": "example.com", "state": "verified"}],
@@ -257,6 +310,9 @@ class TestAsyncOrganizations(OrganizationFixtures):
 
         assert organization.id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert organization.name == "Foo Corporation"
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith("/organizations")
+        assert request_kwargs["json"] == payload
 
     async def test_sends_idempotency_key(
         self, mock_organization, capture_and_mock_http_client_request
@@ -280,16 +336,24 @@ class TestAsyncOrganizations(OrganizationFixtures):
         assert response.name == "Foo Corporation"
 
     async def test_update_organization_with_domain_data(
-        self, mock_organization_updated, mock_http_client_with_response
+        self, mock_organization_updated, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(self.http_client, mock_organization_updated, 201)
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_updated, 201
+        )
 
         updated_organization = await self.organizations.update_organization(
             organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            name="Example Organization",
             domain_data=[{"domain": "example.io", "state": "verified"}],
         )
 
+        assert request_kwargs["url"].endswith(
+            "/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        )
+        assert request_kwargs["method"] == "put"
+        assert request_kwargs["json"] == {
+            "domain_data": [{"domain": "example.io", "state": "verified"}]
+        }
         assert updated_organization.id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert updated_organization.name == "Example Organization"
         assert updated_organization.domains[0].dict() == {
@@ -302,25 +366,54 @@ class TestAsyncOrganizations(OrganizationFixtures):
             "verification_token": "token",
         }
 
-    async def test_delete_organization(self, setup, mock_http_client_with_response):
-        mock_http_client_with_response(
+    async def test_delete_organization(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client,
             202,
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
         response = await self.organizations.delete_organization(
-            organization_id="connection_id"
+            organization_id="organization_id"
         )
 
+        assert request_kwargs["url"].endswith("/organizations/organization_id")
+        assert request_kwargs["method"] == "delete"
         assert response is None
+
+    async def test_list_organizations_auto_pagination_for_single_page(
+        self,
+        mock_organizations_single_page_response,
+        capture_and_mock_pagination_request_for_http_client,
+    ):
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
+            self.http_client, mock_organizations_single_page_response["data"], 200
+        )
+
+        all_organizations = []
+        organizations = await self.organizations.list_organizations()
+
+        async for org in organizations:
+            all_organizations.append(org)
+
+        assert len(list(all_organizations)) == 10
+
+        organization_data = mock_organizations_single_page_response["data"]
+        assert (list_data_to_dicts(all_organizations)) == organization_data
+        assert request_kwargs["url"].endswith("/organizations")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "after": "9",
+            "limit": 10,
+            "order": "desc",
+        }
 
     async def test_list_organizations_auto_pagination_for_multiple_pages(
         self,
         mock_organizations_multiple_data_pages,
-        mock_pagination_request_for_http_client,
+        capture_and_mock_pagination_request_for_http_client,
     ):
-        mock_pagination_request_for_http_client(
+        request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=self.http_client,
             data_list=mock_organizations_multiple_data_pages["data"],
             status_code=200,
@@ -337,3 +430,10 @@ class TestAsyncOrganizations(OrganizationFixtures):
         assert (
             list_data_to_dicts(all_organizations)
         ) == mock_organizations_multiple_data_pages["data"]
+        assert request_kwargs["url"].endswith("/organizations")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "after": "org_40",
+            "limit": 10,
+            "order": "desc",
+        }

@@ -143,67 +143,115 @@ class TestMfa(object):
         )
 
     def test_enroll_factor_sms_success(
-        self, mock_enroll_factor_response_sms, mock_http_client_with_response
+        self, mock_enroll_factor_response_sms, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client, mock_enroll_factor_response_sms, 200
         )
         enroll_factor = self.mfa.enroll_factor(type="sms", phone_number="9204448888")
+
+        assert request_kwargs["url"].endswith("/auth/factors/enroll")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "type": "sms",
+            "phone_number": "9204448888",
+        }
         assert enroll_factor.dict() == mock_enroll_factor_response_sms
 
     def test_enroll_factor_totp_success(
-        self, mock_enroll_factor_response_totp, mock_http_client_with_response
+        self, mock_enroll_factor_response_totp, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client, mock_enroll_factor_response_totp, 200
         )
         enroll_factor = self.mfa.enroll_factor(
             type="totp", totp_issuer="testissuer", totp_user="testuser"
         )
+
+        assert request_kwargs["url"].endswith("/auth/factors/enroll")
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "type": "totp",
+            "totp_issuer": "testissuer",
+            "totp_user": "testuser",
+        }
         assert enroll_factor.dict() == mock_enroll_factor_response_totp
 
     def test_get_factor_totp_success(
-        self, mock_get_factor_response_totp, mock_http_client_with_response
+        self, mock_get_factor_response_totp, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client, mock_get_factor_response_totp, 200
         )
-        response = self.mfa.get_factor(mock_get_factor_response_totp["id"])
+        authentication_factor_id = mock_get_factor_response_totp["id"]
+        response = self.mfa.get_factor(
+            authentication_factor_id=authentication_factor_id
+        )
+
+        assert request_kwargs["url"].endswith(
+            f"/auth/factors/{authentication_factor_id}"
+        )
+        assert request_kwargs["method"] == "get"
         assert response.dict() == mock_get_factor_response_totp
 
     def test_get_factor_sms_success(
-        self, mock_enroll_factor_response_sms, mock_http_client_with_response
+        self, mock_enroll_factor_response_sms, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client, mock_enroll_factor_response_sms, 200
         )
-        response = self.mfa.get_factor(mock_enroll_factor_response_sms["id"])
+
+        authentication_factor_id = mock_enroll_factor_response_sms["id"]
+        response = self.mfa.get_factor(
+            authentication_factor_id=authentication_factor_id
+        )
+
+        assert request_kwargs["url"].endswith(
+            f"/auth/factors/{authentication_factor_id}"
+        )
+        assert request_kwargs["method"] == "get"
         assert response.dict() == mock_enroll_factor_response_sms
 
-    def test_delete_factor_success(self, mock_http_client_with_response):
-        mock_http_client_with_response(self.http_client, None, 200)
+    def test_delete_factor_success(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, None, 200
+        )
         response = self.mfa.delete_factor("auth_factor_01FZ4TS14D1PHFNZ9GF6YD8M1F")
+        assert request_kwargs["url"].endswith(
+            "/auth/factors/auth_factor_01FZ4TS14D1PHFNZ9GF6YD8M1F"
+        )
+        assert request_kwargs["method"] == "delete"
         assert response == None
 
     def test_challenge_success(
-        self, mock_challenge_factor_response, mock_http_client_with_response
+        self, mock_challenge_factor_response, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client, mock_challenge_factor_response, 200
         )
         challenge_factor = self.mfa.challenge_factor(
             authentication_factor_id="auth_factor_01FXNWW32G7F3MG8MYK5D1HJJM"
         )
+        assert request_kwargs["url"].endswith(
+            "/auth/factors/auth_factor_01FXNWW32G7F3MG8MYK5D1HJJM/challenge"
+        )
+        assert request_kwargs["method"] == "post"
         assert challenge_factor.dict() == mock_challenge_factor_response
 
     def test_verify_success(
-        self, mock_verify_challenge_response, mock_http_client_with_response
+        self, mock_verify_challenge_response, capture_and_mock_http_client_request
     ):
-        mock_http_client_with_response(
+        request_kwargs = capture_and_mock_http_client_request(
             self.http_client, mock_verify_challenge_response, 200
         )
         verify_challenge = self.mfa.verify_challenge(
             authentication_challenge_id="auth_challenge_01FXNXH8Y2K3YVWJ10P139A6DT",
             code="093647",
         )
+
+        assert request_kwargs["url"].endswith(
+            "/auth/challenges/auth_challenge_01FXNXH8Y2K3YVWJ10P139A6DT/verify"
+        )
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {"code": "093647"}
         assert verify_challenge.dict() == mock_verify_challenge_response

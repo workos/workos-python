@@ -299,3 +299,27 @@ class TestSyncHTTPClient(object):
         )
 
         assert self.http_client.request("ok_place") == {"foo": "bar"}
+
+    def test_request_removes_none_parameter_values(
+        self, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 200)
+
+        self.http_client.request(
+            path="/test",
+            method="get",
+            params={"organization_id": None, "test": "value"},
+        )
+        assert request_kwargs["params"] == {"test": "value"}
+
+    def test_request_removes_none_json_values(
+        self, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 200)
+
+        self.http_client.request(
+            path="/test",
+            method="post",
+            json={"organization_id": None, "test": "value"},
+        )
+        assert request_kwargs["json"] == {"test": "value"}

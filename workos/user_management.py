@@ -845,7 +845,7 @@ class UserManagement(UserManagementModule):
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
     ) -> User:
-        params = {
+        json = {
             "email": email,
             "password": password,
             "password_hash": password_hash,
@@ -856,7 +856,7 @@ class UserManagement(UserManagementModule):
         }
 
         response = self._http_client.request(
-            USER_PATH, method=REQUEST_METHOD_POST, params=params
+            USER_PATH, method=REQUEST_METHOD_POST, json=json
         )
 
         return User.model_validate(response)
@@ -896,14 +896,14 @@ class UserManagement(UserManagementModule):
     def create_organization_membership(
         self, *, user_id: str, organization_id: str, role_slug: Optional[str] = None
     ) -> OrganizationMembership:
-        params = {
+        json = {
             "user_id": user_id,
             "organization_id": organization_id,
             "role_slug": role_slug,
         }
 
         response = self._http_client.request(
-            ORGANIZATION_MEMBERSHIP_PATH, method=REQUEST_METHOD_POST, params=params
+            ORGANIZATION_MEMBERSHIP_PATH, method=REQUEST_METHOD_POST, json=json
         )
 
         return OrganizationMembership.model_validate(response)

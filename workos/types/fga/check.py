@@ -13,7 +13,7 @@ class WarrantCheckInput(TypedDict, total=False):
     resource_id: str
     relation: str
     subject: SubjectInput
-    context: Optional[Mapping[str, Any]] = None
+    context: Optional[Mapping[str, Any]]
 
 
 class WarrantCheck(WorkOSModel):

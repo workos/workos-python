@@ -1,6 +1,7 @@
 from typing import Any, Literal, Mapping, Optional, Sequence, TypedDict
 
 from workos.types.workos_model import WorkOSModel
+from workos.typing.literals import LiteralOrUntyped
 
 from .warrant import Subject
 
@@ -41,7 +42,7 @@ CheckResult = Literal["authorized", "not_authorized"]
 
 
 class CheckResponse(WorkOSModel):
-    result: CheckResult
+    result: LiteralOrUntyped[CheckResult]
     is_implicit: bool
     debug_info: Optional[DebugInfo] = None
 

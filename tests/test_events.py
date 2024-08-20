@@ -9,7 +9,6 @@ from workos.events import AsyncEvents, Events
 class TestEvents(object):
     @pytest.fixture(autouse=True)
     def setup(self, http_client, module_class):
-        print(http_client)
         self.http_client = http_client
         self.events = module_class(http_client=self.http_client)
 

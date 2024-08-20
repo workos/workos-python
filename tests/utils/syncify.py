@@ -1,6 +1,6 @@
 import asyncio
 from types import CoroutineType
-from typing import Any, Coroutine, Union
+from typing import Any
 
 
 def _call(coro: CoroutineType) -> Any:
@@ -12,7 +12,7 @@ def _call(coro: CoroutineType) -> Any:
         return loop.run_until_complete(coro)
 
 
-def run_sync(obj: Union[Coroutine[Any, Any, Any], Any]) -> Any:
+def run_sync(obj: Any) -> Any:
     if isinstance(obj, CoroutineType):
         return _call(obj)
 

@@ -1,17 +1,11 @@
 import pytest
 
-from tests.utils.syncify import run_sync
 from tests.utils.fixtures.mock_event import MockEvent
 from workos.events import AsyncEvents, Events
 
 
-@pytest.mark.sync_and_async(sync_module=Events, async_module=AsyncEvents)
+@pytest.mark.sync_and_async(Events, AsyncEvents)
 class TestEvents(object):
-    @pytest.fixture(autouse=True)
-    def setup(self, http_client, module_class):
-        self.http_client = http_client
-        self.events = module_class(http_client=self.http_client)
-
     @pytest.fixture
     def mock_events(self):
         events = [MockEvent(id=str(i)).dict() for i in range(10)]
@@ -24,14 +18,16 @@ class TestEvents(object):
             },
         }
 
-    def test_list_events(self, mock_events, capture_and_mock_http_client_request):
+    def test_list_events(
+        self, module_instance, mock_events, capture_and_mock_http_client_request
+    ):
         request_kwargs = capture_and_mock_http_client_request(
-            http_client=self.http_client,
+            http_client=module_instance._http_client,
             status_code=200,
             response_dict=mock_events,
         )
 
-        events = run_sync(self.events.list_events(events=["dsync.activated"]))
+        events = module_instance.list_events(events=["dsync.activated"])
 
         assert request_kwargs["url"].endswith("/events")
         assert request_kwargs["method"] == "get"

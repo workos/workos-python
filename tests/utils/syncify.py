@@ -1,6 +1,7 @@
 import asyncio
-from types import CoroutineType
-from typing import Any, Coroutine, TypeVar, Union
+from functools import wraps
+from types import CoroutineType, FunctionType
+from typing import Any, Coroutine, Protocol, TypeVar, Union
 
 ReturnType = TypeVar("ReturnType")
 
@@ -19,3 +20,23 @@ def run_sync(obj: Union[CoroutineType, ReturnType]) -> ReturnType:
         return _call(obj)
 
     return obj
+
+
+def _run_sync_wrapper(method):
+    @wraps(method)
+    def wrapped(*args, **kwargs):
+        return run_sync(method(*args, **kwargs))
+
+    return wrapped
+
+
+class SyncifyMetaClass(type(Protocol)):
+    def __new__(cls, classname, bases, class_dict):
+        new_class_dict = {}
+        for attribute_name, attribute in class_dict.items():
+            if isinstance(attribute, FunctionType) and attribute_name != "__init__":
+                # Replace the method with a version wrapped in run_sync
+                attribute = _run_sync_wrapper(attribute)
+
+            new_class_dict[attribute_name] = attribute
+        return type.__new__(cls, classname, bases, new_class_dict)

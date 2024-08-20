@@ -1,4 +1,6 @@
-from typing import Any, Callable, Mapping, Optional
+from http import client
+from types import MethodType
+from typing import Any, Callable, Literal, Mapping, Optional, Tuple
 from unittest.mock import AsyncMock, MagicMock
 
 import httpx
@@ -6,26 +8,62 @@ import pytest
 
 from tests.utils.client_configuration import ClientConfiguration
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
+from tests.utils.syncify import SyncifyMetaClass, run_sync
 from workos.types.list_resource import WorkOSListResource
 from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT
 
 
-_TEST_HTTP_CLIENTS = {
-    "sync": SyncHTTPClient(
-        api_key="sk_test",
-        base_url="https://api.workos.test/",
-        client_id="client_b27needthisforssotemxo",
-        version="test",
-    ),
-    "async": AsyncHTTPClient(
-        api_key="sk_test",
-        base_url="https://api.workos.test/",
-        client_id="client_b27needthisforssotemxo",
-        version="test",
-    ),
-}
+# _TEST_HTTP_CLIENTS = {
+#     "SyncHTTPClient": SyncHTTPClient(
+#         api_key="sk_test",
+#         base_url="https://api.workos.test/",
+#         client_id="client_b27needthisforssotemxo",
+#         version="test",
+#     ),
+#     "AsyncHTTPClient": AsyncHTTPClient(
+#         api_key="sk_test",
+#         base_url="https://api.workos.test/",
+#         client_id="client_b27needthisforssotemxo",
+#         version="test",
+#     ),
+# }
+
+
+def _get_test_client_setup(
+    http_client_class_name: str,
+) -> Tuple[Literal["async", "sync"], ClientConfiguration, HTTPClient]:
+    base_url = "https://api.workos.test/"
+    client_id = "client_b27needthisforssotemxo"
+
+    setup_name = None
+    if http_client_class_name == "AsyncHTTPClient":
+        http_client = AsyncHTTPClient(
+            api_key="sk_test",
+            base_url=base_url,
+            client_id=client_id,
+            version="test",
+        )
+        setup_name = "async"
+    elif http_client_class_name == "SyncHTTPClient":
+        http_client = SyncHTTPClient(
+            api_key="sk_test",
+            base_url=base_url,
+            client_id=client_id,
+            version="test",
+        )
+        setup_name = "sync"
+    else:
+        raise ValueError(
+            f"Invalid HTTP client for test module setup: {http_client_class_name}"
+        )
+
+    client_configuration = ClientConfiguration(
+        base_url=base_url, client_id=client_id, request_timeout=DEFAULT_REQUEST_TIMEOUT
+    )
+
+    return setup_name, client_configuration, http_client
 
 
 def pytest_configure(config) -> None:
@@ -38,28 +76,50 @@ def pytest_configure(config) -> None:
 def pytest_generate_tests(metafunc: pytest.Metafunc):
     for marker in metafunc.definition.iter_markers(name="sync_and_async"):
         if marker.name == "sync_and_async":
-            sync_module = marker.kwargs["sync_module"]
-            async_module = marker.kwargs["async_module"]
-            if sync_module is None or async_module is None:
+            if len(marker.args) == 0:
                 raise ValueError(
-                    "sync_and_async marker requires module setups argument"
+                    "sync_and_async marker requires argument representing list of modules."
                 )
 
+            # Take in args as a list of module classes. For example:
+            # @pytest.mark.sync_and_async(Events, AsyncEvents) -> [Events, AsyncEvents]
+            module_classes = marker.args
             ids = []
             arg_values = []
 
-            for setup_name, module_class in {
-                "sync": sync_module,
-                "async": async_module,
-            }.items():
+            for module_class in module_classes:
                 if module_class is None:
                     raise ValueError(
-                        f"Invalid module for test module setup: {module_class}"
+                        f"Invalid module class for sync_and_async marker: {module_class}"
                     )
 
+                # Pull the HTTP client type from the module class annotations and use that
+                # to pass in the proper test HTTP client
+                http_client_name = module_class.__annotations__["_http_client"].__name__
+                setup_name, client_configuration, http_client = _get_test_client_setup(
+                    http_client_name
+                )
+
+                # Now we'll wrap all methods in the module class with run_sync,
+                # so both sync and async methods can be run in the same way
+                syncified_module_class = SyncifyMetaClass(
+                    module_class.__name__,
+                    module_class.__bases__,
+                    module_class.__dict__,
+                )
+
+                # TODO: Fix typing here
+                class_kwargs = {"http_client": http_client}
+                if syncified_module_class.__init__.__annotations__.get(
+                    "client_configuration", None
+                ):
+                    class_kwargs["http_client"] = client_configuration
+
+                module_instance = syncified_module_class(**class_kwargs)
+
                 ids.append(setup_name)  # sync or async will be the test ID
-                arg_names = ["http_client", "module_class"]
-                arg_values.append([_TEST_HTTP_CLIENTS[setup_name], module_class])
+                arg_names = ["module_instance"]
+                arg_values.append([module_instance])
 
             metafunc.parametrize(
                 argnames=arg_names, argvalues=arg_values, ids=ids, scope="class"
@@ -68,49 +128,25 @@ def pytest_generate_tests(metafunc: pytest.Metafunc):
 
 @pytest.fixture
 def sync_http_client_for_test():
-    return _TEST_HTTP_CLIENTS["sync"]
+    _, _, http_client = _get_test_client_setup("SyncHTTPClient")
+    return http_client
 
 
 @pytest.fixture
 def async_http_client_for_test():
-    return _TEST_HTTP_CLIENTS["async"]
+    _, _, http_client = _get_test_client_setup("AsyncHTTPClient")
+    return http_client
 
 
 @pytest.fixture
 def sync_client_configuration_and_http_client_for_test():
-    base_url = "https://api.workos.test/"
-    client_id = "client_b27needthisforssotemxo"
-
-    client_configuration = ClientConfiguration(
-        base_url=base_url, client_id=client_id, request_timeout=DEFAULT_REQUEST_TIMEOUT
-    )
-
-    http_client = SyncHTTPClient(
-        api_key="sk_test",
-        base_url=base_url,
-        client_id=client_id,
-        version="test",
-    )
-
+    _, client_configuration, http_client = _get_test_client_setup("SyncHTTPClient")
     return client_configuration, http_client
 
 
 @pytest.fixture
 def async_client_configuration_and_http_client_for_test():
-    base_url = "https://api.workos.test/"
-    client_id = "client_b27needthisforssotemxo"
-
-    client_configuration = ClientConfiguration(
-        base_url=base_url, client_id=client_id, request_timeout=DEFAULT_REQUEST_TIMEOUT
-    )
-
-    http_client = AsyncHTTPClient(
-        api_key="sk_test",
-        base_url=base_url,
-        client_id=client_id,
-        version="test",
-    )
-
+    _, client_configuration, http_client = _get_test_client_setup("AsyncHTTPClient")
     return client_configuration, http_client
 
 

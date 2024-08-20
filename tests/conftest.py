@@ -12,24 +12,68 @@ from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT
 
 
-@pytest.fixture
-def sync_http_client_for_test():
-    return SyncHTTPClient(
+_TEST_HTTP_CLIENTS = {
+    "sync": SyncHTTPClient(
         api_key="sk_test",
         base_url="https://api.workos.test/",
         client_id="client_b27needthisforssotemxo",
         version="test",
+    ),
+    "async": AsyncHTTPClient(
+        api_key="sk_test",
+        base_url="https://api.workos.test/",
+        client_id="client_b27needthisforssotemxo",
+        version="test",
+    ),
+}
+
+
+def pytest_configure(config) -> None:
+    config.addinivalue_line(
+        "markers", "sync_and_async(): mark test to run both sync and async versions"
     )
+
+
+def pytest_generate_tests(metafunc: pytest.Metafunc):
+    for marker in metafunc.definition.iter_markers(name="sync_and_async"):
+        if marker.name == "sync_and_async":
+            if len(marker.args) == 0:
+                raise ValueError(
+                    "sync_and_async marker requires module setups argument"
+                )
+
+            module_setup = marker.args[0]
+            if "sync" not in module_setup or "async" not in module_setup:
+                raise ValueError(
+                    "sync_and_async marker requires sync and async module setups."
+                )
+
+            ids = []
+            arg_values = []
+
+            for setup_name, module_class in module_setup.items():
+                if module_class is None:
+                    raise ValueError(
+                        f"Invalid module for test module setup: {module_class}"
+                    )
+
+                ids.append(setup_name)  # sync or async will be the test ID
+                arg_names = ["http_client", "module_class"]
+                arg_values.append([_TEST_HTTP_CLIENTS[setup_name], module_class])
+
+            metafunc.parametrize(
+                argnames=arg_names, argvalues=arg_values, ids=ids, scope="class"
+            )
+
+
+@pytest.fixture
+def sync_http_client_for_test():
+    return _TEST_HTTP_CLIENTS["sync"]
 
 
 @pytest.fixture
 def async_http_client_for_test():
-    return AsyncHTTPClient(
-        api_key="sk_test",
-        base_url="https://api.workos.test/",
-        client_id="client_b27needthisforssotemxo",
-        version="test",
-    )
+    return _TEST_HTTP_CLIENTS["async"]
 
 
 @pytest.fixture

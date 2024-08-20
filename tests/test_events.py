@@ -5,7 +5,7 @@ from tests.utils.fixtures.mock_event import MockEvent
 from workos.events import AsyncEvents, Events
 
 
-@pytest.mark.sync_and_async({"sync": Events, "async": AsyncEvents})
+@pytest.mark.sync_and_async(sync_module=Events, async_module=AsyncEvents)
 class TestEvents(object):
     @pytest.fixture(autouse=True)
     def setup(self, http_client, module_class):

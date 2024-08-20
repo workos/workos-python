@@ -30,28 +30,28 @@ _TEST_HTTP_CLIENTS = {
 
 def pytest_configure(config) -> None:
     config.addinivalue_line(
-        "markers", "sync_and_async(): mark test to run both sync and async versions"
+        "markers",
+        "sync_and_async(): mark test to run both sync and async module versions",
     )
 
 
 def pytest_generate_tests(metafunc: pytest.Metafunc):
     for marker in metafunc.definition.iter_markers(name="sync_and_async"):
         if marker.name == "sync_and_async":
-            if len(marker.args) == 0:
+            sync_module = marker.kwargs["sync_module"]
+            async_module = marker.kwargs["async_module"]
+            if sync_module is None or async_module is None:
                 raise ValueError(
                     "sync_and_async marker requires module setups argument"
-                )
-
-            module_setup = marker.args[0]
-            if "sync" not in module_setup or "async" not in module_setup:
-                raise ValueError(
-                    "sync_and_async marker requires sync and async module setups."
                 )
 
             ids = []
             arg_values = []
 
-            for setup_name, module_class in module_setup.items():
+            for setup_name, module_class in {
+                "sync": sync_module,
+                "async": async_module,
+            }.items():
                 if module_class is None:
                     raise ValueError(
                         f"Invalid module for test module setup: {module_class}"

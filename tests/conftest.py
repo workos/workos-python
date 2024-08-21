@@ -108,12 +108,11 @@ def pytest_generate_tests(metafunc: pytest.Metafunc):
                     module_class.__dict__,
                 )
 
-                # TODO: Fix typing here
-                class_kwargs = {"http_client": http_client}
+                class_kwargs: Mapping[str, Any] = {"http_client": http_client}
                 if syncified_module_class.__init__.__annotations__.get(
                     "client_configuration", None
                 ):
-                    class_kwargs["http_client"] = client_configuration
+                    class_kwargs["client_configuration"] = client_configuration
 
                 module_instance = syncified_module_class(**class_kwargs)
 

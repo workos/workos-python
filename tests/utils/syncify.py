@@ -34,7 +34,10 @@ class SyncifyMetaClass(type(Protocol)):
     def __new__(cls, classname, bases, class_dict):
         new_class_dict = {}
         for attribute_name, attribute in class_dict.items():
-            if isinstance(attribute, FunctionType) and attribute_name != "__init__":
+            # Only modify "public" methods
+            if isinstance(attribute, FunctionType) and not attribute_name.startswith(
+                "_"
+            ):
                 # Replace the method with a version wrapped in run_sync
                 attribute = _run_sync_wrapper(attribute)
 

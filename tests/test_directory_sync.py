@@ -1,10 +1,11 @@
 import pytest
 
+from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
-from workos.directory_sync import AsyncDirectorySync, DirectorySync
 from tests.utils.fixtures.mock_directory import MockDirectory
 from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
 from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
+from workos.directory_sync import AsyncDirectorySync, DirectorySync
 
 
 def api_directory_to_sdk(directory):
@@ -295,27 +296,33 @@ class TestDirectorySync(DirectorySyncFixtures):
         assert me == None
 
     def test_list_directories_auto_pagination(
-        self, mock_directories_multiple_data_pages, test_sync_auto_pagination
+        self,
+        mock_directories_multiple_data_pages,
+        test_auto_pagination: TestAutoPaginationFunction,
     ):
-        test_sync_auto_pagination(
+        test_auto_pagination(
             http_client=self.http_client,
             list_function=self.directory_sync.list_directories,
             expected_all_page_data=mock_directories_multiple_data_pages,
         )
 
     def test_directory_users_auto_pagination(
-        self, mock_directory_users_multiple_data_pages, test_sync_auto_pagination
+        self,
+        mock_directory_users_multiple_data_pages,
+        test_auto_pagination: TestAutoPaginationFunction,
     ):
-        test_sync_auto_pagination(
+        test_auto_pagination(
             http_client=self.http_client,
             list_function=self.directory_sync.list_users,
             expected_all_page_data=mock_directory_users_multiple_data_pages,
         )
 
     def test_directory_user_groups_auto_pagination(
-        self, mock_directory_groups_multiple_data_pages, test_sync_auto_pagination
+        self,
+        mock_directory_groups_multiple_data_pages,
+        test_auto_pagination: TestAutoPaginationFunction,
     ):
-        test_sync_auto_pagination(
+        test_auto_pagination(
             http_client=self.http_client,
             list_function=self.directory_sync.list_groups,
             expected_all_page_data=mock_directory_groups_multiple_data_pages,

@@ -1,4 +1,5 @@
 import json
+from typing import Union
 
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
@@ -11,7 +12,8 @@ from tests.utils.fixtures.mock_organization_membership import MockOrganizationMe
 from tests.utils.fixtures.mock_password_reset import MockPasswordReset
 from tests.utils.fixtures.mock_user import MockUser
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
-from tests.utils.syncify import run_sync
+from tests.utils.syncify import syncify
+from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from workos.types.user_management.invitation import Invitation
 from workos.user_management import AsyncUserManagement, UserManagement
 from workos.utils.request_helper import RESPONSE_TYPE_CODE
@@ -317,7 +319,7 @@ class TestUserManagementBase(UserManagementFixtures):
 @pytest.mark.sync_and_async(UserManagement, AsyncUserManagement)
 class TestUserManagement(UserManagementFixtures):
     @pytest.fixture(autouse=True)
-    def setup(self, module_instance):
+    def setup(self, module_instance: Union[UserManagement, AsyncUserManagement]):
         self.http_client = module_instance._http_client
         self.user_management = module_instance
 
@@ -327,7 +329,7 @@ class TestUserManagement(UserManagementFixtures):
         )
 
         user_id = "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
-        user = self.user_management.get_user(user_id=user_id)
+        user = syncify(self.user_management.get_user(user_id=user_id))
 
         assert request_kwargs["url"].endswith(f"user_management/users/{user_id}")
         assert request_kwargs["method"] == "get"
@@ -335,9 +337,11 @@ class TestUserManagement(UserManagementFixtures):
         assert user.profile_picture_url == "https://example.com/profile-picture.jpg"
 
     def test_list_users_auto_pagination(
-        self, mock_users_multiple_pages, test_sync_auto_pagination
+        self,
+        mock_users_multiple_pages,
+        test_auto_pagination: TestAutoPaginationFunction,
     ):
-        test_sync_auto_pagination(
+        test_auto_pagination(
             http_client=self.http_client,
             list_function=self.user_management.list_users,
             expected_all_page_data=mock_users_multiple_pages["data"],
@@ -355,7 +359,7 @@ class TestUserManagement(UserManagementFixtures):
             "password": "password",
             "email_verified": False,
         }
-        user = self.user_management.create_user(**payload)
+        user = syncify(self.user_management.create_user(**payload))
 
         assert request_kwargs["url"].endswith("user_management/users")
         assert request_kwargs["json"] == payload
@@ -372,8 +376,10 @@ class TestUserManagement(UserManagementFixtures):
             "email_verified": True,
             "password": "password",
         }
-        user = self.user_management.update_user(
-            user_id="user_01H7ZGXFP5C6BBQY6Z7277ZCT0", **params
+        user = syncify(
+            self.user_management.update_user(
+                user_id="user_01H7ZGXFP5C6BBQY6Z7277ZCT0", **params
+            )
         )
 
         assert request_kwargs["url"].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
@@ -391,7 +397,9 @@ class TestUserManagement(UserManagementFixtures):
             http_client=self.http_client, status_code=204
         )
 
-        response = self.user_management.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        response = syncify(
+            self.user_management.delete_user("user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        )
 
         assert request_kwargs["url"].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
@@ -408,8 +416,10 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_organization_membership, 201
         )
 
-        organization_membership = self.user_management.create_organization_membership(
-            user_id=user_id, organization_id=organization_id
+        organization_membership = syncify(
+            self.user_management.create_organization_membership(
+                user_id=user_id, organization_id=organization_id
+            )
         )
 
         assert request_kwargs["url"].endswith(
@@ -430,9 +440,11 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_organization_membership, 201
         )
 
-        organization_membership = self.user_management.update_organization_membership(
-            organization_membership_id="om_ABCDE",
-            role_slug="member",
+        organization_membership = syncify(
+            self.user_management.update_organization_membership(
+                organization_membership_id="om_ABCDE",
+                role_slug="member",
+            )
         )
 
         assert request_kwargs["url"].endswith(
@@ -450,7 +462,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_organization_membership, 200
         )
 
-        om = self.user_management.get_organization_membership("om_ABCDE")
+        om = syncify(self.user_management.get_organization_membership("om_ABCDE"))
 
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE"
@@ -463,7 +475,9 @@ class TestUserManagement(UserManagementFixtures):
             http_client=self.http_client, status_code=200
         )
 
-        response = self.user_management.delete_organization_membership("om_ABCDE")
+        response = syncify(
+            self.user_management.delete_organization_membership("om_ABCDE")
+        )
 
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE"
@@ -472,9 +486,11 @@ class TestUserManagement(UserManagementFixtures):
         assert response is None
 
     def test_list_organization_memberships_auto_pagination(
-        self, mock_organization_memberships_multiple_pages, test_sync_auto_pagination
+        self,
+        mock_organization_memberships_multiple_pages,
+        test_auto_pagination: TestAutoPaginationFunction,
     ):
-        test_sync_auto_pagination(
+        test_auto_pagination(
             http_client=self.http_client,
             list_function=self.user_management.list_organization_memberships,
             expected_all_page_data=mock_organization_memberships_multiple_pages["data"],
@@ -487,7 +503,9 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_organization_membership, 200
         )
 
-        om = self.user_management.deactivate_organization_membership("om_ABCDE")
+        om = syncify(
+            self.user_management.deactivate_organization_membership("om_ABCDE")
+        )
 
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE/deactivate"
@@ -502,7 +520,9 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_organization_membership, 200
         )
 
-        om = self.user_management.reactivate_organization_membership("om_ABCDE")
+        om = syncify(
+            self.user_management.reactivate_organization_membership("om_ABCDE")
+        )
 
         assert request_kwargs["url"].endswith(
             "user_management/organization_memberships/om_ABCDE/reactivate"
@@ -526,7 +546,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_auth_response, 200
         )
 
-        response = self.user_management.authenticate_with_password(**params)
+        response = syncify(self.user_management.authenticate_with_password(**params))
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
         assert request_kwargs["method"] == "post"
@@ -556,7 +576,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_auth_response, 200
         )
 
-        response = self.user_management.authenticate_with_code(**params)
+        response = syncify(self.user_management.authenticate_with_code(**params))
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
         assert request_kwargs["method"] == "post"
@@ -582,7 +602,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_auth_response_with_impersonator, 200
         )
 
-        response = self.user_management.authenticate_with_code(**params)
+        response = syncify(self.user_management.authenticate_with_code(**params))
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
         assert request_kwargs["method"] == "post"
@@ -615,7 +635,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_auth_response, 200
         )
 
-        response = self.user_management.authenticate_with_magic_auth(**params)
+        response = syncify(self.user_management.authenticate_with_magic_auth(**params))
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
         assert request_kwargs["method"] == "post"
@@ -646,7 +666,9 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_auth_response, 200
         )
 
-        response = self.user_management.authenticate_with_email_verification(**params)
+        response = syncify(
+            self.user_management.authenticate_with_email_verification(**params)
+        )
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
         assert request_kwargs["method"] == "post"
@@ -677,7 +699,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_auth_response, 200
         )
 
-        response = self.user_management.authenticate_with_totp(**params)
+        response = syncify(self.user_management.authenticate_with_totp(**params))
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
         assert request_kwargs["method"] == "post"
@@ -707,8 +729,8 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_auth_response, 200
         )
 
-        response = self.user_management.authenticate_with_organization_selection(
-            **params
+        response = syncify(
+            self.user_management.authenticate_with_organization_selection(**params)
         )
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
@@ -738,7 +760,9 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_auth_refresh_token_response, 200
         )
 
-        response = self.user_management.authenticate_with_refresh_token(**params)
+        response = syncify(
+            self.user_management.authenticate_with_refresh_token(**params)
+        )
 
         assert request_kwargs["url"].endswith("user_management/authenticate")
         assert request_kwargs["method"] == "post"
@@ -757,7 +781,9 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_password_reset, 200
         )
 
-        password_reset = self.user_management.get_password_reset("password_reset_ABCDE")
+        password_reset = syncify(
+            self.user_management.get_password_reset("password_reset_ABCDE")
+        )
 
         assert request_kwargs["url"].endswith(
             "user_management/password_reset/password_reset_ABCDE"
@@ -773,7 +799,9 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_password_reset, 201
         )
 
-        password_reset = self.user_management.create_password_reset(email=email)
+        password_reset = syncify(
+            self.user_management.create_password_reset(email=email)
+        )
 
         assert request_kwargs["url"].endswith("user_management/password_reset")
         assert request_kwargs["method"] == "post"
@@ -789,7 +817,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, {"user": mock_user}, 200
         )
 
-        response = self.user_management.reset_password(**json)
+        response = syncify(self.user_management.reset_password(**json))
 
         assert request_kwargs["url"].endswith("user_management/password_reset/confirm")
         assert request_kwargs["method"] == "post"
@@ -803,8 +831,8 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_email_verification, 200
         )
 
-        email_verification = self.user_management.get_email_verification(
-            "email_verification_ABCDE"
+        email_verification = syncify(
+            self.user_management.get_email_verification("email_verification_ABCDE")
         )
 
         assert request_kwargs["url"].endswith(
@@ -822,7 +850,9 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, {"user": mock_user}, 200
         )
 
-        response = self.user_management.send_verification_email(user_id=user_id)
+        response = syncify(
+            self.user_management.send_verification_email(user_id=user_id)
+        )
 
         assert request_kwargs["url"].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/email_verification/send"
@@ -838,7 +868,9 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, {"user": mock_user}, 200
         )
 
-        response = self.user_management.verify_email(user_id=user_id, code=code)
+        response = syncify(
+            self.user_management.verify_email(user_id=user_id, code=code)
+        )
 
         assert request_kwargs["url"].endswith(
             "user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/email_verification/confirm"
@@ -854,7 +886,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_magic_auth, 200
         )
 
-        magic_auth = self.user_management.get_magic_auth("magic_auth_ABCDE")
+        magic_auth = syncify(self.user_management.get_magic_auth("magic_auth_ABCDE"))
 
         assert request_kwargs["url"].endswith(
             "user_management/magic_auth/magic_auth_ABCDE"
@@ -870,7 +902,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_magic_auth, 201
         )
 
-        magic_auth = self.user_management.create_magic_auth(email=email)
+        magic_auth = syncify(self.user_management.create_magic_auth(email=email))
 
         assert request_kwargs["url"].endswith("user_management/magic_auth")
         assert request_kwargs["method"] == "post"
@@ -890,12 +922,14 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_enroll_auth_factor_response, 200
         )
 
-        enroll_auth_factor = self.user_management.enroll_auth_factor(
-            user_id=user_id,
-            type=type,
-            totp_issuer=totp_issuer,
-            totp_user=totp_user,
-            totp_secret=totp_secret,
+        enroll_auth_factor = syncify(
+            self.user_management.enroll_auth_factor(
+                user_id=user_id,
+                type=type,
+                totp_issuer=totp_issuer,
+                totp_user=totp_user,
+                totp_secret=totp_secret,
+            )
         )
 
         assert request_kwargs["url"].endswith(
@@ -913,29 +947,15 @@ class TestUserManagement(UserManagementFixtures):
     def test_list_auth_factors_auto_pagination(
         self,
         mock_auth_factors_multiple_pages,
-        capture_and_mock_pagination_request_for_http_client,
+        test_auto_pagination: TestAutoPaginationFunction,
     ):
-        request_kwargs = capture_and_mock_pagination_request_for_http_client(
+        test_auto_pagination(
             http_client=self.http_client,
-            data_list=mock_auth_factors_multiple_pages["data"],
-            status_code=200,
+            list_function=self.user_management.list_auth_factors,
+            list_function_params={"user_id": "user_12345"},
+            expected_all_page_data=mock_auth_factors_multiple_pages["data"],
+            url_path_keys=["user_id"],
         )
-
-        auth_factors = self.user_management.list_auth_factors(user_id="user_12345")
-        all_auth_factors = []
-
-        for auth_factor in auth_factors:
-            all_auth_factors.append(auth_factor)
-
-        assert len(all_auth_factors) == len(mock_auth_factors_multiple_pages["data"])
-        assert (
-            list_data_to_dicts(all_auth_factors)
-        ) == mock_auth_factors_multiple_pages["data"]
-        assert request_kwargs["url"].endswith(
-            "user_management/users/user_12345/auth_factors"
-        )
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["params"] == {"after": "39", "limit": 10, "order": "desc"}
 
     def test_get_invitation(
         self, mock_invitation, capture_and_mock_http_client_request
@@ -944,7 +964,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_invitation, 200
         )
 
-        invitation = self.user_management.get_invitation("invitation_ABCDE")
+        invitation = syncify(self.user_management.get_invitation("invitation_ABCDE"))
 
         assert request_kwargs["url"].endswith(
             "user_management/invitations/invitation_ABCDE"
@@ -959,8 +979,8 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_invitation, 200
         )
 
-        invitation = self.user_management.find_invitation_by_token(
-            "Z1uX3RbwcIl5fIGJJJCXXisdI"
+        invitation = syncify(
+            self.user_management.find_invitation_by_token("Z1uX3RbwcIl5fIGJJJCXXisdI")
         )
 
         assert request_kwargs["url"].endswith(
@@ -970,9 +990,11 @@ class TestUserManagement(UserManagementFixtures):
         assert invitation.token == "Z1uX3RbwcIl5fIGJJJCXXisdI"
 
     def test_list_invitations_auto_pagination(
-        self, mock_invitations_multiple_pages, test_sync_auto_pagination
+        self,
+        mock_invitations_multiple_pages,
+        test_auto_pagination: TestAutoPaginationFunction,
     ):
-        test_sync_auto_pagination(
+        test_auto_pagination(
             http_client=self.http_client,
             list_function=self.user_management.list_invitations,
             list_function_params={"organization_id": "org_12345"},
@@ -988,8 +1010,10 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_invitation, 201
         )
 
-        invitation = self.user_management.send_invitation(
-            email=email, organization_id=organization_id
+        invitation = syncify(
+            self.user_management.send_invitation(
+                email=email, organization_id=organization_id
+            )
         )
 
         assert request_kwargs["url"].endswith("user_management/invitations")
@@ -1007,7 +1031,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_invitation, 200
         )
 
-        invitation = self.user_management.revoke_invitation("invitation_ABCDE")
+        invitation = syncify(self.user_management.revoke_invitation("invitation_ABCDE"))
 
         assert request_kwargs["url"].endswith(
             "user_management/invitations/invitation_ABCDE/revoke"

@@ -1,7 +1,9 @@
+from typing import Union
 import pytest
 
 from tests.utils.fixtures.mock_event import MockEvent
-from workos.events import AsyncEvents, Events
+from tests.utils.syncify import syncify
+from workos.events import AsyncEvents, Events, EventsListResource
 
 
 @pytest.mark.sync_and_async(Events, AsyncEvents)
@@ -19,7 +21,10 @@ class TestEvents(object):
         }
 
     def test_list_events(
-        self, module_instance, mock_events, capture_and_mock_http_client_request
+        self,
+        module_instance: Union[Events, AsyncEvents],
+        mock_events: EventsListResource,
+        capture_and_mock_http_client_request,
     ):
         request_kwargs = capture_and_mock_http_client_request(
             http_client=module_instance._http_client,
@@ -27,7 +32,9 @@ class TestEvents(object):
             response_dict=mock_events,
         )
 
-        events = module_instance.list_events(events=["dsync.activated"])
+        events: EventsListResource = syncify(
+            module_instance.list_events(events=["dsync.activated"])
+        )
 
         assert request_kwargs["url"].endswith("/events")
         assert request_kwargs["method"] == "get"

@@ -1,8 +1,9 @@
 import datetime
 import pytest
+from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
+from tests.utils.fixtures.mock_organization import MockOrganization
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from workos.organizations import AsyncOrganizations, Organizations
-from tests.utils.fixtures.mock_organization import MockOrganization
 
 
 class OrganizationFixtures:
@@ -230,9 +231,9 @@ class TestOrganizations(OrganizationFixtures):
     def test_list_organizations_auto_pagination_for_multiple_pages(
         self,
         mock_organizations_multiple_data_pages,
-        test_sync_auto_pagination,
+        test_auto_pagination: TestAutoPaginationFunction,
     ):
-        test_sync_auto_pagination(
+        test_auto_pagination(
             http_client=self.http_client,
             list_function=self.organizations.list_organizations,
             expected_all_page_data=mock_organizations_multiple_data_pages["data"],

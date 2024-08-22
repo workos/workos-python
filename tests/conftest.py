@@ -1,6 +1,15 @@
-from http import client
-from types import MethodType
-from typing import Any, Callable, Literal, Mapping, Optional, Tuple
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Literal,
+    Mapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+    cast,
+)
 from unittest.mock import AsyncMock, MagicMock
 
 import httpx
@@ -8,27 +17,12 @@ import pytest
 
 from tests.utils.client_configuration import ClientConfiguration
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
-from tests.utils.syncify import SyncifyMetaClass, run_sync
+from tests.utils.syncify import syncify
+from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from workos.types.list_resource import WorkOSListResource
 from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
 from workos.utils.http_client import AsyncHTTPClient, HTTPClient, SyncHTTPClient
 from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT
-
-
-# _TEST_HTTP_CLIENTS = {
-#     "SyncHTTPClient": SyncHTTPClient(
-#         api_key="sk_test",
-#         base_url="https://api.workos.test/",
-#         client_id="client_b27needthisforssotemxo",
-#         version="test",
-#     ),
-#     "AsyncHTTPClient": AsyncHTTPClient(
-#         api_key="sk_test",
-#         base_url="https://api.workos.test/",
-#         client_id="client_b27needthisforssotemxo",
-#         version="test",
-#     ),
-# }
 
 
 def _get_test_client_setup(
@@ -100,21 +94,13 @@ def pytest_generate_tests(metafunc: pytest.Metafunc):
                     http_client_name
                 )
 
-                # Now we'll wrap all methods in the module class with run_sync,
-                # so both sync and async methods can be run in the same way
-                syncified_module_class = SyncifyMetaClass(
-                    module_class.__name__,
-                    module_class.__bases__,
-                    module_class.__dict__,
-                )
-
                 class_kwargs: Mapping[str, Any] = {"http_client": http_client}
-                if syncified_module_class.__init__.__annotations__.get(
+                if module_class.__init__.__annotations__.get(
                     "client_configuration", None
                 ):
                     class_kwargs["client_configuration"] = client_configuration
 
-                module_instance = syncified_module_class(**class_kwargs)
+                module_instance = module_class(**class_kwargs)
 
                 ids.append(setup_name)  # sync or async will be the test ID
                 arg_names = ["module_instance"]
@@ -256,24 +242,62 @@ def capture_and_mock_pagination_request_for_http_client(monkeypatch):
 
 
 @pytest.fixture
-def test_sync_auto_pagination(capture_and_mock_pagination_request_for_http_client):
-    def inner(
-        http_client: SyncHTTPClient,
+def test_auto_pagination(
+    capture_and_mock_pagination_request_for_http_client,
+) -> TestAutoPaginationFunction:
+    def _iterate_results_sync(
         list_function: Callable[[], WorkOSListResource],
+        list_function_params: Optional[Mapping[str, Any]] = None,
+    ) -> Sequence[Any]:
+        results = list_function(**list_function_params or {})
+        all_results = []
+
+        for result in results:
+            all_results.append(result)
+
+        return all_results
+
+    async def _iterate_results_async(
+        list_function: Callable[[], Awaitable[WorkOSListResource]],
+        list_function_params: Optional[Mapping[str, Any]] = None,
+    ) -> Sequence[Any]:
+        results = await list_function(**list_function_params or {})
+        all_results = []
+
+        async for result in results:
+            all_results.append(result)
+
+        return all_results
+
+    def inner(
+        http_client: HTTPClient,
+        list_function: Union[
+            Callable[[], WorkOSListResource],
+            Callable[[], Awaitable[WorkOSListResource]],
+        ],
         expected_all_page_data: dict,
         list_function_params: Optional[Mapping[str, Any]] = None,
-    ):
+        url_path_keys: Optional[Sequence[str]] = None,
+    ) -> None:
         request_kwargs = capture_and_mock_pagination_request_for_http_client(
             http_client=http_client,
             data_list=expected_all_page_data,
             status_code=200,
         )
 
-        results = list_function(**list_function_params or {})
         all_results = []
-
-        for result in results:
-            all_results.append(result)
+        if isinstance(http_client, AsyncHTTPClient):
+            all_results = syncify(
+                _iterate_results_async(
+                    cast(Callable[[], Awaitable[WorkOSListResource]], list_function),
+                    list_function_params,
+                )
+            )
+        else:
+            all_results = _iterate_results_sync(
+                cast(Callable[[], WorkOSListResource], list_function),
+                list_function_params,
+            )
 
         assert len(list(all_results)) == len(expected_all_page_data)
         assert (list_data_to_dicts(all_results)) == expected_all_page_data
@@ -286,6 +310,7 @@ def test_sync_auto_pagination(capture_and_mock_pagination_request_for_http_clien
 
         params = list_function_params or {}
         for param in params:
-            assert request_kwargs["params"][param] == params[param]
+            if url_path_keys is not None and param not in url_path_keys:
+                assert request_kwargs["params"][param] == params[param]
 
     return inner

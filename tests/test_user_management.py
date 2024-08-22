@@ -11,7 +11,7 @@ from tests.utils.fixtures.mock_magic_auth import MockMagicAuth
 from tests.utils.fixtures.mock_organization_membership import MockOrganizationMembership
 from tests.utils.fixtures.mock_password_reset import MockPasswordReset
 from tests.utils.fixtures.mock_user import MockUser
-from tests.utils.list_resource import list_data_to_dicts, list_response_of
+from tests.utils.list_resource import list_response_of
 from tests.utils.syncify import syncify
 from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from workos.types.user_management.invitation import Invitation

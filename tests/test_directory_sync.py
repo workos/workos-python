@@ -1,13 +1,18 @@
 from typing import Union
+
 import pytest
+from workos.directory_sync import AsyncDirectorySync, DirectorySync
 
 from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
-from tests.utils.list_resource import list_data_to_dicts, list_response_of
-from tests.utils.fixtures.mock_directory import MockDirectory
-from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
+from tests.utils.fixtures.mock_directory import (
+    MockDirectory,
+    MockDirectoryMetadata,
+    MockDirectoryUsersMetadata,
+)
 from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
+from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
+from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from tests.utils.syncify import syncify
-from workos.directory_sync import AsyncDirectorySync, DirectorySync
 
 
 def api_directory_to_sdk(directory):
@@ -94,6 +99,16 @@ class TestDirectorySync:
     @pytest.fixture
     def mock_directories(self):
         directory_list = [MockDirectory(id=str(i)).dict() for i in range(10)]
+        return list_response_of(data=directory_list)
+
+    @pytest.fixture
+    def mock_directories_with_metadata(self):
+        metadata = MockDirectoryMetadata(
+            users=MockDirectoryUsersMetadata(active=1, inactive=0), groups=1
+        )
+        directory_list = [
+            MockDirectory(id=str(i), metadata=metadata).dict() for i in range(10)
+        ]
         return list_response_of(data=directory_list)
 
     @pytest.fixture
@@ -233,6 +248,27 @@ class TestDirectorySync:
 
         assert list_data_to_dicts(directories.data) == api_directories_to_sdk(
             mock_directories["data"]
+        )
+        assert request_kwargs["url"].endswith("/directories")
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"] == {
+            "limit": 10,
+            "order": "desc",
+        }
+
+    def test_list_directories_with_metadata(
+        self, mock_directories_with_metadata, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            http_client=self.http_client,
+            status_code=200,
+            response_dict=mock_directories_with_metadata,
+        )
+
+        directories = syncify(self.directory_sync.list_directories())
+
+        assert list_data_to_dicts(directories.data) == api_directories_to_sdk(
+            mock_directories_with_metadata["data"]
         )
         assert request_kwargs["url"].endswith("/directories")
         assert request_kwargs["method"] == "get"

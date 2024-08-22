@@ -118,20 +118,8 @@ def sync_http_client_for_test():
 
 
 @pytest.fixture
-def async_http_client_for_test():
-    _, _, http_client = _get_test_client_setup("AsyncHTTPClient")
-    return http_client
-
-
-@pytest.fixture
 def sync_client_configuration_and_http_client_for_test():
     _, client_configuration, http_client = _get_test_client_setup("SyncHTTPClient")
-    return client_configuration, http_client
-
-
-@pytest.fixture
-def async_client_configuration_and_http_client_for_test():
-    _, client_configuration, http_client = _get_test_client_setup("AsyncHTTPClient")
     return client_configuration, http_client
 
 

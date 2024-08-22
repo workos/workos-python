@@ -1,9 +1,12 @@
 import json
+from typing import Union
 from six.moves.urllib.parse import parse_qsl, urlparse
 import pytest
+from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from tests.utils.fixtures.mock_profile import MockProfile
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from tests.utils.fixtures.mock_connection import MockConnection
+from tests.utils.syncify import syncify
 from workos.sso import SSO, AsyncSSO, SsoProviderType
 from workos.types.sso import Profile
 from workos.utils.request_helper import RESPONSE_TYPE_CODE
@@ -213,18 +216,14 @@ class TestSSOBase(SSOFixtures):
         }
 
 
+@pytest.mark.sync_and_async(SSO, AsyncSSO)
 class TestSSO(SSOFixtures):
     provider: SsoProviderType
 
     @pytest.fixture(autouse=True)
-    def setup(self, sync_client_configuration_and_http_client_for_test):
-        client_configuration, http_client = (
-            sync_client_configuration_and_http_client_for_test
-        )
-        self.http_client = http_client
-        self.sso = SSO(
-            http_client=self.http_client, client_configuration=client_configuration
-        )
+    def setup(self, module_instance: Union[SSO, AsyncSSO]):
+        self.http_client = module_instance._http_client
+        self.sso = module_instance
         self.provider = "GoogleOAuth"
         self.customer_domain = "workos.com"
         self.login_hint = "foo@workos.com"
@@ -246,7 +245,7 @@ class TestSSO(SSOFixtures):
             self.http_client, response_dict, 200
         )
 
-        profile_and_token = self.sso.get_profile_and_token("123")
+        profile_and_token = syncify(self.sso.get_profile_and_token("123"))
 
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.dict() == mock_profile
@@ -271,7 +270,7 @@ class TestSSO(SSOFixtures):
             self.http_client, response_dict, 200
         )
 
-        profile_and_token = self.sso.get_profile_and_token("123")
+        profile_and_token = syncify(self.sso.get_profile_and_token("123"))
 
         assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
         assert profile_and_token.profile.dict() == mock_magic_link_profile
@@ -289,7 +288,7 @@ class TestSSO(SSOFixtures):
             self.http_client, mock_profile, 200
         )
 
-        profile = self.sso.get_profile("123")
+        profile = syncify(self.sso.get_profile("123"))
 
         assert profile.dict() == mock_profile
         assert request_kwargs["url"].endswith("/sso/profile")
@@ -303,7 +302,7 @@ class TestSSO(SSOFixtures):
             self.http_client, mock_connection, 200
         )
 
-        connection = self.sso.get_connection(connection_id="connection_id")
+        connection = syncify(self.sso.get_connection(connection_id="connection_id"))
 
         assert connection.dict() == mock_connection
         assert request_kwargs["url"].endswith("/connections/connection_id")
@@ -316,7 +315,7 @@ class TestSSO(SSOFixtures):
             self.http_client, mock_connections, 200
         )
 
-        connections = self.sso.list_connections()
+        connections = syncify(self.sso.list_connections())
 
         assert list_data_to_dicts(connections.data) == mock_connections["data"]
         assert request_kwargs["url"].endswith("/connections")
@@ -331,7 +330,7 @@ class TestSSO(SSOFixtures):
             status_code=200,
         )
 
-        self.sso.list_connections(connection_type="GenericSAML")
+        syncify(self.sso.list_connections(connection_type="GenericSAML"))
 
         assert request_kwargs["params"] == {
             "connection_type": "GenericSAML",
@@ -346,7 +345,7 @@ class TestSSO(SSOFixtures):
             headers={"content-type": "text/plain; charset=utf-8"},
         )
 
-        response = self.sso.delete_connection(connection_id="connection_id")
+        response = syncify(self.sso.delete_connection(connection_id="connection_id"))
 
         assert request_kwargs["url"].endswith("/connections/connection_id")
         assert request_kwargs["method"] == "delete"
@@ -355,192 +354,10 @@ class TestSSO(SSOFixtures):
     def test_list_connections_auto_pagination(
         self,
         mock_connections_multiple_data_pages,
-        capture_and_mock_pagination_request_for_http_client,
+        test_auto_pagination: TestAutoPaginationFunction,
     ):
-        request_kwargs = capture_and_mock_pagination_request_for_http_client(
+        test_auto_pagination(
             http_client=self.http_client,
-            data_list=mock_connections_multiple_data_pages,
-            status_code=200,
+            list_function=self.sso.list_connections,
+            expected_all_page_data=mock_connections_multiple_data_pages,
         )
-
-        connections = self.sso.list_connections()
-        all_connections = []
-
-        for connection in connections:
-            all_connections.append(connection)
-
-        assert len(list(all_connections)) == len(mock_connections_multiple_data_pages)
-        assert (
-            list_data_to_dicts(all_connections)
-        ) == mock_connections_multiple_data_pages
-        assert request_kwargs["url"].endswith("/connections")
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["params"] == {"after": "39", "limit": 10, "order": "desc"}
-
-
-@pytest.mark.asyncio
-class TestAsyncSSO(SSOFixtures):
-    provider: SsoProviderType
-
-    @pytest.fixture(autouse=True)
-    def setup(self, async_client_configuration_and_http_client_for_test):
-        client_configuration, http_client = (
-            async_client_configuration_and_http_client_for_test
-        )
-        self.http_client = http_client
-        self.sso = AsyncSSO(
-            http_client=self.http_client, client_configuration=client_configuration
-        )
-        self.provider = "GoogleOAuth"
-        self.customer_domain = "workos.com"
-        self.login_hint = "foo@workos.com"
-        self.redirect_uri = "https://localhost/auth/callback"
-        self.state = json.dumps({"things": "with_stuff"})
-        self.connection_id = "connection_123"
-        self.organization_id = "organization_123"
-        self.setup_completed = True
-
-    async def test_get_profile_and_token_returns_expected_profile_object(
-        self, mock_profile: Profile, capture_and_mock_http_client_request
-    ):
-        response_dict = {
-            "profile": mock_profile,
-            "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
-        }
-
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, response_dict, 200
-        )
-
-        profile_and_token = await self.sso.get_profile_and_token("123")
-
-        assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
-        assert profile_and_token.profile.dict() == mock_profile
-        assert request_kwargs["url"].endswith("/sso/token")
-        assert request_kwargs["method"] == "post"
-        assert request_kwargs["json"] == {
-            "client_id": "client_b27needthisforssotemxo",
-            "client_secret": "sk_test",
-            "code": "123",
-            "grant_type": "authorization_code",
-        }
-
-    async def test_get_profile_and_token_without_first_name_or_last_name_returns_expected_profile_object(
-        self, mock_magic_link_profile, capture_and_mock_http_client_request
-    ):
-        response_dict = {
-            "profile": mock_magic_link_profile,
-            "access_token": "01DY34ACQTM3B1CSX1YSZ8Z00D",
-        }
-
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, response_dict, 200
-        )
-
-        profile_and_token = await self.sso.get_profile_and_token("123")
-
-        assert profile_and_token.access_token == "01DY34ACQTM3B1CSX1YSZ8Z00D"
-        assert profile_and_token.profile.dict() == mock_magic_link_profile
-        assert request_kwargs["url"].endswith("/sso/token")
-        assert request_kwargs["method"] == "post"
-        assert request_kwargs["json"] == {
-            "client_id": "client_b27needthisforssotemxo",
-            "client_secret": "sk_test",
-            "code": "123",
-            "grant_type": "authorization_code",
-        }
-
-    async def test_get_profile(
-        self, mock_profile, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_profile, 200
-        )
-
-        profile = await self.sso.get_profile("123")
-
-        assert profile.dict() == mock_profile
-        assert request_kwargs["url"].endswith("/sso/profile")
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["headers"]["authorization"] == f"Bearer 123"
-
-    async def test_get_connection(
-        self, mock_connection, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_connection, 200
-        )
-
-        connection = await self.sso.get_connection(connection_id="connection_id")
-
-        assert connection.dict() == mock_connection
-        assert request_kwargs["url"].endswith("/connections/connection_id")
-        assert request_kwargs["method"] == "get"
-
-    async def test_list_connections(
-        self, mock_connections, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_connections, 200
-        )
-
-        connections = await self.sso.list_connections()
-
-        assert list_data_to_dicts(connections.data) == mock_connections["data"]
-        assert request_kwargs["url"].endswith("/connections")
-        assert request_kwargs["method"] == "get"
-
-    async def test_list_connections_with_connection_type(
-        self, mock_connections, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            http_client=self.http_client,
-            response_dict=mock_connections,
-            status_code=200,
-        )
-
-        await self.sso.list_connections(connection_type="GenericSAML")
-
-        assert request_kwargs["params"] == {
-            "connection_type": "GenericSAML",
-            "limit": 10,
-            "order": "desc",
-        }
-
-    async def test_delete_connection(self, capture_and_mock_http_client_request):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client,
-            status_code=204,
-            headers={"content-type": "text/plain; charset=utf-8"},
-        )
-
-        response = await self.sso.delete_connection(connection_id="connection_id")
-        assert request_kwargs["url"].endswith("/connections/connection_id")
-        assert request_kwargs["method"] == "delete"
-
-        assert response is None
-
-    async def test_list_connections_auto_pagination(
-        self,
-        mock_connections_multiple_data_pages,
-        capture_and_mock_pagination_request_for_http_client,
-    ):
-        request_kwargs = capture_and_mock_pagination_request_for_http_client(
-            http_client=self.http_client,
-            data_list=mock_connections_multiple_data_pages,
-            status_code=200,
-        )
-
-        connections = await self.sso.list_connections()
-        all_connections = []
-
-        async for connection in connections:
-            all_connections.append(connection)
-
-        assert len(list(all_connections)) == len(mock_connections_multiple_data_pages)
-        assert (
-            list_data_to_dicts(all_connections)
-        ) == mock_connections_multiple_data_pages
-        assert request_kwargs["url"].endswith("/connections")
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["params"] == {"after": "39", "limit": 10, "order": "desc"}

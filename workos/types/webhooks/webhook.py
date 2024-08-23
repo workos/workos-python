@@ -70,10 +70,10 @@ class AuthenticationMfaSucceededWebhook(
 ):
     event: Literal["authentication.mfa_succeeded"]
 
-class AuthenticationOauthFailedWebhook(
-    WebhookModel[AuthenticationOauthFailedPayload]
-):
+
+class AuthenticationOauthFailedWebhook(WebhookModel[AuthenticationOauthFailedPayload]):
     event: Literal["authentication.oauth_failed"]
+
 
 class AuthenticationOauthSucceededWebhook(
     WebhookModel[AuthenticationOauthSucceededPayload]
@@ -92,10 +92,10 @@ class AuthenticationPasswordSucceededWebhook(
 ):
     event: Literal["authentication.password_succeeded"]
 
-class AuthenticationSsoFailedWebhook(
-    WebhookModel[AuthenticationSsoFailedPayload]
-):
+
+class AuthenticationSsoFailedWebhook(WebhookModel[AuthenticationSsoFailedPayload]):
     event: Literal["authentication.sso_failed"]
+
 
 class AuthenticationSsoSucceededWebhook(
     WebhookModel[AuthenticationSsoSucceededPayload]

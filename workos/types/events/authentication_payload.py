@@ -42,9 +42,11 @@ class AuthenticationMfaSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["mfa"]
     user_id: Optional[str] = None
 
+
 class AuthenticationOauthFailedPayload(AuthenticationResultFailed):
     type: Literal["oauth"]
-    
+
+
 class AuthenticationOauthSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["oauth"]
     user_id: Optional[str] = None
@@ -58,8 +60,10 @@ class AuthenticationPasswordSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["password"]
     user_id: str
 
+
 class AuthenticationSsoFailedPayload(AuthenticationResultFailed):
     type: Literal["sso"]
+
 
 class AuthenticationSsoSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["sso"]

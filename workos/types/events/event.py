@@ -70,10 +70,10 @@ class AuthenticationMagicAuthSucceededEvent(
 class AuthenticationMfaSucceededEvent(EventModel[AuthenticationMfaSucceededPayload]):
     event: Literal["authentication.mfa_succeeded"]
 
-class AuthenticationOauthFailedEvent(
-    EventModel[AuthenticationOauthFailedPayload]
-):
+
+class AuthenticationOauthFailedEvent(EventModel[AuthenticationOauthFailedPayload]):
     event: Literal["authentication.oauth_failed"]
+
 
 class AuthenticationOauthSucceededEvent(
     EventModel[AuthenticationOauthSucceededPayload]
@@ -92,8 +92,10 @@ class AuthenticationPasswordSucceededEvent(
 ):
     event: Literal["authentication.password_succeeded"]
 
+
 class AuthenticationSsoFailedEvent(EventModel[AuthenticationSsoFailedPayload]):
     event: Literal["authentication.sso_failed"]
+
 
 class AuthenticationSsoSucceededEvent(EventModel[AuthenticationSsoSucceededPayload]):
     event: Literal["authentication.sso_succeeded"]

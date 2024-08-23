@@ -8,9 +8,11 @@ from workos.types.events.authentication_payload import (
     AuthenticationMagicAuthFailedPayload,
     AuthenticationMagicAuthSucceededPayload,
     AuthenticationMfaSucceededPayload,
+    AuthenticationOauthFailedPayload,
     AuthenticationOauthSucceededPayload,
     AuthenticationPasswordFailedPayload,
     AuthenticationPasswordSucceededPayload,
+    AuthenticationSsoFailedPayload,
     AuthenticationSsoSucceededPayload,
 )
 from workos.types.events.connection_payload_with_legacy_fields import (
@@ -51,9 +53,11 @@ EventPayload = TypeVar(
     AuthenticationMagicAuthFailedPayload,
     AuthenticationMagicAuthSucceededPayload,
     AuthenticationMfaSucceededPayload,
+    AuthenticationOauthFailedPayload,
     AuthenticationOauthSucceededPayload,
     AuthenticationPasswordFailedPayload,
     AuthenticationPasswordSucceededPayload,
+    AuthenticationSsoFailedPayload,
     AuthenticationSsoSucceededPayload,
     Connection,
     ConnectionPayloadWithLegacyFields,

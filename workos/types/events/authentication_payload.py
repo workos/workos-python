@@ -5,11 +5,11 @@ from workos.types.workos_model import WorkOSModel
 class AuthenticationResultCommon(WorkOSModel):
     ip_address: Optional[str] = None
     user_agent: Optional[str] = None
-    email: str
 
 
 class AuthenticationResultSucceeded(AuthenticationResultCommon):
     status: Literal["succeeded"]
+    email: str
 
 
 class ErrorWithCode(WorkOSModel):
@@ -20,6 +20,8 @@ class ErrorWithCode(WorkOSModel):
 class AuthenticationResultFailed(AuthenticationResultCommon):
     status: Literal["failed"]
     error: ErrorWithCode
+    email: Optional[str] = None
+    user_id: Optional[str] = None
 
 
 class AuthenticationEmailVerificationSucceededPayload(AuthenticationResultSucceeded):
@@ -38,12 +40,16 @@ class AuthenticationMagicAuthSucceededPayload(AuthenticationResultSucceeded):
 
 class AuthenticationMfaSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["mfa"]
-    user_id: str
+    user_id: Optional[str] = None
+
+
+class AuthenticationOauthFailedPayload(AuthenticationResultFailed):
+    type: Literal["oauth"]
 
 
 class AuthenticationOauthSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["oauth"]
-    user_id: str
+    user_id: Optional[str] = None
 
 
 class AuthenticationPasswordFailedPayload(AuthenticationResultFailed):
@@ -53,6 +59,10 @@ class AuthenticationPasswordFailedPayload(AuthenticationResultFailed):
 class AuthenticationPasswordSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["password"]
     user_id: str
+
+
+class AuthenticationSsoFailedPayload(AuthenticationResultFailed):
+    type: Literal["sso"]
 
 
 class AuthenticationSsoSucceededPayload(AuthenticationResultSucceeded):

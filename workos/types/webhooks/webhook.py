@@ -10,9 +10,11 @@ from workos.types.events.authentication_payload import (
     AuthenticationMagicAuthFailedPayload,
     AuthenticationMagicAuthSucceededPayload,
     AuthenticationMfaSucceededPayload,
+    AuthenticationOauthFailedPayload,
     AuthenticationOauthSucceededPayload,
     AuthenticationPasswordFailedPayload,
     AuthenticationPasswordSucceededPayload,
+    AuthenticationSsoFailedPayload,
     AuthenticationSsoSucceededPayload,
 )
 from workos.types.events.connection_payload_with_legacy_fields import (
@@ -71,6 +73,10 @@ class AuthenticationMfaSucceededWebhook(
     event: Literal["authentication.mfa_succeeded"]
 
 
+class AuthenticationOauthFailedWebhook(WebhookModel[AuthenticationOauthFailedPayload]):
+    event: Literal["authentication.oauth_failed"]
+
+
 class AuthenticationOauthSucceededWebhook(
     WebhookModel[AuthenticationOauthSucceededPayload]
 ):
@@ -87,6 +93,10 @@ class AuthenticationPasswordSucceededWebhook(
     WebhookModel[AuthenticationPasswordSucceededPayload,]
 ):
     event: Literal["authentication.password_succeeded"]
+
+
+class AuthenticationSsoFailedWebhook(WebhookModel[AuthenticationSsoFailedPayload]):
+    event: Literal["authentication.sso_failed"]
 
 
 class AuthenticationSsoSucceededWebhook(
@@ -233,9 +243,11 @@ Webhook = Annotated[
         AuthenticationMagicAuthFailedWebhook,
         AuthenticationMagicAuthSucceededWebhook,
         AuthenticationMfaSucceededWebhook,
+        AuthenticationOauthFailedWebhook,
         AuthenticationOauthSucceededWebhook,
         AuthenticationPasswordFailedWebhook,
         AuthenticationPasswordSucceededWebhook,
+        AuthenticationSsoFailedWebhook,
         AuthenticationSsoSucceededWebhook,
         ConnectionActivatedWebhook,
         ConnectionDeactivatedWebhook,

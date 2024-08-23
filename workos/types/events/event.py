@@ -9,9 +9,11 @@ from workos.types.events.authentication_payload import (
     AuthenticationMagicAuthFailedPayload,
     AuthenticationMagicAuthSucceededPayload,
     AuthenticationMfaSucceededPayload,
+    AuthenticationOauthFailedPayload,
     AuthenticationOauthSucceededPayload,
     AuthenticationPasswordFailedPayload,
     AuthenticationPasswordSucceededPayload,
+    AuthenticationSsoFailedPayload,
     AuthenticationSsoSucceededPayload,
 )
 from workos.types.events.connection_payload_with_legacy_fields import (
@@ -69,6 +71,10 @@ class AuthenticationMfaSucceededEvent(EventModel[AuthenticationMfaSucceededPaylo
     event: Literal["authentication.mfa_succeeded"]
 
 
+class AuthenticationOauthFailedEvent(EventModel[AuthenticationOauthFailedPayload]):
+    event: Literal["authentication.oauth_failed"]
+
+
 class AuthenticationOauthSucceededEvent(
     EventModel[AuthenticationOauthSucceededPayload]
 ):
@@ -85,6 +91,10 @@ class AuthenticationPasswordSucceededEvent(
     EventModel[AuthenticationPasswordSucceededPayload,]
 ):
     event: Literal["authentication.password_succeeded"]
+
+
+class AuthenticationSsoFailedEvent(EventModel[AuthenticationSsoFailedPayload]):
+    event: Literal["authentication.sso_failed"]
 
 
 class AuthenticationSsoSucceededEvent(EventModel[AuthenticationSsoSucceededPayload]):
@@ -227,9 +237,11 @@ Event = Annotated[
         AuthenticationMagicAuthFailedEvent,
         AuthenticationMagicAuthSucceededEvent,
         AuthenticationMfaSucceededEvent,
+        AuthenticationOauthFailedEvent,
         AuthenticationOauthSucceededEvent,
         AuthenticationPasswordFailedEvent,
         AuthenticationPasswordSucceededEvent,
+        AuthenticationSsoFailedEvent,
         AuthenticationSsoSucceededEvent,
         ConnectionActivatedEvent,
         ConnectionDeactivatedEvent,

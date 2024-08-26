@@ -331,6 +331,8 @@ class UserManagementModule(Protocol):
         The URL generated will redirect a User to the Identity Provider configured through
         WorkOS.
 
+        This method is purposefully designed as synchronous as it does not make any HTTP requests.
+
         Kwargs:
             redirect_uri (str): A Redirect URI to return an authorized user to.
             connection_id (str): The connection_id connection selector is used to initiate SSO for a Connection.
@@ -546,6 +548,8 @@ class UserManagementModule(Protocol):
     def get_jwks_url(self) -> str:
         """Get the public key that is used for verifying access tokens.
 
+        This method is purposefully designed as synchronous as it does not make any HTTP requests.
+
         Returns:
             (str): The public JWKS URL.
         """
@@ -554,6 +558,8 @@ class UserManagementModule(Protocol):
 
     def get_logout_url(self, session_id: str) -> str:
         """Get the URL for ending the session and redirecting the user
+
+        This method is purposefully designed as synchronous as it does not make any HTTP requests.
 
         Args:
             session_id (str): The ID of the user's session

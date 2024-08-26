@@ -61,6 +61,8 @@ class SSOModule(Protocol):
         The URL generated will redirect a User to the Identity Provider configured through
         WorkOS.
 
+        This method is purposefully designed as synchronous as it does not make any HTTP requests.
+
         Kwargs:
             redirect_uri (str) : A valid redirect URI, as specified on WorkOS
             state (str) : An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed

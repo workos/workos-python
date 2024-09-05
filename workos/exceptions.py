@@ -2,76 +2,28 @@ from typing import Any, Mapping, Optional
 
 import httpx
 
-
 # Request related exceptions
 class BaseRequestException(Exception):
     def __init__(
         self,
         response: httpx.Response,
-        message: Optional[str] = None,
-        error: Optional[str] = None,
-        errors: Optional[Mapping[str, Any]] = None,
-        error_description: Optional[str] = None,
-        code: Optional[str] = None,
-        pending_authentication_token: Optional[str] = None,
+        response_json: Mapping[str, Any],
     ) -> None:
-        super(BaseRequestException, self).__init__(message)
+        super(BaseRequestException, self).__init__(response_json)
 
-        self.message = message
-        self.error = error
-        self.errors = errors
-        self.code = code
-        self.error_description = error_description
-        self.pending_authentication_token = pending_authentication_token
-        self.extract_and_set_response_related_data(response)
-
-    def extract_and_set_response_related_data(self, response: httpx.Response) -> None:
         self.response = response
-
-        try:
-            response_json = response.json()
-            self.message = response_json.get("message")
-            self.error = response_json.get("error")
-            self.errors = response_json.get("errors")
-            self.code = response_json.get("code")
-            self.error_description = response_json.get("error_description")
-            self.pending_authentication_token = response_json.get(
-                "pending_authentication_token"
-            )
-        except ValueError:
-            self.message = None
-            self.error = None
-            self.errors = None
-            self.code = None
-            self.error_description = None
-            self.pending_authentication_token = None
-
-        headers = response.headers
-        self.request_id = headers.get("X-Request-ID")
+        self.response_json = response_json
 
     def __str__(self) -> str:
-        message = self.message or "No message"
+        message = self.response_json.get("message") or "No message"
         exception = "(message=%s" % message
 
-        if self.request_id is not None:
-            exception += ", request_id=%s" % self.request_id
+        for key, value in self.response_json.items():
+            if key != "message":
+                exception += ", %s=%s" % (key, value)
 
-        if self.code is not None:
-            exception += ", code=%s" % self.code
-
-        if self.error is not None:
-            exception += ", error=%s" % self.error
-
-        if self.errors is not None:
-            exception += ", errors=%s" % self.errors
-
-        if self.error_description is not None:
-            exception += ", error_description=%s" % self.error_description
-
-        if self.pending_authentication_token is not None:
-            exception += (
-                ", pending_authentication_token=%s" % self.pending_authentication_token
-            )
+        request_id = self.response.headers.get("X-Request-ID")
+        exception += ", request_id=%s" % request_id
 
         return exception + ")"
 

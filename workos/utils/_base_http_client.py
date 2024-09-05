@@ -96,27 +96,15 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         status_code = response.status_code
         if status_code >= 400 and status_code < 500:
             if status_code == 401:
-                raise AuthenticationException(response)
+                raise AuthenticationException(response, response_json)
             elif status_code == 403:
-                raise AuthorizationException(response)
+                raise AuthorizationException(response, response_json)
             elif status_code == 404:
-                raise NotFoundException(response)
+                raise NotFoundException(response, response_json)
 
-            error = (
-                response_json.get("error")
-                if response_json and "error" in response_json
-                else "Unknown"
-            )
-            error_description = (
-                response_json.get("error_description")
-                if response_json and "error_description" in response_json
-                else "Unknown"
-            )
-            raise BadRequestException(
-                response, error=error, error_description=error_description
-            )
+            raise BadRequestException(response, response_json)
         elif status_code >= 500 and status_code < 600:
-            raise ServerException(response)
+            raise ServerException(response, response_json)
 
     def _prepare_request(
         self,
@@ -158,10 +146,6 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         # Remove any parameters that are None
         if params is not None:
             params = {k: v for k, v in params.items() if v is not None}
-
-        # Remove any body values that are None
-        if json is not None and isinstance(json, Mapping):
-            json = {k: v for k, v in json.items() if v is not None}
 
         # We'll spread these return values onto the HTTP client request method
         if bodyless_http_method:

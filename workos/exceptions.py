@@ -30,13 +30,12 @@ class BaseRequestException(Exception):
 
     def __str__(self) -> str:
         exception = "(message=%s" % self.message
+        exception += ", request_id=%s" % self.request_id
 
         if self.response_json is not None:
             for key, value in self.response_json.items():
                 if key != "message":
                     exception += ", %s=%s" % (key, value)
-
-        exception += ", request_id=%s" % self.request_id
 
         return exception + ")"
 

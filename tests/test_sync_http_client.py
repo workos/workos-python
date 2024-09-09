@@ -222,7 +222,7 @@ class TestSyncHTTPClient(object):
         except BadRequestException as ex:
             assert (
                 str(ex)
-                == "(message=No message, error=example_error, error_description=Example error description, foo=bar, request_id=request-123)"
+                == "(message=No message, request_id=request-123, error=example_error, error_description=Example error description, foo=bar)"
             )
         except Exception as ex:
             assert ex.__class__ == BadRequestException

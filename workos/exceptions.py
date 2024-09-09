@@ -2,6 +2,7 @@ from typing import Any, Mapping, Optional
 
 import httpx
 
+
 # Request related exceptions
 class BaseRequestException(Exception):
     def __init__(

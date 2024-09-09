@@ -181,7 +181,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             try:
                 response_json = response.json()
             except ValueError:
-                raise ServerException(response)
+                raise ServerException(response, None)
 
         self._maybe_raise_error_by_status_code(response, response_json)
 

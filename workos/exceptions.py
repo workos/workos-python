@@ -8,7 +8,7 @@ class BaseRequestException(Exception):
     def __init__(
         self,
         response: httpx.Response,
-        response_json: Mapping[str, Any],
+        response_json: Optional[Mapping[str, Any]],
     ) -> None:
         super(BaseRequestException, self).__init__(response_json)
 

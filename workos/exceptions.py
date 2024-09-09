@@ -17,7 +17,7 @@ class BaseRequestException(Exception):
         self.message = self.extractFromJson("message", "No message")
         self.error = self.extractFromJson("error", None)
         self.errors = self.extractFromJson("errors", None)
-        self.code = self.extractFromJson("code", None )
+        self.code = self.extractFromJson("code", None)
         self.error_description = self.extractFromJson("error_description", None)
 
         self.request_id = response.headers.get("X-Request-ID")

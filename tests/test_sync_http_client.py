@@ -212,7 +212,11 @@ class TestSyncHTTPClient(object):
         self.http_client._client.request = MagicMock(
             return_value=httpx.Response(
                 status_code=400,
-                json={"error": error, "error_description": error_description, "foo": "bar"},
+                json={
+                    "error": error,
+                    "error_description": error_description,
+                    "foo": "bar",
+                },
                 headers={"X-Request-ID": request_id},
             ),
         )

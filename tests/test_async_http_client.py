@@ -227,7 +227,7 @@ class TestAsyncHTTPClient(object):
         try:
             await self.http_client.request("bad_place")
         except BadRequestException as ex:
-            assert str(ex) == "(message=No message, request_id=request-123)"
+            assert str(ex) == "(message=No message, request_id=request-123, foo=bar)"
         except Exception as ex:
             assert ex.__class__ == BadRequestException
 

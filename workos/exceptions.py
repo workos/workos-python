@@ -15,15 +15,15 @@ class BaseRequestException(Exception):
         self.response = response
         self.response_json = response_json
 
-        self.message = self.extractFromJson("message", "No message")
-        self.error = self.extractFromJson("error", "Unknown")
-        self.errors = self.extractFromJson("errors", None)
-        self.code = self.extractFromJson("code", None)
-        self.error_description = self.extractFromJson("error_description", "Unknown")
+        self.message = self.extract_from_json("message", "No message")
+        self.error = self.extract_from_json("error", "Unknown")
+        self.errors = self.extract_from_json("errors", None)
+        self.code = self.extract_from_json("code", None)
+        self.error_description = self.extract_from_json("error_description", "Unknown")
 
         self.request_id = response.headers.get("X-Request-ID")
 
-    def extractFromJson(self, key: str, alt: Optional[str] = None) -> Optional[str]:
+    def extract_from_json(self, key: str, alt: Optional[str] = None) -> Optional[str]:
         if self.response_json is None:
             return alt
 

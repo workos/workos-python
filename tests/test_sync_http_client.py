@@ -204,7 +204,7 @@ class TestSyncHTTPClient(object):
             # This'll fail for sure here but... just using the nice error that'd come up
             assert ex.__class__ == expected_exception
 
-    def test_bad_request_exceptions_include_expected_request_data(self):
+    def test_bad_request_exceptions_include_request_data(self):
         request_id = "request-123"
         error = "example_error"
         error_description = "Example error description"
@@ -212,7 +212,7 @@ class TestSyncHTTPClient(object):
         self.http_client._client.request = MagicMock(
             return_value=httpx.Response(
                 status_code=400,
-                json={"error": error, "error_description": error_description},
+                json={"error": error, "error_description": error_description, "foo": "bar"},
                 headers={"X-Request-ID": request_id},
             ),
         )
@@ -222,26 +222,8 @@ class TestSyncHTTPClient(object):
         except BadRequestException as ex:
             assert (
                 str(ex)
-                == "(message=No message, request_id=request-123, error=example_error, error_description=Example error description)"
+                == "(message=No message, error=example_error, error_description=Example error description, foo=bar, request_id=request-123)"
             )
-        except Exception as ex:
-            assert ex.__class__ == BadRequestException
-
-    def test_bad_request_exceptions_exclude_expected_request_data(self):
-        request_id = "request-123"
-
-        self.http_client._client.request = MagicMock(
-            return_value=httpx.Response(
-                status_code=400,
-                json={"foo": "bar"},
-                headers={"X-Request-ID": request_id},
-            ),
-        )
-
-        try:
-            self.http_client.request("bad_place")
-        except BadRequestException as ex:
-            assert str(ex) == "(message=No message, request_id=request-123)"
         except Exception as ex:
             assert ex.__class__ == BadRequestException
 

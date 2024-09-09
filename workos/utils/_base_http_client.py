@@ -147,6 +147,10 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         if params is not None:
             params = {k: v for k, v in params.items() if v is not None}
 
+        # Remove any body values that are None
+        if json is not None and isinstance(json, Mapping):
+            json = {k: v for k, v in json.items() if v is not None}
+
         # We'll spread these return values onto the HTTP client request method
         if bodyless_http_method:
             return {

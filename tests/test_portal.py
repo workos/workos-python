@@ -22,6 +22,18 @@ class TestPortal(object):
 
         assert response.link == "https://id.workos.com/portal/launch?secret=secret"
 
+    def test_generate_link_domain_verification(
+        self, mock_portal_link, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(self.http_client, mock_portal_link, 201)
+
+        response = self.portal.generate_link(
+            intent="domain_verification",
+            organization_id="org_01EHQMYV6MBK39QC5PZXHY59C3",
+        )
+
+        assert response.link == "https://id.workos.com/portal/launch?secret=secret"
+
     def test_generate_link_dsync(
         self, mock_portal_link, capture_and_mock_http_client_request
     ):

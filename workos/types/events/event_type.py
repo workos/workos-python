@@ -1,5 +1,8 @@
 from typing import Literal, TypeVar
 
+# README
+# When adding a new event type, ensure a new event class is created
+# and added to the Event class union type in event.py.
 
 EventType = Literal[
     "authentication.email_verification_succeeded",

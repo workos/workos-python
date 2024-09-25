@@ -49,6 +49,12 @@ from workos.types.user_management.magic_auth import MagicAuthCommon
 from workos.types.user_management.password_reset import PasswordResetCommon
 
 
+# README
+# When adding a new event type, ensure the new event class is
+# added to the Event union type at the bottom of this file, and
+# the event name is added to the EventType union type in event_type.py.
+
+
 class AuthenticationEmailVerificationSucceededEvent(
     EventModel[AuthenticationEmailVerificationSucceededPayload,]
 ):
@@ -264,6 +270,9 @@ Event = Annotated[
         OrganizationUpdatedEvent,
         OrganizationDomainVerificationFailedEvent,
         OrganizationDomainVerifiedEvent,
+        OrganizationMembershipCreatedEvent,
+        OrganizationMembershipDeletedEvent,
+        OrganizationMembershipUpdatedEvent,
         PasswordResetCreatedEvent,
         RoleCreatedEvent,
         RoleDeletedEvent,

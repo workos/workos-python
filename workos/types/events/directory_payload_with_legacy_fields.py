@@ -5,7 +5,7 @@ from workos.types.events.directory_payload import DirectoryPayload
 
 class MinimalOrganizationDomain(WorkOSModel):
     id: str
-    organization_id: str
+    domain: str
     object: Literal["organization_domain"]
 
 

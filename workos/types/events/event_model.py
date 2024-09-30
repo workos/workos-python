@@ -27,6 +27,7 @@ from workos.types.events.directory_group_with_previous_attributes import (
 from workos.types.events.directory_payload import DirectoryPayload
 from workos.types.events.directory_payload_with_legacy_fields import (
     DirectoryPayloadWithLegacyFields,
+    DirectoryPayloadWithLegacyFieldsForEventsApi,
 )
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
@@ -63,6 +64,8 @@ EventPayload = TypeVar(
     ConnectionPayloadWithLegacyFields,
     DirectoryPayload,
     DirectoryPayloadWithLegacyFields,
+    # TODO: Remove once merged with DirectoryPayloadWithLegacyFields in next major release.
+    DirectoryPayloadWithLegacyFieldsForEventsApi,
     DirectoryGroup,
     DirectoryGroupWithPreviousAttributes,
     DirectoryUser,

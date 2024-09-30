@@ -3,6 +3,7 @@ import datetime
 from workos.types.events import DirectoryActivatedEvent
 from workos.types.events.directory_payload_with_legacy_fields import (
     DirectoryPayloadWithLegacyFields,
+    DirectoryPayloadWithLegacyFieldsForEventsApi,
 )
 
 
@@ -13,7 +14,7 @@ class MockEvent(DirectoryActivatedEvent):
             object="event",
             id=id,
             event="dsync.activated",
-            data=DirectoryPayloadWithLegacyFields(
+            data=DirectoryPayloadWithLegacyFieldsForEventsApi(
                 object="directory",
                 id="dir_1234",
                 organization_id="organization_id",

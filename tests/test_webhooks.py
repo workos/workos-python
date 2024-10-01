@@ -1,5 +1,6 @@
 import json
 import pytest
+from workos.typing.webhooks import WebhookTypeAdapter
 from workos.webhooks import Webhooks
 
 
@@ -122,3 +123,34 @@ class TestWebhooks(object):
         )
         assert type(result).__name__ == "UntypedWebhook"
         assert result.dict() == json.loads(mock_unknown_webhook_body)
+
+    # TODO: This test should be updated in the next major version to expect
+    # a DirectoryActivatedWebhook return type.
+    def test_validate_dsync_activated_event(self):
+        event_body = {
+            "id": "event_01J8SX5FTXYD2YFWVTGJY49EM6",
+            "data": {
+                "id": "directory_01EHWNC0FCBHZ3BJ7EGKYXK0E6",
+                "name": "Foo Corp's Directory",
+                "type": "generic scim v2.0",
+                "state": "active",
+                "object": "directory",
+                "domains": [
+                    {
+                        "id": "org_domain_01EZTR5N6Y9RQKHK2E9F31KZX6",
+                        "domain": "foo-corp.com",
+                        "object": "organization_domain",
+                    }
+                ],
+                "created_at": "2021-06-25T19:07:33.155Z",
+                "updated_at": "2021-06-25T19:07:33.155Z",
+                "external_key": "UWuccu6o1E0GqkYs",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            },
+            "event": "dsync.activated",
+            "created_at": "2021-06-25T19:07:33.155Z",
+        }
+
+        result = WebhookTypeAdapter.validate_json(json.dumps(event_body))
+        assert type(result).__name__ == "UntypedWebhook"
+        assert result.dict() == event_body

@@ -28,6 +28,7 @@ from workos.types.events.directory_group_with_previous_attributes import (
 from workos.types.events.directory_payload import DirectoryPayload
 from workos.types.events.directory_payload_with_legacy_fields import (
     DirectoryPayloadWithLegacyFields,
+    DirectoryPayloadWithLegacyFieldsForEventsApi,
 )
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
@@ -119,7 +120,7 @@ class ConnectionDeletedEvent(EventModel[Connection]):
     event: Literal["connection.deleted"]
 
 
-class DirectoryActivatedEvent(EventModel[DirectoryPayloadWithLegacyFields]):
+class DirectoryActivatedEvent(EventModel[DirectoryPayloadWithLegacyFieldsForEventsApi]):
     event: Literal["dsync.activated"]
 
 

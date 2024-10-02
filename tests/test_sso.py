@@ -29,6 +29,7 @@ class SSOFixtures:
             idp_id="",
             first_name=None,
             last_name=None,
+            profile=None,
             groups=None,
             raw_attributes={},
         ).dict()

@@ -4,8 +4,10 @@ from workos.types.workos_model import WorkOSModel
 from workos.typing.literals import LiteralOrUntyped
 from typing_extensions import TypedDict
 
+
 class ProfileRole(TypedDict):
     slug: str
+
 
 class Profile(WorkOSModel):
     """Representation of a User Profile as returned by WorkOS through the SSO feature."""

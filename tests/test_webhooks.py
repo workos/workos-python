@@ -124,8 +124,6 @@ class TestWebhooks(object):
         assert type(result).__name__ == "UntypedWebhook"
         assert result.dict() == json.loads(mock_unknown_webhook_body)
 
-    # TODO: This test should be updated in the next major version to expect
-    # a DirectoryActivatedWebhook return type.
     def test_validate_dsync_activated_event(self):
         event_body = {
             "id": "event_01J8SX5FTXYD2YFWVTGJY49EM6",
@@ -152,5 +150,5 @@ class TestWebhooks(object):
         }
 
         result = WebhookTypeAdapter.validate_json(json.dumps(event_body))
-        assert type(result).__name__ == "UntypedWebhook"
+        assert type(result).__name__ == "DirectoryActivatedWebhook"
         assert result.dict() == event_body

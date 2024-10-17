@@ -2,6 +2,11 @@ from typing import Any, Literal, Mapping, Optional, Sequence
 from workos.types.sso.connection import ConnectionType
 from workos.types.workos_model import WorkOSModel
 from workos.typing.literals import LiteralOrUntyped
+from typing_extensions import TypedDict
+
+
+class ProfileRole(TypedDict):
+    slug: str
 
 
 class Profile(WorkOSModel):
@@ -16,6 +21,7 @@ class Profile(WorkOSModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     idp_id: str
+    role: Optional[ProfileRole] = None
     groups: Optional[Sequence[str]] = None
     raw_attributes: Mapping[str, Any]
 

@@ -1,8 +1,9 @@
 from typing import Literal, Optional, TypeVar
+
 from workos.types.user_management.impersonator import Impersonator
+from workos.types.user_management.oauth_credentials import OauthCredentials
 from workos.types.user_management.user import User
 from workos.types.workos_model import WorkOSModel
-
 
 AuthenticationMethod = Literal[
     "SSO",
@@ -27,6 +28,7 @@ class AuthenticationResponse(_AuthenticationResponseBase):
     authentication_method: Optional[AuthenticationMethod] = None
     impersonator: Optional[Impersonator] = None
     organization_id: Optional[str] = None
+    oauth_credentials: Optional[OauthCredentials] = None
     user: User
 
 

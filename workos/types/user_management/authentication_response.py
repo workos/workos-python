@@ -1,5 +1,6 @@
 from typing import Literal, Optional, TypeVar
 from workos.types.user_management.impersonator import Impersonator
+from workos.types.user_management.oauth_tokens import OAuthTokens
 from workos.types.user_management.user import User
 from workos.types.workos_model import WorkOSModel
 
@@ -28,6 +29,7 @@ class AuthenticationResponse(_AuthenticationResponseBase):
     impersonator: Optional[Impersonator] = None
     organization_id: Optional[str] = None
     user: User
+    oauth_tokens: Optional[OAuthTokens] = None
 
 
 class AuthKitAuthenticationResponse(AuthenticationResponse):

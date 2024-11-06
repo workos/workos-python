@@ -29,13 +29,13 @@ class AuthenticationResponse(_AuthenticationResponseBase):
     impersonator: Optional[Impersonator] = None
     organization_id: Optional[str] = None
     user: User
-    oauth_tokens: Optional[OAuthTokens] = None
 
 
 class AuthKitAuthenticationResponse(AuthenticationResponse):
     """Representation of a WorkOS User and Organization ID response."""
 
     impersonator: Optional[Impersonator] = None
+    oauth_tokens: Optional[OAuthTokens] = None
 
 
 class RefreshTokenAuthenticationResponse(_AuthenticationResponseBase):

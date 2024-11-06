@@ -1,4 +1,5 @@
-from typing import Literal, List
+from typing import Literal, Sequence
+
 from workos.types.workos_model import WorkOSModel
 
 OAuthTokensProvidersType = Literal[
@@ -16,4 +17,4 @@ class OAuthTokens(WorkOSModel):
     access_token: str
     refresh_token: str
     expires_at: int
-    scopes: List[str]
+    scopes: Sequence[str]

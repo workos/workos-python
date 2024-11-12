@@ -28,6 +28,7 @@ from workos.types.events.directory_group_with_previous_attributes import (
 from workos.types.events.directory_payload import DirectoryPayload
 from workos.types.events.directory_payload_with_legacy_fields import (
     DirectoryPayloadWithLegacyFields,
+    DirectoryPayloadWithLegacyFieldsForEventsApi,
 )
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
@@ -47,6 +48,12 @@ from workos.types.user_management.email_verification import (
 from workos.types.user_management.invitation import InvitationCommon
 from workos.types.user_management.magic_auth import MagicAuthCommon
 from workos.types.user_management.password_reset import PasswordResetCommon
+
+
+# README
+# When adding a new event type, ensure the new event class is
+# added to the Event union type at the bottom of this file, and
+# the event name is added to the EventType union type in event_type.py.
 
 
 class AuthenticationEmailVerificationSucceededEvent(
@@ -113,7 +120,7 @@ class ConnectionDeletedEvent(EventModel[Connection]):
     event: Literal["connection.deleted"]
 
 
-class DirectoryActivatedEvent(EventModel[DirectoryPayloadWithLegacyFields]):
+class DirectoryActivatedEvent(EventModel[DirectoryPayloadWithLegacyFieldsForEventsApi]):
     event: Literal["dsync.activated"]
 
 
@@ -264,6 +271,9 @@ Event = Annotated[
         OrganizationUpdatedEvent,
         OrganizationDomainVerificationFailedEvent,
         OrganizationDomainVerifiedEvent,
+        OrganizationMembershipCreatedEvent,
+        OrganizationMembershipDeletedEvent,
+        OrganizationMembershipUpdatedEvent,
         PasswordResetCreatedEvent,
         RoleCreatedEvent,
         RoleDeletedEvent,

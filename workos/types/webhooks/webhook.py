@@ -48,6 +48,10 @@ from workos.types.user_management.invitation import InvitationCommon
 from workos.types.user_management.magic_auth import MagicAuthCommon
 from workos.types.user_management.password_reset import PasswordResetCommon
 
+# README
+# When adding a new webhook event type, ensure the new webhook class is
+# added to the Webhook union type at the bottom of this file.
+
 
 class AuthenticationEmailVerificationSucceededWebhook(
     WebhookModel[AuthenticationEmailVerificationSucceededPayload,]
@@ -270,6 +274,9 @@ Webhook = Annotated[
         OrganizationUpdatedWebhook,
         OrganizationDomainVerificationFailedWebhook,
         OrganizationDomainVerifiedWebhook,
+        OrganizationMembershipCreatedWebhook,
+        OrganizationMembershipDeletedWebhook,
+        OrganizationMembershipUpdatedWebhook,
         PasswordResetCreatedWebhook,
         RoleCreatedWebhook,
         RoleDeletedWebhook,

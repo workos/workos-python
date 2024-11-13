@@ -12,8 +12,8 @@ class AuthenticateWithSessionCookieFailureReason(Enum):
 
 class AuthenticateWithSessionCookieSuccessResponse(WorkOSModel):
     authenticated: bool = True
-    sessionId: str
-    organizationId: Optional[str] = None
+    session_id: str
+    organization_id: Optional[str] = None
     role: Optional[str] = None
     permissions: Optional[List[str]] = None
     user: User

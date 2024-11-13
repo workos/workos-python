@@ -28,15 +28,9 @@ class SessionModule:
         self.session_data = session_data
         self.cookie_password = cookie_password
 
-        self.jwks = self.create_remote_jwk_set(
-            self.user_management.get_jwks_url()
-        )
-        self.jwk_algorithms = [str(key.Algorithm) for key in self.jwks]
+        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
 
-        for key in self.jwks:
-            print("Key properties:", dir(key))  # This will show all available attributes
-            print("Algorithm:", key.Algorithm)
-            print("Key type:", key.key_type)
+        self.jwk_algorithms = ['RS256']
 
     def authenticate(
         self,
@@ -66,19 +60,20 @@ class SessionModule:
                 authenticated=False, reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT
             )
 
+        signing_key = self.jwks.get_signing_key_from_jwt(session["access_token"])
         decoded = jwt.decode(
-            session["access_token"], self.jwks, algorithms=self.jwk_algorithms
+            session["access_token"], signing_key.key, algorithms=self.jwk_algorithms
         )
 
         return AuthenticateWithSessionCookieSuccessResponse(
             authenticated=True,
             session_id=decoded["sid"],
-            organization_id=decoded["org_id"],
-            role=decoded["role"],
-            permissions=decoded["permissions"],
-            entitlements=decoded["entitlements"],
+            organization_id=decoded.get("org_id", None),
+            role=decoded.get("role", None),
+            permissions=decoded.get("permissions", None),
+            entitlements=decoded.get("entitlements", None),
             user=session["user"],
-            impersonator=session["impersonator"],
+            impersonator=session.get("impersonator", None),
             reason=None,
         )
 
@@ -131,13 +126,10 @@ class SessionModule:
             session_id=auth_response["session_id"]
         )
 
-    def create_remote_jwk_set(self, url: str) -> List[Dict[str, Any]]:
-        jwks_client = PyJWKClient(url)
-        return jwks_client.get_signing_keys()
-
     def is_valid_jwt(self, token: str) -> bool:
         try:
-            jwt.decode(token, self.jwks, algorithms=self.jwk_algorithms)
+            signing_key = self.jwks.get_signing_key_from_jwt(token)
+            jwt.decode(token, signing_key.key, algorithms=self.jwk_algorithms)
             return True
         except jwt.exceptions.InvalidTokenError as error:
             print("invalid token", error)

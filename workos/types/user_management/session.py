@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, TypedDict
 from enum import Enum
 
 from workos.types.user_management.impersonator import Impersonator
@@ -23,3 +23,6 @@ class AuthenticateWithSessionCookieErrorResponse(WorkOSModel):
     authenticated: bool = False
     reason: AuthenticateWithSessionCookieFailureReason
 
+class SessionConfig(TypedDict):
+    seal_session: bool
+    cookie_password: str

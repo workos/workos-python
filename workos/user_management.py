@@ -1,5 +1,6 @@
 from typing import Optional, Protocol, Sequence, Set, Type
 from workos._client_configuration import ClientConfiguration
+from workos.session import SessionModule
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -43,6 +44,7 @@ from workos.types.user_management.list_filters import (
     UsersListFilters,
 )
 from workos.types.user_management.password_hash_type import PasswordHashType
+from workos.types.user_management.session import SessionConfig
 from workos.types.user_management.user_management_provider_type import (
     UserManagementProviderType,
 )
@@ -108,6 +110,18 @@ class UserManagementModule(Protocol):
     """Offers methods for using the WorkOS User Management API."""
 
     _client_configuration: ClientConfiguration
+
+    def load_sealed_session(self, *, sealed_session: str, cookie_password: str) -> SyncOrAsync[SessionModule]:
+        """Load a sealed session and return the session data.
+
+        Args:
+            sealed_session (str): The sealed session data to load.
+            cookie_password (str): The cookie password to use to decrypt the session data.
+
+        Returns:
+            SessionModule: The session module.
+        """
+        ...
 
     def get_user(self, user_id: str) -> SyncOrAsync[User]:
         """Get the details of an existing user.
@@ -804,6 +818,9 @@ class UserManagement(UserManagementModule):
         self._client_configuration = client_configuration
         self._http_client = http_client
 
+    def load_sealed_session(self, *, session_data: str, cookie_password: str) -> SessionModule:
+        return SessionModule(user_management=self, client_id=self._http_client.client_id, session_data=session_data, cookie_password=cookie_password)
+
     def get_user(self, user_id: str) -> User:
         response = self._http_client.request(
             USER_DETAIL_PATH.format(user_id), method=REQUEST_METHOD_GET
@@ -1013,6 +1030,9 @@ class UserManagement(UserManagementModule):
             json=json,
         )
 
+        if payload["session"] is not None and payload["session"].get("seal_session") is True:
+            response["sealed_session"] = SessionModule.seal_data(response, payload["session"]["cookie_password"])
+
         return response_model.model_validate(response)
 
     def authenticate_with_password(
@@ -1037,16 +1057,21 @@ class UserManagement(UserManagementModule):
         self,
         *,
         code: str,
+        session: Optional[SessionConfig] = None,
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> AuthKitAuthenticationResponse:
+        if session is not None and (session.get("seal_session") is True and session.get("cookie_password") is None or ""):
+            raise ValueError("cookie_password is required when sealing session")
+
         payload: AuthenticateWithCodeParameters = {
             "code": code,
             "grant_type": "authorization_code",
             "ip_address": ip_address,
             "user_agent": user_agent,
             "code_verifier": code_verifier,
+            "session": session,
         }
 
         return self._authenticate_with(

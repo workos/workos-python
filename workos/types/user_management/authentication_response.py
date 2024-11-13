@@ -29,6 +29,7 @@ class AuthenticationResponse(_AuthenticationResponseBase):
     impersonator: Optional[Impersonator] = None
     organization_id: Optional[str] = None
     user: User
+    sealed_session: Optional[str] = None
 
 
 class AuthKitAuthenticationResponse(AuthenticationResponse):

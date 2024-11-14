@@ -30,6 +30,7 @@ class SessionModule:
 
         self.jwks = PyJWKClient(self.user_management.get_jwks_url())
 
+        # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
         self.jwk_algorithms = ['RS256']
 
     def authenticate(
@@ -119,11 +120,11 @@ class SessionModule:
     def get_logout_url(self) -> str:
         auth_response = self.authenticate()
 
-        if not auth_response["authenticated"]:
-            raise ValueError(auth_response["reason"])
+        if not auth_response.authenticated:
+            raise ValueError(f"Failed to extract session ID for logout URL: {auth_response.reason}")
 
         return self.user_management.get_logout_url(
-            session_id=auth_response["session_id"]
+            session_id=auth_response.session_id
         )
 
     def is_valid_jwt(self, token: str) -> bool:
@@ -131,8 +132,7 @@ class SessionModule:
             signing_key = self.jwks.get_signing_key_from_jwt(token)
             jwt.decode(token, signing_key.key, algorithms=self.jwk_algorithms)
             return True
-        except jwt.exceptions.InvalidTokenError as error:
-            print("invalid token", error)
+        except jwt.exceptions.InvalidTokenError:
             return False
 
     @staticmethod

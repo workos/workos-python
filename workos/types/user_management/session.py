@@ -18,6 +18,7 @@ class AuthenticateWithSessionCookieSuccessResponse(WorkOSModel):
     permissions: Optional[List[str]] = None
     user: User
     impersonator: Optional[Impersonator] = None
+    entitlements: Optional[List[str]] = None
 
 class AuthenticateWithSessionCookieErrorResponse(WorkOSModel):
     authenticated: bool = False

@@ -13,6 +13,7 @@ from workos.mfa import Mfa
 from workos.events import Events
 from workos.user_management import UserManagement
 from workos.utils.http_client import SyncHTTPClient
+from workos.widgets import Widgets
 
 
 class SyncClient(BaseClient):
@@ -109,3 +110,9 @@ class SyncClient(BaseClient):
                 http_client=self._http_client, client_configuration=self
             )
         return self._user_management
+
+    @property
+    def widgets(self) -> Widgets:
+        if not getattr(self, "_widgets", None):
+            self._widgets = Widgets(http_client=self._http_client)
+        return self._widgets

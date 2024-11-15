@@ -13,6 +13,7 @@ from workos.sso import AsyncSSO
 from workos.user_management import AsyncUserManagement
 from workos.utils.http_client import AsyncHTTPClient
 from workos.webhooks import WebhooksModule
+from workos.widgets import WidgetsModule
 
 
 class AsyncClient(BaseClient):
@@ -105,3 +106,9 @@ class AsyncClient(BaseClient):
                 http_client=self._http_client, client_configuration=self
             )
         return self._user_management
+
+    @property
+    def widgets(self) -> WidgetsModule:
+        raise NotImplementedError(
+            "Widgets APIs are not yet supported in the async client."
+        )

@@ -8,6 +8,7 @@ from workos.types.workos_model import WorkOSModel
 AuthenticationMethod = Literal[
     "SSO",
     "Password",
+    "Passkey",
     "AppleOAuth",
     "GitHubOAuth",
     "GoogleOAuth",

@@ -4,6 +4,7 @@ import jwt
 from jwt import PyJWKClient
 from datetime import datetime, timezone
 
+from tests.conftest import with_jwks_mock
 from workos.session import SessionModule
 from workos.types.user_management.authentication_response import RefreshTokenAuthenticationResponse
 from workos.types.user_management.session import (
@@ -60,34 +61,13 @@ def TEST_CONSTANTS():
     }
 
 @pytest.fixture
-def mock_user_management(TEST_CONSTANTS):
-    mock_jwks = Mock(spec=PyJWKClient)
-    mock_jwk_set = Mock()
-    mock_jwk_set.keys = [Mock(Algorithm="RS256")]
-    mock_jwks.get_jwk_set.return_value = mock_jwk_set
-
-
-
+def mock_user_management():
     mock = Mock()
     mock.get_jwks_url.return_value = "https://api.workos.com/user_management/sso/jwks/client_123"
-    mock.authenticate_with_refresh_token.return_value = RefreshTokenAuthenticationResponse(
-        **{
-            "access_token": "access_token_123",
-            "refresh_token": "refresh_token_123",
-            "user": {
-                "object": "user",
-                "id": TEST_CONSTANTS["USER_ID"],
-                "email": "user@example.com",
-                "first_name": "Test",
-                "last_name": "User",
-                "email_verified": True,
-                "created_at": TEST_CONSTANTS["CURRENT_TIMESTAMP"],
-                "updated_at": TEST_CONSTANTS["CURRENT_TIMESTAMP"],
-            }
-        }
-    )
+
     return mock
 
+@with_jwks_mock
 def test_initialize_session_module(TEST_CONSTANTS, mock_user_management):
     session = SessionModule(
         user_management=mock_user_management,
@@ -99,15 +79,17 @@ def test_initialize_session_module(TEST_CONSTANTS, mock_user_management):
     assert session.client_id == TEST_CONSTANTS["CLIENT_ID"]
     assert session.cookie_password is not None
 
-def test_initialize_without_cookie_password(mock_user_management):
+@with_jwks_mock
+def test_initialize_without_cookie_password(TEST_CONSTANTS, mock_user_management):
     with pytest.raises(ValueError, match="cookie_password is required"):
         SessionModule(
             user_management=mock_user_management,
-            client_id="client_123",
-            session_data="session_data",
+            client_id=TEST_CONSTANTS["CLIENT_ID"],
+            session_data=TEST_CONSTANTS["SESSION_DATA"],
             cookie_password=""
         )
 
+@with_jwks_mock
 def test_authenticate_no_session_cookie_provided(TEST_CONSTANTS, mock_user_management):
     session = SessionModule(
         user_management=mock_user_management,
@@ -120,6 +102,7 @@ def test_authenticate_no_session_cookie_provided(TEST_CONSTANTS, mock_user_manag
 
     assert response.reason == AuthenticateWithSessionCookieFailureReason.NO_SESSION_COOKIE_PROVIDED
 
+@with_jwks_mock
 def test_authenticate_invalid_session_cookie(TEST_CONSTANTS, mock_user_management):
     session = SessionModule(
         user_management=mock_user_management,
@@ -132,6 +115,7 @@ def test_authenticate_invalid_session_cookie(TEST_CONSTANTS, mock_user_managemen
 
     assert response.reason == AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE
 
+@with_jwks_mock
 def test_authenticate_invalid_jwt(TEST_CONSTANTS, mock_user_management):
     invalid_session_data = SessionModule.seal_data({ "access_token": "invalid_session_data" }, TEST_CONSTANTS["COOKIE_PASSWORD"])
     session = SessionModule(
@@ -145,6 +129,7 @@ def test_authenticate_invalid_jwt(TEST_CONSTANTS, mock_user_management):
 
     assert response.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
 
+@with_jwks_mock
 def test_authenticate_success(TEST_CONSTANTS, mock_user_management):
     session = SessionModule(
         user_management=mock_user_management,
@@ -225,6 +210,7 @@ def test_authenticate_success(TEST_CONSTANTS, mock_user_management):
         assert response.user.id == TEST_CONSTANTS["USER_ID"]
         assert response.impersonator is None
 
+@with_jwks_mock
 def test_refresh_invalid_session_cookie(TEST_CONSTANTS, mock_user_management):
     session = SessionModule(
         user_management=mock_user_management,
@@ -238,13 +224,8 @@ def test_refresh_invalid_session_cookie(TEST_CONSTANTS, mock_user_management):
     assert isinstance(response, RefreshWithSessionCookieErrorResponse)
     assert response.reason == AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE
 
+@with_jwks_mock
 def test_refresh_success(TEST_CONSTANTS, mock_user_management):
-     # Create mock JWKS client
-    mock_jwks = Mock(spec=PyJWKClient)
-    mock_signing_key = Mock()
-    mock_signing_key.key = TEST_CONSTANTS["PUBLIC_KEY"]
-    mock_jwks.get_signing_key_from_jwt.return_value = mock_signing_key
-
     test_user = {
         "object": "user",
         "id": TEST_CONSTANTS["USER_ID"],
@@ -272,51 +253,45 @@ def test_refresh_success(TEST_CONSTANTS, mock_user_management):
         **mock_response
     )
 
+    session = SessionModule(
+        user_management=mock_user_management,
+        client_id=TEST_CONSTANTS["CLIENT_ID"],
+        session_data=session_data,
+        cookie_password=TEST_CONSTANTS["COOKIE_PASSWORD"]
+    )
+
     with (
-        patch(
-            'workos.session.PyJWKClient',
-            return_value=mock_jwks
+        patch.object(
+            session,
+            "is_valid_jwt",
+            return_value=True
         ),
-    ):
-        session = SessionModule(
-            user_management=mock_user_management,
-            client_id=TEST_CONSTANTS["CLIENT_ID"],
-            session_data=session_data,
-            cookie_password=TEST_CONSTANTS["COOKIE_PASSWORD"]
-        )
-
-        with (
-            patch.object(
-                session,
-                "is_valid_jwt",
-                return_value=True
-            ),
-            patch(
-                "jwt.decode",
-                return_value={
-                    "sid": TEST_CONSTANTS["SESSION_ID"],
-                    "org_id": TEST_CONSTANTS["ORGANIZATION_ID"],
-                    "role": "admin",
-                    "permissions": ["read"],
-                    "entitlements": ["feature_1"]
-                }
-            )
-        ):
-            response = session.refresh()
-
-            assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
-            assert response.authenticated is True
-            assert response.user.id == test_user["id"]
-
-        # Verify the refresh token was used correctly
-        mock_user_management.authenticate_with_refresh_token.assert_called_once_with(
-            refresh_token="refresh_token_12345",
-            organization_id=None,
-            session={
-                "seal_session": True,
-                "cookie_password": TEST_CONSTANTS["COOKIE_PASSWORD"]
+        patch(
+            "jwt.decode",
+            return_value={
+                "sid": TEST_CONSTANTS["SESSION_ID"],
+                "org_id": TEST_CONSTANTS["ORGANIZATION_ID"],
+                "role": "admin",
+                "permissions": ["read"],
+                "entitlements": ["feature_1"]
             }
         )
+    ):
+        response = session.refresh()
+
+        assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
+        assert response.authenticated is True
+        assert response.user.id == test_user["id"]
+
+    # Verify the refresh token was used correctly
+    mock_user_management.authenticate_with_refresh_token.assert_called_once_with(
+        refresh_token="refresh_token_12345",
+        organization_id=None,
+        session={
+            "seal_session": True,
+            "cookie_password": TEST_CONSTANTS["COOKIE_PASSWORD"]
+        }
+    )
 
 
 def test_seal_data(TEST_CONSTANTS):

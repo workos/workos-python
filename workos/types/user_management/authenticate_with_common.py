@@ -51,6 +51,7 @@ class AuthenticateWithRefreshTokenParameters(AuthenticateWithBaseParameters):
     refresh_token: str
     organization_id: Union[str, None]
     grant_type: Literal["refresh_token"]
+    session: Union[SessionConfig, None]
 
 
 AuthenticateWithParameters = Union[

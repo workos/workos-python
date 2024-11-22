@@ -431,6 +431,7 @@ class UserManagementModule(Protocol):
         self,
         *,
         code: str,
+        session: Optional[SessionConfig] = None,
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
@@ -439,6 +440,7 @@ class UserManagementModule(Protocol):
 
         Kwargs:
             code (str): The authorization value which was passed back as a query parameter in the callback to the Redirect URI.
+            session (SessionConfig): Configuration for the session. (Optional)
             code_verifier (str): The randomly generated string used to derive the code challenge that was passed to the authorization
                 url as part of the PKCE flow. This parameter is required when the client secret is not present. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
@@ -542,6 +544,7 @@ class UserManagementModule(Protocol):
         self,
         *,
         refresh_token: str,
+        session: Optional[SessionConfig] = None,
         organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
@@ -550,6 +553,7 @@ class UserManagementModule(Protocol):
 
         Kwargs:
             refresh_token (str): The token associated to the user.
+            session (SessionConfig): Configuration for the session. (Optional)
             organization_id (str): The organization to issue the new access token for. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
@@ -1030,8 +1034,8 @@ class UserManagement(UserManagementModule):
             json=json,
         )
 
-        if payload["session"] is not None and payload["session"].get("seal_session") is True:
-            response["sealed_session"] = SessionModule.seal_data(response, payload["session"]["cookie_password"])
+        if payload.get("session") is not None and payload.get("session").get("seal_session") is True:
+            response["sealed_session"] = SessionModule.seal_data(response, payload.get("session").get("cookie_password"))
 
         return response_model.model_validate(response)
 
@@ -1158,16 +1162,21 @@ class UserManagement(UserManagementModule):
         self,
         *,
         refresh_token: str,
+        session: Optional[SessionConfig] = None,
         organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> RefreshTokenAuthenticationResponse:
+        if session is not None and (session.get("seal_session") is True and session.get("cookie_password") is None or ""):
+            raise ValueError("cookie_password is required when sealing session")
+
         payload: AuthenticateWithRefreshTokenParameters = {
             "refresh_token": refresh_token,
             "organization_id": organization_id,
             "grant_type": "refresh_token",
             "ip_address": ip_address,
             "user_agent": user_agent,
+            "session": session,
         }
 
         return self._authenticate_with(
@@ -1614,6 +1623,9 @@ class AsyncUserManagement(UserManagementModule):
             json=json,
         )
 
+        if payload.get("session") is not None and payload.get("session").get("seal_session") is True:
+            response["sealed_session"] = SessionModule.seal_data(response, payload.get("session").get("cookie_password"))
+
         return response_model.model_validate(response)
 
     async def authenticate_with_password(
@@ -1640,16 +1652,21 @@ class AsyncUserManagement(UserManagementModule):
         self,
         *,
         code: str,
+        session: Optional[SessionConfig] = None,
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> AuthKitAuthenticationResponse:
+        if session is not None and (session.get("seal_session") is True and session.get("cookie_password") is None or ""):
+            raise ValueError("cookie_password is required when sealing session")
+
         payload: AuthenticateWithCodeParameters = {
             "code": code,
             "grant_type": "authorization_code",
             "ip_address": ip_address,
             "user_agent": user_agent,
             "code_verifier": code_verifier,
+            "session": session,
         }
 
         return await self._authenticate_with(
@@ -1744,16 +1761,21 @@ class AsyncUserManagement(UserManagementModule):
         self,
         *,
         refresh_token: str,
+        session: Optional[SessionConfig] = None,
         organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> RefreshTokenAuthenticationResponse:
+        if session is not None and (session.get("seal_session") is True and session.get("cookie_password") is None or ""):
+            raise ValueError("cookie_password is required when sealing session")
+
         payload: AuthenticateWithRefreshTokenParameters = {
             "refresh_token": refresh_token,
             "organization_id": organization_id,
             "grant_type": "refresh_token",
             "ip_address": ip_address,
             "user_agent": user_agent,
+            "session": session,
         }
 
         return await self._authenticate_with(

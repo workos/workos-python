@@ -39,7 +39,7 @@ class AuthKitAuthenticationResponse(AuthenticationResponse):
     oauth_tokens: Optional[OAuthTokens] = None
 
 
-class RefreshTokenAuthenticationResponse(_AuthenticationResponseBase):
+class RefreshTokenAuthenticationResponse(AuthenticationResponse):
     """Representation of a WorkOS refresh token authentication response."""
 
     pass

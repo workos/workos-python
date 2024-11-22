@@ -60,9 +60,12 @@ class UserManagementFixtures:
 
     @pytest.fixture
     def mock_auth_refresh_token_response(self):
+        user = MockUser("user_01H7ZGXFP5C6BBQY6Z7277ZCT0").dict()
+
         return {
             "access_token": "access_token_12345",
             "refresh_token": "refresh_token_12345",
+            "user": user,
         }
 
     @pytest.fixture

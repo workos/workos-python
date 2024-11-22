@@ -8,6 +8,8 @@ from workos.types.user_management.session import (
     AuthenticateWithSessionCookieFailureReason,
     AuthenticateWithSessionCookieSuccessResponse,
     AuthenticateWithSessionCookieErrorResponse,
+    RefreshWithSessionCookieErrorResponse,
+    RefreshWithSessionCookieSuccessResponse,
 )
 
 class SessionModule:
@@ -75,25 +77,24 @@ class SessionModule:
             entitlements=decoded.get("entitlements", None),
             user=session["user"],
             impersonator=session.get("impersonator", None),
-            reason=None,
         )
 
     def refresh(self, options: Optional[Dict[str, Any]] = None) -> Union[
-        AuthenticateWithSessionCookieSuccessResponse,
-        AuthenticateWithSessionCookieErrorResponse,
+        RefreshWithSessionCookieSuccessResponse,
+        RefreshWithSessionCookieErrorResponse,
     ]:
-        cookie_password = options.get("cookie_password", self.cookie_password)
-        organization_id = options.get("organization_id", None)
+        cookie_password = self.cookie_password if options is None else options.get("cookie_password")
+        organization_id = None if options is None else options.get("organization_id")
 
         try:
             session = self.unseal_data(self.session_data, cookie_password)
         except Exception:
-            return AuthenticateWithSessionCookieErrorResponse(
+            return RefreshWithSessionCookieErrorResponse(
                 authenticated=False, reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE
             )
 
         if not session["refresh_token"] or not session["user"]:
-            return AuthenticateWithSessionCookieErrorResponse(
+            return RefreshWithSessionCookieErrorResponse(
                 authenticated=False, reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE
             )
 
@@ -101,19 +102,34 @@ class SessionModule:
             auth_response = self.user_management.authenticate_with_refresh_token(
                 refresh_token=session["refresh_token"],
                 organization_id=organization_id,
+                session={
+                    "seal_session": True,
+                    "cookie_password": cookie_password
+                }
             )
 
             self.session_data = auth_response.sealed_session
             self.cookie_password = cookie_password
 
-            return AuthenticateWithSessionCookieSuccessResponse(
+            signing_key = self.jwks.get_signing_key_from_jwt(auth_response.access_token)
+
+            decoded = jwt.decode(
+                auth_response.access_token, signing_key.key, algorithms=self.jwk_algorithms
+            )
+
+            return RefreshWithSessionCookieSuccessResponse(
                 authenticated=True,
                 sealed_session=auth_response.sealed_session,
-                session=auth_response,
-                reason=None,
+                session_id=decoded["sid"],
+                organization_id=decoded.get("org_id", None),
+                role=decoded.get("role", None),
+                permissions=decoded.get("permissions", None),
+                entitlements=decoded.get("entitlements", None),
+                user=auth_response.user,
+                impersonator=auth_response.impersonator,
             )
         except Exception as e:
-            return AuthenticateWithSessionCookieErrorResponse(
+            return RefreshWithSessionCookieErrorResponse(
                 authenticated=False, reason=str(e)
             )
 
@@ -138,10 +154,13 @@ class SessionModule:
     @staticmethod
     def seal_data(data: Dict[str, Any], key: str) -> str:
         fernet = Fernet(key)
-        # take the data and encrypt it with the key using fernet
-        return fernet.encrypt(json.dumps(data).encode())
+        # Encrypt and convert bytes to string
+        encrypted_bytes = fernet.encrypt(json.dumps(data).encode())
+        return encrypted_bytes.decode('utf-8')
 
     @staticmethod
     def unseal_data(sealed_data: str, key: str) -> Dict[str, Any]:
         fernet = Fernet(key)
-        return json.loads(fernet.decrypt(sealed_data).decode())
+        # Convert string back to bytes before decryption
+        encrypted_bytes = sealed_data.encode('utf-8')
+        return json.loads(fernet.decrypt(encrypted_bytes).decode())

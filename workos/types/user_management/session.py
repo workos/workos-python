@@ -1,4 +1,4 @@
-from typing import List, Optional, TypedDict
+from typing import List, Optional, TypedDict, Union
 from enum import Enum
 
 from workos.types.user_management.impersonator import Impersonator
@@ -22,7 +22,15 @@ class AuthenticateWithSessionCookieSuccessResponse(WorkOSModel):
 
 class AuthenticateWithSessionCookieErrorResponse(WorkOSModel):
     authenticated: bool = False
-    reason: AuthenticateWithSessionCookieFailureReason
+    reason: Union[AuthenticateWithSessionCookieFailureReason, str]
+
+class RefreshWithSessionCookieSuccessResponse(AuthenticateWithSessionCookieSuccessResponse):
+    sealed_session: str
+
+
+class RefreshWithSessionCookieErrorResponse(WorkOSModel):
+    authenticated: bool = False
+    reason: Union[AuthenticateWithSessionCookieFailureReason, str]
 
 class SessionConfig(TypedDict):
     seal_session: bool

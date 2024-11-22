@@ -325,6 +325,7 @@ class UserManagementModule(Protocol):
         connection_id: Optional[str] = None,
         organization_id: Optional[str] = None,
         code_challenge: Optional[str] = None,
+        prompt: Optional[str] = None,
     ) -> str:
         """Generate an OAuth 2.0 authorization URL.
 
@@ -349,6 +350,9 @@ class UserManagementModule(Protocol):
             state (str): An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
                 back as a query parameter. (Optional)
             code_challenge (str): Code challenge is derived from the code verifier used for the PKCE flow. (Optional)
+            prompt (str): Used to specify whether the upstream provider should prompt the user for credentials or other
+                consent. Valid values depend on the provider. Currently only applies to provider values of 'GoogleOAuth',
+                'MicrosoftOAuth', or 'GitHubOAuth'. (Optional)
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
@@ -379,6 +383,8 @@ class UserManagementModule(Protocol):
         if code_challenge:
             params["code_challenge"] = code_challenge
             params["code_challenge_method"] = "S256"
+        if prompt is not None:
+            params["prompt"] = prompt
 
         return RequestHelper.build_url_with_query_params(
             base_url=self._client_configuration.base_url,

@@ -10,10 +10,11 @@ about = {}
 with open(os.path.join(base_dir, "workos", "__about__.py")) as f:
     exec(f.read(), about)
 
+
 def read_requirements(filename):
     with open(filename) as f:
-        return [line.strip() for line in f
-                if line.strip() and not line.startswith('#')]
+        return [line.strip() for line in f if line.strip() and not line.startswith("#")]
+
 
 setup(
     name=about["__package_name__"],

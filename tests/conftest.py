@@ -28,6 +28,7 @@ from jwt import PyJWKClient
 from unittest.mock import Mock, patch
 from functools import wraps
 
+
 def _get_test_client_setup(
     http_client_class_name: str,
 ) -> Tuple[Literal["async", "sync"], ClientConfiguration, HTTPClient]:
@@ -306,16 +307,18 @@ def test_auto_pagination(
 
     return inner
 
+
 def with_jwks_mock(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         # Create mock JWKS client
         mock_jwks = Mock(spec=PyJWKClient)
         mock_signing_key = Mock()
-        mock_signing_key.key = kwargs['TEST_CONSTANTS']["PUBLIC_KEY"]
+        mock_signing_key.key = kwargs["TEST_CONSTANTS"]["PUBLIC_KEY"]
         mock_jwks.get_signing_key_from_jwt.return_value = mock_signing_key
 
         # Apply the mock
-        with patch('workos.session.PyJWKClient', return_value=mock_jwks):
+        with patch("workos.session.PyJWKClient", return_value=mock_jwks):
             return func(*args, **kwargs)
+
     return wrapper

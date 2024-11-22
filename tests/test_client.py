@@ -1,4 +1,3 @@
-from http import client
 import os
 import pytest
 from workos import AsyncWorkOSClient, WorkOSClient
@@ -64,6 +63,9 @@ class TestClient:
 
     def test_initialize_user_management(self, default_client):
         assert bool(default_client.user_management)
+
+    def test_initialize_widgets(self, default_client):
+        assert bool(default_client.widgets)
 
     def test_enforce_trailing_slash_for_base_url(
         self,

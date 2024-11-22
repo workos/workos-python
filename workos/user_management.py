@@ -350,7 +350,9 @@ class UserManagementModule(Protocol):
             state (str): An encoded string passed to WorkOS that'd be preserved through the authentication workflow, passed
                 back as a query parameter. (Optional)
             code_challenge (str): Code challenge is derived from the code verifier used for the PKCE flow. (Optional)
-            prompt (str): The prompt parameter can be used to specify whether the user should be prompted for credentials or not.
+            prompt (str): Used to specify whether the upstream provider should prompt the user for credentials or other
+                consent. Valid values depend on the provider. Currently only applies to provider values of 'GoogleOAuth',
+                'MicrosoftOAuth', or 'GitHubOAuth'. (Optional)
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS

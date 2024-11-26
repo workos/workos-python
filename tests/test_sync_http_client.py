@@ -9,6 +9,7 @@ from workos.exceptions import (
     AuthorizationException,
     BadRequestException,
     BaseRequestException,
+    ConflictException,
     ServerException,
 )
 from workos.utils.http_client import SyncHTTPClient
@@ -250,6 +251,23 @@ class TestSyncHTTPClient(object):
         except Exception as ex:
             # This'll fail for sure here but... just using the nice error that'd come up
             assert ex.__class__ == ServerException
+
+    def test_conflict_exception(self):
+        request_id = "request-123"
+
+        self.http_client._client.request = MagicMock(
+            return_value=httpx.Response(
+                status_code=409,
+                headers={"X-Request-ID": request_id},
+            ),
+        )
+
+        try:
+            self.http_client.request("bad_place")
+        except ConflictException as ex:
+            assert str(ex) == "(message=No message, request_id=request-123)"
+        except Exception as ex:
+            assert ex.__class__ == ConflictException
 
     def test_request_includes_base_headers(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 200)

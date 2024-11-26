@@ -16,6 +16,7 @@ import httpx
 from httpx._types import QueryParamTypes
 
 from workos.exceptions import (
+    ConflictException,
     ServerException,
     AuthenticationException,
     AuthorizationException,
@@ -101,6 +102,8 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
                 raise AuthorizationException(response, response_json)
             elif status_code == 404:
                 raise NotFoundException(response, response_json)
+            elif status_code == 409:
+                raise ConflictException(response, response_json)
 
             raise BadRequestException(response, response_json)
         elif status_code >= 500 and status_code < 600:

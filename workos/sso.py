@@ -174,7 +174,7 @@ class SSOModule(Protocol):
         connection_id: str,
         saml_options_signing_key: Optional[str] = None,
         saml_options_signing_cert: Optional[str] = None,
-    ) -> SyncOrAsync[None]:
+    ) -> SyncOrAsync[ConnectionWithDomains]:
         """Updates a single connection
 
         Args:

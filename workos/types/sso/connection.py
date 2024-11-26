@@ -45,6 +45,12 @@ ConnectionType = Literal[
 ]
 
 
+class SamlConnectionOptions(WorkOSModel):
+    """Representation of options payload of a Connection Response."""
+
+    signing_cert: Optional[str]
+
+
 class Connection(WorkOSModel):
     object: Literal["connection"]
     id: str
@@ -54,16 +60,10 @@ class Connection(WorkOSModel):
     state: LiteralOrUntyped[ConnectionState]
     created_at: str
     updated_at: str
-
-
-class SamlConnectionOptions(WorkOSModel):
-    """Representation of options payload of a Connection Response."""
-
-    signing_cert: Optional[str]
+    options: Optional[SamlConnectionOptions] = None
 
 
 class ConnectionWithDomains(Connection):
     """Representation of a Connection Response as returned by WorkOS through the SSO feature."""
 
     domains: Sequence[ConnectionDomain]
-    options: Optional[SamlConnectionOptions]

@@ -14,6 +14,7 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_POST,
     QueryParameters,
     RequestHelper,
+    REQUEST_METHOD_PUT,
 )
 from workos.types.list_resource import (
     ListArgs,
@@ -167,11 +168,29 @@ class SSOModule(Protocol):
         """
         ...
 
+    def update_connection(
+        self,
+        *,
+        connection_id: str,
+        saml_options_signing_key: Optional[str] = None,
+        saml_options_signing_cert: Optional[str] = None,
+    ) -> SyncOrAsync[None]:
+        """Updates a single connection
+
+        Args:
+            connection_id (str): Connection unique identifier
+            saml_options_signing_key (str): Signing key for the connection (Optional)
+            saml_options_signing_cert (str): Signing certificate for the connection (Optional)
+        Returns:
+            None
+        """
+        ...
+
     def delete_connection(self, connection_id: str) -> SyncOrAsync[None]:
         """Deletes a single Connection
 
         Args:
-            connection (str): Connection unique identifier
+            connection_id (str): Connection unique identifier
 
         Returns:
             None
@@ -255,6 +274,28 @@ class SSO(SSOModule):
             **ListPage[ConnectionWithDomains](**response).model_dump(),
         )
 
+    def update_connection(
+        self,
+        *,
+        connection_id: str,
+        saml_options_signing_key: Optional[str] = None,
+        saml_options_signing_cert: Optional[str] = None,
+    ) -> ConnectionWithDomains:
+        json = {
+            "options": {
+                "signing_key": saml_options_signing_key,
+                "signing_cert": saml_options_signing_cert,
+            }
+        }
+
+        response = self._http_client.request(
+            f"connections/{connection_id}",
+            method=REQUEST_METHOD_PUT,
+            json=json,
+        )
+
+        return ConnectionWithDomains.model_validate(response)
+
     def delete_connection(self, connection_id: str) -> None:
         self._http_client.request(
             f"connections/{connection_id}", method=REQUEST_METHOD_DELETE
@@ -334,6 +375,28 @@ class AsyncSSO(SSOModule):
             list_args=params,
             **ListPage[ConnectionWithDomains](**response).model_dump(),
         )
+
+    async def update_connection(
+        self,
+        *,
+        connection_id: str,
+        saml_options_signing_key: Optional[str] = None,
+        saml_options_signing_cert: Optional[str] = None,
+    ) -> ConnectionWithDomains:
+        json = {
+            "options": {
+                "signing_key": saml_options_signing_key,
+                "signing_cert": saml_options_signing_cert,
+            }
+        }
+
+        response = await self._http_client.request(
+            f"connections/{connection_id}",
+            method=REQUEST_METHOD_PUT,
+            json=json,
+        )
+
+        return ConnectionWithDomains.model_validate(response)
 
     async def delete_connection(self, connection_id: str) -> None:
         await self._http_client.request(

@@ -12,13 +12,14 @@ from workos.types.user_management.session import (
     RefreshWithSessionCookieErrorResponse,
     RefreshWithSessionCookieSuccessResponse,
 )
+from workos.user_management import UserManagementModule
 
 
 class Session:
     def __init__(
         self,
         *,
-        user_management: "UserManagementModule",  # type: ignore
+        user_management: "UserManagementModule",
         client_id: str,
         session_data: str,
         cookie_password: str,

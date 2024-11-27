@@ -1081,7 +1081,11 @@ class UserManagement(UserManagementModule):
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> AuthKitAuthenticationResponse:
-        if session is not None and session.get("seal_session") and not session.get("cookie_password"):
+        if (
+            session is not None
+            and session.get("seal_session")
+            and not session.get("cookie_password")
+        ):
             raise ValueError("cookie_password is required when sealing session")
 
         payload: AuthenticateWithCodeParameters = {
@@ -1182,7 +1186,11 @@ class UserManagement(UserManagementModule):
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> RefreshTokenAuthenticationResponse:
-        if session is not None and session.get("seal_session") and not session.get("cookie_password"):
+        if (
+            session is not None
+            and session.get("seal_session")
+            and not session.get("cookie_password")
+        ):
             raise ValueError("cookie_password is required when sealing session")
 
         payload: AuthenticateWithRefreshTokenParameters = {
@@ -1680,7 +1688,11 @@ class AsyncUserManagement(UserManagementModule):
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> AuthKitAuthenticationResponse:
-        if session is not None and session.get("seal_session") and not session.get("cookie_password"):
+        if (
+            session is not None
+            and session.get("seal_session")
+            and not session.get("cookie_password")
+        ):
             raise ValueError("cookie_password is required when sealing session")
 
         payload: AuthenticateWithCodeParameters = {
@@ -1789,7 +1801,11 @@ class AsyncUserManagement(UserManagementModule):
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> RefreshTokenAuthenticationResponse:
-        if session is not None and session.get("seal_session") and not session.get("cookie_password"):
+        if (
+            session is not None
+            and session.get("seal_session")
+            and not session.get("cookie_password")
+        ):
             raise ValueError("cookie_password is required when sealing session")
 
         payload: AuthenticateWithRefreshTokenParameters = {

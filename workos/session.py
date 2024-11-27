@@ -13,11 +13,12 @@ from workos.types.user_management.session import (
     RefreshWithSessionCookieSuccessResponse,
 )
 
+
 class Session:
     def __init__(
         self,
         *,
-        user_management: "UserManagementModule", # type: ignore
+        user_management: "UserManagementModule",  # type: ignore
         client_id: str,
         session_data: str,
         cookie_password: str,
@@ -85,7 +86,10 @@ class Session:
         )
 
     def refresh(
-        self, *, organization_id: Optional[str] = None, cookie_password: Optional[str] = None
+        self,
+        *,
+        organization_id: Optional[str] = None,
+        cookie_password: Optional[str] = None,
     ) -> Union[
         RefreshWithSessionCookieSuccessResponse,
         RefreshWithSessionCookieErrorResponse,
@@ -150,9 +154,10 @@ class Session:
                 f"Failed to extract session ID for logout URL: {auth_response.reason}"
             )
 
-        result = self.user_management.get_logout_url(session_id=auth_response.session_id)
+        result = self.user_management.get_logout_url(
+            session_id=auth_response.session_id
+        )
         return str(result)
-
 
     def is_valid_jwt(self, token: str) -> bool:
         try:

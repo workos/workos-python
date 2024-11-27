@@ -318,6 +318,4 @@ def test_seal_data(TEST_CONSTANTS):
 
 def test_unseal_invalid_data(TEST_CONSTANTS):
     with pytest.raises(Exception):  # Adjust exception type based on your implementation
-        Session.unseal_data(
-            "invalid_sealed_data", TEST_CONSTANTS["COOKIE_PASSWORD"]
-        )
+        Session.unseal_data("invalid_sealed_data", TEST_CONSTANTS["COOKIE_PASSWORD"])

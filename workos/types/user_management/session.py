@@ -1,6 +1,6 @@
 from typing import List, Optional, TypedDict, Union
 from enum import Enum
-
+from typing_extensions import Literal
 from workos.types.user_management.impersonator import Impersonator
 from workos.types.user_management.user import User
 from workos.types.workos_model import WorkOSModel
@@ -13,7 +13,7 @@ class AuthenticateWithSessionCookieFailureReason(Enum):
 
 
 class AuthenticateWithSessionCookieSuccessResponse(WorkOSModel):
-    authenticated: bool = True
+    authenticated: Literal[True]
     session_id: str
     organization_id: Optional[str] = None
     role: Optional[str] = None
@@ -24,7 +24,7 @@ class AuthenticateWithSessionCookieSuccessResponse(WorkOSModel):
 
 
 class AuthenticateWithSessionCookieErrorResponse(WorkOSModel):
-    authenticated: bool = False
+    authenticated: Literal[False]
     reason: Union[AuthenticateWithSessionCookieFailureReason, str]
 
 
@@ -35,10 +35,10 @@ class RefreshWithSessionCookieSuccessResponse(
 
 
 class RefreshWithSessionCookieErrorResponse(WorkOSModel):
-    authenticated: bool = False
+    authenticated: Literal[False]
     reason: Union[AuthenticateWithSessionCookieFailureReason, str]
 
 
-class SessionConfig(TypedDict):
+class SessionConfig(TypedDict, total=False):
     seal_session: bool
     cookie_password: str

@@ -1,5 +1,6 @@
+from __future__ import annotations
 import json
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional, Union, cast
 import jwt
 from jwt import PyJWKClient
 from cryptography.fernet import Fernet
@@ -12,12 +13,11 @@ from workos.types.user_management.session import (
     RefreshWithSessionCookieSuccessResponse,
 )
 
-
-class SessionModule:
+class Session:
     def __init__(
         self,
         *,
-        user_management: Any,
+        user_management: "UserManagementModule", # type: ignore
         client_id: str,
         session_data: str,
         cookie_password: str,
@@ -42,7 +42,7 @@ class SessionModule:
         AuthenticateWithSessionCookieSuccessResponse,
         AuthenticateWithSessionCookieErrorResponse,
     ]:
-        if self.session_data is None:
+        if self.session_data is None or self.session_data == "":
             return AuthenticateWithSessionCookieErrorResponse(
                 authenticated=False,
                 reason=AuthenticateWithSessionCookieFailureReason.NO_SESSION_COOKIE_PROVIDED,
@@ -56,7 +56,7 @@ class SessionModule:
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
             )
 
-        if not session["access_token"]:
+        if not session.get("access_token", None):
             return AuthenticateWithSessionCookieErrorResponse(
                 authenticated=False,
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
@@ -84,14 +84,15 @@ class SessionModule:
             impersonator=session.get("impersonator", None),
         )
 
-    def refresh(self, options: Optional[Dict[str, Any]] = None) -> Union[
+    def refresh(
+        self, *, organization_id: Optional[str] = None, cookie_password: Optional[str] = None
+    ) -> Union[
         RefreshWithSessionCookieSuccessResponse,
         RefreshWithSessionCookieErrorResponse,
     ]:
         cookie_password = (
-            self.cookie_password if options is None else options.get("cookie_password")
+            self.cookie_password if cookie_password is None else cookie_password
         )
-        organization_id = None if options is None else options.get("organization_id")
 
         try:
             session = self.unseal_data(self.session_data, cookie_password)
@@ -101,7 +102,7 @@ class SessionModule:
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
             )
 
-        if not session["refresh_token"] or not session["user"]:
+        if not session.get("refresh_token", None) or not session.get("user", None):
             return RefreshWithSessionCookieErrorResponse(
                 authenticated=False,
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
@@ -144,12 +145,14 @@ class SessionModule:
     def get_logout_url(self) -> str:
         auth_response = self.authenticate()
 
-        if not auth_response.authenticated:
+        if isinstance(auth_response, AuthenticateWithSessionCookieErrorResponse):
             raise ValueError(
                 f"Failed to extract session ID for logout URL: {auth_response.reason}"
             )
 
-        return self.user_management.get_logout_url(session_id=auth_response.session_id)
+        result = self.user_management.get_logout_url(session_id=auth_response.session_id)
+        return str(result)
+
 
     def is_valid_jwt(self, token: str) -> bool:
         try:
@@ -171,4 +174,5 @@ class SessionModule:
         fernet = Fernet(key)
         # Convert string back to bytes before decryption
         encrypted_bytes = sealed_data.encode("utf-8")
-        return json.loads(fernet.decrypt(encrypted_bytes).decode())
+        decrypted_str = fernet.decrypt(encrypted_bytes).decode()
+        return cast(Dict[str, Any], json.loads(decrypted_str))

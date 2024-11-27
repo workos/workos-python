@@ -1,10 +1,15 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
+
 import json
 from typing import Any, Dict, Optional, Union, cast
 import jwt
 from jwt import PyJWKClient
 from cryptography.fernet import Fernet
 
+from workos.types.user_management.authentication_response import (
+    RefreshTokenAuthenticationResponse,
+)
 from workos.types.user_management.session import (
     AuthenticateWithSessionCookieFailureReason,
     AuthenticateWithSessionCookieSuccessResponse,
@@ -12,7 +17,9 @@ from workos.types.user_management.session import (
     RefreshWithSessionCookieErrorResponse,
     RefreshWithSessionCookieSuccessResponse,
 )
-from workos.user_management import UserManagementModule
+
+if TYPE_CHECKING:
+    from workos.user_management import UserManagementModule
 
 
 class Session:
@@ -114,14 +121,19 @@ class Session:
             )
 
         try:
-            auth_response = self.user_management.authenticate_with_refresh_token(
-                refresh_token=session["refresh_token"],
-                organization_id=organization_id,
-                session={"seal_session": True, "cookie_password": cookie_password},
+            auth_response = cast(
+                RefreshTokenAuthenticationResponse,
+                self.user_management.authenticate_with_refresh_token(
+                    refresh_token=session["refresh_token"],
+                    organization_id=organization_id,
+                    session={"seal_session": True, "cookie_password": cookie_password},
+                ),
             )
 
-            self.session_data = auth_response.sealed_session
-            self.cookie_password = cookie_password
+            self.session_data = str(auth_response.sealed_session)
+            self.cookie_password = (
+                cookie_password if cookie_password is not None else self.cookie_password
+            )
 
             signing_key = self.jwks.get_signing_key_from_jwt(auth_response.access_token)
 
@@ -133,7 +145,7 @@ class Session:
 
             return RefreshWithSessionCookieSuccessResponse(
                 authenticated=True,
-                sealed_session=auth_response.sealed_session,
+                sealed_session=str(auth_response.sealed_session),
                 session_id=decoded["sid"],
                 organization_id=decoded.get("org_id", None),
                 role=decoded.get("role", None),

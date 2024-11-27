@@ -1,4 +1,4 @@
-from typing import Literal, Sequence
+from typing import Literal, Sequence, Optional
 from workos.types.sso.connection_domain import ConnectionDomain
 from workos.types.workos_model import WorkOSModel
 from workos.typing.literals import LiteralOrUntyped
@@ -45,6 +45,12 @@ ConnectionType = Literal[
 ]
 
 
+class SamlConnectionOptions(WorkOSModel):
+    """Representation of options payload of a Connection Response."""
+
+    signing_cert: Optional[str]
+
+
 class Connection(WorkOSModel):
     object: Literal["connection"]
     id: str
@@ -54,6 +60,7 @@ class Connection(WorkOSModel):
     state: LiteralOrUntyped[ConnectionState]
     created_at: str
     updated_at: str
+    options: Optional[SamlConnectionOptions] = None
 
 
 class ConnectionWithDomains(Connection):

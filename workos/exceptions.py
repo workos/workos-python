@@ -53,6 +53,10 @@ class BadRequestException(BaseRequestException):
     pass
 
 
+class ConflictException(BaseRequestException):
+    pass
+
+
 class NotFoundException(BaseRequestException):
     pass
 

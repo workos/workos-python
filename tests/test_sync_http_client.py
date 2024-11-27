@@ -201,8 +201,6 @@ class TestSyncHTTPClient(object):
         except expected_exception as ex:  # type: ignore
             assert ex.message == response_message
             assert ex.request_id == request_id
-        except Exception as ex:
-            # This'll fail for sure here but... just using the nice error that'd come up
             assert ex.__class__ == expected_exception
 
     def test_bad_request_exceptions_include_request_data(self):
@@ -229,7 +227,6 @@ class TestSyncHTTPClient(object):
                 str(ex)
                 == "(message=No message, request_id=request-123, error=example_error, error_description=Example error description, foo=bar)"
             )
-        except Exception as ex:
             assert ex.__class__ == BadRequestException
 
     def test_request_bad_body_raises_expected_exception_with_request_data(self):
@@ -248,8 +245,6 @@ class TestSyncHTTPClient(object):
         except ServerException as ex:
             assert ex.message == None
             assert ex.request_id == request_id
-        except Exception as ex:
-            # This'll fail for sure here but... just using the nice error that'd come up
             assert ex.__class__ == ServerException
 
     def test_conflict_exception(self):
@@ -266,7 +261,6 @@ class TestSyncHTTPClient(object):
             self.http_client.request("bad_place")
         except ConflictException as ex:
             assert str(ex) == "(message=No message, request_id=request-123)"
-        except Exception as ex:
             assert ex.__class__ == ConflictException
 
     def test_request_includes_base_headers(self, capture_and_mock_http_client_request):

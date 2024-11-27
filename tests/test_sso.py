@@ -39,6 +39,16 @@ class SSOFixtures:
         return MockConnection("conn_01E4ZCR3C56J083X43JQXF3JK5").dict()
 
     @pytest.fixture
+    def mock_connection_updated(self):
+        connection = MockConnection("conn_01FHT48Z8J8295GZNQ4ZP1J81T").dict()
+
+        connection["options"] = {
+            "signing_cert": "signing_cert",
+        }
+
+        return connection
+
+    @pytest.fixture
     def mock_connections(self):
         connection_list = [MockConnection(id=str(i)).dict() for i in range(10)]
 
@@ -338,6 +348,33 @@ class TestSSO(SSOFixtures):
             "limit": 10,
             "order": "desc",
         }
+
+    def test_update_connection(
+        self, mock_connection_updated, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_connection_updated, 200
+        )
+
+        updated_connection = syncify(
+            self.sso.update_connection(
+                connection_id="conn_01EHT88Z8J8795GZNQ4ZP1J81T",
+                saml_options_signing_key="signing_key",
+                saml_options_signing_cert="signing_cert",
+            )
+        )
+
+        assert request_kwargs["url"].endswith(
+            "/connections/conn_01EHT88Z8J8795GZNQ4ZP1J81T"
+        )
+
+        assert request_kwargs["method"] == "put"
+        assert request_kwargs["json"] == {
+            "options": {"signing_key": "signing_key", "signing_cert": "signing_cert"}
+        }
+        assert updated_connection.id == "conn_01FHT48Z8J8295GZNQ4ZP1J81T"
+        assert updated_connection.name == "Foo Corporation"
+        assert updated_connection.options.signing_cert == "signing_cert"
 
     def test_delete_connection(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(

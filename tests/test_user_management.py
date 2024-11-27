@@ -215,6 +215,26 @@ class TestUserManagementBase(UserManagementFixtures):
             "response_type": RESPONSE_TYPE_CODE,
         }
 
+    def test_authorization_url_has_expected_query_params_with_prompt(self):
+        provider = "GoogleOAuth"
+        redirect_uri = "https://localhost/auth/callback"
+        prompt = "consent"
+        authorization_url = self.user_management.get_authorization_url(
+            provider=provider,
+            redirect_uri=redirect_uri,
+            prompt=prompt,
+        )
+
+        parsed_url = urlparse(authorization_url)
+        assert parsed_url.path == "/user_management/authorize"
+        assert dict(parse_qsl(str(parsed_url.query))) == {
+            "client_id": self.http_client.client_id,
+            "redirect_uri": redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+            "provider": provider,
+            "prompt": prompt,
+        }
+
     def test_authorization_url_has_expected_query_params_with_domain_hint(self):
         connection_id = "connection_123"
         redirect_uri = "https://localhost/auth/callback"

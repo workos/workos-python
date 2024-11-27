@@ -1,5 +1,9 @@
 import datetime
-from workos.types.sso import ConnectionDomain, ConnectionWithDomains
+from workos.types.sso import (
+    ConnectionDomain,
+    ConnectionWithDomains,
+    SamlConnectionOptions,
+)
 
 
 class MockConnection(ConnectionWithDomains):
@@ -14,6 +18,7 @@ class MockConnection(ConnectionWithDomains):
             state="active",
             created_at=now,
             updated_at=now,
+            options=SamlConnectionOptions(signing_cert="signing_cert"),
             domains=[
                 ConnectionDomain(
                     id="connection_domain_abc123",

@@ -143,8 +143,6 @@ def test_authenticate_invalid_jwt(TEST_CONSTANTS, mock_user_management):
 
     response = session.authenticate()
 
-    print(response)
-
     assert response.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
 
 
@@ -192,19 +190,12 @@ def test_authenticate_success(TEST_CONSTANTS, mock_user_management):
         "entitlements": ["feature_1"],
     }
 
-    with (
-        # Mock unsealing the session data
-        patch.object(Session, "unseal_data", return_value=mock_session),
-        # Mock JWT validation
-        patch.object(session, "is_valid_jwt", return_value=True),
-        # Mock JWT decoding
-        patch("jwt.decode", return_value=mock_jwt_payload),
-        # Mock JWT signing key retrieval
-        patch.object(
-            session.jwks,
-            "get_signing_key_from_jwt",
-            return_value=Mock(key=TEST_CONSTANTS["PUBLIC_KEY"]),
-        ),
+    with patch.object(Session, "unseal_data", return_value=mock_session), patch.object(
+        session, "is_valid_jwt", return_value=True
+    ), patch("jwt.decode", return_value=mock_jwt_payload), patch.object(
+        session.jwks,
+        "get_signing_key_from_jwt",
+        return_value=Mock(key=TEST_CONSTANTS["PUBLIC_KEY"]),
     ):
         response = session.authenticate()
 
@@ -273,9 +264,8 @@ def test_refresh_success(TEST_CONSTANTS, mock_user_management):
         cookie_password=TEST_CONSTANTS["COOKIE_PASSWORD"],
     )
 
-    with (
-        patch.object(session, "is_valid_jwt", return_value=True),
-        patch(
+    with patch.object(session, "is_valid_jwt", return_value=True) as _:
+        with patch(
             "jwt.decode",
             return_value={
                 "sid": TEST_CONSTANTS["SESSION_ID"],
@@ -284,13 +274,12 @@ def test_refresh_success(TEST_CONSTANTS, mock_user_management):
                 "permissions": ["read"],
                 "entitlements": ["feature_1"],
             },
-        ),
-    ):
-        response = session.refresh()
+        ):
+            response = session.refresh()
 
-        assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
-        assert response.authenticated is True
-        assert response.user.id == test_user["id"]
+            assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
+            assert response.authenticated is True
+            assert response.user.id == test_user["id"]
 
     # Verify the refresh token was used correctly
     mock_user_management.authenticate_with_refresh_token.assert_called_once_with(
@@ -310,8 +299,6 @@ def test_seal_data(TEST_CONSTANTS):
 
     # Test unsealing
     unsealed = Session.unseal_data(sealed, TEST_CONSTANTS["COOKIE_PASSWORD"])
-    print(test_data)
-    print(unsealed)
 
     assert unsealed == test_data
 

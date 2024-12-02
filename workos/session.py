@@ -71,7 +71,7 @@ class Session:
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
             )
 
-        if not self.is_valid_jwt(session["access_token"]):
+        if not self._is_valid_jwt(session["access_token"]):
             return AuthenticateWithSessionCookieErrorResponse(
                 authenticated=False,
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
@@ -172,7 +172,7 @@ class Session:
         )
         return str(result)
 
-    def is_valid_jwt(self, token: str) -> bool:
+    def _is_valid_jwt(self, token: str) -> bool:
         try:
             signing_key = self.jwks.get_signing_key_from_jwt(token)
             jwt.decode(token, signing_key.key, algorithms=self.jwk_algorithms)

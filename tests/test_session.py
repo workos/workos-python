@@ -191,7 +191,7 @@ def test_authenticate_success(TEST_CONSTANTS, mock_user_management):
     }
 
     with patch.object(Session, "unseal_data", return_value=mock_session), patch.object(
-        session, "is_valid_jwt", return_value=True
+        session, "_is_valid_jwt", return_value=True
     ), patch("jwt.decode", return_value=mock_jwt_payload), patch.object(
         session.jwks,
         "get_signing_key_from_jwt",
@@ -264,7 +264,7 @@ def test_refresh_success(TEST_CONSTANTS, mock_user_management):
         cookie_password=TEST_CONSTANTS["COOKIE_PASSWORD"],
     )
 
-    with patch.object(session, "is_valid_jwt", return_value=True) as _:
+    with patch.object(session, "_is_valid_jwt", return_value=True) as _:
         with patch(
             "jwt.decode",
             return_value={

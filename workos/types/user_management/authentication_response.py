@@ -30,6 +30,7 @@ class AuthenticationResponse(_AuthenticationResponseBase):
     impersonator: Optional[Impersonator] = None
     organization_id: Optional[str] = None
     user: User
+    sealed_session: Optional[str] = None
 
 
 class AuthKitAuthenticationResponse(AuthenticationResponse):
@@ -39,7 +40,7 @@ class AuthKitAuthenticationResponse(AuthenticationResponse):
     oauth_tokens: Optional[OAuthTokens] = None
 
 
-class RefreshTokenAuthenticationResponse(_AuthenticationResponseBase):
+class RefreshTokenAuthenticationResponse(AuthenticationResponse):
     """Representation of a WorkOS refresh token authentication response."""
 
     pass

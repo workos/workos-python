@@ -10,6 +10,12 @@ about = {}
 with open(os.path.join(base_dir, "workos", "__about__.py")) as f:
     exec(f.read(), about)
 
+
+def read_requirements(filename):
+    with open(filename) as f:
+        return [line.strip() for line in f if line.strip() and not line.startswith("#")]
+
+
 setup(
     name=about["__package_name__"],
     version=about["__version__"],
@@ -27,19 +33,9 @@ setup(
     ),
     zip_safe=False,
     license=about["__license__"],
-    install_requires=["httpx>=0.27.0", "pydantic==2.9.2"],
+    install_requires=read_requirements("requirements.txt"),
     extras_require={
-        "dev": [
-            "flake8",
-            "pytest==8.3.2",
-            "pytest-asyncio==0.23.8",
-            "pytest-cov==5.0.0",
-            "six==1.16.0",
-            "black==24.4.2",
-            "twine==5.1.1",
-            "mypy==1.12.0",
-            "httpx>=0.27.0",
-        ],
+        "dev": read_requirements("requirements-dev.txt"),
         ":python_version<'3.4'": ["enum34"],
     },
     classifiers=[

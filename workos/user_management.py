@@ -1,5 +1,6 @@
-from typing import Optional, Protocol, Sequence, Set, Type
+from typing import Optional, Protocol, Sequence, Set, Type, cast
 from workos._client_configuration import ClientConfiguration
+from workos.session import Session
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -43,6 +44,7 @@ from workos.types.user_management.list_filters import (
     UsersListFilters,
 )
 from workos.types.user_management.password_hash_type import PasswordHashType
+from workos.types.user_management.session import SessionConfig
 from workos.types.user_management.user_management_provider_type import (
     UserManagementProviderType,
 )
@@ -108,6 +110,20 @@ class UserManagementModule(Protocol):
     """Offers methods for using the WorkOS User Management API."""
 
     _client_configuration: ClientConfiguration
+
+    def load_sealed_session(
+        self, *, sealed_session: str, cookie_password: str
+    ) -> SyncOrAsync[Session]:
+        """Load a sealed session and return the session data.
+
+        Args:
+            sealed_session (str): The sealed session data to load.
+            cookie_password (str): The cookie password to use to decrypt the session data.
+
+        Returns:
+            Session: The session module.
+        """
+        ...
 
     def get_user(self, user_id: str) -> SyncOrAsync[User]:
         """Get the details of an existing user.
@@ -423,6 +439,7 @@ class UserManagementModule(Protocol):
         self,
         *,
         code: str,
+        session: Optional[SessionConfig] = None,
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
@@ -431,6 +448,7 @@ class UserManagementModule(Protocol):
 
         Kwargs:
             code (str): The authorization value which was passed back as a query parameter in the callback to the Redirect URI.
+            session (SessionConfig): Configuration for the session. (Optional)
             code_verifier (str): The randomly generated string used to derive the code challenge that was passed to the authorization
                 url as part of the PKCE flow. This parameter is required when the client secret is not present. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
@@ -534,6 +552,7 @@ class UserManagementModule(Protocol):
         self,
         *,
         refresh_token: str,
+        session: Optional[SessionConfig] = None,
         organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
@@ -542,6 +561,7 @@ class UserManagementModule(Protocol):
 
         Kwargs:
             refresh_token (str): The token associated to the user.
+            session (SessionConfig): Configuration for the session. (Optional)
             organization_id (str): The organization to issue the new access token for. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
@@ -810,6 +830,16 @@ class UserManagement(UserManagementModule):
         self._client_configuration = client_configuration
         self._http_client = http_client
 
+    def load_sealed_session(
+        self, *, sealed_session: str, cookie_password: str
+    ) -> Session:
+        return Session(
+            user_management=self,
+            client_id=self._http_client.client_id,
+            session_data=sealed_session,
+            cookie_password=cookie_password,
+        )
+
     def get_user(self, user_id: str) -> User:
         response = self._http_client.request(
             USER_DETAIL_PATH.format(user_id), method=REQUEST_METHOD_GET
@@ -1019,7 +1049,16 @@ class UserManagement(UserManagementModule):
             json=json,
         )
 
-        return response_model.model_validate(response)
+        response_data = dict(response)
+
+        session = cast(Optional[SessionConfig], payload.get("session", None))
+
+        if session is not None and session.get("seal_session") is True:
+            response_data["sealed_session"] = Session.seal_data(
+                response_data, str(session.get("cookie_password"))
+            )
+
+        return response_model.model_validate(response_data)
 
     def authenticate_with_password(
         self,
@@ -1043,16 +1082,25 @@ class UserManagement(UserManagementModule):
         self,
         *,
         code: str,
+        session: Optional[SessionConfig] = None,
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> AuthKitAuthenticationResponse:
+        if (
+            session is not None
+            and session.get("seal_session")
+            and not session.get("cookie_password")
+        ):
+            raise ValueError("cookie_password is required when sealing session")
+
         payload: AuthenticateWithCodeParameters = {
             "code": code,
             "grant_type": "authorization_code",
             "ip_address": ip_address,
             "user_agent": user_agent,
             "code_verifier": code_verifier,
+            "session": session,
         }
 
         return self._authenticate_with(
@@ -1139,16 +1187,25 @@ class UserManagement(UserManagementModule):
         self,
         *,
         refresh_token: str,
+        session: Optional[SessionConfig] = None,
         organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> RefreshTokenAuthenticationResponse:
+        if (
+            session is not None
+            and session.get("seal_session")
+            and not session.get("cookie_password")
+        ):
+            raise ValueError("cookie_password is required when sealing session")
+
         payload: AuthenticateWithRefreshTokenParameters = {
             "refresh_token": refresh_token,
             "organization_id": organization_id,
             "grant_type": "refresh_token",
             "ip_address": ip_address,
             "user_agent": user_agent,
+            "session": session,
         }
 
         return self._authenticate_with(
@@ -1223,10 +1280,7 @@ class UserManagement(UserManagementModule):
         return MagicAuth.model_validate(response)
 
     def create_magic_auth(
-        self,
-        *,
-        email: str,
-        invitation_token: Optional[str] = None,
+        self, *, email: str, invitation_token: Optional[str] = None
     ) -> MagicAuth:
         json = {
             "email": email,
@@ -1384,6 +1438,11 @@ class AsyncUserManagement(UserManagementModule):
     ):
         self._client_configuration = client_configuration
         self._http_client = http_client
+
+    async def load_sealed_session(
+        self, *, sealed_session: str, cookie_password: str
+    ) -> Session:
+        raise NotImplementedError("Async load_sealed_session not implemented")
 
     async def get_user(self, user_id: str) -> User:
         response = await self._http_client.request(
@@ -1595,7 +1654,16 @@ class AsyncUserManagement(UserManagementModule):
             json=json,
         )
 
-        return response_model.model_validate(response)
+        response_data = dict(response)
+
+        session = cast(Optional[SessionConfig], payload.get("session", None))
+
+        if session is not None and session.get("seal_session") is True:
+            response_data["sealed_session"] = Session.seal_data(
+                response_data, str(session.get("cookie_password"))
+            )
+
+        return response_model.model_validate(response_data)
 
     async def authenticate_with_password(
         self,
@@ -1621,16 +1689,25 @@ class AsyncUserManagement(UserManagementModule):
         self,
         *,
         code: str,
+        session: Optional[SessionConfig] = None,
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> AuthKitAuthenticationResponse:
+        if (
+            session is not None
+            and session.get("seal_session")
+            and not session.get("cookie_password")
+        ):
+            raise ValueError("cookie_password is required when sealing session")
+
         payload: AuthenticateWithCodeParameters = {
             "code": code,
             "grant_type": "authorization_code",
             "ip_address": ip_address,
             "user_agent": user_agent,
             "code_verifier": code_verifier,
+            "session": session,
         }
 
         return await self._authenticate_with(
@@ -1725,16 +1802,25 @@ class AsyncUserManagement(UserManagementModule):
         self,
         *,
         refresh_token: str,
+        session: Optional[SessionConfig] = None,
         organization_id: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
     ) -> RefreshTokenAuthenticationResponse:
+        if (
+            session is not None
+            and session.get("seal_session")
+            and not session.get("cookie_password")
+        ):
+            raise ValueError("cookie_password is required when sealing session")
+
         payload: AuthenticateWithRefreshTokenParameters = {
             "refresh_token": refresh_token,
             "organization_id": organization_id,
             "grant_type": "refresh_token",
             "ip_address": ip_address,
             "user_agent": user_agent,
+            "session": session,
         }
 
         return await self._authenticate_with(

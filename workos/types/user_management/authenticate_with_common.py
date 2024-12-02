@@ -1,5 +1,6 @@
 from typing import Literal, Union
 from typing_extensions import TypedDict
+from workos.types.user_management.session import SessionConfig
 
 
 class AuthenticateWithBaseParameters(TypedDict):
@@ -17,6 +18,7 @@ class AuthenticateWithCodeParameters(AuthenticateWithBaseParameters):
     code: str
     code_verifier: Union[str, None]
     grant_type: Literal["authorization_code"]
+    session: Union[SessionConfig, None]
 
 
 class AuthenticateWithMagicAuthParameters(AuthenticateWithBaseParameters):
@@ -49,6 +51,7 @@ class AuthenticateWithRefreshTokenParameters(AuthenticateWithBaseParameters):
     refresh_token: str
     organization_id: Union[str, None]
     grant_type: Literal["refresh_token"]
+    session: Union[SessionConfig, None]
 
 
 AuthenticateWithParameters = Union[

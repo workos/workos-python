@@ -3,6 +3,7 @@ from typing import Union
 import pytest
 from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from tests.utils.fixtures.mock_organization import MockOrganization
+from tests.utils.fixtures.mock_role import MockRole
 from tests.utils.list_resource import list_response_of
 from tests.utils.syncify import syncify
 from workos.organizations import AsyncOrganizations, Organizations
@@ -66,6 +67,13 @@ class TestOrganizations:
             MockOrganization(id=str(f"org_{i+1}")).dict() for i in range(40)
         ]
         return list_response_of(data=organizations_list)
+
+    @pytest.fixture
+    def mock_organization_roles(self):
+        return {
+            "data": [MockRole(id=str(i)).dict() for i in range(10)],
+            "object": "list",
+        }
 
     def test_list_organizations(
         self, mock_organizations, capture_and_mock_http_client_request
@@ -226,4 +234,29 @@ class TestOrganizations:
             http_client=self.http_client,
             list_function=self.organizations.list_organizations,
             expected_all_page_data=mock_organizations_multiple_data_pages["data"],
+        )
+
+    def test_list_organization_roles(
+        self, mock_organization_roles, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_roles, 200
+        )
+
+        organization_roles_response = syncify(
+            self.organizations.list_organization_roles(
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T"
+            )
+        )
+
+        def to_dict(x):
+            return x.dict()
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith(
+            "/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/roles"
+        )
+        assert (
+            list(map(to_dict, organization_roles_response.data))
+            == mock_organization_roles["data"]
         )

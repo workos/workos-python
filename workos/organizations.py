@@ -2,6 +2,7 @@ from typing import Optional, Protocol, Sequence
 
 from workos.types.organizations.domain_data_input import DomainDataInput
 from workos.types.organizations.list_filters import OrganizationListFilters
+from workos.types.roles.role import OrganizationRole, RolesList
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
@@ -223,6 +224,14 @@ class Organizations(OrganizationsModule):
             method=REQUEST_METHOD_DELETE,
         )
 
+    def list_organization_roles(self, organization_id: str) -> RolesList:
+        response = self._http_client.request(
+            f"organizations/{organization_id}/roles",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return RolesList.model_validate(response)
+
 
 class AsyncOrganizations(OrganizationsModule):
 
@@ -324,3 +333,11 @@ class AsyncOrganizations(OrganizationsModule):
             f"organizations/{organization_id}",
             method=REQUEST_METHOD_DELETE,
         )
+
+    async def list_organization_roles(self, organization_id: str) -> RolesList:
+        response = await self._http_client.request(
+            f"organizations/{organization_id}/roles",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return RolesList.model_validate(response)

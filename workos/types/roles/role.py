@@ -9,12 +9,11 @@ class RoleCommon(WorkOSModel):
     slug: str
 
 
-# TODO: This is used for events/webhooks only. Rename to EventRole or something similar.
-class Role(RoleCommon):
+class EventRole(RoleCommon):
     permissions: Optional[Sequence[str]] = None
 
 
-class OrganizationRole(RoleCommon):
+class Role(RoleCommon):
     id: str
     name: str
     description: Optional[str] = None
@@ -23,6 +22,6 @@ class OrganizationRole(RoleCommon):
     updated_at: str
 
 
-class RolesList(WorkOSModel):
+class RoleList(WorkOSModel):
     object: Literal["list"]
-    data: Sequence[OrganizationRole]
+    data: Sequence[Role]

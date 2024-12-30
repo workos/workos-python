@@ -1,9 +1,9 @@
 import datetime
 
-from workos.types.roles.role import OrganizationRole
+from workos.types.roles.role import Role
 
 
-class MockRole(OrganizationRole):
+class MockRole(Role):
     def __init__(self, id):
         now = datetime.datetime.now().isoformat()
         super().__init__(

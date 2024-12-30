@@ -39,7 +39,7 @@ from workos.types.events.organization_domain_verification_failed_payload import 
 from workos.types.events.session_created_payload import SessionCreatedPayload
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organizations.organization_domain import OrganizationDomain
-from workos.types.roles.role import Role
+from workos.types.roles.role import EventRole
 from workos.types.sso.connection import Connection
 from workos.types.user_management.email_verification import (
     EmailVerificationCommon,
@@ -213,15 +213,15 @@ class PasswordResetCreatedWebhook(WebhookModel[PasswordResetCommon]):
     event: Literal["password_reset.created"]
 
 
-class RoleCreatedWebhook(WebhookModel[Role]):
+class RoleCreatedWebhook(WebhookModel[EventRole]):
     event: Literal["role.created"]
 
 
-class RoleDeletedWebhook(WebhookModel[Role]):
+class RoleDeletedWebhook(WebhookModel[EventRole]):
     event: Literal["role.deleted"]
 
 
-class RoleUpdatedWebhook(WebhookModel[Role]):
+class RoleUpdatedWebhook(WebhookModel[EventRole]):
     event: Literal["role.updated"]
 
 

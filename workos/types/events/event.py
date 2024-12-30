@@ -27,7 +27,6 @@ from workos.types.events.directory_group_with_previous_attributes import (
 )
 from workos.types.events.directory_payload import DirectoryPayload
 from workos.types.events.directory_payload_with_legacy_fields import (
-    DirectoryPayloadWithLegacyFields,
     DirectoryPayloadWithLegacyFieldsForEventsApi,
 )
 from workos.types.events.directory_user_with_previous_attributes import (
@@ -40,7 +39,7 @@ from workos.types.events.organization_domain_verification_failed_payload import 
 from workos.types.events.session_created_payload import SessionCreatedPayload
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organizations.organization_domain import OrganizationDomain
-from workos.types.roles.role import Role
+from workos.types.roles.role import EventRole
 from workos.types.sso.connection import Connection
 from workos.types.user_management.email_verification import (
     EmailVerificationCommon,
@@ -210,15 +209,15 @@ class PasswordResetCreatedEvent(EventModel[PasswordResetCommon]):
     event: Literal["password_reset.created"]
 
 
-class RoleCreatedEvent(EventModel[Role]):
+class RoleCreatedEvent(EventModel[EventRole]):
     event: Literal["role.created"]
 
 
-class RoleDeletedEvent(EventModel[Role]):
+class RoleDeletedEvent(EventModel[EventRole]):
     event: Literal["role.deleted"]
 
 
-class RoleUpdatedEvent(EventModel[Role]):
+class RoleUpdatedEvent(EventModel[EventRole]):
     event: Literal["role.updated"]
 
 

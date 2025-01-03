@@ -130,7 +130,6 @@ class TestAuditLogs:
             self, mock_audit_log_event, mock_http_client_with_response
         ):
             organization_id = "org_123456789"
-            event = {"any_event": "any_event"}
 
             mock_http_client_with_response(
                 self.http_client,

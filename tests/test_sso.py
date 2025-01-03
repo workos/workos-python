@@ -304,7 +304,7 @@ class TestSSO(SSOFixtures):
         assert profile.dict() == mock_profile
         assert request_kwargs["url"].endswith("/sso/profile")
         assert request_kwargs["method"] == "get"
-        assert request_kwargs["headers"]["authorization"] == f"Bearer 123"
+        assert request_kwargs["headers"]["authorization"] == "Bearer 123"
 
     def test_get_connection(
         self, mock_connection, capture_and_mock_http_client_request

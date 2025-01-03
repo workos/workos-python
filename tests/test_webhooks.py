@@ -72,14 +72,14 @@ class TestWebhooks(object):
             mock_sig_hash,
             "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea25",
         )
-        assert result == False
+        assert result is False
 
     def test_sig_hash_does_not_match_expected_sig_value(self, mock_sig_hash):
         result = self.webhooks._constant_time_compare(
             mock_sig_hash,
             "df25b6efdd39d82e7b30e75ea19655b306860ad5cde3eeaeb6f1dfea029ea252",
         )
-        assert result == False
+        assert result is False
 
     def test_passed_expected_event_validation(
         self, mock_event_body, mock_header, mock_secret

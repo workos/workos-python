@@ -64,7 +64,7 @@ class TestOrganizations:
     @pytest.fixture
     def mock_organizations_multiple_data_pages(self):
         organizations_list = [
-            MockOrganization(id=str(f"org_{i+1}")).dict() for i in range(40)
+            MockOrganization(id=str(f"org_{i + 1}")).dict() for i in range(40)
         ]
         return list_response_of(data=organizations_list)
 

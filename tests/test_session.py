@@ -1,7 +1,6 @@
 import pytest
 from unittest.mock import Mock, patch
 import jwt
-from jwt import PyJWKClient
 from datetime import datetime, timezone
 
 from tests.conftest import with_jwks_mock

@@ -1,4 +1,4 @@
-from typing import Optional, Protocol, Sequence, Set, Type, cast
+from typing import Optional, Protocol, Sequence, Type, cast
 from workos._client_configuration import ClientConfiguration
 from workos.session import Session
 from workos.types.list_resource import (

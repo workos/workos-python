@@ -221,7 +221,7 @@ class TestMfa(object):
             "/auth/factors/auth_factor_01FZ4TS14D1PHFNZ9GF6YD8M1F"
         )
         assert request_kwargs["method"] == "delete"
-        assert response == None
+        assert response is None
 
     def test_challenge_success(
         self, mock_challenge_factor_response, capture_and_mock_http_client_request

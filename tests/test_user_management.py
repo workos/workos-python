@@ -150,9 +150,10 @@ class UserManagementFixtures:
 class TestUserManagementBase(UserManagementFixtures):
     @pytest.fixture(autouse=True)
     def setup(self, sync_client_configuration_and_http_client_for_test):
-        client_configuration, http_client = (
-            sync_client_configuration_and_http_client_for_test
-        )
+        (
+            client_configuration,
+            http_client,
+        ) = sync_client_configuration_and_http_client_for_test
         self.http_client = http_client
         self.user_management = UserManagement(
             http_client=self.http_client, client_configuration=client_configuration
@@ -318,6 +319,29 @@ class TestUserManagementBase(UserManagementFixtures):
             "redirect_uri": redirect_uri,
             "connection_id": connection_id,
             "response_type": RESPONSE_TYPE_CODE,
+        }
+
+    def test_authorization_url_has_expected_query_params_with_screen_hint(self):
+        connection_id = "connection_123"
+        redirect_uri = "https://localhost/auth/callback"
+        screen_hint = "sign-up"
+
+        authorization_url = self.user_management.get_authorization_url(
+            connection_id=connection_id,
+            screen_hint=screen_hint,
+            redirect_uri=redirect_uri,
+            provider="authkit",
+        )
+
+        parsed_url = urlparse(authorization_url)
+        assert parsed_url.path == "/user_management/authorize"
+        assert dict(parse_qsl(str(parsed_url.query))) == {
+            "screen_hint": screen_hint,
+            "client_id": self.http_client.client_id,
+            "redirect_uri": redirect_uri,
+            "connection_id": connection_id,
+            "response_type": RESPONSE_TYPE_CODE,
+            "provider": "authkit",
         }
 
     def test_get_jwks_url(self):

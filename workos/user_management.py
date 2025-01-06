@@ -418,8 +418,7 @@ class UserManagementModule(Protocol):
         self,
         payload: AuthenticateWithParameters,
         response_model: Type[AuthenticationResponseType],
-    ) -> SyncOrAsync[AuthenticationResponseType]:
-        ...
+    ) -> SyncOrAsync[AuthenticationResponseType]: ...
 
     def authenticate_with_password(
         self,

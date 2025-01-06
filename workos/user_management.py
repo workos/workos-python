@@ -388,6 +388,7 @@ class UserManagementModule(Protocol):
             )
 
         if connection_id is not None:
+
             params["connection_id"] = connection_id
         if organization_id is not None:
             params["organization_id"] = organization_id

@@ -44,11 +44,11 @@ from workos.types.user_management.list_filters import (
     UsersListFilters,
 )
 from workos.types.user_management.password_hash_type import PasswordHashType
+from workos.types.user_management.screen_hint import ScreenHintType
 from workos.types.user_management.session import SessionConfig
 from workos.types.user_management.user_management_provider_type import (
     UserManagementProviderType,
 )
-from workos.types.user_management.screen_hint import ScreenHintType
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder

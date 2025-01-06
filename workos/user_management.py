@@ -48,9 +48,7 @@ from workos.types.user_management.session import SessionConfig
 from workos.types.user_management.user_management_provider_type import (
     UserManagementProviderType,
 )
-from workos.types.user_management.screen_hint import (
-    ScreenHintType
-)
+from workos.types.user_management.screen_hint import ScreenHintType
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
@@ -419,7 +417,8 @@ class UserManagementModule(Protocol):
         self,
         payload: AuthenticateWithParameters,
         response_model: Type[AuthenticationResponseType],
-    ) -> SyncOrAsync[AuthenticationResponseType]: ...
+    ) -> SyncOrAsync[AuthenticationResponseType]:
+        ...
 
     def authenticate_with_password(
         self,

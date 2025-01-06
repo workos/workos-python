@@ -150,9 +150,10 @@ class UserManagementFixtures:
 class TestUserManagementBase(UserManagementFixtures):
     @pytest.fixture(autouse=True)
     def setup(self, sync_client_configuration_and_http_client_for_test):
-        client_configuration, http_client = (
-            sync_client_configuration_and_http_client_for_test
-        )
+        (
+            client_configuration,
+            http_client,
+        ) = sync_client_configuration_and_http_client_for_test
         self.http_client = http_client
         self.user_management = UserManagement(
             http_client=self.http_client, client_configuration=client_configuration
@@ -329,7 +330,7 @@ class TestUserManagementBase(UserManagementFixtures):
             connection_id=connection_id,
             screen_hint=screen_hint,
             redirect_uri=redirect_uri,
-            provider="authkit"
+            provider="authkit",
         )
 
         parsed_url = urlparse(authorization_url)
@@ -340,7 +341,7 @@ class TestUserManagementBase(UserManagementFixtures):
             "redirect_uri": redirect_uri,
             "connection_id": connection_id,
             "response_type": RESPONSE_TYPE_CODE,
-            "provider": "authkit"
+            "provider": "authkit",
         }
 
     def test_get_jwks_url(self):

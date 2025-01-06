@@ -48,6 +48,9 @@ from workos.types.user_management.session import SessionConfig
 from workos.types.user_management.user_management_provider_type import (
     UserManagementProviderType,
 )
+from workos.types.user_management.screen_hint import (
+    ScreenHintType
+)
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
@@ -342,6 +345,7 @@ class UserManagementModule(Protocol):
         organization_id: Optional[str] = None,
         code_challenge: Optional[str] = None,
         prompt: Optional[str] = None,
+        screen_hint: Optional[ScreenHintType] = None,
     ) -> str:
         """Generate an OAuth 2.0 authorization URL.
 
@@ -369,6 +373,7 @@ class UserManagementModule(Protocol):
             prompt (str): Used to specify whether the upstream provider should prompt the user for credentials or other
                 consent. Valid values depend on the provider. Currently only applies to provider values of 'GoogleOAuth',
                 'MicrosoftOAuth', or 'GitHubOAuth'. (Optional)
+            screen_hint (ScreenHintType): Specify which AuthKit screen users should land on upon redirection (Only applicable when provider is 'authkit').
 
         Returns:
             str: URL to redirect a User to to begin the OAuth workflow with WorkOS
@@ -401,6 +406,8 @@ class UserManagementModule(Protocol):
             params["code_challenge_method"] = "S256"
         if prompt is not None:
             params["prompt"] = prompt
+        if screen_hint is not None:
+            params["screen_hint"] = screen_hint
 
         return RequestHelper.build_url_with_query_params(
             base_url=self._client_configuration.base_url,

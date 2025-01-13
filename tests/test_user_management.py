@@ -362,6 +362,14 @@ class TestUserManagementBase(UserManagementFixtures):
 
         assert expected == result
 
+    def test_get_logout_url_with_return_to(self):
+        expected = "https://api.workos.test/user_management/sessions/logout?session_id=session_123&return_to=https%3A%2F%2Fexample.com%2Fsigned-out"
+        result = self.user_management.get_logout_url(
+            "session_123", return_to="https://example.com/signed-out"
+        )
+
+        assert expected == result
+
 
 @pytest.mark.sync_and_async(UserManagement, AsyncUserManagement)
 class TestUserManagement(UserManagementFixtures):

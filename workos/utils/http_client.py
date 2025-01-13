@@ -38,7 +38,9 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         client_id: str,
         version: str,
         timeout: Optional[int] = None,
-        transport: Optional[httpx.BaseTransport] = httpx.HTTPTransport(),
+        # If no custom transport is provided, let httpx use the default
+        # so we don't overwrite environment configurations like proxies
+        transport: Optional[httpx.BaseTransport] = None,
     ) -> None:
         super().__init__(
             api_key=api_key,
@@ -136,7 +138,9 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         client_id: str,
         version: str,
         timeout: Optional[int] = None,
-        transport: Optional[httpx.AsyncBaseTransport] = httpx.AsyncHTTPTransport(),
+        # If no custom transport is provided, let httpx use the default
+        # so we don't overwrite environment configurations like proxies
+        transport: Optional[httpx.AsyncBaseTransport] = None,
     ) -> None:
         super().__init__(
             base_url=base_url,

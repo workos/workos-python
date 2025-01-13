@@ -38,7 +38,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         client_id: str,
         version: str,
         timeout: Optional[int] = None,
-        transport: Optional[httpx.BaseTransport] = httpx.HTTPTransport(),
+        transport: Optional[httpx.BaseTransport] = None,
     ) -> None:
         super().__init__(
             api_key=api_key,
@@ -51,7 +51,9 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             base_url=base_url,
             timeout=timeout,
             follow_redirects=True,
-            transport=transport,
+            # Only pass the transport if a custom one is provided, otherwise let httpx use
+            # the default so we don't overwrite environment configurations like proxies
+            transport=transport if transport else None,
         )
 
     def is_closed(self) -> bool:
@@ -136,7 +138,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         client_id: str,
         version: str,
         timeout: Optional[int] = None,
-        transport: Optional[httpx.AsyncBaseTransport] = httpx.AsyncHTTPTransport(),
+        transport: Optional[httpx.AsyncBaseTransport] = None,
     ) -> None:
         super().__init__(
             base_url=base_url,
@@ -149,7 +151,9 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             base_url=base_url,
             timeout=timeout,
             follow_redirects=True,
-            transport=transport,
+            # Only pass the transport if a custom one is provided, otherwise let httpx use
+            # the default so we don't overwrite environment configurations like proxies
+            transport=transport if transport else None,
         )
 
     def is_closed(self) -> bool:

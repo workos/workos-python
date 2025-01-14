@@ -7,3 +7,4 @@ class Organization(OrganizationCommon):
     allow_profiles_outside_organization: bool
     domains: Sequence[OrganizationDomain]
     lookup_key: Optional[str] = None
+    stripe_customer_id: Optional[str] = None

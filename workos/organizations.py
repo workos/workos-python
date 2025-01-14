@@ -105,6 +105,7 @@ class OrganizationsModule(Protocol):
             organization (str): Organization's unique identifier.
             name (str): A descriptive name for the organization. (Optional)
             domain_data (Sequence[DomainDataInput]): List of domains that belong to the organization. (Optional)
+            stripe_customer_id (str): The ID of the Stripe customer associated with the organization. (Optional)
 
         Returns:
             Organization: Updated Organization response from WorkOS.
@@ -206,10 +207,12 @@ class Organizations(OrganizationsModule):
         organization_id: str,
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
+        stripe_customer_id: Optional[str] = None,
     ) -> Organization:
         json = {
             "name": name,
             "domain_data": domain_data,
+            "stripe_customer_id": stripe_customer_id,
         }
 
         response = self._http_client.request(
@@ -316,10 +319,12 @@ class AsyncOrganizations(OrganizationsModule):
         organization_id: str,
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
+        stripe_customer_id: Optional[str] = None,
     ) -> Organization:
         json = {
             "name": name,
             "domain_data": domain_data,
+            "stripe_customer_id": stripe_customer_id,
         }
 
         response = await self._http_client.request(

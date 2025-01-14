@@ -1,4 +1,5 @@
 from typing import Optional, Protocol, Sequence, Type, cast
+from urllib.parse import urlencode
 from workos._client_configuration import ClientConfiguration
 from workos.session import Session
 from workos.types.list_resource import (
@@ -588,19 +589,25 @@ class UserManagementModule(Protocol):
 
         return f"{self._client_configuration.base_url}sso/jwks/{self._client_configuration.client_id}"
 
-    def get_logout_url(self, session_id: str) -> str:
+    def get_logout_url(self, session_id: str, return_to: Optional[str] = None) -> str:
         """Get the URL for ending the session and redirecting the user
 
         This method is purposefully designed as synchronous as it does not make any HTTP requests.
 
         Args:
             session_id (str): The ID of the user's session
+            return_to (str): The URL to redirect the user to after the session is ended. (Optional)
 
         Returns:
             (str): URL to redirect the user to to end the session.
         """
 
-        return f"{self._client_configuration.base_url}user_management/sessions/logout?session_id={session_id}"
+        params = {"session_id": session_id}
+
+        if return_to:
+            params["return_to"] = return_to
+
+        return f"{self._client_configuration.base_url}user_management/sessions/logout?{urlencode(params)}"
 
     def get_password_reset(self, password_reset_id: str) -> SyncOrAsync[PasswordReset]:
         """Get the details of a password reset object.

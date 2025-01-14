@@ -159,7 +159,7 @@ class Session:
                 authenticated=False, reason=str(e)
             )
 
-    def get_logout_url(self) -> str:
+    def get_logout_url(self, return_to: Optional[str] = None) -> str:
         auth_response = self.authenticate()
 
         if isinstance(auth_response, AuthenticateWithSessionCookieErrorResponse):
@@ -168,7 +168,8 @@ class Session:
             )
 
         result = self.user_management.get_logout_url(
-            session_id=auth_response.session_id
+            session_id=auth_response.session_id,
+            return_to=return_to,
         )
         return str(result)
 

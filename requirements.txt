@@ -2,4 +2,4 @@ httpx~=0.28.1
 pydantic~=2.10.4
 PyJWT>=2.9.0, <2.10 ; python_version == "3.8"
 PyJWT>=2.10.0; python_version > "3.8"
-cryptography>=42.0.4, <45
+cryptography>=42.0.8, <45

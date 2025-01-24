@@ -36,7 +36,6 @@ setup(
     install_requires=read_requirements("requirements.txt"),
     extras_require={
         "dev": read_requirements("requirements-dev.txt"),
-        ":python_version<'3.4'": ["enum34"],
     },
     classifiers=[
         "Development Status :: 5 - Production/Stable",

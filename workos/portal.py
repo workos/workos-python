@@ -1,6 +1,7 @@
-from typing import Optional, Protocol
+from typing import Optional, Protocol, Dict, Literal, Union
 from workos.types.portal.portal_link import PortalLink
 from workos.types.portal.portal_link_intent import PortalLinkIntent
+from workos.types.portal.portal_link_intent_options import IntentOptions
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
 
@@ -16,6 +17,7 @@ class PortalModule(Protocol):
         organization_id: str,
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
+        intent_options: Optional[IntentOptions] = None,
     ) -> PortalLink:
         """Generate a link to grant access to an organization's Admin Portal
 
@@ -47,13 +49,16 @@ class Portal(PortalModule):
         organization_id: str,
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
+        intent_options: Optional[IntentOptions] = None,
     ) -> PortalLink:
         json = {
             "intent": intent,
             "organization": organization_id,
             "return_url": return_url,
             "success_url": success_url,
+            "intent_options": intent_options,
         }
+
         response = self._http_client.request(
             PORTAL_GENERATE_PATH, method=REQUEST_METHOD_POST, json=json
         )

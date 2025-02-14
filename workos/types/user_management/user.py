@@ -12,5 +12,6 @@ class User(WorkOSModel):
     last_name: Optional[str] = None
     email_verified: bool
     profile_picture_url: Optional[str] = None
+    last_sign_in_at: Optional[str] = None
     created_at: str
     updated_at: str

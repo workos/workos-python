@@ -79,7 +79,10 @@ class Session:
 
         signing_key = self.jwks.get_signing_key_from_jwt(session["access_token"])
         decoded = jwt.decode(
-            session["access_token"], signing_key.key, algorithms=self.jwk_algorithms
+            session["access_token"],
+            signing_key.key,
+            algorithms=self.jwk_algorithms,
+            options={"verify_aud": False},
         )
 
         return AuthenticateWithSessionCookieSuccessResponse(
@@ -141,6 +144,7 @@ class Session:
                 auth_response.access_token,
                 signing_key.key,
                 algorithms=self.jwk_algorithms,
+                options={"verify_aud": False},
             )
 
             return RefreshWithSessionCookieSuccessResponse(
@@ -176,7 +180,12 @@ class Session:
     def _is_valid_jwt(self, token: str) -> bool:
         try:
             signing_key = self.jwks.get_signing_key_from_jwt(token)
-            jwt.decode(token, signing_key.key, algorithms=self.jwk_algorithms)
+            jwt.decode(
+                token,
+                signing_key.key,
+                algorithms=self.jwk_algorithms,
+                options={"verify_aud": False},
+            )
             return True
         except jwt.exceptions.InvalidTokenError:
             return False

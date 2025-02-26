@@ -25,8 +25,12 @@ class DirectoryUser(WorkOSModel):
     organization_id: str
     first_name: Optional[str] = None
     last_name: Optional[str] = None
+    email: Optional[str] = None
+    # @deprecated Will be removed in a future major version. Enable the `job_title` custom attribute in dashboard and pull from customAttributes instead. See https://workos.com/docs/directory-sync/attributes/custom-attributes/auto-mapped-attributes for details.
     job_title: Optional[str] = None
+    # @deprecated Will be removed in a future major version. Enable the `emails` custom attribute in dashboard and pull from customAttributes instead. See https://workos.com/docs/directory-sync/attributes/custom-attributes/auto-mapped-attributes for details.
     emails: Sequence[DirectoryUserEmail]
+    # @deprecated Will be removed in a future major version. Enable the `username` custom attribute in dashboard and pull from customAttributes instead. See https://workos.com/docs/directory-sync/attributes/custom-attributes/auto-mapped-attributes for details.
     username: Optional[str] = None
     state: DirectoryUserState
     custom_attributes: Dict[str, Any]

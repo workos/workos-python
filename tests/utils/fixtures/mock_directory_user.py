@@ -16,6 +16,7 @@ class MockDirectoryUser(DirectoryUserWithGroups):
             first_name="gsuite_directory",
             last_name="fried chicken",
             job_title="developer",
+            email="marcelina@foo-corp.com",
             emails=[
                 DirectoryUserEmail(
                     primary=True, type="work", value="marcelina@foo-corp.com"

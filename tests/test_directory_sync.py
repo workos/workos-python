@@ -69,6 +69,7 @@ class TestDirectorySync:
             "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
             "first_name": "Marcelina",
             "last_name": "Davis",
+            "email": None,
             "job_title": "Software Engineer",
             "emails": [],
             "username": "marcelina@foo-corp.com",

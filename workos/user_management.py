@@ -139,10 +139,10 @@ class UserManagementModule(Protocol):
         ...
 
     def get_user_by_external_id(self, external_id: str) -> SyncOrAsync[User]:
-        """Get the details of an existing user.
+        """Get the details of an existing user by external id.
 
         Args:
-            external_id (str): The user's external id
+            external_id (str): User's external id
         Returns:
             User: User response from WorkOS.
         """

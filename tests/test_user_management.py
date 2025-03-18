@@ -411,6 +411,7 @@ class TestUserManagement(UserManagementFixtures):
         assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert user.profile_picture_url == "https://example.com/profile-picture.jpg"
         assert user.last_sign_in_at == "2021-06-25T19:07:33.155Z"
+        assert user.metadata == mock_user["metadata"]
 
     def test_list_users_auto_pagination(
         self,

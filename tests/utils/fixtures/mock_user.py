@@ -17,4 +17,5 @@ class MockUser(User):
             last_sign_in_at="2021-06-25T19:07:33.155Z",
             created_at=now,
             updated_at=now,
+            metadata={"key": "value"},
         )

@@ -1,5 +1,6 @@
 from typing import Optional, Protocol, Sequence
 
+from workos.types.metadata import Metadata
 from workos.types.organizations.domain_data_input import DomainDataInput
 from workos.types.organizations.list_filters import OrganizationListFilters
 from workos.types.roles.role import RoleList
@@ -79,6 +80,8 @@ class OrganizationsModule(Protocol):
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> SyncOrAsync[Organization]:
         """Create an organization
 
@@ -98,6 +101,8 @@ class OrganizationsModule(Protocol):
         organization_id: str,
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> SyncOrAsync[Organization]:
         """Update an organization
 
@@ -180,6 +185,8 @@ class Organizations(OrganizationsModule):
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> Organization:
         headers = {}
         if idempotency_key:
@@ -189,6 +196,8 @@ class Organizations(OrganizationsModule):
             "name": name,
             "domain_data": domain_data,
             "idempotency_key": idempotency_key,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = self._http_client.request(
@@ -207,11 +216,15 @@ class Organizations(OrganizationsModule):
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         stripe_customer_id: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> Organization:
         json = {
             "name": name,
             "domain_data": domain_data,
             "stripe_customer_id": stripe_customer_id,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = self._http_client.request(
@@ -291,6 +304,8 @@ class AsyncOrganizations(OrganizationsModule):
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> Organization:
         headers = {}
         if idempotency_key:
@@ -300,6 +315,8 @@ class AsyncOrganizations(OrganizationsModule):
             "name": name,
             "domain_data": domain_data,
             "idempotency_key": idempotency_key,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = await self._http_client.request(
@@ -318,11 +335,15 @@ class AsyncOrganizations(OrganizationsModule):
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         stripe_customer_id: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> Organization:
         json = {
             "name": name,
             "domain_data": domain_data,
             "stripe_customer_id": stripe_customer_id,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = await self._http_client.request(

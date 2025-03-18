@@ -8,6 +8,7 @@ from workos.types.list_resource import (
     ListPage,
     WorkOSListResource,
 )
+from workos.types.metadata import Metadata
 from workos.types.mfa import (
     AuthenticationFactor,
     AuthenticationFactorTotpAndChallengeResponse,
@@ -183,6 +184,8 @@ class UserManagementModule(Protocol):
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> SyncOrAsync[User]:
         """Create a new user.
 
@@ -210,6 +213,8 @@ class UserManagementModule(Protocol):
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
         password_hash_type: Optional[PasswordHashType] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> SyncOrAsync[User]:
         """Update user attributes.
 
@@ -917,6 +922,8 @@ class UserManagement(UserManagementModule):
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> User:
         json = {
             "email": email,
@@ -926,6 +933,8 @@ class UserManagement(UserManagementModule):
             "first_name": first_name,
             "last_name": last_name,
             "email_verified": email_verified or False,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = self._http_client.request(
@@ -944,6 +953,8 @@ class UserManagement(UserManagementModule):
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
         password_hash_type: Optional[PasswordHashType] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> User:
         json = {
             "first_name": first_name,
@@ -952,6 +963,8 @@ class UserManagement(UserManagementModule):
             "password": password,
             "password_hash": password_hash,
             "password_hash_type": password_hash_type,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = self._http_client.request(
@@ -1529,6 +1542,8 @@ class AsyncUserManagement(UserManagementModule):
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> User:
         json = {
             "email": email,
@@ -1538,6 +1553,8 @@ class AsyncUserManagement(UserManagementModule):
             "first_name": first_name,
             "last_name": last_name,
             "email_verified": email_verified or False,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = await self._http_client.request(
@@ -1556,6 +1573,8 @@ class AsyncUserManagement(UserManagementModule):
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
         password_hash_type: Optional[PasswordHashType] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> User:
         json = {
             "first_name": first_name,
@@ -1564,6 +1583,8 @@ class AsyncUserManagement(UserManagementModule):
             "password": password,
             "password_hash": password_hash,
             "password_hash_type": password_hash_type,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = await self._http_client.request(

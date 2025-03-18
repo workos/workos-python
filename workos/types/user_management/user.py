@@ -1,5 +1,6 @@
 from dataclasses import field
-from typing import Literal, Optional, Dict
+from typing import Literal, Optional
+from workos.types.metadata import Metadata
 from workos.types.workos_model import WorkOSModel
 
 
@@ -17,4 +18,4 @@ class User(WorkOSModel):
     created_at: str
     updated_at: str
     external_id: Optional[str] = None
-    metadata: Dict[str, str] = field(default_factory=dict)
+    metadata: Metadata = field(default_factory=dict)

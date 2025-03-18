@@ -109,7 +109,7 @@ class TestOrganizations:
         assert request_kwargs["method"] == "get"
         assert request_kwargs["url"].endswith("/organizations/organization_id")
 
-    def test_get_organization_by_lookup_key(
+    def test_get_organization_by_external_id(
         self, mock_organization, capture_and_mock_http_client_request
     ):
         request_kwargs = capture_and_mock_http_client_request(
@@ -117,12 +117,12 @@ class TestOrganizations:
         )
 
         organization = syncify(
-            self.organizations.get_organization_by_lookup_key(lookup_key="test")
+            self.organizations.get_organization_by_external_id(external_id="test")
         )
 
         assert organization.dict() == mock_organization
         assert request_kwargs["method"] == "get"
-        assert request_kwargs["url"].endswith("/organizations/by_lookup_key/test")
+        assert request_kwargs["url"].endswith("/organizations/external_id/test")
 
     def test_create_organization_with_domain_data(
         self, mock_organization, capture_and_mock_http_client_request

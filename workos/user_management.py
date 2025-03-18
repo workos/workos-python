@@ -66,6 +66,7 @@ from workos.utils.request_helper import (
 
 USER_PATH = "user_management/users"
 USER_DETAIL_PATH = "user_management/users/{0}"
+USER_DETAIL_BY_EXTERNAL_ID_PATH = "user_management/users/external_id/{0}"
 ORGANIZATION_MEMBERSHIP_PATH = "user_management/organization_memberships"
 ORGANIZATION_MEMBERSHIP_DETAIL_PATH = "user_management/organization_memberships/{0}"
 ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH = (
@@ -132,6 +133,16 @@ class UserManagementModule(Protocol):
 
         Args:
             user_id (str): User unique identifier
+        Returns:
+            User: User response from WorkOS.
+        """
+        ...
+
+    def get_user_by_external_id(self, external_id: str) -> SyncOrAsync[User]:
+        """Get the details of an existing user.
+
+        Args:
+            external_id (str): The user's external id
         Returns:
             User: User response from WorkOS.
         """
@@ -389,7 +400,6 @@ class UserManagementModule(Protocol):
             )
 
         if connection_id is not None:
-
             params["connection_id"] = connection_id
         if organization_id is not None:
             params["organization_id"] = organization_id
@@ -856,6 +866,14 @@ class UserManagement(UserManagementModule):
     def get_user(self, user_id: str) -> User:
         response = self._http_client.request(
             USER_DETAIL_PATH.format(user_id), method=REQUEST_METHOD_GET
+        )
+
+        return User.model_validate(response)
+
+    def get_user_by_external_id(self, external_id: str) -> User:
+        response = self._http_client.request(
+            USER_DETAIL_BY_EXTERNAL_ID_PATH.format(external_id),
+            method=REQUEST_METHOD_GET,
         )
 
         return User.model_validate(response)
@@ -1460,6 +1478,14 @@ class AsyncUserManagement(UserManagementModule):
     async def get_user(self, user_id: str) -> User:
         response = await self._http_client.request(
             USER_DETAIL_PATH.format(user_id), method=REQUEST_METHOD_GET
+        )
+
+        return User.model_validate(response)
+
+    async def get_user_by_external_id(self, external_id: str) -> User:
+        response = await self._http_client.request(
+            USER_DETAIL_BY_EXTERNAL_ID_PATH.format(external_id),
+            method=REQUEST_METHOD_GET,
         )
 
         return User.model_validate(response)

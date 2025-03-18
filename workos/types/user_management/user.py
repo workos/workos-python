@@ -15,3 +15,4 @@ class User(WorkOSModel):
     last_sign_in_at: Optional[str] = None
     created_at: str
     updated_at: str
+    external_id: Optional[str] = None

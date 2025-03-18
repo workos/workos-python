@@ -60,13 +60,13 @@ class OrganizationsModule(Protocol):
         """
         ...
 
-    def get_organization_by_lookup_key(
-        self, lookup_key: str
+    def get_organization_by_external_id(
+        self, external_id: str
     ) -> SyncOrAsync[Organization]:
-        """Gets details for a single Organization by lookup key
+        """Gets details for a single Organization by external id
 
         Args:
-            lookup_key (str): Organization's lookup key
+            external_id (str): Organization's external id
 
         Returns:
             Organization: Organization response from WorkOS
@@ -125,7 +125,6 @@ class OrganizationsModule(Protocol):
 
 
 class Organizations(OrganizationsModule):
-
     _http_client: SyncHTTPClient
 
     def __init__(self, http_client: SyncHTTPClient):
@@ -167,9 +166,9 @@ class Organizations(OrganizationsModule):
 
         return Organization.model_validate(response)
 
-    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
+    def get_organization_by_external_id(self, external_id: str) -> Organization:
         response = self._http_client.request(
-            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            "organizations/external_id/{external_id}".format(external_id=external_id),
             method=REQUEST_METHOD_GET,
         )
 
@@ -237,7 +236,6 @@ class Organizations(OrganizationsModule):
 
 
 class AsyncOrganizations(OrganizationsModule):
-
     _http_client: AsyncHTTPClient
 
     def __init__(self, http_client: AsyncHTTPClient):
@@ -279,9 +277,9 @@ class AsyncOrganizations(OrganizationsModule):
 
         return Organization.model_validate(response)
 
-    async def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
+    async def get_organization_by_external_id(self, external_id: str) -> Organization:
         response = await self._http_client.request(
-            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            "organizations/external_id/{external_id}".format(external_id=external_id),
             method=REQUEST_METHOD_GET,
         )
 

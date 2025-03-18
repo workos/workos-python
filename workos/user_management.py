@@ -345,6 +345,7 @@ class UserManagementModule(Protocol):
         code_challenge: Optional[str] = None,
         prompt: Optional[str] = None,
         screen_hint: Optional[ScreenHintType] = None,
+        context: Optional[str] = None,
     ) -> str:
         """Generate an OAuth 2.0 authorization URL.
 

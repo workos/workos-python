@@ -1,4 +1,6 @@
+from dataclasses import field
 from typing import Literal, Optional
+from workos.types.metadata import Metadata
 from workos.types.workos_model import WorkOSModel
 
 
@@ -15,3 +17,5 @@ class User(WorkOSModel):
     last_sign_in_at: Optional[str] = None
     created_at: str
     updated_at: str
+    external_id: Optional[str] = None
+    metadata: Metadata = field(default_factory=dict)

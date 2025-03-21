@@ -392,6 +392,27 @@ class TestUserManagement(UserManagementFixtures):
         assert user.profile_picture_url == "https://example.com/profile-picture.jpg"
         assert user.last_sign_in_at == "2021-06-25T19:07:33.155Z"
 
+    def test_get_user_by_external_id(
+        self, mock_user, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_user, 200
+        )
+
+        external_id = "external-id"
+        user = syncify(
+            self.user_management.get_user_by_external_id(external_id=external_id)
+        )
+
+        assert request_kwargs["url"].endswith(
+            f"user_management/users/external_id/{external_id}"
+        )
+        assert request_kwargs["method"] == "get"
+        assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert user.profile_picture_url == "https://example.com/profile-picture.jpg"
+        assert user.last_sign_in_at == "2021-06-25T19:07:33.155Z"
+        assert user.metadata == mock_user["metadata"]
+
     def test_list_users_auto_pagination(
         self,
         mock_users_multiple_pages,

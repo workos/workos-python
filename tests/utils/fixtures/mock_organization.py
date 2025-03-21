@@ -22,4 +22,5 @@ class MockOrganization(Organization):
                     domain="example.io",
                 )
             ],
+            metadata={"key": "value"},
         )

@@ -8,6 +8,7 @@ from workos.types.list_resource import (
     ListPage,
     WorkOSListResource,
 )
+from workos.types.metadata import Metadata
 from workos.types.mfa import (
     AuthenticationFactor,
     AuthenticationFactorTotpAndChallengeResponse,
@@ -66,6 +67,7 @@ from workos.utils.request_helper import (
 
 USER_PATH = "user_management/users"
 USER_DETAIL_PATH = "user_management/users/{0}"
+USER_DETAIL_BY_EXTERNAL_ID_PATH = "user_management/users/external_id/{0}"
 ORGANIZATION_MEMBERSHIP_PATH = "user_management/organization_memberships"
 ORGANIZATION_MEMBERSHIP_DETAIL_PATH = "user_management/organization_memberships/{0}"
 ORGANIZATION_MEMBERSHIP_DEACTIVATE_PATH = (
@@ -137,6 +139,16 @@ class UserManagementModule(Protocol):
         """
         ...
 
+    def get_user_by_external_id(self, external_id: str) -> SyncOrAsync[User]:
+        """Get the details of an existing user by external id.
+
+        Args:
+            external_id (str): User's external id
+        Returns:
+            User: User response from WorkOS.
+        """
+        ...
+
     def list_users(
         self,
         *,
@@ -172,6 +184,8 @@ class UserManagementModule(Protocol):
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> SyncOrAsync[User]:
         """Create a new user.
 
@@ -199,6 +213,8 @@ class UserManagementModule(Protocol):
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
         password_hash_type: Optional[PasswordHashType] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> SyncOrAsync[User]:
         """Update user attributes.
 
@@ -389,7 +405,6 @@ class UserManagementModule(Protocol):
             )
 
         if connection_id is not None:
-
             params["connection_id"] = connection_id
         if organization_id is not None:
             params["organization_id"] = organization_id
@@ -860,6 +875,14 @@ class UserManagement(UserManagementModule):
 
         return User.model_validate(response)
 
+    def get_user_by_external_id(self, external_id: str) -> User:
+        response = self._http_client.request(
+            USER_DETAIL_BY_EXTERNAL_ID_PATH.format(external_id),
+            method=REQUEST_METHOD_GET,
+        )
+
+        return User.model_validate(response)
+
     def list_users(
         self,
         *,
@@ -899,6 +922,8 @@ class UserManagement(UserManagementModule):
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> User:
         json = {
             "email": email,
@@ -908,6 +933,8 @@ class UserManagement(UserManagementModule):
             "first_name": first_name,
             "last_name": last_name,
             "email_verified": email_verified or False,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = self._http_client.request(
@@ -926,6 +953,8 @@ class UserManagement(UserManagementModule):
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
         password_hash_type: Optional[PasswordHashType] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> User:
         json = {
             "first_name": first_name,
@@ -934,6 +963,8 @@ class UserManagement(UserManagementModule):
             "password": password,
             "password_hash": password_hash,
             "password_hash_type": password_hash_type,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = self._http_client.request(
@@ -1464,6 +1495,14 @@ class AsyncUserManagement(UserManagementModule):
 
         return User.model_validate(response)
 
+    async def get_user_by_external_id(self, external_id: str) -> User:
+        response = await self._http_client.request(
+            USER_DETAIL_BY_EXTERNAL_ID_PATH.format(external_id),
+            method=REQUEST_METHOD_GET,
+        )
+
+        return User.model_validate(response)
+
     async def list_users(
         self,
         *,
@@ -1503,6 +1542,8 @@ class AsyncUserManagement(UserManagementModule):
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> User:
         json = {
             "email": email,
@@ -1512,6 +1553,8 @@ class AsyncUserManagement(UserManagementModule):
             "first_name": first_name,
             "last_name": last_name,
             "email_verified": email_verified or False,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = await self._http_client.request(
@@ -1530,6 +1573,8 @@ class AsyncUserManagement(UserManagementModule):
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
         password_hash_type: Optional[PasswordHashType] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> User:
         json = {
             "first_name": first_name,
@@ -1538,6 +1583,8 @@ class AsyncUserManagement(UserManagementModule):
             "password": password,
             "password_hash": password_hash,
             "password_hash_type": password_hash_type,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = await self._http_client.request(

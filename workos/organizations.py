@@ -1,5 +1,6 @@
 from typing import Optional, Protocol, Sequence
 
+from workos.types.metadata import Metadata
 from workos.types.organizations.domain_data_input import DomainDataInput
 from workos.types.organizations.list_filters import OrganizationListFilters
 from workos.types.roles.role import RoleList
@@ -60,13 +61,13 @@ class OrganizationsModule(Protocol):
         """
         ...
 
-    def get_organization_by_lookup_key(
-        self, lookup_key: str
+    def get_organization_by_external_id(
+        self, external_id: str
     ) -> SyncOrAsync[Organization]:
-        """Gets details for a single Organization by lookup key
+        """Gets details for a single Organization by external id
 
         Args:
-            lookup_key (str): Organization's lookup key
+            external_id (str): Organization's external id
 
         Returns:
             Organization: Organization response from WorkOS
@@ -79,6 +80,8 @@ class OrganizationsModule(Protocol):
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> SyncOrAsync[Organization]:
         """Create an organization
 
@@ -98,6 +101,8 @@ class OrganizationsModule(Protocol):
         organization_id: str,
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> SyncOrAsync[Organization]:
         """Update an organization
 
@@ -125,7 +130,6 @@ class OrganizationsModule(Protocol):
 
 
 class Organizations(OrganizationsModule):
-
     _http_client: SyncHTTPClient
 
     def __init__(self, http_client: SyncHTTPClient):
@@ -167,9 +171,9 @@ class Organizations(OrganizationsModule):
 
         return Organization.model_validate(response)
 
-    def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
+    def get_organization_by_external_id(self, external_id: str) -> Organization:
         response = self._http_client.request(
-            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            "organizations/external_id/{external_id}".format(external_id=external_id),
             method=REQUEST_METHOD_GET,
         )
 
@@ -181,6 +185,8 @@ class Organizations(OrganizationsModule):
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> Organization:
         headers = {}
         if idempotency_key:
@@ -190,6 +196,8 @@ class Organizations(OrganizationsModule):
             "name": name,
             "domain_data": domain_data,
             "idempotency_key": idempotency_key,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = self._http_client.request(
@@ -208,11 +216,15 @@ class Organizations(OrganizationsModule):
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         stripe_customer_id: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> Organization:
         json = {
             "name": name,
             "domain_data": domain_data,
             "stripe_customer_id": stripe_customer_id,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = self._http_client.request(
@@ -237,7 +249,6 @@ class Organizations(OrganizationsModule):
 
 
 class AsyncOrganizations(OrganizationsModule):
-
     _http_client: AsyncHTTPClient
 
     def __init__(self, http_client: AsyncHTTPClient):
@@ -279,9 +290,9 @@ class AsyncOrganizations(OrganizationsModule):
 
         return Organization.model_validate(response)
 
-    async def get_organization_by_lookup_key(self, lookup_key: str) -> Organization:
+    async def get_organization_by_external_id(self, external_id: str) -> Organization:
         response = await self._http_client.request(
-            "organizations/by_lookup_key/{lookup_key}".format(lookup_key=lookup_key),
+            "organizations/external_id/{external_id}".format(external_id=external_id),
             method=REQUEST_METHOD_GET,
         )
 
@@ -293,6 +304,8 @@ class AsyncOrganizations(OrganizationsModule):
         name: str,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         idempotency_key: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> Organization:
         headers = {}
         if idempotency_key:
@@ -302,6 +315,8 @@ class AsyncOrganizations(OrganizationsModule):
             "name": name,
             "domain_data": domain_data,
             "idempotency_key": idempotency_key,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = await self._http_client.request(
@@ -320,11 +335,15 @@ class AsyncOrganizations(OrganizationsModule):
         name: Optional[str] = None,
         domain_data: Optional[Sequence[DomainDataInput]] = None,
         stripe_customer_id: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Metadata] = None,
     ) -> Organization:
         json = {
             "name": name,
             "domain_data": domain_data,
             "stripe_customer_id": stripe_customer_id,
+            "external_id": external_id,
+            "metadata": metadata,
         }
 
         response = await self._http_client.request(

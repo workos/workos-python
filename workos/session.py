@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Protocol, Sequence
+from typing import TYPE_CHECKING, List, Protocol
 
 import json
 from typing import Any, Dict, Optional, Union, cast
@@ -27,7 +27,7 @@ class SessionModule(Protocol):
     session_data: str
     cookie_password: str
     jwks: PyJWKClient
-    jwk_algorithms: Sequence[str]
+    jwk_algorithms: List[str]
 
     def __init__(
         self,

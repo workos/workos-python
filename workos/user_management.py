@@ -1486,7 +1486,12 @@ class AsyncUserManagement(UserManagementModule):
     async def load_sealed_session(
         self, *, sealed_session: str, cookie_password: str
     ) -> Session:
-        raise NotImplementedError("Async load_sealed_session not implemented")
+        return Session(
+            user_management=self,
+            client_id=self._http_client.client_id,
+            session_data=sealed_session,
+            cookie_password=cookie_password,
+        )
 
     async def get_user(self, user_id: str) -> User:
         response = await self._http_client.request(

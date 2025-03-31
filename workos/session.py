@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol, Sequence
 
 import json
 from typing import Any, Dict, Optional, Union, cast
@@ -7,9 +7,6 @@ import jwt
 from jwt import PyJWKClient
 from cryptography.fernet import Fernet
 
-from workos.types.user_management.authentication_response import (
-    RefreshTokenAuthenticationResponse,
-)
 from workos.types.user_management.session import (
     AuthenticateWithSessionCookieFailureReason,
     AuthenticateWithSessionCookieSuccessResponse,
@@ -17,12 +14,21 @@ from workos.types.user_management.session import (
     RefreshWithSessionCookieErrorResponse,
     RefreshWithSessionCookieSuccessResponse,
 )
+from workos.typing.sync_or_async import SyncOrAsync
 
 if TYPE_CHECKING:
     from workos.user_management import UserManagementModule
+    from workos.user_management import AsyncUserManagement, UserManagement
 
 
-class Session:
+class SessionModule(Protocol):
+    user_management: "UserManagementModule"
+    client_id: str
+    session_data: str
+    cookie_password: str
+    jwks: PyJWKClient
+    jwk_algorithms: Sequence[str]
+
     def __init__(
         self,
         *,
@@ -101,67 +107,12 @@ class Session:
         *,
         organization_id: Optional[str] = None,
         cookie_password: Optional[str] = None,
-    ) -> Union[
-        RefreshWithSessionCookieSuccessResponse,
-        RefreshWithSessionCookieErrorResponse,
-    ]:
-        cookie_password = (
-            self.cookie_password if cookie_password is None else cookie_password
-        )
-
-        try:
-            session = self.unseal_data(self.session_data, cookie_password)
-        except Exception:
-            return RefreshWithSessionCookieErrorResponse(
-                authenticated=False,
-                reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
-            )
-
-        if not session.get("refresh_token", None) or not session.get("user", None):
-            return RefreshWithSessionCookieErrorResponse(
-                authenticated=False,
-                reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
-            )
-
-        try:
-            auth_response = cast(
-                RefreshTokenAuthenticationResponse,
-                self.user_management.authenticate_with_refresh_token(
-                    refresh_token=session["refresh_token"],
-                    organization_id=organization_id,
-                    session={"seal_session": True, "cookie_password": cookie_password},
-                ),
-            )
-
-            self.session_data = str(auth_response.sealed_session)
-            self.cookie_password = (
-                cookie_password if cookie_password is not None else self.cookie_password
-            )
-
-            signing_key = self.jwks.get_signing_key_from_jwt(auth_response.access_token)
-
-            decoded = jwt.decode(
-                auth_response.access_token,
-                signing_key.key,
-                algorithms=self.jwk_algorithms,
-                options={"verify_aud": False},
-            )
-
-            return RefreshWithSessionCookieSuccessResponse(
-                authenticated=True,
-                sealed_session=str(auth_response.sealed_session),
-                session_id=decoded["sid"],
-                organization_id=decoded.get("org_id", None),
-                role=decoded.get("role", None),
-                permissions=decoded.get("permissions", None),
-                entitlements=decoded.get("entitlements", None),
-                user=auth_response.user,
-                impersonator=auth_response.impersonator,
-            )
-        except Exception as e:
-            return RefreshWithSessionCookieErrorResponse(
-                authenticated=False, reason=str(e)
-            )
+    ) -> SyncOrAsync[
+        Union[
+            RefreshWithSessionCookieSuccessResponse,
+            RefreshWithSessionCookieErrorResponse,
+        ]
+    ]: ...
 
     def get_logout_url(self, return_to: Optional[str] = None) -> str:
         auth_response = self.authenticate()
@@ -204,3 +155,183 @@ class Session:
         encrypted_bytes = sealed_data.encode("utf-8")
         decrypted_str = fernet.decrypt(encrypted_bytes).decode()
         return cast(Dict[str, Any], json.loads(decrypted_str))
+
+
+class Session(SessionModule):
+    user_management: "UserManagement"
+
+    def __init__(
+        self,
+        *,
+        user_management: "UserManagement",
+        client_id: str,
+        session_data: str,
+        cookie_password: str,
+    ) -> None:
+        # If the cookie password is not provided, throw an error
+        if cookie_password is None or cookie_password == "":
+            raise ValueError("cookie_password is required")
+
+        self.user_management = user_management
+        self.client_id = client_id
+        self.session_data = session_data
+        self.cookie_password = cookie_password
+
+        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+
+        # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
+        self.jwk_algorithms = ["RS256"]
+
+    def refresh(
+        self,
+        *,
+        organization_id: Optional[str] = None,
+        cookie_password: Optional[str] = None,
+    ) -> Union[
+        RefreshWithSessionCookieSuccessResponse,
+        RefreshWithSessionCookieErrorResponse,
+    ]:
+        cookie_password = (
+            self.cookie_password if cookie_password is None else cookie_password
+        )
+
+        try:
+            session = self.unseal_data(self.session_data, cookie_password)
+        except Exception:
+            return RefreshWithSessionCookieErrorResponse(
+                authenticated=False,
+                reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
+            )
+
+        if not session.get("refresh_token", None) or not session.get("user", None):
+            return RefreshWithSessionCookieErrorResponse(
+                authenticated=False,
+                reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
+            )
+
+        try:
+            auth_response = self.user_management.authenticate_with_refresh_token(
+                refresh_token=session["refresh_token"],
+                organization_id=organization_id,
+                session={"seal_session": True, "cookie_password": cookie_password},
+            )
+
+            self.session_data = str(auth_response.sealed_session)
+            self.cookie_password = (
+                cookie_password if cookie_password is not None else self.cookie_password
+            )
+
+            signing_key = self.jwks.get_signing_key_from_jwt(auth_response.access_token)
+
+            decoded = jwt.decode(
+                auth_response.access_token,
+                signing_key.key,
+                algorithms=self.jwk_algorithms,
+                options={"verify_aud": False},
+            )
+
+            return RefreshWithSessionCookieSuccessResponse(
+                authenticated=True,
+                sealed_session=str(auth_response.sealed_session),
+                session_id=decoded["sid"],
+                organization_id=decoded.get("org_id", None),
+                role=decoded.get("role", None),
+                permissions=decoded.get("permissions", None),
+                entitlements=decoded.get("entitlements", None),
+                user=auth_response.user,
+                impersonator=auth_response.impersonator,
+            )
+        except Exception as e:
+            return RefreshWithSessionCookieErrorResponse(
+                authenticated=False, reason=str(e)
+            )
+
+
+class AsyncSession(SessionModule):
+    user_management: "AsyncUserManagement"
+
+    def __init__(
+        self,
+        *,
+        user_management: "AsyncUserManagement",
+        client_id: str,
+        session_data: str,
+        cookie_password: str,
+    ) -> None:
+        # If the cookie password is not provided, throw an error
+        if cookie_password is None or cookie_password == "":
+            raise ValueError("cookie_password is required")
+
+        self.user_management = user_management
+        self.client_id = client_id
+        self.session_data = session_data
+        self.cookie_password = cookie_password
+
+        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+
+        # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
+        self.jwk_algorithms = ["RS256"]
+
+    async def refresh(
+        self,
+        *,
+        organization_id: Optional[str] = None,
+        cookie_password: Optional[str] = None,
+    ) -> Union[
+        RefreshWithSessionCookieSuccessResponse,
+        RefreshWithSessionCookieErrorResponse,
+    ]:
+        cookie_password = (
+            self.cookie_password if cookie_password is None else cookie_password
+        )
+
+        try:
+            session = self.unseal_data(self.session_data, cookie_password)
+        except Exception:
+            return RefreshWithSessionCookieErrorResponse(
+                authenticated=False,
+                reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
+            )
+
+        if not session.get("refresh_token", None) or not session.get("user", None):
+            return RefreshWithSessionCookieErrorResponse(
+                authenticated=False,
+                reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
+            )
+
+        try:
+            auth_response = await self.user_management.authenticate_with_refresh_token(
+                refresh_token=session["refresh_token"],
+                organization_id=organization_id,
+                session={"seal_session": True, "cookie_password": cookie_password},
+            )
+
+            self.session_data = str(auth_response.sealed_session)
+            self.cookie_password = (
+                cookie_password if cookie_password is not None else self.cookie_password
+            )
+
+            signing_key = self.jwks.get_signing_key_from_jwt(auth_response.access_token)
+
+            decoded = jwt.decode(
+                auth_response.access_token,
+                signing_key.key,
+                algorithms=self.jwk_algorithms,
+                options={"verify_aud": False},
+            )
+
+            return RefreshWithSessionCookieSuccessResponse(
+                authenticated=True,
+                sealed_session=str(auth_response.sealed_session),
+                session_id=decoded["sid"],
+                organization_id=decoded.get("org_id", None),
+                role=decoded.get("role", None),
+                permissions=decoded.get("permissions", None),
+                entitlements=decoded.get("entitlements", None),
+                user=auth_response.user,
+                impersonator=auth_response.impersonator,
+            )
+        except Exception as e:
+            return RefreshWithSessionCookieErrorResponse(
+                authenticated=False, reason=str(e)
+            )

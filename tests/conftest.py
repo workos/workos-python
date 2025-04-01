@@ -314,7 +314,7 @@ def with_jwks_mock(func):
         # Create mock JWKS client
         mock_jwks = Mock(spec=PyJWKClient)
         mock_signing_key = Mock()
-        mock_signing_key.key = kwargs["TEST_CONSTANTS"]["PUBLIC_KEY"]
+        mock_signing_key.key = kwargs["session_constants"]["PUBLIC_KEY"]
         mock_jwks.get_signing_key_from_jwt.return_value = mock_signing_key
 
         # Apply the mock

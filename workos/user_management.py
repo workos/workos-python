@@ -1,7 +1,7 @@
-from typing import Optional, Protocol, Sequence, Type, cast
+from typing import Awaitable, Optional, Protocol, Sequence, Type, Union, cast
 from urllib.parse import urlencode
 from workos._client_configuration import ClientConfiguration
-from workos.session import Session
+from workos.session import AsyncSession, Session
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -117,7 +117,7 @@ class UserManagementModule(Protocol):
 
     def load_sealed_session(
         self, *, sealed_session: str, cookie_password: str
-    ) -> SyncOrAsync[Session]:
+    ) -> Union[Session, Awaitable[AsyncSession]]:
         """Load a sealed session and return the session data.
 
         Args:
@@ -1485,8 +1485,8 @@ class AsyncUserManagement(UserManagementModule):
 
     async def load_sealed_session(
         self, *, sealed_session: str, cookie_password: str
-    ) -> Session:
-        return Session(
+    ) -> AsyncSession:
+        return AsyncSession(
             user_management=self,
             client_id=self._http_client.client_id,
             session_data=sealed_session,

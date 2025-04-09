@@ -40,6 +40,7 @@ EventType = Literal[
     "organization_membership.deleted",
     "organization_membership.updated",
     "password_reset.created",
+    "password_reset.succeeded",
     "role.created",
     "role.deleted",
     "role.updated",

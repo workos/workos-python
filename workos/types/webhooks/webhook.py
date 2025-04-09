@@ -213,6 +213,10 @@ class PasswordResetCreatedWebhook(WebhookModel[PasswordResetCommon]):
     event: Literal["password_reset.created"]
 
 
+class PasswordResetSucceededWebhook(WebhookModel[PasswordResetCommon]):
+    event: Literal["password_reset.succeeded"]
+
+
 class RoleCreatedWebhook(WebhookModel[EventRole]):
     event: Literal["role.created"]
 
@@ -278,6 +282,7 @@ Webhook = Annotated[
         OrganizationMembershipDeletedWebhook,
         OrganizationMembershipUpdatedWebhook,
         PasswordResetCreatedWebhook,
+        PasswordResetSucceededWebhook,
         RoleCreatedWebhook,
         RoleDeletedWebhook,
         RoleUpdatedWebhook,

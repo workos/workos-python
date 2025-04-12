@@ -1,5 +1,6 @@
 import concurrent.futures
 from datetime import datetime, timezone
+import time
 from unittest.mock import AsyncMock, Mock, patch
 
 import jwt
@@ -476,6 +477,174 @@ class TestSession(SessionFixtures):
         response = session.refresh()
 
         assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
+
+    @with_jwks_mock
+    def test_authenticate_with_slightly_expired_jwt_fails_without_leeway(
+        self, session_constants, mock_user_management
+    ):
+        # Create a token that's expired by 5 seconds
+        current_time = int(time.time())
+
+        # Create token claims with exp 5 seconds in the past
+        token_claims = {
+            **session_constants["TEST_TOKEN_CLAIMS"],
+            "exp": current_time - 5,  # Expired by 5 seconds
+            "iat": current_time - 60,  # Issued 60 seconds ago
+        }
+
+        slightly_expired_token = jwt.encode(
+            token_claims,
+            session_constants["PRIVATE_KEY"],
+            algorithm="RS256",
+        )
+
+        # Prepare sealed session data with the slightly expired token
+        session_data = Session.seal_data(
+            {
+                "access_token": slightly_expired_token,
+                "user": session_constants["TEST_USER"],
+            },
+            session_constants["COOKIE_PASSWORD"],
+        )
+
+        # With default leeway=0, authentication should fail
+        session = Session(
+            user_management=mock_user_management,
+            client_id=session_constants["CLIENT_ID"],
+            session_data=session_data,
+            cookie_password=session_constants["COOKIE_PASSWORD"],
+            jwt_leeway=0,
+        )
+
+        response = session.authenticate()
+        assert response.authenticated is False
+        assert response.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+
+    @with_jwks_mock
+    def test_authenticate_with_slightly_expired_jwt_succeeds_with_leeway(
+        self, session_constants, mock_user_management
+    ):
+        # Create a token that's expired by 5 seconds
+        current_time = int(time.time())
+
+        # Create token claims with exp 5 seconds in the past
+        token_claims = {
+            **session_constants["TEST_TOKEN_CLAIMS"],
+            "exp": current_time - 5,  # Expired by 5 seconds
+            "iat": current_time - 60,  # Issued 60 seconds ago
+        }
+
+        slightly_expired_token = jwt.encode(
+            token_claims,
+            session_constants["PRIVATE_KEY"],
+            algorithm="RS256",
+        )
+
+        # Prepare sealed session data with the slightly expired token
+        session_data = Session.seal_data(
+            {
+                "access_token": slightly_expired_token,
+                "user": session_constants["TEST_USER"],
+            },
+            session_constants["COOKIE_PASSWORD"],
+        )
+
+        # With leeway=10, authentication should succeed
+        session = Session(
+            user_management=mock_user_management,
+            client_id=session_constants["CLIENT_ID"],
+            session_data=session_data,
+            cookie_password=session_constants["COOKIE_PASSWORD"],
+            jwt_leeway=10,  # 10 seconds leeway
+        )
+
+        response = session.authenticate()
+        assert response.authenticated is True
+        assert response.session_id == session_constants["TEST_TOKEN_CLAIMS"]["sid"]
+
+    @with_jwks_mock
+    def test_authenticate_with_significantly_expired_jwt_fails_without_leeway(
+        self, session_constants, mock_user_management
+    ):
+        # Create a token that's expired by 60 seconds
+        current_time = int(time.time())
+
+        # Create token claims with exp 60 seconds in the past
+        token_claims = {
+            **session_constants["TEST_TOKEN_CLAIMS"],
+            "exp": current_time - 60,  # Expired by 60 seconds
+            "iat": current_time - 120,  # Issued 120 seconds ago
+        }
+
+        significantly_expired_token = jwt.encode(
+            token_claims,
+            session_constants["PRIVATE_KEY"],
+            algorithm="RS256",
+        )
+
+        # Prepare sealed session data with the significantly expired token
+        session_data = Session.seal_data(
+            {
+                "access_token": significantly_expired_token,
+                "user": session_constants["TEST_USER"],
+            },
+            session_constants["COOKIE_PASSWORD"],
+        )
+
+        # With default leeway=0, authentication should fail
+        session = Session(
+            user_management=mock_user_management,
+            client_id=session_constants["CLIENT_ID"],
+            session_data=session_data,
+            cookie_password=session_constants["COOKIE_PASSWORD"],
+            jwt_leeway=0,
+        )
+
+        response = session.authenticate()
+        assert response.authenticated is False
+        assert response.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
+
+    @with_jwks_mock
+    def test_authenticate_with_significantly_expired_jwt_fails_with_insufficient_leeway(
+        self, session_constants, mock_user_management
+    ):
+        # Create a token that's expired by 60 seconds
+        current_time = int(time.time())
+
+        # Create token claims with exp 60 seconds in the past
+        token_claims = {
+            **session_constants["TEST_TOKEN_CLAIMS"],
+            "exp": current_time - 60,  # Expired by 60 seconds
+            "iat": current_time - 120,  # Issued 120 seconds ago
+        }
+
+        significantly_expired_token = jwt.encode(
+            token_claims,
+            session_constants["PRIVATE_KEY"],
+            algorithm="RS256",
+        )
+
+        # Prepare sealed session data with the significantly expired token
+        session_data = Session.seal_data(
+            {
+                "access_token": significantly_expired_token,
+                "user": session_constants["TEST_USER"],
+            },
+            session_constants["COOKIE_PASSWORD"],
+        )
+
+        # With leeway=10, authentication should still fail (not enough leeway)
+        session = Session(
+            user_management=mock_user_management,
+            client_id=session_constants["CLIENT_ID"],
+            session_data=session_data,
+            cookie_password=session_constants["COOKIE_PASSWORD"],
+            jwt_leeway=10,  # 10 seconds leeway is not enough for 60 seconds expiration
+        )
+
+        response = session.authenticate()
+        assert response.authenticated is False
+        assert response.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
 
 
 class TestAsyncSession(SessionFixtures):

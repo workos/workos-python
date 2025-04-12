@@ -891,6 +891,7 @@ class UserManagement(UserManagementModule):
             client_id=self._http_client.client_id,
             session_data=sealed_session,
             cookie_password=cookie_password,
+            jwt_leeway=self._client_configuration.jwt_leeway,
         )
 
     def get_user(self, user_id: str) -> User:
@@ -1531,6 +1532,7 @@ class AsyncUserManagement(UserManagementModule):
             client_id=self._http_client.client_id,
             session_data=sealed_session,
             cookie_password=cookie_password,
+            jwt_leeway=self._client_configuration.jwt_leeway,
         )
 
     async def get_user(self, user_id: str) -> User:

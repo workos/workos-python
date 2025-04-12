@@ -32,12 +32,14 @@ class SyncClient(BaseClient):
         client_id: Optional[str] = None,
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
+        jwt_leeway: float = 0,
     ):
         super().__init__(
             api_key=api_key,
             client_id=client_id,
             base_url=base_url,
             request_timeout=request_timeout,
+            jwt_leeway=jwt_leeway,
         )
         self._http_client = SyncHTTPClient(
             api_key=self._api_key,

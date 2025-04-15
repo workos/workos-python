@@ -209,6 +209,10 @@ class PasswordResetCreatedEvent(EventModel[PasswordResetCommon]):
     event: Literal["password_reset.created"]
 
 
+class PasswordResetSucceededEvent(EventModel[PasswordResetCommon]):
+    event: Literal["password_reset.succeeded"]
+
+
 class RoleCreatedEvent(EventModel[EventRole]):
     event: Literal["role.created"]
 
@@ -274,6 +278,7 @@ Event = Annotated[
         OrganizationMembershipDeletedEvent,
         OrganizationMembershipUpdatedEvent,
         PasswordResetCreatedEvent,
+        PasswordResetSucceededEvent,
         RoleCreatedEvent,
         RoleDeletedEvent,
         RoleUpdatedEvent,

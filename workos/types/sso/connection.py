@@ -54,7 +54,7 @@ class SamlConnectionOptions(WorkOSModel):
 class Connection(WorkOSModel):
     object: Literal["connection"]
     id: str
-    organization_id: Optional[str]
+    organization_id: Optional[str] = None
     connection_type: LiteralOrUntyped[ConnectionType]
     name: str
     state: LiteralOrUntyped[ConnectionState]

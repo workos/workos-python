@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 import jwt
 from datetime import datetime, timezone
 
@@ -396,6 +396,7 @@ class TestSession(SessionFixtures):
 
 
 class TestAsyncSession(SessionFixtures):
+    @pytest.mark.asyncio
     @with_jwks_mock
     async def test_refresh_success(self, session_constants, mock_user_management):
         session_data = AsyncSession.seal_data(
@@ -413,8 +414,8 @@ class TestAsyncSession(SessionFixtures):
             "user": session_constants["TEST_USER"],
         }
 
-        mock_user_management.authenticate_with_refresh_token.return_value = (
-            RefreshTokenAuthenticationResponse(**mock_response)
+        mock_user_management.authenticate_with_refresh_token = AsyncMock(
+            return_value=(RefreshTokenAuthenticationResponse(**mock_response))
         )
 
         session = AsyncSession(
@@ -451,6 +452,7 @@ class TestAsyncSession(SessionFixtures):
             },
         )
 
+    @pytest.mark.asyncio
     @with_jwks_mock
     async def test_refresh_success_with_aud_claim(
         self, session_constants, mock_user_management
@@ -479,8 +481,8 @@ class TestAsyncSession(SessionFixtures):
             "user": session_constants["TEST_USER"],
         }
 
-        mock_user_management.authenticate_with_refresh_token.return_value = (
-            RefreshTokenAuthenticationResponse(**mock_response)
+        mock_user_management.authenticate_with_refresh_token = AsyncMock(
+            return_value=(RefreshTokenAuthenticationResponse(**mock_response))
         )
 
         session = AsyncSession(

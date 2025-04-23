@@ -14,6 +14,8 @@ from unittest.mock import AsyncMock, MagicMock
 
 import httpx
 import pytest
+import asyncio
+from functools import wraps
 
 from tests.utils.client_configuration import ClientConfiguration
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
@@ -26,7 +28,6 @@ from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT
 
 from jwt import PyJWKClient
 from unittest.mock import Mock, patch
-from functools import wraps
 
 
 def _get_test_client_setup(
@@ -310,7 +311,19 @@ def test_auto_pagination(
 
 def with_jwks_mock(func):
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    async def async_wrapper(*args, **kwargs):
+        # Create mock JWKS client
+        mock_jwks = Mock(spec=PyJWKClient)
+        mock_signing_key = Mock()
+        mock_signing_key.key = kwargs["session_constants"]["PUBLIC_KEY"]
+        mock_jwks.get_signing_key_from_jwt.return_value = mock_signing_key
+
+        # Apply the mock
+        with patch("workos.session.PyJWKClient", return_value=mock_jwks):
+            return await func(*args, **kwargs)
+
+    @wraps(func)
+    def sync_wrapper(*args, **kwargs):
         # Create mock JWKS client
         mock_jwks = Mock(spec=PyJWKClient)
         mock_signing_key = Mock()
@@ -321,4 +334,7 @@ def with_jwks_mock(func):
         with patch("workos.session.PyJWKClient", return_value=mock_jwks):
             return func(*args, **kwargs)
 
-    return wrapper
+    # Return appropriate wrapper based on whether the function is async or not
+    if asyncio.iscoroutinefunction(func):
+        return async_wrapper
+    return sync_wrapper

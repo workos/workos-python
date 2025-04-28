@@ -28,6 +28,7 @@ class SessionModule(Protocol):
     cookie_password: str
     jwks: PyJWKClient
     jwk_algorithms: List[str]
+    jwt_leeway: float
 
     def __init__(
         self,
@@ -36,6 +37,7 @@ class SessionModule(Protocol):
         client_id: str,
         session_data: str,
         cookie_password: str,
+        jwt_leeway: float = 0,
     ) -> None:
         # If the cookie password is not provided, throw an error
         if cookie_password is None or cookie_password == "":
@@ -45,6 +47,7 @@ class SessionModule(Protocol):
         self.client_id = client_id
         self.session_data = session_data
         self.cookie_password = cookie_password
+        self.jwt_leeway = jwt_leeway
 
         self.jwks = PyJWKClient(self.user_management.get_jwks_url())
 
@@ -89,6 +92,7 @@ class SessionModule(Protocol):
             signing_key.key,
             algorithms=self.jwk_algorithms,
             options={"verify_aud": False},
+            leeway=self.jwt_leeway,
         )
 
         return AuthenticateWithSessionCookieSuccessResponse(
@@ -136,6 +140,7 @@ class SessionModule(Protocol):
                 signing_key.key,
                 algorithms=self.jwk_algorithms,
                 options={"verify_aud": False},
+                leeway=self.jwt_leeway,
             )
             return True
         except jwt.exceptions.InvalidTokenError:
@@ -167,6 +172,7 @@ class Session(SessionModule):
         client_id: str,
         session_data: str,
         cookie_password: str,
+        jwt_leeway: float = 0,
     ) -> None:
         # If the cookie password is not provided, throw an error
         if cookie_password is None or cookie_password == "":
@@ -176,6 +182,7 @@ class Session(SessionModule):
         self.client_id = client_id
         self.session_data = session_data
         self.cookie_password = cookie_password
+        self.jwt_leeway = jwt_leeway
 
         self.jwks = PyJWKClient(self.user_management.get_jwks_url())
 
@@ -228,6 +235,7 @@ class Session(SessionModule):
                 signing_key.key,
                 algorithms=self.jwk_algorithms,
                 options={"verify_aud": False},
+                leeway=self.jwt_leeway,
             )
 
             return RefreshWithSessionCookieSuccessResponse(
@@ -257,6 +265,7 @@ class AsyncSession(SessionModule):
         client_id: str,
         session_data: str,
         cookie_password: str,
+        jwt_leeway: float = 0,
     ) -> None:
         # If the cookie password is not provided, throw an error
         if cookie_password is None or cookie_password == "":
@@ -266,6 +275,7 @@ class AsyncSession(SessionModule):
         self.client_id = client_id
         self.session_data = session_data
         self.cookie_password = cookie_password
+        self.jwt_leeway = jwt_leeway
 
         self.jwks = PyJWKClient(self.user_management.get_jwks_url())
 
@@ -318,6 +328,7 @@ class AsyncSession(SessionModule):
                 signing_key.key,
                 algorithms=self.jwk_algorithms,
                 options={"verify_aud": False},
+                leeway=self.jwt_leeway,
             )
 
             return RefreshWithSessionCookieSuccessResponse(

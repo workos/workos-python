@@ -535,7 +535,9 @@ class TestFGA:
         )
         assert response.dict(exclude_none=True) == mock_query_response
 
-    def test_query_with_context(self, mock_query_response, mock_http_client_with_response):
+    def test_query_with_context(
+        self, mock_query_response, mock_http_client_with_response
+    ):
         mock_http_client_with_response(self.http_client, mock_query_response, 200)
 
         response = self.fga.query(

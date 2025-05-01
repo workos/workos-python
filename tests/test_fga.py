@@ -534,3 +534,22 @@ class TestFGA:
             warrant_token="warrant_token",
         )
         assert response.dict(exclude_none=True) == mock_query_response
+
+    def test_query_with_context(
+        self, mock_query_response, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_query_response, 200
+        )
+
+        response = self.fga.query(
+            q="select member of type user for permission:view-docs",
+            order="asc",
+            warrant_token="warrant_token",
+            context={"region": "us", "subscription": "pro"},
+        )
+
+        assert request_kwargs["url"] == "https://api.workos.test/fga/v1/query"
+        expected_full_url = "https://api.workos.test/fga/v1/query?q=select+member+of+type+user+for+permission%3Aview-docs&limit=10&order=asc&context=%7B%22region%22%3A+%22us%22%2C+%22subscription%22%3A+%22pro%22%7D"
+        assert request_kwargs["full_url"] == expected_full_url
+        assert response.dict(exclude_none=True) == mock_query_response

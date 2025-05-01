@@ -1,3 +1,4 @@
+import json
 from typing import Any, Mapping, Optional, Protocol, Sequence
 from workos.types.fga import (
     CheckOperation,
@@ -621,11 +622,16 @@ class FGA(FGAModule):
             "after": after,
             "context": context,
         }
+        parsed_list_params = {
+            key: json.dumps(value) if key == "context" and value is not None else value
+            for key, value in list_params.items()
+            if value is not None
+        }
 
         response = self._http_client.request(
             "fga/v1/query",
             method=REQUEST_METHOD_GET,
-            params=list_params,
+            params=parsed_list_params,
             headers={"Warrant-Token": warrant_token} if warrant_token else None,
         )
 

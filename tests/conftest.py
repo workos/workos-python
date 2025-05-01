@@ -11,6 +11,7 @@ from typing import (
     cast,
 )
 from unittest.mock import AsyncMock, MagicMock
+import urllib.parse
 
 import httpx
 import pytest
@@ -161,6 +162,14 @@ def capture_and_mock_http_client_request(monkeypatch):
 
         def capture_and_mock(*args, **kwargs):
             request_kwargs.update(kwargs)
+
+            # Capture full URL with encoded params while keeping original URL
+            if kwargs and "params" in kwargs and kwargs["params"]:
+                # Convert params to query string with proper URL encoding
+                query_string = urllib.parse.urlencode(
+                    kwargs["params"], doseq=True, quote_via=urllib.parse.quote_plus
+                )
+                request_kwargs.update({"full_url": f"{kwargs['url']}?{query_string}"})
 
             return httpx.Response(
                 status_code=status_code,

@@ -236,9 +236,7 @@ class TestSessionBase(SessionFixtures):
             "entitlements": ["feature_1"],
         }
 
-        with patch.object(
-            Session, "unseal_data", return_value=mock_session
-        ), patch.object(session, "_is_valid_jwt", return_value=True), patch(
+        with patch.object(Session, "unseal_data", return_value=mock_session), patch(
             "jwt.decode", return_value=mock_jwt_payload
         ), patch.object(
             session.jwks,
@@ -324,22 +322,21 @@ class TestSession(SessionFixtures):
             cookie_password=session_constants["COOKIE_PASSWORD"],
         )
 
-        with patch.object(session, "_is_valid_jwt", return_value=True) as _:
-            with patch(
-                "jwt.decode",
-                return_value={
-                    "sid": session_constants["SESSION_ID"],
-                    "org_id": session_constants["ORGANIZATION_ID"],
-                    "role": "admin",
-                    "permissions": ["read"],
-                    "entitlements": ["feature_1"],
-                },
-            ):
-                response = session.refresh()
+        with patch(
+            "jwt.decode",
+            return_value={
+                "sid": session_constants["SESSION_ID"],
+                "org_id": session_constants["ORGANIZATION_ID"],
+                "role": "admin",
+                "permissions": ["read"],
+                "entitlements": ["feature_1"],
+            },
+        ):
+            response = session.refresh()
 
-                assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
-                assert response.authenticated is True
-                assert response.user.id == session_constants["TEST_USER"]["id"]
+            assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
+            assert response.authenticated is True
+            assert response.user.id == session_constants["TEST_USER"]["id"]
 
         # Verify the refresh token was used correctly
         mock_user_management.authenticate_with_refresh_token.assert_called_once_with(
@@ -425,22 +422,21 @@ class TestAsyncSession(SessionFixtures):
             cookie_password=session_constants["COOKIE_PASSWORD"],
         )
 
-        with patch.object(session, "_is_valid_jwt", return_value=True) as _:
-            with patch(
-                "jwt.decode",
-                return_value={
-                    "sid": session_constants["SESSION_ID"],
-                    "org_id": session_constants["ORGANIZATION_ID"],
-                    "role": "admin",
-                    "permissions": ["read"],
-                    "entitlements": ["feature_1"],
-                },
-            ):
-                response = await session.refresh()
+        with patch(
+            "jwt.decode",
+            return_value={
+                "sid": session_constants["SESSION_ID"],
+                "org_id": session_constants["ORGANIZATION_ID"],
+                "role": "admin",
+                "permissions": ["read"],
+                "entitlements": ["feature_1"],
+            },
+        ):
+            response = await session.refresh()
 
-                assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
-                assert response.authenticated is True
-                assert response.user.id == session_constants["TEST_USER"]["id"]
+            assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
+            assert response.authenticated is True
+            assert response.user.id == session_constants["TEST_USER"]["id"]
 
         # Verify the refresh token was used correctly
         mock_user_management.authenticate_with_refresh_token.assert_called_once_with(

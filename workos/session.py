@@ -77,19 +77,19 @@ class SessionModule(Protocol):
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE,
             )
 
-        if not self._is_valid_jwt(session["access_token"]):
+        try:
+            signing_key = self.jwks.get_signing_key_from_jwt(session["access_token"])
+            decoded = jwt.decode(
+                session["access_token"],
+                signing_key.key,
+                algorithms=self.jwk_algorithms,
+                options={"verify_aud": False},
+            )
+        except jwt.exceptions.InvalidTokenError:
             return AuthenticateWithSessionCookieErrorResponse(
                 authenticated=False,
                 reason=AuthenticateWithSessionCookieFailureReason.INVALID_JWT,
             )
-
-        signing_key = self.jwks.get_signing_key_from_jwt(session["access_token"])
-        decoded = jwt.decode(
-            session["access_token"],
-            signing_key.key,
-            algorithms=self.jwk_algorithms,
-            options={"verify_aud": False},
-        )
 
         return AuthenticateWithSessionCookieSuccessResponse(
             authenticated=True,
@@ -127,19 +127,6 @@ class SessionModule(Protocol):
             return_to=return_to,
         )
         return str(result)
-
-    def _is_valid_jwt(self, token: str) -> bool:
-        try:
-            signing_key = self.jwks.get_signing_key_from_jwt(token)
-            jwt.decode(
-                token,
-                signing_key.key,
-                algorithms=self.jwk_algorithms,
-                options={"verify_aud": False},
-            )
-            return True
-        except jwt.exceptions.InvalidTokenError:
-            return False
 
     @staticmethod
     def seal_data(data: Dict[str, Any], key: str) -> str:

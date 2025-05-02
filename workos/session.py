@@ -80,7 +80,7 @@ class SessionModule(Protocol):
         try:
             signing_key = self.jwks.get_signing_key_from_jwt(session["access_token"])
             decoded = jwt.decode(
-                token,
+                session["access_token"],
                 signing_key.key,
                 algorithms=self.jwk_algorithms,
                 options={"verify_aud": False},

@@ -101,6 +101,89 @@ class TestErrorHandling:
             self.fga.get_resource(resource_type="test", resource_id="test")
 
 
+class TestWarnings:
+    @pytest.fixture(autouse=True)
+    def setup(self, sync_http_client_for_test):
+        self.http_client = sync_http_client_for_test
+        self.fga = FGA(http_client=self.http_client)
+
+    @pytest.fixture
+    def mock_check_warning_response(self):
+        return {
+            "result": "authorized",
+            "is_implicit": True,
+            "warnings": [
+                {
+                    "code": "missing_context_keys",
+                    "message": "Missing context keys",
+                    "keys": ["key1", "key2"],
+                }
+            ],
+        }
+
+    @pytest.fixture
+    def mock_query_warning_response(self):
+        return {
+            "object": "list",
+            "data": [
+                {
+                    "resource_type": "user",
+                    "resource_id": "richard",
+                    "relation": "member",
+                    "warrant": {
+                        "resource_type": "role",
+                        "resource_id": "developer",
+                        "relation": "member",
+                        "subject": {"resource_type": "user", "resource_id": "richard"},
+                    },
+                    "is_implicit": True,
+                }
+            ],
+            "list_metadata": {},
+            "warnings": [
+                {
+                    "code": "missing_context_keys",
+                    "message": "Missing context keys",
+                    "keys": ["key1", "key2"],
+                }
+            ],
+        }
+
+    def test_check_with_warning(
+        self, mock_check_warning_response, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(
+            self.http_client, mock_check_warning_response, 200
+        )
+
+        response = self.fga.check(
+            op="any_of",
+            checks=[
+                WarrantCheckInput(
+                    resource_type="schedule",
+                    resource_id="schedule-A1",
+                    relation="viewer",
+                    subject=SubjectInput(resource_type="user", resource_id="user-A"),
+                )
+            ],
+        )
+        assert response.dict(exclude_none=True) == mock_check_warning_response
+
+    def test_query_with_warning(
+        self, mock_query_warning_response, mock_http_client_with_response
+    ):
+        mock_http_client_with_response(
+            self.http_client, mock_query_warning_response, 200
+        )
+
+        response = self.fga.query(
+            q="select member of type user for permission:view-docs",
+            order="asc",
+            warrant_token="warrant_token",
+        )
+        assert response.dict(exclude_none=True) == mock_query_warning_response
+
+
 class TestFGA:
     @pytest.fixture(autouse=True)
     def setup(self, sync_http_client_for_test):

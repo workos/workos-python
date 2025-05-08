@@ -1,4 +1,5 @@
-from typing import Sequence, Annotated, Union, Any, Dict
+from typing import Sequence, Union, Any, Dict, Literal
+from typing_extensions import Annotated
 
 from pydantic import BeforeValidator
 from pydantic_core.core_schema import ValidationInfo
@@ -12,6 +13,7 @@ class FGABaseWarning(WorkOSModel):
 
 
 class MissingContextKeysWarning(FGABaseWarning):
+    code: Literal["missing_context_keys"]
     keys: Sequence[str]
 
 
@@ -20,6 +22,8 @@ def fga_warning_dispatch_validator(
 ) -> FGABaseWarning:
     if value.get("code") == "missing_context_keys":
         return MissingContextKeysWarning.model_validate(value)
+
+    # Fallback to the base warning model
     return FGABaseWarning.model_validate(value)
 
 

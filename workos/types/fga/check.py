@@ -3,6 +3,7 @@ from typing import Any, Literal, Mapping, Optional, Sequence, TypedDict
 from workos.types.workos_model import WorkOSModel
 from workos.typing.literals import LiteralOrUntyped
 
+from .warnings import FGAWarning
 from .warrant import Subject, SubjectInput
 
 CheckOperation = Literal["any_of", "all_of", "batch"]
@@ -44,6 +45,7 @@ class CheckResponse(WorkOSModel):
     result: LiteralOrUntyped[CheckResult]
     is_implicit: bool
     debug_info: Optional[DebugInfo] = None
+    warnings: Optional[Sequence[FGAWarning]] = None
 
     def authorized(self) -> bool:
         return self.result == "authorized"

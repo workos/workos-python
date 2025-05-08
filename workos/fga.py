@@ -11,6 +11,7 @@ from workos.types.fga import (
     WarrantWriteOperation,
     WriteWarrantResponse,
     WarrantQueryResult,
+    FGAWarning,
 )
 from workos.types.fga.list_filters import (
     AuthorizationResourceListFilters,
@@ -45,9 +46,11 @@ AuthorizationResourceTypeListResource = WorkOSListResource[
 
 WarrantListResource = WorkOSListResource[Warrant, WarrantListFilters, ListMetadata]
 
-WarrantQueryListResource = WorkOSListResource[
-    WarrantQueryResult, WarrantQueryListFilters, ListMetadata
-]
+
+class WarrantQueryListResource(
+    WorkOSListResource[WarrantQueryResult, WarrantQueryListFilters, ListMetadata]
+):
+    warnings: Optional[Sequence[FGAWarning]] = None
 
 
 class FGAModule(Protocol):
@@ -641,5 +644,6 @@ class FGA(FGAModule):
         return WarrantQueryListResource(
             list_method=self.query,
             list_args=list_params,
+            warnings=response.get("warnings"),
             **ListPage[WarrantQueryResult](**response).model_dump(),
         )

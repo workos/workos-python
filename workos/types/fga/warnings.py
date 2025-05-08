@@ -1,6 +1,7 @@
-from typing import Sequence, Union, Literal, Annotated
+from typing import Sequence, Annotated, Union, Any, Dict
 
-from pydantic import Field
+from pydantic import BeforeValidator
+from pydantic_core.core_schema import ValidationInfo
 
 from workos.types.workos_model import WorkOSModel
 
@@ -11,11 +12,18 @@ class FGABaseWarning(WorkOSModel):
 
 
 class MissingContextKeysWarning(FGABaseWarning):
-    code: Literal["missing_context_keys"]
     keys: Sequence[str]
+
+
+def fga_warning_dispatch_validator(
+    value: Dict[str, Any], info: ValidationInfo
+) -> FGABaseWarning:
+    if value.get("code") == "missing_context_keys":
+        return MissingContextKeysWarning.model_validate(value)
+    return FGABaseWarning.model_validate(value)
 
 
 FGAWarning = Annotated[
     Union[MissingContextKeysWarning, FGABaseWarning],
-    Field(discriminator='type')
+    BeforeValidator(fga_warning_dispatch_validator),
 ]

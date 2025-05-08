@@ -107,9 +107,8 @@ class TestWarnings:
         self.http_client = sync_http_client_for_test
         self.fga = FGA(http_client=self.http_client)
 
-    @pytest.fixture
-    def mock_check_warning_response(self):
-        return {
+    def test_check_with_warning(self, mock_http_client_with_response):
+        mock_response = {
             "result": "authorized",
             "is_implicit": True,
             "warnings": [
@@ -120,10 +119,23 @@ class TestWarnings:
                 }
             ],
         }
+        mock_http_client_with_response(self.http_client, mock_response, 200)
 
-    @pytest.fixture
-    def mock_query_warning_response(self):
-        return {
+        response = self.fga.check(
+            op="any_of",
+            checks=[
+                WarrantCheckInput(
+                    resource_type="schedule",
+                    resource_id="schedule-A1",
+                    relation="viewer",
+                    subject=SubjectInput(resource_type="user", resource_id="user-A"),
+                )
+            ],
+        )
+        assert response.dict(exclude_none=True) == mock_response
+
+    def test_query_with_warning(self, mock_http_client_with_response):
+        mock_response = {
             "object": "list",
             "data": [
                 {
@@ -149,12 +161,28 @@ class TestWarnings:
             ],
         }
 
-    def test_check_with_warning(
-        self, mock_check_warning_response, mock_http_client_with_response
-    ):
-        mock_http_client_with_response(
-            self.http_client, mock_check_warning_response, 200
+        mock_http_client_with_response(self.http_client, mock_response, 200)
+
+        response = self.fga.query(
+            q="select member of type user for permission:view-docs",
+            order="asc",
+            warrant_token="warrant_token",
         )
+        assert response.dict(exclude_none=True) == mock_response
+
+    def test_check_with_generic_warning(self, mock_http_client_with_response):
+        mock_response = {
+            "result": "authorized",
+            "is_implicit": True,
+            "warnings": [
+                {
+                    "code": "generic",
+                    "message": "Generic warning",
+                }
+            ],
+        }
+
+        mock_http_client_with_response(self.http_client, mock_response, 200)
 
         response = self.fga.check(
             op="any_of",
@@ -167,21 +195,7 @@ class TestWarnings:
                 )
             ],
         )
-        assert response.dict(exclude_none=True) == mock_check_warning_response
-
-    def test_query_with_warning(
-        self, mock_query_warning_response, mock_http_client_with_response
-    ):
-        mock_http_client_with_response(
-            self.http_client, mock_query_warning_response, 200
-        )
-
-        response = self.fga.query(
-            q="select member of type user for permission:view-docs",
-            order="asc",
-            warrant_token="warrant_token",
-        )
-        assert response.dict(exclude_none=True) == mock_query_warning_response
+        assert response.dict(exclude_none=True) == mock_response
 
 
 class TestFGA:

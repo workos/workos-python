@@ -9,7 +9,7 @@ class User(WorkOSModel):
 
     object: Literal["user"]
     id: str
-    email: str
+    email: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     email_verified: bool

@@ -6,6 +6,9 @@ from workos.types.workos_model import WorkOSModel
 
 class User(WorkOSModel):
     """Representation of a WorkOS User."""
+    options: Optional[str] = field(default=None)
+    userId: Optional[str] = field(default=None)
+    userId: Optional[str] = field(default=None)
 
     object: Literal["user"]
     id: str

@@ -207,6 +207,7 @@ class UserManagementModule(Protocol):
         self,
         *,
         user_id: str,
+        email: Optional[str] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
@@ -222,6 +223,7 @@ class UserManagementModule(Protocol):
             user_id (str): The User unique identifier
             first_name (str): The user's first name. (Optional)
             last_name (str): The user's last name. (Optional)
+            email (str): The user's email. (Optional)
             email_verified (bool): Whether the user's email address was previously verified. (Optional)
             password (str): The password to set for the user. (Optional)
             password_hash (str): The hashed password to set for the user, used when migrating from another user store. Mutually exclusive with password. (Optional)
@@ -949,6 +951,7 @@ class UserManagement(UserManagementModule):
         user_id: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
+        email: Optional[str] = None,
         email_verified: Optional[bool] = None,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
@@ -959,6 +962,7 @@ class UserManagement(UserManagementModule):
         json = {
             "first_name": first_name,
             "last_name": last_name,
+            "email": email,
             "email_verified": email_verified,
             "password": password,
             "password_hash": password_hash,
@@ -1574,6 +1578,7 @@ class AsyncUserManagement(UserManagementModule):
         user_id: str,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
+        email: Optional[str] = None,
         email_verified: Optional[bool] = None,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
@@ -1584,6 +1589,7 @@ class AsyncUserManagement(UserManagementModule):
         json = {
             "first_name": first_name,
             "last_name": last_name,
+            "email": email,
             "email_verified": email_verified,
             "password": password,
             "password_hash": password_hash,

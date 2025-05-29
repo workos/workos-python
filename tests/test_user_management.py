@@ -347,12 +347,14 @@ class TestUserManagementBase(UserManagementFixtures):
     def test_authorization_url_has_expected_query_params_with_provider_scopes(self):
         provider = "GoogleOAuth"
         provider_scopes = [
-              "https://www.googleapis.com/auth/calendar",
-              "https://www.googleapis.com/auth/admin.directory.group",
-            ]
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/admin.directory.group",
+        ]
         redirect_uri = "https://localhost/auth/callback"
         authorization_url = self.user_management.get_authorization_url(
-            provider=provider, provider_scopes=provider_scopes, redirect_uri=redirect_uri
+            provider=provider,
+            provider_scopes=provider_scopes,
+            redirect_uri=redirect_uri,
         )
 
         parsed_url = urlparse(authorization_url)

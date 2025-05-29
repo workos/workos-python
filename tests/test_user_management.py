@@ -344,6 +344,29 @@ class TestUserManagementBase(UserManagementFixtures):
             "provider": "authkit",
         }
 
+    def test_authorization_url_has_expected_query_params_with_provider_scopes(self):
+        provider = "GoogleOAuth"
+        provider_scopes = [
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/admin.directory.group",
+        ]
+        redirect_uri = "https://localhost/auth/callback"
+        authorization_url = self.user_management.get_authorization_url(
+            provider=provider,
+            provider_scopes=provider_scopes,
+            redirect_uri=redirect_uri,
+        )
+
+        parsed_url = urlparse(authorization_url)
+        assert parsed_url.path == "/user_management/authorize"
+        assert dict(parse_qsl(str(parsed_url.query))) == {
+            "provider": provider,
+            "provider_scopes": ",".join(provider_scopes),
+            "client_id": self.http_client.client_id,
+            "redirect_uri": redirect_uri,
+            "response_type": RESPONSE_TYPE_CODE,
+        }
+
     def test_get_jwks_url(self):
         expected = "%ssso/jwks/%s" % (
             self.http_client.base_url,

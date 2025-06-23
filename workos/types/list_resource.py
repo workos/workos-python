@@ -33,6 +33,7 @@ from workos.types.mfa import AuthenticationFactor
 from workos.types.organizations import Organization
 from workos.types.sso import ConnectionWithDomains
 from workos.types.user_management import Invitation, OrganizationMembership, User
+from workos.types.vault import VaultObject
 from workos.types.workos_model import WorkOSModel
 from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT
 
@@ -51,6 +52,7 @@ ListableResource = TypeVar(
     AuthorizationResource,
     AuthorizationResourceType,
     User,
+    VaultObject,
     Warrant,
     WarrantQueryResult,
 )

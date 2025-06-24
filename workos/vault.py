@@ -423,7 +423,7 @@ class Vault(VaultModule):
     def _encode_uint32(self, value: int) -> bytes:
         return struct.pack(">I", value)  # Big-endian unsigned int (4 bytes)
 
-    def _decode(self, encrypted_data_b64: str) -> dict:
+    def _decode(self, encrypted_data_b64: str) -> dict[str, bytes]:
         """
         This function extracts IV, tag, keyBlobLength, keyBlob, and ciphertext
         from a base64-encoded payload. You must define this according to your encoding format.

@@ -269,13 +269,6 @@ class TestVault:
         ):
             self.vault.update_object(object_id="", value="test-value")
 
-    def test_update_object_empty_value(self):
-        with pytest.raises(
-            ValueError,
-            match="Incomplete arguments: 'object_id' is a required argument",
-        ):
-            self.vault.update_object(object_id="", value="updated-value")
-
     def test_update_object_none_object_id(self):
         with pytest.raises(
             ValueError,
@@ -316,7 +309,7 @@ class TestVault:
         )
 
         assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/vault/v1/data_keys")
+        assert request_kwargs["url"].endswith("/vault/v1/keys/data-key")
         assert request_kwargs["json"]["key_context"] == {"key": "test-key"}
         assert data_key_pair.data_key.id == "key_01234567890abcdef"
         assert data_key_pair.encrypted_keys == "ZW5jcnlwdGVkX2tleXNfZGF0YQ=="
@@ -331,7 +324,7 @@ class TestVault:
         data_key = self.vault.decrypt_data_key(keys="ZW5jcnlwdGVkX2tleXNfZGF0YQ==")
 
         assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/vault/v1/data_keys/decrypt")
+        assert request_kwargs["url"].endswith("/vault/v1/keys/decrypt")
         assert request_kwargs["json"]["keys"] == "ZW5jcnlwdGVkX2tleXNfZGF0YQ=="
         assert data_key.id == "key_01234567890abcdef"
         assert data_key.key == "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY="
@@ -351,7 +344,7 @@ class TestVault:
 
         # Verify create_data_key was called
         assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/vault/v1/data_keys")
+        assert request_kwargs["url"].endswith("/vault/v1/keys/data-key")
         assert request_kwargs["json"]["key_context"] == {"key": "test-key"}
 
         # Verify we got encrypted data back

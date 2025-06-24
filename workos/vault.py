@@ -346,7 +346,7 @@ class Vault(VaultModule):
         }
 
         response = self._http_client.request(
-            "vault/v1/data_keys",
+            "vault/v1/keys/data-key",
             method=REQUEST_METHOD_POST,
             json=request_data,
         )
@@ -363,7 +363,7 @@ class Vault(VaultModule):
         }
 
         response = self._http_client.request(
-            "vault/v1/data_keys/decrypt",
+            "vault/v1/keys/decrypt",
             method=REQUEST_METHOD_POST,
             json=request_data,
         )

@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import Optional, Dict
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
@@ -7,7 +7,7 @@ from cryptography.hazmat.backends import default_backend
 class CryptoProvider:
     def encrypt(
         self, plaintext: bytes, key: bytes, iv: bytes, aad: Optional[bytes]
-    ) -> dict[str, bytes]:
+    ) -> Dict[str, bytes]:
         encryptor = Cipher(
             algorithms.AES(key), modes.GCM(iv), backend=default_backend()
         ).encryptor()

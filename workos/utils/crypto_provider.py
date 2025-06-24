@@ -5,7 +5,7 @@ from cryptography.hazmat.backends import default_backend
 
 
 class CryptoProvider:
-    def encrypt(self, plaintext: bytes, key: bytes, iv: bytes, aad: Optional[bytes]):
+    def encrypt(self, plaintext: bytes, key: bytes, iv: bytes, aad: Optional[bytes]) -> dict[str, bytes]:
         encryptor = Cipher(
             algorithms.AES(key),
             modes.GCM(iv),

@@ -59,13 +59,19 @@ class TestVault:
 
     @pytest.fixture
     def mock_data_key(self):
-        return MockDataKey(
-            "key_01234567890abcdef", "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY="
-        ).dict()
+        return {
+            "id": "key_01234567890abcdef",
+            "data_key": "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
+        }
 
     @pytest.fixture
     def mock_data_key_pair(self):
-        return MockDataKeyPair().dict()
+        return {
+            "context": {"key": "test-key"},
+            "id": "key_01234567890abcdef",
+            "data_key": "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
+            "encrypted_keys": "ZW5jcnlwdGVkX2tleXNfZGF0YQ==",
+        }
 
     def test_read_object_success(
         self, mock_vault_object, capture_and_mock_http_client_request
@@ -186,7 +192,7 @@ class TestVault:
         assert request_kwargs["url"].endswith("/vault/v1/kv")
         assert request_kwargs["json"]["name"] == "test-secret"
         assert request_kwargs["json"]["value"] == "secret-value"
-        assert request_kwargs["json"]["key_context"] == {"key": "test-key"}
+        assert request_kwargs["json"]["context"] == KeyContext({"key": "test-key"})
         assert vault_object.id == "vault_01234567890abcdef"
         assert vault_object.name == "test-secret"
         assert vault_object.value == "secret-value"
@@ -310,7 +316,7 @@ class TestVault:
 
         assert request_kwargs["method"] == "post"
         assert request_kwargs["url"].endswith("/vault/v1/keys/data-key")
-        assert request_kwargs["json"]["key_context"] == {"key": "test-key"}
+        assert request_kwargs["json"]["context"] == KeyContext({"key": "test-key"})
         assert data_key_pair.data_key.id == "key_01234567890abcdef"
         assert data_key_pair.encrypted_keys == "ZW5jcnlwdGVkX2tleXNfZGF0YQ=="
 
@@ -345,7 +351,7 @@ class TestVault:
         # Verify create_data_key was called
         assert request_kwargs["method"] == "post"
         assert request_kwargs["url"].endswith("/vault/v1/keys/data-key")
-        assert request_kwargs["json"]["key_context"] == {"key": "test-key"}
+        assert request_kwargs["json"]["context"] == KeyContext({"key": "test-key"})
 
         # Verify we got encrypted data back
         assert isinstance(encrypted_data, str)
@@ -371,7 +377,12 @@ class TestVault:
 
     def test_decrypt_success(self, mock_data_key, capture_and_mock_http_client_request):
         # First encrypt some data to get a valid encrypted payload
-        mock_data_key_pair = MockDataKeyPair().dict()
+        mock_data_key_pair = {
+            "context": {"key": "test-key"},
+            "id": "key_01234567890abcdef",
+            "data_key": "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
+            "encrypted_keys": "ZW5jcnlwdGVkX2tleXNfZGF0YQ==",
+        }
 
         # Mock create_data_key for encryption
         capture_and_mock_http_client_request(self.http_client, mock_data_key_pair, 200)
@@ -393,7 +404,12 @@ class TestVault:
         self, mock_data_key, capture_and_mock_http_client_request
     ):
         # First encrypt some data with associated data
-        mock_data_key_pair = MockDataKeyPair().dict()
+        mock_data_key_pair = {
+            "context": {"key": "test-key"},
+            "id": "key_01234567890abcdef",
+            "data_key": "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
+            "encrypted_keys": "ZW5jcnlwdGVkX2tleXNfZGF0YQ==",
+        }
 
         # Mock create_data_key for encryption
         capture_and_mock_http_client_request(self.http_client, mock_data_key_pair, 200)

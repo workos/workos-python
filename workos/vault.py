@@ -1,8 +1,8 @@
 import base64
 import struct
-from typing import Dict, Optional, Protocol, Sequence
+from typing import Dict, Optional, Protocol, Sequence, Tuple
 from workos.types.vault import VaultObject, ObjectVersion
-from workos.types.vault.key import DataKey, DataKeyPair, KeyContext
+from workos.types.vault.key import DataKey, DataKeyPair, KeyContext, DecodedKeys
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -285,7 +285,7 @@ class Vault(VaultModule):
         request_data = {
             "name": name,
             "value": value,
-            "key_context": key_context.root,
+            "context": key_context,
         }
 
         response = self._http_client.request(
@@ -341,7 +341,7 @@ class Vault(VaultModule):
 
     def create_data_key(self, *, key_context: KeyContext) -> DataKeyPair:
         request_data = {
-            "key_context": key_context.root,
+            "context": key_context,
         }
 
         response = self._http_client.request(
@@ -350,7 +350,13 @@ class Vault(VaultModule):
             json=request_data,
         )
 
-        return DataKeyPair.model_validate(response)
+        return DataKeyPair.model_validate(
+            {
+                "context": response["context"],
+                "data_key": {"id": response["id"], "key": response["data_key"]},
+                "encrypted_keys": response["encrypted_keys"],
+            }
+        )
 
     def decrypt_data_key(
         self,
@@ -367,7 +373,9 @@ class Vault(VaultModule):
             json=request_data,
         )
 
-        return DataKey.model_validate(response)
+        return DataKey.model_validate(
+            {"id": response["id"], "key": response["data_key"]}
+        )
 
     def encrypt(
         self, *, data: str, context: KeyContext, associated_data: Optional[str] = None
@@ -376,7 +384,7 @@ class Vault(VaultModule):
 
         key = self._base64_to_bytes(key_pair.data_key.key)
         key_blob = self._base64_to_bytes(key_pair.encrypted_keys)
-        prefix_len_buffer = self._encode_uint32(len(key_blob))
+        prefix_len_buffer = self._encode_u32(len(key_blob))
         aad_buffer = associated_data.encode("utf-8") if associated_data else None
         iv = self._crypto_provider.random_bytes(12)
 
@@ -398,16 +406,16 @@ class Vault(VaultModule):
         self, *, encrypted_data: str, associated_data: Optional[str] = None
     ) -> str:
         decoded = self._decode(encrypted_data)
-        data_key = self.decrypt_data_key(keys=self._bytes_to_base64(decoded["keys"]))
+        data_key = self.decrypt_data_key(keys=decoded.keys)
 
         key = self._base64_to_bytes(data_key.key)
         aad_buffer = associated_data.encode("utf-8") if associated_data else None
 
         decrypted_bytes = self._crypto_provider.decrypt(
-            ciphertext=decoded["ciphertext"],
+            ciphertext=decoded.ciphertext,
             key=key,
-            iv=decoded["iv"],
-            tag=decoded["tag"],
+            iv=decoded.iv,
+            tag=decoded.tag,
             aad=aad_buffer,
         )
 
@@ -419,30 +427,77 @@ class Vault(VaultModule):
     def _bytes_to_base64(self, data: bytes) -> str:
         return base64.b64encode(data).decode("utf-8")
 
-    def _encode_uint32(self, value: int) -> bytes:
-        return struct.pack(">I", value)  # Big-endian unsigned int (4 bytes)
+    def _encode_u32(self, value: int) -> bytes:
+        """
+        Encode a 32-bit unsigned integer as LEB128.
 
-    def _decode(self, encrypted_data_b64: str) -> Dict[str, bytes]:
+        Returns:
+            bytes: LEB128-encoded representation of the input value.
+        """
+        if value < 0 or value > 0xFFFFFFFF:
+            raise ValueError("Value must be a 32-bit unsigned integer")
+
+        encoded = bytearray()
+        while True:
+            byte = value & 0x7F
+            value >>= 7
+            if value != 0:
+                byte |= 0x80  # Set continuation bit
+            encoded.append(byte)
+            if value == 0:
+                break
+
+        return bytes(encoded)
+
+    def _decode(self, encrypted_data_b64: str) -> DecodedKeys:
         """
         This function extracts IV, tag, keyBlobLength, keyBlob, and ciphertext
-        from a base64-encoded payload. You must define this according to your encoding format.
-        Assumes format: [IV][TAG][4B Length][keyBlob][ciphertext]
+        from a base64-encoded payload.
+        Encoding format: [IV][TAG][4B Length][keyBlob][ciphertext]
         """
-        raw = base64.b64decode(encrypted_data_b64)
-        offset = 0
+        try:
+            payload = base64.b64decode(encrypted_data_b64)
+        except Exception as e:
+            raise ValueError("Base64 decoding failed") from e
 
-        iv = raw[offset : offset + 12]
-        offset += 12
+        iv = payload[0:12]
+        tag = payload[12:28]
 
-        tag = raw[offset : offset + 16]
-        offset += 16
+        try:
+            key_len, leb_len = self._decode_u32(payload[28:])
+        except Exception as e:
+            raise ValueError("Failed to decode key length") from e
 
-        key_len = int.from_bytes(raw[offset : offset + 4], byteorder="big")
-        offset += 4
+        keys_index = 28 + leb_len
+        keys_end = keys_index + key_len
+        keys_slice = payload[keys_index:keys_end]
+        keys = base64.b64encode(keys_slice).decode("utf-8")
+        ciphertext = payload[keys_end:]
 
-        key_blob = raw[offset : offset + key_len]
-        offset += key_len
+        return DecodedKeys(iv=iv, tag=tag, keys=keys, ciphertext=ciphertext)
 
-        ciphertext = raw[offset:]
+    def _decode_u32(self, buf: bytes) -> Tuple[int, int]:
+        """
+        Decode an unsigned LEB128-encoded 32-bit integer from bytes.
 
-        return {"iv": iv, "tag": tag, "keys": key_blob, "ciphertext": ciphertext}
+        Returns:
+            (value, length_consumed)
+
+        Raises:
+            ValueError if decoding fails or overflows.
+        """
+        res = 0
+        bit = 0
+
+        for i, b in enumerate(buf):
+            if i > 4:
+                raise ValueError("LEB128 integer overflow (was more than 4 bytes)")
+
+            res |= (b & 0x7F) << (7 * bit)
+
+            if (b & 0x80) == 0:
+                return res, i + 1
+
+            bit += 1
+
+        raise ValueError("LEB128 integer not found")

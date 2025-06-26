@@ -1,6 +1,5 @@
 import base64
-import struct
-from typing import Dict, Optional, Protocol, Sequence, Tuple
+from typing import Optional, Protocol, Sequence, Tuple
 from workos.types.vault import VaultObject, ObjectVersion
 from workos.types.vault.key import DataKey, DataKeyPair, KeyContext, DecodedKeys
 from workos.types.list_resource import (
@@ -215,7 +214,8 @@ class Vault(VaultModule):
         object_id: str,
     ) -> VaultObject:
         if not object_id:
-            raise ValueError("Incomplete arguments: 'object_id' is a required argument")
+            raise ValueError(
+                "Incomplete arguments: 'object_id' is a required argument")
 
         response = self._http_client.request(
             RequestHelper.build_parameterized_url(
@@ -304,7 +304,8 @@ class Vault(VaultModule):
         version_check: Optional[str] = None,
     ) -> VaultObject:
         if not object_id:
-            raise ValueError("Incomplete arguments: 'object_id' is a required argument")
+            raise ValueError(
+                "Incomplete arguments: 'object_id' is a required argument")
 
         request_data = {
             "value": value,
@@ -329,7 +330,8 @@ class Vault(VaultModule):
         object_id: str,
     ) -> None:
         if not object_id:
-            raise ValueError("Incomplete arguments: 'object_id' is a required argument")
+            raise ValueError(
+                "Incomplete arguments: 'object_id' is a required argument")
 
         self._http_client.request(
             RequestHelper.build_parameterized_url(
@@ -385,7 +387,8 @@ class Vault(VaultModule):
         key = self._base64_to_bytes(key_pair.data_key.key)
         key_blob = self._base64_to_bytes(key_pair.encrypted_keys)
         prefix_len_buffer = self._encode_u32(len(key_blob))
-        aad_buffer = associated_data.encode("utf-8") if associated_data else None
+        aad_buffer = associated_data.encode(
+            "utf-8") if associated_data else None
         iv = self._crypto_provider.random_bytes(12)
 
         result = self._crypto_provider.encrypt(
@@ -409,7 +412,8 @@ class Vault(VaultModule):
         data_key = self.decrypt_data_key(keys=decoded.keys)
 
         key = self._base64_to_bytes(data_key.key)
-        aad_buffer = associated_data.encode("utf-8") if associated_data else None
+        aad_buffer = associated_data.encode(
+            "utf-8") if associated_data else None
 
         decrypted_bytes = self._crypto_provider.decrypt(
             ciphertext=decoded.ciphertext,
@@ -491,7 +495,8 @@ class Vault(VaultModule):
 
         for i, b in enumerate(buf):
             if i > 4:
-                raise ValueError("LEB128 integer overflow (was more than 4 bytes)")
+                raise ValueError(
+                    "LEB128 integer overflow (was more than 4 bytes)")
 
             res |= (b & 0x7F) << (7 * bit)
 

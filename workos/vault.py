@@ -1,6 +1,6 @@
 import base64
 from typing import Optional, Protocol, Sequence, Tuple
-from workos.types.vault import VaultObject, ObjectVersion
+from workos.types.vault import VaultObject, ObjectVersion, ObjectDigest, ObjectMetadata
 from workos.types.vault.key import DataKey, DataKeyPair, KeyContext, DecodedKeys
 from workos.types.list_resource import (
     ListArgs,
@@ -22,7 +22,7 @@ from workos.utils.crypto_provider import CryptoProvider
 
 DEFAULT_RESPONSE_LIMIT = DEFAULT_LIST_RESPONSE_LIMIT
 
-VaultObjectList = WorkOSListResource[VaultObject, ListArgs, ListMetadata]
+VaultObjectList = WorkOSListResource[ObjectDigest, ListArgs, ListMetadata]
 
 
 class VaultModule(Protocol):
@@ -79,7 +79,7 @@ class VaultModule(Protocol):
         name: str,
         value: str,
         key_context: KeyContext,
-    ) -> VaultObject:
+    ) -> ObjectMetadata:
         """
         Create a new Vault object.
 
@@ -245,10 +245,14 @@ class Vault(VaultModule):
             params=list_params,
         )
 
+        # Ensure object field is present
+        if "object" not in response:
+            response["object"] = "list"
+
         return VaultObjectList(
             list_method=self.list_objects,
             list_args=list_params,
-            **ListPage[VaultObject](**response).model_dump(),
+            **ListPage[ObjectDigest](**response).model_dump(),
         )
 
     def list_object_versions(
@@ -275,7 +279,7 @@ class Vault(VaultModule):
         name: str,
         value: str,
         key_context: KeyContext,
-    ) -> VaultObject:
+    ) -> ObjectMetadata:
         if not name or not value:
             raise ValueError(
                 "Incomplete arguments: 'name' and 'value' are required arguments"
@@ -284,7 +288,7 @@ class Vault(VaultModule):
         request_data = {
             "name": name,
             "value": value,
-            "context": key_context,
+            "key_context": key_context,
         }
 
         response = self._http_client.request(
@@ -293,7 +297,7 @@ class Vault(VaultModule):
             json=request_data,
         )
 
-        return VaultObject.model_validate(response)
+        return ObjectMetadata.model_validate(response)
 
     def update_object(
         self,

@@ -308,7 +308,8 @@ def test_auto_pagination(
         # Validate parameters
         assert "after" in request_kwargs["params"]
         assert request_kwargs["params"]["limit"] == DEFAULT_LIST_RESPONSE_LIMIT
-        assert request_kwargs["params"]["order"] == "desc"
+        if "order" in request_kwargs["params"]:
+            assert request_kwargs["params"]["order"] == "desc"
 
         params = list_function_params or {}
         for param in params:

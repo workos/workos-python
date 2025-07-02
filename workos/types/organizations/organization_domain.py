@@ -14,5 +14,5 @@ class OrganizationDomain(WorkOSModel):
     verification_strategy: Optional[LiteralOrUntyped[Literal["manual", "dns"]]] = None
     verification_token: Optional[str] = None
     verification_prefix: Optional[str] = None
-    created_at: str = None
-    updated_at: str = None
+    created_at: str
+    updated_at: str

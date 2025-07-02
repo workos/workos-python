@@ -8,11 +8,6 @@ from workos.types.vault import (
     ObjectVersion,
     KeyContext,
 )
-from workos.types.vault.key import (
-    DataKey,
-    DataKeyPair,
-    KeyContext as VaultKeyContext,
-)
 
 
 class MockVaultObject(VaultObject):

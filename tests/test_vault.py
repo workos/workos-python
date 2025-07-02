@@ -350,7 +350,7 @@ class TestVault:
         plaintext = "Hello, World!"
         context = KeyContext({"key": "test-key"})
 
-        encrypted_data = self.vault.encrypt(data=plaintext, context=context)
+        encrypted_data = self.vault.encrypt(data=plaintext, key_context=context)
 
         # Verify create_data_key was called
         assert request_kwargs["method"] == "post"
@@ -372,7 +372,7 @@ class TestVault:
         associated_data = "additional-context"
 
         encrypted_data = self.vault.encrypt(
-            data=plaintext, context=context, associated_data=associated_data
+            data=plaintext, key_context=context, associated_data=associated_data
         )
 
         # Verify we got encrypted data back
@@ -393,7 +393,7 @@ class TestVault:
 
         plaintext = "Hello, World!"
         context = KeyContext({"key": "test-key"})
-        encrypted_data = self.vault.encrypt(data=plaintext, context=context)
+        encrypted_data = self.vault.encrypt(data=plaintext, key_context=context)
 
         # Now mock decrypt_data_key for decryption
         capture_and_mock_http_client_request(self.http_client, mock_data_key, 200)
@@ -422,7 +422,7 @@ class TestVault:
         context = KeyContext({"key": "test-key"})
         associated_data = "additional-context"
         encrypted_data = self.vault.encrypt(
-            data=plaintext, context=context, associated_data=associated_data
+            data=plaintext, key_context=context, associated_data=associated_data
         )
 
         # Now mock decrypt_data_key for decryption
@@ -448,7 +448,7 @@ class TestVault:
         context = KeyContext({"env": "test", "service": "vault"})
 
         # Encrypt the data
-        encrypted_data = self.vault.encrypt(data=plaintext, context=context)
+        encrypted_data = self.vault.encrypt(data=plaintext, key_context=context)
 
         # Mock decrypt_data_key for decryption
         capture_and_mock_http_client_request(self.http_client, mock_data_key, 200)

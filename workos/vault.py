@@ -28,7 +28,7 @@ VaultObjectList = WorkOSListResource[ObjectDigest, ListArgs, ListMetadata]
 class VaultModule(Protocol):
     def read_object(self, *, object_id: str) -> VaultObject:
         """
-        Get a Vault object with the decrypted value.
+        Get a Vault object with the value decrypted.
 
         Kwargs:
             object_id (str): The unique identifier for the object.
@@ -81,12 +81,12 @@ class VaultModule(Protocol):
         key_context: KeyContext,
     ) -> ObjectMetadata:
         """
-        Create a new Vault object.
+        Create a new Vault encrypted object.
 
         Kwargs:
             name (str): The name of the object.
             value (str): The value to encrypt and store.
-            key_context (KeyContext): A set of key-value dictionary pairs that determines which root keys to use
+            key_context (KeyContext): A set of key-value dictionary pairs that determines which root keys to use when encrypting data.
 
         Returns:
             VaultObject: The created vault object.
@@ -119,7 +119,7 @@ class VaultModule(Protocol):
         object_id: str,
     ) -> None:
         """
-        Permanently delete a Vault encrypted object.
+        Permanently delete a Vault encrypted object. Warning: this cannont be undone.
 
         Kwargs:
             object_id (str): The unique identifier for the object.
@@ -132,7 +132,7 @@ class VaultModule(Protocol):
         The encrypted data key MUST be stored by the application, as it cannot be retrieved after generation.
 
         Kwargs:
-            key_context (KeyContext): A set of key-value dictionary pairs that determines which root keys to use
+            key_context (KeyContext): A set of key-value dictionary pairs that determines which root keys to use when encrypting data.
         """
         ...
 
@@ -157,7 +157,11 @@ class VaultModule(Protocol):
         ...
 
     def encrypt(
-        self, *, data: str, context: KeyContext, associated_data: Optional[str] = None
+        self,
+        *,
+        data: str,
+        key_context: KeyContext,
+        associated_data: Optional[str] = None,
     ) -> str:
         """
         Encrypt data locally using AES-GCM with a data key derived from the provided context.
@@ -168,7 +172,7 @@ class VaultModule(Protocol):
 
         Kwargs:
             data (str): The plaintext data to encrypt.
-            context (KeyContext): A set of key-value dictionary pairs that determines which root keys to use for key derivation.
+            key_context (KeyContext): A set of key-value dictionary pairs that determines which root keys to use when encrypting data.
             associated_data (str): Additional authenticated data (AAD) that will be authenticated but not encrypted. (Optional)
 
         Returns:
@@ -382,9 +386,13 @@ class Vault(VaultModule):
         )
 
     def encrypt(
-        self, *, data: str, context: KeyContext, associated_data: Optional[str] = None
+        self,
+        *,
+        data: str,
+        key_context: KeyContext,
+        associated_data: Optional[str] = None,
     ) -> str:
-        key_pair = self.create_data_key(key_context=context)
+        key_pair = self.create_data_key(key_context=key_context)
 
         key = self._base64_to_bytes(key_pair.data_key.key)
         key_blob = self._base64_to_bytes(key_pair.encrypted_keys)

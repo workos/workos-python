@@ -199,6 +199,9 @@ class TestOrganizations:
             "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "verification_strategy": "dns",
             "verification_token": "token",
+            "created_at": datetime.datetime.now().isoformat(),
+            "updated_at": datetime.datetime.now().isoformat(),
+            "verification_prefix": None,
         }
 
     def test_delete_organization(self, capture_and_mock_http_client_request):

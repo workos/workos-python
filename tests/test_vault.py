@@ -2,8 +2,8 @@ import pytest
 from tests.utils.fixtures.mock_vault_object import (
     MockVaultObject,
     MockObjectVersion,
-    MockDataKey,
-    MockDataKeyPair,
+    MockObjectDigest,
+    MockObjectMetadata,
 )
 from tests.utils.list_resource import list_response_of
 from tests.utils.syncify import syncify
@@ -24,6 +24,14 @@ class TestVault:
         ).dict()
 
     @pytest.fixture
+    def mock_object_digest(self):
+        return MockObjectDigest("vault_01234567890abcdef", "test-secret").dict()
+
+    @pytest.fixture
+    def mock_object_metadata(self):
+        return MockObjectMetadata("vault_01234567890abcdef").dict()
+
+    @pytest.fixture
     def mock_vault_object_no_value(self):
         mock_obj = MockVaultObject("vault_01234567890abcdef", "test-secret")
         mock_obj.value = None
@@ -32,8 +40,7 @@ class TestVault:
     @pytest.fixture
     def mock_vault_objects_list(self):
         vault_objects = [
-            MockVaultObject(f"vault_{i}", f"secret-{i}", f"value-{i}").dict()
-            for i in range(5)
+            MockObjectDigest(f"vault_{i}", f"secret-{i}").dict() for i in range(5)
         ]
         return {
             "data": vault_objects,
@@ -44,8 +51,7 @@ class TestVault:
     @pytest.fixture
     def mock_vault_objects_multiple_pages(self):
         vault_objects = [
-            MockVaultObject(f"vault_{i}", f"secret-{i}", f"value-{i}").dict()
-            for i in range(25)
+            MockObjectDigest(f"vault_{i}", f"secret-{i}").dict() for i in range(25)
         ]
         return list_response_of(data=vault_objects)
 
@@ -176,13 +182,13 @@ class TestVault:
         assert len(versions) == 0
 
     def test_create_object_success(
-        self, mock_vault_object, capture_and_mock_http_client_request
+        self, mock_object_metadata, capture_and_mock_http_client_request
     ):
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_vault_object, 200
+            self.http_client, mock_object_metadata, 200
         )
 
-        vault_object = self.vault.create_object(
+        object_metadata = self.vault.create_object(
             name="test-secret",
             value="secret-value",
             key_context=KeyContext({"key": "test-key"}),
@@ -192,10 +198,8 @@ class TestVault:
         assert request_kwargs["url"].endswith("/vault/v1/kv")
         assert request_kwargs["json"]["name"] == "test-secret"
         assert request_kwargs["json"]["value"] == "secret-value"
-        assert request_kwargs["json"]["context"] == KeyContext({"key": "test-key"})
-        assert vault_object.id == "vault_01234567890abcdef"
-        assert vault_object.name == "test-secret"
-        assert vault_object.value == "secret-value"
+        assert request_kwargs["json"]["key_context"] == KeyContext({"key": "test-key"})
+        assert object_metadata.id == "vault_01234567890abcdef"
 
     def test_create_object_missing_name(self):
         with pytest.raises(

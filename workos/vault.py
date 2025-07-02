@@ -246,13 +246,14 @@ class Vault(VaultModule):
         )
 
         # Ensure object field is present
-        if "object" not in response:
-            response["object"] = "list"
+        response_dict = dict(response)
+        if "object" not in response_dict:
+            response_dict["object"] = "list"
 
         return VaultObjectList(
             list_method=self.list_objects,
             list_args=list_params,
-            **ListPage[ObjectDigest](**response).model_dump(),
+            **ListPage[ObjectDigest](**response_dict).model_dump(),
         )
 
     def list_object_versions(

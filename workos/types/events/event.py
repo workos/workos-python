@@ -192,6 +192,15 @@ class OrganizationDomainVerificationFailedEvent(
 class OrganizationDomainVerifiedEvent(EventModel[OrganizationDomain]):
     event: Literal["organization_domain.verified"]
 
+class OrganizationDomainCreatedEvent(EventModel[OrganizationDomain]):
+    event: Literal["organization_domain.created"]
+
+class OrganizationDomainUpdatedEvent(EventModel[OrganizationDomain]):
+    event: Literal["organization_domain.updated"]
+
+class OrganizationDomainDeletedEvent(EventModel[OrganizationDomain]):
+    event: Literal["organization_domain.deleted"]
+
 
 class OrganizationMembershipCreatedEvent(EventModel[OrganizationMembership]):
     event: Literal["organization_membership.created"]
@@ -272,6 +281,9 @@ Event = Annotated[
         OrganizationCreatedEvent,
         OrganizationDeletedEvent,
         OrganizationUpdatedEvent,
+        OrganizationDomainCreatedEvent,
+        OrganizationDomainDeletedEvent,
+        OrganizationDomainUpdatedEvent,
         OrganizationDomainVerificationFailedEvent,
         OrganizationDomainVerifiedEvent,
         OrganizationMembershipCreatedEvent,

@@ -38,6 +38,8 @@ class TestOrganizations:
                     "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
                     "verification_strategy": "dns",
                     "verification_token": "token",
+                    "created_at": datetime.datetime.now().isoformat(),
+                    "updated_at": datetime.datetime.now().isoformat(),
                 }
             ],
         }
@@ -189,15 +191,17 @@ class TestOrganizations:
         }
         assert updated_organization.id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert updated_organization.name == "Example Organization"
-        assert updated_organization.domains[0].dict() == {
-            "domain": "example.io",
-            "object": "organization_domain",
-            "id": "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
-            "state": "verified",
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            "verification_strategy": "dns",
-            "verification_token": "token",
-        }
+        domain = updated_organization.domains[0]
+        assert domain.domain == "example.io"
+        assert domain.object == "organization_domain"
+        assert domain.id == "org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8"
+        assert domain.state == "verified"
+        assert domain.organization_id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        assert domain.verification_strategy == "dns"
+        assert domain.verification_token == "token"
+        assert domain.verification_prefix is None
+        assert isinstance(domain.created_at, str)
+        assert isinstance(domain.updated_at, str)
 
     def test_delete_organization(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(

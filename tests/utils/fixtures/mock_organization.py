@@ -20,6 +20,8 @@ class MockOrganization(Organization):
                     id="org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8",
                     organization_id="org_12345",
                     domain="example.io",
+                    created_at=now,
+                    updated_at=now,
                 )
             ],
             metadata={"key": "value"},

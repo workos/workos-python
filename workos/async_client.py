@@ -14,6 +14,7 @@ from workos.user_management import AsyncUserManagement
 from workos.utils.http_client import AsyncHTTPClient
 from workos.webhooks import WebhooksModule
 from workos.widgets import WidgetsModule
+from workos.vault import VaultModule
 
 
 class AsyncClient(BaseClient):
@@ -111,4 +112,10 @@ class AsyncClient(BaseClient):
     def widgets(self) -> WidgetsModule:
         raise NotImplementedError(
             "Widgets APIs are not yet supported in the async client."
+        )
+
+    @property
+    def vault(self) -> VaultModule:
+        raise NotImplementedError(
+            "Vault APIs are not yet supported in the async client."
         )

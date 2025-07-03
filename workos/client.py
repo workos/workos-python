@@ -14,6 +14,7 @@ from workos.events import Events
 from workos.user_management import UserManagement
 from workos.utils.http_client import SyncHTTPClient
 from workos.widgets import Widgets
+from workos.vault import Vault
 
 
 class SyncClient(BaseClient):
@@ -116,3 +117,9 @@ class SyncClient(BaseClient):
         if not getattr(self, "_widgets", None):
             self._widgets = Widgets(http_client=self._http_client)
         return self._widgets
+
+    @property
+    def vault(self) -> Vault:
+        if not getattr(self, "_vault", None):
+            self._vault = Vault(http_client=self._http_client)
+        return self._vault

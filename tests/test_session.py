@@ -2,9 +2,10 @@ import pytest
 from unittest.mock import AsyncMock, Mock, patch
 import jwt
 from datetime import datetime, timezone
+import concurrent.futures
 
 from tests.conftest import with_jwks_mock
-from workos.session import AsyncSession, Session
+from workos.session import AsyncSession, Session, _get_jwks_client
 from workos.types.user_management.authentication_response import (
     RefreshTokenAuthenticationResponse,
 )
@@ -20,6 +21,12 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 
 
 class SessionFixtures:
+    @pytest.fixture(autouse=True)
+    def clear_jwks_cache(self):
+        _get_jwks_client.cache_clear()
+        yield
+        _get_jwks_client.cache_clear()
+
     @pytest.fixture
     def session_constants(self):
         # Generate RSA key pair for testing
@@ -491,3 +498,43 @@ class TestAsyncSession(SessionFixtures):
         response = await session.refresh()
 
         assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
+
+
+class TestJWKSCaching:
+    def test_jwks_client_caching_same_url(self):
+        url = "https://api.workos.com/sso/jwks/test"
+
+        client1 = _get_jwks_client(url)
+        client2 = _get_jwks_client(url)
+
+        # Should be the exact same instance
+        assert client1 is client2
+        assert id(client1) == id(client2)
+
+    def test_jwks_client_caching_different_urls(self):
+        url1 = "https://api.workos.com/sso/jwks/client1"
+        url2 = "https://api.workos.com/sso/jwks/client2"
+
+        client1 = _get_jwks_client(url1)
+        client2 = _get_jwks_client(url2)
+
+        # Should be different instances
+        assert client1 is not client2
+        assert id(client1) != id(client2)
+
+    def test_jwks_cache_thread_safety(self):
+        url = "https://api.workos.com/sso/jwks/thread_test"
+        clients = []
+
+        def get_client():
+            return _get_jwks_client(url)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [executor.submit(get_client) for _ in range(10)]
+            clients = [future.result() for future in futures]
+
+        first_client = clients[0]
+        for client in clients[1:]:
+            assert (
+                client is first_client
+            ), "All concurrent calls should return the same instance"

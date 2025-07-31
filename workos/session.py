@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Protocol
 
+from functools import lru_cache
 import json
 from typing import Any, Dict, Optional, Union, cast
 import jwt
@@ -19,6 +20,11 @@ from workos.typing.sync_or_async import SyncOrAsync
 if TYPE_CHECKING:
     from workos.user_management import UserManagementModule
     from workos.user_management import AsyncUserManagement, UserManagement
+
+
+@lru_cache(maxsize=None)
+def _get_jwks_client(jwks_url: str) -> PyJWKClient:
+    return PyJWKClient(jwks_url)
 
 
 class SessionModule(Protocol):
@@ -46,7 +52,7 @@ class SessionModule(Protocol):
         self.session_data = session_data
         self.cookie_password = cookie_password
 
-        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+        self.jwks = _get_jwks_client(self.user_management.get_jwks_url())
 
         # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
         self.jwk_algorithms = ["RS256"]
@@ -164,7 +170,7 @@ class Session(SessionModule):
         self.session_data = session_data
         self.cookie_password = cookie_password
 
-        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+        self.jwks = _get_jwks_client(self.user_management.get_jwks_url())
 
         # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
         self.jwk_algorithms = ["RS256"]
@@ -254,7 +260,7 @@ class AsyncSession(SessionModule):
         self.session_data = session_data
         self.cookie_password = cookie_password
 
-        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+        self.jwks = _get_jwks_client(self.user_management.get_jwks_url())
 
         # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
         self.jwk_algorithms = ["RS256"]

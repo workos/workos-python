@@ -21,6 +21,24 @@ if TYPE_CHECKING:
     from workos.user_management import AsyncUserManagement, UserManagement
 
 
+class _JWKSClientCache:
+    def __init__(self) -> None:
+        self._clients: Dict[str, PyJWKClient] = {}
+
+    def get_client(self, jwks_url: str) -> PyJWKClient:
+        if jwks_url not in self._clients:
+            self._clients[jwks_url] = PyJWKClient(jwks_url)
+        return self._clients[jwks_url]
+
+
+# Module-level cache instance
+_jwks_cache = _JWKSClientCache()
+
+
+def _get_jwks_client(jwks_url: str) -> PyJWKClient:
+    return _jwks_cache.get_client(jwks_url)
+
+
 class SessionModule(Protocol):
     user_management: "UserManagementModule"
     client_id: str
@@ -46,7 +64,7 @@ class SessionModule(Protocol):
         self.session_data = session_data
         self.cookie_password = cookie_password
 
-        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+        self.jwks = _get_jwks_client(self.user_management.get_jwks_url())
 
         # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
         self.jwk_algorithms = ["RS256"]
@@ -164,7 +182,7 @@ class Session(SessionModule):
         self.session_data = session_data
         self.cookie_password = cookie_password
 
-        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+        self.jwks = _get_jwks_client(self.user_management.get_jwks_url())
 
         # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
         self.jwk_algorithms = ["RS256"]
@@ -254,7 +272,7 @@ class AsyncSession(SessionModule):
         self.session_data = session_data
         self.cookie_password = cookie_password
 
-        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+        self.jwks = _get_jwks_client(self.user_management.get_jwks_url())
 
         # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
         self.jwk_algorithms = ["RS256"]

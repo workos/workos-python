@@ -4,7 +4,7 @@ import jwt
 from datetime import datetime, timezone
 
 from tests.conftest import with_jwks_mock
-from workos.session import AsyncSession, Session
+from workos.session import AsyncSession, Session, _get_jwks_client, _jwks_cache
 from workos.types.user_management.authentication_response import (
     RefreshTokenAuthenticationResponse,
 )
@@ -20,6 +20,12 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 
 
 class SessionFixtures:
+    @pytest.fixture(autouse=True)
+    def clear_jwks_cache(self):
+        _jwks_cache._clients.clear()
+        yield
+        _jwks_cache._clients.clear()
+
     @pytest.fixture
     def session_constants(self):
         # Generate RSA key pair for testing
@@ -491,3 +497,26 @@ class TestAsyncSession(SessionFixtures):
         response = await session.refresh()
 
         assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
+
+
+class TestJWKSCaching:
+    def test_jwks_client_caching_same_url(self):
+        url = "https://api.workos.com/sso/jwks/test"
+
+        client1 = _get_jwks_client(url)
+        client2 = _get_jwks_client(url)
+
+        # Should be the exact same instance
+        assert client1 is client2
+        assert id(client1) == id(client2)
+
+    def test_jwks_client_caching_different_urls(self):
+        url1 = "https://api.workos.com/sso/jwks/client1"
+        url2 = "https://api.workos.com/sso/jwks/client2"
+
+        client1 = _get_jwks_client(url1)
+        client2 = _get_jwks_client(url2)
+
+        # Should be different instances
+        assert client1 is not client2
+        assert id(client1) != id(client2)

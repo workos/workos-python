@@ -1,4 +1,3 @@
-import datetime
 from typing import Union
 import pytest
 from tests.utils.syncify import syncify
@@ -25,8 +24,8 @@ class TestOrganizationDomains:
             "verification_strategy": "dns",
             "verification_token": "workos_example_verification_token_12345",
             "verification_prefix": "_workos-challenge",
-            "created_at": datetime.datetime.now().isoformat(),
-            "updated_at": datetime.datetime.now().isoformat(),
+            "created_at": "2023-01-01T12:00:00.000Z",
+            "updated_at": "2023-01-01T12:00:00.000Z",
         }
 
     @pytest.fixture
@@ -40,8 +39,8 @@ class TestOrganizationDomains:
             "verification_strategy": "dns",
             "verification_token": "workos_example_verification_token_12345",
             "verification_prefix": "_workos-challenge",
-            "created_at": datetime.datetime.now().isoformat(),
-            "updated_at": datetime.datetime.now().isoformat(),
+            "created_at": "2023-01-01T12:00:00.000Z",
+            "updated_at": "2023-01-01T12:00:00.000Z",
         }
 
     def test_get_organization_domain(

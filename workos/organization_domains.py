@@ -1,4 +1,4 @@
-from typing import Optional, Protocol
+from typing import Protocol
 from workos._client_configuration import ClientConfiguration
 from workos.types.organization_domains import OrganizationDomain
 from workos.typing.sync_or_async import SyncOrAsync
@@ -7,7 +7,6 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_DELETE,
     REQUEST_METHOD_GET,
     REQUEST_METHOD_POST,
-    RequestHelper,
 )
 
 

@@ -128,19 +128,6 @@ class OrganizationsModule(Protocol):
         """
         ...
 
-    def delete_organization_domain(
-        self, organization_domain_id: str
-    ) -> SyncOrAsync[None]:
-        """Deletes a single Organization Domain
-
-        Args:
-            organization_domain_id (str): Organization Domain unique identifier
-
-        Returns:
-            None
-        """
-        ...
-
 
 class Organizations(OrganizationsModule):
     _http_client: SyncHTTPClient
@@ -249,12 +236,6 @@ class Organizations(OrganizationsModule):
     def delete_organization(self, organization_id: str) -> None:
         self._http_client.request(
             f"organizations/{organization_id}",
-            method=REQUEST_METHOD_DELETE,
-        )
-
-    def delete_organization_domain(self, organization_domain_id: str) -> None:
-        self._http_client.request(
-            f"organization_domains/{organization_domain_id}",
             method=REQUEST_METHOD_DELETE,
         )
 
@@ -374,12 +355,6 @@ class AsyncOrganizations(OrganizationsModule):
     async def delete_organization(self, organization_id: str) -> None:
         await self._http_client.request(
             f"organizations/{organization_id}",
-            method=REQUEST_METHOD_DELETE,
-        )
-
-    async def delete_organization_domain(self, organization_domain_id: str) -> None:
-        await self._http_client.request(
-            f"organization_domains/{organization_domain_id}",
             method=REQUEST_METHOD_DELETE,
         )
 

@@ -218,25 +218,6 @@ class TestOrganizations:
         assert request_kwargs["method"] == "delete"
         assert response is None
 
-    def test_delete_organization_domain(self, capture_and_mock_http_client_request):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client,
-            204,
-            headers={"content-type": "text/plain; charset=utf-8"},
-        )
-
-        response = syncify(
-            self.organizations.delete_organization_domain(
-                organization_domain_id="org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8"
-            )
-        )
-
-        assert request_kwargs["url"].endswith(
-            "/organization_domains/org_domain_01EHT88Z8WZEFWYPM6EC9BX2R8"
-        )
-        assert request_kwargs["method"] == "delete"
-        assert response is None
-
     def test_list_organizations_auto_pagination_for_single_page(
         self,
         mock_organizations_single_page_response,

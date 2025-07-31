@@ -7,6 +7,7 @@ from workos.events import AsyncEvents
 from workos.fga import FGAModule
 from workos.mfa import MFAModule
 from workos.organizations import AsyncOrganizations
+from workos.organization_domains import AsyncOrganizationDomains
 from workos.passwordless import PasswordlessModule
 from workos.portal import PortalModule
 from workos.sso import AsyncSSO
@@ -79,6 +80,14 @@ class AsyncClient(BaseClient):
         if not getattr(self, "_organizations", None):
             self._organizations = AsyncOrganizations(self._http_client)
         return self._organizations
+
+    @property
+    def organization_domains(self) -> AsyncOrganizationDomains:
+        if not getattr(self, "_organization_domains", None):
+            self._organization_domains = AsyncOrganizationDomains(
+                http_client=self._http_client, client_configuration=self
+            )
+        return self._organization_domains
 
     @property
     def passwordless(self) -> PasswordlessModule:

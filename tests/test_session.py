@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 import concurrent.futures
 
 from tests.conftest import with_jwks_mock
-from workos.session import AsyncSession, Session, _get_jwks_client, _jwks_cache
+from workos.session import AsyncSession, Session, _get_jwks_client
 from workos.types.user_management.authentication_response import (
     RefreshTokenAuthenticationResponse,
 )
@@ -23,9 +23,9 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 class SessionFixtures:
     @pytest.fixture(autouse=True)
     def clear_jwks_cache(self):
-        _jwks_cache.clear()
+        _get_jwks_client.cache_clear()
         yield
-        _jwks_cache.clear()
+        _get_jwks_client.cache_clear()
 
     @pytest.fixture
     def session_constants(self):
@@ -521,7 +521,7 @@ class TestJWKSCaching:
         # Should be different instances
         assert client1 is not client2
         assert id(client1) != id(client2)
-    
+
     def test_jwks_cache_thread_safety(self):
         url = "https://api.workos.com/sso/jwks/thread_test"
         clients = []

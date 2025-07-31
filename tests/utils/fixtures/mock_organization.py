@@ -1,7 +1,7 @@
 import datetime
 
 from workos.types.organizations import Organization
-from workos.types.organizations.organization_domain import OrganizationDomain
+from workos.types.organization_domains import OrganizationDomain
 
 
 class MockOrganization(Organization):

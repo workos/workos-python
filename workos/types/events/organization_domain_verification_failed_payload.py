@@ -1,6 +1,6 @@
 from typing import Literal
 from workos.types.workos_model import WorkOSModel
-from workos.types.organizations.organization_domain import OrganizationDomain
+from workos.types.organization_domains import OrganizationDomain
 from workos.typing.literals import LiteralOrUntyped
 
 

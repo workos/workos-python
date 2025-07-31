@@ -5,6 +5,7 @@ from workos.audit_logs import AuditLogs
 from workos.directory_sync import DirectorySync
 from workos.fga import FGA
 from workos.organizations import Organizations
+from workos.organization_domains import OrganizationDomains
 from workos.passwordless import Passwordless
 from workos.portal import Portal
 from workos.sso import SSO
@@ -79,6 +80,14 @@ class SyncClient(BaseClient):
         if not getattr(self, "_organizations", None):
             self._organizations = Organizations(self._http_client)
         return self._organizations
+
+    @property
+    def organization_domains(self) -> OrganizationDomains:
+        if not getattr(self, "_organization_domains", None):
+            self._organization_domains = OrganizationDomains(
+                http_client=self._http_client, client_configuration=self
+            )
+        return self._organization_domains
 
     @property
     def passwordless(self) -> Passwordless:

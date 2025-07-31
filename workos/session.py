@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Protocol
 
 import json
+import threading
 from typing import Any, Dict, Optional, Union, cast
 import jwt
 from jwt import PyJWKClient
@@ -24,11 +25,28 @@ if TYPE_CHECKING:
 class _JWKSClientCache:
     def __init__(self) -> None:
         self._clients: Dict[str, PyJWKClient] = {}
+        self._lock = threading.Lock()
 
     def get_client(self, jwks_url: str) -> PyJWKClient:
-        if jwks_url not in self._clients:
-            self._clients[jwks_url] = PyJWKClient(jwks_url)
-        return self._clients[jwks_url]
+        if jwks_url in self._clients:
+            return self._clients[jwks_url]
+
+        with self._lock:
+            if jwks_url in self._clients:
+                return self._clients[jwks_url]
+
+            client = PyJWKClient(jwks_url)
+            self._clients[jwks_url] = client
+            return client
+
+    def clear(self) -> None:
+        """Intended primarily for test cleanup and manual cache invalidation.
+        
+        Warning: If called concurrently with get_client(), some newly created
+        clients might be lost due to lock acquisition ordering.
+        """
+        with self._lock:
+            self._clients.clear()
 
 
 # Module-level cache instance

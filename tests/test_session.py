@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import AsyncMock, Mock, patch
 import jwt
 from datetime import datetime, timezone
+import concurrent.futures
 
 from tests.conftest import with_jwks_mock
 from workos.session import AsyncSession, Session, _get_jwks_client, _jwks_cache
@@ -22,9 +23,9 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 class SessionFixtures:
     @pytest.fixture(autouse=True)
     def clear_jwks_cache(self):
-        _jwks_cache._clients.clear()
+        _jwks_cache.clear()
         yield
-        _jwks_cache._clients.clear()
+        _jwks_cache.clear()
 
     @pytest.fixture
     def session_constants(self):
@@ -520,3 +521,20 @@ class TestJWKSCaching:
         # Should be different instances
         assert client1 is not client2
         assert id(client1) != id(client2)
+    
+    def test_jwks_cache_thread_safety(self):
+        url = "https://api.workos.com/sso/jwks/thread_test"
+        clients = []
+
+        def get_client():
+            return _get_jwks_client(url)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [executor.submit(get_client) for _ in range(10)]
+            clients = [future.result() for future in futures]
+
+        first_client = clients[0]
+        for client in clients[1:]:
+            assert (
+                client is first_client
+            ), "All concurrent calls should return the same instance"

@@ -8,7 +8,9 @@ from workos.organization_domains import AsyncOrganizationDomains, OrganizationDo
 @pytest.mark.sync_and_async(OrganizationDomains, AsyncOrganizationDomains)
 class TestOrganizationDomains:
     @pytest.fixture(autouse=True)
-    def setup(self, module_instance: Union[OrganizationDomains, AsyncOrganizationDomains]):
+    def setup(
+        self, module_instance: Union[OrganizationDomains, AsyncOrganizationDomains]
+    ):
         self.http_client = module_instance._http_client
         self.organization_domains = module_instance
 

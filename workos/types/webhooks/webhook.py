@@ -167,8 +167,16 @@ class EmailVerificationCreatedWebhook(WebhookModel[EmailVerificationCommon]):
     event: Literal["email_verification.created"]
 
 
+class InvitationAcceptedWebhook(WebhookModel[InvitationCommon]):
+    event: Literal["invitation.accepted"]
+
+
 class InvitationCreatedWebhook(WebhookModel[InvitationCommon]):
     event: Literal["invitation.created"]
+
+
+class InvitationRevokedWebhook(WebhookModel[InvitationCommon]):
+    event: Literal["invitation.revoked"]
 
 
 class MagicAuthCreatedWebhook(WebhookModel[MagicAuthCommon]):
@@ -271,7 +279,9 @@ Webhook = Annotated[
         DirectoryUserAddedToGroupWebhook,
         DirectoryUserRemovedFromGroupWebhook,
         EmailVerificationCreatedWebhook,
+        InvitationAcceptedWebhook,
         InvitationCreatedWebhook,
+        InvitationRevokedWebhook,
         MagicAuthCreatedWebhook,
         OrganizationCreatedWebhook,
         OrganizationDeletedWebhook,

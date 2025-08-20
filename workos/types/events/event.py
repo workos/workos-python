@@ -163,8 +163,16 @@ class EmailVerificationCreatedEvent(EventModel[EmailVerificationCommon]):
     event: Literal["email_verification.created"]
 
 
+class InvitationAcceptedEvent(EventModel[InvitationCommon]):
+    event: Literal["invitation.accepted"]
+
+
 class InvitationCreatedEvent(EventModel[InvitationCommon]):
     event: Literal["invitation.created"]
+
+
+class InvitationRevokedEvent(EventModel[InvitationCommon]):
+    event: Literal["invitation.revoked"]
 
 
 class MagicAuthCreatedEvent(EventModel[MagicAuthCommon]):
@@ -279,7 +287,9 @@ Event = Annotated[
         DirectoryUserAddedToGroupEvent,
         DirectoryUserRemovedFromGroupEvent,
         EmailVerificationCreatedEvent,
+        InvitationAcceptedEvent,
         InvitationCreatedEvent,
+        InvitationRevokedEvent,
         MagicAuthCreatedEvent,
         OrganizationCreatedEvent,
         OrganizationDeletedEvent,

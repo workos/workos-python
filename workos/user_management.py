@@ -285,7 +285,7 @@ class UserManagementModule(Protocol):
 
         Note:
           role_slug and role_slugs are mutually exclusive. If neither is provided,
-          the user will be assigned the organization's default role.
+          the role(s) of the membership will remain unchanged.
 
         Returns:
             OrganizationMembership: Updated OrganizationMembership response from WorkOS.

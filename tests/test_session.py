@@ -285,7 +285,7 @@ class TestSessionBase(SessionFixtures):
                     "org_id": session_constants["ORGANIZATION_ID"],
                     "role": "admin",
                     "roles": ["admin", "member"],
-                    "permissions": ["read"],
+                    "permissions": ["read", "write"],
                     "entitlements": ["feature_1"],
                     "exp": int(datetime.now(timezone.utc).timestamp()) + 3600,
                     "iat": int(datetime.now(timezone.utc).timestamp()),
@@ -310,7 +310,7 @@ class TestSessionBase(SessionFixtures):
             "org_id": session_constants["ORGANIZATION_ID"],
             "role": "admin",
             "roles": ["admin", "member"],
-            "permissions": ["read"],
+            "permissions": ["read", "write"],
             "entitlements": ["feature_1"],
         }
 
@@ -329,7 +329,7 @@ class TestSessionBase(SessionFixtures):
             assert response.organization_id == session_constants["ORGANIZATION_ID"]
             assert response.role == "admin"
             assert response.roles == ["admin", "member"]
-            assert response.permissions == ["read"]
+            assert response.permissions == ["read", "write"]
             assert response.entitlements == ["feature_1"]
             assert response.user.id == session_constants["USER_ID"]
             assert response.impersonator is None

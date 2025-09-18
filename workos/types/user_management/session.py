@@ -1,6 +1,8 @@
-from typing import Optional, Sequence, TypedDict, Union
 from enum import Enum
+from typing import Optional, Sequence, TypedDict, Union
+
 from typing_extensions import Literal
+
 from workos.types.user_management.impersonator import Impersonator
 from workos.types.user_management.user import User
 from workos.types.workos_model import WorkOSModel
@@ -17,6 +19,7 @@ class AuthenticateWithSessionCookieSuccessResponse(WorkOSModel):
     session_id: str
     organization_id: Optional[str] = None
     role: Optional[str] = None
+    roles: Optional[Sequence[str]] = None
     permissions: Optional[Sequence[str]] = None
     user: User
     impersonator: Optional[Impersonator] = None

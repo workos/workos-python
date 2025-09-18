@@ -245,15 +245,24 @@ class UserManagementModule(Protocol):
         ...
 
     def create_organization_membership(
-        self, *, user_id: str, organization_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        user_id: str,
+        organization_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> SyncOrAsync[OrganizationMembership]:
         """Create a new OrganizationMembership for the given Organization and User.
 
         Kwargs:
-            user_id: The Unique ID of the User.
-            organization_id: The Unique ID of the Organization to which the user belongs to.
-            role_slug: The Unique Slug of the Role to which to grant to this membership.
-                If no slug is passed in, the default role will be granted.(Optional)
+            user_id: The unique ID of the User.
+            organization_id: The unique ID of the Organization to which the user belongs to.
+            role_slug: The unique slug of the role to grant to this membership.(Optional)
+            role_slugs: The unique slugs of the roles to grant to this membership.(Optional)
+
+        Note:
+          role_slug and role_slugs are mutually exclusive. If neither is provided,
+          the user will be assigned the organization's default role.
 
         Returns:
             OrganizationMembership: Created OrganizationMembership response from WorkOS.
@@ -261,14 +270,22 @@ class UserManagementModule(Protocol):
         ...
 
     def update_organization_membership(
-        self, *, organization_membership_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        organization_membership_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> SyncOrAsync[OrganizationMembership]:
         """Updates an OrganizationMembership for the given id.
 
         Args:
             organization_membership_id (str):  The unique ID of the Organization Membership.
-            role_slug: The Unique Slug of the Role to which to grant to this membership.
-                If no slug is passed in, it will not be changed (Optional)
+            role_slug: The unique slug of the role to grant to this membership.(Optional)
+            role_slugs: The unique slugs of the roles to grant to this membership.(Optional)
+
+        Note:
+          role_slug and role_slugs are mutually exclusive. If neither is provided,
+          the role(s) of the membership will remain unchanged.
 
         Returns:
             OrganizationMembership: Updated OrganizationMembership response from WorkOS.
@@ -988,12 +1005,18 @@ class UserManagement(UserManagementModule):
         )
 
     def create_organization_membership(
-        self, *, user_id: str, organization_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        user_id: str,
+        organization_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> OrganizationMembership:
         json = {
             "user_id": user_id,
             "organization_id": organization_id,
             "role_slug": role_slug,
+            "role_slugs": role_slugs,
         }
 
         response = self._http_client.request(
@@ -1003,10 +1026,15 @@ class UserManagement(UserManagementModule):
         return OrganizationMembership.model_validate(response)
 
     def update_organization_membership(
-        self, *, organization_membership_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        organization_membership_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> OrganizationMembership:
         json = {
             "role_slug": role_slug,
+            "role_slugs": role_slugs,
         }
 
         response = self._http_client.request(
@@ -1614,12 +1642,18 @@ class AsyncUserManagement(UserManagementModule):
         )
 
     async def create_organization_membership(
-        self, *, user_id: str, organization_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        user_id: str,
+        organization_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> OrganizationMembership:
         json = {
             "user_id": user_id,
             "organization_id": organization_id,
             "role_slug": role_slug,
+            "role_slugs": role_slugs,
         }
 
         response = await self._http_client.request(
@@ -1629,10 +1663,15 @@ class AsyncUserManagement(UserManagementModule):
         return OrganizationMembership.model_validate(response)
 
     async def update_organization_membership(
-        self, *, organization_membership_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        organization_membership_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> OrganizationMembership:
         json = {
             "role_slug": role_slug,
+            "role_slugs": role_slugs,
         }
 
         response = await self._http_client.request(

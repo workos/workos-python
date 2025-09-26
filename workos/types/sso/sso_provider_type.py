@@ -6,4 +6,5 @@ SsoProviderType = Literal[
     "GitHubOAuth",
     "GoogleOAuth",
     "MicrosoftOAuth",
+    "SalesforceOAuth",
 ]

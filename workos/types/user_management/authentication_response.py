@@ -13,6 +13,7 @@ AuthenticationMethod = Literal[
     "GitHubOAuth",
     "GoogleOAuth",
     "MicrosoftOAuth",
+    "SalesforceOAuth",
     "MagicAuth",
     "Impersonation",
 ]

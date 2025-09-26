@@ -396,7 +396,7 @@ class UserManagementModule(Protocol):
             organization_id (str): The organization_id connection selector is used to initiate SSO for an Organization.
                 The value of this parameter should be a WorkOS Organization ID. (Optional)
             provider (UserManagementProviderType): The provider connection selector is used to initiate SSO using an OAuth-compatible provider.
-                Currently, the supported values for provider are 'authkit', 'AppleOAuth', 'GitHubOAuth, 'GoogleOAuth', and 'MicrosoftOAuth'. (Optional)
+                Currently, the supported values for provider are 'authkit', 'AppleOAuth', 'GitHubOAuth, 'GoogleOAuth', 'MicrosoftOAuth', and 'SalesforceOAuth'. (Optional)
             provider_scopes (Sequence[str]): Can be used to specify additional scopes that will be requested when initiating SSO using an OAuth provider. (Optional)
             domain_hint (str): Can be used to pre-fill the domain field when initiating authentication with Microsoft OAuth,
                 or with a GoogleSAML connection type. (Optional)

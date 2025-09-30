@@ -7,6 +7,7 @@ OAuthTokensProvidersType = Literal[
     "GitHubOauth",
     "GoogleOauth",
     "MicrosoftOauth",
+    "SalesforceOauth",
 ]
 
 

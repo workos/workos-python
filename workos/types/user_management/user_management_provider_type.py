@@ -2,5 +2,10 @@ from typing import Literal
 
 
 UserManagementProviderType = Literal[
-    "authkit", "AppleOAuth", "GitHubOAuth", "GoogleOAuth", "MicrosoftOAuth"
+    "authkit",
+    "AppleOAuth",
+    "GitHubOAuth",
+    "GoogleOAuth",
+    "MicrosoftOAuth",
+    "SalesforceOAuth",
 ]

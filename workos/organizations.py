@@ -1,5 +1,7 @@
 from typing import Optional, Protocol, Sequence
 
+from workos.types.feature_flags import FeatureFlag
+from workos.types.feature_flags.list_filters import FeatureFlagListFilters
 from workos.types.metadata import Metadata
 from workos.types.organizations.domain_data_input import DomainDataInput
 from workos.types.organizations.list_filters import OrganizationListFilters
@@ -22,6 +24,10 @@ ORGANIZATIONS_PATH = "organizations"
 
 OrganizationsListResource = WorkOSListResource[
     Organization, OrganizationListFilters, ListMetadata
+]
+
+FeatureFlagsListResource = WorkOSListResource[
+    FeatureFlag, FeatureFlagListFilters, ListMetadata
 ]
 
 
@@ -125,6 +131,29 @@ class OrganizationsModule(Protocol):
 
         Returns:
             None
+        """
+        ...
+
+    def list_feature_flags(
+        self,
+        organization_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[FeatureFlagsListResource]:
+        """Retrieve a list of feature flags for an organization
+
+        Args:
+            organization_id (str): Organization's unique identifier
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Feature Flag ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Feature Flag ID. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
+
+        Returns:
+            FeatureFlagsListResource: Feature flags list response from WorkOS.
         """
         ...
 
@@ -247,6 +276,34 @@ class Organizations(OrganizationsModule):
 
         return RoleList.model_validate(response)
 
+    def list_feature_flags(
+        self,
+        organization_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> FeatureFlagsListResource:
+        list_params: FeatureFlagListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = self._http_client.request(
+            f"organizations/{organization_id}/feature-flags",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[FeatureFlag, FeatureFlagListFilters, ListMetadata](
+            list_method=self.list_feature_flags,
+            list_args=list_params,
+            **ListPage[FeatureFlag](**response).model_dump(),
+        )
+
 
 class AsyncOrganizations(OrganizationsModule):
     _http_client: AsyncHTTPClient
@@ -365,3 +422,31 @@ class AsyncOrganizations(OrganizationsModule):
         )
 
         return RoleList.model_validate(response)
+
+    async def list_feature_flags(
+        self,
+        organization_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> FeatureFlagsListResource:
+        list_params: FeatureFlagListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            f"organizations/{organization_id}/feature-flags",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[FeatureFlag, FeatureFlagListFilters, ListMetadata](
+            list_method=self.list_feature_flags,
+            list_args=list_params,
+            **ListPage[FeatureFlag](**response).model_dump(),
+        )

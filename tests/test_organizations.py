@@ -2,6 +2,7 @@ import datetime
 from typing import Union
 import pytest
 from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
+from tests.utils.fixtures.mock_feature_flag import MockFeatureFlag
 from tests.utils.fixtures.mock_organization import MockOrganization
 from tests.utils.fixtures.mock_role import MockRole
 from tests.utils.list_resource import list_response_of
@@ -75,6 +76,14 @@ class TestOrganizations:
         return {
             "data": [MockRole(id=str(i)).dict() for i in range(10)],
             "object": "list",
+        }
+
+    @pytest.fixture
+    def mock_feature_flags(self):
+        return {
+            "data": [MockFeatureFlag(id=f"flag_{str(i)}").dict() for i in range(2)],
+            "object": "list",
+            "list_metadata": {"before": None, "after": None},
         }
 
     def test_list_organizations(
@@ -263,4 +272,29 @@ class TestOrganizations:
         assert (
             list(map(to_dict, organization_roles_response.data))
             == mock_organization_roles["data"]
+        )
+
+    def test_list_feature_flags(
+        self, mock_feature_flags, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_feature_flags, 200
+        )
+
+        feature_flags_response = syncify(
+            self.organizations.list_feature_flags(
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T"
+            )
+        )
+
+        def to_dict(x):
+            return x.dict()
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith(
+            "/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/feature-flags"
+        )
+        assert (
+            list(map(to_dict, feature_flags_response.data))
+            == mock_feature_flags["data"]
         )

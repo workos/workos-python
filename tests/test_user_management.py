@@ -494,7 +494,9 @@ class TestUserManagement(UserManagementFixtures):
             "password": "password",
         }
 
-    def test_update_user_with_locale(self, mock_user, capture_and_mock_http_client_request):
+    def test_update_user_with_locale(
+        self, mock_user, capture_and_mock_http_client_request
+    ):
         request_kwargs = capture_and_mock_http_client_request(
             self.http_client, mock_user, 200
         )

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, List, Protocol
 from functools import lru_cache
 import json
 from typing import Any, Dict, Optional, Union, cast
+
 import jwt
 from jwt import PyJWKClient
 from cryptography.fernet import Fernet
@@ -107,6 +108,7 @@ class SessionModule(Protocol):
             entitlements=decoded.get("entitlements", None),
             user=session["user"],
             impersonator=session.get("impersonator", None),
+            feature_flags=decoded.get("feature_flags", None),
         )
 
     def refresh(
@@ -235,6 +237,7 @@ class Session(SessionModule):
                 entitlements=decoded.get("entitlements", None),
                 user=auth_response.user,
                 impersonator=auth_response.impersonator,
+                feature_flags=decoded.get("feature_flags", None),
             )
         except Exception as e:
             return RefreshWithSessionCookieErrorResponse(
@@ -326,6 +329,7 @@ class AsyncSession(SessionModule):
                 entitlements=decoded.get("entitlements", None),
                 user=auth_response.user,
                 impersonator=auth_response.impersonator,
+                feature_flags=decoded.get("feature_flags", None),
             )
         except Exception as e:
             return RefreshWithSessionCookieErrorResponse(

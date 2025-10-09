@@ -19,6 +19,7 @@ class AuthenticateWithCodeParameters(AuthenticateWithBaseParameters):
     code_verifier: Union[str, None]
     grant_type: Literal["authorization_code"]
     session: Union[SessionConfig, None]
+    invitation_token: Union[str, None]
 
 
 class AuthenticateWithMagicAuthParameters(AuthenticateWithBaseParameters):

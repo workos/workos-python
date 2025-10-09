@@ -488,6 +488,7 @@ class UserManagementModule(Protocol):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
+        invitation_token: Optional[str] = None,
     ) -> SyncOrAsync[AuthenticationResponse]:
         """Authenticates an OAuth user or a user that is logging in through SSO.
 
@@ -498,6 +499,7 @@ class UserManagementModule(Protocol):
                 url as part of the PKCE flow. This parameter is required when the client secret is not present. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+            invitation_token (str): The token of an Invitation, if required. (Optional)
 
         Returns:
             AuthenticationResponse: Authentication response from WorkOS.
@@ -1166,6 +1168,7 @@ class UserManagement(UserManagementModule):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
+        invitation_token: Optional[str] = None,
     ) -> AuthKitAuthenticationResponse:
         if (
             session is not None
@@ -1181,6 +1184,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
             "code_verifier": code_verifier,
             "session": session,
+            "invitation_token": invitation_token,
         }
 
         return self._authenticate_with(
@@ -1807,6 +1811,7 @@ class AsyncUserManagement(UserManagementModule):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
+        invitation_token: Optional[str] = None,
     ) -> AuthKitAuthenticationResponse:
         if (
             session is not None
@@ -1822,6 +1827,7 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
             "code_verifier": code_verifier,
             "session": session,
+            "invitation_token": invitation_token,
         }
 
         return await self._authenticate_with(

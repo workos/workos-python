@@ -24,6 +24,7 @@ class AuthenticateWithSessionCookieSuccessResponse(WorkOSModel):
     user: User
     impersonator: Optional[Impersonator] = None
     entitlements: Optional[Sequence[str]] = None
+    feature_flags: Optional[Sequence[str]] = None
 
 
 class AuthenticateWithSessionCookieErrorResponse(WorkOSModel):

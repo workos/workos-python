@@ -718,6 +718,37 @@ class TestUserManagement(UserManagementFixtures):
             "grant_type": "authorization_code",
         }
 
+    def test_authenticate_with_code_with_invitation_token(
+        self,
+        capture_and_mock_http_client_request,
+        mock_auth_response,
+        base_authentication_params,
+    ):
+        params = {
+            "code": "test_code",
+            "code_verifier": "test_code_verifier",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+            "ip_address": "192.0.0.1",
+            "invitation_token": "invitation_token_12345",
+        }
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_auth_response, 200
+        )
+
+        response = syncify(self.user_management.authenticate_with_code(**params))
+
+        assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
+        assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response.organization_id == "org_12345"
+        assert response.access_token == "access_token_12345"
+        assert response.refresh_token == "refresh_token_12345"
+        assert request_kwargs["json"] == {
+            **params,
+            **base_authentication_params,
+            "grant_type": "authorization_code",
+        }
+
     def test_authenticate_with_magic_auth(
         self,
         capture_and_mock_http_client_request,

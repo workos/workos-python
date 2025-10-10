@@ -216,6 +216,7 @@ class UserManagementModule(Protocol):
         password_hash_type: Optional[PasswordHashType] = None,
         external_id: Optional[str] = None,
         metadata: Optional[Metadata] = None,
+        locale: Optional[str] = None,
     ) -> SyncOrAsync[User]:
         """Update user attributes.
 
@@ -228,6 +229,7 @@ class UserManagementModule(Protocol):
             password (str): The password to set for the user. (Optional)
             password_hash (str): The hashed password to set for the user, used when migrating from another user store. Mutually exclusive with password. (Optional)
             password_hash_type (str): The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
+            locale (str): The user's locale. (Optional)
 
         Returns:
             User: Updated User response from WorkOS.
@@ -981,6 +983,7 @@ class UserManagement(UserManagementModule):
         password_hash_type: Optional[PasswordHashType] = None,
         external_id: Optional[str] = None,
         metadata: Optional[Metadata] = None,
+        locale: Optional[str] = None,
     ) -> User:
         json = {
             "first_name": first_name,
@@ -992,6 +995,7 @@ class UserManagement(UserManagementModule):
             "password_hash_type": password_hash_type,
             "external_id": external_id,
             "metadata": metadata,
+            "locale": locale,
         }
 
         response = self._http_client.request(
@@ -1621,6 +1625,7 @@ class AsyncUserManagement(UserManagementModule):
         password_hash_type: Optional[PasswordHashType] = None,
         external_id: Optional[str] = None,
         metadata: Optional[Metadata] = None,
+        locale: Optional[str] = None,
     ) -> User:
         json = {
             "first_name": first_name,
@@ -1632,6 +1637,7 @@ class AsyncUserManagement(UserManagementModule):
             "password_hash_type": password_hash_type,
             "external_id": external_id,
             "metadata": metadata,
+            "locale": locale,
         }
 
         response = await self._http_client.request(

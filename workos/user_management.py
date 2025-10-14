@@ -1404,10 +1404,10 @@ class UserManagement(UserManagementModule):
         self,
         *,
         user_id: str,
-        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[PaginationOrder] = None,
+        order: PaginationOrder = "desc",
     ) -> "SessionsListResource":
         params: ListArgs = {
             "limit": limit,
@@ -2105,10 +2105,10 @@ class AsyncUserManagement(UserManagementModule):
         self,
         *,
         user_id: str,
-        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[PaginationOrder] = None,
+        order: PaginationOrder = "desc",
     ) -> "SessionsListResource":
         params: ListArgs = {
             "limit": limit,

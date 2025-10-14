@@ -17,6 +17,7 @@ def _mock_session(id: str):
         "organization_id": "org_123",
         "status": "active",
         "auth_method": "password",
+        "impersonator": None,
         "ip_address": "192.168.1.1",
         "user_agent": "Mozilla/5.0",
         "expires_at": "2025-07-23T15:00:00.000Z",

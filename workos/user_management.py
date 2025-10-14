@@ -736,7 +736,7 @@ class UserManagementModule(Protocol):
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[PaginationOrder] = None,
+        order: Optional[PaginationOrder] = "desc",
     ) -> SyncOrAsync["SessionsListResource"]: ...
 
     def revoke_session(
@@ -1404,13 +1404,15 @@ class UserManagement(UserManagementModule):
         self,
         *,
         user_id: str,
-        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: PaginationOrder = "desc",
+        order: Optional[PaginationOrder] = "desc",
     ) -> "SessionsListResource":
+        limit_value: int = limit if limit is not None else DEFAULT_LIST_RESPONSE_LIMIT
+
         params: ListArgs = {
-            "limit": limit,
+            "limit": limit_value,
             "before": before,
             "after": after,
             "order": order,
@@ -1423,12 +1425,13 @@ class UserManagement(UserManagementModule):
         )
 
         list_args: SessionsListFilters = {
-            "limit": limit,
+            "limit": limit_value,
             "before": before,
             "after": after,
-            "order": order,
             "user_id": user_id,
         }
+        if order is not None:
+            list_args["order"] = order
 
         return SessionsListResource(
             list_method=self.list_sessions,
@@ -2105,13 +2108,15 @@ class AsyncUserManagement(UserManagementModule):
         self,
         *,
         user_id: str,
-        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: PaginationOrder = "desc",
+        order: Optional[PaginationOrder] = "desc",
     ) -> "SessionsListResource":
+        limit_value: int = limit if limit is not None else DEFAULT_LIST_RESPONSE_LIMIT
+
         params: ListArgs = {
-            "limit": limit,
+            "limit": limit_value,
             "before": before,
             "after": after,
             "order": order,
@@ -2124,12 +2129,13 @@ class AsyncUserManagement(UserManagementModule):
         )
 
         list_args: SessionsListFilters = {
-            "limit": limit,
+            "limit": limit_value,
             "before": before,
             "after": after,
-            "order": order,
             "user_id": user_id,
         }
+        if order is not None:
+            list_args["order"] = order
 
         return SessionsListResource(
             list_method=self.list_sessions,

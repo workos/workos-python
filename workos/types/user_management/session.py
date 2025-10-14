@@ -46,3 +46,34 @@ class RefreshWithSessionCookieErrorResponse(WorkOSModel):
 class SessionConfig(TypedDict, total=False):
     seal_session: bool
     cookie_password: str
+
+
+AuthMethodType = Literal[
+    "external_auth",
+    "impersonation",
+    "magic_code",
+    "migrated_session",
+    "oauth",
+    "passkey",
+    "password",
+    "sso",
+    "unknown",
+]
+
+
+class Session(WorkOSModel):
+    """Representation of a WorkOS User Management Session."""
+
+    object: Literal["session"]
+    id: str
+    user_id: str
+    organization_id: Optional[str] = None
+    status: str
+    auth_method: AuthMethodType
+    impersonator: Optional[Impersonator] = None
+    ip_address: Optional[str] = None
+    user_agent: Optional[str] = None
+    expires_at: str
+    ended_at: Optional[str] = None
+    created_at: str
+    updated_at: str

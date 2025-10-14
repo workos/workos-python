@@ -48,6 +48,19 @@ class SessionConfig(TypedDict, total=False):
     cookie_password: str
 
 
+AuthMethodType = Literal[
+    "external_auth",
+    "impersonation",
+    "magic_code",
+    "migrated_session",
+    "oauth",
+    "passkey",
+    "password",
+    "sso",
+    "unknown",
+]
+
+
 class Session(WorkOSModel):
     """Representation of a WorkOS User Management Session."""
 
@@ -56,10 +69,11 @@ class Session(WorkOSModel):
     user_id: str
     organization_id: Optional[str] = None
     status: str
-    auth_method: Optional[str] = None
+    auth_method: AuthMethodType
+    impersonator: Optional[Impersonator] = None
     ip_address: Optional[str] = None
     user_agent: Optional[str] = None
-    expires_at: Optional[str] = None
+    expires_at: str
     ended_at: Optional[str] = None
     created_at: str
     updated_at: str

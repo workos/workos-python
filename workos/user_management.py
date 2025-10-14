@@ -1404,13 +1404,13 @@ class UserManagement(UserManagementModule):
         self,
         *,
         user_id: str,
-        limit: Optional[int] = None,
+        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: Optional[PaginationOrder] = None,
     ) -> "SessionsListResource":
         params: ListArgs = {
-            "limit": limit or DEFAULT_LIST_RESPONSE_LIMIT,
+            "limit": limit,
             "before": before,
             "after": after,
             "order": order,
@@ -1423,7 +1423,7 @@ class UserManagement(UserManagementModule):
         )
 
         list_args: SessionsListFilters = {
-            "limit": limit or DEFAULT_LIST_RESPONSE_LIMIT,
+            "limit": limit,
             "before": before,
             "after": after,
             "order": order,
@@ -2105,13 +2105,13 @@ class AsyncUserManagement(UserManagementModule):
         self,
         *,
         user_id: str,
-        limit: Optional[int] = None,
+        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: Optional[PaginationOrder] = None,
     ) -> "SessionsListResource":
         params: ListArgs = {
-            "limit": limit or DEFAULT_LIST_RESPONSE_LIMIT,
+            "limit": limit,
             "before": before,
             "after": after,
             "order": order,
@@ -2124,7 +2124,7 @@ class AsyncUserManagement(UserManagementModule):
         )
 
         list_args: SessionsListFilters = {
-            "limit": limit or DEFAULT_LIST_RESPONSE_LIMIT,
+            "limit": limit,
             "before": before,
             "after": after,
             "order": order,

@@ -20,6 +20,9 @@ class BaseRequestException(Exception):
         self.errors = self.extract_from_json("errors", None)
         self.code = self.extract_from_json("code", None)
         self.error_description = self.extract_from_json("error_description", "Unknown")
+        self.email_verification_id = self.extract_from_json(
+            "email_verification_id", None
+        )
 
         self.request_id = response.headers.get("X-Request-ID")
 

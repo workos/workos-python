@@ -10,6 +10,7 @@ from workos.exceptions import (
     BadRequestException,
     BaseRequestException,
     ConflictException,
+    EmailVerificationRequiredException,
     ServerException,
 )
 from workos.utils.http_client import SyncHTTPClient
@@ -263,7 +264,7 @@ class TestSyncHTTPClient(object):
             assert str(ex) == "(message=No message, request_id=request-123)"
             assert ex.__class__ == ConflictException
 
-    def test_authorization_exception_includes_email_verification_id(self):
+    def test_email_verification_required_exception(self):
         request_id = "request-123"
         email_verification_id = "email_verification_01J6K4PMSWQXVFGF5ZQJXC6VC8"
 
@@ -281,14 +282,38 @@ class TestSyncHTTPClient(object):
 
         try:
             self.http_client.request("bad_place")
-        except AuthorizationException as ex:
+        except EmailVerificationRequiredException as ex:
             assert (
                 ex.message == "Please verify your email to authenticate via password."
             )
             assert ex.code == "email_verification_required"
             assert ex.email_verification_id == email_verification_id
             assert ex.request_id == request_id
+            assert ex.__class__ == EmailVerificationRequiredException
+            assert isinstance(ex, AuthorizationException)
+
+    def test_regular_authorization_exception_still_raised(self):
+        request_id = "request-123"
+
+        self.http_client._client.request = MagicMock(
+            return_value=httpx.Response(
+                status_code=403,
+                json={
+                    "message": "You do not have permission to access this resource.",
+                    "code": "forbidden",
+                },
+                headers={"X-Request-ID": request_id},
+            ),
+        )
+
+        try:
+            self.http_client.request("bad_place")
+        except AuthorizationException as ex:
+            assert ex.message == "You do not have permission to access this resource."
+            assert ex.code == "forbidden"
+            assert ex.request_id == request_id
             assert ex.__class__ == AuthorizationException
+            assert not isinstance(ex, EmailVerificationRequiredException)
 
     def test_request_includes_base_headers(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 200)

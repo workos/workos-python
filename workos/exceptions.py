@@ -45,6 +45,24 @@ class AuthorizationException(BaseRequestException):
     pass
 
 
+class EmailVerificationRequiredException(AuthorizationException):
+    """Raised when email verification is required before authentication.
+
+    This exception includes an email_verification_id field that can be used
+    to retrieve the email verification object or resend the verification email.
+    """
+
+    def __init__(
+        self,
+        response: httpx.Response,
+        response_json: Optional[Mapping[str, Any]],
+    ) -> None:
+        super().__init__(response, response_json)
+        self.email_verification_id = self.extract_from_json(
+            "email_verification_id", None
+        )
+
+
 class AuthenticationException(BaseRequestException):
     pass
 

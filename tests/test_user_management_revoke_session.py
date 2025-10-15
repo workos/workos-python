@@ -32,10 +32,7 @@ class TestUserManagementRevokeSession:
         self.user_management = module_instance
 
     def test_revoke_session(self, capture_and_mock_http_client_request):
-        mock = _mock_session("session_abc")
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock, 200
-        )
+        request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 200)
 
         response = syncify(
             self.user_management.revoke_session(session_id="session_abc")
@@ -44,4 +41,4 @@ class TestUserManagementRevokeSession:
         assert request_kwargs["url"].endswith("user_management/sessions/revoke")
         assert request_kwargs["method"] == "post"
         assert request_kwargs["json"] == {"session_id": "session_abc"}
-        assert response.id == "session_abc"
+        assert response is None

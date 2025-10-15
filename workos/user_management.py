@@ -739,9 +739,7 @@ class UserManagementModule(Protocol):
         order: Optional[PaginationOrder] = "desc",
     ) -> SyncOrAsync["SessionsListResource"]: ...
 
-    def revoke_session(
-        self, *, session_id: str
-    ) -> SyncOrAsync[UserManagementSession]: ...
+    def revoke_session(self, *, session_id: str) -> SyncOrAsync[None]: ...
 
     def get_magic_auth(self, magic_auth_id: str) -> SyncOrAsync[MagicAuth]:
         """Get the details of a Magic Auth object.
@@ -1439,14 +1437,12 @@ class UserManagement(UserManagementModule):
             **ListPage[UserManagementSession](**response).model_dump(),
         )
 
-    def revoke_session(self, *, session_id: str) -> UserManagementSession:
+    def revoke_session(self, *, session_id: str) -> None:
         json = {"session_id": session_id}
 
-        response = self._http_client.request(
+        self._http_client.request(
             SESSIONS_REVOKE_PATH, method=REQUEST_METHOD_POST, json=json
         )
-
-        return UserManagementSession.model_validate(response)
 
     def enroll_auth_factor(
         self,
@@ -2143,14 +2139,12 @@ class AsyncUserManagement(UserManagementModule):
             **ListPage[UserManagementSession](**response).model_dump(),
         )
 
-    async def revoke_session(self, *, session_id: str) -> UserManagementSession:
+    async def revoke_session(self, *, session_id: str) -> None:
         json = {"session_id": session_id}
 
-        response = await self._http_client.request(
+        await self._http_client.request(
             SESSIONS_REVOKE_PATH, method=REQUEST_METHOD_POST, json=json
         )
-
-        return UserManagementSession.model_validate(response)
 
     async def enroll_auth_factor(
         self,

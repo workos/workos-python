@@ -51,6 +51,7 @@ class SessionFixtures:
             "roles": ["admin"],
             "permissions": ["read"],
             "entitlements": ["feature_1"],
+            "feature_flags": ["flag1", "flag2"],
             "exp": int(current_datetime.timestamp()) + 3600,
             "iat": int(current_datetime.timestamp()),
         }
@@ -244,6 +245,7 @@ class TestSessionBase(SessionFixtures):
             "roles": ["admin"],
             "permissions": ["read"],
             "entitlements": ["feature_1"],
+            "feature_flags": ["flag1", "flag2"],
         }
 
         with patch.object(Session, "unseal_data", return_value=mock_session), patch(
@@ -263,6 +265,7 @@ class TestSessionBase(SessionFixtures):
             assert response.roles == ["admin"]
             assert response.permissions == ["read"]
             assert response.entitlements == ["feature_1"]
+            assert response.feature_flags == ["flag1", "flag2"]
             assert response.user.id == session_constants["USER_ID"]
             assert response.impersonator is None
 
@@ -312,6 +315,7 @@ class TestSessionBase(SessionFixtures):
             "roles": ["admin", "member"],
             "permissions": ["read", "write"],
             "entitlements": ["feature_1"],
+            "feature_flags": ["flag1", "flag2"],
         }
 
         with patch.object(Session, "unseal_data", return_value=mock_session), patch(
@@ -331,6 +335,7 @@ class TestSessionBase(SessionFixtures):
             assert response.roles == ["admin", "member"]
             assert response.permissions == ["read", "write"]
             assert response.entitlements == ["feature_1"]
+            assert response.feature_flags == ["flag1", "flag2"]
             assert response.user.id == session_constants["USER_ID"]
             assert response.impersonator is None
 
@@ -410,6 +415,7 @@ class TestSession(SessionFixtures):
                 "roles": ["admin"],
                 "permissions": ["read"],
                 "entitlements": ["feature_1"],
+                "feature_flags": ["flag1", "flag2"],
             },
         ):
             response = session.refresh()
@@ -511,6 +517,7 @@ class TestAsyncSession(SessionFixtures):
                 "roles": ["admin"],
                 "permissions": ["read"],
                 "entitlements": ["feature_1"],
+                "feature_flags": ["flag1", "flag2"],
             },
         ):
             response = await session.refresh()

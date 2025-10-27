@@ -23,3 +23,7 @@ class OrganizationMembershipsListFilters(ListArgs, total=False):
 
 class AuthenticationFactorsListFilters(ListArgs, total=False):
     user_id: str
+
+
+class SessionsListFilters(ListArgs, total=False):
+    user_id: str

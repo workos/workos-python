@@ -15,6 +15,7 @@ class MockUser(User):
             email_verified=False,
             profile_picture_url="https://example.com/profile-picture.jpg",
             last_sign_in_at="2021-06-25T19:07:33.155Z",
+            locale="en-US",
             created_at=now,
             updated_at=now,
             metadata={"key": "value"},

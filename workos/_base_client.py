@@ -6,6 +6,7 @@ from workos._client_configuration import ClientConfiguration
 from workos.fga import FGAModule
 from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
 from workos.utils.http_client import HTTPClient
+from workos.api_key import ApiKeyModule
 from workos.audit_logs import AuditLogsModule
 from workos.directory_sync import DirectorySyncModule
 from workos.events import EventsModule
@@ -64,6 +65,10 @@ class BaseClient(ClientConfiguration):
             if request_timeout
             else int(os.getenv("WORKOS_REQUEST_TIMEOUT", DEFAULT_REQUEST_TIMEOUT))
         )
+
+    @property
+    @abstractmethod
+    def api_keys(self) -> ApiKeyModule: ...
 
     @property
     @abstractmethod

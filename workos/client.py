@@ -1,6 +1,7 @@
 from typing import Optional
 from workos.__about__ import __version__
 from workos._base_client import BaseClient
+from workos.api_key import ApiKey
 from workos.audit_logs import AuditLogs
 from workos.directory_sync import DirectorySync
 from workos.fga import FGA
@@ -44,6 +45,12 @@ class SyncClient(BaseClient):
             version=__version__,
             timeout=self.request_timeout,
         )
+
+    @property
+    def api_keys(self) -> ApiKey:
+        if not getattr(self, "_api_keys", None):
+            self._api_keys = ApiKey(self._http_client)
+        return self._api_keys
 
     @property
     def sso(self) -> SSO:

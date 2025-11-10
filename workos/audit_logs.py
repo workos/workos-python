@@ -3,6 +3,7 @@ from typing import Optional, Protocol, Sequence
 
 from workos.types.audit_logs import AuditLogExport
 from workos.types.audit_logs.audit_log_event import AuditLogEvent
+from workos.utils._base_http_client import RetryConfig
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_GET, REQUEST_METHOD_POST
 
@@ -89,8 +90,13 @@ class AuditLogs(AuditLogsModule):
         
         headers["idempotency-key"] = idempotency_key
 
+        # Enable retries for audit log event creation with default settings
         self._http_client.request(
-            EVENTS_PATH, method=REQUEST_METHOD_POST, json=json, headers=headers
+            EVENTS_PATH, 
+            method=REQUEST_METHOD_POST, 
+            json=json, 
+            headers=headers,
+            retry_config=RetryConfig()  # Uses default values: 3 retries, exponential backoff
         )
 
     def create_export(

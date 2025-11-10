@@ -93,6 +93,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         json: JsonType = None,
         headers: HeadersType = None,
         exclude_default_auth_headers: bool = False,
+        retry_config: Optional[RetryConfig] = None,
     ) -> ResponseJson:
         """Executes a request against the WorkOS API.
 
@@ -103,6 +104,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
             params (ParamsType): Query params to be added to the request
             json (JsonType): Body payload to be added to the request
+            retry_config (RetryConfig): Optional retry configuration. If None, no retries.
 
         Returns:
             ResponseJson: Response from WorkOS
@@ -116,15 +118,21 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             exclude_default_auth_headers=exclude_default_auth_headers,
         )
         
+        # If no retry config provided, just make the request without retry logic
+        if retry_config is None:
+            response = self._client.request(**prepared_request_parameters)
+            return self._handle_response(response)
+        
+        # Retry logic enabled
         last_exception = None
         
-        for attempt in range(self._retry_config.max_retries + 1):
+        for attempt in range(retry_config.max_retries + 1):
             try:
                 response = self._client.request(**prepared_request_parameters)
                 
                 # Check if we should retry based on status code
-                if attempt < self._retry_config.max_retries and self._is_retryable_error(response):
-                    delay = self._get_retry_delay(attempt, response)
+                if attempt < retry_config.max_retries and self._is_retryable_error(response):
+                    delay = self._get_retry_delay(attempt, response, retry_config)
                     time.sleep(delay)
                     continue
                 
@@ -133,10 +141,10 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
                 
             except Exception as exc:
                 last_exception = exc
-                if attempt < self._retry_config.max_retries and self._should_retry_exception(exc):
-                    delay = self._retry_config.base_delay * (2 ** attempt)
-                    delay = min(delay, self._retry_config.max_delay)
-                    jitter_amount = delay * self._retry_config.jitter * random.random()
+                if attempt < retry_config.max_retries and self._should_retry_exception(exc):
+                    delay = retry_config.base_delay * (2 ** attempt)
+                    delay = min(delay, retry_config.max_delay)
+                    jitter_amount = delay * retry_config.jitter * random.random()
                     time.sleep(delay + jitter_amount)
                     continue
                 raise
@@ -222,6 +230,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         json: JsonType = None,
         headers: HeadersType = None,
         exclude_default_auth_headers: bool = False,
+        retry_config: Optional[RetryConfig] = None,
     ) -> ResponseJson:
         """Executes a request against the WorkOS API.
 
@@ -232,6 +241,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
             params (ParamsType): Query params to be added to the request
             json (JsonType): Body payload to be added to the request
+            retry_config (RetryConfig): Optional retry configuration. If None, no retries.
 
         Returns:
             ResponseJson: Response from WorkOS
@@ -245,15 +255,21 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             exclude_default_auth_headers=exclude_default_auth_headers,
         )
         
+        # If no retry config provided, just make the request without retry logic
+        if retry_config is None:
+            response = await self._client.request(**prepared_request_parameters)
+            return self._handle_response(response)
+        
+        # Retry logic enabled
         last_exception = None
         
-        for attempt in range(self._retry_config.max_retries + 1):
+        for attempt in range(retry_config.max_retries + 1):
             try:
                 response = await self._client.request(**prepared_request_parameters)
                 
                 # Check if we should retry based on status code
-                if attempt < self._retry_config.max_retries and self._is_retryable_error(response):
-                    delay = self._get_retry_delay(attempt, response)
+                if attempt < retry_config.max_retries and self._is_retryable_error(response):
+                    delay = self._get_retry_delay(attempt, response, retry_config)
                     await asyncio.sleep(delay)
                     continue
                 
@@ -262,10 +278,10 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
                 
             except Exception as exc:
                 last_exception = exc
-                if attempt < self._retry_config.max_retries and self._should_retry_exception(exc):
-                    delay = self._retry_config.base_delay * (2 ** attempt)
-                    delay = min(delay, self._retry_config.max_delay)
-                    jitter_amount = delay * self._retry_config.jitter * random.random()
+                if attempt < retry_config.max_retries and self._should_retry_exception(exc):
+                    delay = retry_config.base_delay * (2 ** attempt)
+                    delay = min(delay, retry_config.max_delay)
+                    jitter_amount = delay * retry_config.jitter * random.random()
                     await asyncio.sleep(delay + jitter_amount)
                     continue
                 raise

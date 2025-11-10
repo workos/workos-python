@@ -67,7 +67,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     _base_url: str
     _version: str
     _timeout: int
-    _retry_config: RetryConfig
+    _retry_config: Optional[RetryConfig]
 
     def __init__(
         self,
@@ -84,7 +84,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         self._client_id = client_id
         self._version = version
         self._timeout = DEFAULT_REQUEST_TIMEOUT if timeout is None else timeout
-        self._retry_config = retry_config if retry_config is not None else RetryConfig()
+        self._retry_config = retry_config  # Store as-is, None means no retries
 
     def _generate_api_url(self, path: str) -> str:
         return f"{self._base_url}{path}"
@@ -128,6 +128,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             raise BadRequestException(response, response_json)
         elif status_code >= 500 and status_code < 600:
             raise ServerException(response, response_json)
+
 
     def _prepare_request(
         self,
@@ -225,7 +226,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         # Do NOT retry 4xx client errors (except 429)
         return False
 
-    def _get_retry_delay(self, attempt: int, response: httpx.Response) -> float:
+    def _get_retry_delay(self, attempt: int, response: httpx.Response, retry_config: RetryConfig) -> float:
         """Calculate delay with exponential backoff and jitter."""
         # Check for Retry-After header on 429 responses
         if response.status_code == 429:
@@ -237,13 +238,13 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
                     pass  # Fall through to exponential backoff
         
         # Exponential backoff: base_delay * 2^attempt
-        delay = self._retry_config.base_delay * (2 ** attempt)
+        delay = retry_config.base_delay * (2 ** attempt)
         
         # Cap at max_delay
-        delay = min(delay, self._retry_config.max_delay)
+        delay = min(delay, retry_config.max_delay)
         
         # Add jitter: random variation of 0-25% of delay
-        jitter_amount = delay * self._retry_config.jitter * random.random()
+        jitter_amount = delay * retry_config.jitter * random.random()
         return delay + jitter_amount
 
     def _should_retry_exception(self, exc: Exception) -> bool:

@@ -106,6 +106,33 @@ class TestAuditLogs:
             assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
             assert response is None
 
+        def test_auto_generates_idempotency_key(
+            self, mock_audit_log_event, capture_and_mock_http_client_request
+        ):
+            """Test that idempotency key is auto-generated when not provided."""
+            organization_id = "org_123456789"
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, {"success": True}, 200
+            )
+
+            response = self.audit_logs.create_event(
+                organization_id=organization_id,
+                event=mock_audit_log_event,
+                # No idempotency_key provided
+            )
+
+            # Assert header exists and is a valid UUID v4
+            assert "idempotency-key" in request_kwargs["headers"]
+            idempotency_key = request_kwargs["headers"]["idempotency-key"]
+            assert len(idempotency_key) == 36  # UUID format: 8-4-4-4-12
+            assert idempotency_key.count("-") == 4
+            # Verify it's a valid UUID by checking the version field (4th section starts with '4')
+            uuid_parts = idempotency_key.split("-")
+            assert len(uuid_parts) == 5
+            assert uuid_parts[2][0] == "4"  # UUID v4 identifier
+            assert response is None
+
         def test_throws_unauthorized_exception(
             self, mock_audit_log_event, mock_http_client_with_response
         ):

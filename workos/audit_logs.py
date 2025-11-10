@@ -1,3 +1,4 @@
+import uuid
 from typing import Optional, Protocol, Sequence
 
 from workos.types.audit_logs import AuditLogExport
@@ -82,8 +83,11 @@ class AuditLogs(AuditLogsModule):
         json = {"organization_id": organization_id, "event": event}
 
         headers = {}
-        if idempotency_key:
-            headers["idempotency-key"] = idempotency_key
+        # Auto-generate UUID v4 if not provided
+        if idempotency_key is None:
+            idempotency_key = str(uuid.uuid4())
+        
+        headers["idempotency-key"] = idempotency_key
 
         self._http_client.request(
             EVENTS_PATH, method=REQUEST_METHOD_POST, json=json, headers=headers

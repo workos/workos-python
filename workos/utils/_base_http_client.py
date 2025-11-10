@@ -1,4 +1,6 @@
 import platform
+import random
+from dataclasses import dataclass
 from typing import (
     Any,
     Mapping,
@@ -33,6 +35,15 @@ _HttpxClientT = TypeVar("_HttpxClientT", bound=Union[httpx.Client, httpx.AsyncCl
 DEFAULT_REQUEST_TIMEOUT = 25
 
 
+@dataclass
+class RetryConfig:
+    """Configuration for retry logic with exponential backoff."""
+    max_retries: int = 3
+    base_delay: float = 1.0  # seconds
+    max_delay: float = 30.0  # seconds
+    jitter: float = 0.25  # 25% jitter
+
+
 ParamsType = Optional[Mapping[str, Any]]
 HeadersType = Optional[Dict[str, str]]
 JsonType = Optional[Union[Mapping[str, Any], Sequence[Any]]]
@@ -56,6 +67,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     _base_url: str
     _version: str
     _timeout: int
+    _retry_config: RetryConfig
 
     def __init__(
         self,
@@ -65,12 +77,14 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         client_id: str,
         version: str,
         timeout: Optional[int] = DEFAULT_REQUEST_TIMEOUT,
+        retry_config: Optional[RetryConfig] = None,
     ) -> None:
         self._api_key = api_key
         self._base_url = base_url
         self._client_id = client_id
         self._version = version
         self._timeout = DEFAULT_REQUEST_TIMEOUT if timeout is None else timeout
+        self._retry_config = retry_config if retry_config is not None else RetryConfig()
 
     def _generate_api_url(self, path: str) -> str:
         return f"{self._base_url}{path}"
@@ -195,6 +209,49 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         self._maybe_raise_error_by_status_code(response, response_json)
 
         return cast(ResponseJson, response_json)
+
+    def _is_retryable_error(self, response: httpx.Response) -> bool:
+        """Determine if an error should be retried."""
+        status_code = response.status_code
+        
+        # Retry on 5xx server errors
+        if 500 <= status_code < 600:
+            return True
+        
+        # Retry on 429 rate limit
+        if status_code == 429:
+            return True
+        
+        # Do NOT retry 4xx client errors (except 429)
+        return False
+
+    def _get_retry_delay(self, attempt: int, response: httpx.Response) -> float:
+        """Calculate delay with exponential backoff and jitter."""
+        # Check for Retry-After header on 429 responses
+        if response.status_code == 429:
+            retry_after = response.headers.get("Retry-After")
+            if retry_after:
+                try:
+                    return float(retry_after)
+                except ValueError:
+                    pass  # Fall through to exponential backoff
+        
+        # Exponential backoff: base_delay * 2^attempt
+        delay = self._retry_config.base_delay * (2 ** attempt)
+        
+        # Cap at max_delay
+        delay = min(delay, self._retry_config.max_delay)
+        
+        # Add jitter: random variation of 0-25% of delay
+        jitter_amount = delay * self._retry_config.jitter * random.random()
+        return delay + jitter_amount
+
+    def _should_retry_exception(self, exc: Exception) -> bool:
+        """Determine if an exception should trigger a retry."""
+        # Retry on network errors (connection, timeout)
+        if isinstance(exc, (httpx.ConnectError, httpx.TimeoutException)):
+            return True
+        return False
 
     def build_request_url(
         self,

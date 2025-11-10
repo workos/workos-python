@@ -1,4 +1,6 @@
 import asyncio
+import random
+import time
 from types import TracebackType
 from typing import Optional, Type, Union
 
@@ -13,6 +15,7 @@ from workos.utils._base_http_client import (
     JsonType,
     ParamsType,
     ResponseJson,
+    RetryConfig,
 )
 from workos.utils.request_helper import REQUEST_METHOD_GET
 
@@ -38,6 +41,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         client_id: str,
         version: str,
         timeout: Optional[int] = None,
+        retry_config: Optional[RetryConfig] = None,
         # If no custom transport is provided, let httpx use the default
         # so we don't overwrite environment configurations like proxies
         transport: Optional[httpx.BaseTransport] = None,
@@ -48,6 +52,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             client_id=client_id,
             version=version,
             timeout=timeout,
+            retry_config=retry_config,
         )
         self._client = SyncHttpxClientWrapper(
             base_url=base_url,
@@ -110,8 +115,38 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             headers=headers,
             exclude_default_auth_headers=exclude_default_auth_headers,
         )
-        response = self._client.request(**prepared_request_parameters)
-        return self._handle_response(response)
+        
+        last_exception = None
+        
+        for attempt in range(self._retry_config.max_retries + 1):
+            try:
+                response = self._client.request(**prepared_request_parameters)
+                
+                # Check if we should retry based on status code
+                if attempt < self._retry_config.max_retries and self._is_retryable_error(response):
+                    delay = self._get_retry_delay(attempt, response)
+                    time.sleep(delay)
+                    continue
+                
+                # No retry needed or max retries reached
+                return self._handle_response(response)
+                
+            except Exception as exc:
+                last_exception = exc
+                if attempt < self._retry_config.max_retries and self._should_retry_exception(exc):
+                    delay = self._retry_config.base_delay * (2 ** attempt)
+                    delay = min(delay, self._retry_config.max_delay)
+                    jitter_amount = delay * self._retry_config.jitter * random.random()
+                    time.sleep(delay + jitter_amount)
+                    continue
+                raise
+        
+        # Should not reach here, but raise last exception if we do
+        if last_exception is not None:
+            raise last_exception
+        
+        # Fallback: this should never happen
+        raise RuntimeError("Unexpected state in retry logic")
 
 
 class AsyncHttpxClientWrapper(httpx.AsyncClient):
@@ -138,6 +173,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         client_id: str,
         version: str,
         timeout: Optional[int] = None,
+        retry_config: Optional[RetryConfig] = None,
         # If no custom transport is provided, let httpx use the default
         # so we don't overwrite environment configurations like proxies
         transport: Optional[httpx.AsyncBaseTransport] = None,
@@ -148,6 +184,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             client_id=client_id,
             version=version,
             timeout=timeout,
+            retry_config=retry_config,
         )
         self._client = AsyncHttpxClientWrapper(
             base_url=base_url,
@@ -207,8 +244,38 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             headers=headers,
             exclude_default_auth_headers=exclude_default_auth_headers,
         )
-        response = await self._client.request(**prepared_request_parameters)
-        return self._handle_response(response)
+        
+        last_exception = None
+        
+        for attempt in range(self._retry_config.max_retries + 1):
+            try:
+                response = await self._client.request(**prepared_request_parameters)
+                
+                # Check if we should retry based on status code
+                if attempt < self._retry_config.max_retries and self._is_retryable_error(response):
+                    delay = self._get_retry_delay(attempt, response)
+                    await asyncio.sleep(delay)
+                    continue
+                
+                # No retry needed or max retries reached
+                return self._handle_response(response)
+                
+            except Exception as exc:
+                last_exception = exc
+                if attempt < self._retry_config.max_retries and self._should_retry_exception(exc):
+                    delay = self._retry_config.base_delay * (2 ** attempt)
+                    delay = min(delay, self._retry_config.max_delay)
+                    jitter_amount = delay * self._retry_config.jitter * random.random()
+                    await asyncio.sleep(delay + jitter_amount)
+                    continue
+                raise
+        
+        # Should not reach here, but raise last exception if we do
+        if last_exception is not None:
+            raise last_exception
+        
+        # Fallback: this should never happen
+        raise RuntimeError("Unexpected state in retry logic")
 
 
 HTTPClient = Union[AsyncHTTPClient, SyncHTTPClient]

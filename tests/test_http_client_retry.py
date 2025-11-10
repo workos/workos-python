@@ -54,32 +54,28 @@ class TestSyncRetryLogic:
             assert mock_sleep.call_count == 2
 
     def test_retries_on_429_rate_limit(self, sync_http_client, retry_config, monkeypatch):
-        """Test that 429 errors trigger retry."""
+        """Test that 429 errors do NOT trigger retry (consistent with workos-node)."""
         call_count = 0
         
         def mock_request(*args, **kwargs):
             nonlocal call_count
             call_count += 1
-            if call_count < 2:
-                return httpx.Response(
-                    status_code=429,
-                    headers={"Retry-After": "0.1"},
-                    json={"error": "Rate limit exceeded"}
-                )
-            return httpx.Response(status_code=200, json={"success": True})
+            return httpx.Response(
+                status_code=429,
+                headers={"Retry-After": "0.1"},
+                json={"error": "Rate limit exceeded"}
+            )
         
         monkeypatch.setattr(sync_http_client._client, "request", MagicMock(side_effect=mock_request))
         
-        with patch("time.sleep") as mock_sleep:
-            response = sync_http_client.request("test/path", retry_config=retry_config)
+        with pytest.raises(BadRequestException):
+            sync_http_client.request("test/path", retry_config=retry_config)
             
-            assert call_count == 2
-            assert response == {"success": True}
-            # Verify Retry-After header was respected
-            mock_sleep.assert_called_once_with(0.1)
+        # Should only be called once (no retries on 429)
+        assert call_count == 1
 
     def test_no_retry_on_400_error(self, sync_http_client, monkeypatch):
-        """Test that 4xx errors (except 429) don't retry (no retry_config passed)."""
+        """Test that 4xx errors don't retry (no retry_config passed)."""
         call_count = 0
         
         def mock_request(*args, **kwargs):
@@ -345,33 +341,29 @@ class TestAsyncRetryLogic:
 
     @pytest.mark.asyncio
     async def test_retries_on_429_rate_limit(self, async_http_client, retry_config, monkeypatch):
-        """Test that 429 errors trigger retry."""
+        """Test that 429 errors do NOT trigger retry (consistent with workos-node)."""
         call_count = 0
         
         async def mock_request(*args, **kwargs):
             nonlocal call_count
             call_count += 1
-            if call_count < 2:
-                return httpx.Response(
-                    status_code=429,
-                    headers={"Retry-After": "0.1"},
-                    json={"error": "Rate limit exceeded"}
-                )
-            return httpx.Response(status_code=200, json={"success": True})
+            return httpx.Response(
+                status_code=429,
+                headers={"Retry-After": "0.1"},
+                json={"error": "Rate limit exceeded"}
+            )
         
         monkeypatch.setattr(async_http_client._client, "request", AsyncMock(side_effect=mock_request))
         
-        with patch("asyncio.sleep") as mock_sleep:
-            response = await async_http_client.request("test/path", retry_config=retry_config)
+        with pytest.raises(BadRequestException):
+            await async_http_client.request("test/path", retry_config=retry_config)
             
-            assert call_count == 2
-            assert response == {"success": True}
-            # Verify Retry-After header was respected
-            mock_sleep.assert_called_once_with(0.1)
+        # Should only be called once (no retries on 429)
+        assert call_count == 1
 
     @pytest.mark.asyncio
     async def test_no_retry_on_400_error(self, async_http_client, monkeypatch):
-        """Test that 4xx errors (except 429) don't retry (no retry_config passed)."""
+        """Test that 4xx errors don't retry (no retry_config passed)."""
         call_count = 0
         
         async def mock_request(*args, **kwargs):

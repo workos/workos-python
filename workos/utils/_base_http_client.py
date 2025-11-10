@@ -34,6 +34,8 @@ _HttpxClientT = TypeVar("_HttpxClientT", bound=Union[httpx.Client, httpx.AsyncCl
 
 DEFAULT_REQUEST_TIMEOUT = 25
 
+# Status codes that should trigger a retry (consistent with workos-node)
+RETRY_STATUS_CODES = [408, 500, 502, 504]
 
 @dataclass
 class RetryConfig:
@@ -43,12 +45,10 @@ class RetryConfig:
     max_delay: float = 30.0  # seconds
     jitter: float = 0.25  # 25% jitter
 
-
 ParamsType = Optional[Mapping[str, Any]]
 HeadersType = Optional[Dict[str, str]]
 JsonType = Optional[Union[Mapping[str, Any], Sequence[Any]]]
 ResponseJson = Mapping[Any, Any]
-
 
 class PreparedRequest(TypedDict):
     method: str
@@ -213,30 +213,10 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
 
     def _is_retryable_error(self, response: httpx.Response) -> bool:
         """Determine if an error should be retried."""
-        status_code = response.status_code
-        
-        # Retry on 5xx server errors
-        if 500 <= status_code < 600:
-            return True
-        
-        # Retry on 429 rate limit
-        if status_code == 429:
-            return True
-        
-        # Do NOT retry 4xx client errors (except 429)
-        return False
+        return response.status_code in RETRY_STATUS_CODES
 
     def _get_retry_delay(self, attempt: int, response: httpx.Response, retry_config: RetryConfig) -> float:
         """Calculate delay with exponential backoff and jitter."""
-        # Check for Retry-After header on 429 responses
-        if response.status_code == 429:
-            retry_after = response.headers.get("Retry-After")
-            if retry_after:
-                try:
-                    return float(retry_after)
-                except ValueError:
-                    pass  # Fall through to exponential backoff
-        
         # Exponential backoff: base_delay * 2^attempt
         delay = retry_config.base_delay * (2 ** attempt)
         

@@ -32,46 +32,75 @@ class TestSyncRetryLogic:
             jitter=0.0,  # No jitter for predictable tests
         )
 
-    def test_retries_on_500_error(self, sync_http_client, retry_config, monkeypatch):
-        """Test that 500 errors trigger retry."""
-        call_count = 0
+    @staticmethod
+    def create_mock_request_with_retries(
+        failure_count: int,
+        failure_response=None,
+        failure_exception=None,
+        success_response=None
+    ):
+        """
+        Create a mock request function that fails N times before succeeding.
+        
+        Args:
+            failure_count: Number of times to fail before success
+            failure_response: Response to return on failure (status_code, json, headers)
+            failure_exception: Exception to raise on failure (instead of response)
+            success_response: Response to return on success (default: 200 with {"success": True})
+        
+        Returns:
+            A tuple of (mock_function, call_count_tracker) where call_count_tracker 
+            is a list that tracks the number of calls
+        """
+        call_count = [0]  # Use list to allow modification in nested function
         
         def mock_request(*args, **kwargs):
-            nonlocal call_count
-            call_count += 1
-            if call_count < 3:
-                return httpx.Response(status_code=500, json={"error": "Server error"})
+            call_count[0] += 1
+            if call_count[0] <= failure_count:
+                if failure_exception:
+                    raise failure_exception
+                if failure_response:
+                    return httpx.Response(**failure_response)
+            
+            if success_response:
+                return httpx.Response(**success_response)
             return httpx.Response(status_code=200, json={"success": True})
+        
+        return mock_request, call_count
+
+    def test_retries_on_408_error(self, sync_http_client, retry_config, monkeypatch):
+        """Test that 408 (Request Timeout) errors trigger retry."""
+        mock_request, call_count = self.create_mock_request_with_retries(
+            failure_count=1,
+            failure_response={"status_code": 408, "json": {"error": "Request timeout"}}
+        )
         
         monkeypatch.setattr(sync_http_client._client, "request", MagicMock(side_effect=mock_request))
         
         with patch("time.sleep") as mock_sleep:
             response = sync_http_client.request("test/path", retry_config=retry_config)
             
-            assert call_count == 3
+            assert call_count[0] == 2
+            assert response == {"success": True}
+            assert mock_sleep.call_count == 1
+
+    def test_retries_on_500_error(self, sync_http_client, retry_config, monkeypatch):
+        """Test that 500 errors trigger retry."""
+        mock_request, call_count = self.create_mock_request_with_retries(
+            failure_count=2,
+            failure_response={"status_code": 500, "json": {"error": "Server error"}}
+        )
+        
+        monkeypatch.setattr(sync_http_client._client, "request", MagicMock(side_effect=mock_request))
+        
+        with patch("time.sleep") as mock_sleep:
+            response = sync_http_client.request("test/path", retry_config=retry_config)
+            
+            assert call_count[0] == 3
             assert response == {"success": True}
             # Verify sleep was called with exponential backoff
             assert mock_sleep.call_count == 2
 
-    def test_retries_on_408_error(self, sync_http_client, retry_config, monkeypatch):
-        """Test that 408 (Request Timeout) errors trigger retry."""
-        call_count = 0
-        
-        def mock_request(*args, **kwargs):
-            nonlocal call_count
-            call_count += 1
-            if call_count < 2:
-                return httpx.Response(status_code=408, json={"error": "Request timeout"})
-            return httpx.Response(status_code=200, json={"success": True})
-        
-        monkeypatch.setattr(sync_http_client._client, "request", MagicMock(side_effect=mock_request))
-        
-        with patch("time.sleep") as mock_sleep:
-            response = sync_http_client.request("test/path", retry_config=retry_config)
-            
-            assert call_count == 2
-            assert response == {"success": True}
-            assert mock_sleep.call_count == 1
 
     def test_retries_on_502_error(self, sync_http_client, retry_config, monkeypatch):
         """Test that 502 (Bad Gateway) errors trigger retry."""
@@ -233,21 +262,17 @@ class TestSyncRetryLogic:
 
     def test_retries_on_network_error(self, sync_http_client, retry_config, monkeypatch):
         """Test that network errors trigger retry."""
-        call_count = 0
-        
-        def mock_request(*args, **kwargs):
-            nonlocal call_count
-            call_count += 1
-            if call_count < 3:
-                raise httpx.ConnectError("Connection failed")
-            return httpx.Response(status_code=200, json={"success": True})
+        mock_request, call_count = self.create_mock_request_with_retries(
+            failure_count=2,
+            failure_exception=httpx.ConnectError("Connection failed")
+        )
         
         monkeypatch.setattr(sync_http_client._client, "request", MagicMock(side_effect=mock_request))
         
         with patch("time.sleep"):
             response = sync_http_client.request("test/path", retry_config=retry_config)
             
-            assert call_count == 3
+            assert call_count[0] == 3
             assert response == {"success": True}
 
     def test_retries_on_timeout_error(self, sync_http_client, retry_config, monkeypatch):
@@ -394,24 +419,56 @@ class TestAsyncRetryLogic:
             jitter=0.0,  # No jitter for predictable tests
         )
 
+    @staticmethod
+    def create_mock_request_with_retries(
+        failure_count: int,
+        failure_response=None,
+        failure_exception=None,
+        success_response=None
+    ):
+        """
+        Create an async mock request function that fails N times before succeeding.
+        
+        Args:
+            failure_count: Number of times to fail before success
+            failure_response: Response to return on failure (status_code, json, headers)
+            failure_exception: Exception to raise on failure (instead of response)
+            success_response: Response to return on success (default: 200 with {"success": True})
+        
+        Returns:
+            A tuple of (mock_function, call_count_tracker) where call_count_tracker 
+            is a list that tracks the number of calls
+        """
+        call_count = [0]  # Use list to allow modification in nested function
+        
+        async def mock_request(*args, **kwargs):
+            call_count[0] += 1
+            if call_count[0] <= failure_count:
+                if failure_exception:
+                    raise failure_exception
+                if failure_response:
+                    return httpx.Response(**failure_response)
+            
+            if success_response:
+                return httpx.Response(**success_response)
+            return httpx.Response(status_code=200, json={"success": True})
+        
+        return mock_request, call_count
+
     @pytest.mark.asyncio
     async def test_retries_on_500_error(self, async_http_client, retry_config, monkeypatch):
         """Test that 500 errors trigger retry."""
-        call_count = 0
-        
-        async def mock_request(*args, **kwargs):
-            nonlocal call_count
-            call_count += 1
-            if call_count < 3:
-                return httpx.Response(status_code=500, json={"error": "Server error"})
-            return httpx.Response(status_code=200, json={"success": True})
+        mock_request, call_count = self.create_mock_request_with_retries(
+            failure_count=2,
+            failure_response={"status_code": 500, "json": {"error": "Server error"}}
+        )
         
         monkeypatch.setattr(async_http_client._client, "request", AsyncMock(side_effect=mock_request))
         
         with patch("asyncio.sleep") as mock_sleep:
             response = await async_http_client.request("test/path", retry_config=retry_config)
             
-            assert call_count == 3
+            assert call_count[0] == 3
             assert response == {"success": True}
             # Verify sleep was called with exponential backoff
             assert mock_sleep.call_count == 2
@@ -419,21 +476,17 @@ class TestAsyncRetryLogic:
     @pytest.mark.asyncio
     async def test_retries_on_408_error(self, async_http_client, retry_config, monkeypatch):
         """Test that 408 (Request Timeout) errors trigger retry."""
-        call_count = 0
-        
-        async def mock_request(*args, **kwargs):
-            nonlocal call_count
-            call_count += 1
-            if call_count < 2:
-                return httpx.Response(status_code=408, json={"error": "Request timeout"})
-            return httpx.Response(status_code=200, json={"success": True})
+        mock_request, call_count = self.create_mock_request_with_retries(
+            failure_count=1,
+            failure_response={"status_code": 408, "json": {"error": "Request timeout"}}
+        )
         
         monkeypatch.setattr(async_http_client._client, "request", AsyncMock(side_effect=mock_request))
         
         with patch("asyncio.sleep") as mock_sleep:
             response = await async_http_client.request("test/path", retry_config=retry_config)
             
-            assert call_count == 2
+            assert call_count[0] == 2
             assert response == {"success": True}
             assert mock_sleep.call_count == 1
 

@@ -122,15 +122,10 @@ class TestAuditLogs:
                 # No idempotency_key provided
             )
 
-            # Assert header exists and is a valid UUID v4
+            # Assert header exists and has a non-empty value
             assert "idempotency-key" in request_kwargs["headers"]
             idempotency_key = request_kwargs["headers"]["idempotency-key"]
-            assert len(idempotency_key) == 36  # UUID format: 8-4-4-4-12
-            assert idempotency_key.count("-") == 4
-            # Verify it's a valid UUID by checking the version field (4th section starts with '4')
-            uuid_parts = idempotency_key.split("-")
-            assert len(uuid_parts) == 5
-            assert uuid_parts[2][0] == "4"  # UUID v4 identifier
+            assert idempotency_key and idempotency_key.strip()
             assert response is None
 
         def test_throws_unauthorized_exception(

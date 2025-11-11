@@ -87,16 +87,16 @@ class AuditLogs(AuditLogsModule):
         # Auto-generate UUID v4 if not provided
         if idempotency_key is None:
             idempotency_key = str(uuid.uuid4())
-        
+
         headers["idempotency-key"] = idempotency_key
 
         # Enable retries for audit log event creation with default settings
         self._http_client.request(
-            EVENTS_PATH, 
-            method=REQUEST_METHOD_POST, 
-            json=json, 
+            EVENTS_PATH,
+            method=REQUEST_METHOD_POST,
+            json=json,
             headers=headers,
-            retry_config=RetryConfig()  # Uses default values: 3 retries, exponential backoff
+            retry_config=RetryConfig(),  # Uses default values: 3 retries, exponential backoff
         )
 
     def create_export(

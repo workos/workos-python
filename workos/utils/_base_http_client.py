@@ -37,18 +37,22 @@ DEFAULT_REQUEST_TIMEOUT = 25
 # Status codes that should trigger a retry (consistent with workos-node)
 RETRY_STATUS_CODES = [408, 500, 502, 504]
 
+
 @dataclass
 class RetryConfig:
     """Configuration for retry logic with exponential backoff."""
+
     max_retries: int = 3
     base_delay: float = 1.0  # seconds
     max_delay: float = 30.0  # seconds
     jitter: float = 0.25  # 25% jitter
 
+
 ParamsType = Optional[Mapping[str, Any]]
 HeadersType = Optional[Dict[str, str]]
 JsonType = Optional[Union[Mapping[str, Any], Sequence[Any]]]
 ResponseJson = Mapping[Any, Any]
+
 
 class PreparedRequest(TypedDict):
     method: str
@@ -128,7 +132,6 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             raise BadRequestException(response, response_json)
         elif status_code >= 500 and status_code < 600:
             raise ServerException(response, response_json)
-
 
     def _prepare_request(
         self,
@@ -215,26 +218,30 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         """Determine if an error should be retried."""
         return response.status_code in RETRY_STATUS_CODES
 
-    def _get_retry_delay(self, attempt: int, response: httpx.Response, retry_config: RetryConfig) -> float:
+    def _get_retry_delay(
+        self, attempt: int, response: httpx.Response, retry_config: RetryConfig
+    ) -> float:
         """Calculate delay with exponential backoff and jitter."""
         return self._calculate_backoff_delay(attempt, retry_config)
 
-    def _calculate_backoff_delay(self, attempt: int, retry_config: RetryConfig) -> float:
+    def _calculate_backoff_delay(
+        self, attempt: int, retry_config: RetryConfig
+    ) -> float:
         """Calculate delay with exponential backoff and jitter.
-        
+
         Args:
             attempt: The current retry attempt number (0-indexed)
             retry_config: The retry configuration
-            
+
         Returns:
             The delay in seconds to wait before the next retry
         """
         # Exponential backoff: base_delay * 2^attempt
-        delay = retry_config.base_delay * (2 ** attempt)
-        
+        delay = retry_config.base_delay * (2**attempt)
+
         # Cap at max_delay
         delay = min(delay, retry_config.max_delay)
-        
+
         # Add jitter: random variation of 0-25% of delay
         jitter_amount = delay * retry_config.jitter * random.random()
         return delay + jitter_amount

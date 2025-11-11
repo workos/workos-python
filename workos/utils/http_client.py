@@ -116,39 +116,43 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             headers=headers,
             exclude_default_auth_headers=exclude_default_auth_headers,
         )
-        
+
         # If no retry config provided, just make the request without retry logic
         if retry_config is None:
             response = self._client.request(**prepared_request_parameters)
             return self._handle_response(response)
-        
+
         # Retry logic enabled
         last_exception = None
-        
+
         for attempt in range(retry_config.max_retries + 1):
             try:
                 response = self._client.request(**prepared_request_parameters)
-                
+
                 # Check if we should retry based on status code
-                if attempt < retry_config.max_retries and self._is_retryable_error(response):
+                if attempt < retry_config.max_retries and self._is_retryable_error(
+                    response
+                ):
                     delay = self._get_retry_delay(attempt, response, retry_config)
                     time.sleep(delay)
                     continue
-                
+
                 # No retry needed or max retries reached
                 return self._handle_response(response)
-                
+
             except Exception as exc:
                 last_exception = exc
-                if attempt < retry_config.max_retries and self._should_retry_exception(exc):
+                if attempt < retry_config.max_retries and self._should_retry_exception(
+                    exc
+                ):
                     delay = self._calculate_backoff_delay(attempt, retry_config)
                     time.sleep(delay)
                     continue
                 raise
-        
+
         if last_exception is not None:
             raise last_exception
-        
+
         raise RuntimeError("Unexpected state in retry logic")
 
 
@@ -249,40 +253,44 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             headers=headers,
             exclude_default_auth_headers=exclude_default_auth_headers,
         )
-        
+
         # If no retry config provided, just make the request without retry logic
         if retry_config is None:
             response = await self._client.request(**prepared_request_parameters)
             return self._handle_response(response)
-        
+
         # Retry logic enabled
         last_exception = None
-        
+
         for attempt in range(retry_config.max_retries + 1):
             try:
                 response = await self._client.request(**prepared_request_parameters)
-                
+
                 # Check if we should retry based on status code
-                if attempt < retry_config.max_retries and self._is_retryable_error(response):
+                if attempt < retry_config.max_retries and self._is_retryable_error(
+                    response
+                ):
                     delay = self._get_retry_delay(attempt, response, retry_config)
                     await asyncio.sleep(delay)
                     continue
-                
+
                 # No retry needed or max retries reached
                 return self._handle_response(response)
-                
+
             except Exception as exc:
                 last_exception = exc
-                if attempt < retry_config.max_retries and self._should_retry_exception(exc):
+                if attempt < retry_config.max_retries and self._should_retry_exception(
+                    exc
+                ):
                     delay = self._calculate_backoff_delay(attempt, retry_config)
                     await asyncio.sleep(delay)
                     continue
                 raise
-        
+
         # Should not reach here, but raise last exception if we do
         if last_exception is not None:
             raise last_exception
-        
+
         # Fallback: this should never happen
         raise RuntimeError("Unexpected state in retry logic")
 

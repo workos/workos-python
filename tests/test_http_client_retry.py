@@ -111,7 +111,11 @@ class TestSyncRetryLogic:
         )
 
         self.assert_request_with_retries(
-            sync_http_client, call_count, expected_call_count=4, expected_sleep_count=3, retry_config=retry_config
+            sync_http_client,
+            call_count,
+            expected_call_count=4,
+            expected_sleep_count=3,
+            retry_config=retry_config,
         )
 
     def test_retries_on_500_error(self, sync_http_client, retry_config, monkeypatch):
@@ -126,7 +130,11 @@ class TestSyncRetryLogic:
         )
 
         self.assert_request_with_retries(
-            sync_http_client, call_count, expected_call_count=4, expected_sleep_count=3, retry_config=retry_config
+            sync_http_client,
+            call_count,
+            expected_call_count=4,
+            expected_sleep_count=3,
+            retry_config=retry_config,
         )
 
     def test_retries_on_502_error(self, sync_http_client, retry_config, monkeypatch):
@@ -141,7 +149,11 @@ class TestSyncRetryLogic:
         )
 
         self.assert_request_with_retries(
-            sync_http_client, call_count, expected_call_count=4, expected_sleep_count=3, retry_config=retry_config
+            sync_http_client,
+            call_count,
+            expected_call_count=4,
+            expected_sleep_count=3,
+            retry_config=retry_config,
         )
 
     def test_retries_on_504_error(self, sync_http_client, retry_config, monkeypatch):
@@ -156,10 +168,16 @@ class TestSyncRetryLogic:
         )
 
         self.assert_request_with_retries(
-            sync_http_client, call_count, expected_call_count=4, expected_sleep_count=3, retry_config=retry_config
+            sync_http_client,
+            call_count,
+            expected_call_count=4,
+            expected_sleep_count=3,
+            retry_config=retry_config,
         )
 
-    def test_no_retry_on_non_retryable_error(self, sync_http_client, retry_config, monkeypatch):
+    def test_no_retry_on_non_retryable_error(
+        self, sync_http_client, retry_config, monkeypatch
+    ):
         """Test that a non retryable error errors do NOT trigger retry (not in RETRY_STATUS_CODES)."""
         mock_request, call_count = self.create_mock_request_with_retries(
             failure_count=100,  # Always fail
@@ -334,7 +352,9 @@ class TestAsyncRetryLogic:
 
         with patch("asyncio.sleep") as mock_sleep:
             if retry_config:
-                response = await http_client.request("test/path", retry_config=retry_config)
+                response = await http_client.request(
+                    "test/path", retry_config=retry_config
+                )
             else:
                 response = await http_client.request("test/path")
 
@@ -357,7 +377,11 @@ class TestAsyncRetryLogic:
         )
 
         await self.assert_async_request_with_retries(
-            async_http_client, call_count, expected_call_count=4, expected_sleep_count=3, retry_config=retry_config
+            async_http_client,
+            call_count,
+            expected_call_count=4,
+            expected_sleep_count=3,
+            retry_config=retry_config,
         )
 
     @pytest.mark.asyncio
@@ -375,7 +399,11 @@ class TestAsyncRetryLogic:
         )
 
         await self.assert_async_request_with_retries(
-            async_http_client, call_count, expected_call_count=4, expected_sleep_count=3, retry_config=retry_config
+            async_http_client,
+            call_count,
+            expected_call_count=4,
+            expected_sleep_count=3,
+            retry_config=retry_config,
         )
 
     @pytest.mark.asyncio
@@ -393,7 +421,11 @@ class TestAsyncRetryLogic:
         )
 
         await self.assert_async_request_with_retries(
-            async_http_client, call_count, expected_call_count=4, expected_sleep_count=3, retry_config=retry_config
+            async_http_client,
+            call_count,
+            expected_call_count=4,
+            expected_sleep_count=3,
+            retry_config=retry_config,
         )
 
     @pytest.mark.asyncio
@@ -411,7 +443,11 @@ class TestAsyncRetryLogic:
         )
 
         await self.assert_async_request_with_retries(
-            async_http_client, call_count, expected_call_count=4, expected_sleep_count=3, retry_config=retry_config
+            async_http_client,
+            call_count,
+            expected_call_count=4,
+            expected_sleep_count=3,
+            retry_config=retry_config,
         )
 
     @pytest.mark.asyncio

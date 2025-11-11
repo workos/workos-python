@@ -138,3 +138,6 @@ dmypy.json
 
 # Intellij
 .idea/
+
+# Cursor
+.cursor/

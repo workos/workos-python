@@ -90,13 +90,13 @@ class AuditLogs(AuditLogsModule):
 
         headers["idempotency-key"] = idempotency_key
 
-        # Enable retries for audit log event creation with default settings
+        # Enable retries for audit log event creation with default retryConfig
         self._http_client.request(
             EVENTS_PATH,
             method=REQUEST_METHOD_POST,
             json=json,
             headers=headers,
-            retry_config=RetryConfig(),  # Uses default values: 3 retries, exponential backoff
+            retry_config=RetryConfig(),
         )
 
     def create_export(

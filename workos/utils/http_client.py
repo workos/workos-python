@@ -133,7 +133,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
                 if attempt < retry_config.max_retries and self._is_retryable_error(
                     response
                 ):
-                    delay = self._get_retry_delay(attempt, response, retry_config)
+                    delay = self._get_backoff_delay(attempt, retry_config)
                     time.sleep(delay)
                     continue
 
@@ -142,10 +142,8 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
 
             except Exception as exc:
                 last_exception = exc
-                if attempt < retry_config.max_retries and self._should_retry_exception(
-                    exc
-                ):
-                    delay = self._calculate_backoff_delay(attempt, retry_config)
+                if attempt < retry_config.max_retries and self._is_retryable_exception(exc):
+                    delay = self._get_backoff_delay(attempt, retry_config)
                     time.sleep(delay)
                     continue
                 raise
@@ -270,7 +268,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
                 if attempt < retry_config.max_retries and self._is_retryable_error(
                     response
                 ):
-                    delay = self._get_retry_delay(attempt, response, retry_config)
+                    delay = self._get_backoff_delay(attempt, retry_config)
                     await asyncio.sleep(delay)
                     continue
 
@@ -279,10 +277,8 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
 
             except Exception as exc:
                 last_exception = exc
-                if attempt < retry_config.max_retries and self._should_retry_exception(
-                    exc
-                ):
-                    delay = self._calculate_backoff_delay(attempt, retry_config)
+                if attempt < retry_config.max_retries and self._is_retryable_exception(exc):
+                    delay = self._get_backoff_delay(attempt, retry_config)
                     await asyncio.sleep(delay)
                     continue
                 raise

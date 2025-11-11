@@ -218,15 +218,14 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         """Determine if an error should be retried."""
         return response.status_code in RETRY_STATUS_CODES
 
-    def _get_retry_delay(
-        self, attempt: int, response: httpx.Response, retry_config: RetryConfig
-    ) -> float:
-        """Calculate delay with exponential backoff and jitter."""
-        return self._calculate_backoff_delay(attempt, retry_config)
+    def _is_retryable_exception(self, exc: Exception) -> bool:
+        """Determine if an exception should trigger a retry."""
+        # Retry on network [connection, timeout] exceptions
+        if isinstance(exc, (httpx.ConnectError, httpx.TimeoutException)):
+            return True
+        return False
 
-    def _calculate_backoff_delay(
-        self, attempt: int, retry_config: RetryConfig
-    ) -> float:
+    def _get_backoff_delay(self, attempt: int, retry_config: RetryConfig) -> float:
         """Calculate delay with exponential backoff and jitter.
 
         Args:
@@ -234,7 +233,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             retry_config: The retry configuration
 
         Returns:
-            The delay in seconds to wait before the next retry
+            The delay, in seconds, to wait before the next retry
         """
         # Exponential backoff: base_delay * 2^attempt
         delay: float = retry_config.base_delay * (2**attempt)
@@ -245,13 +244,6 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         # Add jitter: random variation of 0-25% of delay
         jitter_amount: float = delay * retry_config.jitter * random.random()
         return delay + jitter_amount
-
-    def _should_retry_exception(self, exc: Exception) -> bool:
-        """Determine if an exception should trigger a retry."""
-        # Retry on network errors (connection, timeout)
-        if isinstance(exc, (httpx.ConnectError, httpx.TimeoutException)):
-            return True
-        return False
 
     def build_request_url(
         self,

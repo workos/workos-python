@@ -237,13 +237,13 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             The delay in seconds to wait before the next retry
         """
         # Exponential backoff: base_delay * 2^attempt
-        delay = retry_config.base_delay * (2**attempt)
+        delay: float = retry_config.base_delay * (2**attempt)
 
         # Cap at max_delay
         delay = min(delay, retry_config.max_delay)
 
         # Add jitter: random variation of 0-25% of delay
-        jitter_amount = delay * retry_config.jitter * random.random()
+        jitter_amount: float = delay * retry_config.jitter * random.random()
         return delay + jitter_amount
 
     def _should_retry_exception(self, exc: Exception) -> bool:

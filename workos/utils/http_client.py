@@ -142,7 +142,9 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
 
             except Exception as exc:
                 last_exception = exc
-                if attempt < retry_config.max_retries and self._is_retryable_exception(exc):
+                if attempt < retry_config.max_retries and self._is_retryable_exception(
+                    exc
+                ):
                     delay = self._get_backoff_delay(attempt, retry_config)
                     time.sleep(delay)
                     continue
@@ -277,7 +279,9 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
 
             except Exception as exc:
                 last_exception = exc
-                if attempt < retry_config.max_retries and self._is_retryable_exception(exc):
+                if attempt < retry_config.max_retries and self._is_retryable_exception(
+                    exc
+                ):
                     delay = self._get_backoff_delay(attempt, retry_config)
                     await asyncio.sleep(delay)
                     continue

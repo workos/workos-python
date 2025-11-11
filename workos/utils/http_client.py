@@ -1,5 +1,4 @@
 import asyncio
-import random
 import time
 from types import TracebackType
 from typing import Optional, Type, Union
@@ -142,18 +141,14 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             except Exception as exc:
                 last_exception = exc
                 if attempt < retry_config.max_retries and self._should_retry_exception(exc):
-                    delay = retry_config.base_delay * (2 ** attempt)
-                    delay = min(delay, retry_config.max_delay)
-                    jitter_amount = delay * retry_config.jitter * random.random()
-                    time.sleep(delay + jitter_amount)
+                    delay = self._calculate_backoff_delay(attempt, retry_config)
+                    time.sleep(delay)
                     continue
                 raise
         
-        # Should not reach here, but raise last exception if we do
         if last_exception is not None:
             raise last_exception
         
-        # Fallback: this should never happen
         raise RuntimeError("Unexpected state in retry logic")
 
 
@@ -279,10 +274,8 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             except Exception as exc:
                 last_exception = exc
                 if attempt < retry_config.max_retries and self._should_retry_exception(exc):
-                    delay = retry_config.base_delay * (2 ** attempt)
-                    delay = min(delay, retry_config.max_delay)
-                    jitter_amount = delay * retry_config.jitter * random.random()
-                    await asyncio.sleep(delay + jitter_amount)
+                    delay = self._calculate_backoff_delay(attempt, retry_config)
+                    await asyncio.sleep(delay)
                     continue
                 raise
         

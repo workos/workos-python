@@ -217,6 +217,18 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
 
     def _get_retry_delay(self, attempt: int, response: httpx.Response, retry_config: RetryConfig) -> float:
         """Calculate delay with exponential backoff and jitter."""
+        return self._calculate_backoff_delay(attempt, retry_config)
+
+    def _calculate_backoff_delay(self, attempt: int, retry_config: RetryConfig) -> float:
+        """Calculate delay with exponential backoff and jitter.
+        
+        Args:
+            attempt: The current retry attempt number (0-indexed)
+            retry_config: The retry configuration
+            
+        Returns:
+            The delay in seconds to wait before the next retry
+        """
         # Exponential backoff: base_delay * 2^attempt
         delay = retry_config.base_delay * (2 ** attempt)
         

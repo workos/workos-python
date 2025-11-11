@@ -53,6 +53,83 @@ class TestSyncRetryLogic:
             # Verify sleep was called with exponential backoff
             assert mock_sleep.call_count == 2
 
+    def test_retries_on_408_error(self, sync_http_client, retry_config, monkeypatch):
+        """Test that 408 (Request Timeout) errors trigger retry."""
+        call_count = 0
+        
+        def mock_request(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            if call_count < 2:
+                return httpx.Response(status_code=408, json={"error": "Request timeout"})
+            return httpx.Response(status_code=200, json={"success": True})
+        
+        monkeypatch.setattr(sync_http_client._client, "request", MagicMock(side_effect=mock_request))
+        
+        with patch("time.sleep") as mock_sleep:
+            response = sync_http_client.request("test/path", retry_config=retry_config)
+            
+            assert call_count == 2
+            assert response == {"success": True}
+            assert mock_sleep.call_count == 1
+
+    def test_retries_on_502_error(self, sync_http_client, retry_config, monkeypatch):
+        """Test that 502 (Bad Gateway) errors trigger retry."""
+        call_count = 0
+        
+        def mock_request(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            if call_count < 3:
+                return httpx.Response(status_code=502, json={"error": "Bad gateway"})
+            return httpx.Response(status_code=200, json={"success": True})
+        
+        monkeypatch.setattr(sync_http_client._client, "request", MagicMock(side_effect=mock_request))
+        
+        with patch("time.sleep") as mock_sleep:
+            response = sync_http_client.request("test/path", retry_config=retry_config)
+            
+            assert call_count == 3
+            assert response == {"success": True}
+            assert mock_sleep.call_count == 2
+
+    def test_retries_on_504_error(self, sync_http_client, retry_config, monkeypatch):
+        """Test that 504 (Gateway Timeout) errors trigger retry."""
+        call_count = 0
+        
+        def mock_request(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            if call_count < 2:
+                return httpx.Response(status_code=504, json={"error": "Gateway timeout"})
+            return httpx.Response(status_code=200, json={"success": True})
+        
+        monkeypatch.setattr(sync_http_client._client, "request", MagicMock(side_effect=mock_request))
+        
+        with patch("time.sleep") as mock_sleep:
+            response = sync_http_client.request("test/path", retry_config=retry_config)
+            
+            assert call_count == 2
+            assert response == {"success": True}
+            assert mock_sleep.call_count == 1
+
+    def test_no_retry_on_503_error(self, sync_http_client, retry_config, monkeypatch):
+        """Test that 503 (Service Unavailable) errors do NOT trigger retry (not in RETRY_STATUS_CODES)."""
+        call_count = 0
+        
+        def mock_request(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            return httpx.Response(status_code=503, json={"error": "Service unavailable"})
+        
+        monkeypatch.setattr(sync_http_client._client, "request", MagicMock(side_effect=mock_request))
+        
+        with pytest.raises(ServerException):
+            sync_http_client.request("test/path", retry_config=retry_config)
+        
+        # Should only be called once (no retries on 503)
+        assert call_count == 1
+
     def test_retries_on_429_rate_limit(self, sync_http_client, retry_config, monkeypatch):
         """Test that 429 errors do NOT trigger retry (consistent with workos-node)."""
         call_count = 0
@@ -338,6 +415,87 @@ class TestAsyncRetryLogic:
             assert response == {"success": True}
             # Verify sleep was called with exponential backoff
             assert mock_sleep.call_count == 2
+
+    @pytest.mark.asyncio
+    async def test_retries_on_408_error(self, async_http_client, retry_config, monkeypatch):
+        """Test that 408 (Request Timeout) errors trigger retry."""
+        call_count = 0
+        
+        async def mock_request(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            if call_count < 2:
+                return httpx.Response(status_code=408, json={"error": "Request timeout"})
+            return httpx.Response(status_code=200, json={"success": True})
+        
+        monkeypatch.setattr(async_http_client._client, "request", AsyncMock(side_effect=mock_request))
+        
+        with patch("asyncio.sleep") as mock_sleep:
+            response = await async_http_client.request("test/path", retry_config=retry_config)
+            
+            assert call_count == 2
+            assert response == {"success": True}
+            assert mock_sleep.call_count == 1
+
+    @pytest.mark.asyncio
+    async def test_retries_on_502_error(self, async_http_client, retry_config, monkeypatch):
+        """Test that 502 (Bad Gateway) errors trigger retry."""
+        call_count = 0
+        
+        async def mock_request(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            if call_count < 3:
+                return httpx.Response(status_code=502, json={"error": "Bad gateway"})
+            return httpx.Response(status_code=200, json={"success": True})
+        
+        monkeypatch.setattr(async_http_client._client, "request", AsyncMock(side_effect=mock_request))
+        
+        with patch("asyncio.sleep") as mock_sleep:
+            response = await async_http_client.request("test/path", retry_config=retry_config)
+            
+            assert call_count == 3
+            assert response == {"success": True}
+            assert mock_sleep.call_count == 2
+
+    @pytest.mark.asyncio
+    async def test_retries_on_504_error(self, async_http_client, retry_config, monkeypatch):
+        """Test that 504 (Gateway Timeout) errors trigger retry."""
+        call_count = 0
+        
+        async def mock_request(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            if call_count < 2:
+                return httpx.Response(status_code=504, json={"error": "Gateway timeout"})
+            return httpx.Response(status_code=200, json={"success": True})
+        
+        monkeypatch.setattr(async_http_client._client, "request", AsyncMock(side_effect=mock_request))
+        
+        with patch("asyncio.sleep") as mock_sleep:
+            response = await async_http_client.request("test/path", retry_config=retry_config)
+            
+            assert call_count == 2
+            assert response == {"success": True}
+            assert mock_sleep.call_count == 1
+
+    @pytest.mark.asyncio
+    async def test_no_retry_on_503_error(self, async_http_client, retry_config, monkeypatch):
+        """Test that 503 (Service Unavailable) errors do NOT trigger retry (not in RETRY_STATUS_CODES)."""
+        call_count = 0
+        
+        async def mock_request(*args, **kwargs):
+            nonlocal call_count
+            call_count += 1
+            return httpx.Response(status_code=503, json={"error": "Service unavailable"})
+        
+        monkeypatch.setattr(async_http_client._client, "request", AsyncMock(side_effect=mock_request))
+        
+        with pytest.raises(ServerException):
+            await async_http_client.request("test/path", retry_config=retry_config)
+        
+        # Should only be called once (no retries on 503)
+        assert call_count == 1
 
     @pytest.mark.asyncio
     async def test_retries_on_429_rate_limit(self, async_http_client, retry_config, monkeypatch):

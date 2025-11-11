@@ -133,6 +133,9 @@ dmypy.json
 # VSCode
 .vscode/
 
+# Cursor
+.cursor/
+
 # macOS
 .DS_Store
 

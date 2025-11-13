@@ -5,6 +5,7 @@ from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
 
+API_KEY_VALIDATION_PATH = "api_keys/validations"
 
 
 class ApiKeysModule(Protocol):
@@ -33,7 +34,7 @@ class ApiKeys(ApiKeysModule):
 
     def validate_api_key(self, *, value: str) -> ApiKey:
         response = self._http_client.request(
-            "api_keys/validations", method=REQUEST_METHOD_POST, json={
+            API_KEY_VALIDATION_PATH, method=REQUEST_METHOD_POST, json={
                 "value": value}
         )
         return ApiKey.model_validate(response["api_key"])
@@ -47,7 +48,7 @@ class AsyncApiKeys(ApiKeysModule):
 
     async def validate_api_key(self, *, value: str) -> ApiKey:
         response = await self._http_client.request(
-            "api_keys/validations", method=REQUEST_METHOD_POST, json={
+            API_KEY_VALIDATION_PATH, method=REQUEST_METHOD_POST, json={
                 "value": value}
         )
         return ApiKey.model_validate(response["api_key"])

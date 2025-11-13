@@ -126,6 +126,10 @@ class TestAuditLogs:
             assert "idempotency-key" in request_kwargs["headers"]
             idempotency_key = request_kwargs["headers"]["idempotency-key"]
             assert idempotency_key and idempotency_key.strip()
+            # Assert the auto-generated key has the correct prefix
+            assert idempotency_key.startswith("workos-python-")
+            # Assert the key has the expected UUID format after the prefix
+            assert len(idempotency_key) > len("workos-python-")
             assert response is None
 
         def test_throws_unauthorized_exception(

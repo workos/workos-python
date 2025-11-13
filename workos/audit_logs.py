@@ -86,7 +86,7 @@ class AuditLogs(AuditLogsModule):
         headers = {}
         # Auto-generate UUID v4 if not provided
         if idempotency_key is None:
-            idempotency_key = str(uuid.uuid4())
+            idempotency_key = f"workos-python-{uuid.uuid4()}"
 
         headers["idempotency-key"] = idempotency_key
 

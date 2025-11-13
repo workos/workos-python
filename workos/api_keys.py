@@ -6,7 +6,8 @@ from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
 
 
-class ApiKeyModule(Protocol):
+
+class ApiKeysModule(Protocol):
     def validate_api_key(self) -> SyncOrAsync[ApiKey]:
         """Validates the configured API key.
 
@@ -24,7 +25,7 @@ class ApiKeyModule(Protocol):
         ...
 
 
-class ApiKey(ApiKeyModule):
+class ApiKeys(ApiKeysModule):
     _http_client: SyncHTTPClient
 
     def __init__(self, http_client: SyncHTTPClient):
@@ -39,7 +40,7 @@ class ApiKey(ApiKeyModule):
         return ApiKey.model_validate(response)
 
 
-class AsyncApiKey(ApiKeyModule):
+class AsyncApiKeys(ApiKeysModule):
     _http_client: AsyncHTTPClient
 
     def __init__(self, http_client: AsyncHTTPClient):

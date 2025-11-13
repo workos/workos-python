@@ -1,7 +1,7 @@
 from typing import Optional
 from workos.__about__ import __version__
 from workos._base_client import BaseClient
-from workos.api_key import AsyncApiKey
+from workos.api_keys import AsyncApiKeys
 from workos.audit_logs import AuditLogsModule
 from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
@@ -47,9 +47,9 @@ class AsyncClient(BaseClient):
         )
 
     @property
-    def api_keys(self) -> AsyncApiKey:
+    def api_keys(self) -> AsyncApiKeys:
         if not getattr(self, "_api_keys", None):
-            self._api_keys = AsyncApiKey(self._http_client)
+            self._api_keys = AsyncApiKeys(self._http_client)
         return self._api_keys
 
     @property

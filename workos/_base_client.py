@@ -1,22 +1,21 @@
-from abc import abstractmethod
 import os
+from abc import abstractmethod
 from typing import Optional
-from workos.__about__ import __version__
+
 from workos._client_configuration import ClientConfiguration
-from workos.fga import FGAModule
-from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
-from workos.utils.http_client import HTTPClient
-from workos.api_key import ApiKeyModule
+from workos.api_keys import ApiKeysModule
 from workos.audit_logs import AuditLogsModule
 from workos.directory_sync import DirectorySyncModule
 from workos.events import EventsModule
+from workos.fga import FGAModule
 from workos.mfa import MFAModule
-from workos.organizations import OrganizationsModule
 from workos.organization_domains import OrganizationDomainsModule
+from workos.organizations import OrganizationsModule
 from workos.passwordless import PasswordlessModule
 from workos.portal import PortalModule
 from workos.sso import SSOModule
 from workos.user_management import UserManagementModule
+from workos.utils._base_http_client import DEFAULT_REQUEST_TIMEOUT
 from workos.webhooks import WebhooksModule
 
 
@@ -68,7 +67,7 @@ class BaseClient(ClientConfiguration):
 
     @property
     @abstractmethod
-    def api_keys(self) -> ApiKeyModule: ...
+    def api_keys(self) -> ApiKeysModule: ...
 
     @property
     @abstractmethod

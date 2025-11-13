@@ -8,7 +8,7 @@ from workos.utils.request_helper import REQUEST_METHOD_POST
 
 
 class ApiKeysModule(Protocol):
-    def validate_api_key(self) -> SyncOrAsync[ApiKey]:
+    def validate_api_key(self, *, value: str) -> SyncOrAsync[ApiKey]:
         """Validates the configured API key.
 
         Returns:
@@ -31,13 +31,12 @@ class ApiKeys(ApiKeysModule):
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
-    def validate_api_key(self) -> ApiKey:
+    def validate_api_key(self, *, value: str) -> ApiKey:
         response = self._http_client.request(
-            "api_keys/validate",
-            method=REQUEST_METHOD_POST,
+            "api_keys/validations", method=REQUEST_METHOD_POST, json={
+                "value": value}
         )
-
-        return ApiKey.model_validate(response)
+        return ApiKey.model_validate(response["api_key"])
 
 
 class AsyncApiKeys(ApiKeysModule):
@@ -46,10 +45,9 @@ class AsyncApiKeys(ApiKeysModule):
     def __init__(self, http_client: AsyncHTTPClient):
         self._http_client = http_client
 
-    async def validate_api_key(self) -> ApiKey:
+    async def validate_api_key(self, *, value: str) -> ApiKey:
         response = await self._http_client.request(
-            "api_keys/validate",
-            method=REQUEST_METHOD_POST,
+            "api_keys/validations", method=REQUEST_METHOD_POST, json={
+                "value": value}
         )
-
-        return ApiKey.model_validate(response)
+        return ApiKey.model_validate(response["api_key"])

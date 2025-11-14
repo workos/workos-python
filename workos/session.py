@@ -1,8 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Protocol
 
+from functools import lru_cache
 import json
 from typing import Any, Dict, Optional, Union, cast
+
 import jwt
 from jwt import PyJWKClient
 from cryptography.fernet import Fernet
@@ -19,6 +21,11 @@ from workos.typing.sync_or_async import SyncOrAsync
 if TYPE_CHECKING:
     from workos.user_management import UserManagementModule
     from workos.user_management import AsyncUserManagement, UserManagement
+
+
+@lru_cache(maxsize=None)
+def _get_jwks_client(jwks_url: str) -> PyJWKClient:
+    return PyJWKClient(jwks_url)
 
 
 class SessionModule(Protocol):
@@ -46,7 +53,7 @@ class SessionModule(Protocol):
         self.session_data = session_data
         self.cookie_password = cookie_password
 
-        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+        self.jwks = _get_jwks_client(self.user_management.get_jwks_url())
 
         # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
         self.jwk_algorithms = ["RS256"]
@@ -96,10 +103,12 @@ class SessionModule(Protocol):
             session_id=decoded["sid"],
             organization_id=decoded.get("org_id", None),
             role=decoded.get("role", None),
+            roles=decoded.get("roles", None),
             permissions=decoded.get("permissions", None),
             entitlements=decoded.get("entitlements", None),
             user=session["user"],
             impersonator=session.get("impersonator", None),
+            feature_flags=decoded.get("feature_flags", None),
         )
 
     def refresh(
@@ -164,7 +173,7 @@ class Session(SessionModule):
         self.session_data = session_data
         self.cookie_password = cookie_password
 
-        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+        self.jwks = _get_jwks_client(self.user_management.get_jwks_url())
 
         # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
         self.jwk_algorithms = ["RS256"]
@@ -223,10 +232,12 @@ class Session(SessionModule):
                 session_id=decoded["sid"],
                 organization_id=decoded.get("org_id", None),
                 role=decoded.get("role", None),
+                roles=decoded.get("roles", None),
                 permissions=decoded.get("permissions", None),
                 entitlements=decoded.get("entitlements", None),
                 user=auth_response.user,
                 impersonator=auth_response.impersonator,
+                feature_flags=decoded.get("feature_flags", None),
             )
         except Exception as e:
             return RefreshWithSessionCookieErrorResponse(
@@ -254,7 +265,7 @@ class AsyncSession(SessionModule):
         self.session_data = session_data
         self.cookie_password = cookie_password
 
-        self.jwks = PyJWKClient(self.user_management.get_jwks_url())
+        self.jwks = _get_jwks_client(self.user_management.get_jwks_url())
 
         # Algorithms are hardcoded for security reasons. See https://pyjwt.readthedocs.io/en/stable/algorithms.html#specifying-an-algorithm
         self.jwk_algorithms = ["RS256"]
@@ -313,10 +324,12 @@ class AsyncSession(SessionModule):
                 session_id=decoded["sid"],
                 organization_id=decoded.get("org_id", None),
                 role=decoded.get("role", None),
+                roles=decoded.get("roles", None),
                 permissions=decoded.get("permissions", None),
                 entitlements=decoded.get("entitlements", None),
                 user=auth_response.user,
                 impersonator=auth_response.impersonator,
+                feature_flags=decoded.get("feature_flags", None),
             )
         except Exception as e:
             return RefreshWithSessionCookieErrorResponse(

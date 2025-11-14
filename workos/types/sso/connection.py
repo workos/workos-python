@@ -37,6 +37,7 @@ ConnectionType = Literal[
     "PingFederateSAML",
     "PingOneSAML",
     "RipplingSAML",
+    "SalesforceOAuth",
     "SalesforceSAML",
     "ShibbolethGenericSAML",
     "ShibbolethSAML",

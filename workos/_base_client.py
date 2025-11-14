@@ -11,6 +11,7 @@ from workos.directory_sync import DirectorySyncModule
 from workos.events import EventsModule
 from workos.mfa import MFAModule
 from workos.organizations import OrganizationsModule
+from workos.organization_domains import OrganizationDomainsModule
 from workos.passwordless import PasswordlessModule
 from workos.portal import PortalModule
 from workos.sso import SSOModule
@@ -87,6 +88,10 @@ class BaseClient(ClientConfiguration):
     @property
     @abstractmethod
     def organizations(self) -> OrganizationsModule: ...
+
+    @property
+    @abstractmethod
+    def organization_domains(self) -> OrganizationDomainsModule: ...
 
     @property
     @abstractmethod

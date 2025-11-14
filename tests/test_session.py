@@ -1,10 +1,14 @@
-import pytest
-from unittest.mock import AsyncMock, Mock, patch
-import jwt
+import concurrent.futures
 from datetime import datetime, timezone
+from unittest.mock import AsyncMock, Mock, patch
+
+import jwt
+import pytest
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
 
 from tests.conftest import with_jwks_mock
-from workos.session import AsyncSession, Session
+from workos.session import AsyncSession, Session, _get_jwks_client
 from workos.types.user_management.authentication_response import (
     RefreshTokenAuthenticationResponse,
 )
@@ -15,11 +19,14 @@ from workos.types.user_management.session import (
     RefreshWithSessionCookieSuccessResponse,
 )
 
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
-
 
 class SessionFixtures:
+    @pytest.fixture(autouse=True)
+    def clear_jwks_cache(self):
+        _get_jwks_client.cache_clear()
+        yield
+        _get_jwks_client.cache_clear()
+
     @pytest.fixture
     def session_constants(self):
         # Generate RSA key pair for testing
@@ -41,8 +48,10 @@ class SessionFixtures:
             "sid": "session_123",
             "org_id": "organization_123",
             "role": "admin",
+            "roles": ["admin"],
             "permissions": ["read"],
             "entitlements": ["feature_1"],
+            "feature_flags": ["flag1", "flag2"],
             "exp": int(current_datetime.timestamp()) + 3600,
             "iat": int(current_datetime.timestamp()),
         }
@@ -208,6 +217,7 @@ class TestSessionBase(SessionFixtures):
                     "sid": session_constants["SESSION_ID"],
                     "org_id": session_constants["ORGANIZATION_ID"],
                     "role": "admin",
+                    "roles": ["admin"],
                     "permissions": ["read"],
                     "entitlements": ["feature_1"],
                     "exp": int(datetime.now(timezone.utc).timestamp()) + 3600,
@@ -232,8 +242,10 @@ class TestSessionBase(SessionFixtures):
             "sid": session_constants["SESSION_ID"],
             "org_id": session_constants["ORGANIZATION_ID"],
             "role": "admin",
+            "roles": ["admin"],
             "permissions": ["read"],
             "entitlements": ["feature_1"],
+            "feature_flags": ["flag1", "flag2"],
         }
 
         with patch.object(Session, "unseal_data", return_value=mock_session), patch(
@@ -250,8 +262,80 @@ class TestSessionBase(SessionFixtures):
             assert response.session_id == session_constants["SESSION_ID"]
             assert response.organization_id == session_constants["ORGANIZATION_ID"]
             assert response.role == "admin"
+            assert response.roles == ["admin"]
             assert response.permissions == ["read"]
             assert response.entitlements == ["feature_1"]
+            assert response.feature_flags == ["flag1", "flag2"]
+            assert response.user.id == session_constants["USER_ID"]
+            assert response.impersonator is None
+
+    @with_jwks_mock
+    def test_authenticate_success_with_roles(
+        self, session_constants, mock_user_management
+    ):
+        session = Session(
+            user_management=mock_user_management,
+            client_id=session_constants["CLIENT_ID"],
+            session_data=session_constants["SESSION_DATA"],
+            cookie_password=session_constants["COOKIE_PASSWORD"],
+        )
+
+        # Mock the session data that would be unsealed
+        mock_session = {
+            "access_token": jwt.encode(
+                {
+                    "sid": session_constants["SESSION_ID"],
+                    "org_id": session_constants["ORGANIZATION_ID"],
+                    "role": "admin",
+                    "roles": ["admin", "member"],
+                    "permissions": ["read", "write"],
+                    "entitlements": ["feature_1"],
+                    "exp": int(datetime.now(timezone.utc).timestamp()) + 3600,
+                    "iat": int(datetime.now(timezone.utc).timestamp()),
+                },
+                session_constants["PRIVATE_KEY"],
+                algorithm="RS256",
+            ),
+            "user": {
+                "object": "user",
+                "id": session_constants["USER_ID"],
+                "email": "user@example.com",
+                "email_verified": True,
+                "created_at": session_constants["CURRENT_TIMESTAMP"],
+                "updated_at": session_constants["CURRENT_TIMESTAMP"],
+            },
+            "impersonator": None,
+        }
+
+        # Mock the JWT payload that would be decoded
+        mock_jwt_payload = {
+            "sid": session_constants["SESSION_ID"],
+            "org_id": session_constants["ORGANIZATION_ID"],
+            "role": "admin",
+            "roles": ["admin", "member"],
+            "permissions": ["read", "write"],
+            "entitlements": ["feature_1"],
+            "feature_flags": ["flag1", "flag2"],
+        }
+
+        with patch.object(Session, "unseal_data", return_value=mock_session), patch(
+            "jwt.decode", return_value=mock_jwt_payload
+        ), patch.object(
+            session.jwks,
+            "get_signing_key_from_jwt",
+            return_value=Mock(key=session_constants["PUBLIC_KEY"]),
+        ):
+            response = session.authenticate()
+
+            assert isinstance(response, AuthenticateWithSessionCookieSuccessResponse)
+            assert response.authenticated is True
+            assert response.session_id == session_constants["SESSION_ID"]
+            assert response.organization_id == session_constants["ORGANIZATION_ID"]
+            assert response.role == "admin"
+            assert response.roles == ["admin", "member"]
+            assert response.permissions == ["read", "write"]
+            assert response.entitlements == ["feature_1"]
+            assert response.feature_flags == ["flag1", "flag2"]
             assert response.user.id == session_constants["USER_ID"]
             assert response.impersonator is None
 
@@ -328,8 +412,10 @@ class TestSession(SessionFixtures):
                 "sid": session_constants["SESSION_ID"],
                 "org_id": session_constants["ORGANIZATION_ID"],
                 "role": "admin",
+                "roles": ["admin"],
                 "permissions": ["read"],
                 "entitlements": ["feature_1"],
+                "feature_flags": ["flag1", "flag2"],
             },
         ):
             response = session.refresh()
@@ -428,8 +514,10 @@ class TestAsyncSession(SessionFixtures):
                 "sid": session_constants["SESSION_ID"],
                 "org_id": session_constants["ORGANIZATION_ID"],
                 "role": "admin",
+                "roles": ["admin"],
                 "permissions": ["read"],
                 "entitlements": ["feature_1"],
+                "feature_flags": ["flag1", "flag2"],
             },
         ):
             response = await session.refresh()
@@ -491,3 +579,43 @@ class TestAsyncSession(SessionFixtures):
         response = await session.refresh()
 
         assert isinstance(response, RefreshWithSessionCookieSuccessResponse)
+
+
+class TestJWKSCaching:
+    def test_jwks_client_caching_same_url(self):
+        url = "https://api.workos.com/sso/jwks/test"
+
+        client1 = _get_jwks_client(url)
+        client2 = _get_jwks_client(url)
+
+        # Should be the exact same instance
+        assert client1 is client2
+        assert id(client1) == id(client2)
+
+    def test_jwks_client_caching_different_urls(self):
+        url1 = "https://api.workos.com/sso/jwks/client1"
+        url2 = "https://api.workos.com/sso/jwks/client2"
+
+        client1 = _get_jwks_client(url1)
+        client2 = _get_jwks_client(url2)
+
+        # Should be different instances
+        assert client1 is not client2
+        assert id(client1) != id(client2)
+
+    def test_jwks_cache_thread_safety(self):
+        url = "https://api.workos.com/sso/jwks/thread_test"
+        clients = []
+
+        def get_client():
+            return _get_jwks_client(url)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [executor.submit(get_client) for _ in range(10)]
+            clients = [future.result() for future in futures]
+
+        first_client = clients[0]
+        for client in clients[1:]:
+            assert (
+                client is first_client
+            ), "All concurrent calls should return the same instance"

@@ -1,9 +1,9 @@
 from typing import Literal, Union
+
 from pydantic import Field
 from typing_extensions import Annotated
+
 from workos.types.directory_sync import DirectoryGroup
-from workos.types.user_management import OrganizationMembership, User
-from workos.types.webhooks.webhook_model import WebhookModel
 from workos.types.directory_sync.directory_user import DirectoryUser
 from workos.types.events.authentication_payload import (
     AuthenticationEmailVerificationSucceededPayload,
@@ -37,16 +37,18 @@ from workos.types.events.organization_domain_verification_failed_payload import 
     OrganizationDomainVerificationFailedPayload,
 )
 from workos.types.events.session_created_payload import SessionCreatedPayload
+from workos.types.organization_domains import OrganizationDomain
 from workos.types.organizations.organization_common import OrganizationCommon
-from workos.types.organizations.organization_domain import OrganizationDomain
 from workos.types.roles.role import EventRole
 from workos.types.sso.connection import Connection
+from workos.types.user_management import OrganizationMembership, User
 from workos.types.user_management.email_verification import (
     EmailVerificationCommon,
 )
 from workos.types.user_management.invitation import InvitationCommon
 from workos.types.user_management.magic_auth import MagicAuthCommon
 from workos.types.user_management.password_reset import PasswordResetCommon
+from workos.types.webhooks.webhook_model import WebhookModel
 
 # README
 # When adding a new webhook event type, ensure the new webhook class is
@@ -167,8 +169,16 @@ class EmailVerificationCreatedWebhook(WebhookModel[EmailVerificationCommon]):
     event: Literal["email_verification.created"]
 
 
+class InvitationAcceptedWebhook(WebhookModel[InvitationCommon]):
+    event: Literal["invitation.accepted"]
+
+
 class InvitationCreatedWebhook(WebhookModel[InvitationCommon]):
     event: Literal["invitation.created"]
+
+
+class InvitationRevokedWebhook(WebhookModel[InvitationCommon]):
+    event: Literal["invitation.revoked"]
 
 
 class MagicAuthCreatedWebhook(WebhookModel[MagicAuthCommon]):
@@ -195,6 +205,18 @@ class OrganizationDomainVerificationFailedWebhook(
 
 class OrganizationDomainVerifiedWebhook(WebhookModel[OrganizationDomain]):
     event: Literal["organization_domain.verified"]
+
+
+class OrganizationDomainCreatedWebhook(WebhookModel[OrganizationDomain]):
+    event: Literal["organization_domain.created"]
+
+
+class OrganizationDomainUpdatedWebhook(WebhookModel[OrganizationDomain]):
+    event: Literal["organization_domain.updated"]
+
+
+class OrganizationDomainDeletedWebhook(WebhookModel[OrganizationDomain]):
+    event: Literal["organization_domain.deleted"]
 
 
 class OrganizationMembershipCreatedWebhook(WebhookModel[OrganizationMembership]):
@@ -271,11 +293,16 @@ Webhook = Annotated[
         DirectoryUserAddedToGroupWebhook,
         DirectoryUserRemovedFromGroupWebhook,
         EmailVerificationCreatedWebhook,
+        InvitationAcceptedWebhook,
         InvitationCreatedWebhook,
+        InvitationRevokedWebhook,
         MagicAuthCreatedWebhook,
         OrganizationCreatedWebhook,
         OrganizationDeletedWebhook,
         OrganizationUpdatedWebhook,
+        OrganizationDomainCreatedWebhook,
+        OrganizationDomainDeletedWebhook,
+        OrganizationDomainUpdatedWebhook,
         OrganizationDomainVerificationFailedWebhook,
         OrganizationDomainVerifiedWebhook,
         OrganizationMembershipCreatedWebhook,

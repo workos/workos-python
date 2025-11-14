@@ -414,6 +414,7 @@ class TestUserManagement(UserManagementFixtures):
         assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert user.profile_picture_url == "https://example.com/profile-picture.jpg"
         assert user.last_sign_in_at == "2021-06-25T19:07:33.155Z"
+        assert user.locale == "en-US"
 
     def test_get_user_by_external_id(
         self, mock_user, capture_and_mock_http_client_request
@@ -434,6 +435,7 @@ class TestUserManagement(UserManagementFixtures):
         assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
         assert user.profile_picture_url == "https://example.com/profile-picture.jpg"
         assert user.last_sign_in_at == "2021-06-25T19:07:33.155Z"
+        assert user.locale == "en-US"
         assert user.metadata == mock_user["metadata"]
 
     def test_list_users_auto_pagination(
@@ -491,6 +493,29 @@ class TestUserManagement(UserManagementFixtures):
             "email_verified": True,
             "password": "password",
         }
+
+    def test_update_user_with_locale(
+        self, mock_user, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_user, 200
+        )
+
+        params = {
+            "first_name": "Marcelina",
+            "locale": "fr-FR",
+        }
+        user = syncify(
+            self.user_management.update_user(
+                user_id="user_01H7ZGXFP5C6BBQY6Z7277ZCT0", **params
+            )
+        )
+
+        assert request_kwargs["url"].endswith("users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0")
+        assert user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert request_kwargs["method"] == "put"
+        assert request_kwargs["json"]["first_name"] == "Marcelina"
+        assert request_kwargs["json"]["locale"] == "fr-FR"
 
     def test_delete_user(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(
@@ -712,6 +737,37 @@ class TestUserManagement(UserManagementFixtures):
             "email": "admin@foocorp.com",
             "reason": "Debugging an account issue.",
         }
+        assert request_kwargs["json"] == {
+            **params,
+            **base_authentication_params,
+            "grant_type": "authorization_code",
+        }
+
+    def test_authenticate_with_code_with_invitation_token(
+        self,
+        capture_and_mock_http_client_request,
+        mock_auth_response,
+        base_authentication_params,
+    ):
+        params = {
+            "code": "test_code",
+            "code_verifier": "test_code_verifier",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+            "ip_address": "192.0.0.1",
+            "invitation_token": "invitation_token_12345",
+        }
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_auth_response, 200
+        )
+
+        response = syncify(self.user_management.authenticate_with_code(**params))
+
+        assert request_kwargs["url"].endswith("user_management/authenticate")
+        assert request_kwargs["method"] == "post"
+        assert response.user.id == "user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+        assert response.organization_id == "org_12345"
+        assert response.access_token == "access_token_12345"
+        assert response.refresh_token == "refresh_token_12345"
         assert request_kwargs["json"] == {
             **params,
             **base_authentication_params,

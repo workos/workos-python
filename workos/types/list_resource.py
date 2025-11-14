@@ -23,6 +23,7 @@ from workos.types.directory_sync import (
     DirectoryUserWithGroups,
 )
 from workos.types.events import Event
+from workos.types.feature_flags import FeatureFlag
 from workos.types.fga import (
     Warrant,
     AuthorizationResource,
@@ -33,6 +34,7 @@ from workos.types.mfa import AuthenticationFactor
 from workos.types.organizations import Organization
 from workos.types.sso import ConnectionWithDomains
 from workos.types.user_management import Invitation, OrganizationMembership, User
+from workos.types.user_management.session import Session as UserManagementSession
 from workos.types.vault import ObjectDigest
 from workos.types.workos_model import WorkOSModel
 from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT
@@ -46,12 +48,14 @@ ListableResource = TypeVar(
     DirectoryGroup,
     DirectoryUserWithGroups,
     Event,
+    FeatureFlag,
     Invitation,
     Organization,
     OrganizationMembership,
     AuthorizationResource,
     AuthorizationResourceType,
     User,
+    UserManagementSession,
     ObjectDigest,
     Warrant,
     WarrantQueryResult,

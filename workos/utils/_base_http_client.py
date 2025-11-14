@@ -20,6 +20,7 @@ from workos.exceptions import (
     ServerException,
     AuthenticationException,
     AuthorizationException,
+    EmailVerificationRequiredException,
     NotFoundException,
     BadRequestException,
 )
@@ -99,6 +100,11 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             if status_code == 401:
                 raise AuthenticationException(response, response_json)
             elif status_code == 403:
+                if (
+                    response_json is not None
+                    and response_json.get("code") == "email_verification_required"
+                ):
+                    raise EmailVerificationRequiredException(response, response_json)
                 raise AuthorizationException(response, response_json)
             elif status_code == 404:
                 raise NotFoundException(response, response_json)

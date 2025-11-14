@@ -48,6 +48,7 @@ from workos.types.user_management.list_filters import (
 from workos.types.user_management.password_hash_type import PasswordHashType
 from workos.types.user_management.screen_hint import ScreenHintType
 from workos.types.user_management.session import SessionConfig
+from workos.types.user_management.session import Session as UserManagementSession
 from workos.types.user_management.user_management_provider_type import (
     UserManagementProviderType,
 )
@@ -86,6 +87,8 @@ MAGIC_AUTH_DETAIL_PATH = "user_management/magic_auth/{0}"
 MAGIC_AUTH_PATH = "user_management/magic_auth"
 USER_SEND_MAGIC_AUTH_PATH = "user_management/magic_auth/send"
 USER_AUTH_FACTORS_PATH = "user_management/users/{0}/auth_factors"
+USER_SESSIONS_PATH = "user_management/users/{0}/sessions"
+SESSIONS_REVOKE_PATH = "user_management/sessions/revoke"
 EMAIL_VERIFICATION_DETAIL_PATH = "user_management/email_verification/{0}"
 INVITATION_PATH = "user_management/invitations"
 INVITATION_DETAIL_PATH = "user_management/invitations/{0}"
@@ -107,6 +110,12 @@ AuthenticationFactorsListResource = WorkOSListResource[
 
 InvitationsListResource = WorkOSListResource[
     Invitation, InvitationsListFilters, ListMetadata
+]
+
+from workos.types.user_management.list_filters import SessionsListFilters
+
+SessionsListResource = WorkOSListResource[
+    UserManagementSession, SessionsListFilters, ListMetadata
 ]
 
 
@@ -216,6 +225,7 @@ class UserManagementModule(Protocol):
         password_hash_type: Optional[PasswordHashType] = None,
         external_id: Optional[str] = None,
         metadata: Optional[Metadata] = None,
+        locale: Optional[str] = None,
     ) -> SyncOrAsync[User]:
         """Update user attributes.
 
@@ -228,6 +238,7 @@ class UserManagementModule(Protocol):
             password (str): The password to set for the user. (Optional)
             password_hash (str): The hashed password to set for the user, used when migrating from another user store. Mutually exclusive with password. (Optional)
             password_hash_type (str): The algorithm originally used to hash the password, used when providing a password_hash. Valid values are 'bcrypt', `firebase-scrypt`, and `ssha`. (Optional)
+            locale (str): The user's locale. (Optional)
 
         Returns:
             User: Updated User response from WorkOS.
@@ -245,15 +256,24 @@ class UserManagementModule(Protocol):
         ...
 
     def create_organization_membership(
-        self, *, user_id: str, organization_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        user_id: str,
+        organization_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> SyncOrAsync[OrganizationMembership]:
         """Create a new OrganizationMembership for the given Organization and User.
 
         Kwargs:
-            user_id: The Unique ID of the User.
-            organization_id: The Unique ID of the Organization to which the user belongs to.
-            role_slug: The Unique Slug of the Role to which to grant to this membership.
-                If no slug is passed in, the default role will be granted.(Optional)
+            user_id: The unique ID of the User.
+            organization_id: The unique ID of the Organization to which the user belongs to.
+            role_slug: The unique slug of the role to grant to this membership.(Optional)
+            role_slugs: The unique slugs of the roles to grant to this membership.(Optional)
+
+        Note:
+          role_slug and role_slugs are mutually exclusive. If neither is provided,
+          the user will be assigned the organization's default role.
 
         Returns:
             OrganizationMembership: Created OrganizationMembership response from WorkOS.
@@ -261,14 +281,22 @@ class UserManagementModule(Protocol):
         ...
 
     def update_organization_membership(
-        self, *, organization_membership_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        organization_membership_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> SyncOrAsync[OrganizationMembership]:
         """Updates an OrganizationMembership for the given id.
 
         Args:
             organization_membership_id (str):  The unique ID of the Organization Membership.
-            role_slug: The Unique Slug of the Role to which to grant to this membership.
-                If no slug is passed in, it will not be changed (Optional)
+            role_slug: The unique slug of the role to grant to this membership.(Optional)
+            role_slugs: The unique slugs of the roles to grant to this membership.(Optional)
+
+        Note:
+          role_slug and role_slugs are mutually exclusive. If neither is provided,
+          the role(s) of the membership will remain unchanged.
 
         Returns:
             OrganizationMembership: Updated OrganizationMembership response from WorkOS.
@@ -379,7 +407,7 @@ class UserManagementModule(Protocol):
             organization_id (str): The organization_id connection selector is used to initiate SSO for an Organization.
                 The value of this parameter should be a WorkOS Organization ID. (Optional)
             provider (UserManagementProviderType): The provider connection selector is used to initiate SSO using an OAuth-compatible provider.
-                Currently, the supported values for provider are 'authkit', 'AppleOAuth', 'GitHubOAuth, 'GoogleOAuth', and 'MicrosoftOAuth'. (Optional)
+                Currently, the supported values for provider are 'authkit', 'AppleOAuth', 'GitHubOAuth, 'GoogleOAuth', 'MicrosoftOAuth', and 'SalesforceOAuth'. (Optional)
             provider_scopes (Sequence[str]): Can be used to specify additional scopes that will be requested when initiating SSO using an OAuth provider. (Optional)
             domain_hint (str): Can be used to pre-fill the domain field when initiating authentication with Microsoft OAuth,
                 or with a GoogleSAML connection type. (Optional)
@@ -471,6 +499,7 @@ class UserManagementModule(Protocol):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
+        invitation_token: Optional[str] = None,
     ) -> SyncOrAsync[AuthenticationResponse]:
         """Authenticates an OAuth user or a user that is logging in through SSO.
 
@@ -481,6 +510,7 @@ class UserManagementModule(Protocol):
                 url as part of the PKCE flow. This parameter is required when the client secret is not present. (Optional)
             ip_address (str): The IP address of the request from the user who is attempting to authenticate. (Optional)
             user_agent (str): The user agent of the request from the user who is attempting to authenticate. (Optional)
+            invitation_token (str): The token of an Invitation, if required. (Optional)
 
         Returns:
             AuthenticationResponse: Authentication response from WorkOS.
@@ -700,6 +730,18 @@ class UserManagementModule(Protocol):
             User: User response from WorkOS.
         """
         ...
+
+    def list_sessions(
+        self,
+        *,
+        user_id: str,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[PaginationOrder] = "desc",
+    ) -> SyncOrAsync["SessionsListResource"]: ...
+
+    def revoke_session(self, *, session_id: str) -> SyncOrAsync[None]: ...
 
     def get_magic_auth(self, magic_auth_id: str) -> SyncOrAsync[MagicAuth]:
         """Get the details of a Magic Auth object.
@@ -962,6 +1004,7 @@ class UserManagement(UserManagementModule):
         password_hash_type: Optional[PasswordHashType] = None,
         external_id: Optional[str] = None,
         metadata: Optional[Metadata] = None,
+        locale: Optional[str] = None,
     ) -> User:
         json = {
             "first_name": first_name,
@@ -973,6 +1016,7 @@ class UserManagement(UserManagementModule):
             "password_hash_type": password_hash_type,
             "external_id": external_id,
             "metadata": metadata,
+            "locale": locale,
         }
 
         response = self._http_client.request(
@@ -988,12 +1032,18 @@ class UserManagement(UserManagementModule):
         )
 
     def create_organization_membership(
-        self, *, user_id: str, organization_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        user_id: str,
+        organization_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> OrganizationMembership:
         json = {
             "user_id": user_id,
             "organization_id": organization_id,
             "role_slug": role_slug,
+            "role_slugs": role_slugs,
         }
 
         response = self._http_client.request(
@@ -1003,10 +1053,15 @@ class UserManagement(UserManagementModule):
         return OrganizationMembership.model_validate(response)
 
     def update_organization_membership(
-        self, *, organization_membership_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        organization_membership_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> OrganizationMembership:
         json = {
             "role_slug": role_slug,
+            "role_slugs": role_slugs,
         }
 
         response = self._http_client.request(
@@ -1138,6 +1193,7 @@ class UserManagement(UserManagementModule):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
+        invitation_token: Optional[str] = None,
     ) -> AuthKitAuthenticationResponse:
         if (
             session is not None
@@ -1153,6 +1209,7 @@ class UserManagement(UserManagementModule):
             "user_agent": user_agent,
             "code_verifier": code_verifier,
             "session": session,
+            "invitation_token": invitation_token,
         }
 
         return self._authenticate_with(
@@ -1344,6 +1401,52 @@ class UserManagement(UserManagementModule):
         )
 
         return MagicAuth.model_validate(response)
+
+    def list_sessions(
+        self,
+        *,
+        user_id: str,
+        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[PaginationOrder] = "desc",
+    ) -> "SessionsListResource":
+        limit_value: int = limit if limit is not None else DEFAULT_LIST_RESPONSE_LIMIT
+
+        params: ListArgs = {
+            "limit": limit_value,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = self._http_client.request(
+            USER_SESSIONS_PATH.format(user_id),
+            method=REQUEST_METHOD_GET,
+            params=params,
+        )
+
+        list_args: SessionsListFilters = {
+            "limit": limit_value,
+            "before": before,
+            "after": after,
+            "user_id": user_id,
+        }
+        if order is not None:
+            list_args["order"] = order
+
+        return SessionsListResource(
+            list_method=self.list_sessions,
+            list_args=list_args,
+            **ListPage[UserManagementSession](**response).model_dump(),
+        )
+
+    def revoke_session(self, *, session_id: str) -> None:
+        json = {"session_id": session_id}
+
+        self._http_client.request(
+            SESSIONS_REVOKE_PATH, method=REQUEST_METHOD_POST, json=json
+        )
 
     def enroll_auth_factor(
         self,
@@ -1589,6 +1692,7 @@ class AsyncUserManagement(UserManagementModule):
         password_hash_type: Optional[PasswordHashType] = None,
         external_id: Optional[str] = None,
         metadata: Optional[Metadata] = None,
+        locale: Optional[str] = None,
     ) -> User:
         json = {
             "first_name": first_name,
@@ -1600,6 +1704,7 @@ class AsyncUserManagement(UserManagementModule):
             "password_hash_type": password_hash_type,
             "external_id": external_id,
             "metadata": metadata,
+            "locale": locale,
         }
 
         response = await self._http_client.request(
@@ -1614,12 +1719,18 @@ class AsyncUserManagement(UserManagementModule):
         )
 
     async def create_organization_membership(
-        self, *, user_id: str, organization_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        user_id: str,
+        organization_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> OrganizationMembership:
         json = {
             "user_id": user_id,
             "organization_id": organization_id,
             "role_slug": role_slug,
+            "role_slugs": role_slugs,
         }
 
         response = await self._http_client.request(
@@ -1629,10 +1740,15 @@ class AsyncUserManagement(UserManagementModule):
         return OrganizationMembership.model_validate(response)
 
     async def update_organization_membership(
-        self, *, organization_membership_id: str, role_slug: Optional[str] = None
+        self,
+        *,
+        organization_membership_id: str,
+        role_slug: Optional[str] = None,
+        role_slugs: Optional[Sequence[str]] = None,
     ) -> OrganizationMembership:
         json = {
             "role_slug": role_slug,
+            "role_slugs": role_slugs,
         }
 
         response = await self._http_client.request(
@@ -1768,6 +1884,7 @@ class AsyncUserManagement(UserManagementModule):
         code_verifier: Optional[str] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
+        invitation_token: Optional[str] = None,
     ) -> AuthKitAuthenticationResponse:
         if (
             session is not None
@@ -1783,6 +1900,7 @@ class AsyncUserManagement(UserManagementModule):
             "user_agent": user_agent,
             "code_verifier": code_verifier,
             "session": session,
+            "invitation_token": invitation_token,
         }
 
         return await self._authenticate_with(
@@ -1987,6 +2105,52 @@ class AsyncUserManagement(UserManagementModule):
         )
 
         return MagicAuth.model_validate(response)
+
+    async def list_sessions(
+        self,
+        *,
+        user_id: str,
+        limit: Optional[int] = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[PaginationOrder] = "desc",
+    ) -> "SessionsListResource":
+        limit_value: int = limit if limit is not None else DEFAULT_LIST_RESPONSE_LIMIT
+
+        params: ListArgs = {
+            "limit": limit_value,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            USER_SESSIONS_PATH.format(user_id),
+            method=REQUEST_METHOD_GET,
+            params=params,
+        )
+
+        list_args: SessionsListFilters = {
+            "limit": limit_value,
+            "before": before,
+            "after": after,
+            "user_id": user_id,
+        }
+        if order is not None:
+            list_args["order"] = order
+
+        return SessionsListResource(
+            list_method=self.list_sessions,
+            list_args=list_args,
+            **ListPage[UserManagementSession](**response).model_dump(),
+        )
+
+    async def revoke_session(self, *, session_id: str) -> None:
+        json = {"session_id": session_id}
+
+        await self._http_client.request(
+            SESSIONS_REVOKE_PATH, method=REQUEST_METHOD_POST, json=json
+        )
 
     async def enroll_auth_factor(
         self,

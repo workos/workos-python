@@ -1,8 +1,8 @@
-from typing import Sequence, Union, Any, Dict, Literal
-from typing_extensions import Annotated
+from typing import Any, Dict, Literal, Sequence, Union
 
 from pydantic import BeforeValidator
 from pydantic_core.core_schema import ValidationInfo
+from typing_extensions import Annotated
 
 from workos.types.workos_model import WorkOSModel
 
@@ -12,7 +12,7 @@ class FGABaseWarning(WorkOSModel):
     message: str
 
 
-class MissingContextKeysWarning(FGABaseWarning):
+class MissingContextKeysWarning(FGABaseWarning):  # type: ignore[override, unused-ignore]
     code: Literal["missing_context_keys"]
     keys: Sequence[str]
 

@@ -1,5 +1,5 @@
 from typing import Optional
-from workos.__about__ import __version__
+from importlib.metadata import version
 from workos._base_client import BaseClient
 from workos.api_keys import AsyncApiKeys
 from workos.audit_logs import AuditLogsModule
@@ -43,7 +43,7 @@ class AsyncClient(BaseClient):
             api_key=self._api_key,
             base_url=self.base_url,
             client_id=self._client_id,
-            version=__version__,
+            version=version("workos"),
             timeout=self.request_timeout,
         )
 

@@ -9,7 +9,6 @@ from workos.types.list_resource import (
     WorkOSListResource,
 )
 from workos.utils.http_client import SyncHTTPClient
-from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
     REQUEST_METHOD_DELETE,

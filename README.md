@@ -20,7 +20,7 @@ pip install workos
 To install from source, clone the repo and run the following:
 
 ```
-python setup.py install
+python -m pip install .
 ```
 
 ## Configuration

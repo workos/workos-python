@@ -1,4 +1,5 @@
 import pytest
+
 from workos.passwordless import Passwordless
 
 
@@ -53,4 +54,4 @@ class TestPasswordless:
             "/passwordless/sessions/passwordless_session_01EHDAK2BFGWCSZXP9HGZ3VK8C/send"
         )
         assert request_kwargs["method"] == "post"
-        assert response == True
+        assert response

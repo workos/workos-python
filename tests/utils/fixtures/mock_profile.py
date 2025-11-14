@@ -2,7 +2,6 @@ from workos.types.sso import Profile
 
 
 class MockProfile(Profile):
-
     def __init__(self, id: str):
         super().__init__(
             object="profile",

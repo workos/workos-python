@@ -1,4 +1,4 @@
-from typing import Optional, Protocol, Dict, Literal, Union
+from typing import Optional, Protocol
 from workos.types.portal.portal_link import PortalLink
 from workos.types.portal.portal_link_intent import PortalLinkIntent
 from workos.types.portal.portal_link_intent_options import IntentOptions
@@ -36,7 +36,6 @@ class PortalModule(Protocol):
 
 
 class Portal(PortalModule):
-
     _http_client: SyncHTTPClient
 
     def __init__(self, http_client: SyncHTTPClient):

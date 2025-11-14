@@ -616,6 +616,6 @@ class TestJWKSCaching:
 
         first_client = clients[0]
         for client in clients[1:]:
-            assert (
-                client is first_client
-            ), "All concurrent calls should return the same instance"
+            assert client is first_client, (
+                "All concurrent calls should return the same instance"
+            )

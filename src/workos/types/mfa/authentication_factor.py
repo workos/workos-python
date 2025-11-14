@@ -1,12 +1,11 @@
 from typing import Literal, Optional, Union
 
-from workos.types.workos_model import WorkOSModel
 from workos.types.mfa.enroll_authentication_factor_type import (
     SmsAuthenticationFactorType,
     TotpAuthenticationFactorType,
 )
+from workos.types.workos_model import WorkOSModel
 from workos.typing.literals import LiteralOrUntyped
-
 
 AuthenticationFactorType = Literal[
     "generic_otp", SmsAuthenticationFactorType, TotpAuthenticationFactorType
@@ -43,21 +42,21 @@ class AuthenticationFactorBase(WorkOSModel):
     user_id: Optional[str] = None
 
 
-class AuthenticationFactorTotp(AuthenticationFactorBase):
+class AuthenticationFactorTotp(AuthenticationFactorBase):  # type: ignore[override, unused-ignore]
     """Representation of a MFA Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     type: TotpAuthenticationFactorType
     totp: TotpFactor
 
 
-class AuthenticationFactorTotpExtended(AuthenticationFactorBase):
+class AuthenticationFactorTotpExtended(AuthenticationFactorBase):  # type: ignore[override, unused-ignore]
     """Representation of a MFA Authentication Factor Response when enrolling an authentication factor."""
 
     type: TotpAuthenticationFactorType
     totp: ExtendedTotpFactor
 
 
-class AuthenticationFactorSms(AuthenticationFactorBase):
+class AuthenticationFactorSms(AuthenticationFactorBase):  # type: ignore[override, unused-ignore]
     """Representation of a SMS Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     type: SmsAuthenticationFactorType

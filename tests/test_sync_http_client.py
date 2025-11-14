@@ -1,8 +1,8 @@
 from platform import python_version
+from unittest.mock import MagicMock
 
 import httpx
 import pytest
-from unittest.mock import MagicMock
 
 from workos.exceptions import (
     AuthenticationException,
@@ -14,7 +14,6 @@ from workos.exceptions import (
     ServerException,
 )
 from workos.utils.http_client import SyncHTTPClient
-
 
 STATUS_CODE_TO_EXCEPTION_MAPPING = [
     (400, BadRequestException),
@@ -244,7 +243,7 @@ class TestSyncHTTPClient(object):
         try:
             self.http_client.request("bad_place")
         except ServerException as ex:
-            assert ex.message == None
+            assert ex.message is None
             assert ex.request_id == request_id
             assert ex.__class__ == ServerException
 

@@ -14,7 +14,6 @@ QueryParameters = Dict[str, QueryParameterValue]
 
 
 class RequestHelper:
-
     @classmethod
     def build_parameterized_url(cls, url: str, **params: QueryParameterValue) -> str:
         escaped_params = {k: urllib.parse.quote(str(v)) for k, v in params.items()}

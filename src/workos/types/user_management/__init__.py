@@ -7,6 +7,6 @@ from .magic_auth import *
 from .organization_membership import *
 from .password_hash_type import *
 from .password_reset import *
-from .user_management_provider_type import *
-from .user import *
 from .session import *
+from .user import *
+from .user_management_provider_type import *

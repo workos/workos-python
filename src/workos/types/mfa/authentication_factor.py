@@ -43,21 +43,21 @@ class AuthenticationFactorBase(WorkOSModel):
     user_id: Optional[str] = None
 
 
-class AuthenticationFactorTotp(AuthenticationFactorBase):
+class AuthenticationFactorTotp(AuthenticationFactorBase):  # type: ignore[override]
     """Representation of a MFA Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     type: TotpAuthenticationFactorType
     totp: TotpFactor
 
 
-class AuthenticationFactorTotpExtended(AuthenticationFactorBase):
+class AuthenticationFactorTotpExtended(AuthenticationFactorBase):  # type: ignore[override]
     """Representation of a MFA Authentication Factor Response when enrolling an authentication factor."""
 
     type: TotpAuthenticationFactorType
     totp: ExtendedTotpFactor
 
 
-class AuthenticationFactorSms(AuthenticationFactorBase):
+class AuthenticationFactorSms(AuthenticationFactorBase):  # type: ignore[override]
     """Representation of a SMS Authentication Factor Response as returned by WorkOS through the MFA feature."""
 
     type: SmsAuthenticationFactorType

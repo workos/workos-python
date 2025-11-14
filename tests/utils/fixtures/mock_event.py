@@ -2,7 +2,6 @@ import datetime
 
 from workos.types.events import DirectoryActivatedEvent
 from workos.types.events.directory_payload_with_legacy_fields import (
-    DirectoryPayloadWithLegacyFields,
     DirectoryPayloadWithLegacyFieldsForEventsApi,
 )
 

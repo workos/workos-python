@@ -4,6 +4,7 @@ import pytest
 
 from workos.audit_logs import AuditLogEvent, AuditLogs
 from workos.exceptions import AuthenticationException, BadRequestException
+from workos.types.audit_logs.audit_log_event_response import AuditLogEventResponse
 
 
 class _TestSetup:
@@ -84,7 +85,9 @@ class TestAuditLogs:
                 "organization_id": organization_id,
                 "event": event,
             }
-            assert response is None
+            assert response is not None
+            assert response.success is True
+            assert isinstance(response, AuditLogEventResponse)
 
         def test_sends_idempotency_key(
             self, mock_audit_log_event, capture_and_mock_http_client_request
@@ -104,7 +107,8 @@ class TestAuditLogs:
             )
 
             assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
-            assert response is None
+            assert response is not None
+            assert response.success is True
 
         def test_auto_generates_idempotency_key(
             self, mock_audit_log_event, capture_and_mock_http_client_request
@@ -130,7 +134,8 @@ class TestAuditLogs:
             assert idempotency_key.startswith("workos-python-")
             # Assert the key has the expected UUID format after the prefix
             assert len(idempotency_key) > len("workos-python-")
-            assert response is None
+            assert response is not None
+            assert response.success is True
 
         def test_throws_unauthorized_exception(
             self, mock_audit_log_event, mock_http_client_with_response
@@ -177,6 +182,74 @@ class TestAuditLogs:
                     excinfo.message
                     == "Audit Log could not be processed due to missing or incorrect data."
                 )
+
+        def test_handles_missing_success_field(
+            self, mock_audit_log_event, mock_http_client_with_response
+        ):
+            """Test that schema validation fails when response is missing required fields."""
+            organization_id = "org_123456789"
+
+            # Mock response missing the 'success' field
+            mock_http_client_with_response(
+                self.http_client,
+                {},  # Empty response
+                200,
+            )
+
+            with pytest.raises(Exception) as excinfo:  # Pydantic will raise ValidationError
+                self.audit_logs.create_event(
+                    organization_id=organization_id,
+                    event=mock_audit_log_event,
+                )
+
+            # Assert that validation error occurred
+            assert "success" in str(excinfo.value).lower() or "validation" in str(
+                excinfo.value
+            ).lower()
+
+        def test_handles_invalid_success_type(
+            self, mock_audit_log_event, mock_http_client_with_response
+        ):
+            """Test that schema validation fails when response has incorrect field types."""
+            organization_id = "org_123456789"
+
+            # Mock response with wrong type for 'success' field (non-coercible value)
+            mock_http_client_with_response(
+                self.http_client,
+                {"success": ["invalid", "list"]},  # List instead of boolean
+                200,
+            )
+
+            with pytest.raises(Exception) as excinfo:  # Pydantic will raise ValidationError
+                self.audit_logs.create_event(
+                    organization_id=organization_id,
+                    event=mock_audit_log_event,
+                )
+
+            # Assert that validation error occurred
+            assert excinfo.value is not None
+
+        def test_handles_malformed_json_response(
+            self, mock_audit_log_event, mock_http_client_with_response
+        ):
+            """Test that schema validation fails when response is completely malformed."""
+            organization_id = "org_123456789"
+
+            # Mock response with unexpected structure
+            mock_http_client_with_response(
+                self.http_client,
+                {"unexpected": "data", "structure": 123},
+                200,
+            )
+
+            with pytest.raises(Exception) as excinfo:
+                self.audit_logs.create_event(
+                    organization_id=organization_id,
+                    event=mock_audit_log_event,
+                )
+
+            # Assert that validation error occurred
+            assert excinfo.value is not None
 
     class TestCreateExport(_TestSetup):
         def test_succeeds(self, mock_http_client_with_response):

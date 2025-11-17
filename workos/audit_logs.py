@@ -3,6 +3,7 @@ from typing import Optional, Protocol, Sequence
 
 from workos.types.audit_logs import AuditLogExport
 from workos.types.audit_logs.audit_log_event import AuditLogEvent
+from workos.types.audit_logs.audit_log_event_response import AuditLogEventResponse
 from workos.utils._base_http_client import RetryConfig
 from workos.utils.http_client import SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_GET, REQUEST_METHOD_POST
@@ -20,7 +21,7 @@ class AuditLogsModule(Protocol):
         organization_id: str,
         event: AuditLogEvent,
         idempotency_key: Optional[str] = None,
-    ) -> None:
+    ) -> AuditLogEventResponse:
         """Create an Audit Logs event.
 
         Kwargs:
@@ -28,7 +29,7 @@ class AuditLogsModule(Protocol):
             event (AuditLogEvent): An AuditLogEvent object.
             idempotency_key (str): Idempotency key. (Optional)
         Returns:
-            None
+            AuditLogEventResponse: Response indicating success
         """
         ...
 
@@ -80,7 +81,7 @@ class AuditLogs(AuditLogsModule):
         organization_id: str,
         event: AuditLogEvent,
         idempotency_key: Optional[str] = None,
-    ) -> None:
+    ) -> AuditLogEventResponse:
         json = {"organization_id": organization_id, "event": event}
 
         headers = {}
@@ -91,13 +92,15 @@ class AuditLogs(AuditLogsModule):
         headers["idempotency-key"] = idempotency_key
 
         # Enable retries for audit log event creation with default retryConfig
-        self._http_client.request(
+        response = self._http_client.request(
             EVENTS_PATH,
             method=REQUEST_METHOD_POST,
             json=json,
             headers=headers,
             retry_config=RetryConfig(),
         )
+
+        return AuditLogEventResponse.model_validate(response)
 
     def create_export(
         self,

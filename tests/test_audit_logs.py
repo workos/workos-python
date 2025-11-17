@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+from pydantic import ValidationError
 
 from workos.audit_logs import AuditLogEvent, AuditLogs
 from workos.exceptions import AuthenticationException, BadRequestException
@@ -196,19 +197,11 @@ class TestAuditLogs:
                 200,
             )
 
-            with pytest.raises(
-                Exception
-            ) as excinfo:  # Pydantic will raise ValidationError
+            with pytest.raises(ValidationError):
                 self.audit_logs.create_event(
                     organization_id=organization_id,
                     event=mock_audit_log_event,
                 )
-
-            # Assert that validation error occurred
-            assert (
-                "success" in str(excinfo.value).lower()
-                or "validation" in str(excinfo.value).lower()
-            )
 
         def test_handles_invalid_success_type(
             self, mock_audit_log_event, mock_http_client_with_response
@@ -223,16 +216,11 @@ class TestAuditLogs:
                 200,
             )
 
-            with pytest.raises(
-                Exception
-            ) as excinfo:  # Pydantic will raise ValidationError
+            with pytest.raises(ValidationError):
                 self.audit_logs.create_event(
                     organization_id=organization_id,
                     event=mock_audit_log_event,
                 )
-
-            # Assert that validation error occurred
-            assert excinfo.value is not None
 
         def test_handles_malformed_json_response(
             self, mock_audit_log_event, mock_http_client_with_response
@@ -247,14 +235,11 @@ class TestAuditLogs:
                 200,
             )
 
-            with pytest.raises(Exception) as excinfo:
+            with pytest.raises(ValidationError):
                 self.audit_logs.create_event(
                     organization_id=organization_id,
                     event=mock_audit_log_event,
                 )
-
-            # Assert that validation error occurred
-            assert excinfo.value is not None
 
     class TestCreateExport(_TestSetup):
         def test_succeeds(self, mock_http_client_with_response):

@@ -5,4 +5,3 @@ class AuditLogEventResponse(WorkOSModel):
     """Response from creating an audit log event."""
 
     success: bool
-

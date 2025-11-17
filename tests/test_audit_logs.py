@@ -196,16 +196,19 @@ class TestAuditLogs:
                 200,
             )
 
-            with pytest.raises(Exception) as excinfo:  # Pydantic will raise ValidationError
+            with pytest.raises(
+                Exception
+            ) as excinfo:  # Pydantic will raise ValidationError
                 self.audit_logs.create_event(
                     organization_id=organization_id,
                     event=mock_audit_log_event,
                 )
 
             # Assert that validation error occurred
-            assert "success" in str(excinfo.value).lower() or "validation" in str(
-                excinfo.value
-            ).lower()
+            assert (
+                "success" in str(excinfo.value).lower()
+                or "validation" in str(excinfo.value).lower()
+            )
 
         def test_handles_invalid_success_type(
             self, mock_audit_log_event, mock_http_client_with_response
@@ -220,7 +223,9 @@ class TestAuditLogs:
                 200,
             )
 
-            with pytest.raises(Exception) as excinfo:  # Pydantic will raise ValidationError
+            with pytest.raises(
+                Exception
+            ) as excinfo:  # Pydantic will raise ValidationError
                 self.audit_logs.create_event(
                     organization_id=organization_id,
                     event=mock_audit_log_event,

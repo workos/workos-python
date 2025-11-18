@@ -94,6 +94,7 @@ INVITATION_PATH = "user_management/invitations"
 INVITATION_DETAIL_PATH = "user_management/invitations/{0}"
 INVITATION_DETAIL_BY_TOKEN_PATH = "user_management/invitations/by_token/{0}"
 INVITATION_REVOKE_PATH = "user_management/invitations/{0}/revoke"
+INVITATION_RESEND_PATH = "user_management/invitations/{0}/resend"
 PASSWORD_RESET_PATH = "user_management/password_reset"
 PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
 
@@ -896,6 +897,17 @@ class UserManagementModule(Protocol):
         """
         ...
 
+    def resend_invitation(self, invitation_id: str) -> SyncOrAsync[Invitation]:
+        """Resends an existing Invitation.
+
+        Args:
+            invitation_id (str):  The unique ID of the Invitation.
+
+        Returns:
+            Invitation: Invitation response from WorkOS.
+        """
+        ...
+
 
 class UserManagement(UserManagementModule):
     _http_client: SyncHTTPClient
@@ -1580,6 +1592,13 @@ class UserManagement(UserManagementModule):
     def revoke_invitation(self, invitation_id: str) -> Invitation:
         response = self._http_client.request(
             INVITATION_REVOKE_PATH.format(invitation_id), method=REQUEST_METHOD_POST
+        )
+
+        return Invitation.model_validate(response)
+
+    def resend_invitation(self, invitation_id: str) -> Invitation:
+        response = self._http_client.request(
+            INVITATION_RESEND_PATH.format(invitation_id), method=REQUEST_METHOD_POST
         )
 
         return Invitation.model_validate(response)
@@ -2283,6 +2302,13 @@ class AsyncUserManagement(UserManagementModule):
     async def revoke_invitation(self, invitation_id: str) -> Invitation:
         response = await self._http_client.request(
             INVITATION_REVOKE_PATH.format(invitation_id), method=REQUEST_METHOD_POST
+        )
+
+        return Invitation.model_validate(response)
+
+    async def resend_invitation(self, invitation_id: str) -> Invitation:
+        response = await self._http_client.request(
+            INVITATION_RESEND_PATH.format(invitation_id), method=REQUEST_METHOD_POST
         )
 
         return Invitation.model_validate(response)

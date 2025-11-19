@@ -1194,3 +1194,59 @@ class TestUserManagement(UserManagementFixtures):
         )
         assert request_kwargs["method"] == "post"
         assert isinstance(invitation, Invitation)
+
+    def test_resend_invitation(
+        self, capture_and_mock_http_client_request, mock_invitation
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_invitation, 200
+        )
+
+        invitation = syncify(self.user_management.resend_invitation("invitation_ABCDE"))
+
+        assert request_kwargs["url"].endswith(
+            "user_management/invitations/invitation_ABCDE/resend"
+        )
+        assert request_kwargs["method"] == "post"
+        assert isinstance(invitation, Invitation)
+        assert invitation.id == "invitation_ABCDE"
+
+    def test_resend_invitation_not_found(self, capture_and_mock_http_client_request):
+        error_response = {
+            "message": "Invitation not found",
+            "code": "not_found",
+        }
+        capture_and_mock_http_client_request(self.http_client, error_response, 404)
+
+        with pytest.raises(Exception):
+            syncify(self.user_management.resend_invitation("invitation_nonexistent"))
+
+    def test_resend_invitation_expired(self, capture_and_mock_http_client_request):
+        error_response = {
+            "message": "Invite has expired.",
+            "code": "invite_expired",
+        }
+        capture_and_mock_http_client_request(self.http_client, error_response, 400)
+
+        with pytest.raises(Exception):
+            syncify(self.user_management.resend_invitation("invitation_expired"))
+
+    def test_resend_invitation_revoked(self, capture_and_mock_http_client_request):
+        error_response = {
+            "message": "Invite has been revoked.",
+            "code": "invite_revoked",
+        }
+        capture_and_mock_http_client_request(self.http_client, error_response, 400)
+
+        with pytest.raises(Exception):
+            syncify(self.user_management.resend_invitation("invitation_revoked"))
+
+    def test_resend_invitation_accepted(self, capture_and_mock_http_client_request):
+        error_response = {
+            "message": "Invite has already been accepted.",
+            "code": "invite_accepted",
+        }
+        capture_and_mock_http_client_request(self.http_client, error_response, 400)
+
+        with pytest.raises(Exception):
+            syncify(self.user_management.resend_invitation("invitation_accepted"))

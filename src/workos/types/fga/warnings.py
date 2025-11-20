@@ -12,7 +12,7 @@ class FGABaseWarning(WorkOSModel):
     message: str
 
 
-class MissingContextKeysWarning(FGABaseWarning):  # type: ignore[override]
+class MissingContextKeysWarning(FGABaseWarning):  # type: ignore[override, unused-ignore]
     code: Literal["missing_context_keys"]
     keys: Sequence[str]
 

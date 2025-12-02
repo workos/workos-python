@@ -49,4 +49,5 @@ class MockDirectoryUser(DirectoryUserWithGroups):
                 ],
             },
             role=InlineRole(slug="member"),
+            roles=[InlineRole(slug="member")],
         )

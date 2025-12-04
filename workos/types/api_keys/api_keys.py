@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal, Optional, Sequence
 
 from workos.types.workos_model import WorkOSModel
 
@@ -15,6 +15,6 @@ class ApiKey(WorkOSModel):
     name: str
     obfuscated_value: str
     last_used_at: Optional[str] = None
-    permissions: list[str]
+    permissions: Sequence[str]
     created_at: str
     updated_at: str

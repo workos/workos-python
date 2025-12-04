@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional
 
 from workos.types.workos_model import WorkOSModel
 
@@ -14,7 +14,7 @@ class ApiKey(WorkOSModel):
     owner: ApiKeyOwner
     name: str
     obfuscated_value: str
-    last_used_at: str | None = None
+    last_used_at: Optional[str] = None
     permissions: list[str]
     created_at: str
     updated_at: str

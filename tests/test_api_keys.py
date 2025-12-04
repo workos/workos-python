@@ -4,7 +4,6 @@ import pytest
 from tests.utils.fixtures.mock_api_key import MockApiKey
 from tests.utils.syncify import syncify
 from workos.api_keys import API_KEY_VALIDATION_PATH, ApiKeys, AsyncApiKeys
-from workos.exceptions import AuthenticationException
 
 
 @pytest.mark.sync_and_async(ApiKeys, AsyncApiKeys)
@@ -44,9 +43,8 @@ class TestApiKeys:
     ):
         mock_http_client_with_response(
             module_instance._http_client,
-            {"message": "Invalid API key", "error": "invalid_api_key"},
-            401,
+            {"api_key": None},
+            200,
         )
 
-        with pytest.raises(AuthenticationException):
-            syncify(module_instance.validate_api_key(value="invalid-key"))
+        assert syncify(module_instance.validate_api_key(value="invalid-key")) is None

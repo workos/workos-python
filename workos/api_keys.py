@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Optional, Protocol
 
 from workos.types.api_keys import ApiKey
 from workos.typing.sync_or_async import SyncOrAsync
@@ -6,22 +6,19 @@ from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.request_helper import REQUEST_METHOD_POST
 
 API_KEY_VALIDATION_PATH = "api_keys/validations"
+RESOURCE_OBJECT_PATH = "api_key"
 
 
 class ApiKeysModule(Protocol):
-    def validate_api_key(self, *, value: str) -> SyncOrAsync[ApiKey]:
-        """Validates the configured API key.
+    def validate_api_key(self, *, value: str) -> SyncOrAsync[Optional[ApiKey]]:
+        """Validate an API key.
+
+        Kwargs:
+            value (str): API key value
 
         Returns:
-            ApiKey: The validated API key details containing
-                information about the key's name and usage
-
-        Raises:
-            AuthenticationException: If the API key is invalid or
-                unauthorized (401)
-            NotFoundException: If the API key is not found (404)
-            ServerException: If the API server encounters an error
-                (5xx)
+            Optional[ApiKey]: Returns ApiKey resource object
+                if supplied value was valid, None if it was not
         """
         ...
 
@@ -32,12 +29,13 @@ class ApiKeys(ApiKeysModule):
     def __init__(self, http_client: SyncHTTPClient):
         self._http_client = http_client
 
-    def validate_api_key(self, *, value: str) -> ApiKey:
+    def validate_api_key(self, *, value: str) -> Optional[ApiKey]:
         response = self._http_client.request(
-            API_KEY_VALIDATION_PATH, method=REQUEST_METHOD_POST, json={
-                "value": value}
+            API_KEY_VALIDATION_PATH, method=REQUEST_METHOD_POST, json={"value": value}
         )
-        return ApiKey.model_validate(response["api_key"])
+        if response.get(RESOURCE_OBJECT_PATH) is None:
+            return None
+        return ApiKey.model_validate(response[RESOURCE_OBJECT_PATH])
 
 
 class AsyncApiKeys(ApiKeysModule):
@@ -46,9 +44,10 @@ class AsyncApiKeys(ApiKeysModule):
     def __init__(self, http_client: AsyncHTTPClient):
         self._http_client = http_client
 
-    async def validate_api_key(self, *, value: str) -> ApiKey:
+    async def validate_api_key(self, *, value: str) -> Optional[ApiKey]:
         response = await self._http_client.request(
-            API_KEY_VALIDATION_PATH, method=REQUEST_METHOD_POST, json={
-                "value": value}
+            API_KEY_VALIDATION_PATH, method=REQUEST_METHOD_POST, json={"value": value}
         )
-        return ApiKey.model_validate(response["api_key"])
+        if response.get(RESOURCE_OBJECT_PATH) is None:
+            return None
+        return ApiKey.model_validate(response[RESOURCE_OBJECT_PATH])

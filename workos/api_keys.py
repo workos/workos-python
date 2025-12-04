@@ -31,8 +31,7 @@ class ApiKeys(ApiKeysModule):
 
     def validate_api_key(self, *, value: str) -> Optional[ApiKey]:
         response = self._http_client.request(
-            API_KEY_VALIDATION_PATH, method=REQUEST_METHOD_POST, json={
-                "value": value}
+            API_KEY_VALIDATION_PATH, method=REQUEST_METHOD_POST, json={"value": value}
         )
         if response.get(RESOURCE_OBJECT_ATTRIBUTE_NAME) is None:
             return None
@@ -47,8 +46,7 @@ class AsyncApiKeys(ApiKeysModule):
 
     async def validate_api_key(self, *, value: str) -> Optional[ApiKey]:
         response = await self._http_client.request(
-            API_KEY_VALIDATION_PATH, method=REQUEST_METHOD_POST, json={
-                "value": value}
+            API_KEY_VALIDATION_PATH, method=REQUEST_METHOD_POST, json={"value": value}
         )
         if response.get(RESOURCE_OBJECT_ATTRIBUTE_NAME) is None:
             return None

@@ -22,6 +22,7 @@ class Profile(WorkOSModel):
     last_name: Optional[str] = None
     idp_id: str
     role: Optional[ProfileRole] = None
+    roles: Optional[Sequence[ProfileRole]] = None
     groups: Optional[Sequence[str]] = None
     custom_attributes: Optional[Mapping[str, Any]] = None
     raw_attributes: Optional[Mapping[str, Any]] = None

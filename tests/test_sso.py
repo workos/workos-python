@@ -30,6 +30,7 @@ class SSOFixtures:
             first_name=None,
             last_name=None,
             role=None,
+            roles=None,
             groups=None,
             raw_attributes={},
         ).dict()

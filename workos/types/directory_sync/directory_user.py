@@ -38,6 +38,7 @@ class DirectoryUser(WorkOSModel):
     created_at: str
     updated_at: str
     role: Optional[InlineRole] = None
+    roles: Optional[Sequence[InlineRole]] = None
 
     def primary_email(self) -> Union[DirectoryUserEmail, None]:
         return next((email for email in self.emails if email.primary), None)

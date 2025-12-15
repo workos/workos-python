@@ -10,4 +10,4 @@ from .event_type import *
 from .event import *
 from .organization_domain_verification_failed_payload import *
 from .previous_attributes import *
-from .session_created_payload import *
+from .session_payload import *

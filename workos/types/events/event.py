@@ -36,7 +36,10 @@ from workos.types.events.event_model import EventModel
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
-from workos.types.events.session_created_payload import SessionCreatedPayload
+from workos.types.events.session_payload import (
+    SessionCreatedPayload,
+    SessionRevokedPayload,
+)
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organization_domains import OrganizationDomain
 from workos.types.roles.role import EventRole
@@ -249,6 +252,10 @@ class SessionCreatedEvent(EventModel[SessionCreatedPayload]):
     event: Literal["session.created"]
 
 
+class SessionRevokedEvent(EventModel[SessionRevokedPayload]):
+    event: Literal["session.revoked"]
+
+
 class UserCreatedEvent(EventModel[User]):
     event: Literal["user.created"]
 
@@ -308,6 +315,7 @@ Event = Annotated[
         RoleDeletedEvent,
         RoleUpdatedEvent,
         SessionCreatedEvent,
+        SessionRevokedEvent,
         UserCreatedEvent,
         UserDeletedEvent,
         UserUpdatedEvent,

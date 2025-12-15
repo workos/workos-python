@@ -36,9 +36,9 @@ from workos.types.events.organization_domain_verification_failed_payload import 
     OrganizationDomainVerificationFailedPayload,
 )
 
-from workos.types.events.session_payload import(
+from workos.types.events.session_payload import (
     SessionCreatedPayload,
-    SessionRevokedPayload
+    SessionRevokedPayload,
 )
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organization_domains import OrganizationDomain

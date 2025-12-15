@@ -35,7 +35,11 @@ from workos.types.events.directory_user_with_previous_attributes import (
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
-from workos.types.events.session_created_payload import SessionCreatedPayload
+
+from workos.types.events.session_payload import(
+    SessionCreatedPayload,
+    SessionRevokedPayload
+)
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organization_domains import OrganizationDomain
 from workos.types.roles.role import EventRole
@@ -81,6 +85,7 @@ EventPayload = TypeVar(
     OrganizationMembership,
     PasswordResetCommon,
     SessionCreatedPayload,
+    SessionRevokedPayload,
     User,
 )
 

@@ -1655,7 +1655,7 @@ class UserManagement(UserManagementModule):
             params=list_params,
         )
 
-        return WorkOSListResource[FeatureFlag, FeatureFlagListFilters, ListMetadata](
+        return FeatureFlagsListResource(
             list_method=self.list_feature_flags,
             list_args=list_params,
             **ListPage[FeatureFlag](**response).model_dump(),
@@ -2393,7 +2393,7 @@ class AsyncUserManagement(UserManagementModule):
             params=list_params,
         )
 
-        return WorkOSListResource[FeatureFlag, FeatureFlagListFilters, ListMetadata](
+        return FeatureFlagsListResource(
             list_method=self.list_feature_flags,
             list_args=list_params,
             **ListPage[FeatureFlag](**response).model_dump(),

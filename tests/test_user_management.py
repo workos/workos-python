@@ -6,6 +6,7 @@ import pytest
 
 from tests.utils.fixtures.mock_auth_factor_totp import MockAuthenticationFactorTotp
 from tests.utils.fixtures.mock_email_verification import MockEmailVerification
+from tests.utils.fixtures.mock_feature_flag import MockFeatureFlag
 from tests.utils.fixtures.mock_invitation import MockInvitation
 from tests.utils.fixtures.mock_magic_auth import MockMagicAuth
 from tests.utils.fixtures.mock_organization_membership import MockOrganizationMembership
@@ -145,6 +146,14 @@ class UserManagementFixtures:
     def mock_invitations_multiple_pages(self):
         invitations_list = [MockInvitation(id=str(i)).dict() for i in range(40)]
         return list_response_of(data=invitations_list)
+
+    @pytest.fixture
+    def mock_feature_flags(self):
+        return {
+            "data": [MockFeatureFlag(id=f"flag_{str(i)}").dict() for i in range(2)],
+            "object": "list",
+            "list_metadata": {"before": None, "after": None},
+        }
 
 
 class TestUserManagementBase(UserManagementFixtures):
@@ -1250,3 +1259,28 @@ class TestUserManagement(UserManagementFixtures):
 
         with pytest.raises(Exception):
             syncify(self.user_management.resend_invitation("invitation_accepted"))
+
+    def test_list_feature_flags(
+        self, mock_feature_flags, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_feature_flags, 200
+        )
+
+        feature_flags_response = syncify(
+            self.user_management.list_feature_flags(
+                user_id="user_01H7ZGXFP5C6BBQY6Z7277ZCT0"
+            )
+        )
+
+        def to_dict(x):
+            return x.dict()
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith(
+            "/user_management/users/user_01H7ZGXFP5C6BBQY6Z7277ZCT0/feature-flags"
+        )
+        assert (
+            list(map(to_dict, feature_flags_response.data))
+            == mock_feature_flags["data"]
+        )

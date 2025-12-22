@@ -2,8 +2,9 @@
 # Clean out the dist directory so only the current release gets uploaded
 rm dist/*
 
-# Build the distribution
-python3 setup.py sdist bdist_wheel
+# Build the package using uv
+uv build --sdist --wheel
 
-# Upload the distribution to PyPi via twine
-twine upload dist/*
+# Upload the distribution to PyPi via uv
+uv publish
+

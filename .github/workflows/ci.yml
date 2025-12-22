@@ -17,29 +17,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python }}
-          cache: "pip"
-          cache-dependency-path: setup.py
+          enable-cache: true
 
       - name: Install dependencies
-        run: |
-          pip install -e .[dev]
+        run: uv sync --locked --dev
 
       - name: Check formatting
-        run: black --check .
+        run: uv run ruff format --check .
 
       - name: Lint
-        run: |
-          flake8 . --extend-exclude .devbox --count --select=E9,F7,F82 --show-source --statistics
-          flake8 . --extend-exclude .devbox --count --exit-zero --max-complexity=10 --statistics
+        run: uv run ruff check --extend-exclude .devbox
 
       - name: Type Check
-        run: mypy
+        run: uv run mypy
 
       - name: Test
-        run: python -m pytest
+        run: uv run pytest

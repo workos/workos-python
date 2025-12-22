@@ -1,7 +1,5 @@
 from enum import Enum
-from typing import Optional, Sequence, TypedDict, Union
-
-from typing_extensions import Literal
+from typing import Literal, Optional, Sequence, TypedDict, Union
 
 from workos.types.user_management.impersonator import Impersonator
 from workos.types.user_management.user import User

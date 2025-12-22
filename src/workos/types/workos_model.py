@@ -14,7 +14,7 @@ class WorkOSModel(BaseModel):
         by_alias: bool = False,
         exclude_unset: bool = False,
         exclude_defaults: bool = False,
-        exclude_none: bool = False
+        exclude_none: bool = False,
     ) -> Dict[str, Any]:
         return self.model_dump(
             include=include,

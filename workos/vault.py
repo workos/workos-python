@@ -37,6 +37,17 @@ class VaultModule(Protocol):
         """
         ...
 
+    def read_object_by_name(self, *, name: str) -> VaultObject:
+        """
+        Get a Vault object by name with the value decrypted.
+
+        Kwargs:
+            name (str): The unique name of the object.
+        Returns:
+            VaultObject: A vault object with metadata, name and decrypted value.
+        """
+        ...
+
     def list_objects(
         self,
         *,
@@ -224,6 +235,24 @@ class Vault(VaultModule):
             RequestHelper.build_parameterized_url(
                 "vault/v1/kv/{object_id}",
                 object_id=object_id,
+            ),
+            method=REQUEST_METHOD_GET,
+        )
+
+        return VaultObject.model_validate(response)
+
+    def read_object_by_name(
+        self,
+        *,
+        name: str,
+    ) -> VaultObject:
+        if not name:
+            raise ValueError("Incomplete arguments: 'name' is a required argument")
+
+        response = self._http_client.request(
+            RequestHelper.build_parameterized_url(
+                "vault/v1/kv/name/{name}",
+                name=name,
             ),
             method=REQUEST_METHOD_GET,
         )

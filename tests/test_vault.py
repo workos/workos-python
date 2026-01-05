@@ -107,6 +107,34 @@ class TestVault:
         ):
             self.vault.read_object(object_id=None)
 
+    def test_read_object_by_name_success(
+        self, mock_vault_object, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_vault_object, 200
+        )
+
+        vault_object = self.vault.read_object_by_name(name="test-secret")
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/vault/v1/kv/name/test-secret")
+        assert vault_object.id == "vault_01234567890abcdef"
+        assert vault_object.name == "test-secret"
+        assert vault_object.value == "secret-value"
+        assert vault_object.metadata.environment_id == "env_01234567890abcdef"
+
+    def test_read_object_by_name_missing_name(self):
+        with pytest.raises(
+            ValueError, match="Incomplete arguments: 'name' is a required argument"
+        ):
+            self.vault.read_object_by_name(name="")
+
+    def test_read_object_by_name_none_name(self):
+        with pytest.raises(
+            ValueError, match="Incomplete arguments: 'name' is a required argument"
+        ):
+            self.vault.read_object_by_name(name=None)
+
     def test_list_objects_default_params(
         self, mock_vault_objects_list, capture_and_mock_http_client_request
     ):

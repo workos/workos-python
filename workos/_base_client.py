@@ -10,6 +10,7 @@ from workos.events import EventsModule
 from workos.fga import FGAModule
 from workos.mfa import MFAModule
 from workos.organization_domains import OrganizationDomainsModule
+from workos.pipes import PipesModule
 from workos.organizations import OrganizationsModule
 from workos.passwordless import PasswordlessModule
 from workos.portal import PortalModule
@@ -100,6 +101,10 @@ class BaseClient(ClientConfiguration):
     @property
     @abstractmethod
     def passwordless(self) -> PasswordlessModule: ...
+
+    @property
+    @abstractmethod
+    def pipes(self) -> PipesModule: ...
 
     @property
     @abstractmethod

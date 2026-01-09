@@ -8,6 +8,7 @@ from workos.fga import FGA
 from workos.organizations import Organizations
 from workos.organization_domains import OrganizationDomains
 from workos.passwordless import Passwordless
+from workos.pipes import Pipes
 from workos.portal import Portal
 from workos.sso import SSO
 from workos.webhooks import Webhooks
@@ -101,6 +102,12 @@ class SyncClient(BaseClient):
         if not getattr(self, "_passwordless", None):
             self._passwordless = Passwordless(self._http_client)
         return self._passwordless
+
+    @property
+    def pipes(self) -> Pipes:
+        if not getattr(self, "_pipes", None):
+            self._pipes = Pipes(self._http_client)
+        return self._pipes
 
     @property
     def portal(self) -> Portal:

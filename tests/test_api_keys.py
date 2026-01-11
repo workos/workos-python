@@ -3,7 +3,12 @@ import pytest
 
 from tests.utils.fixtures.mock_api_key import MockApiKey
 from tests.utils.syncify import syncify
-from workos.api_keys import API_KEY_VALIDATION_PATH, ApiKeys, AsyncApiKeys
+from workos.api_keys import (
+    API_KEYS_PATH,
+    API_KEY_VALIDATION_PATH,
+    ApiKeys,
+    AsyncApiKeys,
+)
 
 
 @pytest.mark.sync_and_async(ApiKeys, AsyncApiKeys)
@@ -48,3 +53,18 @@ class TestApiKeys:
         )
 
         assert syncify(module_instance.validate_api_key(value="invalid-key")) is None
+
+    def test_delete_api_key(
+        self,
+        module_instance,
+        capture_and_mock_http_client_request,
+    ):
+        api_key_id = "api_key_01234567890"
+        request_kwargs = capture_and_mock_http_client_request(
+            module_instance._http_client, {}, 204
+        )
+
+        syncify(module_instance.delete_api_key(api_key_id))
+
+        assert request_kwargs["url"].endswith(f"{API_KEYS_PATH}/{api_key_id}")
+        assert request_kwargs["method"] == "delete"

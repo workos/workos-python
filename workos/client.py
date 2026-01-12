@@ -1,12 +1,14 @@
 from typing import Optional
 from workos.__about__ import __version__
 from workos._base_client import BaseClient
+from workos.api_keys import ApiKeys
 from workos.audit_logs import AuditLogs
 from workos.directory_sync import DirectorySync
 from workos.fga import FGA
 from workos.organizations import Organizations
 from workos.organization_domains import OrganizationDomains
 from workos.passwordless import Passwordless
+from workos.pipes import Pipes
 from workos.portal import Portal
 from workos.sso import SSO
 from workos.webhooks import Webhooks
@@ -44,6 +46,12 @@ class SyncClient(BaseClient):
             version=__version__,
             timeout=self.request_timeout,
         )
+
+    @property
+    def api_keys(self) -> ApiKeys:
+        if not getattr(self, "_api_keys", None):
+            self._api_keys = ApiKeys(self._http_client)
+        return self._api_keys
 
     @property
     def sso(self) -> SSO:
@@ -94,6 +102,12 @@ class SyncClient(BaseClient):
         if not getattr(self, "_passwordless", None):
             self._passwordless = Passwordless(self._http_client)
         return self._passwordless
+
+    @property
+    def pipes(self) -> Pipes:
+        if not getattr(self, "_pipes", None):
+            self._pipes = Pipes(self._http_client)
+        return self._pipes
 
     @property
     def portal(self) -> Portal:

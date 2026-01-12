@@ -50,6 +50,7 @@ EventType = Literal[
     "role.deleted",
     "role.updated",
     "session.created",
+    "session.revoked",
     "user.created",
     "user.deleted",
     "user.updated",

@@ -2,6 +2,8 @@ from typing import Awaitable, Optional, Protocol, Sequence, Type, Union, cast
 from urllib.parse import urlencode
 from workos._client_configuration import ClientConfiguration
 from workos.session import AsyncSession, Session
+from workos.types.feature_flags import FeatureFlag
+from workos.types.feature_flags.list_filters import FeatureFlagListFilters
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -94,8 +96,10 @@ INVITATION_PATH = "user_management/invitations"
 INVITATION_DETAIL_PATH = "user_management/invitations/{0}"
 INVITATION_DETAIL_BY_TOKEN_PATH = "user_management/invitations/by_token/{0}"
 INVITATION_REVOKE_PATH = "user_management/invitations/{0}/revoke"
+INVITATION_RESEND_PATH = "user_management/invitations/{0}/resend"
 PASSWORD_RESET_PATH = "user_management/password_reset"
 PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
+USER_FEATURE_FLAGS_PATH = "user_management/users/{0}/feature-flags"
 
 
 UsersListResource = WorkOSListResource[User, UsersListFilters, ListMetadata]
@@ -110,6 +114,10 @@ AuthenticationFactorsListResource = WorkOSListResource[
 
 InvitationsListResource = WorkOSListResource[
     Invitation, InvitationsListFilters, ListMetadata
+]
+
+FeatureFlagsListResource = WorkOSListResource[
+    FeatureFlag, FeatureFlagListFilters, ListMetadata
 ]
 
 from workos.types.user_management.list_filters import SessionsListFilters
@@ -896,6 +904,40 @@ class UserManagementModule(Protocol):
         """
         ...
 
+    def resend_invitation(self, invitation_id: str) -> SyncOrAsync[Invitation]:
+        """Resends an existing Invitation.
+
+        Args:
+            invitation_id (str):  The unique ID of the Invitation.
+
+        Returns:
+            Invitation: Invitation response from WorkOS.
+        """
+        ...
+
+    def list_feature_flags(
+        self,
+        user_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[FeatureFlagsListResource]:
+        """Retrieve a list of feature flags for a user
+
+        Args:
+            user_id (str): User's unique identifier
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided Feature Flag ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided Feature Flag ID. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
+
+        Returns:
+            FeatureFlagsListResource: Feature flags list response from WorkOS.
+        """
+        ...
+
 
 class UserManagement(UserManagementModule):
     _http_client: SyncHTTPClient
@@ -1583,6 +1625,41 @@ class UserManagement(UserManagementModule):
         )
 
         return Invitation.model_validate(response)
+
+    def resend_invitation(self, invitation_id: str) -> Invitation:
+        response = self._http_client.request(
+            INVITATION_RESEND_PATH.format(invitation_id), method=REQUEST_METHOD_POST
+        )
+
+        return Invitation.model_validate(response)
+
+    def list_feature_flags(
+        self,
+        user_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> FeatureFlagsListResource:
+        list_params: FeatureFlagListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = self._http_client.request(
+            USER_FEATURE_FLAGS_PATH.format(user_id),
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return FeatureFlagsListResource(
+            list_method=self.list_feature_flags,
+            list_args=list_params,
+            **ListPage[FeatureFlag](**response).model_dump(),
+        )
 
 
 class AsyncUserManagement(UserManagementModule):
@@ -2286,3 +2363,38 @@ class AsyncUserManagement(UserManagementModule):
         )
 
         return Invitation.model_validate(response)
+
+    async def resend_invitation(self, invitation_id: str) -> Invitation:
+        response = await self._http_client.request(
+            INVITATION_RESEND_PATH.format(invitation_id), method=REQUEST_METHOD_POST
+        )
+
+        return Invitation.model_validate(response)
+
+    async def list_feature_flags(
+        self,
+        user_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> FeatureFlagsListResource:
+        list_params: FeatureFlagListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            USER_FEATURE_FLAGS_PATH.format(user_id),
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return FeatureFlagsListResource(
+            list_method=self.list_feature_flags,
+            list_args=list_params,
+            **ListPage[FeatureFlag](**response).model_dump(),
+        )

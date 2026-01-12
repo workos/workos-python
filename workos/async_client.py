@@ -1,6 +1,7 @@
 from typing import Optional
 from workos.__about__ import __version__
 from workos._base_client import BaseClient
+from workos.api_keys import AsyncApiKeys
 from workos.audit_logs import AuditLogsModule
 from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
@@ -9,6 +10,7 @@ from workos.mfa import MFAModule
 from workos.organizations import AsyncOrganizations
 from workos.organization_domains import AsyncOrganizationDomains
 from workos.passwordless import PasswordlessModule
+from workos.pipes import AsyncPipes
 from workos.portal import PortalModule
 from workos.sso import AsyncSSO
 from workos.user_management import AsyncUserManagement
@@ -44,6 +46,12 @@ class AsyncClient(BaseClient):
             version=__version__,
             timeout=self.request_timeout,
         )
+
+    @property
+    def api_keys(self) -> AsyncApiKeys:
+        if not getattr(self, "_api_keys", None):
+            self._api_keys = AsyncApiKeys(self._http_client)
+        return self._api_keys
 
     @property
     def sso(self) -> AsyncSSO:
@@ -94,6 +102,12 @@ class AsyncClient(BaseClient):
         raise NotImplementedError(
             "Passwordless APIs are not yet supported in the async client."
         )
+
+    @property
+    def pipes(self) -> AsyncPipes:
+        if not getattr(self, "_pipes", None):
+            self._pipes = AsyncPipes(self._http_client)
+        return self._pipes
 
     @property
     def portal(self) -> PortalModule:

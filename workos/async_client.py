@@ -10,6 +10,7 @@ from workos.mfa import MFAModule
 from workos.organizations import AsyncOrganizations
 from workos.organization_domains import AsyncOrganizationDomains
 from workos.passwordless import PasswordlessModule
+from workos.pipes import AsyncPipes
 from workos.portal import PortalModule
 from workos.sso import AsyncSSO
 from workos.user_management import AsyncUserManagement
@@ -101,6 +102,12 @@ class AsyncClient(BaseClient):
         raise NotImplementedError(
             "Passwordless APIs are not yet supported in the async client."
         )
+
+    @property
+    def pipes(self) -> AsyncPipes:
+        if not getattr(self, "_pipes", None):
+            self._pipes = AsyncPipes(self._http_client)
+        return self._pipes
 
     @property
     def portal(self) -> PortalModule:

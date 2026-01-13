@@ -34,4 +34,8 @@ jobs:
       - name: Build
         run: uv build
       - name: Publish
-        run: uv publish
+        env:
+          TWINE_NON_INTERACTIVE: true
+          TWINE_USERNAME: "__token__"
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+        run: uvx twine upload dist/* --skip-existing

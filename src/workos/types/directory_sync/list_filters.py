@@ -12,10 +12,10 @@ class DirectoryUserListFilters(
     ListArgs,
     total=False,
 ):
-    group: Optional[str]
-    directory: Optional[str]
+    group_id: Optional[str]
+    directory_id: Optional[str]
 
 
 class DirectoryGroupListFilters(ListArgs, total=False):
-    user: Optional[str]
-    directory: Optional[str]
+    user_id: Optional[str]
+    directory_id: Optional[str]

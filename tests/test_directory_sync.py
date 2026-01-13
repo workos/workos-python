@@ -145,7 +145,7 @@ class TestDirectorySync:
         assert request_kwargs["url"].endswith("/directory_users")
         assert request_kwargs["method"] == "get"
         assert request_kwargs["params"] == {
-            "directory": "directory_id",
+            "directory_id": "directory_id",
             "limit": 10,
             "order": "desc",
         }
@@ -163,7 +163,7 @@ class TestDirectorySync:
         assert request_kwargs["url"].endswith("/directory_users")
         assert request_kwargs["method"] == "get"
         assert request_kwargs["params"] == {
-            "group": "directory_grp_id",
+            "group_id": "directory_grp_id",
             "limit": 10,
             "order": "desc",
         }
@@ -181,7 +181,7 @@ class TestDirectorySync:
         assert request_kwargs["url"].endswith("/directory_groups")
         assert request_kwargs["method"] == "get"
         assert request_kwargs["params"] == {
-            "directory": "directory_id",
+            "directory_id": "directory_id",
             "limit": 10,
             "order": "desc",
         }
@@ -199,7 +199,7 @@ class TestDirectorySync:
         assert request_kwargs["url"].endswith("/directory_groups")
         assert request_kwargs["method"] == "get"
         assert request_kwargs["params"] == {
-            "user": "directory_user_id",
+            "user_id": "directory_user_id",
             "limit": 10,
             "order": "desc",
         }

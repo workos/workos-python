@@ -4,7 +4,7 @@ import httpx
 
 from workos.utils._base_http_client import RetryConfig
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
-from workos.exceptions import ServerException, BadRequestException
+from workos.exceptions import ServerException
 
 
 class TestSyncRetryLogic:

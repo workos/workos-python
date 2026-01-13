@@ -1,14 +1,14 @@
 import pytest
+
 from tests.utils.fixtures.mock_vault_object import (
-    MockVaultObject,
-    MockObjectVersion,
     MockObjectDigest,
     MockObjectMetadata,
+    MockObjectVersion,
+    MockVaultObject,
 )
 from tests.utils.list_resource import list_response_of
-from tests.utils.syncify import syncify
-from workos.vault import Vault
 from workos.types.vault.key import KeyContext
+from workos.vault import Vault
 
 
 class TestVault:
@@ -107,6 +107,34 @@ class TestVault:
         ):
             self.vault.read_object(object_id=None)
 
+    def test_read_object_by_name_success(
+        self, mock_vault_object, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_vault_object, 200
+        )
+
+        vault_object = self.vault.read_object_by_name(name="test-secret")
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/vault/v1/kv/name/test-secret")
+        assert vault_object.id == "vault_01234567890abcdef"
+        assert vault_object.name == "test-secret"
+        assert vault_object.value == "secret-value"
+        assert vault_object.metadata.environment_id == "env_01234567890abcdef"
+
+    def test_read_object_by_name_missing_name(self):
+        with pytest.raises(
+            ValueError, match="Incomplete arguments: 'name' is a required argument"
+        ):
+            self.vault.read_object_by_name(name="")
+
+    def test_read_object_by_name_none_name(self):
+        with pytest.raises(
+            ValueError, match="Incomplete arguments: 'name' is a required argument"
+        ):
+            self.vault.read_object_by_name(name=None)
+
     def test_list_objects_default_params(
         self, mock_vault_objects_list, capture_and_mock_http_client_request
     ):
@@ -132,9 +160,7 @@ class TestVault:
             self.http_client, mock_vault_objects_list, 200
         )
 
-        vault_objects = self.vault.list_objects(
-            limit=5, before="vault_before", after="vault_after"
-        )
+        self.vault.list_objects(limit=5, before="vault_before", after="vault_after")
 
         assert request_kwargs["method"] == "get"
         assert request_kwargs["url"].endswith("/vault/v1/kv")
@@ -257,7 +283,7 @@ class TestVault:
             self.http_client, mock_vault_object, 200
         )
 
-        vault_object = self.vault.update_object(
+        self.vault.update_object(
             object_id="vault_01234567890abcdef",
             value="updated-value",
             version_check="version_123",

@@ -12,30 +12,25 @@ defaults:
     shell: bash
 
 jobs:
-  test:
+  pypi:
     name: Publish to PyPI
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-          cache: "pip"
-          cache-dependency-path: setup.py
-
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
       - name: Install dependencies
-        run: |
-          pip install -e .[dev]
-
+        run: uv sync --locked
       - name: Test
-        run: |
-          python -m pytest
-
+        run: uv run pytest
+      - name: Build
+        run: uv build
       - name: Publish
         env:
           TWINE_NON_INTERACTIVE: true
           TWINE_USERNAME: "__token__"
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-        run: |
-          python setup.py sdist bdist_wheel
-          twine upload dist/* --skip-existing
+        run: uvx twine upload dist/* --skip-existing

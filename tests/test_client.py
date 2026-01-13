@@ -37,6 +37,9 @@ class TestClient:
         os.environ.pop("WORKOS_API_KEY")
         os.environ.pop("WORKOS_CLIENT_ID")
 
+    def test_initialize_api_keys(self, default_client):
+        assert bool(default_client.api_keys)
+
     def test_initialize_sso(self, default_client):
         assert bool(default_client.sso)
 
@@ -111,6 +114,9 @@ class TestAsyncClient:
 
         os.environ.pop("WORKOS_API_KEY")
         os.environ.pop("WORKOS_CLIENT_ID")
+
+    def test_initialize_api_keys(self, default_client):
+        assert bool(default_client.api_keys)
 
     def test_initialize_directory_sync(self, default_client):
         assert bool(default_client.directory_sync)

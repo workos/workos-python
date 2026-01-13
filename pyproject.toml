@@ -1,0 +1,63 @@
+[project]
+name = "workos"
+version = "5.38.1"
+description = "WorkOS Python Client"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "WorkOS", email = "team@workos.com" }]
+requires-python = ">=3.8"
+
+dependencies = [
+  "cryptography>=44.0.2",
+  "httpx~=0.28.1",
+  "pydantic>=2.10.4",
+  "pyjwt>=2.10.0 ; python_full_version >= '3.9'",
+  "pyjwt>=2.9.0,<2.10 ; python_full_version == '3.8.*'",
+]
+
+[project.urls]
+Homepage = "https://workos.com/docs/sdks/python"
+Documentation = "https://workos.com/docs/reference"
+Changelog = "https://workos.com/docs/sdks/python"
+
+[dependency-groups]
+dev = [
+  { include-group = "test" },
+  { include-group = "lint" },
+  { include-group = "type_check" },
+]
+test = [
+  "pytest==8.3.4",
+  "pytest-asyncio==0.23.8",
+  "pytest-cov==5.0.0",
+  "six==1.17.0",
+]
+lint = ["ruff==0.14.5"]
+type_check = ["mypy==1.14.1"]
+
+
+[tool.mypy]
+packages = "workos"
+warn_return_any = true
+warn_unused_configs = true
+warn_unreachable = true
+warn_redundant_casts = true
+warn_no_return = true
+warn_unused_ignores = true
+implicit_reexport = true
+strict_equality = true
+strict = true
+
+[tool.ruff.lint.per-file-ignores]
+"*/__init__.py" = ["F401", "F403"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.uv.build-backend]
+source-include = ["py.typed"]
+source-exclude = ["tests*"]
+
+[build-system]
+requires = ["uv_build>=0.8.15,<0.9.0"]
+build-backend = "uv_build"

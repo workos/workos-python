@@ -176,7 +176,6 @@ class DirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> DirectoryUsersListResource:
-
         list_params: DirectoryUserListFilters = {
             "limit": limit,
             "before": before,
@@ -185,9 +184,9 @@ class DirectorySync(DirectorySyncModule):
         }
 
         if group_id is not None:
-            list_params["group"] = group_id
+            list_params["group_id"] = group_id
         if directory_id is not None:
-            list_params["directory"] = directory_id
+            list_params["directory_id"] = directory_id
 
         response = self._http_client.request(
             "directory_users",
@@ -219,9 +218,9 @@ class DirectorySync(DirectorySyncModule):
         }
 
         if user_id is not None:
-            list_params["user"] = user_id
+            list_params["user_id"] = user_id
         if directory_id is not None:
-            list_params["directory"] = directory_id
+            list_params["directory_id"] = directory_id
 
         response = self._http_client.request(
             "directory_groups",
@@ -315,7 +314,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> DirectoryUsersListResource:
-
         list_params: DirectoryUserListFilters = {
             "limit": limit,
             "before": before,
@@ -324,9 +322,9 @@ class AsyncDirectorySync(DirectorySyncModule):
         }
 
         if group_id is not None:
-            list_params["group"] = group_id
+            list_params["group_id"] = group_id
         if directory_id is not None:
-            list_params["directory"] = directory_id
+            list_params["directory_id"] = directory_id
 
         response = await self._http_client.request(
             "directory_users",
@@ -357,9 +355,9 @@ class AsyncDirectorySync(DirectorySyncModule):
             "order": order,
         }
         if user_id is not None:
-            list_params["user"] = user_id
+            list_params["user_id"] = user_id
         if directory_id is not None:
-            list_params["directory"] = directory_id
+            list_params["directory_id"] = directory_id
 
         response = await self._http_client.request(
             "directory_groups",

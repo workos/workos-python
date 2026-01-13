@@ -1,5 +1,5 @@
+from importlib.metadata import version
 from typing import Optional
-from workos.__about__ import __version__
 from workos._base_client import BaseClient
 from workos.api_keys import ApiKeys
 from workos.audit_logs import AuditLogs
@@ -32,18 +32,20 @@ class SyncClient(BaseClient):
         client_id: Optional[str] = None,
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
+        jwt_leeway: float = 0,
     ):
         super().__init__(
             api_key=api_key,
             client_id=client_id,
             base_url=base_url,
             request_timeout=request_timeout,
+            jwt_leeway=jwt_leeway,
         )
         self._http_client = SyncHTTPClient(
             api_key=self._api_key,
             base_url=self.base_url,
             client_id=self._client_id,
-            version=__version__,
+            version=version("workos"),
             timeout=self.request_timeout,
         )
 

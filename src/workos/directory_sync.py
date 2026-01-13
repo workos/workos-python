@@ -176,7 +176,6 @@ class DirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> DirectoryUsersListResource:
-
         list_params: DirectoryUserListFilters = {
             "limit": limit,
             "before": before,
@@ -315,7 +314,6 @@ class AsyncDirectorySync(DirectorySyncModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> DirectoryUsersListResource:
-
         list_params: DirectoryUserListFilters = {
             "limit": limit,
             "before": before,

@@ -27,6 +27,7 @@ class BaseClient(ClientConfiguration):
     _base_url: str
     _client_id: str
     _request_timeout: int
+    _jwt_leeway: float
 
     def __init__(
         self,
@@ -35,6 +36,7 @@ class BaseClient(ClientConfiguration):
         client_id: Optional[str],
         base_url: Optional[str] = None,
         request_timeout: Optional[int] = None,
+        jwt_leeway: float = 0,
     ) -> None:
         api_key = api_key or os.getenv("WORKOS_API_KEY")
         if api_key is None:
@@ -65,6 +67,8 @@ class BaseClient(ClientConfiguration):
             if request_timeout
             else int(os.getenv("WORKOS_REQUEST_TIMEOUT", DEFAULT_REQUEST_TIMEOUT))
         )
+
+        self._jwt_leeway = jwt_leeway
 
     @property
     @abstractmethod
@@ -136,3 +140,7 @@ class BaseClient(ClientConfiguration):
     @property
     def request_timeout(self) -> int:
         return self._request_timeout
+
+    @property
+    def jwt_leeway(self) -> float:
+        return self._jwt_leeway

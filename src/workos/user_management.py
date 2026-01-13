@@ -1,5 +1,6 @@
 from typing import Awaitable, Optional, Protocol, Sequence, Type, Union, cast
 from urllib.parse import urlencode
+
 from workos._client_configuration import ClientConfiguration
 from workos.session import AsyncSession, Session
 from workos.types.feature_flags import FeatureFlag
@@ -38,19 +39,20 @@ from workos.types.user_management.authenticate_with_common import (
     AuthenticateWithTotpParameters,
 )
 from workos.types.user_management.authentication_response import (
-    AuthKitAuthenticationResponse,
     AuthenticationResponseType,
+    AuthKitAuthenticationResponse,
 )
 from workos.types.user_management.list_filters import (
     AuthenticationFactorsListFilters,
     InvitationsListFilters,
     OrganizationMembershipsListFilters,
+    SessionsListFilters,
     UsersListFilters,
 )
 from workos.types.user_management.password_hash_type import PasswordHashType
 from workos.types.user_management.screen_hint import ScreenHintType
-from workos.types.user_management.session import SessionConfig
 from workos.types.user_management.session import Session as UserManagementSession
+from workos.types.user_management.session import SessionConfig
 from workos.types.user_management.user_management_provider_type import (
     UserManagementProviderType,
 )
@@ -59,11 +61,11 @@ from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
 from workos.utils.pagination_order import PaginationOrder
 from workos.utils.request_helper import (
     DEFAULT_LIST_RESPONSE_LIMIT,
-    RESPONSE_TYPE_CODE,
-    REQUEST_METHOD_POST,
-    REQUEST_METHOD_GET,
     REQUEST_METHOD_DELETE,
+    REQUEST_METHOD_GET,
+    REQUEST_METHOD_POST,
     REQUEST_METHOD_PUT,
+    RESPONSE_TYPE_CODE,
     QueryParameters,
     RequestHelper,
 )
@@ -119,8 +121,6 @@ InvitationsListResource = WorkOSListResource[
 FeatureFlagsListResource = WorkOSListResource[
     FeatureFlag, FeatureFlagListFilters, ListMetadata
 ]
-
-from workos.types.user_management.list_filters import SessionsListFilters
 
 SessionsListResource = WorkOSListResource[
     UserManagementSession, SessionsListFilters, ListMetadata
@@ -956,6 +956,7 @@ class UserManagement(UserManagementModule):
             client_id=self._http_client.client_id,
             session_data=sealed_session,
             cookie_password=cookie_password,
+            jwt_leeway=self._client_configuration.jwt_leeway,
         )
 
     def get_user(self, user_id: str) -> User:
@@ -1679,6 +1680,7 @@ class AsyncUserManagement(UserManagementModule):
             client_id=self._http_client.client_id,
             session_data=sealed_session,
             cookie_password=cookie_password,
+            jwt_leeway=self._client_configuration.jwt_leeway,
         )
 
     async def get_user(self, user_id: str) -> User:

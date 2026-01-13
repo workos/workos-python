@@ -1,14 +1,14 @@
 import pytest
+
 from tests.utils.fixtures.mock_vault_object import (
-    MockVaultObject,
-    MockObjectVersion,
     MockObjectDigest,
     MockObjectMetadata,
+    MockObjectVersion,
+    MockVaultObject,
 )
 from tests.utils.list_resource import list_response_of
-from tests.utils.syncify import syncify
-from workos.vault import Vault
 from workos.types.vault.key import KeyContext
+from workos.vault import Vault
 
 
 class TestVault:
@@ -160,9 +160,7 @@ class TestVault:
             self.http_client, mock_vault_objects_list, 200
         )
 
-        vault_objects = self.vault.list_objects(
-            limit=5, before="vault_before", after="vault_after"
-        )
+        self.vault.list_objects(limit=5, before="vault_before", after="vault_after")
 
         assert request_kwargs["method"] == "get"
         assert request_kwargs["url"].endswith("/vault/v1/kv")
@@ -285,7 +283,7 @@ class TestVault:
             self.http_client, mock_vault_object, 200
         )
 
-        vault_object = self.vault.update_object(
+        self.vault.update_object(
             object_id="vault_01234567890abcdef",
             value="updated-value",
             version_check="version_123",

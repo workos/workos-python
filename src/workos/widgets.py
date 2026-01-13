@@ -30,7 +30,6 @@ class WidgetsModule(Protocol):
 
 
 class Widgets(WidgetsModule):
-
     _http_client: SyncHTTPClient
 
     def __init__(self, http_client: SyncHTTPClient):

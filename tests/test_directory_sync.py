@@ -337,7 +337,7 @@ class TestDirectorySync:
 
         me = mock_user_instance.primary_email()
 
-        assert me == None
+        assert me is None
 
     def test_list_directories_auto_pagination(
         self,

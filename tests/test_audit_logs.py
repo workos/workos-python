@@ -288,3 +288,419 @@ class TestAuditLogs:
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )
+
+    class TestCreateSchema(_TestSetup):
+        def test_succeeds(self, capture_and_mock_http_client_request):
+            action = "user.signed_in"
+
+            expected_payload = {
+                "object": "audit_log_schema",
+                "version": 1,
+                "targets": [{"type": "user"}],
+                "actor": {"metadata": {"type": "object", "properties": {}}},
+                "metadata": None,
+                "created_at": "2024-10-14T15:09:44.537Z",
+            }
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 201
+            )
+
+            response = self.audit_logs.create_schema(
+                action=action,
+                targets=[{"type": "user"}],
+            )
+
+            assert request_kwargs["url"].endswith(
+                f"/audit_logs/actions/{action}/schemas"
+            )
+            assert request_kwargs["method"] == "post"
+            assert request_kwargs["json"] == {"targets": [{"type": "user"}]}
+            assert response.version == 1
+            assert response.targets[0].type == "user"
+
+        def test_sends_idempotency_key(self, capture_and_mock_http_client_request):
+            action = "user.signed_in"
+            idempotency_key = "test_123456789"
+
+            expected_payload = {
+                "object": "audit_log_schema",
+                "version": 1,
+                "targets": [{"type": "user"}],
+                "actor": {"metadata": {"type": "object", "properties": {}}},
+                "created_at": "2024-10-14T15:09:44.537Z",
+            }
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 201
+            )
+
+            self.audit_logs.create_schema(
+                action=action,
+                targets=[{"type": "user"}],
+                idempotency_key=idempotency_key,
+            )
+
+            assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
+
+        def test_with_actor_and_metadata(self, capture_and_mock_http_client_request):
+            action = "user.viewed_invoice"
+
+            expected_payload = {
+                "object": "audit_log_schema",
+                "version": 1,
+                "targets": [
+                    {
+                        "type": "invoice",
+                        "metadata": {
+                            "type": "object",
+                            "properties": {"status": {"type": "string"}},
+                        },
+                    }
+                ],
+                "actor": {
+                    "metadata": {
+                        "type": "object",
+                        "properties": {"role": {"type": "string"}},
+                    }
+                },
+                "metadata": {
+                    "type": "object",
+                    "properties": {"transactionId": {"type": "string"}},
+                },
+                "created_at": "2024-10-14T15:09:44.537Z",
+            }
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 201
+            )
+
+            response = self.audit_logs.create_schema(
+                action=action,
+                targets=[
+                    {
+                        "type": "invoice",
+                        "metadata": {
+                            "type": "object",
+                            "properties": {"status": {"type": "string"}},
+                        },
+                    }
+                ],
+                actor={
+                    "metadata": {
+                        "type": "object",
+                        "properties": {"role": {"type": "string"}},
+                    }
+                },
+                metadata={
+                    "type": "object",
+                    "properties": {"transactionId": {"type": "string"}},
+                },
+            )
+
+            assert request_kwargs["json"]["actor"] is not None
+            assert request_kwargs["json"]["metadata"] is not None
+            assert response.metadata is not None
+
+        def test_throws_unauthorized_exception(self, mock_http_client_with_response):
+            mock_http_client_with_response(
+                self.http_client,
+                {"message": "Unauthorized"},
+                401,
+                {"X-Request-ID": "a-request-id"},
+            )
+
+            with pytest.raises(AuthenticationException) as excinfo:
+                self.audit_logs.create_schema(
+                    action="user.signed_in",
+                    targets=[{"type": "user"}],
+                )
+
+            assert "(message=Unauthorized, request_id=a-request-id)" == str(
+                excinfo.value
+            )
+
+    class TestListSchemas(_TestSetup):
+        def test_succeeds(self, capture_and_mock_http_client_request):
+            action = "user.viewed_invoice"
+
+            expected_payload = {
+                "object": "list",
+                "data": [
+                    {
+                        "version": 1,
+                        "actor": {
+                            "metadata": {
+                                "type": "object",
+                                "properties": {"role": {"type": "string"}},
+                            }
+                        },
+                        "targets": [
+                            {
+                                "type": "invoice",
+                                "metadata": {
+                                    "type": "object",
+                                    "properties": {"status": {"type": "string"}},
+                                },
+                            }
+                        ],
+                        "metadata": {
+                            "type": "object",
+                            "properties": {"transactionId": {"type": "string"}},
+                        },
+                        "updated_at": "2021-06-25T19:07:33.155Z",
+                    }
+                ],
+                "list_metadata": {"before": None, "after": None},
+            }
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 200
+            )
+
+            response = self.audit_logs.list_schemas(action=action)
+
+            assert request_kwargs["url"].endswith(
+                f"/audit_logs/actions/{action}/schemas"
+            )
+            assert request_kwargs["method"] == "get"
+            assert len(response.data) == 1
+            assert response.data[0].version == 1
+
+        def test_with_pagination_params(self, capture_and_mock_http_client_request):
+            action = "user.signed_in"
+
+            expected_payload = {
+                "object": "list",
+                "data": [],
+                "list_metadata": {"before": None, "after": None},
+            }
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 200
+            )
+
+            self.audit_logs.list_schemas(
+                action=action,
+                limit=5,
+                order="asc",
+            )
+
+            assert request_kwargs["params"]["limit"] == 5
+            assert request_kwargs["params"]["order"] == "asc"
+
+    class TestListActions(_TestSetup):
+        def test_succeeds(self, capture_and_mock_http_client_request):
+            expected_payload = {
+                "object": "list",
+                "data": [
+                    {
+                        "object": "audit_log_action",
+                        "name": "user.viewed_invoice",
+                        "schema": {
+                            "object": "audit_log_schema",
+                            "version": 1,
+                            "actor": {
+                                "metadata": {
+                                    "type": "object",
+                                    "properties": {"role": {"type": "string"}},
+                                }
+                            },
+                            "targets": [
+                                {
+                                    "type": "invoice",
+                                    "metadata": {
+                                        "type": "object",
+                                        "properties": {"status": {"type": "string"}},
+                                    },
+                                }
+                            ],
+                            "metadata": {
+                                "type": "object",
+                                "properties": {"transactionId": {"type": "string"}},
+                            },
+                            "updated_at": "2021-06-25T19:07:33.155Z",
+                        },
+                        "created_at": "2021-06-25T19:07:33.155Z",
+                        "updated_at": "2021-06-25T19:07:33.155Z",
+                    }
+                ],
+                "list_metadata": {"before": None, "after": None},
+            }
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 200
+            )
+
+            response = self.audit_logs.list_actions()
+
+            assert request_kwargs["url"].endswith("/audit_logs/actions")
+            assert request_kwargs["method"] == "get"
+            assert len(response.data) == 1
+            assert response.data[0].name == "user.viewed_invoice"
+            assert response.data[0].action_schema.version == 1
+
+        def test_with_pagination_params(self, capture_and_mock_http_client_request):
+            expected_payload = {
+                "object": "list",
+                "data": [],
+                "list_metadata": {"before": None, "after": None},
+            }
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 200
+            )
+
+            self.audit_logs.list_actions(
+                limit=10,
+                order="asc",
+                after="cursor_123",
+            )
+
+            assert request_kwargs["params"]["limit"] == 10
+            assert request_kwargs["params"]["order"] == "asc"
+            assert request_kwargs["params"]["after"] == "cursor_123"
+
+    class TestGetRetention(_TestSetup):
+        def test_succeeds(self, capture_and_mock_http_client_request):
+            organization_id = "org_123456789"
+
+            expected_payload = {"retention_period_in_days": 30}
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 200
+            )
+
+            response = self.audit_logs.get_retention(organization_id)
+
+            assert request_kwargs["url"].endswith(
+                f"/organizations/{organization_id}/audit_logs_retention"
+            )
+            assert request_kwargs["method"] == "get"
+            assert response.retention_period_in_days == 30
+
+        def test_throws_unauthorized_exception(self, mock_http_client_with_response):
+            mock_http_client_with_response(
+                self.http_client,
+                {"message": "Unauthorized"},
+                401,
+                {"X-Request-ID": "a-request-id"},
+            )
+
+            with pytest.raises(AuthenticationException) as excinfo:
+                self.audit_logs.get_retention("org_123456789")
+
+            assert "(message=Unauthorized, request_id=a-request-id)" == str(
+                excinfo.value
+            )
+
+    class TestSetRetention(_TestSetup):
+        def test_succeeds(self, capture_and_mock_http_client_request):
+            organization_id = "org_123456789"
+
+            expected_payload = {"retention_period_in_days": 365}
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 200
+            )
+
+            response = self.audit_logs.set_retention(
+                organization_id=organization_id,
+                retention_period_in_days=365,
+            )
+
+            assert request_kwargs["url"].endswith(
+                f"/organizations/{organization_id}/audit_logs_retention"
+            )
+            assert request_kwargs["method"] == "put"
+            assert request_kwargs["json"] == {"retention_period_in_days": 365}
+            assert response.retention_period_in_days == 365
+
+        def test_throws_unauthorized_exception(self, mock_http_client_with_response):
+            mock_http_client_with_response(
+                self.http_client,
+                {"message": "Unauthorized"},
+                401,
+                {"X-Request-ID": "a-request-id"},
+            )
+
+            with pytest.raises(AuthenticationException) as excinfo:
+                self.audit_logs.set_retention(
+                    organization_id="org_123456789",
+                    retention_period_in_days=30,
+                )
+
+            assert "(message=Unauthorized, request_id=a-request-id)" == str(
+                excinfo.value
+            )
+
+    class TestGetConfiguration(_TestSetup):
+        def test_succeeds_with_log_stream(self, capture_and_mock_http_client_request):
+            organization_id = "org_123456789"
+
+            expected_payload = {
+                "organization_id": organization_id,
+                "retention_period_in_days": 30,
+                "state": "active",
+                "log_stream": {
+                    "id": "audit_log_stream_01HQJW5XBQZ8Y4R9S3T5V6W7X8",
+                    "type": "Datadog",
+                    "state": "active",
+                    "last_synced_at": "2024-01-15T10:30:00.000Z",
+                    "created_at": "2024-01-15T10:30:00.000Z",
+                },
+            }
+
+            request_kwargs = capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 200
+            )
+
+            response = self.audit_logs.get_configuration(organization_id)
+
+            assert request_kwargs["url"].endswith(
+                f"/organizations/{organization_id}/audit_log_configuration"
+            )
+            assert request_kwargs["method"] == "get"
+            assert response.organization_id == organization_id
+            assert response.retention_period_in_days == 30
+            assert response.state == "active"
+            assert response.log_stream is not None
+            assert response.log_stream.type == "Datadog"
+            assert response.log_stream.state == "active"
+
+        def test_succeeds_without_log_stream(
+            self, capture_and_mock_http_client_request
+        ):
+            organization_id = "org_123456789"
+
+            expected_payload = {
+                "organization_id": organization_id,
+                "retention_period_in_days": 30,
+                "state": "inactive",
+            }
+
+            capture_and_mock_http_client_request(
+                self.http_client, expected_payload, 200
+            )
+
+            response = self.audit_logs.get_configuration(organization_id)
+
+            assert response.organization_id == organization_id
+            assert response.retention_period_in_days == 30
+            assert response.state == "inactive"
+            assert response.log_stream is None
+
+        def test_throws_unauthorized_exception(self, mock_http_client_with_response):
+            mock_http_client_with_response(
+                self.http_client,
+                {"message": "Unauthorized"},
+                401,
+                {"X-Request-ID": "a-request-id"},
+            )
+
+            with pytest.raises(AuthenticationException) as excinfo:
+                self.audit_logs.get_configuration("org_123456789")
+
+            assert "(message=Unauthorized, request_id=a-request-id)" == str(
+                excinfo.value
+            )

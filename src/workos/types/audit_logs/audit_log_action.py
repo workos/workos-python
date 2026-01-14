@@ -1,9 +1,16 @@
+import warnings
 from typing import Literal
-
-from pydantic import ConfigDict, Field
 
 from workos.types.audit_logs.audit_log_schema import AuditLogSchema
 from workos.types.workos_model import WorkOSModel
+
+# Suppress Pydantic warning about 'schema' shadowing BaseModel.schema()
+# (a deprecated method replaced by model_json_schema() in Pydantic v2)
+warnings.filterwarnings(
+    "ignore",
+    message='Field name "schema" in "AuditLogAction" shadows an attribute',
+    category=UserWarning,
+)
 
 
 class AuditLogAction(WorkOSModel):
@@ -14,10 +21,8 @@ class AuditLogAction(WorkOSModel):
     defines the structure of events for that action.
     """
 
-    model_config = ConfigDict(populate_by_name=True)
-
     object: Literal["audit_log_action"]
     name: str
-    action_schema: AuditLogSchema = Field(alias="schema")
+    schema: AuditLogSchema  # type: ignore[assignment]
     created_at: str
     updated_at: str

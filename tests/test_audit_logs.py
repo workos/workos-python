@@ -538,7 +538,7 @@ class TestAuditLogs:
             assert request_kwargs["method"] == "get"
             assert len(response.data) == 1
             assert response.data[0].name == "user.viewed_invoice"
-            assert response.data[0].action_schema.version == 1
+            assert response.data[0].schema.version == 1
 
         def test_with_pagination_params(self, capture_and_mock_http_client_request):
             expected_payload = {

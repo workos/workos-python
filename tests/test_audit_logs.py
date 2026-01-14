@@ -1,17 +1,15 @@
 from datetime import datetime
+from typing import Union
 
 import pytest
 
-from workos.audit_logs import AuditLogEvent, AuditLogs
+from tests.utils.syncify import syncify
+from workos.audit_logs import AuditLogEvent, AuditLogs, AsyncAuditLogs
 from workos.exceptions import AuthenticationException, BadRequestException
 
 
-class _TestSetup:
-    @pytest.fixture(autouse=True)
-    def setup(self, sync_http_client_for_test):
-        self.http_client = sync_http_client_for_test
-        self.audit_logs = AuditLogs(http_client=self.http_client)
-
+@pytest.mark.sync_and_async(AuditLogs, AsyncAuditLogs)
+class TestAuditLogs:
     @pytest.fixture
     def mock_audit_log_event(self) -> AuditLogEvent:
         return {
@@ -37,10 +35,12 @@ class _TestSetup:
             },
         }
 
-
-class TestAuditLogs:
-    class TestCreateEvent(_TestSetup):
-        def test_succeeds(self, capture_and_mock_http_client_request):
+    class TestCreateEvent:
+        def test_succeeds(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             organization_id = "org_123456789"
 
             event: AuditLogEvent = {
@@ -67,15 +67,17 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                http_client=self.http_client,
+                http_client=module_instance._http_client,
                 response_dict={"success": True},
                 status_code=200,
             )
 
-            response = self.audit_logs.create_event(
-                organization_id=organization_id,
-                event=event,
-                idempotency_key="test_123456",
+            response = syncify(
+                module_instance.create_event(
+                    organization_id=organization_id,
+                    event=event,
+                    idempotency_key="test_123456",
+                )
             )
 
             assert request_kwargs["url"].endswith("/audit_logs/events")
@@ -87,52 +89,65 @@ class TestAuditLogs:
             assert response is None
 
         def test_sends_idempotency_key(
-            self, mock_audit_log_event, capture_and_mock_http_client_request
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            mock_audit_log_event,
+            capture_and_mock_http_client_request,
         ):
             idempotency_key = "test_123456789"
 
             organization_id = "org_123456789"
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, {"success": True}, 200
+                module_instance._http_client, {"success": True}, 200
             )
 
-            response = self.audit_logs.create_event(
-                organization_id=organization_id,
-                event=mock_audit_log_event,
-                idempotency_key=idempotency_key,
+            response = syncify(
+                module_instance.create_event(
+                    organization_id=organization_id,
+                    event=mock_audit_log_event,
+                    idempotency_key=idempotency_key,
+                )
             )
 
             assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
             assert response is None
 
         def test_throws_unauthorized_exception(
-            self, mock_audit_log_event, mock_http_client_with_response
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            mock_audit_log_event,
+            mock_http_client_with_response,
         ):
             organization_id = "org_123456789"
 
             mock_http_client_with_response(
-                self.http_client,
+                module_instance._http_client,
                 {"message": "Unauthorized"},
                 401,
                 {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.create_event(
-                    organization_id=organization_id, event=mock_audit_log_event
+                syncify(
+                    module_instance.create_event(
+                        organization_id=organization_id, event=mock_audit_log_event
+                    )
                 )
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )
 
         def test_throws_badrequest_excpetion(
-            self, mock_audit_log_event, mock_http_client_with_response
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            mock_audit_log_event,
+            mock_http_client_with_response,
         ):
             organization_id = "org_123456789"
 
             mock_http_client_with_response(
-                self.http_client,
+                module_instance._http_client,
                 {
                     "message": "Audit Log could not be processed due to missing or incorrect data.",
                     "code": "invalid_audit_log",
@@ -142,8 +157,10 @@ class TestAuditLogs:
             )
 
             with pytest.raises(BadRequestException) as excinfo:
-                self.audit_logs.create_event(
-                    organization_id=organization_id, event=mock_audit_log_event
+                syncify(
+                    module_instance.create_event(
+                        organization_id=organization_id, event=mock_audit_log_event
+                    )
                 )
                 assert excinfo.code == "invalid_audit_log"
                 assert excinfo.errors == ["error in a field"]
@@ -152,8 +169,12 @@ class TestAuditLogs:
                     == "Audit Log could not be processed due to missing or incorrect data."
                 )
 
-    class TestCreateExport(_TestSetup):
-        def test_succeeds(self, mock_http_client_with_response):
+    class TestCreateExport:
+        def test_succeeds(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            mock_http_client_with_response,
+        ):
             organization_id = "org_123456789"
             now = datetime.now().isoformat()
             range_start = now
@@ -168,18 +189,24 @@ class TestAuditLogs:
                 "updated_at": now,
             }
 
-            mock_http_client_with_response(self.http_client, expected_payload, 201)
+            mock_http_client_with_response(
+                module_instance._http_client, expected_payload, 201
+            )
 
-            response = self.audit_logs.create_export(
-                organization_id=organization_id,
-                range_start=range_start,
-                range_end=range_end,
+            response = syncify(
+                module_instance.create_export(
+                    organization_id=organization_id,
+                    range_start=range_start,
+                    range_end=range_end,
+                )
             )
 
             assert response.dict() == expected_payload
 
         def test_succeeds_with_additional_filters(
-            self, capture_and_mock_http_client_request
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
         ):
             now = datetime.now().isoformat()
             organization_id = "org_123456789"
@@ -200,17 +227,19 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 201
+                module_instance._http_client, expected_payload, 201
             )
 
-            response = self.audit_logs.create_export(
-                actions=actions,
-                organization_id=organization_id,
-                range_end=range_end,
-                range_start=range_start,
-                targets=targets,
-                actor_names=actor_names,
-                actor_ids=actor_ids,
+            response = syncify(
+                module_instance.create_export(
+                    actions=actions,
+                    organization_id=organization_id,
+                    range_end=range_end,
+                    range_start=range_start,
+                    targets=targets,
+                    actor_names=actor_names,
+                    actor_ids=actor_ids,
+                )
             )
 
             assert request_kwargs["url"].endswith("/audit_logs/exports")
@@ -226,30 +255,40 @@ class TestAuditLogs:
             }
             assert response.dict() == expected_payload
 
-        def test_throws_unauthorized_excpetion(self, mock_http_client_with_response):
+        def test_throws_unauthorized_excpetion(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            mock_http_client_with_response,
+        ):
             organization_id = "org_123456789"
             range_start = datetime.now().isoformat()
             range_end = datetime.now().isoformat()
 
             mock_http_client_with_response(
-                self.http_client,
+                module_instance._http_client,
                 {"message": "Unauthorized"},
                 401,
                 {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.create_export(
-                    organization_id=organization_id,
-                    range_start=range_start,
-                    range_end=range_end,
+                syncify(
+                    module_instance.create_export(
+                        organization_id=organization_id,
+                        range_start=range_start,
+                        range_end=range_end,
+                    )
                 )
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )
 
-    class TestGetExport(_TestSetup):
-        def test_succeeds(self, capture_and_mock_http_client_request):
+    class TestGetExport:
+        def test_succeeds(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             now = datetime.now().isoformat()
             expected_payload = {
                 "object": "audit_log_export",
@@ -261,11 +300,13 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 200
+                module_instance._http_client, expected_payload, 200
             )
 
-            response = self.audit_logs.get_export(
-                expected_payload["id"],
+            response = syncify(
+                module_instance.get_export(
+                    expected_payload["id"],
+                )
             )
 
             assert request_kwargs["url"].endswith(
@@ -274,23 +315,31 @@ class TestAuditLogs:
             assert request_kwargs["method"] == "get"
             assert response.dict() == expected_payload
 
-        def test_throws_unauthorized_excpetion(self, mock_http_client_with_response):
+        def test_throws_unauthorized_excpetion(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            mock_http_client_with_response,
+        ):
             mock_http_client_with_response(
-                self.http_client,
+                module_instance._http_client,
                 {"message": "Unauthorized"},
                 401,
                 {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.get_export("audit_log_export_1234")
+                syncify(module_instance.get_export("audit_log_export_1234"))
 
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )
 
-    class TestCreateSchema(_TestSetup):
-        def test_succeeds(self, capture_and_mock_http_client_request):
+    class TestCreateSchema:
+        def test_succeeds(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             action = "user.signed_in"
 
             expected_payload = {
@@ -303,12 +352,14 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 201
+                module_instance._http_client, expected_payload, 201
             )
 
-            response = self.audit_logs.create_schema(
-                action=action,
-                targets=[{"type": "user"}],
+            response = syncify(
+                module_instance.create_schema(
+                    action=action,
+                    targets=[{"type": "user"}],
+                )
             )
 
             assert request_kwargs["url"].endswith(
@@ -319,7 +370,11 @@ class TestAuditLogs:
             assert response.version == 1
             assert response.targets[0].type == "user"
 
-        def test_sends_idempotency_key(self, capture_and_mock_http_client_request):
+        def test_sends_idempotency_key(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             action = "user.signed_in"
             idempotency_key = "test_123456789"
 
@@ -332,18 +387,24 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 201
+                module_instance._http_client, expected_payload, 201
             )
 
-            self.audit_logs.create_schema(
-                action=action,
-                targets=[{"type": "user"}],
-                idempotency_key=idempotency_key,
+            syncify(
+                module_instance.create_schema(
+                    action=action,
+                    targets=[{"type": "user"}],
+                    idempotency_key=idempotency_key,
+                )
             )
 
             assert request_kwargs["headers"]["idempotency-key"] == idempotency_key
 
-        def test_with_actor_and_metadata(self, capture_and_mock_http_client_request):
+        def test_with_actor_and_metadata(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             action = "user.viewed_invoice"
 
             expected_payload = {
@@ -372,56 +433,68 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 201
+                module_instance._http_client, expected_payload, 201
             )
 
-            response = self.audit_logs.create_schema(
-                action=action,
-                targets=[
-                    {
-                        "type": "invoice",
+            response = syncify(
+                module_instance.create_schema(
+                    action=action,
+                    targets=[
+                        {
+                            "type": "invoice",
+                            "metadata": {
+                                "type": "object",
+                                "properties": {"status": {"type": "string"}},
+                            },
+                        }
+                    ],
+                    actor={
                         "metadata": {
                             "type": "object",
-                            "properties": {"status": {"type": "string"}},
-                        },
-                    }
-                ],
-                actor={
-                    "metadata": {
+                            "properties": {"role": {"type": "string"}},
+                        }
+                    },
+                    metadata={
                         "type": "object",
-                        "properties": {"role": {"type": "string"}},
-                    }
-                },
-                metadata={
-                    "type": "object",
-                    "properties": {"transactionId": {"type": "string"}},
-                },
+                        "properties": {"transactionId": {"type": "string"}},
+                    },
+                )
             )
 
             assert request_kwargs["json"]["actor"] is not None
             assert request_kwargs["json"]["metadata"] is not None
             assert response.metadata is not None
 
-        def test_throws_unauthorized_exception(self, mock_http_client_with_response):
+        def test_throws_unauthorized_exception(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            mock_http_client_with_response,
+        ):
             mock_http_client_with_response(
-                self.http_client,
+                module_instance._http_client,
                 {"message": "Unauthorized"},
                 401,
                 {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.create_schema(
-                    action="user.signed_in",
-                    targets=[{"type": "user"}],
+                syncify(
+                    module_instance.create_schema(
+                        action="user.signed_in",
+                        targets=[{"type": "user"}],
+                    )
                 )
 
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )
 
-    class TestListSchemas(_TestSetup):
-        def test_succeeds(self, capture_and_mock_http_client_request):
+    class TestListSchemas:
+        def test_succeeds(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             action = "user.viewed_invoice"
 
             expected_payload = {
@@ -455,10 +528,10 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 200
+                module_instance._http_client, expected_payload, 200
             )
 
-            response = self.audit_logs.list_schemas(action=action)
+            response = syncify(module_instance.list_schemas(action=action))
 
             assert request_kwargs["url"].endswith(
                 f"/audit_logs/actions/{action}/schemas"
@@ -467,7 +540,11 @@ class TestAuditLogs:
             assert len(response.data) == 1
             assert response.data[0].version == 1
 
-        def test_with_pagination_params(self, capture_and_mock_http_client_request):
+        def test_with_pagination_params(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             action = "user.signed_in"
 
             expected_payload = {
@@ -477,20 +554,26 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 200
+                module_instance._http_client, expected_payload, 200
             )
 
-            self.audit_logs.list_schemas(
-                action=action,
-                limit=5,
-                order="asc",
+            syncify(
+                module_instance.list_schemas(
+                    action=action,
+                    limit=5,
+                    order="asc",
+                )
             )
 
             assert request_kwargs["params"]["limit"] == 5
             assert request_kwargs["params"]["order"] == "asc"
 
-    class TestListActions(_TestSetup):
-        def test_succeeds(self, capture_and_mock_http_client_request):
+    class TestListActions:
+        def test_succeeds(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             expected_payload = {
                 "object": "list",
                 "data": [
@@ -529,10 +612,10 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 200
+                module_instance._http_client, expected_payload, 200
             )
 
-            response = self.audit_logs.list_actions()
+            response = syncify(module_instance.list_actions())
 
             assert request_kwargs["url"].endswith("/audit_logs/actions")
             assert request_kwargs["method"] == "get"
@@ -540,7 +623,11 @@ class TestAuditLogs:
             assert response.data[0].name == "user.viewed_invoice"
             assert response.data[0].schema.version == 1
 
-        def test_with_pagination_params(self, capture_and_mock_http_client_request):
+        def test_with_pagination_params(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             expected_payload = {
                 "object": "list",
                 "data": [],
@@ -548,30 +635,36 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 200
+                module_instance._http_client, expected_payload, 200
             )
 
-            self.audit_logs.list_actions(
-                limit=10,
-                order="asc",
-                after="cursor_123",
+            syncify(
+                module_instance.list_actions(
+                    limit=10,
+                    order="asc",
+                    after="cursor_123",
+                )
             )
 
             assert request_kwargs["params"]["limit"] == 10
             assert request_kwargs["params"]["order"] == "asc"
             assert request_kwargs["params"]["after"] == "cursor_123"
 
-    class TestGetRetention(_TestSetup):
-        def test_succeeds(self, capture_and_mock_http_client_request):
+    class TestGetRetention:
+        def test_succeeds(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             organization_id = "org_123456789"
 
             expected_payload = {"retention_period_in_days": 30}
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 200
+                module_instance._http_client, expected_payload, 200
             )
 
-            response = self.audit_logs.get_retention(organization_id)
+            response = syncify(module_instance.get_retention(organization_id))
 
             assert request_kwargs["url"].endswith(
                 f"/organizations/{organization_id}/audit_logs_retention"
@@ -579,34 +672,44 @@ class TestAuditLogs:
             assert request_kwargs["method"] == "get"
             assert response.retention_period_in_days == 30
 
-        def test_throws_unauthorized_exception(self, mock_http_client_with_response):
+        def test_throws_unauthorized_exception(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            mock_http_client_with_response,
+        ):
             mock_http_client_with_response(
-                self.http_client,
+                module_instance._http_client,
                 {"message": "Unauthorized"},
                 401,
                 {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.get_retention("org_123456789")
+                syncify(module_instance.get_retention("org_123456789"))
 
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )
 
-    class TestSetRetention(_TestSetup):
-        def test_succeeds(self, capture_and_mock_http_client_request):
+    class TestSetRetention:
+        def test_succeeds(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             organization_id = "org_123456789"
 
             expected_payload = {"retention_period_in_days": 365}
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 200
+                module_instance._http_client, expected_payload, 200
             )
 
-            response = self.audit_logs.set_retention(
-                organization_id=organization_id,
-                retention_period_in_days=365,
+            response = syncify(
+                module_instance.set_retention(
+                    organization_id=organization_id,
+                    retention_period_in_days=365,
+                )
             )
 
             assert request_kwargs["url"].endswith(
@@ -616,26 +719,36 @@ class TestAuditLogs:
             assert request_kwargs["json"] == {"retention_period_in_days": 365}
             assert response.retention_period_in_days == 365
 
-        def test_throws_unauthorized_exception(self, mock_http_client_with_response):
+        def test_throws_unauthorized_exception(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            mock_http_client_with_response,
+        ):
             mock_http_client_with_response(
-                self.http_client,
+                module_instance._http_client,
                 {"message": "Unauthorized"},
                 401,
                 {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.set_retention(
-                    organization_id="org_123456789",
-                    retention_period_in_days=30,
+                syncify(
+                    module_instance.set_retention(
+                        organization_id="org_123456789",
+                        retention_period_in_days=30,
+                    )
                 )
 
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value
             )
 
-    class TestGetConfiguration(_TestSetup):
-        def test_succeeds_with_log_stream(self, capture_and_mock_http_client_request):
+    class TestGetConfiguration:
+        def test_succeeds_with_log_stream(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
             organization_id = "org_123456789"
 
             expected_payload = {
@@ -652,10 +765,10 @@ class TestAuditLogs:
             }
 
             request_kwargs = capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 200
+                module_instance._http_client, expected_payload, 200
             )
 
-            response = self.audit_logs.get_configuration(organization_id)
+            response = syncify(module_instance.get_configuration(organization_id))
 
             assert request_kwargs["url"].endswith(
                 f"/organizations/{organization_id}/audit_log_configuration"
@@ -669,7 +782,9 @@ class TestAuditLogs:
             assert response.log_stream.state == "active"
 
         def test_succeeds_without_log_stream(
-            self, capture_and_mock_http_client_request
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
         ):
             organization_id = "org_123456789"
 
@@ -680,26 +795,30 @@ class TestAuditLogs:
             }
 
             capture_and_mock_http_client_request(
-                self.http_client, expected_payload, 200
+                module_instance._http_client, expected_payload, 200
             )
 
-            response = self.audit_logs.get_configuration(organization_id)
+            response = syncify(module_instance.get_configuration(organization_id))
 
             assert response.organization_id == organization_id
             assert response.retention_period_in_days == 30
             assert response.state == "inactive"
             assert response.log_stream is None
 
-        def test_throws_unauthorized_exception(self, mock_http_client_with_response):
+        def test_throws_unauthorized_exception(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            mock_http_client_with_response,
+        ):
             mock_http_client_with_response(
-                self.http_client,
+                module_instance._http_client,
                 {"message": "Unauthorized"},
                 401,
                 {"X-Request-ID": "a-request-id"},
             )
 
             with pytest.raises(AuthenticationException) as excinfo:
-                self.audit_logs.get_configuration("org_123456789")
+                syncify(module_instance.get_configuration("org_123456789"))
 
             assert "(message=Unauthorized, request_id=a-request-id)" == str(
                 excinfo.value

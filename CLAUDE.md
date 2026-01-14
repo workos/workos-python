@@ -13,7 +13,7 @@ uv sync --locked --dev # Install package in development mode with dev dependenci
 ### Code Quality
 
 ```bash
-ur run ruff format .          # Format code
+uv run ruff format .          # Format code
 uv run ruff format --check .  # Check formatting without making changes
 uv run ruff check .           # Lint code
 uv run mypy                   # Type checking
@@ -21,8 +21,36 @@ uv run mypy                   # Type checking
 
 ### Testing
 
+The SDK uses [nox](https://nox.thea.codes/) with [nox-uv](https://github.com/dantebben/nox-uv) for multi-version Python testing. This ensures compatibility across all supported Python versions (3.8-3.14).
+
+**Quick testing with the test script:**
+
 ```bash
-uv run pytest                    # Run all tests
+./scripts/test.sh              # Run tests on all Python versions
+./scripts/test.sh 3.12         # Run tests on Python 3.12 only
+./scripts/test.sh 3.11 3.12    # Run tests on Python 3.11 and 3.12
+./scripts/test.sh --coverage   # Run tests with coverage on all versions
+./scripts/test.sh --ci         # Run full CI checks (lint, type, tests)
+./scripts/test.sh --fresh      # Recreate virtual environments
+./scripts/test.sh 3.12 -- -k "test_sso" -v  # Pass pytest arguments
+```
+
+**Direct nox commands:**
+
+```bash
+uv run nox                       # Run tests on all Python versions
+uv run nox -s tests-3.12         # Run tests on specific Python version
+uv run nox -s coverage           # Run tests with coverage
+uv run nox -s lint               # Run linting
+uv run nox -s typecheck          # Run type checking
+uv run nox -s ci                 # Run all CI checks
+uv run nox -l                    # List all available sessions
+```
+
+**Single-version testing (faster for development):**
+
+```bash
+uv run pytest                    # Run all tests on current Python
 uv run pytest tests/test_sso.py  # Run specific test file
 uv run pytest -k "test_name"     # Run tests matching pattern
 uv run pytest --cov=workos       # Run tests with coverage

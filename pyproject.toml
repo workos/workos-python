@@ -1,6 +1,6 @@
 [project]
 name = "workos"
-version = "5.38.1"
+version = "5.39.0"
 description = "WorkOS Python Client"
 readme = "README.md"
 license = "MIT"
@@ -25,6 +25,7 @@ dev = [
   { include-group = "test" },
   { include-group = "lint" },
   { include-group = "type_check" },
+  { include-group = "nox" },
 ]
 test = [
   "pytest==8.3.4",
@@ -34,6 +35,10 @@ test = [
 ]
 lint = ["ruff==0.14.5"]
 type_check = ["mypy==1.14.1"]
+nox = [
+  "nox>=2024.10.9 ; python_version >= '3.9'",
+  "nox-uv>=0.7.0 ; python_version >= '3.9'",
+]
 
 
 [tool.mypy]

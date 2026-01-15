@@ -11,6 +11,8 @@ These tests run against the installed package (wheel or sdist) to verify:
 Run with: uv run --isolated --no-project --with dist/*.whl tests/smoke_test.py
 """
 
+# ruff: noqa: F401 - imports are intentionally unused; this file tests import functionality
+
 import sys
 from pathlib import Path
 

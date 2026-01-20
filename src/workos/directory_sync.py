@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Protocol
+from typing import Any, Dict, Optional, Protocol, Union
 
 from workos.types.directory_sync.list_filters import (
     DirectoryGroupListFilters,
@@ -41,7 +41,7 @@ PARAM_KEY_MAPPING = {
 
 
 def _prepare_request_params(
-    list_params: DirectoryUserListFilters | DirectoryGroupListFilters,
+    list_params: Union[DirectoryUserListFilters, DirectoryGroupListFilters],
 ) -> Dict[str, Any]:
     """Convert list_params to API request params by renaming keys."""
     request_params: Dict[str, Any] = dict(list_params)

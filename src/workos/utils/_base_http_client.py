@@ -1,4 +1,6 @@
 import platform
+import random
+from dataclasses import dataclass
 from typing import (
     Any,
     Mapping,
@@ -32,6 +34,19 @@ _HttpxClientT = TypeVar("_HttpxClientT", bound=Union[httpx.Client, httpx.AsyncCl
 
 DEFAULT_REQUEST_TIMEOUT = 25
 
+# Status codes that should trigger a retry (consistent with workos-node)
+RETRY_STATUS_CODES = [408, 500, 502, 504]
+
+
+@dataclass
+class RetryConfig:
+    """Configuration for retry logic with exponential backoff."""
+
+    max_retries: int = 3
+    base_delay: float = 1.0  # seconds
+    max_delay: float = 30.0  # seconds
+    jitter: float = 0.25  # 25% jitter
+
 
 ParamsType = Optional[Mapping[str, Any]]
 HeadersType = Optional[Dict[str, str]]
@@ -56,6 +71,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
     _base_url: str
     _version: str
     _timeout: int
+    _retry_config: Optional[RetryConfig]
 
     def __init__(
         self,
@@ -65,12 +81,14 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         client_id: str,
         version: str,
         timeout: Optional[int] = DEFAULT_REQUEST_TIMEOUT,
+        retry_config: Optional[RetryConfig] = None,
     ) -> None:
         self._api_key = api_key
         self._base_url = base_url
         self._client_id = client_id
         self._version = version
         self._timeout = DEFAULT_REQUEST_TIMEOUT if timeout is None else timeout
+        self._retry_config = retry_config  # Store as-is, None means no retries
 
     def _generate_api_url(self, path: str) -> str:
         return f"{self._base_url}{path}"
@@ -195,6 +213,37 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         self._maybe_raise_error_by_status_code(response, response_json)
 
         return cast(ResponseJson, response_json)
+
+    def _is_retryable_error(self, response: httpx.Response) -> bool:
+        """Determine if an error should be retried."""
+        return response.status_code in RETRY_STATUS_CODES
+
+    def _is_retryable_exception(self, exc: Exception) -> bool:
+        """Determine if an exception should trigger a retry."""
+        # Retry on network [connection, timeout] exceptions
+        if isinstance(exc, (httpx.ConnectError, httpx.TimeoutException)):
+            return True
+        return False
+
+    def _get_backoff_delay(self, attempt: int, retry_config: RetryConfig) -> float:
+        """Calculate delay with exponential backoff and jitter.
+
+        Args:
+            attempt: The current retry attempt number (0-indexed)
+            retry_config: The retry configuration
+
+        Returns:
+            The delay, in seconds, to wait before the next retry
+        """
+        # Exponential backoff: base_delay * 2^attempt
+        delay: float = retry_config.base_delay * (2**attempt)
+
+        # Cap at max_delay
+        delay = min(delay, retry_config.max_delay)
+
+        # Add jitter: random variation of 0-25% of delay
+        jitter_amount: float = delay * retry_config.jitter * random.random()
+        return delay + jitter_amount
 
     def build_request_url(
         self,

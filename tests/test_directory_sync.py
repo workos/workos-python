@@ -2,8 +2,6 @@ from typing import Union
 
 import pytest
 
-from workos.directory_sync import _prepare_request_params
-
 from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from tests.utils.fixtures.mock_directory import (
     MockDirectory,
@@ -14,7 +12,11 @@ from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
 from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from tests.utils.syncify import syncify
-from workos.directory_sync import AsyncDirectorySync, DirectorySync
+from workos.directory_sync import (
+    _prepare_request_params,
+    AsyncDirectorySync,
+    DirectorySync,
+)
 
 
 def api_directory_to_sdk(directory):

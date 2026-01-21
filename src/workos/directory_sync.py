@@ -1,4 +1,4 @@
-from typing import Optional, Protocol
+from typing import Any, Dict, Optional, Protocol, Union
 
 from workos.types.directory_sync.list_filters import (
     DirectoryGroupListFilters,
@@ -31,6 +31,24 @@ DirectoryGroupsListResource = WorkOSListResource[
 DirectoriesListResource = WorkOSListResource[
     Directory, DirectoryListFilters, ListMetadata
 ]
+
+# Mapping from SDK parameter names to API parameter names
+PARAM_KEY_MAPPING = {
+    "directory_id": "directory",
+    "group_id": "group",
+    "user_id": "user",
+}
+
+
+def _prepare_request_params(
+    list_params: Union[DirectoryUserListFilters, DirectoryGroupListFilters],
+) -> Dict[str, Any]:
+    """Convert list_params to API request params by renaming keys."""
+    request_params: Dict[str, Any] = dict(list_params)
+    for sdk_key, api_key in PARAM_KEY_MAPPING.items():
+        if sdk_key in request_params:
+            request_params[api_key] = request_params.pop(sdk_key)
+    return request_params
 
 
 class DirectorySyncModule(Protocol):
@@ -191,7 +209,7 @@ class DirectorySync(DirectorySyncModule):
         response = self._http_client.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
-            params=list_params,
+            params=_prepare_request_params(list_params),
         )
 
         return WorkOSListResource(
@@ -225,7 +243,7 @@ class DirectorySync(DirectorySyncModule):
         response = self._http_client.request(
             "directory_groups",
             method=REQUEST_METHOD_GET,
-            params=list_params,
+            params=_prepare_request_params(list_params),
         )
 
         return WorkOSListResource[
@@ -329,7 +347,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         response = await self._http_client.request(
             "directory_users",
             method=REQUEST_METHOD_GET,
-            params=list_params,
+            params=_prepare_request_params(list_params),
         )
 
         return WorkOSListResource(
@@ -354,6 +372,7 @@ class AsyncDirectorySync(DirectorySyncModule):
             "after": after,
             "order": order,
         }
+
         if user_id is not None:
             list_params["user_id"] = user_id
         if directory_id is not None:
@@ -362,7 +381,7 @@ class AsyncDirectorySync(DirectorySyncModule):
         response = await self._http_client.request(
             "directory_groups",
             method=REQUEST_METHOD_GET,
-            params=list_params,
+            params=_prepare_request_params(list_params),
         )
 
         return WorkOSListResource[

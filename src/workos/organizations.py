@@ -1,5 +1,6 @@
 from typing import Optional, Protocol, Sequence
 
+from workos.types.api_keys import ApiKey, ApiKeyListFilters, ApiKeyWithValue
 from workos.types.feature_flags import FeatureFlag
 from workos.types.feature_flags.list_filters import FeatureFlagListFilters
 from workos.types.metadata import Metadata
@@ -29,6 +30,8 @@ OrganizationsListResource = WorkOSListResource[
 FeatureFlagsListResource = WorkOSListResource[
     FeatureFlag, FeatureFlagListFilters, ListMetadata
 ]
+
+ApiKeysListResource = WorkOSListResource[ApiKey, ApiKeyListFilters, ListMetadata]
 
 
 class OrganizationsModule(Protocol):
@@ -154,6 +157,55 @@ class OrganizationsModule(Protocol):
 
         Returns:
             FeatureFlagsListResource: Feature flags list response from WorkOS.
+        """
+        ...
+
+    def create_api_key(
+        self,
+        organization_id: str,
+        *,
+        name: str,
+        permissions: Optional[Sequence[str]] = None,
+    ) -> SyncOrAsync[ApiKeyWithValue]:
+        """Create an API key for an organization.
+
+        The response includes the full API key value which is only returned once
+        at creation time. Make sure to store this value securely.
+
+        Args:
+            organization_id (str): Organization's unique identifier
+
+        Kwargs:
+            name (str): A descriptive name for the API key
+            permissions (Sequence[str]): List of permissions to assign to the key (Optional)
+
+        Returns:
+            ApiKeyWithValue: API key with the full value field
+        """
+        ...
+
+    def list_api_keys(
+        self,
+        organization_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[ApiKeysListResource]:
+        """Retrieve a list of API keys for an organization
+
+        Args:
+            organization_id (str): Organization's unique identifier
+
+        Kwargs:
+            limit (int): Maximum number of records to return. (Optional)
+            before (str): Pagination cursor to receive records before a provided API Key ID. (Optional)
+            after (str): Pagination cursor to receive records after a provided API Key ID. (Optional)
+            order (Literal["asc","desc"]): Sort records in either ascending or descending (default) order by created_at timestamp. (Optional)
+
+        Returns:
+            ApiKeysListResource: API keys list response from WorkOS.
         """
         ...
 
@@ -304,6 +356,55 @@ class Organizations(OrganizationsModule):
             **ListPage[FeatureFlag](**response).model_dump(),
         )
 
+    def create_api_key(
+        self,
+        organization_id: str,
+        *,
+        name: str,
+        permissions: Optional[Sequence[str]] = None,
+    ) -> ApiKeyWithValue:
+        json = {
+            "name": name,
+            "permissions": permissions,
+        }
+
+        response = self._http_client.request(
+            f"organizations/{organization_id}/api_keys",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return ApiKeyWithValue.model_validate(response)
+
+    def list_api_keys(
+        self,
+        organization_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> ApiKeysListResource:
+        list_params: ApiKeyListFilters = {
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = self._http_client.request(
+            f"organizations/{organization_id}/api_keys",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[ApiKey, ApiKeyListFilters, ListMetadata](
+            list_method=self.list_api_keys,
+            list_args=list_params,
+            **ListPage[ApiKey](**response).model_dump(),
+        )
+
 
 class AsyncOrganizations(OrganizationsModule):
     _http_client: AsyncHTTPClient
@@ -449,4 +550,53 @@ class AsyncOrganizations(OrganizationsModule):
             list_method=self.list_feature_flags,
             list_args=list_params,
             **ListPage[FeatureFlag](**response).model_dump(),
+        )
+
+    async def create_api_key(
+        self,
+        organization_id: str,
+        *,
+        name: str,
+        permissions: Optional[Sequence[str]] = None,
+    ) -> ApiKeyWithValue:
+        json = {
+            "name": name,
+            "permissions": permissions,
+        }
+
+        response = await self._http_client.request(
+            f"organizations/{organization_id}/api_keys",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return ApiKeyWithValue.model_validate(response)
+
+    async def list_api_keys(
+        self,
+        organization_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> ApiKeysListResource:
+        list_params: ApiKeyListFilters = {
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            f"organizations/{organization_id}/api_keys",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[ApiKey, ApiKeyListFilters, ListMetadata](
+            list_method=self.list_api_keys,
+            list_args=list_params,
+            **ListPage[ApiKey](**response).model_dump(),
         )

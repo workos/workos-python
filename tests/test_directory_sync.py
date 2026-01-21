@@ -1,7 +1,6 @@
 from typing import Union
 
 import pytest
-from workos.directory_sync import AsyncDirectorySync, DirectorySync
 
 from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from tests.utils.fixtures.mock_directory import (
@@ -13,6 +12,11 @@ from tests.utils.fixtures.mock_directory_group import MockDirectoryGroup
 from tests.utils.fixtures.mock_directory_user import MockDirectoryUser
 from tests.utils.list_resource import list_data_to_dicts, list_response_of
 from tests.utils.syncify import syncify
+from workos.directory_sync import (
+    _prepare_request_params,
+    AsyncDirectorySync,
+    DirectorySync,
+)
 
 
 def api_directory_to_sdk(directory):
@@ -145,7 +149,7 @@ class TestDirectorySync:
         assert request_kwargs["url"].endswith("/directory_users")
         assert request_kwargs["method"] == "get"
         assert request_kwargs["params"] == {
-            "directory_id": "directory_id",
+            "directory": "directory_id",
             "limit": 10,
             "order": "desc",
         }
@@ -163,7 +167,7 @@ class TestDirectorySync:
         assert request_kwargs["url"].endswith("/directory_users")
         assert request_kwargs["method"] == "get"
         assert request_kwargs["params"] == {
-            "group_id": "directory_grp_id",
+            "group": "directory_grp_id",
             "limit": 10,
             "order": "desc",
         }
@@ -181,7 +185,7 @@ class TestDirectorySync:
         assert request_kwargs["url"].endswith("/directory_groups")
         assert request_kwargs["method"] == "get"
         assert request_kwargs["params"] == {
-            "directory_id": "directory_id",
+            "directory": "directory_id",
             "limit": 10,
             "order": "desc",
         }
@@ -199,7 +203,7 @@ class TestDirectorySync:
         assert request_kwargs["url"].endswith("/directory_groups")
         assert request_kwargs["method"] == "get"
         assert request_kwargs["params"] == {
-            "user_id": "directory_user_id",
+            "user": "directory_user_id",
             "limit": 10,
             "order": "desc",
         }
@@ -371,3 +375,53 @@ class TestDirectorySync:
             list_function=self.directory_sync.list_groups,
             expected_all_page_data=mock_directory_groups_multiple_data_pages,
         )
+
+
+class TestPrepareRequestParams:
+    """Tests for SDK-to-API parameter name translation.
+
+    The SDK uses Pythonic parameter names (directory_id, group_id, user_id)
+    but the WorkOS API expects shorter names (directory, group, user).
+    The _prepare_request_params function handles this translation.
+
+    See: https://github.com/workos/workos-python/issues/511
+    See: https://github.com/workos/workos-python/issues/519
+    """
+
+    def test_translates_directory_id_to_directory(self):
+        params = {"directory_id": "dir_123", "limit": 10}
+        result = _prepare_request_params(params)
+        assert "directory" in result
+        assert "directory_id" not in result
+        assert result["directory"] == "dir_123"
+
+    def test_translates_group_id_to_group(self):
+        params = {"group_id": "grp_123", "limit": 10}
+        result = _prepare_request_params(params)
+        assert "group" in result
+        assert "group_id" not in result
+        assert result["group"] == "grp_123"
+
+    def test_translates_user_id_to_user(self):
+        params = {"user_id": "usr_123", "limit": 10}
+        result = _prepare_request_params(params)
+        assert "user" in result
+        assert "user_id" not in result
+        assert result["user"] == "usr_123"
+
+    def test_preserves_non_id_params(self):
+        params = {
+            "directory_id": "dir_123",
+            "limit": 10,
+            "order": "desc",
+            "after": "cursor",
+        }
+        result = _prepare_request_params(params)
+        assert result["limit"] == 10
+        assert result["order"] == "desc"
+        assert result["after"] == "cursor"
+
+    def test_handles_empty_params(self):
+        params = {"limit": 10, "order": "desc"}
+        result = _prepare_request_params(params)
+        assert result == {"limit": 10, "order": "desc"}

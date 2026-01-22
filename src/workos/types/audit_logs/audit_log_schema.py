@@ -43,7 +43,7 @@ class AuditLogSchema(WorkOSModel):
     object: Literal["audit_log_schema"] = "audit_log_schema"
     version: int
     targets: Sequence[AuditLogSchemaTarget]
-    actor: AuditLogSchemaActor
+    actor: Optional[AuditLogSchemaActor] = None
     metadata: Optional[AuditLogSchemaMetadata] = None
     created_at: Optional[str] = None
     updated_at: Optional[str] = None

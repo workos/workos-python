@@ -1,4 +1,4 @@
-from typing import Any, Dict, Literal, Mapping, Optional, Protocol, Sequence
+from typing import Dict, Literal, Optional, Protocol, Sequence
 
 from workos.types.audit_logs import (
     AuditLogAction,
@@ -8,6 +8,12 @@ from workos.types.audit_logs import (
     AuditLogSchema,
     AuditLogSchemaListFilters,
     AuditLogActionListFilters,
+)
+from workos.types.audit_logs.audit_log_schema_input import (
+    AuditLogSchemaActorInput,
+    AuditLogSchemaTargetInput,
+    MetadataSchemaInput,
+    serialize_schema_options,
 )
 from workos.types.audit_logs.audit_log_event import AuditLogEvent
 from workos.types.list_resource import ListMetadata, ListPage, WorkOSListResource
@@ -98,9 +104,9 @@ class AuditLogsModule(Protocol):
         self,
         *,
         action: str,
-        targets: Sequence[Mapping[str, Any]],
-        actor: Optional[Mapping[str, Any]] = None,
-        metadata: Optional[Mapping[str, Any]] = None,
+        targets: Sequence[AuditLogSchemaTargetInput],
+        actor: Optional[AuditLogSchemaActorInput] = None,
+        metadata: Optional[MetadataSchemaInput] = None,
         idempotency_key: Optional[str] = None,
     ) -> SyncOrAsync[AuditLogSchema]:
         """Create an Audit Log schema for an action.
@@ -108,8 +114,12 @@ class AuditLogsModule(Protocol):
         Kwargs:
             action (str): The action name for the schema (e.g., 'user.signed_in').
             targets (list): List of target definitions with type and optional metadata.
+                Each target has a 'type' and optional 'metadata' mapping property
+                names to types (e.g., {"status": "string"}).
             actor (dict): Optional actor definition with metadata schema. (Optional)
+                The metadata maps property names to types (e.g., {"role": "string"}).
             metadata (dict): Optional event-level metadata schema. (Optional)
+                Maps property names to types (e.g., {"invoice_id": "string"}).
             idempotency_key (str): Idempotency key. (Optional)
 
         Returns:
@@ -265,18 +275,12 @@ class AuditLogs(AuditLogsModule):
         self,
         *,
         action: str,
-        targets: Sequence[Mapping[str, Any]],
-        actor: Optional[Mapping[str, Any]] = None,
-        metadata: Optional[Mapping[str, Any]] = None,
+        targets: Sequence[AuditLogSchemaTargetInput],
+        actor: Optional[AuditLogSchemaActorInput] = None,
+        metadata: Optional[MetadataSchemaInput] = None,
         idempotency_key: Optional[str] = None,
     ) -> AuditLogSchema:
-        json: Dict[str, Any] = {
-            "targets": list(targets),
-        }
-        if actor is not None:
-            json["actor"] = actor
-        if metadata is not None:
-            json["metadata"] = metadata
+        json = serialize_schema_options(targets, actor, metadata)
 
         headers: Dict[str, str] = {}
         if idempotency_key:
@@ -445,18 +449,12 @@ class AsyncAuditLogs(AuditLogsModule):
         self,
         *,
         action: str,
-        targets: Sequence[Mapping[str, Any]],
-        actor: Optional[Mapping[str, Any]] = None,
-        metadata: Optional[Mapping[str, Any]] = None,
+        targets: Sequence[AuditLogSchemaTargetInput],
+        actor: Optional[AuditLogSchemaActorInput] = None,
+        metadata: Optional[MetadataSchemaInput] = None,
         idempotency_key: Optional[str] = None,
     ) -> AuditLogSchema:
-        json: Dict[str, Any] = {
-            "targets": list(targets),
-        }
-        if actor is not None:
-            json["actor"] = actor
-        if metadata is not None:
-            json["metadata"] = metadata
+        json = serialize_schema_options(targets, actor, metadata)
 
         headers: Dict[str, str] = {}
         if idempotency_key:

@@ -8,4 +8,5 @@ from .audit_log_export import *
 from .audit_log_metadata import *
 from .audit_log_retention import *
 from .audit_log_schema import *
+from .audit_log_schema_input import *
 from .list_filters import *

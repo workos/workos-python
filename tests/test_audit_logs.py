@@ -407,6 +407,7 @@ class TestAuditLogs:
         ):
             action = "user.viewed_invoice"
 
+            # Response from API uses full JSON Schema format
             expected_payload = {
                 "object": "audit_log_schema",
                 "version": 1,
@@ -436,34 +437,73 @@ class TestAuditLogs:
                 module_instance._http_client, expected_payload, 201
             )
 
+            # Input uses simplified format (like JS SDK)
             response = syncify(
                 module_instance.create_schema(
                     action=action,
                     targets=[
                         {
                             "type": "invoice",
-                            "metadata": {
-                                "type": "object",
-                                "properties": {"status": {"type": "string"}},
-                            },
+                            "metadata": {"status": "string"},
                         }
                     ],
-                    actor={
-                        "metadata": {
-                            "type": "object",
-                            "properties": {"role": {"type": "string"}},
-                        }
-                    },
-                    metadata={
-                        "type": "object",
-                        "properties": {"transactionId": {"type": "string"}},
-                    },
+                    actor={"metadata": {"role": "string"}},
+                    metadata={"transactionId": "string"},
                 )
             )
 
-            assert request_kwargs["json"]["actor"] is not None
-            assert request_kwargs["json"]["metadata"] is not None
+            # Verify serialization transforms to full JSON Schema format
+            assert request_kwargs["json"]["actor"] == {
+                "metadata": {
+                    "type": "object",
+                    "properties": {"role": {"type": "string"}},
+                }
+            }
+            assert request_kwargs["json"]["metadata"] == {
+                "type": "object",
+                "properties": {"transactionId": {"type": "string"}},
+            }
+            assert request_kwargs["json"]["targets"] == [
+                {
+                    "type": "invoice",
+                    "metadata": {
+                        "type": "object",
+                        "properties": {"status": {"type": "string"}},
+                    },
+                }
+            ]
             assert response.metadata is not None
+
+        def test_without_actor_in_response(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
+            """Test that schema can be parsed when actor is not in the response."""
+            action = "user.signed_in"
+
+            # Response without actor field (backend omits when no custom metadata)
+            expected_payload = {
+                "object": "audit_log_schema",
+                "version": 1,
+                "targets": [{"type": "user"}],
+                "metadata": None,
+                "created_at": "2024-10-14T15:09:44.537Z",
+            }
+
+            capture_and_mock_http_client_request(
+                module_instance._http_client, expected_payload, 201
+            )
+
+            response = syncify(
+                module_instance.create_schema(
+                    action=action,
+                    targets=[{"type": "user"}],
+                )
+            )
+
+            assert response.version == 1
+            assert response.actor is None
 
         def test_throws_unauthorized_exception(
             self,
@@ -671,6 +711,24 @@ class TestAuditLogs:
             )
             assert request_kwargs["method"] == "get"
             assert response.retention_period_in_days == 30
+
+        def test_succeeds_with_null_retention(
+            self,
+            module_instance: Union[AuditLogs, AsyncAuditLogs],
+            capture_and_mock_http_client_request,
+        ):
+            """Test that retention can be parsed when retention_period_in_days is null."""
+            organization_id = "org_123456789"
+
+            expected_payload = {"retention_period_in_days": None}
+
+            capture_and_mock_http_client_request(
+                module_instance._http_client, expected_payload, 200
+            )
+
+            response = syncify(module_instance.get_retention(organization_id))
+
+            assert response.retention_period_in_days is None
 
         def test_throws_unauthorized_exception(
             self,

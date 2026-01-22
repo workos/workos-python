@@ -112,6 +112,7 @@ def test_async_client_modules_accessible() -> None:
     # Modules fully supported in async client
     supported_modules = [
         "api_keys",
+        "audit_logs",
         "directory_sync",
         "events",
         "organizations",
@@ -123,7 +124,6 @@ def test_async_client_modules_accessible() -> None:
 
     # Modules that exist but raise NotImplementedError
     not_implemented_modules = [
-        "audit_logs",
         "fga",
         "mfa",
         "passwordless",

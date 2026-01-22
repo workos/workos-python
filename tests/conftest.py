@@ -13,9 +13,10 @@ from typing import (
 from unittest.mock import AsyncMock, MagicMock
 import urllib.parse
 
+import inspect
+
 import httpx
 import pytest
-import asyncio
 from functools import wraps
 
 from tests.utils.client_configuration import ClientConfiguration
@@ -345,6 +346,6 @@ def with_jwks_mock(func):
             return func(*args, **kwargs)
 
     # Return appropriate wrapper based on whether the function is async or not
-    if asyncio.iscoroutinefunction(func):
+    if inspect.iscoroutinefunction(func):
         return async_wrapper
     return sync_wrapper

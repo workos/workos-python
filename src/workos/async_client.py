@@ -2,7 +2,7 @@ from typing import Optional
 from importlib.metadata import version
 from workos._base_client import BaseClient
 from workos.api_keys import AsyncApiKeys
-from workos.audit_logs import AuditLogsModule
+from workos.audit_logs import AsyncAuditLogs
 from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
 from workos.fga import FGAModule
@@ -64,10 +64,10 @@ class AsyncClient(BaseClient):
         return self._sso
 
     @property
-    def audit_logs(self) -> AuditLogsModule:
-        raise NotImplementedError(
-            "Audit logs APIs are not yet supported in the async client."
-        )
+    def audit_logs(self) -> AsyncAuditLogs:
+        if not getattr(self, "_audit_logs", None):
+            self._audit_logs = AsyncAuditLogs(self._http_client)
+        return self._audit_logs
 
     @property
     def directory_sync(self) -> AsyncDirectorySync:

@@ -1,4 +1,4 @@
-from typing import Literal, Sequence, Optional
+from typing import Any, Literal, Sequence, Optional
 from typing_extensions import TypedDict
 
 from workos.types.workos_model import WorkOSModel
@@ -21,5 +21,6 @@ class OrganizationMembership(WorkOSModel):
     role: OrganizationMembershipRole
     roles: Optional[Sequence[OrganizationMembershipRole]] = None
     status: LiteralOrUntyped[OrganizationMembershipStatus]
+    idp_attributes: dict[str, Any]
     created_at: str
     updated_at: str

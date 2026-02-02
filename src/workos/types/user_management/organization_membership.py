@@ -21,6 +21,6 @@ class OrganizationMembership(WorkOSModel):
     role: OrganizationMembershipRole
     roles: Optional[Sequence[OrganizationMembershipRole]] = None
     status: LiteralOrUntyped[OrganizationMembershipStatus]
-    idp_attributes: Dict[str, Any]
+    custom_attributes: Dict[str, Any]
     created_at: str
     updated_at: str

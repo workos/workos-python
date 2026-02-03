@@ -1,4 +1,4 @@
-from typing import Any, Dict, Literal, Sequence, Optional
+from typing import Any, Literal, Mapping, Optional, Sequence
 from typing_extensions import TypedDict
 
 from workos.types.workos_model import WorkOSModel
@@ -21,6 +21,6 @@ class OrganizationMembership(WorkOSModel):
     role: OrganizationMembershipRole
     roles: Optional[Sequence[OrganizationMembershipRole]] = None
     status: LiteralOrUntyped[OrganizationMembershipStatus]
-    custom_attributes: Dict[str, Any]
+    custom_attributes: Mapping[str, Any]
     created_at: str
     updated_at: str

@@ -13,6 +13,7 @@ class MockOrganizationMembership(OrganizationMembership):
             organization_id="org_67890",
             status="active",
             role={"slug": "member"},
+            custom_attributes={},
             created_at=now,
             updated_at=now,
         )

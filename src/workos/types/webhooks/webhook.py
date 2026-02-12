@@ -43,7 +43,7 @@ from workos.types.events.directory_payload_with_legacy_fields import (
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
-from workos.types.events.flag_payload import FlagPayload
+from workos.types.events.flag_payload import FlagPayload, FlagRuleUpdatedContext
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
@@ -243,6 +243,7 @@ class FlagDeletedWebhook(WebhookModel[FlagPayload]):
 
 class FlagRuleUpdatedWebhook(WebhookModel[FlagPayload]):
     event: Literal["flag.rule_updated"]
+    context: FlagRuleUpdatedContext
 
 
 class FlagUpdatedWebhook(WebhookModel[FlagPayload]):

@@ -43,7 +43,7 @@ from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
 from workos.types.events.event_model import EventModel
-from workos.types.events.flag_payload import FlagPayload
+from workos.types.events.flag_payload import FlagPayload, FlagRuleUpdatedContext
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
@@ -235,6 +235,7 @@ class FlagDeletedEvent(EventModel[FlagPayload]):
 
 class FlagRuleUpdatedEvent(EventModel[FlagPayload]):
     event: Literal["flag.rule_updated"]
+    context: FlagRuleUpdatedContext
 
 
 class FlagUpdatedEvent(EventModel[FlagPayload]):

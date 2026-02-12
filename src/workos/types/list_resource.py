@@ -44,12 +44,9 @@ from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT
 ListableResource = TypeVar(
     # add all possible generics of List Resource
     "ListableResource",
-<<<<<<< HEAD
     ApiKey,
-=======
     AuditLogAction,
     AuditLogSchema,
->>>>>>> main
     AuthenticationFactor,
     ConnectionWithDomains,
     Directory,

@@ -1,6 +1,8 @@
+from functools import partial
 from typing import Optional, Protocol, Sequence
 
-from workos.types.api_keys import ApiKey, ApiKeyListFilters, ApiKeyWithValue
+from workos.types.api_keys import ApiKey, ApiKeyWithValue
+from workos.types.api_keys.list_filters import ApiKeyListFilters
 from workos.types.feature_flags import FeatureFlag
 from workos.types.feature_flags.list_filters import FeatureFlagListFilters
 from workos.types.metadata import Metadata
@@ -386,7 +388,6 @@ class Organizations(OrganizationsModule):
         order: PaginationOrder = "desc",
     ) -> ApiKeysListResource:
         list_params: ApiKeyListFilters = {
-            "organization_id": organization_id,
             "limit": limit,
             "before": before,
             "after": after,
@@ -400,7 +401,7 @@ class Organizations(OrganizationsModule):
         )
 
         return WorkOSListResource[ApiKey, ApiKeyListFilters, ListMetadata](
-            list_method=self.list_api_keys,
+            list_method=partial(self.list_api_keys, organization_id),
             list_args=list_params,
             **ListPage[ApiKey](**response).model_dump(),
         )
@@ -582,7 +583,6 @@ class AsyncOrganizations(OrganizationsModule):
         order: PaginationOrder = "desc",
     ) -> ApiKeysListResource:
         list_params: ApiKeyListFilters = {
-            "organization_id": organization_id,
             "limit": limit,
             "before": before,
             "after": after,
@@ -596,7 +596,7 @@ class AsyncOrganizations(OrganizationsModule):
         )
 
         return WorkOSListResource[ApiKey, ApiKeyListFilters, ListMetadata](
-            list_method=self.list_api_keys,
+            list_method=partial(self.list_api_keys, organization_id),
             list_args=list_params,
             **ListPage[ApiKey](**response).model_dump(),
         )

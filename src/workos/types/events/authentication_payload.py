@@ -98,6 +98,7 @@ class AuthenticationSsoSucceededPayload(AuthenticationResultSucceeded):
 class AuthenticationRadarRiskDetectedPayload(AuthenticationResultCommon):
     auth_method: str
     action: str
-    control: str
+    control: Optional[str] = None
     blocklist_type: Optional[str] = None
-    user_id: Optional[str] = None
+    user_id: str
+    email: str

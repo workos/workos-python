@@ -5,7 +5,7 @@ from typing_extensions import Annotated
 
 from workos.types.directory_sync import DirectoryGroup
 from workos.types.directory_sync.directory_user import DirectoryUser
-from workos.types.events.api_key_payload import ApiKeyPayload
+from workos.types.api_keys import ApiKey
 from workos.types.events.authentication_payload import (
     AuthenticationEmailVerificationFailedPayload,
     AuthenticationEmailVerificationSucceededPayload,
@@ -71,11 +71,11 @@ from workos.types.webhooks.webhook_model import WebhookModel
 # added to the Webhook union type at the bottom of this file.
 
 
-class ApiKeyCreatedWebhook(WebhookModel[ApiKeyPayload]):
+class ApiKeyCreatedWebhook(WebhookModel[ApiKey]):
     event: Literal["api_key.created"]
 
 
-class ApiKeyRevokedWebhook(WebhookModel[ApiKeyPayload]):
+class ApiKeyRevokedWebhook(WebhookModel[ApiKey]):
     event: Literal["api_key.revoked"]
 
 

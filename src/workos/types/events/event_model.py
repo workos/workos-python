@@ -3,7 +3,7 @@ from workos.types.user_management import OrganizationMembership, User
 from workos.types.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_group import DirectoryGroup
 from workos.types.directory_sync.directory_user import DirectoryUser
-from workos.types.events.api_key_payload import ApiKeyPayload
+from workos.types.api_keys import ApiKey
 from workos.types.events.authentication_payload import (
     AuthenticationEmailVerificationFailedPayload,
     AuthenticationEmailVerificationSucceededPayload,
@@ -67,7 +67,7 @@ from workos.types.user_management.password_reset import PasswordResetCommon
 
 EventPayload = TypeVar(
     "EventPayload",
-    ApiKeyPayload,
+    ApiKey,
     AuthenticationEmailVerificationFailedPayload,
     AuthenticationEmailVerificationSucceededPayload,
     AuthenticationMagicAuthFailedPayload,

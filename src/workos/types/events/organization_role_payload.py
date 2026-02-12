@@ -8,7 +8,7 @@ class OrganizationRolePayload(WorkOSModel):
     slug: str
     name: str
     description: Optional[str] = None
-    resource_type_slug: Optional[str] = None
+    resource_type_slug: str
     permissions: Sequence[str]
     created_at: str
     updated_at: str

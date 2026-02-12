@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional
 from workos.types.workos_model import WorkOSModel
 
 SamlCertificateType = Literal["ResponseSigning", "RequestSigning", "ResponseEncryption"]
@@ -6,7 +6,7 @@ SamlCertificateType = Literal["ResponseSigning", "RequestSigning", "ResponseEncr
 
 class SamlCertificateConnection(WorkOSModel):
     id: str
-    organization_id: str
+    organization_id: Optional[str] = None
 
 
 class SamlCertificate(WorkOSModel):

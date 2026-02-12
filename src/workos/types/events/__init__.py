@@ -1,4 +1,3 @@
-from .api_key_payload import *
 from .authentication_payload import *
 from .connection_payload_with_legacy_fields import *
 from .connection_saml_certificate_payload import *

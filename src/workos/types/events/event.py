@@ -4,7 +4,7 @@ from typing_extensions import Annotated
 from workos.types.user_management import OrganizationMembership, User
 from workos.types.directory_sync.directory_group import DirectoryGroup
 from workos.types.directory_sync.directory_user import DirectoryUser
-from workos.types.events.api_key_payload import ApiKeyPayload
+from workos.types.api_keys import ApiKey
 from workos.types.events.authentication_payload import (
     AuthenticationEmailVerificationFailedPayload,
     AuthenticationEmailVerificationSucceededPayload,
@@ -71,11 +71,11 @@ from workos.types.user_management.password_reset import PasswordResetCommon
 # the event name is added to the EventType union type in event_type.py.
 
 
-class ApiKeyCreatedEvent(EventModel[ApiKeyPayload]):
+class ApiKeyCreatedEvent(EventModel[ApiKey]):
     event: Literal["api_key.created"]
 
 
-class ApiKeyRevokedEvent(EventModel[ApiKeyPayload]):
+class ApiKeyRevokedEvent(EventModel[ApiKey]):
     event: Literal["api_key.revoked"]
 
 

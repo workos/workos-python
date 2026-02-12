@@ -3,20 +3,30 @@ from workos.types.user_management import OrganizationMembership, User
 from workos.types.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_group import DirectoryGroup
 from workos.types.directory_sync.directory_user import DirectoryUser
+from workos.types.events.api_key_payload import ApiKeyPayload
 from workos.types.events.authentication_payload import (
+    AuthenticationEmailVerificationFailedPayload,
     AuthenticationEmailVerificationSucceededPayload,
     AuthenticationMagicAuthFailedPayload,
     AuthenticationMagicAuthSucceededPayload,
+    AuthenticationMfaFailedPayload,
     AuthenticationMfaSucceededPayload,
     AuthenticationOauthFailedPayload,
     AuthenticationOauthSucceededPayload,
+    AuthenticationPasskeyFailedPayload,
+    AuthenticationPasskeySucceededPayload,
     AuthenticationPasswordFailedPayload,
     AuthenticationPasswordSucceededPayload,
+    AuthenticationRadarRiskDetectedPayload,
     AuthenticationSsoFailedPayload,
     AuthenticationSsoSucceededPayload,
 )
 from workos.types.events.connection_payload_with_legacy_fields import (
     ConnectionPayloadWithLegacyFields,
+)
+from workos.types.events.connection_saml_certificate_payload import (
+    ConnectionSamlCertificateRenewedPayload,
+    ConnectionSamlCertificateRenewalRequiredPayload,
 )
 from workos.types.events.directory_group_membership_payload import (
     DirectoryGroupMembershipPayload,
@@ -32,9 +42,12 @@ from workos.types.events.directory_payload_with_legacy_fields import (
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
+from workos.types.events.flag_payload import FlagPayload
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
+from workos.types.events.organization_role_payload import OrganizationRolePayload
+from workos.types.events.permission_payload import PermissionPayload
 
 from workos.types.events.session_payload import (
     SessionCreatedPayload,
@@ -54,18 +67,26 @@ from workos.types.user_management.password_reset import PasswordResetCommon
 
 EventPayload = TypeVar(
     "EventPayload",
+    ApiKeyPayload,
+    AuthenticationEmailVerificationFailedPayload,
     AuthenticationEmailVerificationSucceededPayload,
     AuthenticationMagicAuthFailedPayload,
     AuthenticationMagicAuthSucceededPayload,
+    AuthenticationMfaFailedPayload,
     AuthenticationMfaSucceededPayload,
     AuthenticationOauthFailedPayload,
     AuthenticationOauthSucceededPayload,
+    AuthenticationPasskeyFailedPayload,
+    AuthenticationPasskeySucceededPayload,
     AuthenticationPasswordFailedPayload,
     AuthenticationPasswordSucceededPayload,
+    AuthenticationRadarRiskDetectedPayload,
     AuthenticationSsoFailedPayload,
     AuthenticationSsoSucceededPayload,
     Connection,
     ConnectionPayloadWithLegacyFields,
+    ConnectionSamlCertificateRenewedPayload,
+    ConnectionSamlCertificateRenewalRequiredPayload,
     DirectoryPayload,
     DirectoryPayloadWithLegacyFields,
     # TODO: Remove once merged with DirectoryPayloadWithLegacyFields in next major release.
@@ -77,13 +98,16 @@ EventPayload = TypeVar(
     DirectoryGroupMembershipPayload,
     EmailVerificationCommon,
     EventRole,
+    FlagPayload,
     InvitationCommon,
     MagicAuthCommon,
     OrganizationCommon,
     OrganizationDomain,
     OrganizationDomainVerificationFailedPayload,
     OrganizationMembership,
+    OrganizationRolePayload,
     PasswordResetCommon,
+    PermissionPayload,
     SessionCreatedPayload,
     SessionRevokedPayload,
     User,

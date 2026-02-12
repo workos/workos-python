@@ -1,5 +1,7 @@
+from .api_key_payload import *
 from .authentication_payload import *
 from .connection_payload_with_legacy_fields import *
+from .connection_saml_certificate_payload import *
 from .directory_group_membership_payload import *
 from .directory_group_with_previous_attributes import *
 from .directory_payload import *
@@ -8,6 +10,9 @@ from .directory_user_with_previous_attributes import *
 from .event_model import *
 from .event_type import *
 from .event import *
+from .flag_payload import *
 from .organization_domain_verification_failed_payload import *
+from .organization_role_payload import *
+from .permission_payload import *
 from .previous_attributes import *
 from .session_payload import *

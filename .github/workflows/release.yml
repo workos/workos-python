@@ -19,10 +19,10 @@ jobs:
     steps:
       - name: Generate token
         id: generate-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
-          app-id: ${{ vars.WORKOS_BOT_APP_ID }}
-          private-key: ${{ secrets.WORKOS_BOT_PRIVATE_KEY }}
+          app-id: ${{ vars.SDK_BOT_APP_ID }}
+          private-key: ${{ secrets.SDK_BOT_PRIVATE_KEY }}
 
       - name: Checkout
         uses: actions/checkout@v4

@@ -15,6 +15,7 @@ class InvitationCommon(WorkOSModel):
     expires_at: str
     organization_id: Optional[str] = None
     inviter_user_id: Optional[str] = None
+    accepted_user_id: Optional[str] = None
     created_at: str
     updated_at: str
 

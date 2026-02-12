@@ -2,6 +2,7 @@ import datetime
 from typing import Union
 import pytest
 from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
+from tests.utils.fixtures.mock_api_key import MockApiKey, MockApiKeyWithValue
 from tests.utils.fixtures.mock_feature_flag import MockFeatureFlag
 from tests.utils.fixtures.mock_organization import MockOrganization
 from tests.utils.fixtures.mock_role import MockRole
@@ -297,4 +298,117 @@ class TestOrganizations:
         assert (
             list(map(to_dict, feature_flags_response.data))
             == mock_feature_flags["data"]
+        )
+
+    @pytest.fixture
+    def mock_api_key_with_value(self):
+        return MockApiKeyWithValue().dict()
+
+    @pytest.fixture
+    def mock_api_keys(self):
+        api_key_list = [MockApiKey(id=f"api_key_{i}").dict() for i in range(5)]
+        return {
+            "data": api_key_list,
+            "list_metadata": {"before": None, "after": None},
+            "object": "list",
+        }
+
+    @pytest.fixture
+    def mock_api_keys_multiple_pages(self):
+        api_key_list = [MockApiKey(id=f"api_key_{i}").dict() for i in range(40)]
+        return list_response_of(data=api_key_list)
+
+    def test_create_api_key(
+        self, mock_api_key_with_value, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_api_key_with_value, 201
+        )
+
+        api_key = syncify(
+            self.organizations.create_api_key(
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                name="Production API Key",
+                permissions=["posts:read", "posts:write"],
+            )
+        )
+
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith(
+            "/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/api_keys"
+        )
+        assert request_kwargs["json"]["name"] == "Production API Key"
+        assert request_kwargs["json"]["permissions"] == ["posts:read", "posts:write"]
+        assert api_key.id == mock_api_key_with_value["id"]
+        assert api_key.value == mock_api_key_with_value["value"]
+        assert api_key.object == "api_key"
+
+    def test_create_api_key_without_permissions(
+        self, mock_api_key_with_value, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_api_key_with_value, 201
+        )
+
+        api_key = syncify(
+            self.organizations.create_api_key(
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                name="Basic API Key",
+            )
+        )
+
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"]["name"] == "Basic API Key"
+        assert request_kwargs["json"].get("permissions") is None
+        assert api_key.id == mock_api_key_with_value["id"]
+
+    def test_list_api_keys(self, mock_api_keys, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_api_keys, 200
+        )
+
+        api_keys_response = syncify(
+            self.organizations.list_api_keys(
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T"
+            )
+        )
+
+        def to_dict(x):
+            return x.dict()
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith(
+            "/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/api_keys"
+        )
+        assert list(map(to_dict, api_keys_response.data)) == mock_api_keys["data"]
+
+    def test_list_api_keys_with_pagination_params(
+        self, mock_api_keys, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_api_keys, 200
+        )
+
+        syncify(
+            self.organizations.list_api_keys(
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                limit=5,
+                order="asc",
+            )
+        )
+
+        assert request_kwargs["params"]["limit"] == 5
+        assert request_kwargs["params"]["order"] == "asc"
+
+    def test_list_api_keys_auto_pagination_for_multiple_pages(
+        self,
+        mock_api_keys_multiple_pages,
+        test_auto_pagination: TestAutoPaginationFunction,
+    ):
+        test_auto_pagination(
+            http_client=self.http_client,
+            list_function=self.organizations.list_api_keys,
+            expected_all_page_data=mock_api_keys_multiple_pages["data"],
+            list_function_params={"organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T"},
+            url_path_keys=["organization_id"],
         )

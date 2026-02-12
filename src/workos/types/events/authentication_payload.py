@@ -86,13 +86,13 @@ class AuthenticationSsoData(WorkOSModel):
 
 class AuthenticationSsoFailedPayload(AuthenticationResultFailed):
     type: Literal["sso"]
-    sso: Optional[AuthenticationSsoData] = None
+    sso: AuthenticationSsoData
 
 
 class AuthenticationSsoSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["sso"]
     user_id: Optional[str] = None
-    sso: Optional[AuthenticationSsoData] = None
+    sso: AuthenticationSsoData
 
 
 class AuthenticationRadarRiskDetectedPayload(AuthenticationResultCommon):

@@ -5,6 +5,7 @@ from typing import Optional
 from workos._client_configuration import ClientConfiguration
 from workos.api_keys import ApiKeysModule
 from workos.audit_logs import AuditLogsModule
+from workos.authorization import AuthorizationModule
 from workos.directory_sync import DirectorySyncModule
 from workos.events import EventsModule
 from workos.fga import FGAModule
@@ -73,6 +74,10 @@ class BaseClient(ClientConfiguration):
     @property
     @abstractmethod
     def api_keys(self) -> ApiKeysModule: ...
+
+    @property
+    @abstractmethod
+    def authorization(self) -> AuthorizationModule: ...
 
     @property
     @abstractmethod

@@ -3,6 +3,7 @@ from importlib.metadata import version
 from workos._base_client import BaseClient
 from workos.api_keys import AsyncApiKeys
 from workos.audit_logs import AsyncAuditLogs
+from workos.authorization import AsyncAuthorization
 from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
 from workos.fga import FGAModule
@@ -54,6 +55,12 @@ class AsyncClient(BaseClient):
         if not getattr(self, "_api_keys", None):
             self._api_keys = AsyncApiKeys(self._http_client)
         return self._api_keys
+
+    @property
+    def authorization(self) -> AsyncAuthorization:
+        if not getattr(self, "_authorization", None):
+            self._authorization = AsyncAuthorization(self._http_client)
+        return self._authorization
 
     @property
     def sso(self) -> AsyncSSO:

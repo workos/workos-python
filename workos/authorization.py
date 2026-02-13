@@ -1,10 +1,17 @@
-from typing import Any, Dict, Optional, Protocol, Sequence
+from typing import Any, Dict, Optional, Protocol, Sequence, Union
 
+from pydantic import TypeAdapter
+
+from workos.types.authorization.environment_role import (
+    EnvironmentRole,
+    EnvironmentRoleList,
+)
 from workos.types.authorization.organization_role import (
     OrganizationRole,
     OrganizationRoleList,
 )
 from workos.types.authorization.permission import Permission
+from workos.types.authorization.role import Role, RoleList
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -24,6 +31,8 @@ from workos.utils.request_helper import (
 )
 
 AUTHORIZATION_PERMISSIONS_PATH = "authorization/permissions"
+
+_role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
 
 
 class PermissionListFilters(ListArgs, total=False):
@@ -80,11 +89,11 @@ class AuthorizationModule(Protocol):
 
     def list_organization_roles(
         self, organization_id: str
-    ) -> SyncOrAsync[OrganizationRoleList]: ...
+    ) -> SyncOrAsync[RoleList]: ...
 
     def get_organization_role(
         self, organization_id: str, slug: str
-    ) -> SyncOrAsync[OrganizationRole]: ...
+    ) -> SyncOrAsync[Role]: ...
 
     def update_organization_role(
         self,
@@ -118,6 +127,42 @@ class AuthorizationModule(Protocol):
         *,
         permission_slug: str,
     ) -> SyncOrAsync[None]: ...
+
+    # Environment Roles
+
+    def create_environment_role(
+        self,
+        *,
+        slug: str,
+        name: str,
+        description: Optional[str] = None,
+    ) -> SyncOrAsync[EnvironmentRole]: ...
+
+    def list_environment_roles(self) -> SyncOrAsync[EnvironmentRoleList]: ...
+
+    def get_environment_role(self, slug: str) -> SyncOrAsync[EnvironmentRole]: ...
+
+    def update_environment_role(
+        self,
+        slug: str,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> SyncOrAsync[EnvironmentRole]: ...
+
+    def set_environment_role_permissions(
+        self,
+        slug: str,
+        *,
+        permissions: Sequence[str],
+    ) -> SyncOrAsync[EnvironmentRole]: ...
+
+    def add_environment_role_permission(
+        self,
+        slug: str,
+        *,
+        permission_slug: str,
+    ) -> SyncOrAsync[EnvironmentRole]: ...
 
 
 class Authorization(AuthorizationModule):
@@ -229,23 +274,21 @@ class Authorization(AuthorizationModule):
 
         return OrganizationRole.model_validate(response)
 
-    def list_organization_roles(self, organization_id: str) -> OrganizationRoleList:
+    def list_organization_roles(self, organization_id: str) -> RoleList:
         response = self._http_client.request(
             f"authorization/organizations/{organization_id}/roles",
             method=REQUEST_METHOD_GET,
         )
 
-        return OrganizationRoleList.model_validate(response)
+        return RoleList.model_validate(response)
 
-    def get_organization_role(
-        self, organization_id: str, slug: str
-    ) -> OrganizationRole:
+    def get_organization_role(self, organization_id: str, slug: str) -> Role:
         response = self._http_client.request(
             f"authorization/organizations/{organization_id}/roles/{slug}",
             method=REQUEST_METHOD_GET,
         )
 
-        return OrganizationRole.model_validate(response)
+        return _role_adapter.validate_python(response)
 
     def update_organization_role(
         self,
@@ -310,6 +353,92 @@ class Authorization(AuthorizationModule):
             f"authorization/organizations/{organization_id}/roles/{slug}/permissions/{permission_slug}",
             method=REQUEST_METHOD_DELETE,
         )
+
+    # Environment Roles
+
+    def create_environment_role(
+        self,
+        *,
+        slug: str,
+        name: str,
+        description: Optional[str] = None,
+    ) -> EnvironmentRole:
+        json: Dict[str, Any] = {"slug": slug, "name": name}
+        if description is not None:
+            json["description"] = description
+
+        response = self._http_client.request(
+            "authorization/roles",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return EnvironmentRole.model_validate(response)
+
+    def list_environment_roles(self) -> EnvironmentRoleList:
+        response = self._http_client.request(
+            "authorization/roles",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return EnvironmentRoleList.model_validate(response)
+
+    def get_environment_role(self, slug: str) -> EnvironmentRole:
+        response = self._http_client.request(
+            f"authorization/roles/{slug}",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return EnvironmentRole.model_validate(response)
+
+    def update_environment_role(
+        self,
+        slug: str,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> EnvironmentRole:
+        json: Dict[str, Any] = {}
+        if name is not None:
+            json["name"] = name
+        if description is not None:
+            json["description"] = description
+
+        response = self._http_client.request(
+            f"authorization/roles/{slug}",
+            method=REQUEST_METHOD_PATCH,
+            json=json,
+        )
+
+        return EnvironmentRole.model_validate(response)
+
+    def set_environment_role_permissions(
+        self,
+        slug: str,
+        *,
+        permissions: Sequence[str],
+    ) -> EnvironmentRole:
+        response = self._http_client.request(
+            f"authorization/roles/{slug}/permissions",
+            method=REQUEST_METHOD_PUT,
+            json={"permissions": list(permissions)},
+        )
+
+        return EnvironmentRole.model_validate(response)
+
+    def add_environment_role_permission(
+        self,
+        slug: str,
+        *,
+        permission_slug: str,
+    ) -> EnvironmentRole:
+        response = self._http_client.request(
+            f"authorization/roles/{slug}/permissions",
+            method=REQUEST_METHOD_POST,
+            json={"slug": permission_slug},
+        )
+
+        return EnvironmentRole.model_validate(response)
 
 
 class AsyncAuthorization(AuthorizationModule):
@@ -421,25 +550,21 @@ class AsyncAuthorization(AuthorizationModule):
 
         return OrganizationRole.model_validate(response)
 
-    async def list_organization_roles(
-        self, organization_id: str
-    ) -> OrganizationRoleList:
+    async def list_organization_roles(self, organization_id: str) -> RoleList:
         response = await self._http_client.request(
             f"authorization/organizations/{organization_id}/roles",
             method=REQUEST_METHOD_GET,
         )
 
-        return OrganizationRoleList.model_validate(response)
+        return RoleList.model_validate(response)
 
-    async def get_organization_role(
-        self, organization_id: str, slug: str
-    ) -> OrganizationRole:
+    async def get_organization_role(self, organization_id: str, slug: str) -> Role:
         response = await self._http_client.request(
             f"authorization/organizations/{organization_id}/roles/{slug}",
             method=REQUEST_METHOD_GET,
         )
 
-        return OrganizationRole.model_validate(response)
+        return _role_adapter.validate_python(response)
 
     async def update_organization_role(
         self,
@@ -504,3 +629,89 @@ class AsyncAuthorization(AuthorizationModule):
             f"authorization/organizations/{organization_id}/roles/{slug}/permissions/{permission_slug}",
             method=REQUEST_METHOD_DELETE,
         )
+
+    # Environment Roles
+
+    async def create_environment_role(
+        self,
+        *,
+        slug: str,
+        name: str,
+        description: Optional[str] = None,
+    ) -> EnvironmentRole:
+        json: Dict[str, Any] = {"slug": slug, "name": name}
+        if description is not None:
+            json["description"] = description
+
+        response = await self._http_client.request(
+            "authorization/roles",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return EnvironmentRole.model_validate(response)
+
+    async def list_environment_roles(self) -> EnvironmentRoleList:
+        response = await self._http_client.request(
+            "authorization/roles",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return EnvironmentRoleList.model_validate(response)
+
+    async def get_environment_role(self, slug: str) -> EnvironmentRole:
+        response = await self._http_client.request(
+            f"authorization/roles/{slug}",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return EnvironmentRole.model_validate(response)
+
+    async def update_environment_role(
+        self,
+        slug: str,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> EnvironmentRole:
+        json: Dict[str, Any] = {}
+        if name is not None:
+            json["name"] = name
+        if description is not None:
+            json["description"] = description
+
+        response = await self._http_client.request(
+            f"authorization/roles/{slug}",
+            method=REQUEST_METHOD_PATCH,
+            json=json,
+        )
+
+        return EnvironmentRole.model_validate(response)
+
+    async def set_environment_role_permissions(
+        self,
+        slug: str,
+        *,
+        permissions: Sequence[str],
+    ) -> EnvironmentRole:
+        response = await self._http_client.request(
+            f"authorization/roles/{slug}/permissions",
+            method=REQUEST_METHOD_PUT,
+            json={"permissions": list(permissions)},
+        )
+
+        return EnvironmentRole.model_validate(response)
+
+    async def add_environment_role_permission(
+        self,
+        slug: str,
+        *,
+        permission_slug: str,
+    ) -> EnvironmentRole:
+        response = await self._http_client.request(
+            f"authorization/roles/{slug}/permissions",
+            method=REQUEST_METHOD_POST,
+            json={"slug": permission_slug},
+        )
+
+        return EnvironmentRole.model_validate(response)

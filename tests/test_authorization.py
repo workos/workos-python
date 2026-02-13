@@ -218,9 +218,7 @@ class TestAuthorization:
         )
 
         roles_response = syncify(
-            self.authorization.list_organization_roles(
-                "org_01EHT88Z8J8795GZNQ4ZP1J81T"
-            )
+            self.authorization.list_organization_roles("org_01EHT88Z8J8795GZNQ4ZP1J81T")
         )
 
         assert request_kwargs["method"] == "get"

@@ -1,6 +1,7 @@
 from typing import Union
 
 import pytest
+from tests.utils.fixtures.mock_organization_role import MockOrganizationRole
 from tests.utils.fixtures.mock_permission import MockPermission
 from tests.utils.list_resource import list_response_of
 from tests.utils.syncify import syncify
@@ -169,4 +170,171 @@ class TestAuthorization:
         assert request_kwargs["method"] == "delete"
         assert request_kwargs["url"].endswith(
             "/authorization/permissions/documents:read"
+        )
+
+    # --- Organization Role fixtures ---
+
+    @pytest.fixture
+    def mock_organization_role(self):
+        return MockOrganizationRole(id="role_01ABC").dict()
+
+    @pytest.fixture
+    def mock_organization_roles(self):
+        return {
+            "data": [MockOrganizationRole(id=f"role_{i}").dict() for i in range(5)],
+            "object": "list",
+        }
+
+    # --- Organization Role tests ---
+
+    def test_create_organization_role(
+        self, mock_organization_role, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_role, 201
+        )
+
+        role = syncify(
+            self.authorization.create_organization_role(
+                "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                slug="admin",
+                name="Admin",
+            )
+        )
+
+        assert role.id == "role_01ABC"
+        assert role.type == "OrganizationRole"
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/roles"
+        )
+        assert request_kwargs["json"] == {"slug": "admin", "name": "Admin"}
+
+    def test_list_organization_roles(
+        self, mock_organization_roles, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_roles, 200
+        )
+
+        roles_response = syncify(
+            self.authorization.list_organization_roles(
+                "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+            )
+        )
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/roles"
+        )
+        assert len(roles_response.data) == 5
+
+    def test_get_organization_role(
+        self, mock_organization_role, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_role, 200
+        )
+
+        role = syncify(
+            self.authorization.get_organization_role(
+                "org_01EHT88Z8J8795GZNQ4ZP1J81T", "admin"
+            )
+        )
+
+        assert role.id == "role_01ABC"
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/roles/admin"
+        )
+
+    def test_update_organization_role(
+        self, mock_organization_role, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_role, 200
+        )
+
+        role = syncify(
+            self.authorization.update_organization_role(
+                "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                "admin",
+                name="Super Admin",
+            )
+        )
+
+        assert role.id == "role_01ABC"
+        assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/roles/admin"
+        )
+        assert request_kwargs["json"] == {"name": "Super Admin"}
+
+    def test_set_organization_role_permissions(
+        self, mock_organization_role, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_role, 200
+        )
+
+        role = syncify(
+            self.authorization.set_organization_role_permissions(
+                "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                "admin",
+                permissions=["documents:read", "documents:write"],
+            )
+        )
+
+        assert role.id == "role_01ABC"
+        assert request_kwargs["method"] == "put"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/roles/admin/permissions"
+        )
+        assert request_kwargs["json"] == {
+            "permissions": ["documents:read", "documents:write"]
+        }
+
+    def test_add_organization_role_permission(
+        self, mock_organization_role, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_role, 200
+        )
+
+        role = syncify(
+            self.authorization.add_organization_role_permission(
+                "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                "admin",
+                permission_slug="documents:read",
+            )
+        )
+
+        assert role.id == "role_01ABC"
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/roles/admin/permissions"
+        )
+        assert request_kwargs["json"] == {"slug": "documents:read"}
+
+    def test_remove_organization_role_permission(
+        self, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client,
+            202,
+            headers={"content-type": "text/plain; charset=utf-8"},
+        )
+
+        response = syncify(
+            self.authorization.remove_organization_role_permission(
+                "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                "admin",
+                permission_slug="documents:read",
+            )
+        )
+
+        assert response is None
+        assert request_kwargs["method"] == "delete"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/roles/admin/permissions/documents:read"
         )

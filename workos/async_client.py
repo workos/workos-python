@@ -2,6 +2,7 @@ from typing import Optional
 from workos.__about__ import __version__
 from workos._base_client import BaseClient
 from workos.audit_logs import AuditLogsModule
+from workos.authorization import AsyncAuthorization
 from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
 from workos.fga import FGAModule
@@ -44,6 +45,12 @@ class AsyncClient(BaseClient):
             version=__version__,
             timeout=self.request_timeout,
         )
+
+    @property
+    def authorization(self) -> AsyncAuthorization:
+        if not getattr(self, "_authorization", None):
+            self._authorization = AsyncAuthorization(self._http_client)
+        return self._authorization
 
     @property
     def sso(self) -> AsyncSSO:

@@ -2,6 +2,7 @@ from typing import Optional
 from workos.__about__ import __version__
 from workos._base_client import BaseClient
 from workos.audit_logs import AuditLogs
+from workos.authorization import Authorization
 from workos.directory_sync import DirectorySync
 from workos.fga import FGA
 from workos.organizations import Organizations
@@ -44,6 +45,12 @@ class SyncClient(BaseClient):
             version=__version__,
             timeout=self.request_timeout,
         )
+
+    @property
+    def authorization(self) -> Authorization:
+        if not getattr(self, "_authorization", None):
+            self._authorization = Authorization(self._http_client)
+        return self._authorization
 
     @property
     def sso(self) -> SSO:

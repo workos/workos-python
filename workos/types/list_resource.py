@@ -17,6 +17,7 @@ from typing import (
     cast,
 )
 from typing_extensions import Required, TypedDict
+from workos.types.authorization.permission import Permission
 from workos.types.directory_sync import (
     Directory,
     DirectoryGroup,
@@ -49,6 +50,7 @@ ListableResource = TypeVar(
     Invitation,
     Organization,
     OrganizationMembership,
+    Permission,
     AuthorizationResource,
     AuthorizationResourceType,
     User,

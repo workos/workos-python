@@ -1,4 +1,6 @@
-from typing import Any, Dict, Optional, Protocol, Sequence
+from typing import Any, Dict, Optional, Protocol, Sequence, Union
+
+from pydantic import TypeAdapter
 
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
@@ -9,6 +11,7 @@ from workos.types.authorization.organization_role import (
     OrganizationRoleList,
 )
 from workos.types.authorization.permission import Permission
+from workos.types.authorization.role import Role, RoleList
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -28,6 +31,8 @@ from workos.utils.request_helper import (
 )
 
 AUTHORIZATION_PERMISSIONS_PATH = "authorization/permissions"
+
+_role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
 
 
 class PermissionListFilters(ListArgs, total=False):
@@ -84,11 +89,11 @@ class AuthorizationModule(Protocol):
 
     def list_organization_roles(
         self, organization_id: str
-    ) -> SyncOrAsync[OrganizationRoleList]: ...
+    ) -> SyncOrAsync[RoleList]: ...
 
     def get_organization_role(
         self, organization_id: str, slug: str
-    ) -> SyncOrAsync[OrganizationRole]: ...
+    ) -> SyncOrAsync[Role]: ...
 
     def update_organization_role(
         self,
@@ -269,23 +274,21 @@ class Authorization(AuthorizationModule):
 
         return OrganizationRole.model_validate(response)
 
-    def list_organization_roles(self, organization_id: str) -> OrganizationRoleList:
+    def list_organization_roles(self, organization_id: str) -> RoleList:
         response = self._http_client.request(
             f"authorization/organizations/{organization_id}/roles",
             method=REQUEST_METHOD_GET,
         )
 
-        return OrganizationRoleList.model_validate(response)
+        return RoleList.model_validate(response)
 
-    def get_organization_role(
-        self, organization_id: str, slug: str
-    ) -> OrganizationRole:
+    def get_organization_role(self, organization_id: str, slug: str) -> Role:
         response = self._http_client.request(
             f"authorization/organizations/{organization_id}/roles/{slug}",
             method=REQUEST_METHOD_GET,
         )
 
-        return OrganizationRole.model_validate(response)
+        return _role_adapter.validate_python(response)
 
     def update_organization_role(
         self,
@@ -547,25 +550,21 @@ class AsyncAuthorization(AuthorizationModule):
 
         return OrganizationRole.model_validate(response)
 
-    async def list_organization_roles(
-        self, organization_id: str
-    ) -> OrganizationRoleList:
+    async def list_organization_roles(self, organization_id: str) -> RoleList:
         response = await self._http_client.request(
             f"authorization/organizations/{organization_id}/roles",
             method=REQUEST_METHOD_GET,
         )
 
-        return OrganizationRoleList.model_validate(response)
+        return RoleList.model_validate(response)
 
-    async def get_organization_role(
-        self, organization_id: str, slug: str
-    ) -> OrganizationRole:
+    async def get_organization_role(self, organization_id: str, slug: str) -> Role:
         response = await self._http_client.request(
             f"authorization/organizations/{organization_id}/roles/{slug}",
             method=REQUEST_METHOD_GET,
         )
 
-        return OrganizationRole.model_validate(response)
+        return _role_adapter.validate_python(response)
 
     async def update_organization_role(
         self,

@@ -219,9 +219,7 @@ class TestAuthorization:
         )
 
         roles_response = syncify(
-            self.authorization.list_organization_roles(
-                "org_01EHT88Z8J8795GZNQ4ZP1J81T"
-            )
+            self.authorization.list_organization_roles("org_01EHT88Z8J8795GZNQ4ZP1J81T")
         )
 
         assert request_kwargs["method"] == "get"
@@ -429,9 +427,7 @@ class TestAuthorization:
 
         assert role.id == "role_01DEF"
         assert request_kwargs["method"] == "put"
-        assert request_kwargs["url"].endswith(
-            "/authorization/roles/member/permissions"
-        )
+        assert request_kwargs["url"].endswith("/authorization/roles/member/permissions")
         assert request_kwargs["json"] == {"permissions": ["documents:read"]}
 
     def test_add_environment_role_permission(
@@ -449,7 +445,5 @@ class TestAuthorization:
 
         assert role.id == "role_01DEF"
         assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith(
-            "/authorization/roles/member/permissions"
-        )
+        assert request_kwargs["url"].endswith("/authorization/roles/member/permissions")
         assert request_kwargs["json"] == {"slug": "documents:read"}

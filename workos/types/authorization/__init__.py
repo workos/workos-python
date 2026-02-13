@@ -9,3 +9,7 @@ from workos.types.authorization.organization_role import (
 from workos.types.authorization.permission import (
     Permission as Permission,
 )
+from workos.types.authorization.role import (
+    Role as Role,
+    RoleList as RoleList,
+)

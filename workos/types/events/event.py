@@ -32,6 +32,8 @@ from workos.types.events.directory_payload_with_legacy_fields import (
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
+from workos.types.authorization.organization_role import OrganizationRoleEvent
+from workos.types.authorization.permission import Permission
 from workos.types.events.event_model import EventModel
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
@@ -225,12 +227,36 @@ class OrganizationMembershipUpdatedEvent(EventModel[OrganizationMembership]):
     event: Literal["organization_membership.updated"]
 
 
+class OrganizationRoleCreatedEvent(EventModel[OrganizationRoleEvent]):
+    event: Literal["organization_role.created"]
+
+
+class OrganizationRoleUpdatedEvent(EventModel[OrganizationRoleEvent]):
+    event: Literal["organization_role.updated"]
+
+
+class OrganizationRoleDeletedEvent(EventModel[OrganizationRoleEvent]):
+    event: Literal["organization_role.deleted"]
+
+
 class PasswordResetCreatedEvent(EventModel[PasswordResetCommon]):
     event: Literal["password_reset.created"]
 
 
 class PasswordResetSucceededEvent(EventModel[PasswordResetCommon]):
     event: Literal["password_reset.succeeded"]
+
+
+class PermissionCreatedEvent(EventModel[Permission]):
+    event: Literal["permission.created"]
+
+
+class PermissionUpdatedEvent(EventModel[Permission]):
+    event: Literal["permission.updated"]
+
+
+class PermissionDeletedEvent(EventModel[Permission]):
+    event: Literal["permission.deleted"]
 
 
 class RoleCreatedEvent(EventModel[EventRole]):
@@ -302,8 +328,14 @@ Event = Annotated[
         OrganizationMembershipCreatedEvent,
         OrganizationMembershipDeletedEvent,
         OrganizationMembershipUpdatedEvent,
+        OrganizationRoleCreatedEvent,
+        OrganizationRoleUpdatedEvent,
+        OrganizationRoleDeletedEvent,
         PasswordResetCreatedEvent,
         PasswordResetSucceededEvent,
+        PermissionCreatedEvent,
+        PermissionUpdatedEvent,
+        PermissionDeletedEvent,
         RoleCreatedEvent,
         RoleDeletedEvent,
         RoleUpdatedEvent,

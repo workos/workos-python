@@ -38,6 +38,11 @@ from workos.types.events.organization_domain_verification_failed_payload import 
 from workos.types.events.session_created_payload import SessionCreatedPayload
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organization_domains import OrganizationDomain
+from workos.types.authorization.organization_role import (
+    OrganizationRole,
+    OrganizationRoleEvent,
+)
+from workos.types.authorization.permission import Permission
 from workos.types.roles.role import EventRole
 from workos.types.sso.connection import Connection
 from workos.types.user_management.email_verification import (
@@ -79,7 +84,10 @@ EventPayload = TypeVar(
     OrganizationDomain,
     OrganizationDomainVerificationFailedPayload,
     OrganizationMembership,
+    OrganizationRole,
+    OrganizationRoleEvent,
     PasswordResetCommon,
+    Permission,
     SessionCreatedPayload,
     User,
 )

@@ -17,7 +17,7 @@ nox.options.default_venv_backend = "uv"
 nox.options.reuse_venv = "yes"
 
 # All Python versions supported by the SDK (must match CI matrix)
-PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+PYTHON_VERSIONS = ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
 
 # Default sessions to run
 nox.options.sessions = ["tests"]

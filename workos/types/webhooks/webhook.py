@@ -37,6 +37,8 @@ from workos.types.events.organization_domain_verification_failed_payload import 
     OrganizationDomainVerificationFailedPayload,
 )
 from workos.types.events.session_created_payload import SessionCreatedPayload
+from workos.types.authorization.organization_role import OrganizationRole
+from workos.types.authorization.permission import Permission
 from workos.types.organization_domains import OrganizationDomain
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.roles.role import EventRole
@@ -231,12 +233,36 @@ class OrganizationMembershipUpdatedWebhook(WebhookModel[OrganizationMembership])
     event: Literal["organization_membership.updated"]
 
 
+class OrganizationRoleCreatedWebhook(WebhookModel[OrganizationRole]):
+    event: Literal["organization_role.created"]
+
+
+class OrganizationRoleUpdatedWebhook(WebhookModel[OrganizationRole]):
+    event: Literal["organization_role.updated"]
+
+
+class OrganizationRoleDeletedWebhook(WebhookModel[OrganizationRole]):
+    event: Literal["organization_role.deleted"]
+
+
 class PasswordResetCreatedWebhook(WebhookModel[PasswordResetCommon]):
     event: Literal["password_reset.created"]
 
 
 class PasswordResetSucceededWebhook(WebhookModel[PasswordResetCommon]):
     event: Literal["password_reset.succeeded"]
+
+
+class PermissionCreatedWebhook(WebhookModel[Permission]):
+    event: Literal["permission.created"]
+
+
+class PermissionUpdatedWebhook(WebhookModel[Permission]):
+    event: Literal["permission.updated"]
+
+
+class PermissionDeletedWebhook(WebhookModel[Permission]):
+    event: Literal["permission.deleted"]
 
 
 class RoleCreatedWebhook(WebhookModel[EventRole]):
@@ -308,8 +334,14 @@ Webhook = Annotated[
         OrganizationMembershipCreatedWebhook,
         OrganizationMembershipDeletedWebhook,
         OrganizationMembershipUpdatedWebhook,
+        OrganizationRoleCreatedWebhook,
+        OrganizationRoleUpdatedWebhook,
+        OrganizationRoleDeletedWebhook,
         PasswordResetCreatedWebhook,
         PasswordResetSucceededWebhook,
+        PermissionCreatedWebhook,
+        PermissionUpdatedWebhook,
+        PermissionDeletedWebhook,
         RoleCreatedWebhook,
         RoleDeletedWebhook,
         RoleUpdatedWebhook,

@@ -42,13 +42,13 @@ from workos.types.events.directory_payload_with_legacy_fields import (
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
+from workos.types.authorization.organization_role import OrganizationRoleEvent
+from workos.types.authorization.permission import Permission
 from workos.types.events.event_model import EventModel
 from workos.types.events.flag_payload import FlagPayload, FlagRuleUpdatedContext
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
-from workos.types.events.organization_role_payload import OrganizationRolePayload
-from workos.types.events.permission_payload import PermissionPayload
 from workos.types.events.session_payload import (
     SessionCreatedPayload,
     SessionRevokedPayload,
@@ -308,16 +308,16 @@ class OrganizationMembershipUpdatedEvent(EventModel[OrganizationMembership]):
     event: Literal["organization_membership.updated"]
 
 
-class OrganizationRoleCreatedEvent(EventModel[OrganizationRolePayload]):
+class OrganizationRoleCreatedEvent(EventModel[OrganizationRoleEvent]):
     event: Literal["organization_role.created"]
 
 
-class OrganizationRoleDeletedEvent(EventModel[OrganizationRolePayload]):
-    event: Literal["organization_role.deleted"]
-
-
-class OrganizationRoleUpdatedEvent(EventModel[OrganizationRolePayload]):
+class OrganizationRoleUpdatedEvent(EventModel[OrganizationRoleEvent]):
     event: Literal["organization_role.updated"]
+
+
+class OrganizationRoleDeletedEvent(EventModel[OrganizationRoleEvent]):
+    event: Literal["organization_role.deleted"]
 
 
 class PasswordResetCreatedEvent(EventModel[PasswordResetCommon]):
@@ -328,16 +328,16 @@ class PasswordResetSucceededEvent(EventModel[PasswordResetCommon]):
     event: Literal["password_reset.succeeded"]
 
 
-class PermissionCreatedEvent(EventModel[PermissionPayload]):
+class PermissionCreatedEvent(EventModel[Permission]):
     event: Literal["permission.created"]
 
 
-class PermissionDeletedEvent(EventModel[PermissionPayload]):
-    event: Literal["permission.deleted"]
-
-
-class PermissionUpdatedEvent(EventModel[PermissionPayload]):
+class PermissionUpdatedEvent(EventModel[Permission]):
     event: Literal["permission.updated"]
+
+
+class PermissionDeletedEvent(EventModel[Permission]):
+    event: Literal["permission.deleted"]
 
 
 class RoleCreatedEvent(EventModel[EventRole]):
@@ -428,13 +428,13 @@ Event = Annotated[
         OrganizationMembershipDeletedEvent,
         OrganizationMembershipUpdatedEvent,
         OrganizationRoleCreatedEvent,
-        OrganizationRoleDeletedEvent,
         OrganizationRoleUpdatedEvent,
+        OrganizationRoleDeletedEvent,
         PasswordResetCreatedEvent,
         PasswordResetSucceededEvent,
         PermissionCreatedEvent,
-        PermissionDeletedEvent,
         PermissionUpdatedEvent,
+        PermissionDeletedEvent,
         RoleCreatedEvent,
         RoleDeletedEvent,
         RoleUpdatedEvent,

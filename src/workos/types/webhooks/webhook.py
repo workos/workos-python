@@ -47,12 +47,12 @@ from workos.types.events.flag_payload import FlagPayload, FlagRuleUpdatedContext
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
-from workos.types.events.organization_role_payload import OrganizationRolePayload
-from workos.types.events.permission_payload import PermissionPayload
 from workos.types.events.session_payload import (
     SessionCreatedPayload,
     SessionRevokedPayload,
 )
+from workos.types.authorization.organization_role import OrganizationRoleEvent
+from workos.types.authorization.permission import Permission
 from workos.types.organization_domains import OrganizationDomain
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.roles.role import EventRole
@@ -316,16 +316,16 @@ class OrganizationMembershipUpdatedWebhook(WebhookModel[OrganizationMembership])
     event: Literal["organization_membership.updated"]
 
 
-class OrganizationRoleCreatedWebhook(WebhookModel[OrganizationRolePayload]):
+class OrganizationRoleCreatedWebhook(WebhookModel[OrganizationRoleEvent]):
     event: Literal["organization_role.created"]
 
 
-class OrganizationRoleDeletedWebhook(WebhookModel[OrganizationRolePayload]):
-    event: Literal["organization_role.deleted"]
-
-
-class OrganizationRoleUpdatedWebhook(WebhookModel[OrganizationRolePayload]):
+class OrganizationRoleUpdatedWebhook(WebhookModel[OrganizationRoleEvent]):
     event: Literal["organization_role.updated"]
+
+
+class OrganizationRoleDeletedWebhook(WebhookModel[OrganizationRoleEvent]):
+    event: Literal["organization_role.deleted"]
 
 
 class PasswordResetCreatedWebhook(WebhookModel[PasswordResetCommon]):
@@ -336,16 +336,16 @@ class PasswordResetSucceededWebhook(WebhookModel[PasswordResetCommon]):
     event: Literal["password_reset.succeeded"]
 
 
-class PermissionCreatedWebhook(WebhookModel[PermissionPayload]):
+class PermissionCreatedWebhook(WebhookModel[Permission]):
     event: Literal["permission.created"]
 
 
-class PermissionDeletedWebhook(WebhookModel[PermissionPayload]):
-    event: Literal["permission.deleted"]
-
-
-class PermissionUpdatedWebhook(WebhookModel[PermissionPayload]):
+class PermissionUpdatedWebhook(WebhookModel[Permission]):
     event: Literal["permission.updated"]
+
+
+class PermissionDeletedWebhook(WebhookModel[Permission]):
+    event: Literal["permission.deleted"]
 
 
 class RoleCreatedWebhook(WebhookModel[EventRole]):
@@ -436,13 +436,13 @@ Webhook = Annotated[
         OrganizationMembershipDeletedWebhook,
         OrganizationMembershipUpdatedWebhook,
         OrganizationRoleCreatedWebhook,
-        OrganizationRoleDeletedWebhook,
         OrganizationRoleUpdatedWebhook,
+        OrganizationRoleDeletedWebhook,
         PasswordResetCreatedWebhook,
         PasswordResetSucceededWebhook,
         PermissionCreatedWebhook,
-        PermissionDeletedWebhook,
         PermissionUpdatedWebhook,
+        PermissionDeletedWebhook,
         RoleCreatedWebhook,
         RoleDeletedWebhook,
         RoleUpdatedWebhook,

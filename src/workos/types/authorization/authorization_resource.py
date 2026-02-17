@@ -1,5 +1,6 @@
 from typing import Literal, Optional, Sequence
 
+from workos.types.list_resource import ListMetadata
 from workos.types.workos_model import WorkOSModel
 
 
@@ -19,3 +20,4 @@ class AuthorizationResource(WorkOSModel):
 class AuthorizationResourceList(WorkOSModel):
     object: Literal["list"]
     data: Sequence[AuthorizationResource]
+    list_metadata: ListMetadata

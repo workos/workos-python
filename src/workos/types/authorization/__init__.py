@@ -1,3 +1,7 @@
+from workos.types.authorization.authorization_resource import (
+    AuthorizationResource,
+    AuthorizationResourceList,
+)
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,

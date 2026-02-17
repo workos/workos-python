@@ -4,6 +4,7 @@ from workos.types.authorization.environment_role import (
 )
 from workos.types.authorization.organization_role import (
     OrganizationRole as OrganizationRole,
+    OrganizationRoleEvent as OrganizationRoleEvent,
     OrganizationRoleList as OrganizationRoleList,
 )
 from workos.types.authorization.permission import (

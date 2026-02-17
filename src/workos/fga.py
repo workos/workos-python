@@ -1,5 +1,17 @@
+"""
+DEPRECATED: This module is deprecated and will be removed in a future version.
+Please use workos.authorization instead for Fine-Grained Authorization (FGA) functionality.
+
+See authorization.py for the new resource-based FGA APIs:
+- get_resource, create_resource, update_resource, delete_resource, list_resources
+- get_resource_by_external_id, update_resource_by_external_id, delete_resource_by_external_id
+- check, assign_role, remove_role, list_role_assignments, remove_role_assignment
+- list_resources_for_membership, list_memberships_for_resource, list_memberships_for_resource_by_external_id
+"""
+
 import json
 from typing import Any, Mapping, Optional, Protocol, Sequence
+
 from workos.types.fga import (
     CheckOperation,
     CheckResponse,

@@ -10,7 +10,7 @@ class MockAuthorizationResource(AuthorizationResource):
         external_id: str = "doc-456",
         name: str = "Q4 Budget Report",
         description: Optional[str] = "Financial report for Q4 2025",
-        resource_type_slug: str = "document",
+        resource_type_slug: str = "folder",
         organization_id: str = "org_01HXYZ123ABC456DEF789ABC",
         parent_resource_id: Optional[str] = None,
     ):

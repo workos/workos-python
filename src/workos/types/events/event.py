@@ -49,8 +49,6 @@ from workos.types.events.flag_payload import FlagPayload, FlagRuleUpdatedContext
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
-from workos.types.events.organization_role_payload import OrganizationRolePayload
-from workos.types.events.permission_payload import PermissionPayload
 from workos.types.events.session_payload import (
     SessionCreatedPayload,
     SessionRevokedPayload,

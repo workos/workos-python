@@ -46,19 +46,13 @@ from workos.types.events.flag_payload import FlagPayload
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
-from workos.types.events.organization_role_payload import OrganizationRolePayload
-from workos.types.events.permission_payload import PermissionPayload
-
 from workos.types.events.session_payload import (
     SessionCreatedPayload,
     SessionRevokedPayload,
 )
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organization_domains import OrganizationDomain
-from workos.types.authorization.organization_role import (
-    OrganizationRole,
-    OrganizationRoleEvent,
-)
+from workos.types.authorization.organization_role import OrganizationRoleEvent
 from workos.types.authorization.permission import Permission
 from workos.types.roles.role import EventRole
 from workos.types.sso.connection import Connection

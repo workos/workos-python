@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Protocol, Sequence, Union
+from typing import Any, Dict, Optional, Protocol, Sequence
 
 from pydantic import TypeAdapter
 
@@ -6,10 +6,7 @@ from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,
 )
-from workos.types.authorization.organization_role import (
-    OrganizationRole,
-    OrganizationRoleList,
-)
+from workos.types.authorization.organization_role import OrganizationRole
 from workos.types.authorization.permission import Permission
 from workos.types.authorization.role import Role, RoleList
 from workos.types.list_resource import (

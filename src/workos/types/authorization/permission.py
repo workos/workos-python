@@ -1,8 +1,9 @@
 from typing import Literal, Optional
+
 from workos.types.workos_model import WorkOSModel
 
 
-class PermissionPayload(WorkOSModel):
+class Permission(WorkOSModel):
     object: Literal["permission"]
     id: str
     slug: str

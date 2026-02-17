@@ -11,7 +11,5 @@ from .event_type import *
 from .event import *
 from .flag_payload import *
 from .organization_domain_verification_failed_payload import *
-from .organization_role_payload import *
-from .permission_payload import *
 from .previous_attributes import *
 from .session_payload import *

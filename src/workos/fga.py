@@ -5,7 +5,6 @@ See src/workos/authorization.py
 
 import json
 from typing import Any, Mapping, Optional, Protocol, Sequence
-
 from workos.types.fga import (
     CheckOperation,
     CheckResponse,

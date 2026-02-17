@@ -3,7 +3,6 @@ from typing import Literal, Optional, Sequence
 from workos.types.list_resource import ListMetadata
 from workos.types.workos_model import WorkOSModel
 
-
 class AuthorizationResource(WorkOSModel):
     object: Literal["authorization_resource"]
     id: str

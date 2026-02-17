@@ -322,7 +322,6 @@ class OrganizationRoleDeletedEvent(EventModel[OrganizationRoleEvent]):
     event: Literal["organization_role.deleted"]
 
 
-
 class PasswordResetCreatedEvent(EventModel[PasswordResetCommon]):
     event: Literal["password_reset.created"]
 
@@ -341,7 +340,6 @@ class PermissionUpdatedEvent(EventModel[Permission]):
 
 class PermissionDeletedEvent(EventModel[Permission]):
     event: Literal["permission.deleted"]
-
 
 
 class RoleCreatedEvent(EventModel[EventRole]):

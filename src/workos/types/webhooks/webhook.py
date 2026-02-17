@@ -328,7 +328,6 @@ class OrganizationRoleDeletedWebhook(WebhookModel[OrganizationRoleEvent]):
     event: Literal["organization_role.deleted"]
 
 
-
 class PasswordResetCreatedWebhook(WebhookModel[PasswordResetCommon]):
     event: Literal["password_reset.created"]
 
@@ -347,7 +346,6 @@ class PermissionUpdatedWebhook(WebhookModel[Permission]):
 
 class PermissionDeletedWebhook(WebhookModel[Permission]):
     event: Literal["permission.deleted"]
-
 
 
 class RoleCreatedWebhook(WebhookModel[EventRole]):

@@ -14,7 +14,7 @@ from workos.utils._base_http_client import (
     ParamsType,
     ResponseJson,
 )
-from workos.utils.request_helper import REQUEST_METHOD_GET
+from workos.utils.request_helper import REQUEST_METHOD_DELETE, REQUEST_METHOD_GET
 
 
 class SyncHttpxClientWrapper(httpx.Client):
@@ -113,6 +113,23 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         response = self._client.request(**prepared_request_parameters)
         return self._handle_response(response)
 
+    def delete_with_body(
+        self,
+        path: str,
+        json: JsonType = None,
+        headers: HeadersType = None,
+    ) -> ResponseJson:
+        """Executes a DELETE request with a JSON body against the WorkOS API."""
+        prepared_request_parameters = self._prepare_request(
+            path=path,
+            method=REQUEST_METHOD_DELETE,
+            json=json,
+            headers=headers,
+            force_include_body=True,
+        )
+        response = self._client.request(**prepared_request_parameters)
+        return self._handle_response(response)
+
 
 class AsyncHttpxClientWrapper(httpx.AsyncClient):
     def __del__(self) -> None:
@@ -206,6 +223,23 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             json=json,
             headers=headers,
             exclude_default_auth_headers=exclude_default_auth_headers,
+        )
+        response = await self._client.request(**prepared_request_parameters)
+        return self._handle_response(response)
+
+    async def delete_with_body(
+        self,
+        path: str,
+        json: JsonType = None,
+        headers: HeadersType = None,
+    ) -> ResponseJson:
+        """Executes a DELETE request with a JSON body against the WorkOS API."""
+        prepared_request_parameters = self._prepare_request(
+            path=path,
+            method=REQUEST_METHOD_DELETE,
+            json=json,
+            headers=headers,
+            force_include_body=True,
         )
         response = await self._client.request(**prepared_request_parameters)
         return self._handle_response(response)

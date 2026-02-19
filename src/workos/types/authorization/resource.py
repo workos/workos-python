@@ -8,11 +8,13 @@ class Resource(WorkOSModel):
 
     object: Literal["authorization_resource"]
     id: str
-    resource_type: str
-    resource_id: str
+    external_id: str
+    name: str
+    description: Optional[str] = None
+    resource_type_slug: str
     organization_id: str
-    external_id: Optional[str] = None
+    parent_resource_id: Optional[str] = None
     meta: Optional[Mapping[str, Any]] = None
-    environment_id: str
+    environment_id: Optional[str] = None
     created_at: str
     updated_at: str

@@ -17,4 +17,8 @@ from workos.types.authorization.role import (
     Role,
     RoleList,
 )
-from workos.types.authorization.role_assignment import RoleAssignment
+from workos.types.authorization.role_assignment import (
+    RoleAssignment,
+    RoleAssignmentResource,
+    RoleAssignmentRole,
+)

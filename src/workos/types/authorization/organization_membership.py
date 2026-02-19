@@ -10,13 +10,14 @@ class AuthorizationOrganizationMembership(WorkOSModel):
     """Representation of an Organization Membership returned by Authorization endpoints.
 
     This is a separate type from the user_management OrganizationMembership because
-    authorization endpoints return memberships without `role` and `organization_name` fields.
+    authorization endpoints return memberships without the `role` field.
     """
 
     object: Literal["organization_membership"]
     id: str
     user_id: str
     organization_id: str
+    organization_name: str
     status: LiteralOrUntyped[OrganizationMembershipStatus]
     custom_attributes: Optional[Mapping[str, Any]] = None
     created_at: str

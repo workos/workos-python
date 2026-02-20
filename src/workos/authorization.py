@@ -3,6 +3,7 @@ from typing import Any, Dict, Optional, Protocol, Sequence, Union
 from pydantic import TypeAdapter
 from typing_extensions import TypedDict
 
+from workos.types.authorization.access_evaluation import AccessEvaluation
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,
@@ -43,6 +44,18 @@ class ParentResourceByExternalId(TypedDict):
 
 
 ParentResource = Union[ParentResourceById, ParentResourceByExternalId]
+
+
+class CheckResourceById(TypedDict):
+    resource_id: str
+
+
+class CheckResourceByExternalId(TypedDict):
+    resource_type: str
+    external_id: str
+
+
+CheckResource = Union[CheckResourceById, CheckResourceByExternalId]
 
 _role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
 
@@ -205,6 +218,16 @@ class AuthorizationModule(Protocol):
         *,
         cascade_delete: Optional[bool] = None,
     ) -> SyncOrAsync[None]: ...
+
+    # Access Evaluation
+
+    def check(
+        self,
+        organization_membership_id: str,
+        *,
+        resource: CheckResource,
+        relation: str,
+    ) -> SyncOrAsync[AccessEvaluation]: ...
 
 
 class Authorization(AuthorizationModule):
@@ -522,8 +545,8 @@ class Authorization(AuthorizationModule):
 
     def update_resource(
         self,
-        *,
         resource_id: str,
+        *,
         name: Optional[str] = None,
         description: Optional[str] = None,
     ) -> Resource:
@@ -543,8 +566,8 @@ class Authorization(AuthorizationModule):
 
     def delete_resource(
         self,
-        *,
         resource_id: str,
+        *,
         cascade_delete: Optional[bool] = None,
     ) -> None:
         if cascade_delete is not None:
@@ -557,6 +580,28 @@ class Authorization(AuthorizationModule):
                 f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
                 method=REQUEST_METHOD_DELETE,
             )
+
+    # Access Evaluation
+
+    def check(
+        self,
+        organization_membership_id: str,
+        *,
+        resource: CheckResource,
+        relation: str,
+    ) -> AccessEvaluation:
+        json: Dict[str, Any] = {
+            "resource": resource,
+            "relation": relation,
+        }
+
+        response = self._http_client.request(
+            f"authorization/organization_memberships/{organization_membership_id}/check",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return AccessEvaluation.model_validate(response)
 
 
 class AsyncAuthorization(AuthorizationModule):
@@ -909,3 +954,25 @@ class AsyncAuthorization(AuthorizationModule):
                 f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
                 method=REQUEST_METHOD_DELETE,
             )
+
+    # Access Evaluation
+
+    async def check(
+        self,
+        organization_membership_id: str,
+        *,
+        resource: CheckResource,
+        relation: str,
+    ) -> AccessEvaluation:
+        json: Dict[str, Any] = {
+            "resource": resource,
+            "relation": relation,
+        }
+
+        response = await self._http_client.request(
+            f"authorization/organization_memberships/{organization_membership_id}/check",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return AccessEvaluation.model_validate(response)

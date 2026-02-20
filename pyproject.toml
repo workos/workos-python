@@ -64,5 +64,5 @@ source-include = ["py.typed"]
 source-exclude = ["tests*"]
 
 [build-system]
-requires = ["uv_build>=0.8.15,<0.9.0"]
+requires = ["uv_build>=0.10.4,<0.11.0"]
 build-backend = "uv_build"

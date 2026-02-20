@@ -1,9 +1,10 @@
-from typing import Any, Literal, Mapping, Optional
+from typing import Literal, Optional
 
 from workos.types.workos_model import WorkOSModel
 
 
-class AuthorizationResource(WorkOSModel):
+class Resource(WorkOSModel):
+    """Representation of an Authorization Resource."""
 
     object: Literal["authorization_resource"]
     id: str

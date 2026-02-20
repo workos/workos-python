@@ -117,14 +117,18 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         self,
         path: str,
         json: JsonType = None,
+        params: ParamsType = None,
         headers: HeadersType = None,
+        exclude_default_auth_headers: bool = False,
     ) -> ResponseJson:
         """Executes a DELETE request with a JSON body against the WorkOS API."""
         prepared_request_parameters = self._prepare_request(
             path=path,
             method=REQUEST_METHOD_DELETE,
             json=json,
+            params=params,
             headers=headers,
+            exclude_default_auth_headers=exclude_default_auth_headers,
             force_include_body=True,
         )
         response = self._client.request(**prepared_request_parameters)
@@ -231,14 +235,18 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         self,
         path: str,
         json: JsonType = None,
+        params: ParamsType = None,
         headers: HeadersType = None,
+        exclude_default_auth_headers: bool = False,
     ) -> ResponseJson:
         """Executes a DELETE request with a JSON body against the WorkOS API."""
         prepared_request_parameters = self._prepare_request(
             path=path,
             method=REQUEST_METHOD_DELETE,
             json=json,
+            params=params,
             headers=headers,
+            exclude_default_auth_headers=exclude_default_auth_headers,
             force_include_body=True,
         )
         response = await self._client.request(**prepared_request_parameters)

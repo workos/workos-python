@@ -372,3 +372,36 @@ class TestSyncHTTPClient(object):
             json={"organization_id": None, "test": "value"},
         )
         assert request_kwargs["json"] == {"test": "value"}
+
+    def test_delete_with_body_sends_json(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 200)
+
+        self.http_client.delete_with_body(
+            path="/test",
+            json={"resource_id": "res_01ABC"},
+        )
+
+        assert request_kwargs["method"] == "delete"
+        assert request_kwargs["json"] == {"resource_id": "res_01ABC"}
+
+    def test_delete_with_body_sends_params(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 200)
+
+        self.http_client.delete_with_body(
+            path="/test",
+            json={"resource_id": "res_01ABC"},
+            params={"org_id": "org_01ABC"},
+        )
+
+        assert request_kwargs["params"] == {"org_id": "org_01ABC"}
+        assert request_kwargs["json"] == {"resource_id": "res_01ABC"}
+
+    def test_delete_without_body_raises_value_error(self):
+        with pytest.raises(
+            ValueError, match="Cannot send a body with a delete request"
+        ):
+            self.http_client.request(
+                path="/test",
+                method="delete",
+                json={"should": "fail"},
+            )

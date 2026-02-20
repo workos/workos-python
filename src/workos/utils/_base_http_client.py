@@ -134,7 +134,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             method Optional[str]: One of the supported methods as defined by the REQUEST_METHOD_X constants
             params Optional[dict]: Query params or body payload to be added to the request
             headers Optional[dict]: Custom headers to be added to the request
-            token Optional[str]: Bearer token
+            exclude_default_auth_headers (bool): If True, excludes default auth headers from the request
             force_include_body (bool): If True, allows sending a body in a bodyless request (used for DELETE requests)
 
         Returns:

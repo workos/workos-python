@@ -61,18 +61,10 @@ class AuthenticationPasswordSucceededPayload(AuthenticationResultSucceeded):
     user_id: str
 
 
-class AuthenticationSsoData(WorkOSModel):
-    connection_id: Optional[str] = None
-    organization_id: Optional[str] = None
-    session_id: Optional[str] = None
-
-
 class AuthenticationSsoFailedPayload(AuthenticationResultFailed):
     type: Literal["sso"]
-    sso: Optional[AuthenticationSsoData] = None
 
 
 class AuthenticationSsoSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["sso"]
     user_id: Optional[str] = None
-    sso: Optional[AuthenticationSsoData] = None

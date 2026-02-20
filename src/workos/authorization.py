@@ -8,6 +8,7 @@ from workos.types.authorization.environment_role import (
 )
 from workos.types.authorization.organization_role import OrganizationRole
 from workos.types.authorization.permission import Permission
+from workos.types.authorization.resource import Resource
 from workos.types.authorization.role import Role, RoleList
 from workos.types.list_resource import (
     ListArgs,
@@ -28,6 +29,15 @@ from workos.utils.request_helper import (
 )
 
 AUTHORIZATION_PERMISSIONS_PATH = "authorization/permissions"
+AUTHORIZATION_ORGANIZATIONS_PATH = "authorization/organizations"
+
+
+class ResourceListFilters(ListArgs, total=False):
+    organization_id: str
+    resource_type_slug: Optional[str]
+
+
+ResourcesListResource = WorkOSListResource[Resource, ResourceListFilters, ListMetadata]
 
 _role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
 
@@ -160,6 +170,45 @@ class AuthorizationModule(Protocol):
         *,
         permission_slug: str,
     ) -> SyncOrAsync[EnvironmentRole]: ...
+
+    # Resources (External ID) + List
+
+    def get_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+    ) -> SyncOrAsync[Resource]: ...
+
+    def update_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> SyncOrAsync[Resource]: ...
+
+    def delete_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+        *,
+        cascade_delete: Optional[bool] = None,
+    ) -> SyncOrAsync[None]: ...
+
+    def list_resources(
+        self,
+        organization_id: str,
+        *,
+        resource_type_slug: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[ResourcesListResource]: ...
 
 
 class Authorization(AuthorizationModule):
@@ -437,6 +486,97 @@ class Authorization(AuthorizationModule):
 
         return EnvironmentRole.model_validate(response)
 
+    # Resources (External ID) + List
+
+    def get_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+    ) -> Resource:
+        response = self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return Resource.model_validate(response)
+
+    def update_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> Resource:
+        json: Dict[str, Any] = {}
+        if name is not None:
+            json["name"] = name
+        if description is not None:
+            json["description"] = description
+
+        response = self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}",
+            method=REQUEST_METHOD_PATCH,
+            json=json,
+        )
+
+        return Resource.model_validate(response)
+
+    def delete_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+        *,
+        cascade_delete: Optional[bool] = None,
+    ) -> None:
+        path = f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}"
+        params: Dict[str, bool] = {}
+        if cascade_delete is not None:
+            params["cascade_delete"] = cascade_delete
+
+        self._http_client.request(
+            path,
+            method=REQUEST_METHOD_DELETE,
+            params=params if params else None,
+        )
+
+    def list_resources(
+        self,
+        organization_id: str,
+        *,
+        resource_type_slug: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> ResourcesListResource:
+        list_params: ResourceListFilters = {
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+        if resource_type_slug is not None:
+            list_params["resource_type_slug"] = resource_type_slug
+
+        query_params = {k: v for k, v in list_params.items() if k != "organization_id"}
+
+        response = self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources",
+            method=REQUEST_METHOD_GET,
+            params=query_params,
+        )
+
+        return WorkOSListResource[Resource, ResourceListFilters, ListMetadata](
+            list_method=self.list_resources,
+            list_args=list_params,
+            **ListPage[Resource](**response).model_dump(),
+        )
+
 
 class AsyncAuthorization(AuthorizationModule):
     _http_client: AsyncHTTPClient
@@ -712,3 +852,94 @@ class AsyncAuthorization(AuthorizationModule):
         )
 
         return EnvironmentRole.model_validate(response)
+
+    # Resources (External ID) + List
+
+    async def get_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+    ) -> Resource:
+        response = await self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return Resource.model_validate(response)
+
+    async def update_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> Resource:
+        json: Dict[str, Any] = {}
+        if name is not None:
+            json["name"] = name
+        if description is not None:
+            json["description"] = description
+
+        response = await self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}",
+            method=REQUEST_METHOD_PATCH,
+            json=json,
+        )
+
+        return Resource.model_validate(response)
+
+    async def delete_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+        *,
+        cascade_delete: Optional[bool] = None,
+    ) -> None:
+        path = f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}"
+        params: Dict[str, bool] = {}
+        if cascade_delete is not None:
+            params["cascade_delete"] = cascade_delete
+
+        await self._http_client.request(
+            path,
+            method=REQUEST_METHOD_DELETE,
+            params=params if params else None,
+        )
+
+    async def list_resources(
+        self,
+        organization_id: str,
+        *,
+        resource_type_slug: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> ResourcesListResource:
+        list_params: ResourceListFilters = {
+            "organization_id": organization_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+        if resource_type_slug is not None:
+            list_params["resource_type_slug"] = resource_type_slug
+
+        query_params = {k: v for k, v in list_params.items() if k != "organization_id"}
+
+        response = await self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources",
+            method=REQUEST_METHOD_GET,
+            params=query_params,
+        )
+
+        return WorkOSListResource[Resource, ResourceListFilters, ListMetadata](
+            list_method=self.list_resources,
+            list_args=list_params,
+            **ListPage[Resource](**response).model_dump(),
+        )

@@ -79,9 +79,7 @@ class TestEvents(object):
         )
 
         events: EventsListResource = syncify(
-            module_instance.list_events(
-                events=["organization_membership.created"]
-            )
+            module_instance.list_events(events=["organization_membership.created"])
         )
 
         event = events.data[0]

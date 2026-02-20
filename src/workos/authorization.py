@@ -8,6 +8,9 @@ from workos.types.authorization.environment_role import (
     EnvironmentRoleList,
 )
 from workos.types.authorization.organization_role import OrganizationRole
+from workos.types.authorization.organization_membership import (
+    AuthorizationOrganizationMembership,
+)
 from workos.types.authorization.permission import Permission
 from workos.types.authorization.resource import Resource
 from workos.types.authorization.role import Role, RoleList
@@ -53,6 +56,34 @@ class PermissionListFilters(ListArgs, total=False):
 
 PermissionsListResource = WorkOSListResource[
     Permission, PermissionListFilters, ListMetadata
+]
+
+
+class ResourcesForMembershipListFilters(ListArgs, total=False):
+    organization_membership_id: str
+    resource_type: Optional[str]
+    parent_resource_id: Optional[str]
+    parent_organization_id: Optional[str]
+    parent_resource_type: Optional[str]
+    parent_external_id: Optional[str]
+
+
+ResourcesForMembershipListResource = WorkOSListResource[
+    Resource, ResourcesForMembershipListFilters, ListMetadata
+]
+
+
+class MembershipsForResourceListFilters(ListArgs, total=False):
+    resource_id: str
+    organization_id: str
+    resource_type: str
+    external_id: str
+
+
+MembershipsForResourceListResource = WorkOSListResource[
+    AuthorizationOrganizationMembership,
+    MembershipsForResourceListFilters,
+    ListMetadata,
 ]
 
 
@@ -205,6 +236,45 @@ class AuthorizationModule(Protocol):
         *,
         cascade_delete: Optional[bool] = None,
     ) -> SyncOrAsync[None]: ...
+
+    # Resource-Membership Relationships
+
+    def list_resources_for_membership(
+        self,
+        organization_membership_id: str,
+        *,
+        resource_type: Optional[str] = None,
+        parent_resource_id: Optional[str] = None,
+        parent_organization_id: Optional[str] = None,
+        parent_resource_type: Optional[str] = None,
+        parent_external_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> SyncOrAsync[ResourcesForMembershipListResource]: ...
+
+    def list_memberships_for_resource(
+        self,
+        resource_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> SyncOrAsync[MembershipsForResourceListResource]: ...
+
+    def list_memberships_for_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> SyncOrAsync[MembershipsForResourceListResource]: ...
 
 
 class Authorization(AuthorizationModule):
@@ -558,6 +628,128 @@ class Authorization(AuthorizationModule):
                 method=REQUEST_METHOD_DELETE,
             )
 
+    # Resource-Membership Relationships
+
+    def list_resources_for_membership(
+        self,
+        organization_membership_id: str,
+        *,
+        resource_type: Optional[str] = None,
+        parent_resource_id: Optional[str] = None,
+        parent_organization_id: Optional[str] = None,
+        parent_resource_type: Optional[str] = None,
+        parent_external_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> ResourcesForMembershipListResource:
+        list_params: ResourcesForMembershipListFilters = {
+            "limit": limit,
+            "order": order,
+            "before": before,
+            "after": after,
+        }
+
+        if resource_type is not None:
+            list_params["resource_type"] = resource_type
+
+        # Parent by internal ID and by external ID are mutually exclusive
+        if parent_resource_id is not None and parent_organization_id is not None:
+            raise ValueError(
+                "parent_resource_id and parent_organization_id are mutually exclusive"
+            )
+
+        if parent_resource_id is not None:
+            list_params["parent_resource_id"] = parent_resource_id
+        elif parent_organization_id is not None:
+            list_params["parent_organization_id"] = parent_organization_id
+            if parent_resource_type is not None:
+                list_params["parent_resource_type"] = parent_resource_type
+            if parent_external_id is not None:
+                list_params["parent_external_id"] = parent_external_id
+
+        response = self._http_client.request(
+            f"authorization/organization_memberships/{organization_membership_id}/resources",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        # Add path param to list_args for pagination iterator
+        list_params["organization_membership_id"] = organization_membership_id
+
+        return ResourcesForMembershipListResource(
+            list_method=self.list_resources_for_membership,
+            list_args=list_params,
+            **ListPage[Resource](**response).model_dump(),
+        )
+
+    def list_memberships_for_resource(
+        self,
+        resource_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> MembershipsForResourceListResource:
+        list_params: MembershipsForResourceListFilters = {
+            "limit": limit,
+            "order": order,
+            "before": before,
+            "after": after,
+        }
+
+        response = self._http_client.request(
+            f"authorization/resources/{resource_id}/organization_memberships",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        # Add path param to list_args for pagination iterator
+        list_params["resource_id"] = resource_id
+
+        return MembershipsForResourceListResource(
+            list_method=self.list_memberships_for_resource,
+            list_args=list_params,
+            **ListPage[AuthorizationOrganizationMembership](**response).model_dump(),
+        )
+
+    def list_memberships_for_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> MembershipsForResourceListResource:
+        list_params: MembershipsForResourceListFilters = {
+            "limit": limit,
+            "order": order,
+            "before": before,
+            "after": after,
+        }
+
+        response = self._http_client.request(
+            f"authorization/organizations/{organization_id}/resources/{resource_type}/{external_id}/organization_memberships",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        # Add path params to list_args for pagination iterator
+        list_params["organization_id"] = organization_id
+        list_params["resource_type"] = resource_type
+        list_params["external_id"] = external_id
+
+        return MembershipsForResourceListResource(
+            list_method=self.list_memberships_for_resource_by_external_id,
+            list_args=list_params,
+            **ListPage[AuthorizationOrganizationMembership](**response).model_dump(),
+        )
+
 
 class AsyncAuthorization(AuthorizationModule):
     _http_client: AsyncHTTPClient
@@ -909,3 +1101,125 @@ class AsyncAuthorization(AuthorizationModule):
                 f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
                 method=REQUEST_METHOD_DELETE,
             )
+
+    # Resource-Membership Relationships
+
+    async def list_resources_for_membership(
+        self,
+        organization_membership_id: str,
+        *,
+        resource_type: Optional[str] = None,
+        parent_resource_id: Optional[str] = None,
+        parent_organization_id: Optional[str] = None,
+        parent_resource_type: Optional[str] = None,
+        parent_external_id: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> ResourcesForMembershipListResource:
+        list_params: ResourcesForMembershipListFilters = {
+            "limit": limit,
+            "order": order,
+            "before": before,
+            "after": after,
+        }
+
+        if resource_type is not None:
+            list_params["resource_type"] = resource_type
+
+        # Parent by internal ID and by external ID are mutually exclusive
+        if parent_resource_id is not None and parent_organization_id is not None:
+            raise ValueError(
+                "parent_resource_id and parent_organization_id are mutually exclusive"
+            )
+
+        if parent_resource_id is not None:
+            list_params["parent_resource_id"] = parent_resource_id
+        elif parent_organization_id is not None:
+            list_params["parent_organization_id"] = parent_organization_id
+            if parent_resource_type is not None:
+                list_params["parent_resource_type"] = parent_resource_type
+            if parent_external_id is not None:
+                list_params["parent_external_id"] = parent_external_id
+
+        response = await self._http_client.request(
+            f"authorization/organization_memberships/{organization_membership_id}/resources",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        # Add path param to list_args for pagination iterator
+        list_params["organization_membership_id"] = organization_membership_id
+
+        return ResourcesForMembershipListResource(
+            list_method=self.list_resources_for_membership,
+            list_args=list_params,
+            **ListPage[Resource](**response).model_dump(),
+        )
+
+    async def list_memberships_for_resource(
+        self,
+        resource_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> MembershipsForResourceListResource:
+        list_params: MembershipsForResourceListFilters = {
+            "limit": limit,
+            "order": order,
+            "before": before,
+            "after": after,
+        }
+
+        response = await self._http_client.request(
+            f"authorization/resources/{resource_id}/organization_memberships",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        # Add path param to list_args for pagination iterator
+        list_params["resource_id"] = resource_id
+
+        return MembershipsForResourceListResource(
+            list_method=self.list_memberships_for_resource,
+            list_args=list_params,
+            **ListPage[AuthorizationOrganizationMembership](**response).model_dump(),
+        )
+
+    async def list_memberships_for_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type: str,
+        external_id: str,
+        *,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        order: PaginationOrder = "desc",
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> MembershipsForResourceListResource:
+        list_params: MembershipsForResourceListFilters = {
+            "limit": limit,
+            "order": order,
+            "before": before,
+            "after": after,
+        }
+
+        response = await self._http_client.request(
+            f"authorization/organizations/{organization_id}/resources/{resource_type}/{external_id}/organization_memberships",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        # Add path params to list_args for pagination iterator
+        list_params["organization_id"] = organization_id
+        list_params["resource_type"] = resource_type
+        list_params["external_id"] = external_id
+
+        return MembershipsForResourceListResource(
+            list_method=self.list_memberships_for_resource_by_external_id,
+            list_args=list_params,
+            **ListPage[AuthorizationOrganizationMembership](**response).model_dump(),
+        )

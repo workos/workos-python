@@ -2,6 +2,7 @@ from typing import Any, Dict, Optional, Protocol, Sequence
 
 from pydantic import TypeAdapter
 
+from workos.types.authorization.access_evaluation import AccessEvaluation
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,
@@ -160,6 +161,18 @@ class AuthorizationModule(Protocol):
         *,
         permission_slug: str,
     ) -> SyncOrAsync[EnvironmentRole]: ...
+
+    # Access Evaluation
+
+    def check(
+        self,
+        organization_membership_id: str,
+        *,
+        permission_slug: str,
+        resource_id: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
+    ) -> SyncOrAsync[AccessEvaluation]: ...
 
 
 class Authorization(AuthorizationModule):
@@ -437,6 +450,42 @@ class Authorization(AuthorizationModule):
 
         return EnvironmentRole.model_validate(response)
 
+    # Access Evaluation
+
+    def check(
+        self,
+        organization_membership_id: str,
+        *,
+        permission_slug: str,
+        resource_id: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
+    ) -> AccessEvaluation:
+        if resource_id is not None and resource_external_id is not None:
+            raise ValueError(
+                "resource_id and resource_external_id are mutually exclusive"
+            )
+        if resource_external_id is not None and resource_type_slug is None:
+            raise ValueError(
+                "resource_type_slug is required when resource_external_id is provided"
+            )
+
+        json: Dict[str, Any] = {"permission_slug": permission_slug}
+        if resource_id is not None:
+            json["resource_id"] = resource_id
+        if resource_external_id is not None:
+            json["resource_external_id"] = resource_external_id
+        if resource_type_slug is not None:
+            json["resource_type_slug"] = resource_type_slug
+
+        response = self._http_client.request(
+            f"authorization/organization_memberships/{organization_membership_id}/check",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return AccessEvaluation.model_validate(response)
+
 
 class AsyncAuthorization(AuthorizationModule):
     _http_client: AsyncHTTPClient
@@ -712,3 +761,39 @@ class AsyncAuthorization(AuthorizationModule):
         )
 
         return EnvironmentRole.model_validate(response)
+
+    # Access Evaluation
+
+    async def check(
+        self,
+        organization_membership_id: str,
+        *,
+        permission_slug: str,
+        resource_id: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
+    ) -> AccessEvaluation:
+        if resource_id is not None and resource_external_id is not None:
+            raise ValueError(
+                "resource_id and resource_external_id are mutually exclusive"
+            )
+        if resource_external_id is not None and resource_type_slug is None:
+            raise ValueError(
+                "resource_type_slug is required when resource_external_id is provided"
+            )
+
+        json: Dict[str, Any] = {"permission_slug": permission_slug}
+        if resource_id is not None:
+            json["resource_id"] = resource_id
+        if resource_external_id is not None:
+            json["resource_external_id"] = resource_external_id
+        if resource_type_slug is not None:
+            json["resource_type_slug"] = resource_type_slug
+
+        response = await self._http_client.request(
+            f"authorization/organization_memberships/{organization_membership_id}/check",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return AccessEvaluation.model_validate(response)

@@ -522,8 +522,8 @@ class Authorization(AuthorizationModule):
 
     def update_resource(
         self,
-        *,
         resource_id: str,
+        *,
         name: Optional[str] = None,
         description: Optional[str] = None,
     ) -> Resource:
@@ -543,8 +543,8 @@ class Authorization(AuthorizationModule):
 
     def delete_resource(
         self,
-        *,
         resource_id: str,
+        *,
         cascade_delete: Optional[bool] = None,
     ) -> None:
         if cascade_delete is not None:

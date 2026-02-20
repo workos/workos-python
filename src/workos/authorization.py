@@ -34,17 +34,12 @@ AUTHORIZATION_RESOURCES_PATH = "authorization/resources"
 
 
 class ParentResourceById(TypedDict):
-    """Identify a parent resource by its WorkOS resource ID."""
-
-    resource_id: str
+    parent_resource_id: str
 
 
 class ParentResourceByExternalId(TypedDict):
-    """Identify a parent resource by organization, type, and external ID."""
-
-    organization_id: str
-    resource_type: str
-    external_id: str
+    parent_resource_external_id: str
+    parent_resource_type_slug: str
 
 
 ParentResource = Union[ParentResourceById, ParentResourceByExternalId]
@@ -188,18 +183,20 @@ class AuthorizationModule(Protocol):
     def create_resource(
         self,
         *,
-        resource_type: str,
+        resource_type_slug: str,
         organization_id: str,
-        external_id: Optional[str] = None,
-        meta: Optional[Dict[str, Any]] = None,
-        parent: Optional[ParentResource] = None,
+        external_id: str,
+        name: str,
+        parent: ParentResource,
+        description: Optional[str] = None,
     ) -> SyncOrAsync[Resource]: ...
 
     def update_resource(
         self,
         resource_id: str,
         *,
-        meta: Optional[Dict[str, Any]] = None,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
     ) -> SyncOrAsync[Resource]: ...
 
     def delete_resource(
@@ -498,22 +495,22 @@ class Authorization(AuthorizationModule):
     def create_resource(
         self,
         *,
-        resource_type: str,
+        resource_type_slug: str,
         organization_id: str,
-        external_id: Optional[str] = None,
-        meta: Optional[Dict[str, Any]] = None,
-        parent: Optional[ParentResource] = None,
+        external_id: str,
+        name: str,
+        parent: ParentResource,
+        description: Optional[str] = None,
     ) -> Resource:
         json: Dict[str, Any] = {
-            "resource_type": resource_type,
+            "resource_type_slug": resource_type_slug,
             "organization_id": organization_id,
+            "external_id": external_id,
+            "name": name,
+            **parent,
         }
-        if external_id is not None:
-            json["external_id"] = external_id
-        if meta is not None:
-            json["meta"] = meta
-        if parent is not None:
-            json["parent"] = parent
+        if description is not None:
+            json["description"] = description
 
         response = self._http_client.request(
             AUTHORIZATION_RESOURCES_PATH,
@@ -525,13 +522,16 @@ class Authorization(AuthorizationModule):
 
     def update_resource(
         self,
-        resource_id: str,
         *,
-        meta: Optional[Dict[str, Any]] = None,
+        resource_id: str,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
     ) -> Resource:
         json: Dict[str, Any] = {}
-        if meta is not None:
-            json["meta"] = meta
+        if name is not None:
+            json["name"] = name
+        if description is not None:
+            json["description"] = description
 
         response = self._http_client.request(
             f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
@@ -543,8 +543,8 @@ class Authorization(AuthorizationModule):
 
     def delete_resource(
         self,
-        resource_id: str,
         *,
+        resource_id: str,
         cascade_delete: Optional[bool] = None,
     ) -> None:
         if cascade_delete is not None:
@@ -847,22 +847,22 @@ class AsyncAuthorization(AuthorizationModule):
     async def create_resource(
         self,
         *,
-        resource_type: str,
+        resource_type_slug: str,
         organization_id: str,
-        external_id: Optional[str] = None,
-        meta: Optional[Dict[str, Any]] = None,
-        parent: Optional[ParentResource] = None,
+        external_id: str,
+        name: str,
+        parent: ParentResource,
+        description: Optional[str] = None,
     ) -> Resource:
         json: Dict[str, Any] = {
-            "resource_type": resource_type,
+            "resource_type_slug": resource_type_slug,
             "organization_id": organization_id,
+            "external_id": external_id,
+            "name": name,
+            **parent,
         }
-        if external_id is not None:
-            json["external_id"] = external_id
-        if meta is not None:
-            json["meta"] = meta
-        if parent is not None:
-            json["parent"] = parent
+        if description is not None:
+            json["description"] = description
 
         response = await self._http_client.request(
             AUTHORIZATION_RESOURCES_PATH,
@@ -876,11 +876,14 @@ class AsyncAuthorization(AuthorizationModule):
         self,
         resource_id: str,
         *,
-        meta: Optional[Dict[str, Any]] = None,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
     ) -> Resource:
         json: Dict[str, Any] = {}
-        if meta is not None:
-            json["meta"] = meta
+        if name is not None:
+            json["name"] = name
+        if description is not None:
+            json["description"] = description
 
         response = await self._http_client.request(
             f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",

@@ -14,8 +14,5 @@ class Resource(WorkOSModel):
     resource_type_slug: str
     organization_id: str
     parent_resource_id: Optional[str] = None
-    # The API returns meta when set via create_resource / update_resource.
-    # Without this field the model would silently discard that data.
-    meta: Optional[Mapping[str, Any]] = None
     created_at: str
     updated_at: str

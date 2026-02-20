@@ -1,6 +1,7 @@
-from typing import Any, Dict, Optional, Protocol, Sequence
+from typing import Any, Dict, Optional, Protocol, Sequence, Union
 
 from pydantic import TypeAdapter
+from typing_extensions import TypedDict
 
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
@@ -8,6 +9,7 @@ from workos.types.authorization.environment_role import (
 )
 from workos.types.authorization.organization_role import OrganizationRole
 from workos.types.authorization.permission import Permission
+from workos.types.authorization.resource import Resource
 from workos.types.authorization.role import Role, RoleList
 from workos.types.list_resource import (
     ListArgs,
@@ -28,6 +30,24 @@ from workos.utils.request_helper import (
 )
 
 AUTHORIZATION_PERMISSIONS_PATH = "authorization/permissions"
+AUTHORIZATION_RESOURCES_PATH = "authorization/resources"
+
+
+class ParentResourceById(TypedDict):
+    """Identify a parent resource by its WorkOS resource ID."""
+
+    resource_id: str
+
+
+class ParentResourceByExternalId(TypedDict):
+    """Identify a parent resource by organization, type, and external ID."""
+
+    organization_id: str
+    resource_type: str
+    external_id: str
+
+
+ParentResource = Union[ParentResourceById, ParentResourceByExternalId]
 
 _role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
 
@@ -160,6 +180,34 @@ class AuthorizationModule(Protocol):
         *,
         permission_slug: str,
     ) -> SyncOrAsync[EnvironmentRole]: ...
+
+    # Resources
+
+    def get_resource(self, resource_id: str) -> SyncOrAsync[Resource]: ...
+
+    def create_resource(
+        self,
+        *,
+        resource_type: str,
+        organization_id: str,
+        external_id: Optional[str] = None,
+        meta: Optional[Dict[str, Any]] = None,
+        parent: Optional[ParentResource] = None,
+    ) -> SyncOrAsync[Resource]: ...
+
+    def update_resource(
+        self,
+        resource_id: str,
+        *,
+        meta: Optional[Dict[str, Any]] = None,
+    ) -> SyncOrAsync[Resource]: ...
+
+    def delete_resource(
+        self,
+        resource_id: str,
+        *,
+        cascade_delete: Optional[bool] = None,
+    ) -> SyncOrAsync[None]: ...
 
 
 class Authorization(AuthorizationModule):
@@ -437,6 +485,79 @@ class Authorization(AuthorizationModule):
 
         return EnvironmentRole.model_validate(response)
 
+    # Resources
+
+    def get_resource(self, resource_id: str) -> Resource:
+        response = self._http_client.request(
+            f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return Resource.model_validate(response)
+
+    def create_resource(
+        self,
+        *,
+        resource_type: str,
+        organization_id: str,
+        external_id: Optional[str] = None,
+        meta: Optional[Dict[str, Any]] = None,
+        parent: Optional[ParentResource] = None,
+    ) -> Resource:
+        json: Dict[str, Any] = {
+            "resource_type": resource_type,
+            "organization_id": organization_id,
+        }
+        if external_id is not None:
+            json["external_id"] = external_id
+        if meta is not None:
+            json["meta"] = meta
+        if parent is not None:
+            json["parent"] = parent
+
+        response = self._http_client.request(
+            AUTHORIZATION_RESOURCES_PATH,
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return Resource.model_validate(response)
+
+    def update_resource(
+        self,
+        resource_id: str,
+        *,
+        meta: Optional[Dict[str, Any]] = None,
+    ) -> Resource:
+        json: Dict[str, Any] = {}
+        if meta is not None:
+            json["meta"] = meta
+
+        response = self._http_client.request(
+            f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
+            method=REQUEST_METHOD_PATCH,
+            json=json,
+        )
+
+        return Resource.model_validate(response)
+
+    def delete_resource(
+        self,
+        resource_id: str,
+        *,
+        cascade_delete: Optional[bool] = None,
+    ) -> None:
+        if cascade_delete is not None:
+            self._http_client.delete_with_body(
+                f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
+                json={"cascade_delete": cascade_delete},
+            )
+        else:
+            self._http_client.request(
+                f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
+                method=REQUEST_METHOD_DELETE,
+            )
+
 
 class AsyncAuthorization(AuthorizationModule):
     _http_client: AsyncHTTPClient
@@ -712,3 +833,76 @@ class AsyncAuthorization(AuthorizationModule):
         )
 
         return EnvironmentRole.model_validate(response)
+
+    # Resources
+
+    async def get_resource(self, resource_id: str) -> Resource:
+        response = await self._http_client.request(
+            f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
+            method=REQUEST_METHOD_GET,
+        )
+
+        return Resource.model_validate(response)
+
+    async def create_resource(
+        self,
+        *,
+        resource_type: str,
+        organization_id: str,
+        external_id: Optional[str] = None,
+        meta: Optional[Dict[str, Any]] = None,
+        parent: Optional[ParentResource] = None,
+    ) -> Resource:
+        json: Dict[str, Any] = {
+            "resource_type": resource_type,
+            "organization_id": organization_id,
+        }
+        if external_id is not None:
+            json["external_id"] = external_id
+        if meta is not None:
+            json["meta"] = meta
+        if parent is not None:
+            json["parent"] = parent
+
+        response = await self._http_client.request(
+            AUTHORIZATION_RESOURCES_PATH,
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return Resource.model_validate(response)
+
+    async def update_resource(
+        self,
+        resource_id: str,
+        *,
+        meta: Optional[Dict[str, Any]] = None,
+    ) -> Resource:
+        json: Dict[str, Any] = {}
+        if meta is not None:
+            json["meta"] = meta
+
+        response = await self._http_client.request(
+            f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
+            method=REQUEST_METHOD_PATCH,
+            json=json,
+        )
+
+        return Resource.model_validate(response)
+
+    async def delete_resource(
+        self,
+        resource_id: str,
+        *,
+        cascade_delete: Optional[bool] = None,
+    ) -> None:
+        if cascade_delete is not None:
+            await self._http_client.delete_with_body(
+                f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
+                json={"cascade_delete": cascade_delete},
+            )
+        else:
+            await self._http_client.request(
+                f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
+                method=REQUEST_METHOD_DELETE,
+            )

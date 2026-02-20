@@ -42,8 +42,11 @@ class TestAuthorizationResourceCRUD:
 
         resource = syncify(
             self.authorization.create_resource(
-                resource_type="document",
+                resource_type_slug="document",
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                external_id="ext_123",
+                name="Test Document",
+                parent={"parent_resource_id": "res_01PARENT"},
             )
         )
 
@@ -51,11 +54,14 @@ class TestAuthorizationResourceCRUD:
         assert request_kwargs["method"] == "post"
         assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
-            "resource_type": "document",
+            "resource_type_slug": "document",
             "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            "external_id": "ext_123",
+            "name": "Test Document",
+            "parent_resource_id": "res_01PARENT",
         }
 
-    def test_create_resource_with_all_optional_fields(
+    def test_create_resource_with_description(
         self, mock_resource, capture_and_mock_http_client_request
     ):
         request_kwargs = capture_and_mock_http_client_request(
@@ -64,21 +70,16 @@ class TestAuthorizationResourceCRUD:
 
         syncify(
             self.authorization.create_resource(
-                resource_type="document",
+                resource_type_slug="document",
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
                 external_id="ext_123",
-                meta={"key": "value"},
-                parent={"resource_id": "res_01PARENT"},
+                name="Test Document",
+                parent={"parent_resource_id": "res_01PARENT"},
+                description="A test document",
             )
         )
 
-        assert request_kwargs["json"] == {
-            "resource_type": "document",
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            "external_id": "ext_123",
-            "meta": {"key": "value"},
-            "parent": {"resource_id": "res_01PARENT"},
-        }
+        assert request_kwargs["json"]["description"] == "A test document"
 
     def test_create_resource_with_parent_by_id(
         self, mock_resource, capture_and_mock_http_client_request
@@ -89,13 +90,15 @@ class TestAuthorizationResourceCRUD:
 
         syncify(
             self.authorization.create_resource(
-                resource_type="document",
+                resource_type_slug="document",
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                parent={"resource_id": "res_01PARENT"},
+                external_id="ext_123",
+                name="Test Document",
+                parent={"parent_resource_id": "res_01PARENT"},
             )
         )
 
-        assert request_kwargs["json"]["parent"] == {"resource_id": "res_01PARENT"}
+        assert request_kwargs["json"]["parent_resource_id"] == "res_01PARENT"
 
     def test_create_resource_with_parent_by_external_id(
         self, mock_resource, capture_and_mock_http_client_request
@@ -106,25 +109,23 @@ class TestAuthorizationResourceCRUD:
 
         syncify(
             self.authorization.create_resource(
-                resource_type="document",
+                resource_type_slug="document",
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                external_id="ext_123",
+                name="Test Document",
                 parent={
-                    "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                    "resource_type": "folder",
-                    "external_id": "ext_parent_456",
+                    "parent_resource_external_id": "ext_parent_456",
+                    "parent_resource_type_slug": "folder",
                 },
             )
         )
 
-        assert request_kwargs["json"]["parent"] == {
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            "resource_type": "folder",
-            "external_id": "ext_parent_456",
-        }
+        assert request_kwargs["json"]["parent_resource_external_id"] == "ext_parent_456"
+        assert request_kwargs["json"]["parent_resource_type_slug"] == "folder"
 
     # --- update_resource ---
 
-    def test_update_resource_with_meta(
+    def test_update_resource_with_name(
         self, mock_resource, capture_and_mock_http_client_request
     ):
         request_kwargs = capture_and_mock_http_client_request(
@@ -134,16 +135,16 @@ class TestAuthorizationResourceCRUD:
         resource = syncify(
             self.authorization.update_resource(
                 "res_01ABC",
-                meta={"updated_key": "updated_value"},
+                name="Updated Name",
             )
         )
 
         assert resource.id == "res_01ABC"
         assert request_kwargs["method"] == "patch"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
-        assert request_kwargs["json"] == {"meta": {"updated_key": "updated_value"}}
+        assert request_kwargs["json"] == {"name": "Updated Name"}
 
-    def test_update_resource_without_meta(
+    def test_update_resource_without_changes(
         self, mock_resource, capture_and_mock_http_client_request
     ):
         request_kwargs = capture_and_mock_http_client_request(

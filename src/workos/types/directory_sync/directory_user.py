@@ -1,8 +1,7 @@
 from typing import Any, Dict, Literal, Optional, Sequence, Union
 
-from workos.types.workos_model import WorkOSModel
 from workos.types.directory_sync.directory_group import DirectoryGroup
-
+from workos.types.workos_model import WorkOSModel
 
 DirectoryUserState = Literal["active", "inactive"]
 
@@ -33,7 +32,7 @@ class DirectoryUser(WorkOSModel):
     # @deprecated Will be removed in a future major version. Enable the `username` custom attribute in dashboard and pull from customAttributes instead. See https://workos.com/docs/directory-sync/attributes/custom-attributes/auto-mapped-attributes for details.
     username: Optional[str] = None
     state: DirectoryUserState
-    custom_attributes: Dict[str, Any]
+    custom_attributes: Optional[Dict[str, Any]] = None
     raw_attributes: Dict[str, Any]
     created_at: str
     updated_at: str

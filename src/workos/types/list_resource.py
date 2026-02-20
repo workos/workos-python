@@ -17,7 +17,9 @@ from typing import (
     cast,
 )
 from typing_extensions import Required, TypedDict
+from workos.types.api_keys import ApiKey
 from workos.types.audit_logs import AuditLogAction, AuditLogSchema
+from workos.types.authorization.permission import Permission
 from workos.types.directory_sync import (
     Directory,
     DirectoryGroup,
@@ -43,6 +45,7 @@ from workos.utils.request_helper import DEFAULT_LIST_RESPONSE_LIMIT
 ListableResource = TypeVar(
     # add all possible generics of List Resource
     "ListableResource",
+    ApiKey,
     AuditLogAction,
     AuditLogSchema,
     AuthenticationFactor,
@@ -55,6 +58,7 @@ ListableResource = TypeVar(
     Invitation,
     Organization,
     OrganizationMembership,
+    Permission,
     AuthorizationResource,
     AuthorizationResourceType,
     User,

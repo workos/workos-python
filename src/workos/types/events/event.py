@@ -4,20 +4,30 @@ from typing_extensions import Annotated
 from workos.types.user_management import OrganizationMembership, User
 from workos.types.directory_sync.directory_group import DirectoryGroup
 from workos.types.directory_sync.directory_user import DirectoryUser
+from workos.types.api_keys import ApiKey
 from workos.types.events.authentication_payload import (
+    AuthenticationEmailVerificationFailedPayload,
     AuthenticationEmailVerificationSucceededPayload,
     AuthenticationMagicAuthFailedPayload,
     AuthenticationMagicAuthSucceededPayload,
+    AuthenticationMfaFailedPayload,
     AuthenticationMfaSucceededPayload,
     AuthenticationOauthFailedPayload,
     AuthenticationOauthSucceededPayload,
+    AuthenticationPasskeyFailedPayload,
+    AuthenticationPasskeySucceededPayload,
     AuthenticationPasswordFailedPayload,
     AuthenticationPasswordSucceededPayload,
+    AuthenticationRadarRiskDetectedPayload,
     AuthenticationSsoFailedPayload,
     AuthenticationSsoSucceededPayload,
 )
 from workos.types.events.connection_payload_with_legacy_fields import (
     ConnectionPayloadWithLegacyFields,
+)
+from workos.types.events.connection_saml_certificate_payload import (
+    ConnectionSamlCertificateRenewedPayload,
+    ConnectionSamlCertificateRenewalRequiredPayload,
 )
 from workos.types.events.directory_group_membership_payload import (
     DirectoryGroupMembershipPayload,
@@ -32,7 +42,10 @@ from workos.types.events.directory_payload_with_legacy_fields import (
 from workos.types.events.directory_user_with_previous_attributes import (
     DirectoryUserWithPreviousAttributes,
 )
+from workos.types.authorization.organization_role import OrganizationRoleEvent
+from workos.types.authorization.permission import Permission
 from workos.types.events.event_model import EventModel
+from workos.types.events.flag_payload import FlagPayload, FlagRuleUpdatedContext
 from workos.types.events.organization_domain_verification_failed_payload import (
     OrganizationDomainVerificationFailedPayload,
 )
@@ -58,6 +71,20 @@ from workos.types.user_management.password_reset import PasswordResetCommon
 # the event name is added to the EventType union type in event_type.py.
 
 
+class ApiKeyCreatedEvent(EventModel[ApiKey]):
+    event: Literal["api_key.created"]
+
+
+class ApiKeyRevokedEvent(EventModel[ApiKey]):
+    event: Literal["api_key.revoked"]
+
+
+class AuthenticationEmailVerificationFailedEvent(
+    EventModel[AuthenticationEmailVerificationFailedPayload,]
+):
+    event: Literal["authentication.email_verification_failed"]
+
+
 class AuthenticationEmailVerificationSucceededEvent(
     EventModel[AuthenticationEmailVerificationSucceededPayload,]
 ):
@@ -76,6 +103,10 @@ class AuthenticationMagicAuthSucceededEvent(
     event: Literal["authentication.magic_auth_succeeded"]
 
 
+class AuthenticationMfaFailedEvent(EventModel[AuthenticationMfaFailedPayload]):
+    event: Literal["authentication.mfa_failed"]
+
+
 class AuthenticationMfaSucceededEvent(EventModel[AuthenticationMfaSucceededPayload]):
     event: Literal["authentication.mfa_succeeded"]
 
@@ -90,6 +121,16 @@ class AuthenticationOauthSucceededEvent(
     event: Literal["authentication.oauth_succeeded"]
 
 
+class AuthenticationPasskeyFailedEvent(EventModel[AuthenticationPasskeyFailedPayload]):
+    event: Literal["authentication.passkey_failed"]
+
+
+class AuthenticationPasskeySucceededEvent(
+    EventModel[AuthenticationPasskeySucceededPayload]
+):
+    event: Literal["authentication.passkey_succeeded"]
+
+
 class AuthenticationPasswordFailedEvent(
     EventModel[AuthenticationPasswordFailedPayload]
 ):
@@ -100,6 +141,12 @@ class AuthenticationPasswordSucceededEvent(
     EventModel[AuthenticationPasswordSucceededPayload,]
 ):
     event: Literal["authentication.password_succeeded"]
+
+
+class AuthenticationRadarRiskDetectedEvent(
+    EventModel[AuthenticationRadarRiskDetectedPayload]
+):
+    event: Literal["authentication.radar_risk_detected"]
 
 
 class AuthenticationSsoFailedEvent(EventModel[AuthenticationSsoFailedPayload]):
@@ -120,6 +167,18 @@ class ConnectionDeactivatedEvent(EventModel[ConnectionPayloadWithLegacyFields]):
 
 class ConnectionDeletedEvent(EventModel[Connection]):
     event: Literal["connection.deleted"]
+
+
+class ConnectionSamlCertificateRenewedEvent(
+    EventModel[ConnectionSamlCertificateRenewedPayload]
+):
+    event: Literal["connection.saml_certificate_renewed"]
+
+
+class ConnectionSamlCertificateRenewalRequiredEvent(
+    EventModel[ConnectionSamlCertificateRenewalRequiredPayload]
+):
+    event: Literal["connection.saml_certificate_renewal_required"]
 
 
 class DirectoryActivatedEvent(EventModel[DirectoryPayloadWithLegacyFieldsForEventsApi]):
@@ -166,12 +225,33 @@ class EmailVerificationCreatedEvent(EventModel[EmailVerificationCommon]):
     event: Literal["email_verification.created"]
 
 
+class FlagCreatedEvent(EventModel[FlagPayload]):
+    event: Literal["flag.created"]
+
+
+class FlagDeletedEvent(EventModel[FlagPayload]):
+    event: Literal["flag.deleted"]
+
+
+class FlagRuleUpdatedEvent(EventModel[FlagPayload]):
+    event: Literal["flag.rule_updated"]
+    context: FlagRuleUpdatedContext
+
+
+class FlagUpdatedEvent(EventModel[FlagPayload]):
+    event: Literal["flag.updated"]
+
+
 class InvitationAcceptedEvent(EventModel[InvitationCommon]):
     event: Literal["invitation.accepted"]
 
 
 class InvitationCreatedEvent(EventModel[InvitationCommon]):
     event: Literal["invitation.created"]
+
+
+class InvitationResentEvent(EventModel[InvitationCommon]):
+    event: Literal["invitation.resent"]
 
 
 class InvitationRevokedEvent(EventModel[InvitationCommon]):
@@ -228,12 +308,36 @@ class OrganizationMembershipUpdatedEvent(EventModel[OrganizationMembership]):
     event: Literal["organization_membership.updated"]
 
 
+class OrganizationRoleCreatedEvent(EventModel[OrganizationRoleEvent]):
+    event: Literal["organization_role.created"]
+
+
+class OrganizationRoleUpdatedEvent(EventModel[OrganizationRoleEvent]):
+    event: Literal["organization_role.updated"]
+
+
+class OrganizationRoleDeletedEvent(EventModel[OrganizationRoleEvent]):
+    event: Literal["organization_role.deleted"]
+
+
 class PasswordResetCreatedEvent(EventModel[PasswordResetCommon]):
     event: Literal["password_reset.created"]
 
 
 class PasswordResetSucceededEvent(EventModel[PasswordResetCommon]):
     event: Literal["password_reset.succeeded"]
+
+
+class PermissionCreatedEvent(EventModel[Permission]):
+    event: Literal["permission.created"]
+
+
+class PermissionUpdatedEvent(EventModel[Permission]):
+    event: Literal["permission.updated"]
+
+
+class PermissionDeletedEvent(EventModel[Permission]):
+    event: Literal["permission.deleted"]
 
 
 class RoleCreatedEvent(EventModel[EventRole]):
@@ -270,19 +374,28 @@ class UserUpdatedEvent(EventModel[User]):
 
 Event = Annotated[
     Union[
+        ApiKeyCreatedEvent,
+        ApiKeyRevokedEvent,
+        AuthenticationEmailVerificationFailedEvent,
         AuthenticationEmailVerificationSucceededEvent,
         AuthenticationMagicAuthFailedEvent,
         AuthenticationMagicAuthSucceededEvent,
+        AuthenticationMfaFailedEvent,
         AuthenticationMfaSucceededEvent,
         AuthenticationOauthFailedEvent,
         AuthenticationOauthSucceededEvent,
+        AuthenticationPasskeyFailedEvent,
+        AuthenticationPasskeySucceededEvent,
         AuthenticationPasswordFailedEvent,
         AuthenticationPasswordSucceededEvent,
+        AuthenticationRadarRiskDetectedEvent,
         AuthenticationSsoFailedEvent,
         AuthenticationSsoSucceededEvent,
         ConnectionActivatedEvent,
         ConnectionDeactivatedEvent,
         ConnectionDeletedEvent,
+        ConnectionSamlCertificateRenewedEvent,
+        ConnectionSamlCertificateRenewalRequiredEvent,
         DirectoryActivatedEvent,
         DirectoryDeletedEvent,
         DirectoryGroupCreatedEvent,
@@ -294,8 +407,13 @@ Event = Annotated[
         DirectoryUserAddedToGroupEvent,
         DirectoryUserRemovedFromGroupEvent,
         EmailVerificationCreatedEvent,
+        FlagCreatedEvent,
+        FlagDeletedEvent,
+        FlagRuleUpdatedEvent,
+        FlagUpdatedEvent,
         InvitationAcceptedEvent,
         InvitationCreatedEvent,
+        InvitationResentEvent,
         InvitationRevokedEvent,
         MagicAuthCreatedEvent,
         OrganizationCreatedEvent,
@@ -309,8 +427,14 @@ Event = Annotated[
         OrganizationMembershipCreatedEvent,
         OrganizationMembershipDeletedEvent,
         OrganizationMembershipUpdatedEvent,
+        OrganizationRoleCreatedEvent,
+        OrganizationRoleUpdatedEvent,
+        OrganizationRoleDeletedEvent,
         PasswordResetCreatedEvent,
         PasswordResetSucceededEvent,
+        PermissionCreatedEvent,
+        PermissionUpdatedEvent,
+        PermissionDeletedEvent,
         RoleCreatedEvent,
         RoleDeletedEvent,
         RoleUpdatedEvent,

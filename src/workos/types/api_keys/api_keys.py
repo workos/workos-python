@@ -18,3 +18,9 @@ class ApiKey(WorkOSModel):
     permissions: Sequence[str]
     created_at: str
     updated_at: str
+
+
+class ApiKeyWithValue(ApiKey):
+    """API key with the full value field, returned only on creation."""
+
+    value: str

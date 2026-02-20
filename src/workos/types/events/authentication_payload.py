@@ -29,6 +29,10 @@ class AuthenticationEmailVerificationSucceededPayload(AuthenticationResultSuccee
     user_id: str
 
 
+class AuthenticationEmailVerificationFailedPayload(AuthenticationResultFailed):
+    type: Literal["email_verification"]
+
+
 class AuthenticationMagicAuthFailedPayload(AuthenticationResultFailed):
     type: Literal["magic_auth"]
 
@@ -43,6 +47,10 @@ class AuthenticationMfaSucceededPayload(AuthenticationResultSucceeded):
     user_id: Optional[str] = None
 
 
+class AuthenticationMfaFailedPayload(AuthenticationResultFailed):
+    type: Literal["mfa"]
+
+
 class AuthenticationOauthFailedPayload(AuthenticationResultFailed):
     type: Literal["oauth"]
 
@@ -50,6 +58,15 @@ class AuthenticationOauthFailedPayload(AuthenticationResultFailed):
 class AuthenticationOauthSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["oauth"]
     user_id: Optional[str] = None
+
+
+class AuthenticationPasskeyFailedPayload(AuthenticationResultFailed):
+    type: Literal["passkey"]
+
+
+class AuthenticationPasskeySucceededPayload(AuthenticationResultSucceeded):
+    type: Literal["passkey"]
+    user_id: str
 
 
 class AuthenticationPasswordFailedPayload(AuthenticationResultFailed):
@@ -61,10 +78,27 @@ class AuthenticationPasswordSucceededPayload(AuthenticationResultSucceeded):
     user_id: str
 
 
+class AuthenticationSsoData(WorkOSModel):
+    connection_id: Optional[str] = None
+    organization_id: Optional[str] = None
+    session_id: Optional[str] = None
+
+
 class AuthenticationSsoFailedPayload(AuthenticationResultFailed):
     type: Literal["sso"]
+    sso: AuthenticationSsoData
 
 
 class AuthenticationSsoSucceededPayload(AuthenticationResultSucceeded):
     type: Literal["sso"]
     user_id: Optional[str] = None
+    sso: AuthenticationSsoData
+
+
+class AuthenticationRadarRiskDetectedPayload(AuthenticationResultCommon):
+    auth_method: str
+    action: str
+    control: Optional[str] = None
+    blocklist_type: Optional[str] = None
+    user_id: str
+    email: str

@@ -99,6 +99,7 @@ INVITATION_DETAIL_PATH = "user_management/invitations/{0}"
 INVITATION_DETAIL_BY_TOKEN_PATH = "user_management/invitations/by_token/{0}"
 INVITATION_REVOKE_PATH = "user_management/invitations/{0}/revoke"
 INVITATION_RESEND_PATH = "user_management/invitations/{0}/resend"
+INVITATION_ACCEPT_PATH = "user_management/invitations/{0}/accept"
 PASSWORD_RESET_PATH = "user_management/password_reset"
 PASSWORD_RESET_DETAIL_PATH = "user_management/password_reset/{0}"
 USER_FEATURE_FLAGS_PATH = "user_management/users/{0}/feature-flags"
@@ -915,6 +916,17 @@ class UserManagementModule(Protocol):
         """
         ...
 
+    def accept_invitation(self, invitation_id: str) -> SyncOrAsync[Invitation]:
+        """Accepts an existing Invitation.
+
+        Args:
+            invitation_id (str):  The unique ID of the Invitation.
+
+        Returns:
+            Invitation: Invitation response from WorkOS.
+        """
+        ...
+
     def list_feature_flags(
         self,
         user_id: str,
@@ -1630,6 +1642,13 @@ class UserManagement(UserManagementModule):
     def resend_invitation(self, invitation_id: str) -> Invitation:
         response = self._http_client.request(
             INVITATION_RESEND_PATH.format(invitation_id), method=REQUEST_METHOD_POST
+        )
+
+        return Invitation.model_validate(response)
+
+    def accept_invitation(self, invitation_id: str) -> Invitation:
+        response = self._http_client.request(
+            INVITATION_ACCEPT_PATH.format(invitation_id), method=REQUEST_METHOD_POST
         )
 
         return Invitation.model_validate(response)
@@ -2369,6 +2388,13 @@ class AsyncUserManagement(UserManagementModule):
     async def resend_invitation(self, invitation_id: str) -> Invitation:
         response = await self._http_client.request(
             INVITATION_RESEND_PATH.format(invitation_id), method=REQUEST_METHOD_POST
+        )
+
+        return Invitation.model_validate(response)
+
+    async def accept_invitation(self, invitation_id: str) -> Invitation:
+        response = await self._http_client.request(
+            INVITATION_ACCEPT_PATH.format(invitation_id), method=REQUEST_METHOD_POST
         )
 
         return Invitation.model_validate(response)

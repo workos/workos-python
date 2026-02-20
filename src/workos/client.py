@@ -3,6 +3,7 @@ from typing import Optional
 from workos._base_client import BaseClient
 from workos.api_keys import ApiKeys
 from workos.audit_logs import AuditLogs
+from workos.authorization import Authorization
 from workos.directory_sync import DirectorySync
 from workos.fga import FGA
 from workos.organizations import Organizations
@@ -54,6 +55,12 @@ class SyncClient(BaseClient):
         if not getattr(self, "_api_keys", None):
             self._api_keys = ApiKeys(self._http_client)
         return self._api_keys
+
+    @property
+    def authorization(self) -> Authorization:
+        if not getattr(self, "_authorization", None):
+            self._authorization = Authorization(self._http_client)
+        return self._authorization
 
     @property
     def sso(self) -> SSO:

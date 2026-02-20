@@ -19,7 +19,12 @@ from typing import (
 from typing_extensions import Required, TypedDict
 from workos.types.api_keys import ApiKey
 from workos.types.audit_logs import AuditLogAction, AuditLogSchema
+from workos.types.authorization.organization_membership import (
+    AuthorizationOrganizationMembership,
+)
 from workos.types.authorization.permission import Permission
+from workos.types.authorization.resource import Resource
+from workos.types.authorization.role_assignment import RoleAssignment
 from workos.types.directory_sync import (
     Directory,
     DirectoryGroup,
@@ -59,6 +64,9 @@ ListableResource = TypeVar(
     Organization,
     OrganizationMembership,
     Permission,
+    Resource,
+    RoleAssignment,
+    AuthorizationOrganizationMembership,
     AuthorizationResource,
     AuthorizationResourceType,
     User,

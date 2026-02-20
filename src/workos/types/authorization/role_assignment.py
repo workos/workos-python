@@ -4,13 +4,11 @@ from workos.types.workos_model import WorkOSModel
 
 
 class RoleAssignmentRole(WorkOSModel):
-    """The role associated with a role assignment."""
 
     slug: str
 
 
 class RoleAssignmentResource(WorkOSModel):
-    """The resource associated with a role assignment."""
 
     id: str
     external_id: str
@@ -18,7 +16,6 @@ class RoleAssignmentResource(WorkOSModel):
 
 
 class RoleAssignment(WorkOSModel):
-    """Representation of a WorkOS Authorization Role Assignment."""
 
     object: Literal["role_assignment"]
     id: str

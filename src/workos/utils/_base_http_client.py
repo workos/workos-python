@@ -135,7 +135,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             params Optional[dict]: Query params or body payload to be added to the request
             headers Optional[dict]: Custom headers to be added to the request
             token Optional[str]: Bearer token
-            force_include_body (bool): If True, allows sending a body with DELETE requests
+            force_include_body (bool): If True, allows sending a body in a bodyless request (used for DELETE requests)
 
         Returns:
             dict: Response from WorkOS

@@ -12,7 +12,7 @@ dependencies = [
   "httpx~=0.28.1",
   "pydantic>=2.10.4",
   "pyjwt>=2.10.0 ; python_full_version >= '3.9'",
-  "pyjwt>=2.9.0,<2.10 ; python_full_version == '3.8.*'",
+  "pyjwt>=2.11,<2.12; python_full_version == '3.8.*'",
 ]
 
 [project.urls]

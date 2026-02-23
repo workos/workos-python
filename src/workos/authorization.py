@@ -28,6 +28,7 @@ from workos.utils.request_helper import (
 )
 
 AUTHORIZATION_PERMISSIONS_PATH = "authorization/permissions"
+AUTHORIZATION_RESOURCES_PATH = "authorization/resources"
 
 _role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
 

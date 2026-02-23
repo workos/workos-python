@@ -449,8 +449,6 @@ class Authorization(AuthorizationModule):
 
         return EnvironmentRole.model_validate(response)
 
-    # Access Evaluation
-
     def check(
         self,
         organization_membership_id: str,

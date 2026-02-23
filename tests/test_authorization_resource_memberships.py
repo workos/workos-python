@@ -5,6 +5,10 @@ from tests.utils.fixtures.mock_resource import MockResource
 from tests.utils.list_resource import list_response_of
 from tests.utils.syncify import syncify
 from workos.authorization import AsyncAuthorization, Authorization
+from workos.types.authorization.resource_identifier import (
+    ParentResourceIdentifierByExternalId,
+    ParentResourceIdentifierById,
+)
 
 
 def _mock_membership(
@@ -48,7 +52,7 @@ class TestListResourcesForMembership:
         resources = [MockResource(id=f"res_{i}").dict() for i in range(40)]
         return list_response_of(data=resources)
 
-    def test_list_resources_for_membership(
+    def test_list_resources_for_membership_with_parent_resource_id(
         self, mock_resources_list, capture_and_mock_http_client_request
     ):
         request_kwargs = capture_and_mock_http_client_request(
@@ -59,6 +63,9 @@ class TestListResourcesForMembership:
             self.authorization.list_resources_for_membership(
                 "om_01ABC",
                 permission_slug="documents:read",
+                parent_resource=ParentResourceIdentifierById(
+                    parent_resource_id="res_parent_01",
+                ),
             )
         )
 
@@ -68,22 +75,6 @@ class TestListResourcesForMembership:
             "/authorization/organization_memberships/om_01ABC/resources"
         )
         assert request_kwargs["params"]["permission_slug"] == "documents:read"
-
-    def test_list_resources_for_membership_with_parent_resource_id(
-        self, mock_resources_list, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list, 200
-        )
-
-        syncify(
-            self.authorization.list_resources_for_membership(
-                "om_01ABC",
-                permission_slug="documents:read",
-                parent_resource_id="res_parent_01",
-            )
-        )
-
         assert request_kwargs["params"]["parent_resource_id"] == "res_parent_01"
         assert "parent_resource_type_slug" not in request_kwargs["params"]
         assert "parent_resource_external_id" not in request_kwargs["params"]
@@ -99,51 +90,16 @@ class TestListResourcesForMembership:
             self.authorization.list_resources_for_membership(
                 "om_01ABC",
                 permission_slug="documents:read",
-                parent_resource_type_slug="folder",
-                parent_resource_external_id="folder_abc",
+                parent_resource=ParentResourceIdentifierByExternalId(
+                    parent_resource_type_slug="folder",
+                    parent_resource_external_id="folder_abc",
+                ),
             )
         )
 
         assert request_kwargs["params"]["parent_resource_type_slug"] == "folder"
         assert request_kwargs["params"]["parent_resource_external_id"] == "folder_abc"
         assert "parent_resource_id" not in request_kwargs["params"]
-
-    def test_list_resources_for_membership_rejects_both_parent_id_and_external_id(
-        self,
-    ):
-        with pytest.raises(ValueError, match="Cannot specify both"):
-            syncify(
-                self.authorization.list_resources_for_membership(
-                    "om_01ABC",
-                    permission_slug="documents:read",
-                    parent_resource_id="res_parent_01",
-                    parent_resource_external_id="folder_abc",
-                )
-            )
-
-    def test_list_resources_for_membership_rejects_type_slug_without_external_id(
-        self,
-    ):
-        with pytest.raises(ValueError, match="must be provided together"):
-            syncify(
-                self.authorization.list_resources_for_membership(
-                    "om_01ABC",
-                    permission_slug="documents:read",
-                    parent_resource_type_slug="folder",
-                )
-            )
-
-    def test_list_resources_for_membership_rejects_external_id_without_type_slug(
-        self,
-    ):
-        with pytest.raises(ValueError, match="must be provided together"):
-            syncify(
-                self.authorization.list_resources_for_membership(
-                    "om_01ABC",
-                    permission_slug="documents:read",
-                    parent_resource_external_id="folder_abc",
-                )
-            )
 
     def test_list_resources_for_membership_auto_pagination(
         self,
@@ -157,8 +113,11 @@ class TestListResourcesForMembership:
             list_function_params={
                 "organization_membership_id": "om_01ABC",
                 "permission_slug": "documents:read",
+                "parent_resource": ParentResourceIdentifierById(
+                    parent_resource_id="res_parent_01",
+                ),
             },
-            url_path_keys=["organization_membership_id"],
+            url_path_keys=["organization_membership_id", "parent_resource"],
         )
 
 

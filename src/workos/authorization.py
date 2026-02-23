@@ -13,6 +13,7 @@ from workos.types.authorization.organization_membership import (
 from workos.types.authorization.organization_role import OrganizationRole
 from workos.types.authorization.permission import Permission
 from workos.types.authorization.resource import Resource
+from workos.types.authorization.resource_identifier import ParentResourceIdentifier
 from workos.types.authorization.role import Role, RoleList
 from workos.types.list_resource import (
     ListArgs,
@@ -48,9 +49,7 @@ PermissionsListResource = WorkOSListResource[
 
 class ResourcesForMembershipListFilters(ListArgs, total=False):
     permission_slug: str
-    parent_resource_id: Optional[str]
-    parent_resource_type_slug: Optional[str]
-    parent_resource_external_id: Optional[str]
+    parent_resource: ParentResourceIdentifier
 
 
 ResourcesForMembershipListResource = WorkOSListResource[
@@ -197,9 +196,7 @@ class AuthorizationModule(Protocol):
         organization_membership_id: str,
         *,
         permission_slug: str,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
+        parent_resource: ParentResourceIdentifier,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -515,47 +512,30 @@ class Authorization(AuthorizationModule):
         organization_membership_id: str,
         *,
         permission_slug: str,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
+        parent_resource: ParentResourceIdentifier,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> ResourcesForMembershipListResource:
-        if parent_resource_id is not None and (
-            parent_resource_type_slug is not None
-            or parent_resource_external_id is not None
-        ):
-            raise ValueError(
-                "Cannot specify both parent_resource_id and "
-                "parent_resource_type_slug/parent_resource_external_id. "
-                "Use one identification method."
-            )
-        if (parent_resource_type_slug is None) != (parent_resource_external_id is None):
-            raise ValueError(
-                "parent_resource_type_slug and parent_resource_external_id "
-                "must be provided together."
-            )
-
         list_params: ResourcesForMembershipListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
             "permission_slug": permission_slug,
+            "parent_resource": parent_resource,
         }
-        if parent_resource_id is not None:
-            list_params["parent_resource_id"] = parent_resource_id
-        if parent_resource_type_slug is not None:
-            list_params["parent_resource_type_slug"] = parent_resource_type_slug
-        if parent_resource_external_id is not None:
-            list_params["parent_resource_external_id"] = parent_resource_external_id
+
+        http_params: Dict[str, Any] = {
+            k: v for k, v in list_params.items() if k != "parent_resource"
+        }
+        http_params.update(parent_resource)
 
         response = self._http_client.request(
             f"authorization/organization_memberships/{organization_membership_id}/resources",
             method=REQUEST_METHOD_GET,
-            params=list_params,
+            params=http_params,
         )
 
         return WorkOSListResource[
@@ -932,47 +912,30 @@ class AsyncAuthorization(AuthorizationModule):
         organization_membership_id: str,
         *,
         permission_slug: str,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
+        parent_resource: ParentResourceIdentifier,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> ResourcesForMembershipListResource:
-        if parent_resource_id is not None and (
-            parent_resource_type_slug is not None
-            or parent_resource_external_id is not None
-        ):
-            raise ValueError(
-                "Cannot specify both parent_resource_id and "
-                "parent_resource_type_slug/parent_resource_external_id. "
-                "Use one identification method."
-            )
-        if (parent_resource_type_slug is None) != (parent_resource_external_id is None):
-            raise ValueError(
-                "parent_resource_type_slug and parent_resource_external_id "
-                "must be provided together."
-            )
-
         list_params: ResourcesForMembershipListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
             "permission_slug": permission_slug,
+            "parent_resource": parent_resource,
         }
-        if parent_resource_id is not None:
-            list_params["parent_resource_id"] = parent_resource_id
-        if parent_resource_type_slug is not None:
-            list_params["parent_resource_type_slug"] = parent_resource_type_slug
-        if parent_resource_external_id is not None:
-            list_params["parent_resource_external_id"] = parent_resource_external_id
+
+        http_params: Dict[str, Any] = {
+            k: v for k, v in list_params.items() if k != "parent_resource"
+        }
+        http_params.update(parent_resource)
 
         response = await self._http_client.request(
             f"authorization/organization_memberships/{organization_membership_id}/resources",
             method=REQUEST_METHOD_GET,
-            params=list_params,
+            params=http_params,
         )
 
         return WorkOSListResource[

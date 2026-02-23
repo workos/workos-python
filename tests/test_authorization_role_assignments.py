@@ -158,7 +158,11 @@ class TestAuthorizationRoleAssignments:
         )
 
         response = syncify(
-            self.authorization.remove_role("om_01ABC", role_slug="admin")
+            self.authorization.remove_role(
+                "om_01ABC",
+                role_slug="admin",
+                resource_identifier={"resource_id": "res_01ABC"},
+            )
         )
 
         assert response is None
@@ -166,7 +170,10 @@ class TestAuthorizationRoleAssignments:
         assert request_kwargs["url"].endswith(
             "/authorization/organization_memberships/om_01ABC/role_assignments"
         )
-        assert request_kwargs["json"] == {"role_slug": "admin"}
+        assert request_kwargs["json"] == {
+            "role_slug": "admin",
+            "resource_id": "res_01ABC",
+        }
 
     # --- remove_role_assignment ---
 

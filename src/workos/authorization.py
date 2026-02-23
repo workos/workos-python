@@ -30,6 +30,7 @@ from workos.utils.request_helper import (
 )
 
 AUTHORIZATION_PERMISSIONS_PATH = "authorization/permissions"
+AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH = "authorization/organization_memberships"
 
 _role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
 
@@ -195,6 +196,7 @@ class AuthorizationModule(Protocol):
         organization_membership_id: str,
         *,
         role_slug: str,
+        resource_identifier: ResourceIdentifier,
     ) -> SyncOrAsync[None]: ...
 
     def remove_role_assignment(
@@ -510,7 +512,7 @@ class Authorization(AuthorizationModule):
         }
 
         response = self._http_client.request(
-            f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
             method=REQUEST_METHOD_GET,
             params=query_params,
         )
@@ -534,7 +536,7 @@ class Authorization(AuthorizationModule):
         json.update(resource_identifier)
 
         response = self._http_client.request(
-            f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
             method=REQUEST_METHOD_POST,
             json=json,
         )
@@ -546,10 +548,14 @@ class Authorization(AuthorizationModule):
         organization_membership_id: str,
         *,
         role_slug: str,
+        resource_identifier: ResourceIdentifier,
     ) -> None:
+        json: Dict[str, Any] = {"role_slug": role_slug}
+        json.update(resource_identifier)
+
         self._http_client.delete_with_body(
-            f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
-            json={"role_slug": role_slug},
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
+            json=json,
         )
 
     def remove_role_assignment(
@@ -558,7 +564,7 @@ class Authorization(AuthorizationModule):
         role_assignment_id: str,
     ) -> None:
         self._http_client.request(
-            f"authorization/organization_memberships/{organization_membership_id}/role_assignments/{role_assignment_id}",
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments/{role_assignment_id}",
             method=REQUEST_METHOD_DELETE,
         )
 
@@ -869,7 +875,7 @@ class AsyncAuthorization(AuthorizationModule):
         }
 
         response = await self._http_client.request(
-            f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
             method=REQUEST_METHOD_GET,
             params=query_params,
         )
@@ -893,7 +899,7 @@ class AsyncAuthorization(AuthorizationModule):
         json.update(resource_identifier)
 
         response = await self._http_client.request(
-            f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
             method=REQUEST_METHOD_POST,
             json=json,
         )
@@ -905,10 +911,14 @@ class AsyncAuthorization(AuthorizationModule):
         organization_membership_id: str,
         *,
         role_slug: str,
+        resource_identifier: ResourceIdentifier,
     ) -> None:
+        json: Dict[str, Any] = {"role_slug": role_slug}
+        json.update(resource_identifier)
+
         await self._http_client.delete_with_body(
-            f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
-            json={"role_slug": role_slug},
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
+            json=json,
         )
 
     async def remove_role_assignment(
@@ -917,6 +927,6 @@ class AsyncAuthorization(AuthorizationModule):
         role_assignment_id: str,
     ) -> None:
         await self._http_client.request(
-            f"authorization/organization_memberships/{organization_membership_id}/role_assignments/{role_assignment_id}",
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments/{role_assignment_id}",
             method=REQUEST_METHOD_DELETE,
         )

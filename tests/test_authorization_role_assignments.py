@@ -38,8 +38,6 @@ class TestAuthorizationRoleAssignments:
         ]
         return list_response_of(data=assignment_list)
 
-    # --- list_role_assignments ---
-
     def test_list_role_assignments(
         self, mock_role_assignments, capture_and_mock_http_client_request
     ):
@@ -94,8 +92,6 @@ class TestAuthorizationRoleAssignments:
             },
         )
 
-    # --- assign_role ---
-
     def test_assign_role(
         self, mock_role_assignment, capture_and_mock_http_client_request
     ):
@@ -148,8 +144,6 @@ class TestAuthorizationRoleAssignments:
             "resource_type_slug": "document",
         }
 
-    # --- remove_role ---
-
     def test_remove_role(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(
             self.http_client,
@@ -175,7 +169,34 @@ class TestAuthorizationRoleAssignments:
             "resource_id": "res_01ABC",
         }
 
-    # --- remove_role_assignment ---
+    def test_remove_role_with_external_id(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client,
+            status_code=202,
+            headers={"content-type": "text/plain; charset=utf-8"},
+        )
+
+        response = syncify(
+            self.authorization.remove_role(
+                "om_01ABC",
+                role_slug="admin",
+                resource_identifier={
+                    "resource_external_id": "ext_123",
+                    "resource_type_slug": "document",
+                },
+            )
+        )
+
+        assert response is None
+        assert request_kwargs["method"] == "delete"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organization_memberships/om_01ABC/role_assignments"
+        )
+        assert request_kwargs["json"] == {
+            "role_slug": "admin",
+            "resource_external_id": "ext_123",
+            "resource_type_slug": "document",
+        }
 
     def test_remove_role_assignment(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(

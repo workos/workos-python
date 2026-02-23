@@ -3,6 +3,10 @@ from typing import Union
 import pytest
 from tests.utils.syncify import syncify
 from workos.authorization import AsyncAuthorization, Authorization
+from workos.types.authorization.resource_identifier import (
+    ResourceIdentifierByExternalId,
+    ResourceIdentifierById,
+)
 
 
 @pytest.mark.sync_and_async(Authorization, AsyncAuthorization)
@@ -31,7 +35,7 @@ class TestAuthorizationCheck:
             self.authorization.check(
                 "om_01ABC",
                 permission_slug="documents:read",
-                resource_id="res_01ABC",
+                resource=ResourceIdentifierById(resource_id="res_01ABC"),
             )
         )
 
@@ -52,7 +56,7 @@ class TestAuthorizationCheck:
             self.authorization.check(
                 "om_01ABC",
                 permission_slug="documents:write",
-                resource_id="res_01ABC",
+                resource=ResourceIdentifierById(resource_id="res_01ABC"),
             )
         )
 
@@ -70,7 +74,7 @@ class TestAuthorizationCheck:
             self.authorization.check(
                 "om_01ABC",
                 permission_slug="documents:read",
-                resource_id="res_01XYZ",
+                resource=ResourceIdentifierById(resource_id="res_01XYZ"),
             )
         )
 
@@ -90,8 +94,10 @@ class TestAuthorizationCheck:
             self.authorization.check(
                 "om_01ABC",
                 permission_slug="documents:read",
-                resource_external_id="ext_doc_123",
-                resource_type_slug="document",
+                resource=ResourceIdentifierByExternalId(
+                    resource_external_id="ext_doc_123",
+                    resource_type_slug="document",
+                ),
             )
         )
 
@@ -112,32 +118,10 @@ class TestAuthorizationCheck:
             self.authorization.check(
                 "om_01MEMBERSHIP",
                 permission_slug="admin:access",
+                resource=ResourceIdentifierById(resource_id="res_01ABC"),
             )
         )
 
         assert request_kwargs["url"].endswith(
             "/authorization/organization_memberships/om_01MEMBERSHIP/check"
         )
-        assert request_kwargs["json"] == {"permission_slug": "admin:access"}
-
-    def test_check_raises_when_both_resource_identifiers_provided(self):
-        with pytest.raises(ValueError, match="mutually exclusive"):
-            syncify(
-                self.authorization.check(
-                    "om_01ABC",
-                    permission_slug="documents:read",
-                    resource_id="res_01ABC",
-                    resource_external_id="ext_doc_123",
-                    resource_type_slug="document",
-                )
-            )
-
-    def test_check_raises_when_external_id_without_type_slug(self):
-        with pytest.raises(ValueError, match="resource_type_slug is required"):
-            syncify(
-                self.authorization.check(
-                    "om_01ABC",
-                    permission_slug="documents:read",
-                    resource_external_id="ext_doc_123",
-                )
-            )

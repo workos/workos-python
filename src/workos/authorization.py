@@ -9,6 +9,7 @@ from workos.types.authorization.environment_role import (
 )
 from workos.types.authorization.organization_role import OrganizationRole
 from workos.types.authorization.permission import Permission
+from workos.types.authorization.resource_identifier import ResourceIdentifier
 from workos.types.authorization.role import Role, RoleList
 from workos.types.list_resource import (
     ListArgs,
@@ -169,9 +170,7 @@ class AuthorizationModule(Protocol):
         organization_membership_id: str,
         *,
         permission_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
+        resource: ResourceIdentifier,
     ) -> SyncOrAsync[AccessEvaluation]: ...
 
 
@@ -457,26 +456,10 @@ class Authorization(AuthorizationModule):
         organization_membership_id: str,
         *,
         permission_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
+        resource: ResourceIdentifier,
     ) -> AccessEvaluation:
-        if resource_id is not None and resource_external_id is not None:
-            raise ValueError(
-                "resource_id and resource_external_id are mutually exclusive"
-            )
-        if resource_external_id is not None and resource_type_slug is None:
-            raise ValueError(
-                "resource_type_slug is required when resource_external_id is provided"
-            )
-
         json: Dict[str, Any] = {"permission_slug": permission_slug}
-        if resource_id is not None:
-            json["resource_id"] = resource_id
-        if resource_external_id is not None:
-            json["resource_external_id"] = resource_external_id
-        if resource_type_slug is not None:
-            json["resource_type_slug"] = resource_type_slug
+        json.update(resource)
 
         response = self._http_client.request(
             f"authorization/organization_memberships/{organization_membership_id}/check",
@@ -769,26 +752,10 @@ class AsyncAuthorization(AuthorizationModule):
         organization_membership_id: str,
         *,
         permission_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
+        resource: ResourceIdentifier,
     ) -> AccessEvaluation:
-        if resource_id is not None and resource_external_id is not None:
-            raise ValueError(
-                "resource_id and resource_external_id are mutually exclusive"
-            )
-        if resource_external_id is not None and resource_type_slug is None:
-            raise ValueError(
-                "resource_type_slug is required when resource_external_id is provided"
-            )
-
         json: Dict[str, Any] = {"permission_slug": permission_slug}
-        if resource_id is not None:
-            json["resource_id"] = resource_id
-        if resource_external_id is not None:
-            json["resource_external_id"] = resource_external_id
-        if resource_type_slug is not None:
-            json["resource_type_slug"] = resource_type_slug
+        json.update(resource)
 
         response = await self._http_client.request(
             f"authorization/organization_memberships/{organization_membership_id}/check",

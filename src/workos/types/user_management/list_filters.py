@@ -1,9 +1,6 @@
 from typing import Optional, Sequence
 from workos.types.list_resource import ListArgs
-from workos.types.user_management.organization_membership import (
-    OrganizationMembershipStatus,
-)
-
+from workos.types.user_management.organization_membership_status import OrganizationMembershipStatus
 
 class UsersListFilters(ListArgs, total=False):
     email: Optional[str]

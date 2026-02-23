@@ -52,7 +52,9 @@ class ResourcesForMembershipListFilters(ListArgs, total=False):
 
 
 ResourcesForMembershipListResource = WorkOSListResource[
-    Resource, ResourcesForMembershipListFilters, ListMetadata
+    Resource,
+    ResourcesForMembershipListFilters,
+    ListMetadata,
 ]
 
 
@@ -187,8 +189,6 @@ class AuthorizationModule(Protocol):
         *,
         permission_slug: str,
     ) -> SyncOrAsync[EnvironmentRole]: ...
-
-    # Resource-Membership Relationships
 
     def list_resources_for_membership(
         self,
@@ -503,8 +503,6 @@ class Authorization(AuthorizationModule):
         )
 
         return EnvironmentRole.model_validate(response)
-
-    # Resource-Membership Relationships
 
     def list_resources_for_membership(
         self,

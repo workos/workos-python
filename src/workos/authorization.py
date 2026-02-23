@@ -9,6 +9,7 @@ from workos.types.authorization.environment_role import (
 from workos.types.authorization.organization_role import OrganizationRole
 from workos.types.authorization.permission import Permission
 from workos.types.authorization.role import Role, RoleList
+from workos.types.authorization.resource_identifier import ResourceIdentifier
 from workos.types.authorization.role_assignment import RoleAssignment
 from workos.types.list_resource import (
     ListArgs,
@@ -171,8 +172,6 @@ class AuthorizationModule(Protocol):
         permission_slug: str,
     ) -> SyncOrAsync[EnvironmentRole]: ...
 
-    # Role Assignments
-
     def list_role_assignments(
         self,
         *,
@@ -188,6 +187,7 @@ class AuthorizationModule(Protocol):
         organization_membership_id: str,
         *,
         role_slug: str,
+        resource_identifier: ResourceIdentifier,
     ) -> SyncOrAsync[RoleAssignment]: ...
 
     def remove_role(
@@ -528,11 +528,15 @@ class Authorization(AuthorizationModule):
         organization_membership_id: str,
         *,
         role_slug: str,
+        resource_identifier: ResourceIdentifier,
     ) -> RoleAssignment:
+        json: Dict[str, Any] = {"role_slug": role_slug}
+        json.update(resource_identifier)
+
         response = self._http_client.request(
             f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
             method=REQUEST_METHOD_POST,
-            json={"role_slug": role_slug},
+            json=json,
         )
 
         return RoleAssignment.model_validate(response)
@@ -883,11 +887,15 @@ class AsyncAuthorization(AuthorizationModule):
         organization_membership_id: str,
         *,
         role_slug: str,
+        resource_identifier: ResourceIdentifier,
     ) -> RoleAssignment:
+        json: Dict[str, Any] = {"role_slug": role_slug}
+        json.update(resource_identifier)
+
         response = await self._http_client.request(
             f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
             method=REQUEST_METHOD_POST,
-            json={"role_slug": role_slug},
+            json=json,
         )
 
         return RoleAssignment.model_validate(response)

@@ -104,7 +104,11 @@ class TestAuthorizationRoleAssignments:
         )
 
         role_assignment = syncify(
-            self.authorization.assign_role("om_01ABC", role_slug="admin")
+            self.authorization.assign_role(
+                "om_01ABC",
+                role_slug="admin",
+                resource_identifier={"resource_id": "res_01ABC"},
+            )
         )
 
         assert role_assignment.id == "ra_01ABC"
@@ -113,7 +117,36 @@ class TestAuthorizationRoleAssignments:
         assert request_kwargs["url"].endswith(
             "/authorization/organization_memberships/om_01ABC/role_assignments"
         )
-        assert request_kwargs["json"] == {"role_slug": "admin"}
+        assert request_kwargs["json"] == {
+            "role_slug": "admin",
+            "resource_id": "res_01ABC",
+        }
+
+    def test_assign_role_with_external_id(
+        self, mock_role_assignment, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_role_assignment, 201
+        )
+
+        role_assignment = syncify(
+            self.authorization.assign_role(
+                "om_01ABC",
+                role_slug="admin",
+                resource_identifier={
+                    "resource_external_id": "ext_123",
+                    "resource_type_slug": "document",
+                },
+            )
+        )
+
+        assert role_assignment.id == "ra_01ABC"
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "role_slug": "admin",
+            "resource_external_id": "ext_123",
+            "resource_type_slug": "document",
+        }
 
     # --- remove_role ---
 

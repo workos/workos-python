@@ -49,7 +49,6 @@ PermissionsListResource = WorkOSListResource[
 
 class ResourcesForMembershipListFilters(ListArgs, total=False):
     permission_slug: str
-    parent_resource: ParentResourceIdentifier
 
 
 ResourcesForMembershipListResource = WorkOSListResource[
@@ -524,12 +523,9 @@ class Authorization(AuthorizationModule):
             "after": after,
             "order": order,
             "permission_slug": permission_slug,
-            "parent_resource": parent_resource,
         }
 
-        http_params: Dict[str, Any] = {
-            k: v for k, v in list_params.items() if k != "parent_resource"
-        }
+        http_params: Dict[str, Any] = {**list_params}
         http_params.update(parent_resource)
 
         response = self._http_client.request(
@@ -542,7 +538,9 @@ class Authorization(AuthorizationModule):
             Resource, ResourcesForMembershipListFilters, ListMetadata
         ](
             list_method=partial(
-                self.list_resources_for_membership, organization_membership_id
+                self.list_resources_for_membership,
+                organization_membership_id,
+                parent_resource=parent_resource,
             ),
             list_args=list_params,
             **ListPage[Resource](**response).model_dump(),
@@ -905,8 +903,6 @@ class AsyncAuthorization(AuthorizationModule):
 
         return EnvironmentRole.model_validate(response)
 
-    # Resource-Membership Relationships
-
     async def list_resources_for_membership(
         self,
         organization_membership_id: str,
@@ -924,12 +920,9 @@ class AsyncAuthorization(AuthorizationModule):
             "after": after,
             "order": order,
             "permission_slug": permission_slug,
-            "parent_resource": parent_resource,
         }
 
-        http_params: Dict[str, Any] = {
-            k: v for k, v in list_params.items() if k != "parent_resource"
-        }
+        http_params: Dict[str, Any] = {**list_params}
         http_params.update(parent_resource)
 
         response = await self._http_client.request(
@@ -942,7 +935,9 @@ class AsyncAuthorization(AuthorizationModule):
             Resource, ResourcesForMembershipListFilters, ListMetadata
         ](
             list_method=partial(
-                self.list_resources_for_membership, organization_membership_id
+                self.list_resources_for_membership,
+                organization_membership_id,
+                parent_resource=parent_resource,
             ),
             list_args=list_params,
             **ListPage[Resource](**response).model_dump(),

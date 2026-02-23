@@ -69,6 +69,7 @@ class TestListResourcesForMembership:
             )
         )
 
+        assert result.object == "list"
         assert len(result.data) == 3
         assert request_kwargs["method"] == "get"
         assert request_kwargs["url"].endswith(
@@ -100,6 +101,54 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["parent_resource_type_slug"] == "folder"
         assert request_kwargs["params"]["parent_resource_external_id"] == "folder_abc"
         assert "parent_resource_id" not in request_kwargs["params"]
+
+    def test_list_resources_for_membership_empty(
+        self, capture_and_mock_http_client_request
+    ):
+        empty_response = {
+            "data": [],
+            "list_metadata": {"before": None, "after": None},
+            "object": "list",
+        }
+        capture_and_mock_http_client_request(self.http_client, empty_response, 200)
+
+        result = syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="documents:read",
+                parent_resource=ParentResourceIdentifierById(
+                    parent_resource_id="res_parent_01",
+                ),
+            )
+        )
+
+        assert result.object == "list"
+        assert len(result.data) == 0
+
+    def test_list_resources_for_membership_passes_pagination_params(
+        self, mock_resources_list, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list, 200
+        )
+
+        syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="documents:read",
+                parent_resource=ParentResourceIdentifierById(
+                    parent_resource_id="res_parent_01",
+                ),
+                limit=10,
+                after="res_cursor123",
+                order="desc",
+            )
+        )
+
+        assert request_kwargs["params"]["permission_slug"] == "documents:read"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["after"] == "res_cursor123"
+        assert request_kwargs["params"]["order"] == "desc"
 
     def test_list_resources_for_membership_auto_pagination(
         self,

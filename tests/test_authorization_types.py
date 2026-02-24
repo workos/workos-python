@@ -112,7 +112,6 @@ class TestAuthorizationOrganizationMembership:
             "id": "om_01ABC",
             "user_id": "user_01ABC",
             "organization_id": "org_01ABC",
-            "organization_name": "Test Org",
             "status": "active",
             "created_at": "2024-01-01T00:00:00Z",
             "updated_at": "2024-01-01T00:00:00Z",
@@ -123,7 +122,6 @@ class TestAuthorizationOrganizationMembership:
         assert membership.id == "om_01ABC"
         assert membership.user_id == "user_01ABC"
         assert membership.organization_id == "org_01ABC"
-        assert membership.organization_name == "Test Org"
         assert membership.status == "active"
         assert membership.custom_attributes is None
 

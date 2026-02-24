@@ -4,15 +4,6 @@ from typing import Any, Dict, Optional, Protocol, Sequence, Union
 from pydantic import TypeAdapter
 from typing_extensions import TypedDict
 
-
-class _Unset(Enum):
-    """Sentinel to distinguish 'not provided' from an explicit None."""
-
-    TOKEN = 0
-
-
-UNSET: _Unset = _Unset.TOKEN
-
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,
@@ -38,6 +29,13 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_POST,
     REQUEST_METHOD_PUT,
 )
+
+class _Unset(Enum):
+
+    TOKEN = 0
+
+
+UNSET: _Unset = _Unset.TOKEN
 
 AUTHORIZATION_PERMISSIONS_PATH = "authorization/permissions"
 AUTHORIZATION_RESOURCES_PATH = "authorization/resources"

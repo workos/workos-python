@@ -204,6 +204,28 @@ class TestAuthorizationResourceCRUD:
         assert request_kwargs["method"] == "patch"
         assert request_kwargs["json"] == {}
 
+
+    def test_update_resource_without_desc(
+        self, mock_resource, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resource, 200
+        )
+
+        resource = syncify(
+            self.authorization.update_resource(
+                "res_01ABC",
+                name="Updated Name",
+            )
+        )
+
+        assert resource.id == "res_01ABC"
+        assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
+        assert request_kwargs["json"] == {
+            "name": "Updated Name"
+        }
+
     # --- delete_resource ---
 
     def test_delete_resource_without_cascade(

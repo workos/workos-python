@@ -32,6 +32,7 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_PUT,
 )
 
+
 class _Unset(Enum):
     TOKEN = 0
 
@@ -76,6 +77,7 @@ class PermissionListFilters(ListArgs, total=False):
 PermissionsListResource = WorkOSListResource[
     Permission, PermissionListFilters, ListMetadata
 ]
+
 
 class AuthorizationModule(Protocol):
     """Offers methods through the WorkOS Authorization service."""
@@ -747,6 +749,7 @@ class Authorization(AuthorizationModule):
         )
 
         return AccessEvaluation.model_validate(response)
+
 
 class AsyncAuthorization(AuthorizationModule):
     _http_client: AsyncHTTPClient

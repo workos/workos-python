@@ -140,6 +140,39 @@ class TestAuthorizationResourceExternalId:
         assert request_kwargs["method"] == "patch"
         assert request_kwargs["json"] == {}
 
+    def test_update_resource_by_external_id_clear_description(
+        self, mock_resource, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resource, 200
+        )
+
+        syncify(
+            self.authorization.update_resource_by_external_id(
+                MOCK_ORG_ID, MOCK_RESOURCE_TYPE, MOCK_EXTERNAL_ID, description=None
+            )
+        )
+
+        assert request_kwargs["method"] == "patch"
+        assert request_kwargs["json"] == {"description": None}
+
+    def test_update_resource_by_external_id_without_description(
+        self, mock_resource, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resource, 200
+        )
+
+        resource = syncify(
+            self.authorization.update_resource_by_external_id(
+                MOCK_ORG_ID, MOCK_RESOURCE_TYPE, MOCK_EXTERNAL_ID, name="Updated Name"
+            )
+        )
+
+        assert resource.id == "res_01ABC"
+        assert request_kwargs["method"] == "patch"
+        assert request_kwargs["json"] == {"name": "Updated Name"}
+
     # --- delete_resource_by_external_id ---
 
     def test_delete_resource_by_external_id_without_cascade(

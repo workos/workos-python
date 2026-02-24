@@ -258,7 +258,7 @@ class AuthorizationModule(Protocol):
         external_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, _Unset] = UNSET,
     ) -> SyncOrAsync[Resource]: ...
 
     def delete_resource_by_external_id(
@@ -697,18 +697,19 @@ class Authorization(AuthorizationModule):
         external_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, _Unset] = UNSET,
     ) -> Resource:
         json: Dict[str, Any] = {}
         if name is not None:
             json["name"] = name
-        if description is not None:
+        if not isinstance(description, _Unset):
             json["description"] = description
 
         response = self._http_client.request(
             f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}",
             method=REQUEST_METHOD_PATCH,
             json=json,
+            exclude_none=False,
         )
 
         return Resource.model_validate(response)
@@ -1170,18 +1171,19 @@ class AsyncAuthorization(AuthorizationModule):
         external_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, _Unset] = UNSET,
     ) -> Resource:
         json: Dict[str, Any] = {}
         if name is not None:
             json["name"] = name
-        if description is not None:
+        if not isinstance(description, _Unset):
             json["description"] = description
 
         response = await self._http_client.request(
             f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}",
             method=REQUEST_METHOD_PATCH,
             json=json,
+            exclude_none=False,
         )
 
         return Resource.model_validate(response)

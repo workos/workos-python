@@ -622,6 +622,51 @@ class Authorization(AuthorizationModule):
                 method=REQUEST_METHOD_DELETE,
             )
 
+    def list_resources(
+        self,
+        *,
+        organization_id: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
+        parent_resource_id: Optional[str] = None,
+        parent_resource_type_slug: Optional[str] = None,
+        parent_external_id: Optional[str] = None,
+        search: Optional[str] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> ResourcesListResource:
+        list_params: ResourceListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+        if organization_id is not None:
+            list_params["organization_id"] = organization_id
+        if resource_type_slug is not None:
+            list_params["resource_type_slug"] = resource_type_slug
+        if parent_resource_id is not None:
+            list_params["parent_resource_id"] = parent_resource_id
+        if parent_resource_type_slug is not None:
+            list_params["parent_resource_type_slug"] = parent_resource_type_slug
+        if parent_external_id is not None:
+            list_params["parent_external_id"] = parent_external_id
+        if search is not None:
+            list_params["search"] = search
+
+        response = self._http_client.request(
+            AUTHORIZATION_RESOURCES_PATH,
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[Resource, ResourceListFilters, ListMetadata](
+            list_method=self.list_resources,
+            list_args=list_params,
+            **ListPage[Resource](**response).model_dump(),
+        )
+
     def get_resource_by_external_id(
         self,
         organization_id: str,
@@ -675,51 +720,6 @@ class Authorization(AuthorizationModule):
             path,
             method=REQUEST_METHOD_DELETE,
             params=params if params else None,
-        )
-
-    def list_resources(
-        self,
-        *,
-        organization_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
-        parent_external_id: Optional[str] = None,
-        search: Optional[str] = None,
-        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: PaginationOrder = "desc",
-    ) -> ResourcesListResource:
-        list_params: ResourceListFilters = {
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order,
-        }
-        if organization_id is not None:
-            list_params["organization_id"] = organization_id
-        if resource_type_slug is not None:
-            list_params["resource_type_slug"] = resource_type_slug
-        if parent_resource_id is not None:
-            list_params["parent_resource_id"] = parent_resource_id
-        if parent_resource_type_slug is not None:
-            list_params["parent_resource_type_slug"] = parent_resource_type_slug
-        if parent_external_id is not None:
-            list_params["parent_external_id"] = parent_external_id
-        if search is not None:
-            list_params["search"] = search
-
-        response = self._http_client.request(
-            AUTHORIZATION_RESOURCES_PATH,
-            method=REQUEST_METHOD_GET,
-            params=list_params,
-        )
-
-        return WorkOSListResource[Resource, ResourceListFilters, ListMetadata](
-            list_method=self.list_resources,
-            list_args=list_params,
-            **ListPage[Resource](**response).model_dump(),
         )
 
 

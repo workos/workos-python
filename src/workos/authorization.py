@@ -30,8 +30,8 @@ from workos.utils.request_helper import (
     REQUEST_METHOD_PUT,
 )
 
-class _Unset(Enum):
 
+class _Unset(Enum):
     TOKEN = 0
 
 

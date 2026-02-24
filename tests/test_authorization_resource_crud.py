@@ -204,7 +204,6 @@ class TestAuthorizationResourceCRUD:
         assert request_kwargs["method"] == "patch"
         assert request_kwargs["json"] == {}
 
-
     def test_update_resource_without_desc(
         self, mock_resource, capture_and_mock_http_client_request
     ):
@@ -222,9 +221,7 @@ class TestAuthorizationResourceCRUD:
         assert resource.id == "res_01ABC"
         assert request_kwargs["method"] == "patch"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
-        assert request_kwargs["json"] == {
-            "name": "Updated Name"
-        }
+        assert request_kwargs["json"] == {"name": "Updated Name"}
 
     # --- delete_resource ---
 

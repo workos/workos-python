@@ -197,13 +197,13 @@ class TestAuthorizationResourceExternalId:
             self.http_client, mock_resources_list, 200
         )
 
-        resources_response = syncify(self.authorization.list_resources(MOCK_ORG_ID))
+        resources_response = syncify(
+            self.authorization.list_resources(organization_id=MOCK_ORG_ID)
+        )
 
         assert request_kwargs["method"] == "get"
-        assert request_kwargs["url"].endswith(
-            f"/authorization/organizations/{MOCK_ORG_ID}/resources"
-        )
-        assert "organization_id" not in request_kwargs["params"]
+        assert request_kwargs["url"].endswith("/authorization/resources")
+        assert request_kwargs["params"]["organization_id"] == MOCK_ORG_ID
         assert len(resources_response.data) == 1
         assert resources_response.data[0].id == "res_01ABC"
 
@@ -214,7 +214,9 @@ class TestAuthorizationResourceExternalId:
             self.http_client, mock_resources_empty_list, 200
         )
 
-        resources_response = syncify(self.authorization.list_resources(MOCK_ORG_ID))
+        resources_response = syncify(
+            self.authorization.list_resources(organization_id=MOCK_ORG_ID)
+        )
 
         assert request_kwargs["method"] == "get"
         assert len(resources_response.data) == 0
@@ -228,7 +230,7 @@ class TestAuthorizationResourceExternalId:
 
         syncify(
             self.authorization.list_resources(
-                MOCK_ORG_ID, resource_type_slug="document"
+                organization_id=MOCK_ORG_ID, resource_type_slug="document"
             )
         )
 
@@ -244,7 +246,7 @@ class TestAuthorizationResourceExternalId:
 
         syncify(
             self.authorization.list_resources(
-                MOCK_ORG_ID,
+                organization_id=MOCK_ORG_ID,
                 limit=5,
                 after="res_cursor_abc",
                 before="res_cursor_xyz",
@@ -267,5 +269,4 @@ class TestAuthorizationResourceExternalId:
             list_function=self.authorization.list_resources,
             expected_all_page_data=mock_resources_multiple,
             list_function_params={"organization_id": MOCK_ORG_ID},
-            url_path_keys=["organization_id"],
         )

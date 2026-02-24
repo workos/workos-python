@@ -30,11 +30,16 @@ from workos.utils.request_helper import (
 
 AUTHORIZATION_PERMISSIONS_PATH = "authorization/permissions"
 AUTHORIZATION_ORGANIZATIONS_PATH = "authorization/organizations"
+AUTHORIZATION_RESOURCES_PATH = "authorization/resources"
 
 
 class ResourceListFilters(ListArgs, total=False):
-    organization_id: str
+    organization_id: Optional[str]
     resource_type_slug: Optional[str]
+    parent_resource_id: Optional[str]
+    parent_resource_type_slug: Optional[str]
+    parent_external_id: Optional[str]
+    search: Optional[str]
 
 
 ResourcesListResource = WorkOSListResource[Resource, ResourceListFilters, ListMetadata]
@@ -201,9 +206,13 @@ class AuthorizationModule(Protocol):
 
     def list_resources(
         self,
-        organization_id: str,
         *,
+        organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
+        parent_resource_id: Optional[str] = None,
+        parent_resource_type_slug: Optional[str] = None,
+        parent_external_id: Optional[str] = None,
+        search: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -545,30 +554,41 @@ class Authorization(AuthorizationModule):
 
     def list_resources(
         self,
-        organization_id: str,
         *,
+        organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
+        parent_resource_id: Optional[str] = None,
+        parent_resource_type_slug: Optional[str] = None,
+        parent_external_id: Optional[str] = None,
+        search: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> ResourcesListResource:
         list_params: ResourceListFilters = {
-            "organization_id": organization_id,
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
         }
+        if organization_id is not None:
+            list_params["organization_id"] = organization_id
         if resource_type_slug is not None:
             list_params["resource_type_slug"] = resource_type_slug
-
-        query_params = {k: v for k, v in list_params.items() if k != "organization_id"}
+        if parent_resource_id is not None:
+            list_params["parent_resource_id"] = parent_resource_id
+        if parent_resource_type_slug is not None:
+            list_params["parent_resource_type_slug"] = parent_resource_type_slug
+        if parent_external_id is not None:
+            list_params["parent_external_id"] = parent_external_id
+        if search is not None:
+            list_params["search"] = search
 
         response = self._http_client.request(
-            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources",
+            AUTHORIZATION_RESOURCES_PATH,
             method=REQUEST_METHOD_GET,
-            params=query_params,
+            params=list_params,
         )
 
         return WorkOSListResource[Resource, ResourceListFilters, ListMetadata](
@@ -912,30 +932,41 @@ class AsyncAuthorization(AuthorizationModule):
 
     async def list_resources(
         self,
-        organization_id: str,
         *,
+        organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
+        parent_resource_id: Optional[str] = None,
+        parent_resource_type_slug: Optional[str] = None,
+        parent_external_id: Optional[str] = None,
+        search: Optional[str] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> ResourcesListResource:
         list_params: ResourceListFilters = {
-            "organization_id": organization_id,
             "limit": limit,
             "before": before,
             "after": after,
             "order": order,
         }
+        if organization_id is not None:
+            list_params["organization_id"] = organization_id
         if resource_type_slug is not None:
             list_params["resource_type_slug"] = resource_type_slug
-
-        query_params = {k: v for k, v in list_params.items() if k != "organization_id"}
+        if parent_resource_id is not None:
+            list_params["parent_resource_id"] = parent_resource_id
+        if parent_resource_type_slug is not None:
+            list_params["parent_resource_type_slug"] = parent_resource_type_slug
+        if parent_external_id is not None:
+            list_params["parent_external_id"] = parent_external_id
+        if search is not None:
+            list_params["search"] = search
 
         response = await self._http_client.request(
-            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources",
+            AUTHORIZATION_RESOURCES_PATH,
             method=REQUEST_METHOD_GET,
-            params=query_params,
+            params=list_params,
         )
 
         return WorkOSListResource[Resource, ResourceListFilters, ListMetadata](

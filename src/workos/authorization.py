@@ -4,12 +4,14 @@ from typing import Any, Dict, Optional, Protocol, Sequence, Union
 from pydantic import TypeAdapter
 from typing_extensions import TypedDict
 
+from workos.types.authorization.access_evaluation import AccessEvaluation
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,
 )
 from workos.types.authorization.organization_role import OrganizationRole
 from workos.types.authorization.permission import Permission
+from workos.types.authorization.resource_identifier import ResourceIdentifier
 from workos.types.authorization.resource import Resource
 from workos.types.authorization.role import Role, RoleList
 from workos.types.list_resource import (
@@ -267,6 +269,14 @@ class AuthorizationModule(Protocol):
         *,
         cascade_delete: Optional[bool] = None,
     ) -> SyncOrAsync[None]: ...
+
+    def check(
+        self,
+        organization_membership_id: str,
+        *,
+        permission_slug: str,
+        resource: ResourceIdentifier,
+    ) -> SyncOrAsync[AccessEvaluation]: ...
 
 
 class Authorization(AuthorizationModule):
@@ -722,6 +732,24 @@ class Authorization(AuthorizationModule):
             params=params if params else None,
         )
 
+    def check(
+        self,
+        organization_membership_id: str,
+        *,
+        permission_slug: str,
+        resource: ResourceIdentifier,
+    ) -> AccessEvaluation:
+        json: Dict[str, Any] = {"permission_slug": permission_slug}
+        json.update(resource)
+
+        response = self._http_client.request(
+            f"authorization/organization_memberships/{organization_membership_id}/check",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return AccessEvaluation.model_validate(response)
+
 
 class AsyncAuthorization(AuthorizationModule):
     _http_client: AsyncHTTPClient
@@ -1175,3 +1203,21 @@ class AsyncAuthorization(AuthorizationModule):
             method=REQUEST_METHOD_DELETE,
             params=params if params else None,
         )
+
+    async def check(
+        self,
+        organization_membership_id: str,
+        *,
+        permission_slug: str,
+        resource: ResourceIdentifier,
+    ) -> AccessEvaluation:
+        json: Dict[str, Any] = {"permission_slug": permission_slug}
+        json.update(resource)
+
+        response = await self._http_client.request(
+            f"authorization/organization_memberships/{organization_membership_id}/check",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return AccessEvaluation.model_validate(response)

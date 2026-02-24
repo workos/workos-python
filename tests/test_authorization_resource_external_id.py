@@ -186,7 +186,7 @@ class TestAuthorizationResourceExternalId:
         assert request_kwargs["url"].endswith(
             f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
         )
-        assert request_kwargs["params"] == {"cascade_delete": True}
+        assert request_kwargs["params"] == {"cascade_delete": "true"}
 
     # --- list_resources ---
 

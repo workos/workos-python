@@ -621,16 +621,16 @@ class Authorization(AuthorizationModule):
         *,
         cascade_delete: Optional[bool] = None,
     ) -> None:
-        if cascade_delete is not None:
-            self._http_client.delete_with_body(
-                f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
-                json={"cascade_delete": cascade_delete},
-            )
-        else:
-            self._http_client.request(
-                f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
-                method=REQUEST_METHOD_DELETE,
-            )
+        params = (
+            {"cascade_delete": str(cascade_delete).lower()}
+            if cascade_delete is not None
+            else None
+        )
+        self._http_client.request(
+            f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
+            method=REQUEST_METHOD_DELETE,
+            params=params,
+        )
 
     def list_resources(
         self,
@@ -722,14 +722,15 @@ class Authorization(AuthorizationModule):
         cascade_delete: Optional[bool] = None,
     ) -> None:
         path = f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}"
-        params: Dict[str, bool] = {}
-        if cascade_delete is not None:
-            params["cascade_delete"] = cascade_delete
-
+        params = (
+            {"cascade_delete": str(cascade_delete).lower()}
+            if cascade_delete is not None
+            else None
+        )
         self._http_client.request(
             path,
             method=REQUEST_METHOD_DELETE,
-            params=params if params else None,
+            params=params,
         )
 
     def check(
@@ -1093,16 +1094,16 @@ class AsyncAuthorization(AuthorizationModule):
         *,
         cascade_delete: Optional[bool] = None,
     ) -> None:
-        if cascade_delete is not None:
-            await self._http_client.delete_with_body(
-                f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
-                json={"cascade_delete": cascade_delete},
-            )
-        else:
-            await self._http_client.request(
-                f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
-                method=REQUEST_METHOD_DELETE,
-            )
+        params = (
+            {"cascade_delete": str(cascade_delete).lower()}
+            if cascade_delete is not None
+            else None
+        )
+        await self._http_client.request(
+            f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
+            method=REQUEST_METHOD_DELETE,
+            params=params,
+        )
 
     async def list_resources(
         self,
@@ -1194,14 +1195,15 @@ class AsyncAuthorization(AuthorizationModule):
         cascade_delete: Optional[bool] = None,
     ) -> None:
         path = f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}"
-        params: Dict[str, bool] = {}
-        if cascade_delete is not None:
-            params["cascade_delete"] = cascade_delete
-
+        params = (
+            {"cascade_delete": str(cascade_delete).lower()}
+            if cascade_delete is not None
+            else None
+        )
         await self._http_client.request(
             path,
             method=REQUEST_METHOD_DELETE,
-            params=params if params else None,
+            params=params,
         )
 
     async def check(

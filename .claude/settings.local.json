@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh api:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(uv run pytest:*)"
+    ]
+  }
+}

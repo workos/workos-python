@@ -254,4 +254,4 @@ class TestAuthorizationResourceCRUD:
         assert response is None
         assert request_kwargs["method"] == "delete"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
-        assert request_kwargs["json"] == {"cascade_delete": True}
+        assert request_kwargs["params"] == {"cascade_delete": "true"}

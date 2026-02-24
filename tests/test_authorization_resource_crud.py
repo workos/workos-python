@@ -61,6 +61,31 @@ class TestAuthorizationResourceCRUD:
             "parent_resource_id": "res_01PARENT",
         }
 
+    def test_create_resource_without_parent(
+        self, mock_resource, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resource, 201
+        )
+
+        resource = syncify(
+            self.authorization.create_resource(
+                resource_type_slug="document",
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                external_id="ext_123",
+                name="Test Resource",
+            )
+        )
+
+        assert resource.id == "res_01ABC"
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "resource_type_slug": "document",
+            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            "external_id": "ext_123",
+            "name": "Test Resource",
+        }
+
     def test_create_resource_with_all_optional_fields(
         self, mock_resource, capture_and_mock_http_client_request
     ):
@@ -154,6 +179,18 @@ class TestAuthorizationResourceCRUD:
             "name": "Updated Name",
             "description": "Updated description",
         }
+
+    def test_update_resource_clear_description(
+        self, mock_resource, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resource, 200
+        )
+
+        syncify(self.authorization.update_resource("res_01ABC", description=None))
+
+        assert request_kwargs["method"] == "patch"
+        assert request_kwargs["json"] == {"description": None}
 
     def test_update_resource_without_meta(
         self, mock_resource, capture_and_mock_http_client_request

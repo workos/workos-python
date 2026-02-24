@@ -1,7 +1,17 @@
+from enum import Enum
 from typing import Any, Dict, Optional, Protocol, Sequence, Union
 
 from pydantic import TypeAdapter
 from typing_extensions import TypedDict
+
+
+class _Unset(Enum):
+    """Sentinel to distinguish 'not provided' from an explicit None."""
+
+    TOKEN = 0
+
+
+UNSET: _Unset = _Unset.TOKEN
 
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
@@ -187,7 +197,7 @@ class AuthorizationModule(Protocol):
         organization_id: str,
         external_id: str,
         name: str,
-        parent: ParentResource,
+        parent: Optional[ParentResource] = None,
         description: Optional[str] = None,
     ) -> SyncOrAsync[Resource]: ...
 
@@ -196,7 +206,7 @@ class AuthorizationModule(Protocol):
         resource_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, _Unset] = UNSET,
     ) -> SyncOrAsync[Resource]: ...
 
     def delete_resource(
@@ -499,7 +509,7 @@ class Authorization(AuthorizationModule):
         organization_id: str,
         external_id: str,
         name: str,
-        parent: ParentResource,
+        parent: Optional[ParentResource] = None,
         description: Optional[str] = None,
     ) -> Resource:
         json: Dict[str, Any] = {
@@ -507,7 +517,7 @@ class Authorization(AuthorizationModule):
             "organization_id": organization_id,
             "external_id": external_id,
             "name": name,
-            **parent,
+            **(parent or {}),
         }
         if description is not None:
             json["description"] = description
@@ -525,18 +535,19 @@ class Authorization(AuthorizationModule):
         resource_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, _Unset] = UNSET,
     ) -> Resource:
         json: Dict[str, Any] = {}
         if name is not None:
             json["name"] = name
-        if description is not None:
+        if not isinstance(description, _Unset):
             json["description"] = description
 
         response = self._http_client.request(
             f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
             method=REQUEST_METHOD_PATCH,
             json=json,
+            exclude_none=False,
         )
 
         return Resource.model_validate(response)
@@ -851,7 +862,7 @@ class AsyncAuthorization(AuthorizationModule):
         organization_id: str,
         external_id: str,
         name: str,
-        parent: ParentResource,
+        parent: Optional[ParentResource] = None,
         description: Optional[str] = None,
     ) -> Resource:
         json: Dict[str, Any] = {
@@ -859,7 +870,7 @@ class AsyncAuthorization(AuthorizationModule):
             "organization_id": organization_id,
             "external_id": external_id,
             "name": name,
-            **parent,
+            **(parent or {}),
         }
         if description is not None:
             json["description"] = description
@@ -877,18 +888,19 @@ class AsyncAuthorization(AuthorizationModule):
         resource_id: str,
         *,
         name: Optional[str] = None,
-        description: Optional[str] = None,
+        description: Union[str, None, _Unset] = UNSET,
     ) -> Resource:
         json: Dict[str, Any] = {}
         if name is not None:
             json["name"] = name
-        if description is not None:
+        if not isinstance(description, _Unset):
             json["description"] = description
 
         response = await self._http_client.request(
             f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
             method=REQUEST_METHOD_PATCH,
             json=json,
+            exclude_none=False,
         )
 
         return Resource.model_validate(response)

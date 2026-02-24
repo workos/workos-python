@@ -515,8 +515,9 @@ class Authorization(AuthorizationModule):
             "organization_id": organization_id,
             "external_id": external_id,
             "name": name,
-            **(parent or {}),
         }
+        if parent is not None:
+            json.update(parent)
         if description is not None:
             json["description"] = description
 
@@ -868,8 +869,9 @@ class AsyncAuthorization(AuthorizationModule):
             "organization_id": organization_id,
             "external_id": external_id,
             "name": name,
-            **(parent or {}),
         }
+        if parent is not None:
+            json.update(parent)
         if description is not None:
             json["description"] = description
 

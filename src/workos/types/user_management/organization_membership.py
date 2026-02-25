@@ -8,20 +8,22 @@ from workos.types.workos_model import WorkOSModel
 from workos.typing.literals import LiteralOrUntyped
 
 
-class OrganizationMembershipRole(TypedDict):
-    slug: str
-
-
-class OrganizationMembership(WorkOSModel):
-    """Representation of an WorkOS Organization Membership."""
-
+class BaseOrganizationMembership(WorkOSModel):
     object: Literal["organization_membership"]
     id: str
     user_id: str
     organization_id: str
-    role: OrganizationMembershipRole
-    roles: Optional[Sequence[OrganizationMembershipRole]] = None
     status: LiteralOrUntyped[OrganizationMembershipStatus]
-    custom_attributes: Mapping[str, Any]
+    custom_attributes: Optional[Mapping[str, Any]] = None
     created_at: str
     updated_at: str
+
+
+class OrganizationMembershipRole(TypedDict):
+    slug: str
+
+
+class OrganizationMembership(BaseOrganizationMembership):
+    role: OrganizationMembershipRole
+    roles: Optional[Sequence[OrganizationMembershipRole]] = None
+    custom_attributes: Mapping[str, Any]

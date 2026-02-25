@@ -13,6 +13,5 @@ class AuthorizationOrganizationMembership(WorkOSModel):
     user_id: str
     organization_id: str
     status: LiteralOrUntyped[OrganizationMembershipStatus]
-    custom_attributes: Optional[Mapping[str, Any]] = None
     created_at: str
     updated_at: str

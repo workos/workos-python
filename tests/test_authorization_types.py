@@ -2,7 +2,7 @@
 AuthorizationOrganizationMembership."""
 
 from workos.types.authorization import (
-    AccessEvaluation,
+    AccessCheckResponse,
     AuthorizationOrganizationMembership,
     Resource,
     RoleAssignment,
@@ -13,15 +13,15 @@ from workos.types.authorization import (
 
 class TestAccessEvaluation:
     def test_authorized_true(self):
-        result = AccessEvaluation(authorized=True)
+        result = AccessCheckResponse(authorized=True)
         assert result.authorized is True
 
     def test_authorized_false(self):
-        result = AccessEvaluation(authorized=False)
+        result = AccessCheckResponse(authorized=False)
         assert result.authorized is False
 
     def test_from_dict(self):
-        result = AccessEvaluation.model_validate({"authorized": True})
+        result = AccessCheckResponse.model_validate({"authorized": True})
         assert result.authorized is True
 
 
@@ -123,20 +123,3 @@ class TestAuthorizationOrganizationMembership:
         assert membership.user_id == "user_01ABC"
         assert membership.organization_id == "org_01ABC"
         assert membership.status == "active"
-        assert membership.custom_attributes is None
-
-    def test_membership_with_custom_attributes(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01ABC",
-            "user_id": "user_01ABC",
-            "organization_id": "org_01ABC",
-            "organization_name": "Test Org",
-            "status": "active",
-            "custom_attributes": {"department": "Engineering"},
-            "created_at": "2024-01-01T00:00:00Z",
-            "updated_at": "2024-01-01T00:00:00Z",
-        }
-        membership = AuthorizationOrganizationMembership.model_validate(data)
-
-        assert membership.custom_attributes == {"department": "Engineering"}

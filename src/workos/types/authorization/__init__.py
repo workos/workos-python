@@ -1,4 +1,4 @@
-from workos.types.authorization.access_evaluation import AccessEvaluation
+from workos.types.authorization.access_evaluation import AccessCheckResponse
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,

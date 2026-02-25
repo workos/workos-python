@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional, Protocol, Sequence, Union
 from pydantic import TypeAdapter
 from typing_extensions import TypedDict
 
-from workos.types.authorization.access_evaluation import AccessEvaluation
+from workos.types.authorization.access_check_response import AccessCheckResponse
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,
@@ -276,7 +276,7 @@ class AuthorizationModule(Protocol):
         *,
         permission_slug: str,
         resource: ResourceIdentifier,
-    ) -> SyncOrAsync[AccessEvaluation]: ...
+    ) -> SyncOrAsync[AccessCheckResponse]: ...
 
 
 class Authorization(AuthorizationModule):
@@ -740,7 +740,7 @@ class Authorization(AuthorizationModule):
         *,
         permission_slug: str,
         resource: ResourceIdentifier,
-    ) -> AccessEvaluation:
+    ) -> AccessCheckResponse:
         json: Dict[str, Any] = {"permission_slug": permission_slug}
         json.update(resource)
 
@@ -750,7 +750,7 @@ class Authorization(AuthorizationModule):
             json=json,
         )
 
-        return AccessEvaluation.model_validate(response)
+        return AccessCheckResponse.model_validate(response)
 
 
 class AsyncAuthorization(AuthorizationModule):
@@ -1214,7 +1214,7 @@ class AsyncAuthorization(AuthorizationModule):
         *,
         permission_slug: str,
         resource: ResourceIdentifier,
-    ) -> AccessEvaluation:
+    ) -> AccessCheckResponse:
         json: Dict[str, Any] = {"permission_slug": permission_slug}
         json.update(resource)
 
@@ -1224,4 +1224,4 @@ class AsyncAuthorization(AuthorizationModule):
             json=json,
         )
 
-        return AccessEvaluation.model_validate(response)
+        return AccessCheckResponse.model_validate(response)

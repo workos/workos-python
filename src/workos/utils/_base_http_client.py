@@ -123,6 +123,8 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         json: JsonType = None,
         headers: HeadersType = None,
         exclude_default_auth_headers: bool = False,
+        force_include_body: bool = False,
+        exclude_none: bool = True,
     ) -> PreparedRequest:
         """Executes a request against the WorkOS API.
 
@@ -133,7 +135,8 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             method Optional[str]: One of the supported methods as defined by the REQUEST_METHOD_X constants
             params Optional[dict]: Query params or body payload to be added to the request
             headers Optional[dict]: Custom headers to be added to the request
-            token Optional[str]: Bearer token
+            exclude_default_auth_headers (bool): If True, excludes default auth headers from the request
+            force_include_body (bool): If True, allows sending a body in a bodyless request (used for DELETE requests)
 
         Returns:
             dict: Response from WorkOS
@@ -149,7 +152,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             REQUEST_METHOD_GET,
         ]
 
-        if bodyless_http_method and json is not None:
+        if bodyless_http_method and json is not None and not force_include_body:
             raise ValueError(f"Cannot send a body with a {parsed_method} request")
 
         # Remove any parameters that are None
@@ -157,11 +160,11 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             params = {k: v for k, v in params.items() if v is not None}
 
         # Remove any body values that are None
-        if json is not None and isinstance(json, Mapping):
+        if exclude_none and json is not None and isinstance(json, Mapping):
             json = {k: v for k, v in json.items() if v is not None}
 
         # We'll spread these return values onto the HTTP client request method
-        if bodyless_http_method:
+        if bodyless_http_method and not force_include_body:
             return {
                 "method": parsed_method,
                 "url": url,

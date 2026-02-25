@@ -206,12 +206,12 @@ class AuthorizationModule(Protocol):
     def create_resource(
         self,
         *,
-        resource_type_slug: str,
-        organization_id: str,
         external_id: str,
         name: str,
-        parent: Optional[ParentResource] = None,
         description: Optional[str] = None,
+        resource_type_slug: str,
+        organization_id: str,
+        parent: Optional[ParentResource] = None,
     ) -> SyncOrAsync[Resource]: ...
 
     def update_resource(
@@ -567,12 +567,12 @@ class Authorization(AuthorizationModule):
     def create_resource(
         self,
         *,
-        resource_type_slug: str,
-        organization_id: str,
         external_id: str,
         name: str,
-        parent: Optional[ParentResource] = None,
         description: Optional[str] = None,
+        resource_type_slug: str,
+        organization_id: str,
+        parent: Optional[ParentResource] = None,
     ) -> Resource:
         json: Dict[str, Any] = {
             "resource_type_slug": resource_type_slug,
@@ -1041,12 +1041,12 @@ class AsyncAuthorization(AuthorizationModule):
     async def create_resource(
         self,
         *,
-        resource_type_slug: str,
-        organization_id: str,
         external_id: str,
         name: str,
-        parent: Optional[ParentResource] = None,
         description: Optional[str] = None,
+        resource_type_slug: str,
+        organization_id: str,
+        parent: Optional[ParentResource] = None,
     ) -> Resource:
         json: Dict[str, Any] = {
             "resource_type_slug": resource_type_slug,

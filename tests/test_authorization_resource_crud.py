@@ -50,6 +50,8 @@ class TestAuthorizationResourceCRUD:
             )
         )
 
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
             "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "resource_type_slug": "document",
@@ -81,6 +83,8 @@ class TestAuthorizationResourceCRUD:
             )
         )
 
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
             "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "resource_type_slug": "document",
@@ -109,6 +113,8 @@ class TestAuthorizationResourceCRUD:
             )
         )
 
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
             "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "resource_type_slug": "document",
@@ -143,6 +149,8 @@ class TestAuthorizationResourceCRUD:
             )
         )
 
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
             "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "resource_type_slug": "document",
@@ -177,6 +185,8 @@ class TestAuthorizationResourceCRUD:
             )
         )
 
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
             "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "resource_type_slug": "document",
@@ -211,6 +221,8 @@ class TestAuthorizationResourceCRUD:
             )
         )
 
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
             "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "resource_type_slug": "document",

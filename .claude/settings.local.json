@@ -1,12 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(uv run pytest:*)",
-      "Bash(python3:*)",
-      "Bash(uv run python:*)",
-      "Bash(gh pr list:*)",
-      "Bash(gh api:*)",
-      "Bash(uv run mypy:*)"
+      "Bash(uv run pytest:*)"
     ]
   }
 }

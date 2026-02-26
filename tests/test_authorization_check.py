@@ -82,6 +82,8 @@ class TestAuthorizationCheck:
             "permission_slug": "documents:read",
             "resource_id": "res_01XYZ",
         }
+        assert "resource_external_id" not in request_kwargs["json"]
+        assert "resource_type_slug" not in request_kwargs["json"]
 
     def test_check_with_resource_external_id(
         self, mock_check_authorized, capture_and_mock_http_client_request
@@ -106,6 +108,7 @@ class TestAuthorizationCheck:
             "resource_external_id": "ext_doc_123",
             "resource_type_slug": "document",
         }
+        assert "resource_id" not in request_kwargs["json"]
 
     def test_check_url_construction(
         self, mock_check_authorized, capture_and_mock_http_client_request

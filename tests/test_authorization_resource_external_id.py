@@ -195,6 +195,7 @@ class TestAuthorizationResourceExternalId:
         assert request_kwargs["url"].endswith(
             f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
         )
+        assert request_kwargs.get("params") is None
 
     def test_delete_resource_by_external_id_with_cascade(
         self, capture_and_mock_http_client_request
@@ -220,6 +221,31 @@ class TestAuthorizationResourceExternalId:
             f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
         )
         assert request_kwargs["params"] == {"cascade_delete": "true"}
+
+    def test_delete_resource_by_external_id_with_cascade_false(
+        self, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client,
+            status_code=202,
+            headers={"content-type": "text/plain; charset=utf-8"},
+        )
+
+        response = syncify(
+            self.authorization.delete_resource_by_external_id(
+                MOCK_ORG_ID,
+                MOCK_RESOURCE_TYPE,
+                MOCK_EXTERNAL_ID,
+                cascade_delete=False,
+            )
+        )
+
+        assert response is None
+        assert request_kwargs["method"] == "delete"
+        assert request_kwargs["url"].endswith(
+            f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
+        )
+        assert request_kwargs["params"] == {"cascade_delete": "false"}
 
     # --- list_resources ---
 
@@ -269,6 +295,70 @@ class TestAuthorizationResourceExternalId:
 
         assert request_kwargs["method"] == "get"
         assert request_kwargs["params"]["resource_type_slug"] == "document"
+
+    def test_list_resources_with_parent_resource_id_filter(
+        self, mock_resources_list, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list, 200
+        )
+
+        syncify(
+            self.authorization.list_resources(
+                organization_id=MOCK_ORG_ID, parent_resource_id="res_01PARENT"
+            )
+        )
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"]["parent_resource_id"] == "res_01PARENT"
+
+    def test_list_resources_with_parent_resource_type_slug_filter(
+        self, mock_resources_list, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list, 200
+        )
+
+        syncify(
+            self.authorization.list_resources(
+                organization_id=MOCK_ORG_ID, parent_resource_type_slug="folder"
+            )
+        )
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"]["parent_resource_type_slug"] == "folder"
+
+    def test_list_resources_with_parent_external_id_filter(
+        self, mock_resources_list, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list, 200
+        )
+
+        syncify(
+            self.authorization.list_resources(
+                organization_id=MOCK_ORG_ID, parent_external_id="ext_parent_456"
+            )
+        )
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"]["parent_external_id"] == "ext_parent_456"
+
+    def test_list_resources_with_search_filter(
+        self, mock_resources_list, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list, 200
+        )
+
+        syncify(
+            self.authorization.list_resources(
+                organization_id=MOCK_ORG_ID, search="budget"
+            )
+        )
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["params"]["search"] == "budget"
 
     def test_list_resources_with_pagination_params(
         self, mock_resources_list, capture_and_mock_http_client_request

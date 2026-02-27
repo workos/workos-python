@@ -9,6 +9,7 @@ class Permission(WorkOSModel):
     slug: str
     name: str
     description: Optional[str] = None
+    resource_type_slug: str
     system: bool
     created_at: str
     updated_at: str

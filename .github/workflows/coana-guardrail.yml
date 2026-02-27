@@ -22,7 +22,7 @@ jobs:
           echo "all_changed_files=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} | tr '\n' ' ')" >> $GITHUB_OUTPUT
 
       - name: Use Node.js 24.x
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: 24.x
 

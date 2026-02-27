@@ -53,11 +53,33 @@ class TestAuthorization:
 
         assert permission.id == "perm_01ABC"
         assert permission.slug == "documents:read"
+        assert permission.resource_type_slug == "organization"
         assert request_kwargs["method"] == "post"
         assert request_kwargs["url"].endswith("/authorization/permissions")
         assert request_kwargs["json"] == {
             "slug": "documents:read",
             "name": "Read Documents",
+        }
+
+    def test_create_permission_with_resource_type_slug(
+        self, mock_permission, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_permission, 201
+        )
+
+        syncify(
+            self.authorization.create_permission(
+                slug="documents:read",
+                name="Read Documents",
+                resource_type_slug="project",
+            )
+        )
+
+        assert request_kwargs["json"] == {
+            "slug": "documents:read",
+            "name": "Read Documents",
+            "resource_type_slug": "project",
         }
 
     def test_create_permission_with_description(
@@ -205,6 +227,7 @@ class TestAuthorization:
 
         assert role.id == "role_01ABC"
         assert role.type == "OrganizationRole"
+        assert role.resource_type_slug == "organization"
         assert request_kwargs["method"] == "post"
         assert request_kwargs["url"].endswith(
             "/authorization/organizations/org_01EHT88Z8J8795GZNQ4ZP1J81T/roles"
@@ -366,9 +389,31 @@ class TestAuthorization:
 
         assert role.id == "role_01DEF"
         assert role.type == "EnvironmentRole"
+        assert role.resource_type_slug == "organization"
         assert request_kwargs["method"] == "post"
         assert request_kwargs["url"].endswith("/authorization/roles")
         assert request_kwargs["json"] == {"slug": "member", "name": "Member"}
+
+    def test_create_environment_role_with_resource_type_slug(
+        self, mock_environment_role, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_environment_role, 201
+        )
+
+        syncify(
+            self.authorization.create_environment_role(
+                slug="member",
+                name="Member",
+                resource_type_slug="project",
+            )
+        )
+
+        assert request_kwargs["json"] == {
+            "slug": "member",
+            "name": "Member",
+            "resource_type_slug": "project",
+        }
 
     def test_list_environment_roles(
         self, mock_environment_roles, capture_and_mock_http_client_request

@@ -12,6 +12,7 @@ class MockEnvironmentRole(EnvironmentRole):
             name="Member",
             slug="member",
             description="Default environment member role",
+            resource_type_slug="organization",
             permissions=["documents:read"],
             type="EnvironmentRole",
             created_at=now,

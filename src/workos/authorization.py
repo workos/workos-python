@@ -50,6 +50,7 @@ class AuthorizationModule(Protocol):
         slug: str,
         name: str,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
     ) -> SyncOrAsync[Permission]: ...
 
     def list_permissions(
@@ -133,6 +134,7 @@ class AuthorizationModule(Protocol):
         slug: str,
         name: str,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
     ) -> SyncOrAsync[EnvironmentRole]: ...
 
     def list_environment_roles(self) -> SyncOrAsync[EnvironmentRoleList]: ...
@@ -174,10 +176,13 @@ class Authorization(AuthorizationModule):
         slug: str,
         name: str,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
     ) -> Permission:
         json: Dict[str, Any] = {"slug": slug, "name": name}
         if description is not None:
             json["description"] = description
+        if resource_type_slug is not None:
+            json["resource_type_slug"] = resource_type_slug
 
         response = self._http_client.request(
             AUTHORIZATION_PERMISSIONS_PATH,
@@ -359,10 +364,13 @@ class Authorization(AuthorizationModule):
         slug: str,
         name: str,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
     ) -> EnvironmentRole:
         json: Dict[str, Any] = {"slug": slug, "name": name}
         if description is not None:
             json["description"] = description
+        if resource_type_slug is not None:
+            json["resource_type_slug"] = resource_type_slug
 
         response = self._http_client.request(
             "authorization/roles",
@@ -450,10 +458,13 @@ class AsyncAuthorization(AuthorizationModule):
         slug: str,
         name: str,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
     ) -> Permission:
         json: Dict[str, Any] = {"slug": slug, "name": name}
         if description is not None:
             json["description"] = description
+        if resource_type_slug is not None:
+            json["resource_type_slug"] = resource_type_slug
 
         response = await self._http_client.request(
             AUTHORIZATION_PERMISSIONS_PATH,
@@ -635,10 +646,13 @@ class AsyncAuthorization(AuthorizationModule):
         slug: str,
         name: str,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
     ) -> EnvironmentRole:
         json: Dict[str, Any] = {"slug": slug, "name": name}
         if description is not None:
             json["description"] = description
+        if resource_type_slug is not None:
+            json["resource_type_slug"] = resource_type_slug
 
         response = await self._http_client.request(
             "authorization/roles",

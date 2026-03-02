@@ -124,6 +124,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
         headers: HeadersType = None,
         exclude_default_auth_headers: bool = False,
         force_include_body: bool = False,
+        exclude_none: bool = True,
     ) -> PreparedRequest:
         """Executes a request against the WorkOS API.
 
@@ -136,7 +137,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             headers Optional[dict]: Custom headers to be added to the request
             exclude_default_auth_headers (bool): If True, excludes default auth headers from the request
             force_include_body (bool): If True, allows sending a body in a bodyless request (used for DELETE requests)
-
+            exclude_none (bool): If True (default), strips keys with None values from the JSON body so only defined fields are sent.
         Returns:
             dict: Response from WorkOS
         """
@@ -159,7 +160,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             params = {k: v for k, v in params.items() if v is not None}
 
         # Remove any body values that are None
-        if json is not None and isinstance(json, Mapping):
+        if exclude_none and json is not None and isinstance(json, Mapping):
             json = {k: v for k, v in json.items() if v is not None}
 
         # We'll spread these return values onto the HTTP client request method

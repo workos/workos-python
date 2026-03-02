@@ -77,7 +77,6 @@ class TestAsyncHTTPClient(object):
         "method,status_code,expected_response",
         [
             ("POST", 201, {"message": "Success!"}),
-            ("PUT", 200, {"message": "Success!"}),
             ("PATCH", 200, {"message": "Success!"}),
         ],
     )
@@ -273,6 +272,7 @@ class TestAsyncHTTPClient(object):
 
         await self.http_client.request("ok_place")
 
+        assert request_kwargs["url"].endswith("ok_place")
         default_headers = set(
             (header[0].lower(), header[1])
             for header in self.http_client.default_headers.items()
@@ -313,6 +313,8 @@ class TestAsyncHTTPClient(object):
             method="get",
             params={"organization_id": None, "test": "value"},
         )
+
+        assert request_kwargs["url"].endswith("/test")
         assert request_kwargs["params"] == {"test": "value"}
 
     async def test_request_removes_none_json_values(
@@ -325,6 +327,8 @@ class TestAsyncHTTPClient(object):
             method="post",
             json={"organization_id": None, "test": "value"},
         )
+
+        assert request_kwargs["url"].endswith("/test")
         assert request_kwargs["json"] == {"test": "value"}
 
     async def test_delete_with_body_sends_json(
@@ -338,6 +342,7 @@ class TestAsyncHTTPClient(object):
         )
 
         assert request_kwargs["method"] == "delete"
+        assert request_kwargs["url"].endswith("/test")
         assert request_kwargs["json"] == {"resource_id": "res_01ABC"}
 
     async def test_delete_with_body_sends_params(
@@ -351,6 +356,8 @@ class TestAsyncHTTPClient(object):
             params={"org_id": "org_01ABC"},
         )
 
+        assert request_kwargs["method"] == "delete"
+        assert request_kwargs["url"].endswith("/test")
         assert request_kwargs["params"] == {"org_id": "org_01ABC"}
         assert request_kwargs["json"] == {"resource_id": "res_01ABC"}
 

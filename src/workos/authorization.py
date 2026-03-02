@@ -12,7 +12,7 @@ from workos.types.authorization.environment_role import (
 from workos.types.authorization.organization_role import OrganizationRole
 from workos.types.authorization.permission import Permission
 from workos.types.authorization.resource_identifier import ResourceIdentifier
-from workos.types.authorization.resource import Resource
+from workos.types.authorization.authorization_resource import AuthorizationResource
 from workos.types.authorization.role import Role, RoleList
 from workos.types.list_resource import (
     ListArgs,
@@ -53,7 +53,10 @@ class ResourceListFilters(ListArgs, total=False):
     search: Optional[str]
 
 
-ResourcesListResource = WorkOSListResource[Resource, ResourceListFilters, ListMetadata]
+# TODO RENAME
+ResourcesListResource = WorkOSListResource[
+    AuthorizationResource, ResourceListFilters, ListMetadata
+]
 
 
 class ParentResourceById(TypedDict):
@@ -201,7 +204,7 @@ class AuthorizationModule(Protocol):
 
     # Resources
 
-    def get_resource(self, resource_id: str) -> SyncOrAsync[Resource]: ...
+    def get_resource(self, resource_id: str) -> SyncOrAsync[AuthorizationResource]: ...
 
     def create_resource(
         self,
@@ -212,7 +215,7 @@ class AuthorizationModule(Protocol):
         resource_type_slug: str,
         organization_id: str,
         parent: Optional[ParentResource] = None,
-    ) -> SyncOrAsync[Resource]: ...
+    ) -> SyncOrAsync[AuthorizationResource]: ...
 
     def update_resource(
         self,
@@ -220,7 +223,7 @@ class AuthorizationModule(Protocol):
         *,
         name: Optional[str] = None,
         description: Union[str, None, _Unset] = UNSET,
-    ) -> SyncOrAsync[Resource]: ...
+    ) -> SyncOrAsync[AuthorizationResource]: ...
 
     def delete_resource(
         self,
@@ -249,7 +252,7 @@ class AuthorizationModule(Protocol):
         organization_id: str,
         resource_type: str,
         external_id: str,
-    ) -> SyncOrAsync[Resource]: ...
+    ) -> SyncOrAsync[AuthorizationResource]: ...
 
     def update_resource_by_external_id(
         self,
@@ -259,7 +262,7 @@ class AuthorizationModule(Protocol):
         *,
         name: Optional[str] = None,
         description: Union[str, None, _Unset] = UNSET,
-    ) -> SyncOrAsync[Resource]: ...
+    ) -> SyncOrAsync[AuthorizationResource]: ...
 
     def delete_resource_by_external_id(
         self,
@@ -554,15 +557,13 @@ class Authorization(AuthorizationModule):
 
         return EnvironmentRole.model_validate(response)
 
-    # Resources
-
-    def get_resource(self, resource_id: str) -> Resource:
+    def get_resource(self, resource_id: str) -> AuthorizationResource:
         response = self._http_client.request(
             f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
             method=REQUEST_METHOD_GET,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     def create_resource(
         self,
@@ -573,7 +574,7 @@ class Authorization(AuthorizationModule):
         resource_type_slug: str,
         organization_id: str,
         parent: Optional[ParentResource] = None,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         json: Dict[str, Any] = {
             "resource_type_slug": resource_type_slug,
             "organization_id": organization_id,
@@ -591,7 +592,7 @@ class Authorization(AuthorizationModule):
             json=json,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     def update_resource(
         self,
@@ -599,7 +600,7 @@ class Authorization(AuthorizationModule):
         *,
         name: Optional[str] = None,
         description: Union[str, None, _Unset] = UNSET,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         json: Dict[str, Any] = {}
         if name is not None:
             json["name"] = name
@@ -613,7 +614,7 @@ class Authorization(AuthorizationModule):
             exclude_none=False,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     def delete_resource(
         self,
@@ -671,10 +672,12 @@ class Authorization(AuthorizationModule):
             params=list_params,
         )
 
-        return WorkOSListResource[Resource, ResourceListFilters, ListMetadata](
+        return WorkOSListResource[
+            AuthorizationResource, ResourceListFilters, ListMetadata
+        ](
             list_method=self.list_resources,
             list_args=list_params,
-            **ListPage[Resource](**response).model_dump(),
+            **ListPage[AuthorizationResource](**response).model_dump(),
         )
 
     def get_resource_by_external_id(
@@ -682,13 +685,13 @@ class Authorization(AuthorizationModule):
         organization_id: str,
         resource_type: str,
         external_id: str,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         response = self._http_client.request(
             f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}",
             method=REQUEST_METHOD_GET,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     def update_resource_by_external_id(
         self,
@@ -698,7 +701,7 @@ class Authorization(AuthorizationModule):
         *,
         name: Optional[str] = None,
         description: Union[str, None, _Unset] = UNSET,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         json: Dict[str, Any] = {}
         if name is not None:
             json["name"] = name
@@ -712,7 +715,7 @@ class Authorization(AuthorizationModule):
             exclude_none=False,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     def delete_resource_by_external_id(
         self,
@@ -1030,13 +1033,13 @@ class AsyncAuthorization(AuthorizationModule):
 
     # Resources
 
-    async def get_resource(self, resource_id: str) -> Resource:
+    async def get_resource(self, resource_id: str) -> AuthorizationResource:
         response = await self._http_client.request(
             f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}",
             method=REQUEST_METHOD_GET,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     async def create_resource(
         self,
@@ -1047,7 +1050,7 @@ class AsyncAuthorization(AuthorizationModule):
         resource_type_slug: str,
         organization_id: str,
         parent: Optional[ParentResource] = None,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         json: Dict[str, Any] = {
             "resource_type_slug": resource_type_slug,
             "organization_id": organization_id,
@@ -1065,7 +1068,7 @@ class AsyncAuthorization(AuthorizationModule):
             json=json,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     async def update_resource(
         self,
@@ -1073,7 +1076,7 @@ class AsyncAuthorization(AuthorizationModule):
         *,
         name: Optional[str] = None,
         description: Union[str, None, _Unset] = UNSET,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         json: Dict[str, Any] = {}
         if name is not None:
             json["name"] = name
@@ -1087,7 +1090,7 @@ class AsyncAuthorization(AuthorizationModule):
             exclude_none=False,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     async def delete_resource(
         self,
@@ -1145,10 +1148,12 @@ class AsyncAuthorization(AuthorizationModule):
             params=list_params,
         )
 
-        return WorkOSListResource[Resource, ResourceListFilters, ListMetadata](
+        return WorkOSListResource[
+            AuthorizationResource, ResourceListFilters, ListMetadata
+        ](
             list_method=self.list_resources,
             list_args=list_params,
-            **ListPage[Resource](**response).model_dump(),
+            **ListPage[AuthorizationResource](**response).model_dump(),
         )
 
     async def get_resource_by_external_id(
@@ -1156,13 +1161,13 @@ class AsyncAuthorization(AuthorizationModule):
         organization_id: str,
         resource_type: str,
         external_id: str,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         response = await self._http_client.request(
             f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type}/{external_id}",
             method=REQUEST_METHOD_GET,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     async def update_resource_by_external_id(
         self,
@@ -1172,7 +1177,7 @@ class AsyncAuthorization(AuthorizationModule):
         *,
         name: Optional[str] = None,
         description: Union[str, None, _Unset] = UNSET,
-    ) -> Resource:
+    ) -> AuthorizationResource:
         json: Dict[str, Any] = {}
         if name is not None:
             json["name"] = name
@@ -1186,7 +1191,7 @@ class AsyncAuthorization(AuthorizationModule):
             exclude_none=False,
         )
 
-        return Resource.model_validate(response)
+        return AuthorizationResource.model_validate(response)
 
     async def delete_resource_by_external_id(
         self,

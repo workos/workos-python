@@ -23,7 +23,7 @@ from workos.types.authorization.organization_membership import (
     AuthorizationOrganizationMembership,
 )
 from workos.types.authorization.permission import Permission
-from workos.types.authorization.resource import Resource
+from workos.types.authorization.authorization_resource import AuthorizationResource
 from workos.types.authorization.role_assignment import RoleAssignment
 from workos.types.directory_sync import (
     Directory,
@@ -64,7 +64,7 @@ ListableResource = TypeVar(
     Organization,
     OrganizationMembership,
     Permission,
-    Resource,
+    AuthorizationResource,
     RoleAssignment,
     AuthorizationOrganizationMembership,
     AuthorizationResource,

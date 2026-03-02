@@ -1,9 +1,9 @@
 import datetime
 
-from workos.types.authorization.resource import Resource
+from workos.types.authorization.authorization_resource import AuthorizationResource
 
 
-class MockResource(Resource):
+class MockResource(AuthorizationResource):
     def __init__(
         self,
         id: str = "res_01ABC",

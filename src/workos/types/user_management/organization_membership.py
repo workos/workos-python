@@ -1,5 +1,6 @@
 from typing import Any, Literal, Mapping, Optional, Sequence
 
+from pydantic import Field
 from typing_extensions import TypedDict
 
 from workos.types.user_management.organization_membership_status import (
@@ -27,4 +28,4 @@ class OrganizationMembershipRole(TypedDict):
 class OrganizationMembership(BaseOrganizationMembership):
     role: OrganizationMembershipRole
     roles: Optional[Sequence[OrganizationMembershipRole]] = None
-    custom_attributes: Mapping[str, Any]
+    custom_attributes: Mapping[str, Any] = Field(default_factory=dict)

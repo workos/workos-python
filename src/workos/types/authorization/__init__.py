@@ -12,7 +12,7 @@ from workos.types.authorization.organization_role import (
     OrganizationRoleList,
 )
 from workos.types.authorization.permission import Permission
-from workos.types.authorization.resource import Resource
+from workos.types.authorization.authorization_resource import AuthorizationResource
 from workos.types.authorization.resource_identifier import (
     ResourceIdentifier,
     ResourceIdentifierByExternalId,

@@ -1,10 +1,10 @@
-"""Tests for new authorization types: Resource, RoleAssignment, AccessEvaluation,
+"""Tests for new authorization types: AuthorizationResource, RoleAssignment, AccessEvaluation,
 AuthorizationOrganizationMembership."""
 
 from workos.types.authorization import (
     AccessCheckResponse,
     AuthorizationOrganizationMembership,
-    Resource,
+    AuthorizationResource,
     RoleAssignment,
     RoleAssignmentResource,
     RoleAssignmentRole,
@@ -37,7 +37,7 @@ class TestResource:
             "created_at": "2024-01-01T00:00:00Z",
             "updated_at": "2024-01-01T00:00:00Z",
         }
-        resource = Resource.model_validate(data)
+        resource = AuthorizationResource.model_validate(data)
 
         assert resource.object == "authorization_resource"
         assert resource.id == "res_01ABC"
@@ -61,7 +61,7 @@ class TestResource:
             "created_at": "2024-01-01T00:00:00Z",
             "updated_at": "2024-01-01T00:00:00Z",
         }
-        resource = Resource.model_validate(data)
+        resource = AuthorizationResource.model_validate(data)
 
         assert resource.description == "A test document resource"
         assert resource.parent_resource_id == "res_01PARENT"

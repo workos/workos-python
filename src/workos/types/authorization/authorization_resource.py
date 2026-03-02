@@ -3,7 +3,7 @@ from typing import Literal, Optional
 from workos.types.workos_model import WorkOSModel
 
 
-class Resource(WorkOSModel):
+class AuthorizationResource(WorkOSModel):
     """Representation of an Authorization Resource."""
 
     object: Literal["authorization_resource"]

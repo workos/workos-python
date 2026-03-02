@@ -64,17 +64,6 @@ AuthorizationResourcesList = WorkOSListResource[
     AuthorizationResource, ResourceListFilters, ListMetadata
 ]
 
-_role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
-
-
-class PermissionListFilters(ListArgs, total=False):
-    pass
-
-
-PermissionsListResource = WorkOSListResource[
-    Permission, PermissionListFilters, ListMetadata
-]
-
 
 class ResourcesForMembershipListFilters(ListArgs, total=False):
     permission_slug: str
@@ -94,6 +83,17 @@ AuthorizationOrganizationMembershipList = WorkOSListResource[
     AuthorizationOrganizationMembership,
     AuthorizationOrganizationMembershipListFilters,
     ListMetadata,
+]
+
+_role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
+
+
+class PermissionListFilters(ListArgs, total=False):
+    pass
+
+
+PermissionsListResource = WorkOSListResource[
+    Permission, PermissionListFilters, ListMetadata
 ]
 
 

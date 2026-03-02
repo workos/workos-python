@@ -41,16 +41,7 @@ class TestAuthorizationResourceCRUD:
         assert request_kwargs["method"] == "get"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
 
-        assert response.object == "authorization_resource"
-        assert response.id == "res_01ABC"
-        assert response.external_id == "ext_123"
-        assert response.name == "Test Resource"
-        assert response.description == "A test resource for unit tests"
-        assert response.resource_type_slug == "document"
-        assert response.organization_id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
-        assert response.parent_resource_id == "res_01XYZ"
-        assert response.created_at == "2024-01-15T12:00:00.000Z"
-        assert response.updated_at == "2024-01-15T12:00:00.000Z"
+        assert response.dict() == MockAuthorizationResource().dict()
 
     def test_get_resource_without_parent(self, capture_and_mock_http_client_request):
         mock_resource = MockAuthorizationResource(parent_resource_id=None).dict()
@@ -58,7 +49,9 @@ class TestAuthorizationResourceCRUD:
 
         response = syncify(self.authorization.get_resource("res_01ABC"))
 
-        assert response.parent_resource_id is None
+        assert (
+            response.dict() == MockAuthorizationResource(parent_resource_id=None).dict()
+        )
 
     def test_get_resource_without_description(
         self, capture_and_mock_http_client_request
@@ -68,7 +61,7 @@ class TestAuthorizationResourceCRUD:
 
         response = syncify(self.authorization.get_resource("res_01ABC"))
 
-        assert response.description is None
+        assert response.dict() == MockAuthorizationResource(description=None).dict()
 
     def test_get_resource_without_parent_and_description(
         self, capture_and_mock_http_client_request
@@ -80,8 +73,12 @@ class TestAuthorizationResourceCRUD:
 
         response = syncify(self.authorization.get_resource("res_01ABC"))
 
-        assert response.parent_resource_id is None
-        assert response.description is None
+        assert (
+            response.dict()
+            == MockAuthorizationResource(
+                parent_resource_id=None, description=None
+            ).dict()
+        )
 
     # --- create_resource ---
 
@@ -116,16 +113,7 @@ class TestAuthorizationResourceCRUD:
         assert "parent_resource_external_id" not in request_kwargs["json"]
         assert "parent_resource_type_slug" not in request_kwargs["json"]
 
-        assert response.object == "authorization_resource"
-        assert response.id == "res_01ABC"
-        assert response.external_id == "ext_123"
-        assert response.name == "Test Resource"
-        assert response.description == "A test resource for unit tests"
-        assert response.resource_type_slug == "document"
-        assert response.organization_id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
-        assert response.parent_resource_id == "res_01XYZ"
-        assert response.created_at == "2024-01-15T12:00:00.000Z"
-        assert response.updated_at == "2024-01-15T12:00:00.000Z"
+        assert response.dict() == MockAuthorizationResource().dict()
 
     def test_create_resource_with_parent_by_id_no_description(
         self, capture_and_mock_http_client_request
@@ -159,7 +147,7 @@ class TestAuthorizationResourceCRUD:
         assert "parent_resource_external_id" not in request_kwargs["json"]
         assert "parent_resource_type_slug" not in request_kwargs["json"]
 
-        assert response.description is None
+        assert response.dict() == MockAuthorizationResource(description=None).dict()
 
     def test_create_resource_with_parent_by_external_id(
         self, mock_resource, capture_and_mock_http_client_request
@@ -196,16 +184,7 @@ class TestAuthorizationResourceCRUD:
 
         assert "parent_resource_id" not in request_kwargs["json"]
 
-        assert response.object == "authorization_resource"
-        assert response.id == "res_01ABC"
-        assert response.external_id == "ext_123"
-        assert response.name == "Test Resource"
-        assert response.description == "A test resource for unit tests"
-        assert response.resource_type_slug == "document"
-        assert response.organization_id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
-        assert response.parent_resource_id == "res_01XYZ"
-        assert response.created_at == "2024-01-15T12:00:00.000Z"
-        assert response.updated_at == "2024-01-15T12:00:00.000Z"
+        assert response.dict() == MockAuthorizationResource().dict()
 
     def test_create_resource_with_parent_by_external_id_no_description(
         self, capture_and_mock_http_client_request
@@ -242,7 +221,36 @@ class TestAuthorizationResourceCRUD:
         assert "description" not in request_kwargs["json"]
         assert "parent_resource_id" not in request_kwargs["json"]
 
-        assert response.description is None
+        assert response.dict() == MockAuthorizationResource(description=None).dict()
+
+    def test_create_resource_without_parent(self, capture_and_mock_http_client_request):
+        mock_resource = MockAuthorizationResource(parent_resource_id=None).dict()
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resource, 200
+        )
+
+        response = syncify(
+            self.authorization.create_resource(
+                external_id="ext_123",
+                name="Test Resource",
+                description="A test resource",
+                resource_type_slug="document",
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            )
+        )
+
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["json"] == {
+            "resource_type_slug": "document",
+            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            "external_id": "ext_123",
+            "name": "Test Resource",
+            "description": "A test resource",
+        }
+
+        assert (
+            response.dict() == MockAuthorizationResource(parent_resource_id=None).dict()
+        )
 
     # --- update_resource ---
     def test_update_resource_name_only(
@@ -263,9 +271,12 @@ class TestAuthorizationResourceCRUD:
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
         assert request_kwargs["json"] == {"name": "New Name"}
 
-        assert response.id == "res_01ABC"
-        assert response.name == "New Name"
-        assert response.description == "A test resource for unit tests"
+        assert (
+            response.dict()
+            == MockAuthorizationResource(
+                name="New Name",
+            ).dict()
+        )
 
     def test_update_resource_description_only(
         self, mock_resource, capture_and_mock_http_client_request
@@ -288,9 +299,12 @@ class TestAuthorizationResourceCRUD:
         assert request_kwargs["json"] == {
             "description": "Updated description only",
         }
-        assert response.id == "res_01ABC"
-        assert response.name == "Test Resource"
-        assert response.description == "Updated description only"
+        assert (
+            response.dict()
+            == MockAuthorizationResource(
+                description="Updated description only",
+            ).dict()
+        )
 
     def test_update_resource_remove_description(
         self, mock_resource, capture_and_mock_http_client_request
@@ -307,8 +321,12 @@ class TestAuthorizationResourceCRUD:
         assert request_kwargs["method"] == "patch"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
         assert request_kwargs["json"] == {"description": None}
-        assert response.id == "res_01ABC"
-        assert response.description is None
+        assert (
+            response.dict()
+            == MockAuthorizationResource(
+                description=None,
+            ).dict()
+        )
 
     def test_update_resource_with_name_and_description(
         self, capture_and_mock_http_client_request
@@ -335,9 +353,13 @@ class TestAuthorizationResourceCRUD:
             "name": "Updated Name",
             "description": "Updated description",
         }
-        assert response.id == "res_01ABC"
-        assert response.name == "Updated Name"
-        assert response.description == "Updated description"
+        assert (
+            response.dict()
+            == MockAuthorizationResource(
+                name="Updated Name",
+                description="Updated description",
+            ).dict()
+        )
 
     # --- delete_resource ---
 

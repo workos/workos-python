@@ -1,7 +1,10 @@
 from typing import Union
 
 import pytest
+from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from tests.utils.fixtures.mock_resource import MockAuthorizationResource
+from tests.utils.fixtures.mock_resource_list import MockAuthorizationResourceList
+from tests.utils.list_resource import list_response_of
 from tests.utils.syncify import syncify
 from workos.authorization import AsyncAuthorization, Authorization
 from workos.exceptions import BadRequestException
@@ -16,7 +19,15 @@ class TestAuthorizationResourceCRUD:
 
     @pytest.fixture
     def mock_resource(self):
-        return MockAuthorizationResource(id="res_01ABC").dict()
+        return MockAuthorizationResource().dict()
+
+    @pytest.fixture
+    def mock_resources_list_two(self):
+        return MockAuthorizationResourceList().dict()
+
+    @pytest.fixture
+    def mock_resources_empty_list(self):
+        return list_response_of(data=[])
 
     # --- get_resource ---
 
@@ -378,3 +389,359 @@ class TestAuthorizationResourceCRUD:
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
         assert request_kwargs["params"] == {"cascade_delete": "false"}
         assert response is None
+
+    # --- list_resources ---
+    def test_list_resources_returns_paginated_list(
+        self,
+        mock_resources_list_two,
+        capture_and_mock_http_client_request,
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        response = syncify(self.authorization.list_resources())
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/authorization/resources")
+        assert request_kwargs["params"] == {"limit": 10, "order": "desc"}
+
+        assert response.object == "list"
+        assert len(response.data) == 2
+
+        assert response.data[0].object == "authorization_resource"
+        assert response.data[0].id == "authz_resource_01HXYZ123ABC456DEF789ABC"
+        assert response.data[0].external_id == "doc-12345678"
+        assert response.data[0].name == "Q5 Budget Report"
+        assert response.data[0].description == "Financial report for Q5 2025"
+        assert response.data[0].resource_type_slug == "document"
+        assert response.data[0].organization_id == "org_01HXYZ123ABC456DEF789ABC"
+        assert (
+            response.data[0].parent_resource_id
+            == "authz_resource_01HXYZ123ABC456DEF789XYZ"
+        )
+        assert response.data[0].created_at == "2024-01-15T09:30:00.000Z"
+        assert response.data[0].updated_at == "2024-01-15T09:30:00.000Z"
+
+        assert response.data[1].object == "authorization_resource"
+        assert response.data[1].id == "authz_resource_01HXYZ123ABC456DEF789DEF"
+        assert response.data[1].external_id == "folder-123"
+        assert response.data[1].name == "Finance Folder"
+        assert response.data[1].description is None
+        assert response.data[1].resource_type_slug == "folder"
+        assert response.data[1].organization_id == "org_01HXYZ123ABC456DEF789ABC"
+        assert response.data[1].parent_resource_id is None
+        assert response.data[1].created_at == "2024-01-14T08:00:00.000Z"
+        assert response.data[1].updated_at == "2024-01-14T08:00:00.000Z"
+
+        assert response.list_metadata.before is None
+        assert response.list_metadata.after == "authz_resource_01HXYZ123ABC456DEF789DEF"
+
+    def test_list_resources_returns_empty_list(
+        self,
+        mock_resources_empty_list,
+        capture_and_mock_http_client_request,
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_empty_list, 200
+        )
+
+        response = syncify(self.authorization.list_resources())
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/authorization/resources")
+        assert request_kwargs["params"] == {"limit": 10, "order": "desc"}
+
+        assert len(response.data) == 0
+        assert response.list_metadata.before is None
+        assert response.list_metadata.after is None
+
+    def test_list_resources_request_with_no_parameters(
+        self,
+        mock_resources_list_two,
+        capture_and_mock_http_client_request,
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources())
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/authorization/resources")
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+
+        assert "organization_id" not in request_kwargs["params"]
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_organization_id(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(organization_id="org_123"))
+
+        assert request_kwargs["params"]["organization_id"] == "org_123"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_resource_type_slug(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(resource_type_slug="document"))
+
+        assert request_kwargs["params"]["resource_type_slug"] == "document"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+
+        assert "organization_id" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_parent_resource_id(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(parent_resource_id="res_parent_123"))
+
+        assert request_kwargs["params"]["parent_resource_id"] == "res_parent_123"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+
+        assert "organization_id" not in request_kwargs["params"]
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_parent_resource_type_slug(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(parent_resource_type_slug="folder"))
+
+        assert request_kwargs["params"]["parent_resource_type_slug"] == "folder"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+
+        assert "organization_id" not in request_kwargs["params"]
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_parent_external_id(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(parent_external_id="parent_ext_456"))
+
+        assert request_kwargs["params"]["parent_external_id"] == "parent_ext_456"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+        assert "organization_id" not in request_kwargs["params"]
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_search(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(search="Budget"))
+
+        assert request_kwargs["params"]["search"] == "Budget"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+
+        assert "organization_id" not in request_kwargs["params"]
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_limit(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(limit=25))
+
+        assert request_kwargs["params"]["limit"] == 25
+        assert request_kwargs["params"]["order"] == "desc"
+
+        assert "organization_id" not in request_kwargs["params"]
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_before(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(before="cursor_before"))
+
+        assert request_kwargs["params"]["before"] == "cursor_before"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+
+        assert "organization_id" not in request_kwargs["params"]
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_after(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(after="cursor_after"))
+
+        assert request_kwargs["params"]["after"] == "cursor_after"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+
+        assert "organization_id" not in request_kwargs["params"]
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+
+    def test_list_resources_with_order_asc(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(order="asc"))
+
+        assert request_kwargs["params"]["order"] == "asc"
+        assert request_kwargs["params"]["limit"] == 10
+
+        assert "organization_id" not in request_kwargs["params"]
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_order_desc(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(self.authorization.list_resources(order="desc"))
+
+        assert request_kwargs["params"]["order"] == "desc"
+        assert request_kwargs["params"]["limit"] == 10
+
+        assert "organization_id" not in request_kwargs["params"]
+        assert "resource_type_slug" not in request_kwargs["params"]
+        assert "parent_resource_id" not in request_kwargs["params"]
+        assert "parent_resource_type_slug" not in request_kwargs["params"]
+        assert "parent_external_id" not in request_kwargs["params"]
+        assert "search" not in request_kwargs["params"]
+        assert "before" not in request_kwargs["params"]
+        assert "after" not in request_kwargs["params"]
+
+    def test_list_resources_with_all_parameters(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(
+            self.authorization.list_resources(
+                organization_id="org_123",
+                resource_type_slug="document",
+                parent_resource_id="res_parent_123",
+                parent_resource_type_slug="folder",
+                parent_external_id="parent_ext_456",
+                search="Budget",
+                limit=5,
+                before="cursor_before",
+                after="cursor_after",
+                order="asc",
+            )
+        )
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/authorization/resources")
+        assert request_kwargs["params"]["organization_id"] == "org_123"
+        assert request_kwargs["params"]["resource_type_slug"] == "document"
+        assert request_kwargs["params"]["parent_resource_id"] == "res_parent_123"
+        assert request_kwargs["params"]["parent_resource_type_slug"] == "folder"
+        assert request_kwargs["params"]["parent_external_id"] == "parent_ext_456"
+        assert request_kwargs["params"]["search"] == "Budget"
+        assert request_kwargs["params"]["limit"] == 5
+        assert request_kwargs["params"]["before"] == "cursor_before"
+        assert request_kwargs["params"]["after"] == "cursor_after"
+        assert request_kwargs["params"]["order"] == "asc"

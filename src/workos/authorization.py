@@ -51,6 +51,7 @@ AUTHORIZATION_RESOURCES_PATH = "authorization/resources"
 AUTHORIZATION_ORGANIZATIONS_PATH = "authorization/organizations"
 AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH = "authorization/organization_memberships"
 
+
 class ResourceListFilters(ListArgs, total=False):
     organization_id: Optional[str]
     resource_type_slug: Optional[str]
@@ -78,6 +79,7 @@ PermissionsListResource = WorkOSListResource[
 
 class ResourcesForMembershipListFilters(ListArgs, total=False):
     permission_slug: str
+
 
 class MembershipsForResourceListFilters(ListArgs, total=False):
     permission_slug: str
@@ -864,7 +866,7 @@ class Authorization(AuthorizationModule):
             list_params["assignment"] = assignment
 
         response = self._http_client.request(
-            f"authorization/resources/{resource_id}/organization_memberships",
+            f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}/organization_memberships",
             method=REQUEST_METHOD_GET,
             params=list_params,
         )
@@ -903,7 +905,7 @@ class Authorization(AuthorizationModule):
             list_params["assignment"] = assignment
 
         response = self._http_client.request(
-            f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
+            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
             method=REQUEST_METHOD_GET,
             params=list_params,
         )
@@ -1461,7 +1463,7 @@ class AsyncAuthorization(AuthorizationModule):
             list_params["assignment"] = assignment
 
         response = await self._http_client.request(
-            f"authorization/resources/{resource_id}/organization_memberships",
+            f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}/organization_memberships",
             method=REQUEST_METHOD_GET,
             params=list_params,
         )
@@ -1500,7 +1502,7 @@ class AsyncAuthorization(AuthorizationModule):
             list_params["assignment"] = assignment
 
         response = await self._http_client.request(
-            f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
+            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
             method=REQUEST_METHOD_GET,
             params=list_params,
         )

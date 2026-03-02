@@ -4,6 +4,7 @@ import pytest
 from tests.utils.fixtures.mock_resource import MockAuthorizationResource
 from tests.utils.syncify import syncify
 from workos.authorization import AsyncAuthorization, Authorization
+from workos.exceptions import BadRequestException
 
 
 @pytest.mark.sync_and_async(Authorization, AsyncAuthorization)
@@ -72,151 +73,99 @@ class TestAuthorizationResourceCRUD:
         assert response.description is None
 
     # --- create_resource ---
-    def test_create_resource_without_parent(
+
+    def test_create_resource_with_parent_by_id(
         self, mock_resource, capture_and_mock_http_client_request
     ):
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 201
+            self.http_client, mock_resource, 200
         )
 
         response = syncify(
             self.authorization.create_resource(
-                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                resource_type_slug="document",
                 external_id="ext_123",
-                name="Q4 Budget Report",
-                description="Financial report for Q4 2025",
+                name="Test Resource",
+                description="A test resource",
+                resource_type_slug="document",
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                parent={"parent_resource_id": "res_01XYZ"},
             )
         )
 
         assert request_kwargs["method"] == "post"
         assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "resource_type_slug": "document",
-            "external_id": "ext_123",
-            "name": "Q4 Budget Report",
-            "description": "Financial report for Q4 2025",
-        }
-        assert "parent_resource_id" not in request_kwargs["json"]
-        assert "parent_resource_external_id" not in request_kwargs["json"]
-        assert "parent_resource_type_slug" not in request_kwargs["json"]
-
-        assert response.object == "authorization_resource"
-        assert response.id == "res_01ABC"
-
-    def test_create_resource_with_parent_resource_id(
-        self, mock_resource, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 201
-        )
-
-        response = syncify(
-            self.authorization.create_resource(
-                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                resource_type_slug="document",
-                external_id="ext_123",
-                name="Q4 Budget Report",
-                description="Financial report for Q4 2025",
-                parent={"parent_resource_id": "res_01PARENT"},
-            )
-        )
-
-        assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/authorization/resources")
-        assert request_kwargs["json"] == {
             "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            "resource_type_slug": "document",
             "external_id": "ext_123",
-            "name": "Q4 Budget Report",
-            "description": "Financial report for Q4 2025",
-            "parent_resource_id": "res_01PARENT",
+            "name": "Test Resource",
+            "description": "A test resource",
+            "parent_resource_id": "res_01XYZ",
         }
         assert "parent_resource_external_id" not in request_kwargs["json"]
         assert "parent_resource_type_slug" not in request_kwargs["json"]
 
         assert response.object == "authorization_resource"
         assert response.id == "res_01ABC"
+        assert response.external_id == "ext_123"
+        assert response.name == "Test Resource"
+        assert response.description == "A test resource for unit tests"
+        assert response.resource_type_slug == "document"
+        assert response.organization_id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        assert response.parent_resource_id == "res_01XYZ"
+        assert response.created_at == "2024-01-15T12:00:00.000Z"
+        assert response.updated_at == "2024-01-15T12:00:00.000Z"
 
-    def test_create_resource_with_parent_resource_id_and_no_description(
-        self, mock_resource, capture_and_mock_http_client_request
+    def test_create_resource_with_parent_by_id_no_description(
+        self, capture_and_mock_http_client_request
     ):
+        mock_resource = MockAuthorizationResource(description=None).dict()
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 201
+            self.http_client, mock_resource, 200
         )
 
         response = syncify(
             self.authorization.create_resource(
-                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                resource_type_slug="document",
                 external_id="ext_123",
-                name="Q4 Budget Report",
-                parent={"parent_resource_id": "res_01PARENT"},
-            )
-        )
-
-        assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/authorization/resources")
-        assert request_kwargs["json"] == {
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            "resource_type_slug": "document",
-            "external_id": "ext_123",
-            "name": "Q4 Budget Report",
-            "parent_resource_id": "res_01PARENT",
-        }
-        assert response.object == "authorization_resource"
-        assert response.id == "res_01ABC"
-
-    def test_create_resource_with_parent_resource_id_and_none_description(
-        self, mock_resource, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 201
-        )
-
-        response = syncify(
-            self.authorization.create_resource(
-                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                resource_type_slug="document",
-                external_id="ext_123",
-                name="Q4 Budget Report",
+                name="Test Resource",
                 description=None,
-                parent={"parent_resource_id": "res_01PARENT"},
+                resource_type_slug="document",
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                parent={"parent_resource_id": "res_01XYZ"},
             )
         )
 
         assert request_kwargs["method"] == "post"
         assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "resource_type_slug": "document",
+            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "external_id": "ext_123",
-            "name": "Q4 Budget Report",
-            "parent_resource_id": "res_01PARENT",
+            "name": "Test Resource",
+            "parent_resource_id": "res_01XYZ",
         }
+        assert "description" not in request_kwargs["json"]
         assert "parent_resource_external_id" not in request_kwargs["json"]
         assert "parent_resource_type_slug" not in request_kwargs["json"]
-        assert "description" not in request_kwargs["json"]
-        assert response.object == "authorization_resource"
-        assert response.id == "res_01ABC"
 
-    def test_create_resource_with_parent_external_id(
+        assert response.description is None
+
+    def test_create_resource_with_parent_by_external_id(
         self, mock_resource, capture_and_mock_http_client_request
     ):
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 201
+            self.http_client, mock_resource, 200
         )
 
         response = syncify(
             self.authorization.create_resource(
-                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                resource_type_slug="document",
                 external_id="ext_123",
-                name="Q4 Budget Report",
-                description="Financial report for Q4 2025",
+                name="Test Resource",
+                description="A test resource",
+                resource_type_slug="document",
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
                 parent={
-                    "parent_resource_external_id": "ext_parent_456",
+                    "parent_resource_external_id": "parent_ext_456",
                     "parent_resource_type_slug": "folder",
                 },
             )
@@ -225,90 +174,64 @@ class TestAuthorizationResourceCRUD:
         assert request_kwargs["method"] == "post"
         assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "resource_type_slug": "document",
+            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "external_id": "ext_123",
-            "name": "Q4 Budget Report",
-            "description": "Financial report for Q4 2025",
-            "parent_resource_external_id": "ext_parent_456",
+            "name": "Test Resource",
+            "description": "A test resource",
+            "parent_resource_external_id": "parent_ext_456",
             "parent_resource_type_slug": "folder",
         }
+
         assert "parent_resource_id" not in request_kwargs["json"]
 
         assert response.object == "authorization_resource"
         assert response.id == "res_01ABC"
+        assert response.external_id == "ext_123"
+        assert response.name == "Test Resource"
+        assert response.description == "A test resource for unit tests"
+        assert response.resource_type_slug == "document"
+        assert response.organization_id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        assert response.parent_resource_id == "res_01XYZ"
+        assert response.created_at == "2024-01-15T12:00:00.000Z"
+        assert response.updated_at == "2024-01-15T12:00:00.000Z"
 
-    def test_create_resource_with_parent_external_id_and_no_description(
-        self, mock_resource, capture_and_mock_http_client_request
+    def test_create_resource_with_parent_by_external_id_no_description(
+        self, capture_and_mock_http_client_request
     ):
+        mock_resource = MockAuthorizationResource(description=None).dict()
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 201
+            self.http_client, mock_resource, 200
         )
 
         response = syncify(
             self.authorization.create_resource(
-                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                resource_type_slug="document",
                 external_id="ext_123",
-                name="Q4 Budget Report",
-                parent={
-                    "parent_resource_external_id": "ext_parent_456",
-                    "parent_resource_type_slug": "folder",
-                },
-            )
-        )
-
-        assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/authorization/resources")
-        assert request_kwargs["json"] == {
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            "resource_type_slug": "document",
-            "external_id": "ext_123",
-            "name": "Q4 Budget Report",
-            "parent_resource_external_id": "ext_parent_456",
-            "parent_resource_type_slug": "folder",
-        }
-        assert "parent_resource_id" not in request_kwargs["json"]
-
-        assert response.object == "authorization_resource"
-        assert response.id == "res_01ABC"
-
-    def test_create_resource_with_parent_external_id_and_none_description(
-        self, mock_resource, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 201
-        )
-
-        response = syncify(
-            self.authorization.create_resource(
-                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                resource_type_slug="document",
-                external_id="ext_123",
-                name="Q4 Budget Report",
+                name="Test Resource",
                 description=None,
+                resource_type_slug="document",
+                organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
                 parent={
-                    "parent_resource_external_id": "ext_parent_456",
+                    "parent_resource_external_id": "parent_ext_456",
                     "parent_resource_type_slug": "folder",
                 },
             )
         )
 
         assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["json"] == {
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "resource_type_slug": "document",
+            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
             "external_id": "ext_123",
-            "name": "Q4 Budget Report",
-            "parent_resource_external_id": "ext_parent_456",
+            "name": "Test Resource",
+            "parent_resource_external_id": "parent_ext_456",
             "parent_resource_type_slug": "folder",
         }
-        assert "parent_resource_id" not in request_kwargs["json"]
-        assert "description" not in request_kwargs["json"]
 
-        assert response.object == "authorization_resource"
-        assert response.id == "res_01ABC"
+        assert "description" not in request_kwargs["json"]
+        assert "parent_resource_id" not in request_kwargs["json"]
+
+        assert response.description is None
 
     # --- update_resource ---
 

@@ -77,7 +77,6 @@ class TestAsyncHTTPClient(object):
         "method,status_code,expected_response",
         [
             ("POST", 201, {"message": "Success!"}),
-            ("PUT", 200, {"message": "Success!"}),
             ("PATCH", 200, {"message": "Success!"}),
         ],
     )

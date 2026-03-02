@@ -53,6 +53,8 @@ class WarrantQueryListResource(
     warnings: Optional[Sequence[FGAWarning]] = None
 
 
+# Deprecated: Use the Authorization module instead.
+# See: workos.authorization
 class FGAModule(Protocol):
     def get_resource(
         self, *, resource_type: str, resource_id: str

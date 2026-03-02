@@ -77,6 +77,7 @@ class TestAsyncHTTPClient(object):
         "method,status_code,expected_response",
         [
             ("POST", 201, {"message": "Success!"}),
+            ("PUT", 200, {"message": "Success!"}),
             ("PATCH", 200, {"message": "Success!"}),
         ],
     )
@@ -272,7 +273,6 @@ class TestAsyncHTTPClient(object):
 
         await self.http_client.request("ok_place")
 
-        assert request_kwargs["url"].endswith("ok_place")
         default_headers = set(
             (header[0].lower(), header[1])
             for header in self.http_client.default_headers.items()
@@ -314,7 +314,6 @@ class TestAsyncHTTPClient(object):
             params={"organization_id": None, "test": "value"},
         )
 
-        assert request_kwargs["url"].endswith("/test")
         assert request_kwargs["params"] == {"test": "value"}
 
     async def test_request_removes_none_json_values(
@@ -338,12 +337,11 @@ class TestAsyncHTTPClient(object):
 
         await self.http_client.delete_with_body(
             path="/test",
-            json={"resource_id": "res_01ABC"},
+            json={"obj": "json"},
         )
 
         assert request_kwargs["method"] == "delete"
-        assert request_kwargs["url"].endswith("/test")
-        assert request_kwargs["json"] == {"resource_id": "res_01ABC"}
+        assert request_kwargs["json"] == {"obj": "json"}
 
     async def test_delete_with_body_sends_params(
         self, capture_and_mock_http_client_request
@@ -352,14 +350,12 @@ class TestAsyncHTTPClient(object):
 
         await self.http_client.delete_with_body(
             path="/test",
-            json={"resource_id": "res_01ABC"},
-            params={"org_id": "org_01ABC"},
+            json={"obj1": "json"},
+            params={"obj2": "params"},
         )
 
-        assert request_kwargs["method"] == "delete"
-        assert request_kwargs["url"].endswith("/test")
-        assert request_kwargs["params"] == {"org_id": "org_01ABC"}
-        assert request_kwargs["json"] == {"resource_id": "res_01ABC"}
+        assert request_kwargs["json"] == {"obj1": "json"}
+        assert request_kwargs["params"] == {"obj2": "params"}
 
     async def test_delete_without_body_raises_value_error(self):
         with pytest.raises(

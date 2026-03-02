@@ -378,23 +378,23 @@ class TestSyncHTTPClient(object):
 
         self.http_client.delete_with_body(
             path="/test",
-            json={"resource_id": "res_01ABC"},
+            json={"obj": "json"},
         )
 
         assert request_kwargs["method"] == "delete"
-        assert request_kwargs["json"] == {"resource_id": "res_01ABC"}
+        assert request_kwargs["json"] == {"obj": "json"}
 
     def test_delete_with_body_sends_params(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 200)
 
         self.http_client.delete_with_body(
             path="/test",
-            json={"resource_id": "res_01ABC"},
-            params={"org_id": "org_01ABC"},
+            json={"obj1": "json"},
+            params={"obj2": "params"},
         )
 
-        assert request_kwargs["params"] == {"org_id": "org_01ABC"}
-        assert request_kwargs["json"] == {"resource_id": "res_01ABC"}
+        assert request_kwargs["json"] == {"obj1": "json"}
+        assert request_kwargs["params"] == {"obj2": "params"}
 
     def test_delete_without_body_raises_value_error(self):
         with pytest.raises(

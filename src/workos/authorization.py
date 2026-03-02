@@ -74,21 +74,21 @@ ParentResource = Union[ParentResourceById, ParentResourceByExternalId]
 _role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
 
 
-class PermissionListFilters(ListArgs, total=False):
-    pass
-
-
-PermissionsListResource = WorkOSListResource[
-    Permission, PermissionListFilters, ListMetadata
-]
-
-
 class RoleAssignmentListFilters(ListArgs, total=False):
     organization_membership_id: str
 
 
 RoleAssignmentsListResource = WorkOSListResource[
     RoleAssignment, RoleAssignmentListFilters, ListMetadata
+]
+
+
+class PermissionListFilters(ListArgs, total=False):
+    pass
+
+
+PermissionsListResource = WorkOSListResource[
+    Permission, PermissionListFilters, ListMetadata
 ]
 
 
@@ -851,10 +851,6 @@ class Authorization(AuthorizationModule):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> RoleAssignmentsListResource:
-        # list_params includes organization_membership_id so auto-pagination
-        # can reconstruct the full request. query_params excludes it because
-        # it is already embedded in the URL path and must not be sent as a
-        # query-string parameter.
         list_params: RoleAssignmentListFilters = {
             "organization_membership_id": organization_membership_id,
             "limit": limit,

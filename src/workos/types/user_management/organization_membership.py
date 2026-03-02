@@ -1,4 +1,5 @@
 from typing import Any, Literal, Mapping, Optional, Sequence
+
 from typing_extensions import TypedDict
 
 from workos.types.user_management.organization_membership_status import (

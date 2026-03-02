@@ -80,6 +80,10 @@ class ResourcesForMembershipListFilters(ListArgs, total=False):
     permission_slug: str
 
 
+AuthorizationResourcesForMembershipList = WorkOSListResource[
+    AuthorizationResource, ResourcesForMembershipListFilters, ListMetadata
+]
+
 class AuthorizationOrganizationMembershipListFilters(ListArgs, total=False):
     permission_slug: str
     assignment: Optional[Literal["direct", "indirect"]]
@@ -301,7 +305,7 @@ class AuthorizationModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[AuthorizationResourcesList]: ...
+    ) -> SyncOrAsync[AuthorizationResourcesForMembershipList]: ...
 
     def list_memberships_for_resource(
         self,
@@ -813,7 +817,7 @@ class Authorization(AuthorizationModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AuthorizationResourcesList:
+    ) -> AuthorizationResourcesForMembershipList:
         list_params: ResourcesForMembershipListFilters = {
             "limit": limit,
             "before": before,
@@ -831,9 +835,7 @@ class Authorization(AuthorizationModule):
             params=http_params,
         )
 
-        return WorkOSListResource[
-            AuthorizationResource, ResourcesForMembershipListFilters, ListMetadata
-        ](
+        return AuthorizationResourcesForMembershipList(
             list_method=partial(
                 self.list_resources_for_membership,
                 organization_membership_id,
@@ -1410,7 +1412,7 @@ class AsyncAuthorization(AuthorizationModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> AuthorizationResourcesList:
+    ) -> AuthorizationResourcesForMembershipList:
         list_params: ResourcesForMembershipListFilters = {
             "limit": limit,
             "before": before,
@@ -1428,9 +1430,7 @@ class AsyncAuthorization(AuthorizationModule):
             params=http_params,
         )
 
-        return WorkOSListResource[
-            AuthorizationResource, ResourcesForMembershipListFilters, ListMetadata
-        ](
+        return AuthorizationResourcesForMembershipList(
             list_method=partial(
                 self.list_resources_for_membership,
                 organization_membership_id,

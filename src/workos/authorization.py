@@ -81,14 +81,14 @@ class ResourcesForMembershipListFilters(ListArgs, total=False):
     permission_slug: str
 
 
-class MembershipsForResourceListFilters(ListArgs, total=False):
+class AuthorizationOrganizationMembershipListFilters(ListArgs, total=False):
     permission_slug: str
     assignment: Optional[Literal["direct", "indirect"]]
 
 
-MembershipsForResourceListResource = WorkOSListResource[
+AuthorizationOrganizationMembershipList = WorkOSListResource[
     AuthorizationOrganizationMembership,
-    MembershipsForResourceListFilters,
+    AuthorizationOrganizationMembershipListFilters,
     ListMetadata,
 ]
 
@@ -314,7 +314,7 @@ class AuthorizationModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[MembershipsForResourceListResource]: ...
+    ) -> SyncOrAsync[AuthorizationOrganizationMembershipList]: ...
 
     def list_memberships_for_resource_by_external_id(
         self,
@@ -328,7 +328,7 @@ class AuthorizationModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[MembershipsForResourceListResource]: ...
+    ) -> SyncOrAsync[AuthorizationOrganizationMembershipList]: ...
 
 
 class Authorization(AuthorizationModule):
@@ -854,8 +854,8 @@ class Authorization(AuthorizationModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> MembershipsForResourceListResource:
-        list_params: MembershipsForResourceListFilters = {
+    ) -> AuthorizationOrganizationMembershipList:
+        list_params: AuthorizationOrganizationMembershipListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
@@ -873,7 +873,7 @@ class Authorization(AuthorizationModule):
 
         return WorkOSListResource[
             AuthorizationOrganizationMembership,
-            MembershipsForResourceListFilters,
+            AuthorizationOrganizationMembershipListFilters,
             ListMetadata,
         ](
             list_method=partial(self.list_memberships_for_resource, resource_id),
@@ -893,8 +893,8 @@ class Authorization(AuthorizationModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> MembershipsForResourceListResource:
-        list_params: MembershipsForResourceListFilters = {
+    ) -> AuthorizationOrganizationMembershipList:
+        list_params: AuthorizationOrganizationMembershipListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
@@ -912,7 +912,7 @@ class Authorization(AuthorizationModule):
 
         return WorkOSListResource[
             AuthorizationOrganizationMembership,
-            MembershipsForResourceListFilters,
+            AuthorizationOrganizationMembershipListFilters,
             ListMetadata,
         ](
             list_method=partial(
@@ -1451,8 +1451,8 @@ class AsyncAuthorization(AuthorizationModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> MembershipsForResourceListResource:
-        list_params: MembershipsForResourceListFilters = {
+    ) -> AuthorizationOrganizationMembershipList:
+        list_params: AuthorizationOrganizationMembershipListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
@@ -1470,7 +1470,7 @@ class AsyncAuthorization(AuthorizationModule):
 
         return WorkOSListResource[
             AuthorizationOrganizationMembership,
-            MembershipsForResourceListFilters,
+            AuthorizationOrganizationMembershipListFilters,
             ListMetadata,
         ](
             list_method=partial(self.list_memberships_for_resource, resource_id),
@@ -1490,8 +1490,8 @@ class AsyncAuthorization(AuthorizationModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> MembershipsForResourceListResource:
-        list_params: MembershipsForResourceListFilters = {
+    ) -> AuthorizationOrganizationMembershipList:
+        list_params: AuthorizationOrganizationMembershipListFilters = {
             "limit": limit,
             "before": before,
             "after": after,
@@ -1509,7 +1509,7 @@ class AsyncAuthorization(AuthorizationModule):
 
         return WorkOSListResource[
             AuthorizationOrganizationMembership,
-            MembershipsForResourceListFilters,
+            AuthorizationOrganizationMembershipListFilters,
             ListMetadata,
         ](
             list_method=partial(

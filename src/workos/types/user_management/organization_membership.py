@@ -14,7 +14,6 @@ class BaseOrganizationMembership(WorkOSModel):
     user_id: str
     organization_id: str
     status: LiteralOrUntyped[OrganizationMembershipStatus]
-    custom_attributes: Optional[Mapping[str, Any]] = None
     created_at: str
     updated_at: str
 
@@ -28,4 +27,4 @@ class OrganizationMembership(BaseOrganizationMembership):
 
     role: OrganizationMembershipRole
     roles: Optional[Sequence[OrganizationMembershipRole]] = None
-    custom_attributes: Optional[Mapping[str, Any]] = {}
+    custom_attributes: Mapping[str, Any] = {}

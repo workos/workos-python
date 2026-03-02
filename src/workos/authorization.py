@@ -84,6 +84,7 @@ AuthorizationResourcesForMembershipList = WorkOSListResource[
     AuthorizationResource, ResourcesForMembershipListFilters, ListMetadata
 ]
 
+
 class AuthorizationOrganizationMembershipListFilters(ListArgs, total=False):
     permission_slug: str
     assignment: Optional[Literal["direct", "indirect"]]

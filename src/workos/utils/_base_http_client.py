@@ -137,7 +137,7 @@ class BaseHTTPClient(Generic[_HttpxClientT]):
             headers Optional[dict]: Custom headers to be added to the request
             exclude_default_auth_headers (bool): If True, excludes default auth headers from the request
             force_include_body (bool): If True, allows sending a body in a bodyless request (used for DELETE requests)
-
+            exclude_none (bool): If True (default), strips keys with None values from the JSON body so only defined fields are sent.
         Returns:
             dict: Response from WorkOS
         """

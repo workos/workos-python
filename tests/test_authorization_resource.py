@@ -234,12 +234,80 @@ class TestAuthorizationResourceCRUD:
         assert response.description is None
 
     # --- update_resource ---
-
-    def test_update_resource_with_name_and_description(
+    def test_update_resource_name_only(
         self, mock_resource, capture_and_mock_http_client_request
     ):
+        updated_resource = MockAuthorizationResource(
+            name="New Name",
+        ).dict()
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 200
+            self.http_client, updated_resource, 200
+        )
+
+        response = syncify(
+            self.authorization.update_resource("res_01ABC", name="New Name")
+        )
+
+        assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
+        assert request_kwargs["json"] == {"name": "New Name"}
+
+        assert response.id == "res_01ABC"
+        assert response.name == "New Name"
+        assert response.description == "A test resource for unit tests"
+
+    def test_update_resource_description_only(
+        self, mock_resource, capture_and_mock_http_client_request
+    ):
+        updated_resource = MockAuthorizationResource(
+            description="Updated description only",
+        ).dict()
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, updated_resource, 200
+        )
+
+        response = syncify(
+            self.authorization.update_resource(
+                "res_01ABC", description="Updated description only"
+            )
+        )
+
+        assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
+        assert request_kwargs["json"] == {
+            "description": "Updated description only",
+        }
+        assert response.id == "res_01ABC"
+        assert response.name == "Test Resource"
+        assert response.description == "Updated description only"
+
+    def test_update_resource_remove_description(
+        self, mock_resource, capture_and_mock_http_client_request
+    ):
+        updated_resource = MockAuthorizationResource(description=None).dict()
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, updated_resource, 200
+        )
+
+        response = syncify(
+            self.authorization.update_resource("res_01ABC", description=None)
+        )
+
+        assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
+        assert request_kwargs["json"] == {"description": None}
+        assert response.id == "res_01ABC"
+        assert response.description is None
+
+    def test_update_resource_with_name_and_description(
+        self, capture_and_mock_http_client_request
+    ):
+        updated_resource = MockAuthorizationResource(
+            name="Updated Name",
+            description="Updated description",
+        ).dict()
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, updated_resource, 200
         )
 
         response = syncify(
@@ -257,51 +325,8 @@ class TestAuthorizationResourceCRUD:
             "description": "Updated description",
         }
         assert response.id == "res_01ABC"
-
-    def test_update_resource_clear_description(
-        self, mock_resource, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 200
-        )
-
-        syncify(self.authorization.update_resource("res_01ABC", description=None))
-
-        assert request_kwargs["method"] == "patch"
-        assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
-        assert request_kwargs["json"] == {"description": None}
-
-    def test_update_resource_without_meta(
-        self, mock_resource, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 200
-        )
-
-        syncify(self.authorization.update_resource("res_01ABC"))
-
-        assert request_kwargs["method"] == "patch"
-        assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
-        assert request_kwargs["json"] == {}
-
-    def test_update_resource_without_desc(
-        self, mock_resource, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 200
-        )
-
-        response = syncify(
-            self.authorization.update_resource(
-                "res_01ABC",
-                name="Updated Name",
-            )
-        )
-
-        assert request_kwargs["method"] == "patch"
-        assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
-        assert request_kwargs["json"] == {"name": "Updated Name"}
-        assert response.id == "res_01ABC"
+        assert response.name == "Updated Name"
+        assert response.description == "Updated description"
 
     # --- delete_resource ---
 

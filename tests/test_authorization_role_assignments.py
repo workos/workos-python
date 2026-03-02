@@ -124,3 +124,20 @@ class TestAuthorizationRoleAssignments:
             "resource_type_slug": "document",
         }
         assert "resource_id" not in request_kwargs["json"]
+
+    def test_remove_role_assignment(self, capture_and_mock_http_client_request):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, status_code=204
+        )
+
+        syncify(
+            self.authorization.remove_role_assignment(
+                "om_01ABC",
+                role_assignment_id="ra_01XYZ",
+            )
+        )
+
+        assert request_kwargs["method"] == "delete"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organization_memberships/om_01ABC/role_assignments/ra_01XYZ"
+        )

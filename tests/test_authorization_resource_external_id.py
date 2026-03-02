@@ -1,7 +1,7 @@
 from typing import Union
 
 import pytest
-from tests.utils.fixtures.mock_resource import MockResource
+from tests.utils.fixtures.mock_resource import MockAuthorizationResource
 from tests.utils.list_resource import list_response_of
 from tests.utils.syncify import syncify
 from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
@@ -22,7 +22,7 @@ class TestAuthorizationResourceExternalId:
 
     @pytest.fixture
     def mock_resource(self):
-        return MockResource(
+        return MockAuthorizationResource(
             id="res_01ABC",
             external_id=MOCK_EXTERNAL_ID,
             resource_type_slug=MOCK_RESOURCE_TYPE,
@@ -40,7 +40,7 @@ class TestAuthorizationResourceExternalId:
     @pytest.fixture
     def mock_resources_multiple(self):
         resources = [
-            MockResource(id=f"res_{i:05d}", external_id=f"ext_{i}").dict()
+            MockAuthorizationResource(id=f"res_{i:05d}", external_id=f"ext_{i}").dict()
             for i in range(15)
         ]
         return resources
@@ -79,7 +79,7 @@ class TestAuthorizationResourceExternalId:
         res_type = "folder"
         ext_id = "my-folder-123"
 
-        mock_res = MockResource(
+        mock_res = MockAuthorizationResource(
             id="res_02XYZ",
             external_id=ext_id,
             resource_type_slug=res_type,

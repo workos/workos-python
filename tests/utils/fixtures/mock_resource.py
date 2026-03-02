@@ -1,16 +1,18 @@
+from typing import Optional
+
 from workos.types.authorization.authorization_resource import AuthorizationResource
 
 
-class MockResource(AuthorizationResource):
+class MockAuthorizationResource(AuthorizationResource):
     def __init__(
         self,
         id: str = "res_01ABC",
         external_id: str = "ext_123",
         name: str = "Test Resource",
-        description: str = "A test resource for unit tests",
+        description: Optional[str] = "A test resource for unit tests",
         resource_type_slug: str = "document",
         organization_id: str = "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-        parent_resource_id: str = "res_01XYZ",
+        parent_resource_id: Optional[str] = "res_01XYZ",
         created_at: str = "2024-01-15T12:00:00.000Z",
         updated_at: str = "2024-01-15T12:00:00.000Z",
     ):

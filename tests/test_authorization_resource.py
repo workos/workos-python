@@ -1,7 +1,7 @@
 from typing import Union
 
 import pytest
-from tests.utils.fixtures.mock_resource import MockResource
+from tests.utils.fixtures.mock_resource import MockAuthorizationResource
 from tests.utils.syncify import syncify
 from workos.authorization import AsyncAuthorization, Authorization
 
@@ -15,7 +15,7 @@ class TestAuthorizationResourceCRUD:
 
     @pytest.fixture
     def mock_resource(self):
-        return MockResource(id="res_01ABC").dict()
+        return MockAuthorizationResource(id="res_01ABC").dict()
 
     # --- get_resource ---
 
@@ -39,6 +39,37 @@ class TestAuthorizationResourceCRUD:
         assert response.parent_resource_id == "res_01XYZ"
         assert response.created_at == "2024-01-15T12:00:00.000Z"
         assert response.updated_at == "2024-01-15T12:00:00.000Z"
+
+    def test_get_resource_without_parent(self, capture_and_mock_http_client_request):
+        mock_resource = MockAuthorizationResource(parent_resource_id=None).dict()
+        capture_and_mock_http_client_request(self.http_client, mock_resource, 200)
+
+        response = syncify(self.authorization.get_resource("res_01ABC"))
+
+        assert response.parent_resource_id is None
+
+    def test_get_resource_without_description(
+        self, capture_and_mock_http_client_request
+    ):
+        mock_resource = MockAuthorizationResource(description=None).dict()
+        capture_and_mock_http_client_request(self.http_client, mock_resource, 200)
+
+        response = syncify(self.authorization.get_resource("res_01ABC"))
+
+        assert response.description is None
+
+    def test_get_resource_without_parent_and_description(
+        self, capture_and_mock_http_client_request
+    ):
+        mock_resource = MockAuthorizationResource(
+            parent_resource_id=None, description=None
+        ).dict()
+        capture_and_mock_http_client_request(self.http_client, mock_resource, 200)
+
+        response = syncify(self.authorization.get_resource("res_01ABC"))
+
+        assert response.parent_resource_id is None
+        assert response.description is None
 
     # --- create_resource ---
     def test_create_resource_without_parent(

@@ -1,13 +1,11 @@
 from typing import Union
 
 import pytest
-from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from tests.utils.fixtures.mock_resource import MockAuthorizationResource
 from tests.utils.fixtures.mock_resource_list import MockAuthorizationResourceList
 from tests.utils.list_resource import list_response_of
 from tests.utils.syncify import syncify
 from workos.authorization import AsyncAuthorization, Authorization
-from workos.exceptions import BadRequestException
 
 
 @pytest.mark.sync_and_async(Authorization, AsyncAuthorization)

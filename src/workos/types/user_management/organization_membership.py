@@ -1,6 +1,5 @@
 from typing import Any, Literal, Mapping, Optional, Sequence
 
-from pydantic import Field
 from typing_extensions import TypedDict
 
 from workos.types.workos_model import WorkOSModel

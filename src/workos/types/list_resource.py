@@ -33,9 +33,8 @@ from workos.types.directory_sync import (
 from workos.types.events import Event
 from workos.types.feature_flags import FeatureFlag
 from workos.types.fga import (
-    Warrant,
-    AuthorizationResource,
     AuthorizationResourceType,
+    Warrant,
     WarrantQueryResult,
 )
 from workos.types.mfa import AuthenticationFactor

@@ -8,6 +8,12 @@ from workos.types.authorization.resource_identifier import (
     ResourceIdentifierById,
 )
 
+MOCK_ORG_MEMBERSHIP_ID = "org_membership_01ABC"
+MOCK_PERMISSION_SLUG = "document:read"
+MOCK_RESOURCE_ID = "res_01ABC"
+MOCK_RESOURCE_TYPE = "document"
+MOCK_EXTERNAL_ID = "ext_123"
+
 
 @pytest.mark.sync_and_async(Authorization, AsyncAuthorization)
 class TestAuthorizationCheck:
@@ -16,115 +22,121 @@ class TestAuthorizationCheck:
         self.http_client = module_instance._http_client
         self.authorization = module_instance
 
-    @pytest.fixture
-    def mock_check_authorized(self):
-        return {"authorized": True}
-
-    @pytest.fixture
-    def mock_check_unauthorized(self):
-        return {"authorized": False}
-
-    def test_check_authorized(
-        self, mock_check_authorized, capture_and_mock_http_client_request
+    def test_check_authorized_by_resource_id(
+        self, capture_and_mock_http_client_request
     ):
+        mock_response = {"authorized": True}
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_check_authorized, 200
+            self.http_client, mock_response, 200
         )
 
-        result = syncify(
+        resource: ResourceIdentifierById = {"resource_id": MOCK_RESOURCE_ID}
+        response = syncify(
             self.authorization.check(
-                "om_01ABC",
-                permission_slug="documents:read",
-                resource=ResourceIdentifierById(resource_id="res_01ABC"),
+                MOCK_ORG_MEMBERSHIP_ID,
+                permission_slug=MOCK_PERMISSION_SLUG,
+                resource=resource,
             )
         )
 
-        assert result.authorized is True
         assert request_kwargs["method"] == "post"
         assert request_kwargs["url"].endswith(
-            "/authorization/organization_memberships/om_01ABC/check"
+            f"/authorization/organization_memberships/{MOCK_ORG_MEMBERSHIP_ID}/check"
         )
+        assert request_kwargs["json"] == {
+            "permission_slug": MOCK_PERMISSION_SLUG,
+            "resource_id": MOCK_RESOURCE_ID,
+        }
 
-    def test_check_unauthorized(
-        self, mock_check_unauthorized, capture_and_mock_http_client_request
+        assert response.authorized is True
+
+    def test_check_authorized_by_external_id(
+        self, capture_and_mock_http_client_request
     ):
+        mock_response = {"authorized": True}
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_check_unauthorized, 200
+            self.http_client, mock_response, 200
         )
 
-        result = syncify(
+        resource: ResourceIdentifierByExternalId = {
+            "resource_external_id": MOCK_EXTERNAL_ID,
+            "resource_type_slug": MOCK_RESOURCE_TYPE,
+        }
+        response = syncify(
             self.authorization.check(
-                "om_01ABC",
-                permission_slug="documents:write",
-                resource=ResourceIdentifierById(resource_id="res_01ABC"),
+                MOCK_ORG_MEMBERSHIP_ID,
+                permission_slug=MOCK_PERMISSION_SLUG,
+                resource=resource,
             )
         )
 
-        assert result.authorized is False
         assert request_kwargs["method"] == "post"
-
-    def test_check_with_resource_id(
-        self, mock_check_authorized, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_check_authorized, 200
-        )
-
-        syncify(
-            self.authorization.check(
-                "om_01ABC",
-                permission_slug="documents:read",
-                resource=ResourceIdentifierById(resource_id="res_01XYZ"),
-            )
-        )
-
-        assert request_kwargs["json"] == {
-            "permission_slug": "documents:read",
-            "resource_id": "res_01XYZ",
-        }
-        assert "resource_external_id" not in request_kwargs["json"]
-        assert "resource_type_slug" not in request_kwargs["json"]
-
-    def test_check_with_resource_external_id(
-        self, mock_check_authorized, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_check_authorized, 200
-        )
-
-        syncify(
-            self.authorization.check(
-                "om_01ABC",
-                permission_slug="documents:read",
-                resource=ResourceIdentifierByExternalId(
-                    resource_external_id="ext_doc_123",
-                    resource_type_slug="document",
-                ),
-            )
-        )
-
-        assert request_kwargs["json"] == {
-            "permission_slug": "documents:read",
-            "resource_external_id": "ext_doc_123",
-            "resource_type_slug": "document",
-        }
-        assert "resource_id" not in request_kwargs["json"]
-
-    def test_check_url_construction(
-        self, mock_check_authorized, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_check_authorized, 200
-        )
-
-        syncify(
-            self.authorization.check(
-                "om_01MEMBERSHIP",
-                permission_slug="admin:access",
-                resource=ResourceIdentifierById(resource_id="res_01ABC"),
-            )
-        )
-
         assert request_kwargs["url"].endswith(
-            "/authorization/organization_memberships/om_01MEMBERSHIP/check"
+            f"/authorization/organization_memberships/{MOCK_ORG_MEMBERSHIP_ID}/check"
         )
+        assert request_kwargs["json"] == {
+            "permission_slug": MOCK_PERMISSION_SLUG,
+            "resource_external_id": MOCK_EXTERNAL_ID,
+            "resource_type_slug": MOCK_RESOURCE_TYPE,
+        }
+
+        assert response.authorized is True
+
+    def test_check_not_authorized_by_resource_id(
+        self, capture_and_mock_http_client_request
+    ):
+        mock_response = {"authorized": False}
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_response, 200
+        )
+
+        resource: ResourceIdentifierById = {"resource_id": MOCK_RESOURCE_ID}
+        response = syncify(
+            self.authorization.check(
+                MOCK_ORG_MEMBERSHIP_ID,
+                permission_slug=MOCK_PERMISSION_SLUG,
+                resource=resource,
+            )
+        )
+
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith(
+            f"/authorization/organization_memberships/{MOCK_ORG_MEMBERSHIP_ID}/check"
+        )
+        assert request_kwargs["json"] == {
+            "permission_slug": MOCK_PERMISSION_SLUG,
+            "resource_id": MOCK_RESOURCE_ID,
+        }
+
+        assert response.authorized is False
+
+    def test_check_not_authorized_by_external_id(
+        self, capture_and_mock_http_client_request
+    ):
+        mock_response = {"authorized": False}
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_response, 200
+        )
+
+        resource: ResourceIdentifierByExternalId = {
+            "resource_external_id": MOCK_EXTERNAL_ID,
+            "resource_type_slug": MOCK_RESOURCE_TYPE,
+        }
+        response = syncify(
+            self.authorization.check(
+                MOCK_ORG_MEMBERSHIP_ID,
+                permission_slug=MOCK_PERMISSION_SLUG,
+                resource=resource,
+            )
+        )
+
+        assert request_kwargs["method"] == "post"
+        assert request_kwargs["url"].endswith(
+            f"/authorization/organization_memberships/{MOCK_ORG_MEMBERSHIP_ID}/check"
+        )
+        assert request_kwargs["json"] == {
+            "permission_slug": MOCK_PERMISSION_SLUG,
+            "resource_external_id": MOCK_EXTERNAL_ID,
+            "resource_type_slug": MOCK_RESOURCE_TYPE,
+        }
+        assert response.authorized is False

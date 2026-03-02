@@ -335,8 +335,7 @@ class TestAuthorizationResourceCRUD:
     ):
         request_kwargs = capture_and_mock_http_client_request(
             self.http_client,
-            status_code=202,
-            headers={"content-type": "text/plain; charset=utf-8"},
+            status_code=204,
         )
 
         response = syncify(self.authorization.delete_resource("res_01ABC"))
@@ -346,11 +345,12 @@ class TestAuthorizationResourceCRUD:
         assert request_kwargs.get("params") is None
         assert response is None
 
-    def test_delete_resource_with_cascade(self, capture_and_mock_http_client_request):
+    def test_delete_resource_with_cascade_true(
+        self, capture_and_mock_http_client_request
+    ):
         request_kwargs = capture_and_mock_http_client_request(
             self.http_client,
-            status_code=202,
-            headers={"content-type": "text/plain; charset=utf-8"},
+            status_code=204,
         )
 
         response = syncify(
@@ -367,8 +367,7 @@ class TestAuthorizationResourceCRUD:
     ):
         request_kwargs = capture_and_mock_http_client_request(
             self.http_client,
-            status_code=202,
-            headers={"content-type": "text/plain; charset=utf-8"},
+            status_code=204,
         )
 
         response = syncify(

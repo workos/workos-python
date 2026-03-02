@@ -100,7 +100,76 @@ class TestAuthorizationResourceExternalId:
 
     # --- update_resource_by_external_id ---
 
-    def test_update_resource_by_external_id_with_name(
+    def test_update_resource_by_external_id_name_only(
+        self, mock_resource, capture_and_mock_http_client_request
+    ):
+        updated_resource = MockAuthorizationResource(name="New Name").dict()
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, updated_resource, 200
+        )
+
+        response = syncify(
+            self.authorization.update_resource_by_external_id(
+                MOCK_ORG_ID, MOCK_RESOURCE_TYPE, MOCK_EXTERNAL_ID, name="New Name"
+            )
+        )
+
+        assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith(
+            f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
+        )
+        assert request_kwargs["json"] == {"name": "New Name"}
+
+        assert response.object == "authorization_resource"
+        assert response.id == "res_01ABC"
+        assert response.external_id == MOCK_EXTERNAL_ID
+        assert response.name == "New Name"
+        assert response.description == "A test resource for unit tests"
+        assert response.resource_type_slug == MOCK_RESOURCE_TYPE
+        assert response.organization_id == MOCK_ORG_ID
+        assert response.parent_resource_id == "res_01XYZ"
+        assert response.created_at == "2024-01-15T12:00:00.000Z"
+        assert response.updated_at == "2024-01-15T12:00:00.000Z"
+
+    def test_update_resource_by_external_id_description_only(
+        self, capture_and_mock_http_client_request
+    ):
+        updated_resource = MockAuthorizationResource(
+            description="Updated description only",
+        ).dict()
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, updated_resource, 200
+        )
+
+        response = syncify(
+            self.authorization.update_resource_by_external_id(
+                MOCK_ORG_ID,
+                MOCK_RESOURCE_TYPE,
+                MOCK_EXTERNAL_ID,
+                description="Updated description only",
+            )
+        )
+
+        assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith(
+            f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
+        )
+        assert request_kwargs["json"] == {
+            "description": "Updated description only",
+        }
+
+        assert response.object == "authorization_resource"
+        assert response.id == "res_01ABC"
+        assert response.external_id == MOCK_EXTERNAL_ID
+        assert response.name == "Test Resource"
+        assert response.description == "Updated description only"
+        assert response.resource_type_slug == MOCK_RESOURCE_TYPE
+        assert response.organization_id == MOCK_ORG_ID
+        assert response.parent_resource_id == "res_01XYZ"
+        assert response.created_at == "2024-01-15T12:00:00.000Z"
+        assert response.updated_at == "2024-01-15T12:00:00.000Z"
+
+    def test_update_resource_by_external_id_name_and_description(
         self, capture_and_mock_http_client_request
     ):
         updated_resource = MockAuthorizationResource(
@@ -129,30 +198,19 @@ class TestAuthorizationResourceExternalId:
             "name": "Updated Name",
             "description": "Updated description",
         }
+
+        assert response.object == "authorization_resource"
         assert response.id == "res_01ABC"
+        assert response.external_id == MOCK_EXTERNAL_ID
         assert response.name == "Updated Name"
         assert response.description == "Updated description"
+        assert response.resource_type_slug == MOCK_RESOURCE_TYPE
+        assert response.organization_id == MOCK_ORG_ID
+        assert response.parent_resource_id == "res_01XYZ"
+        assert response.created_at == "2024-01-15T12:00:00.000Z"
+        assert response.updated_at == "2024-01-15T12:00:00.000Z"
 
-    def test_update_resource_by_external_id_empty(
-        self, mock_resource, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resource, 200
-        )
-
-        syncify(
-            self.authorization.update_resource_by_external_id(
-                MOCK_ORG_ID, MOCK_RESOURCE_TYPE, MOCK_EXTERNAL_ID
-            )
-        )
-
-        assert request_kwargs["method"] == "patch"
-        assert request_kwargs["url"].endswith(
-            f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
-        )
-        assert request_kwargs["json"] == {}
-
-    def test_update_resource_by_external_id_clear_description(
+    def test_update_resource_by_external_id_remove_description(
         self, capture_and_mock_http_client_request
     ):
         updated_resource = MockAuthorizationResource(description=None).dict()
@@ -162,7 +220,10 @@ class TestAuthorizationResourceExternalId:
 
         response = syncify(
             self.authorization.update_resource_by_external_id(
-                MOCK_ORG_ID, MOCK_RESOURCE_TYPE, MOCK_EXTERNAL_ID, description=None
+                MOCK_ORG_ID,
+                MOCK_RESOURCE_TYPE,
+                MOCK_EXTERNAL_ID,
+                description=None,
             )
         )
 
@@ -171,31 +232,17 @@ class TestAuthorizationResourceExternalId:
             f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
         )
         assert request_kwargs["json"] == {"description": None}
+
+        assert response.object == "authorization_resource"
         assert response.id == "res_01ABC"
+        assert response.external_id == MOCK_EXTERNAL_ID
+        assert response.name == "Test Resource"
         assert response.description is None
-
-    def test_update_resource_by_external_id_without_description(
-        self, capture_and_mock_http_client_request
-    ):
-        updated_resource = MockAuthorizationResource(name="Updated Name").dict()
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, updated_resource, 200
-        )
-
-        response = syncify(
-            self.authorization.update_resource_by_external_id(
-                MOCK_ORG_ID, MOCK_RESOURCE_TYPE, MOCK_EXTERNAL_ID, name="Updated Name"
-            )
-        )
-
-        assert request_kwargs["method"] == "patch"
-        assert request_kwargs["url"].endswith(
-            f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
-        )
-        assert request_kwargs["json"] == {"name": "Updated Name"}
-        assert response.id == "res_01ABC"
-        assert response.name == "Updated Name"
-        assert response.description == "A test resource for unit tests"
+        assert response.resource_type_slug == MOCK_RESOURCE_TYPE
+        assert response.organization_id == MOCK_ORG_ID
+        assert response.parent_resource_id == "res_01XYZ"
+        assert response.created_at == "2024-01-15T12:00:00.000Z"
+        assert response.updated_at == "2024-01-15T12:00:00.000Z"
 
     # --- delete_resource_by_external_id ---
 

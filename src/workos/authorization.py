@@ -3,7 +3,6 @@ from functools import partial
 from typing import Any, Dict, Literal, Optional, Protocol, Sequence, Union
 
 from pydantic import TypeAdapter
-from typing_extensions import TypedDict
 
 from workos.types.authorization.access_check_response import AccessCheckResponse
 from workos.types.authorization.environment_role import (

@@ -23,7 +23,6 @@ class TestAuthorizationResourceExternalId:
         return MockAuthorizationResource().dict()
 
     # --- get_resource_by_external_id ---
-
     def test_get_resource_by_external_id(
         self, mock_resource, capture_and_mock_http_client_request
     ):

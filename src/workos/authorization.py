@@ -55,8 +55,7 @@ class ResourceListFilters(ListArgs, total=False):
     search: Optional[str]
 
 
-# TODO RENAME
-ResourcesListResource = WorkOSListResource[
+AuthorizationResourcesList = WorkOSListResource[
     AuthorizationResource, ResourceListFilters, ListMetadata
 ]
 
@@ -256,7 +255,7 @@ class AuthorizationModule(Protocol):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[ResourcesListResource]: ...
+    ) -> SyncOrAsync[AuthorizationResourcesList]: ...
 
     def get_resource_by_external_id(
         self,
@@ -689,7 +688,7 @@ class Authorization(AuthorizationModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> ResourcesListResource:
+    ) -> AuthorizationResourcesList:
         list_params: ResourceListFilters = {
             "limit": limit,
             "before": before,
@@ -1252,7 +1251,7 @@ class AsyncAuthorization(AuthorizationModule):
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
-    ) -> ResourcesListResource:
+    ) -> AuthorizationResourcesList:
         list_params: ResourceListFilters = {
             "limit": limit,
             "before": before,

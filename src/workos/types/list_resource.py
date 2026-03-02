@@ -33,6 +33,7 @@ from workos.types.directory_sync import (
 from workos.types.events import Event
 from workos.types.feature_flags import FeatureFlag
 from workos.types.fga import (
+    AuthorizationResource as FGAAuthorizationResource,
     AuthorizationResourceType,
     Warrant,
     WarrantQueryResult,
@@ -66,7 +67,7 @@ ListableResource = TypeVar(
     AuthorizationResource,
     RoleAssignment,
     AuthorizationOrganizationMembership,
-    AuthorizationResource,
+    FGAAuthorizationResource,
     AuthorizationResourceType,
     User,
     UserManagementSession,

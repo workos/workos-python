@@ -28,4 +28,4 @@ class OrganizationMembership(BaseOrganizationMembership):
 
     role: OrganizationMembershipRole
     roles: Optional[Sequence[OrganizationMembershipRole]] = None
-    custom_attributes: Mapping[str, Any] = {}
+    custom_attributes: Optional[Mapping[str, Any]] = {}

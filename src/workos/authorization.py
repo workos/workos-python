@@ -14,7 +14,6 @@ from workos.types.authorization.permission import Permission
 from workos.types.authorization.resource_identifier import ResourceIdentifier
 from workos.types.authorization.authorization_resource import AuthorizationResource
 from workos.types.authorization.role import Role, RoleList
-from workos.types.authorization.resource_identifier import ResourceIdentifier
 from workos.types.authorization.role_assignment import RoleAssignment
 from workos.types.list_resource import (
     ListArgs,

@@ -24,16 +24,21 @@ class TestAuthorizationResourceCRUD:
             self.http_client, mock_resource, 200
         )
 
-        resource = syncify(self.authorization.get_resource("res_01ABC"))
+        response = syncify(self.authorization.get_resource("res_01ABC"))
 
-        assert resource.id == "res_01ABC"
-        assert resource.object == "authorization_resource"
-        assert resource.external_id == "ext_123"
-        assert resource.name == "Test Resource"
-        assert resource.resource_type_slug == "document"
-        assert resource.organization_id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
         assert request_kwargs["method"] == "get"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
+
+        assert response.object == "authorization_resource"
+        assert response.id == "res_01ABC"
+        assert response.external_id == "ext_123"
+        assert response.name == "Test Resource"
+        assert response.description == "A test resource for unit tests"
+        assert response.resource_type_slug == "document"
+        assert response.organization_id == "org_01EHT88Z8J8795GZNQ4ZP1J81T"
+        assert response.parent_resource_id == "res_01XYZ"
+        assert response.created_at == "2024-01-15T12:00:00.000Z"
+        assert response.updated_at == "2024-01-15T12:00:00.000Z"
 
     # --- create_resource ---
     def test_create_resource_without_parent(
@@ -43,7 +48,7 @@ class TestAuthorizationResourceCRUD:
             self.http_client, mock_resource, 201
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.create_resource(
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
                 resource_type_slug="document",
@@ -66,8 +71,8 @@ class TestAuthorizationResourceCRUD:
         assert "parent_resource_external_id" not in request_kwargs["json"]
         assert "parent_resource_type_slug" not in request_kwargs["json"]
 
-        assert resource.object == "authorization_resource"
-        assert resource.id == "res_01ABC"
+        assert response.object == "authorization_resource"
+        assert response.id == "res_01ABC"
 
     def test_create_resource_with_parent_resource_id(
         self, mock_resource, capture_and_mock_http_client_request
@@ -76,7 +81,7 @@ class TestAuthorizationResourceCRUD:
             self.http_client, mock_resource, 201
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.create_resource(
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
                 resource_type_slug="document",
@@ -100,8 +105,8 @@ class TestAuthorizationResourceCRUD:
         assert "parent_resource_external_id" not in request_kwargs["json"]
         assert "parent_resource_type_slug" not in request_kwargs["json"]
 
-        assert resource.object == "authorization_resource"
-        assert resource.id == "res_01ABC"
+        assert response.object == "authorization_resource"
+        assert response.id == "res_01ABC"
 
     def test_create_resource_with_parent_resource_id_and_no_description(
         self, mock_resource, capture_and_mock_http_client_request
@@ -110,7 +115,7 @@ class TestAuthorizationResourceCRUD:
             self.http_client, mock_resource, 201
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.create_resource(
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
                 resource_type_slug="document",
@@ -129,8 +134,8 @@ class TestAuthorizationResourceCRUD:
             "name": "Q4 Budget Report",
             "parent_resource_id": "res_01PARENT",
         }
-        assert resource.object == "authorization_resource"
-        assert resource.id == "res_01ABC"
+        assert response.object == "authorization_resource"
+        assert response.id == "res_01ABC"
 
     def test_create_resource_with_parent_resource_id_and_none_description(
         self, mock_resource, capture_and_mock_http_client_request
@@ -139,7 +144,7 @@ class TestAuthorizationResourceCRUD:
             self.http_client, mock_resource, 201
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.create_resource(
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
                 resource_type_slug="document",
@@ -162,8 +167,8 @@ class TestAuthorizationResourceCRUD:
         assert "parent_resource_external_id" not in request_kwargs["json"]
         assert "parent_resource_type_slug" not in request_kwargs["json"]
         assert "description" not in request_kwargs["json"]
-        assert resource.object == "authorization_resource"
-        assert resource.id == "res_01ABC"
+        assert response.object == "authorization_resource"
+        assert response.id == "res_01ABC"
 
     def test_create_resource_with_parent_external_id(
         self, mock_resource, capture_and_mock_http_client_request
@@ -172,7 +177,7 @@ class TestAuthorizationResourceCRUD:
             self.http_client, mock_resource, 201
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.create_resource(
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
                 resource_type_slug="document",
@@ -199,8 +204,8 @@ class TestAuthorizationResourceCRUD:
         }
         assert "parent_resource_id" not in request_kwargs["json"]
 
-        assert resource.object == "authorization_resource"
-        assert resource.id == "res_01ABC"
+        assert response.object == "authorization_resource"
+        assert response.id == "res_01ABC"
 
     def test_create_resource_with_parent_external_id_and_no_description(
         self, mock_resource, capture_and_mock_http_client_request
@@ -209,7 +214,7 @@ class TestAuthorizationResourceCRUD:
             self.http_client, mock_resource, 201
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.create_resource(
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
                 resource_type_slug="document",
@@ -234,8 +239,8 @@ class TestAuthorizationResourceCRUD:
         }
         assert "parent_resource_id" not in request_kwargs["json"]
 
-        assert resource.object == "authorization_resource"
-        assert resource.id == "res_01ABC"
+        assert response.object == "authorization_resource"
+        assert response.id == "res_01ABC"
 
     def test_create_resource_with_parent_external_id_and_none_description(
         self, mock_resource, capture_and_mock_http_client_request
@@ -244,7 +249,7 @@ class TestAuthorizationResourceCRUD:
             self.http_client, mock_resource, 201
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.create_resource(
                 organization_id="org_01EHT88Z8J8795GZNQ4ZP1J81T",
                 resource_type_slug="document",
@@ -271,8 +276,8 @@ class TestAuthorizationResourceCRUD:
         assert "parent_resource_id" not in request_kwargs["json"]
         assert "description" not in request_kwargs["json"]
 
-        assert resource.object == "authorization_resource"
-        assert resource.id == "res_01ABC"
+        assert response.object == "authorization_resource"
+        assert response.id == "res_01ABC"
 
     # --- update_resource ---
 
@@ -283,7 +288,7 @@ class TestAuthorizationResourceCRUD:
             self.http_client, mock_resource, 200
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.update_resource(
                 "res_01ABC",
                 name="Updated Name",
@@ -291,13 +296,13 @@ class TestAuthorizationResourceCRUD:
             )
         )
 
-        assert resource.id == "res_01ABC"
         assert request_kwargs["method"] == "patch"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
         assert request_kwargs["json"] == {
             "name": "Updated Name",
             "description": "Updated description",
         }
+        assert response.id == "res_01ABC"
 
     def test_update_resource_clear_description(
         self, mock_resource, capture_and_mock_http_client_request
@@ -309,6 +314,7 @@ class TestAuthorizationResourceCRUD:
         syncify(self.authorization.update_resource("res_01ABC", description=None))
 
         assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
         assert request_kwargs["json"] == {"description": None}
 
     def test_update_resource_without_meta(
@@ -321,6 +327,7 @@ class TestAuthorizationResourceCRUD:
         syncify(self.authorization.update_resource("res_01ABC"))
 
         assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
         assert request_kwargs["json"] == {}
 
     def test_update_resource_without_desc(
@@ -330,17 +337,17 @@ class TestAuthorizationResourceCRUD:
             self.http_client, mock_resource, 200
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.update_resource(
                 "res_01ABC",
                 name="Updated Name",
             )
         )
 
-        assert resource.id == "res_01ABC"
         assert request_kwargs["method"] == "patch"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
         assert request_kwargs["json"] == {"name": "Updated Name"}
+        assert response.id == "res_01ABC"
 
     # --- delete_resource ---
 
@@ -355,10 +362,10 @@ class TestAuthorizationResourceCRUD:
 
         response = syncify(self.authorization.delete_resource("res_01ABC"))
 
-        assert response is None
         assert request_kwargs["method"] == "delete"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
         assert request_kwargs.get("params") is None
+        assert response is None
 
     def test_delete_resource_with_cascade(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(
@@ -371,10 +378,10 @@ class TestAuthorizationResourceCRUD:
             self.authorization.delete_resource("res_01ABC", cascade_delete=True)
         )
 
-        assert response is None
         assert request_kwargs["method"] == "delete"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
         assert request_kwargs["params"] == {"cascade_delete": "true"}
+        assert response is None
 
     def test_delete_resource_with_cascade_false(
         self, capture_and_mock_http_client_request
@@ -389,7 +396,7 @@ class TestAuthorizationResourceCRUD:
             self.authorization.delete_resource("res_01ABC", cascade_delete=False)
         )
 
-        assert response is None
         assert request_kwargs["method"] == "delete"
         assert request_kwargs["url"].endswith("/authorization/resources/res_01ABC")
         assert request_kwargs["params"] == {"cascade_delete": "false"}
+        assert response is None

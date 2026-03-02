@@ -54,19 +54,23 @@ class TestAuthorizationResourceExternalId:
             self.http_client, mock_resource, 200
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.get_resource_by_external_id(
                 MOCK_ORG_ID, MOCK_RESOURCE_TYPE, MOCK_EXTERNAL_ID
             )
         )
 
-        assert resource.id == "res_01ABC"
-        assert resource.external_id == MOCK_EXTERNAL_ID
-        assert resource.object == "authorization_resource"
         assert request_kwargs["method"] == "get"
         assert request_kwargs["url"].endswith(
             f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
         )
+        assert response.id == "res_01ABC"
+        assert response.external_id == MOCK_EXTERNAL_ID
+        assert response.object == "authorization_resource"
+        assert response.description == "A test resource for unit tests"
+        assert response.parent_resource_id == "res_01XYZ"
+        assert response.created_at == "2024-01-15T12:00:00.000Z"
+        assert response.updated_at == "2024-01-15T12:00:00.000Z"
 
     def test_get_resource_by_external_id_url_construction(
         self, mock_resource, capture_and_mock_http_client_request
@@ -86,14 +90,18 @@ class TestAuthorizationResourceExternalId:
             self.http_client, mock_res, 200
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.get_resource_by_external_id(org_id, res_type, ext_id)
         )
 
-        assert resource.id == "res_02XYZ"
         assert request_kwargs["url"].endswith(
             f"/authorization/organizations/{org_id}/resources/{res_type}/{ext_id}"
         )
+        assert response.id == "res_02XYZ"
+        assert response.description == "A test resource for unit tests"
+        assert response.parent_resource_id == "res_01XYZ"
+        assert response.created_at == "2024-01-15T12:00:00.000Z"
+        assert response.updated_at == "2024-01-15T12:00:00.000Z"
 
     # --- update_resource_by_external_id ---
 
@@ -104,7 +112,7 @@ class TestAuthorizationResourceExternalId:
             self.http_client, mock_resource, 200
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.update_resource_by_external_id(
                 MOCK_ORG_ID,
                 MOCK_RESOURCE_TYPE,
@@ -114,7 +122,6 @@ class TestAuthorizationResourceExternalId:
             )
         )
 
-        assert resource.id == "res_01ABC"
         assert request_kwargs["method"] == "patch"
         assert request_kwargs["url"].endswith(
             f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
@@ -123,6 +130,7 @@ class TestAuthorizationResourceExternalId:
             "name": "Updated Name",
             "description": "Updated description",
         }
+        assert response.id == "res_01ABC"
 
     def test_update_resource_by_external_id_empty(
         self, mock_resource, capture_and_mock_http_client_request
@@ -138,6 +146,9 @@ class TestAuthorizationResourceExternalId:
         )
 
         assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith(
+            f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
+        )
         assert request_kwargs["json"] == {}
 
     def test_update_resource_by_external_id_clear_description(
@@ -154,6 +165,9 @@ class TestAuthorizationResourceExternalId:
         )
 
         assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith(
+            f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
+        )
         assert request_kwargs["json"] == {"description": None}
 
     def test_update_resource_by_external_id_without_description(
@@ -163,15 +177,18 @@ class TestAuthorizationResourceExternalId:
             self.http_client, mock_resource, 200
         )
 
-        resource = syncify(
+        response = syncify(
             self.authorization.update_resource_by_external_id(
                 MOCK_ORG_ID, MOCK_RESOURCE_TYPE, MOCK_EXTERNAL_ID, name="Updated Name"
             )
         )
 
-        assert resource.id == "res_01ABC"
         assert request_kwargs["method"] == "patch"
+        assert request_kwargs["url"].endswith(
+            f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
+        )
         assert request_kwargs["json"] == {"name": "Updated Name"}
+        assert response.id == "res_01ABC"
 
     # --- delete_resource_by_external_id ---
 
@@ -190,12 +207,12 @@ class TestAuthorizationResourceExternalId:
             )
         )
 
-        assert response is None
         assert request_kwargs["method"] == "delete"
         assert request_kwargs["url"].endswith(
             f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
         )
         assert request_kwargs.get("params") is None
+        assert response is None
 
     def test_delete_resource_by_external_id_with_cascade(
         self, capture_and_mock_http_client_request
@@ -215,12 +232,12 @@ class TestAuthorizationResourceExternalId:
             )
         )
 
-        assert response is None
         assert request_kwargs["method"] == "delete"
         assert request_kwargs["url"].endswith(
             f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
         )
         assert request_kwargs["params"] == {"cascade_delete": "true"}
+        assert response is None
 
     def test_delete_resource_by_external_id_with_cascade_false(
         self, capture_and_mock_http_client_request
@@ -240,12 +257,12 @@ class TestAuthorizationResourceExternalId:
             )
         )
 
-        assert response is None
         assert request_kwargs["method"] == "delete"
         assert request_kwargs["url"].endswith(
             f"/authorization/organizations/{MOCK_ORG_ID}/resources/{MOCK_RESOURCE_TYPE}/{MOCK_EXTERNAL_ID}"
         )
         assert request_kwargs["params"] == {"cascade_delete": "false"}
+        assert response is None
 
     # --- list_resources ---
 
@@ -256,15 +273,19 @@ class TestAuthorizationResourceExternalId:
             self.http_client, mock_resources_list, 200
         )
 
-        resources_response = syncify(
+        response = syncify(
             self.authorization.list_resources(organization_id=MOCK_ORG_ID)
         )
 
         assert request_kwargs["method"] == "get"
         assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["params"]["organization_id"] == MOCK_ORG_ID
-        assert len(resources_response.data) == 1
-        assert resources_response.data[0].id == "res_01ABC"
+        assert len(response.data) == 1
+        assert response.data[0].id == "res_01ABC"
+        assert response.data[0].description == "A test resource for unit tests"
+        assert response.data[0].parent_resource_id == "res_01XYZ"
+        assert response.data[0].created_at == "2024-01-15T12:00:00.000Z"
+        assert response.data[0].updated_at == "2024-01-15T12:00:00.000Z"
 
     def test_list_resources_empty_results(
         self, mock_resources_empty_list, capture_and_mock_http_client_request
@@ -273,12 +294,13 @@ class TestAuthorizationResourceExternalId:
             self.http_client, mock_resources_empty_list, 200
         )
 
-        resources_response = syncify(
+        response = syncify(
             self.authorization.list_resources(organization_id=MOCK_ORG_ID)
         )
 
         assert request_kwargs["method"] == "get"
-        assert len(resources_response.data) == 0
+        assert request_kwargs["url"].endswith("/authorization/resources")
+        assert len(response.data) == 0
 
     def test_list_resources_with_resource_type_slug_filter(
         self, mock_resources_list, capture_and_mock_http_client_request
@@ -294,6 +316,7 @@ class TestAuthorizationResourceExternalId:
         )
 
         assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["params"]["resource_type_slug"] == "document"
 
     def test_list_resources_with_parent_resource_id_filter(
@@ -310,6 +333,7 @@ class TestAuthorizationResourceExternalId:
         )
 
         assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["params"]["parent_resource_id"] == "res_01PARENT"
 
     def test_list_resources_with_parent_resource_type_slug_filter(
@@ -326,6 +350,7 @@ class TestAuthorizationResourceExternalId:
         )
 
         assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["params"]["parent_resource_type_slug"] == "folder"
 
     def test_list_resources_with_parent_external_id_filter(
@@ -342,6 +367,7 @@ class TestAuthorizationResourceExternalId:
         )
 
         assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["params"]["parent_external_id"] == "ext_parent_456"
 
     def test_list_resources_with_search_filter(
@@ -358,6 +384,7 @@ class TestAuthorizationResourceExternalId:
         )
 
         assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["params"]["search"] == "budget"
 
     def test_list_resources_with_pagination_params(
@@ -377,6 +404,8 @@ class TestAuthorizationResourceExternalId:
             )
         )
 
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith("/authorization/resources")
         assert request_kwargs["params"]["limit"] == 5
         assert request_kwargs["params"]["after"] == "res_cursor_abc"
         assert request_kwargs["params"]["before"] == "res_cursor_xyz"

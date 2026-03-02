@@ -1,13 +1,12 @@
 from typing import Union
 
 import pytest
-from tests.utils.fixtures.mock_resource import MockResource
-from tests.utils.list_resource import list_response_of
+from tests.utils.fixtures.mock_resource_list import MockAuthorizationResourceList
 from tests.utils.syncify import syncify
 from workos.authorization import AsyncAuthorization, Authorization
-from workos.types.authorization.resource_identifier import (
-    ParentResourceIdentifierByExternalId,
-    ParentResourceIdentifierById,
+from workos.types.authorization.parent_resource_identifier import (
+    ParentResourceByExternalId,
+    ParentResourceById,
 )
 
 
@@ -39,314 +38,384 @@ class TestListResourcesForMembership:
         self.authorization = module_instance
 
     @pytest.fixture
-    def mock_resources_list(self):
-        resources = [MockResource(id=f"res_{i}").dict() for i in range(3)]
-        return {
-            "data": resources,
-            "list_metadata": {"before": None, "after": None},
-            "object": "list",
-        }
+    def mock_resources_list_two(self):
+        return MockAuthorizationResourceList().dict()
 
-    @pytest.fixture
-    def mock_resources_multiple_pages(self):
-        resources = [MockResource(id=f"res_{i}").dict() for i in range(40)]
-        return list_response_of(data=resources)
+    # --- list_resources_for_membership with ParentResourceById ---
 
-    def test_list_resources_for_membership_with_parent_resource_id(
-        self, mock_resources_list, capture_and_mock_http_client_request
+    def test_list_resources_for_membership_with_parent_by_id_returns_paginated_list(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
     ):
+        parent = ParentResourceById(parent_resource_id="res_parent_123")
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list, 200
+            self.http_client, mock_resources_list_two, 200
         )
 
-        result = syncify(
+        response = syncify(
             self.authorization.list_resources_for_membership(
                 "om_01ABC",
-                permission_slug="documents:read",
-                parent_resource=ParentResourceIdentifierById(
-                    parent_resource_id="res_parent_01",
-                ),
+                permission_slug="document:read",
+                parent_resource=parent,
             )
         )
 
-        assert result.object == "list"
-        assert len(result.data) == 3
         assert request_kwargs["method"] == "get"
         assert request_kwargs["url"].endswith(
             "/authorization/organization_memberships/om_01ABC/resources"
         )
-        assert request_kwargs["params"]["permission_slug"] == "documents:read"
-        assert request_kwargs["params"]["parent_resource_id"] == "res_parent_01"
-        assert "parent_resource_type_slug" not in request_kwargs["params"]
-        assert "parent_resource_external_id" not in request_kwargs["params"]
+        assert request_kwargs["params"]["parent_resource_id"] == "res_parent_123"
+        assert request_kwargs["params"]["permission_slug"] == "document:read"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
 
-    def test_list_resources_for_membership_with_parent_external_id(
-        self, mock_resources_list, capture_and_mock_http_client_request
+        assert response.object == "list"
+        assert len(response.data) == 2
+        assert response.data[0].id == "authz_resource_01HXYZ123ABC456DEF789ABC"
+        assert response.data[0].external_id == "doc-12345678"
+        assert response.list_metadata.before is None
+        assert (
+            response.list_metadata.after == "authz_resource_01HXYZ123ABC456DEF789DEF"
+        )
+
+    def test_list_resources_for_membership_with_parent_by_id_with_limit(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
     ):
+        parent = ParentResourceById(parent_resource_id="res_parent_123")
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list, 200
+            self.http_client, mock_resources_list_two, 200
         )
 
         syncify(
             self.authorization.list_resources_for_membership(
                 "om_01ABC",
-                permission_slug="documents:read",
-                parent_resource=ParentResourceIdentifierByExternalId(
-                    parent_resource_type_slug="folder",
-                    parent_resource_external_id="folder_abc",
-                ),
+                permission_slug="document:read",
+                parent_resource=parent,
+                limit=25,
             )
         )
 
-        assert request_kwargs["params"]["parent_resource_type_slug"] == "folder"
-        assert request_kwargs["params"]["parent_resource_external_id"] == "folder_abc"
-        assert "parent_resource_id" not in request_kwargs["params"]
+        assert request_kwargs["params"]["parent_resource_id"] == "res_parent_123"
+        assert request_kwargs["params"]["permission_slug"] == "document:read"
+        assert request_kwargs["params"]["limit"] == 25
+        assert request_kwargs["params"]["order"] == "desc"
 
-    def test_list_resources_for_membership_empty(
-        self, capture_and_mock_http_client_request
+    def test_list_resources_for_membership_with_parent_by_id_with_before(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
     ):
-        empty_response = {
-            "data": [],
-            "list_metadata": {"before": None, "after": None},
-            "object": "list",
-        }
-        capture_and_mock_http_client_request(self.http_client, empty_response, 200)
-
-        result = syncify(
-            self.authorization.list_resources_for_membership(
-                "om_01ABC",
-                permission_slug="documents:read",
-                parent_resource=ParentResourceIdentifierById(
-                    parent_resource_id="res_parent_01",
-                ),
-            )
-        )
-
-        assert result.object == "list"
-        assert len(result.data) == 0
-
-    def test_list_resources_for_membership_passes_pagination_params(
-        self, mock_resources_list, capture_and_mock_http_client_request
-    ):
+        parent = ParentResourceById(parent_resource_id="res_parent_123")
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list, 200
+            self.http_client, mock_resources_list_two, 200
         )
 
         syncify(
             self.authorization.list_resources_for_membership(
                 "om_01ABC",
-                permission_slug="documents:read",
-                parent_resource=ParentResourceIdentifierById(
-                    parent_resource_id="res_parent_01",
-                ),
-                limit=10,
-                after="res_cursor123",
+                permission_slug="document:read",
+                parent_resource=parent,
+                before="cursor_before",
+            )
+        )
+
+        assert request_kwargs["params"]["parent_resource_id"] == "res_parent_123"
+        assert request_kwargs["params"]["before"] == "cursor_before"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+
+    def test_list_resources_for_membership_with_parent_by_id_with_after(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        parent = ParentResourceById(parent_resource_id="res_parent_123")
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
+                after="cursor_after",
+            )
+        )
+
+        assert request_kwargs["params"]["parent_resource_id"] == "res_parent_123"
+        assert request_kwargs["params"]["after"] == "cursor_after"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+
+    def test_list_resources_for_membership_with_parent_by_id_with_order_asc(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        parent = ParentResourceById(parent_resource_id="res_parent_123")
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
+                order="asc",
+            )
+        )
+
+        assert request_kwargs["params"]["parent_resource_id"] == "res_parent_123"
+        assert request_kwargs["params"]["order"] == "asc"
+        assert request_kwargs["params"]["limit"] == 10
+
+    def test_list_resources_for_membership_with_parent_by_id_with_order_desc(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        parent = ParentResourceById(parent_resource_id="res_parent_123")
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
                 order="desc",
             )
         )
 
-        assert request_kwargs["params"]["permission_slug"] == "documents:read"
+        assert request_kwargs["params"]["parent_resource_id"] == "res_parent_123"
+        assert request_kwargs["params"]["order"] == "desc"
         assert request_kwargs["params"]["limit"] == 10
-        assert request_kwargs["params"]["after"] == "res_cursor123"
+
+    def test_list_resources_for_membership_with_parent_by_id_with_all_parameters(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        parent = ParentResourceById(parent_resource_id="res_parent_123")
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        response = syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
+                limit=5,
+                before="cursor_before",
+                after="cursor_after",
+                order="asc",
+            )
+        )
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organization_memberships/om_01ABC/resources"
+        )
+        assert request_kwargs["params"]["parent_resource_id"] == "res_parent_123"
+        assert request_kwargs["params"]["permission_slug"] == "document:read"
+        assert request_kwargs["params"]["limit"] == 5
+        assert request_kwargs["params"]["before"] == "cursor_before"
+        assert request_kwargs["params"]["after"] == "cursor_after"
+        assert request_kwargs["params"]["order"] == "asc"
+
+        assert response.object == "list"
+        assert len(response.data) == 2
+
+    # --- list_resources_for_membership with ParentResourceByExternalId ---
+
+    def test_list_resources_for_membership_with_parent_by_external_id_returns_paginated_list(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        parent = ParentResourceByExternalId(
+            parent_resource_external_id="parent_ext_456",
+            parent_resource_type_slug="folder",
+        )
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        response = syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
+            )
+        )
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organization_memberships/om_01ABC/resources"
+        )
+        assert request_kwargs["params"]["parent_resource_external_id"] == "parent_ext_456"
+        assert (
+            request_kwargs["params"]["parent_resource_type_slug"] == "folder"
+        )
+        assert request_kwargs["params"]["permission_slug"] == "document:read"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
+        assert "parent_resource_id" not in request_kwargs["params"]
+
+        assert response.object == "list"
+        assert len(response.data) == 2
+        assert response.data[0].id == "authz_resource_01HXYZ123ABC456DEF789ABC"
+        assert response.list_metadata.before is None
+
+    def test_list_resources_for_membership_with_parent_by_external_id_with_limit(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        parent = ParentResourceByExternalId(
+            parent_resource_external_id="parent_ext_456",
+            parent_resource_type_slug="folder",
+        )
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
+                limit=25,
+            )
+        )
+
+        assert request_kwargs["params"]["parent_resource_external_id"] == "parent_ext_456"
+        assert request_kwargs["params"]["parent_resource_type_slug"] == "folder"
+        assert request_kwargs["params"]["limit"] == 25
         assert request_kwargs["params"]["order"] == "desc"
 
-    def test_list_resources_for_membership_auto_pagination(
-        self,
-        mock_resources_multiple_pages,
-        test_auto_pagination,
+    def test_list_resources_for_membership_with_parent_by_external_id_with_before(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
     ):
-        test_auto_pagination(
-            http_client=self.http_client,
-            list_function=self.authorization.list_resources_for_membership,
-            expected_all_page_data=mock_resources_multiple_pages["data"],
-            list_function_params={
-                "organization_membership_id": "om_01ABC",
-                "permission_slug": "documents:read",
-                "parent_resource": ParentResourceIdentifierById(
-                    parent_resource_id="res_parent_01",
-                ),
-            },
-            url_path_keys=["organization_membership_id", "parent_resource"],
+        parent = ParentResourceByExternalId(
+            parent_resource_external_id="parent_ext_456",
+            parent_resource_type_slug="folder",
         )
-
-
-@pytest.mark.sync_and_async(Authorization, AsyncAuthorization)
-class TestListMembershipsForResource:
-    @pytest.fixture(autouse=True)
-    def setup(self, module_instance: Union[Authorization, AsyncAuthorization]):
-        self.http_client = module_instance._http_client
-        self.authorization = module_instance
-
-    @pytest.fixture
-    def mock_memberships_list(self):
-        memberships = [_mock_membership(membership_id=f"om_{i}") for i in range(3)]
-        return {
-            "data": memberships,
-            "list_metadata": {"before": None, "after": None},
-            "object": "list",
-        }
-
-    @pytest.fixture
-    def mock_empty_memberships_list(self):
-        return {
-            "data": [],
-            "list_metadata": {"before": None, "after": None},
-            "object": "list",
-        }
-
-    @pytest.fixture
-    def mock_memberships_multiple_pages(self):
-        memberships = [_mock_membership(membership_id=f"om_{i}") for i in range(40)]
-        return list_response_of(data=memberships)
-
-    def test_list_memberships_for_resource(
-        self, mock_memberships_list, capture_and_mock_http_client_request
-    ):
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_memberships_list, 200
-        )
-
-        result = syncify(
-            self.authorization.list_memberships_for_resource(
-                "res_01ABC",
-                permission_slug="documents:read",
-            )
-        )
-
-        assert len(result.data) == 3
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["url"].endswith(
-            "/authorization/resources/res_01ABC/organization_memberships"
-        )
-        assert request_kwargs["params"]["permission_slug"] == "documents:read"
-
-    def test_list_memberships_for_resource_empty(
-        self, mock_empty_memberships_list, capture_and_mock_http_client_request
-    ):
-        capture_and_mock_http_client_request(
-            self.http_client, mock_empty_memberships_list, 200
-        )
-
-        result = syncify(
-            self.authorization.list_memberships_for_resource(
-                "res_01ABC",
-                permission_slug="documents:read",
-            )
-        )
-
-        assert len(result.data) == 0
-
-    def test_list_memberships_for_resource_with_assignment(
-        self, mock_memberships_list, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_memberships_list, 200
+            self.http_client, mock_resources_list_two, 200
         )
 
         syncify(
-            self.authorization.list_memberships_for_resource(
-                "res_01ABC",
-                permission_slug="documents:read",
-                assignment="direct",
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
+                before="cursor_before",
             )
         )
 
-        assert request_kwargs["params"]["assignment"] == "direct"
+        assert request_kwargs["params"]["parent_resource_external_id"] == "parent_ext_456"
+        assert request_kwargs["params"]["before"] == "cursor_before"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
 
-    def test_list_memberships_for_resource_auto_pagination(
-        self,
-        mock_memberships_multiple_pages,
-        test_auto_pagination,
+    def test_list_resources_for_membership_with_parent_by_external_id_with_after(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
     ):
-        test_auto_pagination(
-            http_client=self.http_client,
-            list_function=self.authorization.list_memberships_for_resource,
-            expected_all_page_data=mock_memberships_multiple_pages["data"],
-            list_function_params={
-                "resource_id": "res_01ABC",
-                "permission_slug": "documents:read",
-            },
-            url_path_keys=["resource_id"],
+        parent = ParentResourceByExternalId(
+            parent_resource_external_id="parent_ext_456",
+            parent_resource_type_slug="folder",
         )
-
-
-@pytest.mark.sync_and_async(Authorization, AsyncAuthorization)
-class TestListMembershipsForResourceByExternalId:
-    @pytest.fixture(autouse=True)
-    def setup(self, module_instance: Union[Authorization, AsyncAuthorization]):
-        self.http_client = module_instance._http_client
-        self.authorization = module_instance
-
-    @pytest.fixture
-    def mock_memberships_list(self):
-        memberships = [_mock_membership(membership_id=f"om_{i}") for i in range(3)]
-        return {
-            "data": memberships,
-            "list_metadata": {"before": None, "after": None},
-            "object": "list",
-        }
-
-    @pytest.fixture
-    def mock_memberships_multiple_pages(self):
-        memberships = [_mock_membership(membership_id=f"om_{i}") for i in range(40)]
-        return list_response_of(data=memberships)
-
-    def test_list_memberships_for_resource_by_external_id(
-        self, mock_memberships_list, capture_and_mock_http_client_request
-    ):
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_memberships_list, 200
-        )
-
-        result = syncify(
-            self.authorization.list_memberships_for_resource_by_external_id(
-                "org_456",
-                "document",
-                "doc_abc",
-                permission_slug="documents:read",
-            )
-        )
-
-        assert len(result.data) == 3
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["url"].endswith(
-            "/authorization/organizations/org_456/resources/document/doc_abc/organization_memberships"
-        )
-        assert request_kwargs["params"]["permission_slug"] == "documents:read"
-
-    def test_list_memberships_for_resource_by_external_id_with_assignment(
-        self, mock_memberships_list, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_memberships_list, 200
+            self.http_client, mock_resources_list_two, 200
         )
 
         syncify(
-            self.authorization.list_memberships_for_resource_by_external_id(
-                "org_456",
-                "document",
-                "doc_abc",
-                permission_slug="documents:read",
-                assignment="indirect",
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
+                after="cursor_after",
             )
         )
 
-        assert request_kwargs["params"]["assignment"] == "indirect"
+        assert request_kwargs["params"]["parent_resource_external_id"] == "parent_ext_456"
+        assert request_kwargs["params"]["after"] == "cursor_after"
+        assert request_kwargs["params"]["limit"] == 10
+        assert request_kwargs["params"]["order"] == "desc"
 
-    def test_list_memberships_for_resource_by_external_id_auto_pagination(
-        self,
-        mock_memberships_multiple_pages,
-        test_auto_pagination,
+    def test_list_resources_for_membership_with_parent_by_external_id_with_order_asc(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
     ):
-        test_auto_pagination(
-            http_client=self.http_client,
-            list_function=self.authorization.list_memberships_for_resource_by_external_id,
-            expected_all_page_data=mock_memberships_multiple_pages["data"],
-            list_function_params={
-                "organization_id": "org_456",
-                "resource_type_slug": "document",
-                "external_id": "doc_abc",
-                "permission_slug": "documents:read",
-            },
-            url_path_keys=["organization_id", "resource_type_slug", "external_id"],
+        parent = ParentResourceByExternalId(
+            parent_resource_external_id="parent_ext_456",
+            parent_resource_type_slug="folder",
         )
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
+                order="asc",
+            )
+        )
+
+        assert request_kwargs["params"]["parent_resource_external_id"] == "parent_ext_456"
+        assert request_kwargs["params"]["order"] == "asc"
+        assert request_kwargs["params"]["limit"] == 10
+
+    def test_list_resources_for_membership_with_parent_by_external_id_with_order_desc(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        parent = ParentResourceByExternalId(
+            parent_resource_external_id="parent_ext_456",
+            parent_resource_type_slug="folder",
+        )
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
+                order="desc",
+            )
+        )
+
+        assert request_kwargs["params"]["parent_resource_external_id"] == "parent_ext_456"
+        assert request_kwargs["params"]["order"] == "desc"
+        assert request_kwargs["params"]["limit"] == 10
+
+    def test_list_resources_for_membership_with_parent_by_external_id_with_all_parameters(
+        self, mock_resources_list_two, capture_and_mock_http_client_request
+    ):
+        parent = ParentResourceByExternalId(
+            parent_resource_external_id="parent_ext_456",
+            parent_resource_type_slug="folder",
+        )
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_resources_list_two, 200
+        )
+
+        response = syncify(
+            self.authorization.list_resources_for_membership(
+                "om_01ABC",
+                permission_slug="document:read",
+                parent_resource=parent,
+                limit=5,
+                before="cursor_before",
+                after="cursor_after",
+                order="asc",
+            )
+        )
+
+        assert request_kwargs["method"] == "get"
+        assert request_kwargs["url"].endswith(
+            "/authorization/organization_memberships/om_01ABC/resources"
+        )
+        assert request_kwargs["params"]["parent_resource_external_id"] == "parent_ext_456"
+        assert request_kwargs["params"]["parent_resource_type_slug"] == "folder"
+        assert request_kwargs["params"]["permission_slug"] == "document:read"
+        assert request_kwargs["params"]["limit"] == 5
+        assert request_kwargs["params"]["before"] == "cursor_before"
+        assert request_kwargs["params"]["after"] == "cursor_after"
+        assert request_kwargs["params"]["order"] == "asc"
+        assert "parent_resource_id" not in request_kwargs["params"]
+
+        assert response.object == "list"
+        assert len(response.data) == 2

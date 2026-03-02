@@ -19,13 +19,13 @@ jobs:
     steps:
       - name: Generate token
         id: generate-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
         with:
           app-id: ${{ vars.SDK_BOT_APP_ID }}
           private-key: ${{ secrets.SDK_BOT_PRIVATE_KEY }}
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           token: ${{ steps.generate-token.outputs.token }}
 
@@ -36,7 +36,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: v${{ steps.get-version.outputs.version }}
           name: v${{ steps.get-version.outputs.version }}
@@ -52,9 +52,9 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
       - name: Build
         run: uv build
       - name: Publish

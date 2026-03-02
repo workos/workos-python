@@ -1,4 +1,4 @@
-from workos.types.authorization.access_evaluation import AccessEvaluation
+from workos.types.authorization.access_check_response import AccessCheckResponse
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,
@@ -12,11 +12,14 @@ from workos.types.authorization.organization_role import (
     OrganizationRoleList,
 )
 from workos.types.authorization.permission import Permission
-from workos.types.authorization.resource import Resource
-from workos.types.authorization.resource_identifier import (
+from workos.types.authorization.parent_resource_identifier import (
     ParentResourceIdentifier,
-    ParentResourceIdentifierByExternalId,
-    ParentResourceIdentifierById,
+)
+from workos.types.authorization.authorization_resource import AuthorizationResource
+from workos.types.authorization.resource_identifier import (
+    ResourceIdentifier,
+    ResourceIdentifierByExternalId,
+    ResourceIdentifierById,
 )
 from workos.types.authorization.role import (
     Role,

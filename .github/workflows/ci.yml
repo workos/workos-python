@@ -42,7 +42,7 @@ jobs:
 
   smoke-test:
     name: Smoke test (Python ${{ matrix.python }})
-    if: github.event_name == 'pull_request' && contains(toJSON(github.event.pull_request.labels.*.name), 'autorelease: pending')
+    if: ${{ github.event_name == 'pull_request' && contains(toJSON(github.event.pull_request.labels.*.name), 'autorelease: pending') }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

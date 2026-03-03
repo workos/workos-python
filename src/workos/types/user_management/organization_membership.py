@@ -19,6 +19,7 @@ class OrganizationMembership(WorkOSModel):
     id: str
     user_id: str
     organization_id: str
+    organization_name: str
     role: OrganizationMembershipRole
     roles: Optional[Sequence[OrganizationMembershipRole]] = None
     status: LiteralOrUntyped[OrganizationMembershipStatus]

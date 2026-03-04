@@ -1,15 +1,22 @@
 from enum import Enum
+from functools import partial
 from typing import Any, Dict, Optional, Protocol, Sequence, Union
 
 from pydantic import TypeAdapter
-from typing_extensions import TypedDict
 
 from workos.types.authorization.access_check_response import AccessCheckResponse
+from workos.types.authorization.assignment import Assignment
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,
 )
+from workos.types.authorization.organization_membership import (
+    AuthorizationOrganizationMembership,
+)
 from workos.types.authorization.organization_role import OrganizationRole
+from workos.types.authorization.parent_resource_identifier import (
+    ParentResourceIdentifier,
+)
 from workos.types.authorization.permission import Permission
 from workos.types.authorization.resource_identifier import ResourceIdentifier
 from workos.types.authorization.authorization_resource import AuthorizationResource
@@ -60,16 +67,25 @@ AuthorizationResourcesList = WorkOSListResource[
 ]
 
 
-class ParentResourceById(TypedDict):
-    parent_resource_id: str
+class ResourcesForMembershipListFilters(ListArgs, total=False):
+    permission_slug: str
 
 
-class ParentResourceByExternalId(TypedDict):
-    parent_resource_external_id: str
-    parent_resource_type_slug: str
+AuthorizationResourcesForMembershipList = WorkOSListResource[
+    AuthorizationResource, ResourcesForMembershipListFilters, ListMetadata
+]
 
 
-ParentResource = Union[ParentResourceById, ParentResourceByExternalId]
+class AuthorizationOrganizationMembershipListFilters(ListArgs, total=False):
+    permission_slug: str
+    assignment: Optional[Assignment]
+
+
+AuthorizationOrganizationMembershipList = WorkOSListResource[
+    AuthorizationOrganizationMembership,
+    AuthorizationOrganizationMembershipListFilters,
+    ListMetadata,
+]
 
 _role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
 
@@ -224,7 +240,7 @@ class AuthorizationModule(Protocol):
         description: Optional[str] = None,
         resource_type_slug: str,
         organization_id: str,
-        parent: Optional[ParentResource] = None,
+        parent: Optional[ParentResourceIdentifier] = None,
     ) -> SyncOrAsync[AuthorizationResource]: ...
 
     def update_resource(
@@ -322,6 +338,44 @@ class AuthorizationModule(Protocol):
         after: Optional[str] = None,
         order: PaginationOrder = "desc",
     ) -> SyncOrAsync[RoleAssignmentsListResource]: ...
+
+    def list_resources_for_membership(
+        self,
+        organization_membership_id: str,
+        *,
+        permission_slug: str,
+        parent_resource: ParentResourceIdentifier,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[AuthorizationResourcesForMembershipList]: ...
+
+    def list_memberships_for_resource(
+        self,
+        resource_id: str,
+        *,
+        permission_slug: str,
+        assignment: Optional[Assignment] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[AuthorizationOrganizationMembershipList]: ...
+
+    def list_memberships_for_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type_slug: str,
+        external_id: str,
+        *,
+        permission_slug: str,
+        assignment: Optional[Assignment] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[AuthorizationOrganizationMembershipList]: ...
 
 
 class Authorization(AuthorizationModule):
@@ -615,7 +669,7 @@ class Authorization(AuthorizationModule):
         description: Optional[str] = None,
         resource_type_slug: str,
         organization_id: str,
-        parent: Optional[ParentResource] = None,
+        parent: Optional[ParentResourceIdentifier] = None,
     ) -> AuthorizationResource:
         json: Dict[str, Any] = {
             "resource_type_slug": resource_type_slug,
@@ -790,7 +844,7 @@ class Authorization(AuthorizationModule):
         json.update(resource)
 
         response = self._http_client.request(
-            f"authorization/organization_memberships/{organization_membership_id}/check",
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/check",
             method=REQUEST_METHOD_POST,
             json=json,
         )
@@ -878,6 +932,125 @@ class Authorization(AuthorizationModule):
             list_method=self.list_role_assignments,
             list_args=list_params,
             **ListPage[RoleAssignment](**response).model_dump(),
+        )
+
+    def list_resources_for_membership(
+        self,
+        organization_membership_id: str,
+        *,
+        permission_slug: str,
+        parent_resource: ParentResourceIdentifier,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> AuthorizationResourcesForMembershipList:
+        list_params: ResourcesForMembershipListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+            "permission_slug": permission_slug,
+        }
+
+        http_params: Dict[str, Any] = {**list_params}
+        http_params.update(parent_resource)
+
+        response = self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/resources",
+            method=REQUEST_METHOD_GET,
+            params=http_params,
+        )
+
+        return AuthorizationResourcesForMembershipList(
+            list_method=partial(
+                self.list_resources_for_membership,
+                organization_membership_id,
+                parent_resource=parent_resource,
+            ),
+            list_args=list_params,
+            **ListPage[AuthorizationResource](**response).model_dump(),
+        )
+
+    def list_memberships_for_resource(
+        self,
+        resource_id: str,
+        *,
+        permission_slug: str,
+        assignment: Optional[Assignment] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> AuthorizationOrganizationMembershipList:
+        list_params: AuthorizationOrganizationMembershipListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+            "permission_slug": permission_slug,
+        }
+        if assignment is not None:
+            list_params["assignment"] = assignment
+
+        response = self._http_client.request(
+            f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}/organization_memberships",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[
+            AuthorizationOrganizationMembership,
+            AuthorizationOrganizationMembershipListFilters,
+            ListMetadata,
+        ](
+            list_method=partial(self.list_memberships_for_resource, resource_id),
+            list_args=list_params,
+            **ListPage[AuthorizationOrganizationMembership](**response).model_dump(),
+        )
+
+    def list_memberships_for_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type_slug: str,
+        external_id: str,
+        *,
+        permission_slug: str,
+        assignment: Optional[Assignment] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> AuthorizationOrganizationMembershipList:
+        list_params: AuthorizationOrganizationMembershipListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+            "permission_slug": permission_slug,
+        }
+        if assignment is not None:
+            list_params["assignment"] = assignment
+
+        response = self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[
+            AuthorizationOrganizationMembership,
+            AuthorizationOrganizationMembershipListFilters,
+            ListMetadata,
+        ](
+            list_method=partial(
+                self.list_memberships_for_resource_by_external_id,
+                organization_id,
+                resource_type_slug,
+                external_id,
+            ),
+            list_args=list_params,
+            **ListPage[AuthorizationOrganizationMembership](**response).model_dump(),
         )
 
 
@@ -1174,7 +1347,7 @@ class AsyncAuthorization(AuthorizationModule):
         description: Optional[str] = None,
         resource_type_slug: str,
         organization_id: str,
-        parent: Optional[ParentResource] = None,
+        parent: Optional[ParentResourceIdentifier] = None,
     ) -> AuthorizationResource:
         json: Dict[str, Any] = {
             "resource_type_slug": resource_type_slug,
@@ -1349,7 +1522,7 @@ class AsyncAuthorization(AuthorizationModule):
         json.update(resource)
 
         response = await self._http_client.request(
-            f"authorization/organization_memberships/{organization_membership_id}/check",
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/check",
             method=REQUEST_METHOD_POST,
             json=json,
         )
@@ -1437,4 +1610,123 @@ class AsyncAuthorization(AuthorizationModule):
             list_method=self.list_role_assignments,
             list_args=list_params,
             **ListPage[RoleAssignment](**response).model_dump(),
+        )
+
+    async def list_resources_for_membership(
+        self,
+        organization_membership_id: str,
+        *,
+        permission_slug: str,
+        parent_resource: ParentResourceIdentifier,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> AuthorizationResourcesForMembershipList:
+        list_params: ResourcesForMembershipListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+            "permission_slug": permission_slug,
+        }
+
+        http_params: Dict[str, Any] = {**list_params}
+        http_params.update(parent_resource)
+
+        response = await self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/resources",
+            method=REQUEST_METHOD_GET,
+            params=http_params,
+        )
+
+        return AuthorizationResourcesForMembershipList(
+            list_method=partial(
+                self.list_resources_for_membership,
+                organization_membership_id,
+                parent_resource=parent_resource,
+            ),
+            list_args=list_params,
+            **ListPage[AuthorizationResource](**response).model_dump(),
+        )
+
+    async def list_memberships_for_resource(
+        self,
+        resource_id: str,
+        *,
+        permission_slug: str,
+        assignment: Optional[Assignment] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> AuthorizationOrganizationMembershipList:
+        list_params: AuthorizationOrganizationMembershipListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+            "permission_slug": permission_slug,
+        }
+        if assignment is not None:
+            list_params["assignment"] = assignment
+
+        response = await self._http_client.request(
+            f"{AUTHORIZATION_RESOURCES_PATH}/{resource_id}/organization_memberships",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[
+            AuthorizationOrganizationMembership,
+            AuthorizationOrganizationMembershipListFilters,
+            ListMetadata,
+        ](
+            list_method=partial(self.list_memberships_for_resource, resource_id),
+            list_args=list_params,
+            **ListPage[AuthorizationOrganizationMembership](**response).model_dump(),
+        )
+
+    async def list_memberships_for_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type_slug: str,
+        external_id: str,
+        *,
+        permission_slug: str,
+        assignment: Optional[Assignment] = None,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> AuthorizationOrganizationMembershipList:
+        list_params: AuthorizationOrganizationMembershipListFilters = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+            "permission_slug": permission_slug,
+        }
+        if assignment is not None:
+            list_params["assignment"] = assignment
+
+        response = await self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATIONS_PATH}/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
+            method=REQUEST_METHOD_GET,
+            params=list_params,
+        )
+
+        return WorkOSListResource[
+            AuthorizationOrganizationMembership,
+            AuthorizationOrganizationMembershipListFilters,
+            ListMetadata,
+        ](
+            list_method=partial(
+                self.list_memberships_for_resource_by_external_id,
+                organization_id,
+                resource_type_slug,
+                external_id,
+            ),
+            list_args=list_params,
+            **ListPage[AuthorizationOrganizationMembership](**response).model_dump(),
         )

@@ -1,10 +1,11 @@
 from enum import Enum
 from functools import partial
-from typing import Any, Dict, Literal, Optional, Protocol, Sequence, Union
+from typing import Any, Dict, Optional, Protocol, Sequence, Union
 
 from pydantic import TypeAdapter
 
 from workos.types.authorization.access_check_response import AccessCheckResponse
+from workos.types.authorization.assignment import Assignment
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,
@@ -76,7 +77,7 @@ AuthorizationResourcesForMembershipList = WorkOSListResource[
 
 class AuthorizationOrganizationMembershipListFilters(ListArgs, total=False):
     permission_slug: str
-    assignment: Optional[Literal["direct", "indirect"]]
+    assignment: Optional[Assignment]
 
 
 AuthorizationOrganizationMembershipList = WorkOSListResource[
@@ -313,7 +314,7 @@ class AuthorizationModule(Protocol):
         resource_id: str,
         *,
         permission_slug: str,
-        assignment: Optional[Literal["direct", "indirect"]] = None,
+        assignment: Optional[Assignment] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -327,7 +328,7 @@ class AuthorizationModule(Protocol):
         external_id: str,
         *,
         permission_slug: str,
-        assignment: Optional[Literal["direct", "indirect"]] = None,
+        assignment: Optional[Assignment] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -851,7 +852,7 @@ class Authorization(AuthorizationModule):
         resource_id: str,
         *,
         permission_slug: str,
-        assignment: Optional[Literal["direct", "indirect"]] = None,
+        assignment: Optional[Assignment] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -890,7 +891,7 @@ class Authorization(AuthorizationModule):
         external_id: str,
         *,
         permission_slug: str,
-        assignment: Optional[Literal["direct", "indirect"]] = None,
+        assignment: Optional[Assignment] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -1446,7 +1447,7 @@ class AsyncAuthorization(AuthorizationModule):
         resource_id: str,
         *,
         permission_slug: str,
-        assignment: Optional[Literal["direct", "indirect"]] = None,
+        assignment: Optional[Assignment] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -1485,7 +1486,7 @@ class AsyncAuthorization(AuthorizationModule):
         external_id: str,
         *,
         permission_slug: str,
-        assignment: Optional[Literal["direct", "indirect"]] = None,
+        assignment: Optional[Assignment] = None,
         limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,

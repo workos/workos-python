@@ -13,26 +13,6 @@ from workos.types.authorization.parent_resource_identifier import (
 )
 
 
-def _mock_membership(
-    membership_id: str = "om_01ABC",
-    user_id: str = "user_123",
-    organization_id: str = "org_456",
-    organization_name: str = "Acme Inc",
-    status: str = "active",
-) -> dict:
-    return {
-        "object": "organization_membership",
-        "id": membership_id,
-        "user_id": user_id,
-        "organization_id": organization_id,
-        "organization_name": organization_name,
-        "status": status,
-        "custom_attributes": None,
-        "created_at": "2024-01-01T00:00:00Z",
-        "updated_at": "2024-01-01T00:00:00Z",
-    }
-
-
 @pytest.mark.sync_and_async(Authorization, AsyncAuthorization)
 class TestListResourcesForMembership:
     @pytest.fixture(autouse=True)
@@ -41,17 +21,15 @@ class TestListResourcesForMembership:
         self.authorization = module_instance
 
     @pytest.fixture
-    def mock_resources_list_two(self):
-        return MockAuthorizationResourceList().dict()
-
-    # --- list_resources_for_membership with ParentResourceById ---
+    def mock_resources_list(self):
+        return MockAuthorizationResourceList().model_dump()
 
     def test_list_resources_for_membership_with_parent_by_id_returns_paginated_list(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceById(parent_resource_id="res_parent_123")
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         response = syncify(
@@ -73,17 +51,38 @@ class TestListResourcesForMembership:
 
         assert response.object == "list"
         assert len(response.data) == 2
+        assert response.data[0].object == "authorization_resource"
         assert response.data[0].id == "authz_resource_01HXYZ123ABC456DEF789ABC"
         assert response.data[0].external_id == "doc-12345678"
+        assert response.data[0].name == "Q5 Budget Report"
+        assert response.data[0].description == "Financial report for Q5 2025"
+        assert response.data[0].resource_type_slug == "document"
+        assert response.data[0].organization_id == "org_01HXYZ123ABC456DEF789ABC"
+        assert (
+            response.data[0].parent_resource_id
+            == "authz_resource_01HXYZ123ABC456DEF789XYZ"
+        )
+        assert response.data[0].created_at == "2024-01-15T09:30:00.000Z"
+        assert response.data[0].updated_at == "2024-01-15T09:30:00.000Z"
+        assert response.data[1].object == "authorization_resource"
+        assert response.data[1].id == "authz_resource_01HXYZ123ABC456DEF789DEF"
+        assert response.data[1].external_id == "folder-123"
+        assert response.data[1].name == "Finance Folder"
+        assert response.data[1].description is None
+        assert response.data[1].resource_type_slug == "folder"
+        assert response.data[1].organization_id == "org_01HXYZ123ABC456DEF789ABC"
+        assert response.data[1].parent_resource_id is None
+        assert response.data[1].created_at == "2024-01-14T08:00:00.000Z"
+        assert response.data[1].updated_at == "2024-01-14T08:00:00.000Z"
         assert response.list_metadata.before is None
         assert response.list_metadata.after == "authz_resource_01HXYZ123ABC456DEF789DEF"
 
     def test_list_resources_for_membership_with_parent_by_id_with_limit(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceById(parent_resource_id="res_parent_123")
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         syncify(
@@ -101,11 +100,11 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["order"] == "desc"
 
     def test_list_resources_for_membership_with_parent_by_id_with_before(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceById(parent_resource_id="res_parent_123")
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         syncify(
@@ -123,11 +122,11 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["order"] == "desc"
 
     def test_list_resources_for_membership_with_parent_by_id_with_after(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceById(parent_resource_id="res_parent_123")
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         syncify(
@@ -145,11 +144,11 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["order"] == "desc"
 
     def test_list_resources_for_membership_with_parent_by_id_with_order_asc(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceById(parent_resource_id="res_parent_123")
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         syncify(
@@ -166,11 +165,11 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["limit"] == 10
 
     def test_list_resources_for_membership_with_parent_by_id_with_order_desc(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceById(parent_resource_id="res_parent_123")
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         syncify(
@@ -187,11 +186,11 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["limit"] == 10
 
     def test_list_resources_for_membership_with_parent_by_id_with_all_parameters(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceById(parent_resource_id="res_parent_123")
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         response = syncify(
@@ -223,14 +222,14 @@ class TestListResourcesForMembership:
     # --- list_resources_for_membership with ParentResourceByExternalId ---
 
     def test_list_resources_for_membership_with_parent_by_external_id_returns_paginated_list(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceByExternalId(
             parent_resource_external_id="parent_ext_456",
             parent_resource_type_slug="folder",
         )
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         response = syncify(
@@ -256,18 +255,40 @@ class TestListResourcesForMembership:
 
         assert response.object == "list"
         assert len(response.data) == 2
+        assert response.data[0].object == "authorization_resource"
         assert response.data[0].id == "authz_resource_01HXYZ123ABC456DEF789ABC"
+        assert response.data[0].external_id == "doc-12345678"
+        assert response.data[0].name == "Q5 Budget Report"
+        assert response.data[0].description == "Financial report for Q5 2025"
+        assert response.data[0].resource_type_slug == "document"
+        assert response.data[0].organization_id == "org_01HXYZ123ABC456DEF789ABC"
+        assert (
+            response.data[0].parent_resource_id
+            == "authz_resource_01HXYZ123ABC456DEF789XYZ"
+        )
+        assert response.data[0].created_at == "2024-01-15T09:30:00.000Z"
+        assert response.data[0].updated_at == "2024-01-15T09:30:00.000Z"
+        assert response.data[1].object == "authorization_resource"
+        assert response.data[1].id == "authz_resource_01HXYZ123ABC456DEF789DEF"
+        assert response.data[1].external_id == "folder-123"
+        assert response.data[1].name == "Finance Folder"
+        assert response.data[1].description is None
+        assert response.data[1].resource_type_slug == "folder"
+        assert response.data[1].organization_id == "org_01HXYZ123ABC456DEF789ABC"
+        assert response.data[1].parent_resource_id is None
+        assert response.data[1].created_at == "2024-01-14T08:00:00.000Z"
+        assert response.data[1].updated_at == "2024-01-14T08:00:00.000Z"
         assert response.list_metadata.before is None
 
     def test_list_resources_for_membership_with_parent_by_external_id_with_limit(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceByExternalId(
             parent_resource_external_id="parent_ext_456",
             parent_resource_type_slug="folder",
         )
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         syncify(
@@ -287,14 +308,14 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["order"] == "desc"
 
     def test_list_resources_for_membership_with_parent_by_external_id_with_before(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceByExternalId(
             parent_resource_external_id="parent_ext_456",
             parent_resource_type_slug="folder",
         )
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         syncify(
@@ -314,14 +335,14 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["order"] == "desc"
 
     def test_list_resources_for_membership_with_parent_by_external_id_with_after(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceByExternalId(
             parent_resource_external_id="parent_ext_456",
             parent_resource_type_slug="folder",
         )
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         syncify(
@@ -341,14 +362,14 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["order"] == "desc"
 
     def test_list_resources_for_membership_with_parent_by_external_id_with_order_asc(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceByExternalId(
             parent_resource_external_id="parent_ext_456",
             parent_resource_type_slug="folder",
         )
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         syncify(
@@ -367,14 +388,14 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["limit"] == 10
 
     def test_list_resources_for_membership_with_parent_by_external_id_with_order_desc(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceByExternalId(
             parent_resource_external_id="parent_ext_456",
             parent_resource_type_slug="folder",
         )
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         syncify(
@@ -393,14 +414,14 @@ class TestListResourcesForMembership:
         assert request_kwargs["params"]["limit"] == 10
 
     def test_list_resources_for_membership_with_parent_by_external_id_with_all_parameters(
-        self, mock_resources_list_two, capture_and_mock_http_client_request
+        self, mock_resources_list, capture_and_mock_http_client_request
     ):
         parent = ParentResourceByExternalId(
             parent_resource_external_id="parent_ext_456",
             parent_resource_type_slug="folder",
         )
         request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_resources_list_two, 200
+            self.http_client, mock_resources_list, 200
         )
 
         response = syncify(
@@ -471,8 +492,20 @@ class TestListMembershipsForResource:
 
         assert response.object == "list"
         assert len(response.data) == 2
+        assert response.data[0].object == "organization_membership"
         assert response.data[0].id == "om_01ABC"
         assert response.data[0].user_id == "user_123"
+        assert response.data[0].organization_id == "org_456"
+        assert response.data[0].status == "active"
+        assert response.data[0].created_at == "2024-01-01T00:00:00Z"
+        assert response.data[0].updated_at == "2024-01-01T00:00:00Z"
+        assert response.data[1].object == "organization_membership"
+        assert response.data[1].id == "om_01DEF"
+        assert response.data[1].user_id == "user_789"
+        assert response.data[1].organization_id == "org_456"
+        assert response.data[1].status == "active"
+        assert response.data[1].created_at == "2024-01-02T00:00:00Z"
+        assert response.data[1].updated_at == "2024-01-02T00:00:00Z"
         assert response.list_metadata.before is None
         assert response.list_metadata.after == "om_01DEF"
 
@@ -669,7 +702,20 @@ class TestListMembershipsForResource:
 
         assert response.object == "list"
         assert len(response.data) == 2
+        assert response.data[0].object == "organization_membership"
         assert response.data[0].id == "om_01ABC"
+        assert response.data[0].user_id == "user_123"
+        assert response.data[0].organization_id == "org_456"
+        assert response.data[0].status == "active"
+        assert response.data[0].created_at == "2024-01-01T00:00:00Z"
+        assert response.data[0].updated_at == "2024-01-01T00:00:00Z"
+        assert response.data[1].object == "organization_membership"
+        assert response.data[1].id == "om_01DEF"
+        assert response.data[1].user_id == "user_789"
+        assert response.data[1].organization_id == "org_456"
+        assert response.data[1].status == "active"
+        assert response.data[1].created_at == "2024-01-02T00:00:00Z"
+        assert response.data[1].updated_at == "2024-01-02T00:00:00Z"
         assert response.list_metadata.before is None
         assert response.list_metadata.after == "om_01DEF"
 

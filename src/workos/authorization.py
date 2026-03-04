@@ -228,8 +228,6 @@ class AuthorizationModule(Protocol):
         permission_slug: str,
     ) -> SyncOrAsync[EnvironmentRole]: ...
 
-    # Resources
-
     def get_resource(self, resource_id: str) -> SyncOrAsync[AuthorizationResource]: ...
 
     def create_resource(
@@ -851,8 +849,6 @@ class Authorization(AuthorizationModule):
 
         return AccessCheckResponse.model_validate(response)
 
-    # Role Assignments
-
     def assign_role(
         self,
         organization_membership_id: str,
@@ -1141,8 +1137,6 @@ class AsyncAuthorization(AuthorizationModule):
             method=REQUEST_METHOD_DELETE,
         )
 
-    # Organization Roles
-
     async def create_organization_role(
         self,
         organization_id: str,
@@ -1243,8 +1237,6 @@ class AsyncAuthorization(AuthorizationModule):
             method=REQUEST_METHOD_DELETE,
         )
 
-    # Environment Roles
-
     async def create_environment_role(
         self,
         *,
@@ -1328,8 +1320,6 @@ class AsyncAuthorization(AuthorizationModule):
         )
 
         return EnvironmentRole.model_validate(response)
-
-    # Resources
 
     async def get_resource(self, resource_id: str) -> AuthorizationResource:
         response = await self._http_client.request(
@@ -1528,8 +1518,6 @@ class AsyncAuthorization(AuthorizationModule):
         )
 
         return AccessCheckResponse.model_validate(response)
-
-    # Role Assignments
 
     async def assign_role(
         self,

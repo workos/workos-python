@@ -3,6 +3,7 @@ from functools import partial
 from typing import Any, Dict, Optional, Protocol, Sequence, Union
 
 from pydantic import TypeAdapter
+from typing_extensions import TypedDict
 
 from workos.types.authorization.access_check_response import AccessCheckResponse
 from workos.types.authorization.assignment import Assignment
@@ -21,6 +22,7 @@ from workos.types.authorization.permission import Permission
 from workos.types.authorization.resource_identifier import ResourceIdentifier
 from workos.types.authorization.authorization_resource import AuthorizationResource
 from workos.types.authorization.role import Role, RoleList
+from workos.types.authorization.role_assignment import RoleAssignment
 from workos.types.list_resource import (
     ListArgs,
     ListMetadata,
@@ -87,6 +89,15 @@ AuthorizationOrganizationMembershipList = WorkOSListResource[
 ]
 
 _role_adapter: TypeAdapter[Role] = TypeAdapter(Role)
+
+
+class RoleAssignmentListFilters(ListArgs, total=False):
+    organization_membership_id: str
+
+
+RoleAssignmentsListResource = WorkOSListResource[
+    RoleAssignment, RoleAssignmentListFilters, ListMetadata
+]
 
 
 class PermissionListFilters(ListArgs, total=False):
@@ -296,6 +307,38 @@ class AuthorizationModule(Protocol):
         permission_slug: str,
         resource: ResourceIdentifier,
     ) -> SyncOrAsync[AccessCheckResponse]: ...
+
+    def assign_role(
+        self,
+        organization_membership_id: str,
+        *,
+        role_slug: str,
+        resource_identifier: ResourceIdentifier,
+    ) -> SyncOrAsync[RoleAssignment]: ...
+
+    def remove_role(
+        self,
+        organization_membership_id: str,
+        *,
+        role_slug: str,
+        resource_identifier: ResourceIdentifier,
+    ) -> SyncOrAsync[None]: ...
+
+    def remove_role_assignment(
+        self,
+        organization_membership_id: str,
+        role_assignment_id: str,
+    ) -> SyncOrAsync[None]: ...
+
+    def list_role_assignments(
+        self,
+        *,
+        organization_membership_id: str,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> SyncOrAsync[RoleAssignmentsListResource]: ...
 
     def list_resources_for_membership(
         self,
@@ -808,6 +851,89 @@ class Authorization(AuthorizationModule):
         )
 
         return AccessCheckResponse.model_validate(response)
+
+    # Role Assignments
+
+    def assign_role(
+        self,
+        organization_membership_id: str,
+        *,
+        role_slug: str,
+        resource_identifier: ResourceIdentifier,
+    ) -> RoleAssignment:
+        json: Dict[str, Any] = {"role_slug": role_slug}
+        json.update(resource_identifier)
+
+        response = self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return RoleAssignment.model_validate(response)
+
+    def remove_role(
+        self,
+        organization_membership_id: str,
+        *,
+        role_slug: str,
+        resource_identifier: ResourceIdentifier,
+    ) -> None:
+        json: Dict[str, Any] = {"role_slug": role_slug}
+        json.update(resource_identifier)
+
+        self._http_client.delete_with_body(
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
+            json=json,
+        )
+
+    def remove_role_assignment(
+        self,
+        organization_membership_id: str,
+        role_assignment_id: str,
+    ) -> None:
+        self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments/{role_assignment_id}",
+            method=REQUEST_METHOD_DELETE,
+        )
+
+    def list_role_assignments(
+        self,
+        *,
+        organization_membership_id: str,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> RoleAssignmentsListResource:
+        list_params: RoleAssignmentListFilters = {
+            "organization_membership_id": organization_membership_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        query_params: ListArgs = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
+            method=REQUEST_METHOD_GET,
+            params=query_params,
+        )
+
+        return WorkOSListResource[
+            RoleAssignment, RoleAssignmentListFilters, ListMetadata
+        ](
+            list_method=self.list_role_assignments,
+            list_args=list_params,
+            **ListPage[RoleAssignment](**response).model_dump(),
+        )
 
     def list_resources_for_membership(
         self,
@@ -1403,6 +1529,89 @@ class AsyncAuthorization(AuthorizationModule):
         )
 
         return AccessCheckResponse.model_validate(response)
+
+    # Role Assignments
+
+    async def assign_role(
+        self,
+        organization_membership_id: str,
+        *,
+        role_slug: str,
+        resource_identifier: ResourceIdentifier,
+    ) -> RoleAssignment:
+        json: Dict[str, Any] = {"role_slug": role_slug}
+        json.update(resource_identifier)
+
+        response = await self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
+            method=REQUEST_METHOD_POST,
+            json=json,
+        )
+
+        return RoleAssignment.model_validate(response)
+
+    async def remove_role(
+        self,
+        organization_membership_id: str,
+        *,
+        role_slug: str,
+        resource_identifier: ResourceIdentifier,
+    ) -> None:
+        json: Dict[str, Any] = {"role_slug": role_slug}
+        json.update(resource_identifier)
+
+        await self._http_client.delete_with_body(
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
+            json=json,
+        )
+
+    async def remove_role_assignment(
+        self,
+        organization_membership_id: str,
+        role_assignment_id: str,
+    ) -> None:
+        await self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments/{role_assignment_id}",
+            method=REQUEST_METHOD_DELETE,
+        )
+
+    async def list_role_assignments(
+        self,
+        *,
+        organization_membership_id: str,
+        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: PaginationOrder = "desc",
+    ) -> RoleAssignmentsListResource:
+        list_params: RoleAssignmentListFilters = {
+            "organization_membership_id": organization_membership_id,
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        query_params: ListArgs = {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": order,
+        }
+
+        response = await self._http_client.request(
+            f"{AUTHORIZATION_ORGANIZATION_MEMBERSHIPS_PATH}/{organization_membership_id}/role_assignments",
+            method=REQUEST_METHOD_GET,
+            params=query_params,
+        )
+
+        return WorkOSListResource[
+            RoleAssignment, RoleAssignmentListFilters, ListMetadata
+        ](
+            list_method=self.list_role_assignments,
+            list_args=list_params,
+            **ListPage[RoleAssignment](**response).model_dump(),
+        )
 
     async def list_resources_for_membership(
         self,

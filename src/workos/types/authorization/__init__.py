@@ -1,4 +1,5 @@
 from workos.types.authorization.access_check_response import AccessCheckResponse
+from workos.types.authorization.assignment import Assignment
 from workos.types.authorization.environment_role import (
     EnvironmentRole,
     EnvironmentRoleList,

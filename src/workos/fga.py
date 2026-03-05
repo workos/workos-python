@@ -54,6 +54,11 @@ class WarrantQueryListResource(
 
 
 class FGAModule(Protocol):
+    """
+    .. deprecated::
+        Use :class:`workos.authorization.AuthorizationModule` instead.
+    """
+
     def get_resource(
         self, *, resource_type: str, resource_id: str
     ) -> AuthorizationResource:

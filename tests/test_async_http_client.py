@@ -313,6 +313,7 @@ class TestAsyncHTTPClient(object):
             method="get",
             params={"organization_id": None, "test": "value"},
         )
+
         assert request_kwargs["params"] == {"test": "value"}
 
     async def test_request_removes_none_json_values(
@@ -325,4 +326,43 @@ class TestAsyncHTTPClient(object):
             method="post",
             json={"organization_id": None, "test": "value"},
         )
+
+        assert request_kwargs["url"].endswith("/test")
         assert request_kwargs["json"] == {"test": "value"}
+
+    async def test_delete_with_body_sends_json(
+        self, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 200)
+
+        await self.http_client.delete_with_body(
+            path="/test",
+            json={"obj": "json"},
+        )
+
+        assert request_kwargs["method"] == "delete"
+        assert request_kwargs["json"] == {"obj": "json"}
+
+    async def test_delete_with_body_sends_params(
+        self, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 200)
+
+        await self.http_client.delete_with_body(
+            path="/test",
+            json={"obj1": "json"},
+            params={"obj2": "params"},
+        )
+
+        assert request_kwargs["json"] == {"obj1": "json"}
+        assert request_kwargs["params"] == {"obj2": "params"}
+
+    async def test_delete_without_body_raises_value_error(self):
+        with pytest.raises(
+            ValueError, match="Cannot send a body with a delete request"
+        ):
+            await self.http_client.request(
+                path="/test",
+                method="delete",
+                json={"should": "fail"},
+            )

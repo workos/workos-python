@@ -19,7 +19,12 @@ from typing import (
 from typing_extensions import Required, TypedDict
 from workos.types.api_keys import ApiKey
 from workos.types.audit_logs import AuditLogAction, AuditLogSchema
+from workos.types.authorization.organization_membership import (
+    AuthorizationOrganizationMembership,
+)
 from workos.types.authorization.permission import Permission
+from workos.types.authorization.authorization_resource import AuthorizationResource
+from workos.types.authorization.role_assignment import RoleAssignment
 from workos.types.directory_sync import (
     Directory,
     DirectoryGroup,
@@ -28,9 +33,9 @@ from workos.types.directory_sync import (
 from workos.types.events import Event
 from workos.types.feature_flags import FeatureFlag
 from workos.types.fga import (
-    Warrant,
-    AuthorizationResource,
+    AuthorizationResource as FGAAuthorizationResource,
     AuthorizationResourceType,
+    Warrant,
     WarrantQueryResult,
 )
 from workos.types.mfa import AuthenticationFactor
@@ -60,6 +65,9 @@ ListableResource = TypeVar(
     OrganizationMembership,
     Permission,
     AuthorizationResource,
+    RoleAssignment,
+    AuthorizationOrganizationMembership,
+    FGAAuthorizationResource,
     AuthorizationResourceType,
     User,
     UserManagementSession,

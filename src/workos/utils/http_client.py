@@ -14,7 +14,7 @@ from workos.utils._base_http_client import (
     ParamsType,
     ResponseJson,
 )
-from workos.utils.request_helper import REQUEST_METHOD_GET
+from workos.utils.request_helper import REQUEST_METHOD_DELETE, REQUEST_METHOD_GET
 
 
 class SyncHttpxClientWrapper(httpx.Client):
@@ -88,6 +88,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
         json: JsonType = None,
         headers: HeadersType = None,
         exclude_default_auth_headers: bool = False,
+        exclude_none: bool = True,
     ) -> ResponseJson:
         """Executes a request against the WorkOS API.
 
@@ -98,6 +99,7 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
             params (ParamsType): Query params to be added to the request
             json (JsonType): Body payload to be added to the request
+            exclude_none (bool): If True, removes None values from the JSON body
 
         Returns:
             ResponseJson: Response from WorkOS
@@ -109,6 +111,28 @@ class SyncHTTPClient(BaseHTTPClient[httpx.Client]):
             json=json,
             headers=headers,
             exclude_default_auth_headers=exclude_default_auth_headers,
+            exclude_none=exclude_none,
+        )
+        response = self._client.request(**prepared_request_parameters)
+        return self._handle_response(response)
+
+    def delete_with_body(
+        self,
+        path: str,
+        json: JsonType = None,
+        params: ParamsType = None,
+        headers: HeadersType = None,
+        exclude_default_auth_headers: bool = False,
+    ) -> ResponseJson:
+        """Executes a DELETE request with a JSON body against the WorkOS API."""
+        prepared_request_parameters = self._prepare_request(
+            path=path,
+            method=REQUEST_METHOD_DELETE,
+            json=json,
+            params=params,
+            headers=headers,
+            exclude_default_auth_headers=exclude_default_auth_headers,
+            force_include_body=True,
         )
         response = self._client.request(**prepared_request_parameters)
         return self._handle_response(response)
@@ -185,6 +209,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
         json: JsonType = None,
         headers: HeadersType = None,
         exclude_default_auth_headers: bool = False,
+        exclude_none: bool = True,
     ) -> ResponseJson:
         """Executes a request against the WorkOS API.
 
@@ -195,6 +220,7 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             method (str): One of the supported methods as defined by the REQUEST_METHOD_X constants
             params (ParamsType): Query params to be added to the request
             json (JsonType): Body payload to be added to the request
+            exclude_none (bool): If True, removes None values from the JSON body
 
         Returns:
             ResponseJson: Response from WorkOS
@@ -206,6 +232,28 @@ class AsyncHTTPClient(BaseHTTPClient[httpx.AsyncClient]):
             json=json,
             headers=headers,
             exclude_default_auth_headers=exclude_default_auth_headers,
+            exclude_none=exclude_none,
+        )
+        response = await self._client.request(**prepared_request_parameters)
+        return self._handle_response(response)
+
+    async def delete_with_body(
+        self,
+        path: str,
+        json: JsonType = None,
+        params: ParamsType = None,
+        headers: HeadersType = None,
+        exclude_default_auth_headers: bool = False,
+    ) -> ResponseJson:
+        """Executes a DELETE request with a JSON body against the WorkOS API."""
+        prepared_request_parameters = self._prepare_request(
+            path=path,
+            method=REQUEST_METHOD_DELETE,
+            json=json,
+            params=params,
+            headers=headers,
+            exclude_default_auth_headers=exclude_default_auth_headers,
+            force_include_body=True,
         )
         response = await self._client.request(**prepared_request_parameters)
         return self._handle_response(response)

@@ -25,6 +25,7 @@ from workos.types.authorization.organization_membership import (
 from workos.types.authorization.permission import Permission
 from workos.types.authorization.authorization_resource import AuthorizationResource
 from workos.types.authorization.role_assignment import RoleAssignment
+from workos.types.connect import ClientSecret, ConnectApplication
 from workos.types.directory_sync import (
     Directory,
     DirectoryGroup,
@@ -54,6 +55,8 @@ ListableResource = TypeVar(
     AuditLogAction,
     AuditLogSchema,
     AuthenticationFactor,
+    ClientSecret,
+    ConnectApplication,
     ConnectionWithDomains,
     Directory,
     DirectoryGroup,

@@ -4,6 +4,7 @@ from workos._base_client import BaseClient
 from workos.api_keys import AsyncApiKeys
 from workos.audit_logs import AsyncAuditLogs
 from workos.authorization import AsyncAuthorization
+from workos.connect import AsyncConnect
 from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
 from workos.fga import FGAModule
@@ -49,6 +50,12 @@ class AsyncClient(BaseClient):
             version=version("workos"),
             timeout=self.request_timeout,
         )
+
+    @property
+    def connect(self) -> AsyncConnect:
+        if not getattr(self, "_connect", None):
+            self._connect = AsyncConnect(self._http_client)
+        return self._connect
 
     @property
     def api_keys(self) -> AsyncApiKeys:

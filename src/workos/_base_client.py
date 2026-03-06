@@ -6,6 +6,7 @@ from workos._client_configuration import ClientConfiguration
 from workos.api_keys import ApiKeysModule
 from workos.audit_logs import AuditLogsModule
 from workos.authorization import AuthorizationModule
+from workos.connect import ConnectModule
 from workos.directory_sync import DirectorySyncModule
 from workos.events import EventsModule
 from workos.fga import FGAModule
@@ -78,6 +79,10 @@ class BaseClient(ClientConfiguration):
     @property
     @abstractmethod
     def authorization(self) -> AuthorizationModule: ...
+
+    @property
+    @abstractmethod
+    def connect(self) -> ConnectModule: ...
 
     @property
     @abstractmethod

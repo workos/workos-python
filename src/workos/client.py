@@ -4,6 +4,7 @@ from workos._base_client import BaseClient
 from workos.api_keys import ApiKeys
 from workos.audit_logs import AuditLogs
 from workos.authorization import Authorization
+from workos.connect import Connect
 from workos.directory_sync import DirectorySync
 from workos.fga import FGA
 from workos.organizations import Organizations
@@ -49,6 +50,12 @@ class SyncClient(BaseClient):
             version=version("workos"),
             timeout=self.request_timeout,
         )
+
+    @property
+    def connect(self) -> Connect:
+        if not getattr(self, "_connect", None):
+            self._connect = Connect(self._http_client)
+        return self._connect
 
     @property
     def api_keys(self) -> ApiKeys:

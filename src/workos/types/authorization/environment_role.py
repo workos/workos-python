@@ -9,6 +9,7 @@ class EnvironmentRole(WorkOSModel):
     name: str
     slug: str
     description: Optional[str] = None
+    resource_type_slug: str
     permissions: Sequence[str]
     type: Literal["EnvironmentRole"]
     created_at: str

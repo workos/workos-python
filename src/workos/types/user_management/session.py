@@ -47,6 +47,7 @@ class SessionConfig(TypedDict, total=False):
 
 
 AuthMethodType = Literal[
+    "cross_app_auth",
     "external_auth",
     "impersonation",
     "magic_code",

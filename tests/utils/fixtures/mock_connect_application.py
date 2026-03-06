@@ -19,7 +19,9 @@ class MockConnectApplication(ConnectApplication):
         if application_type == "m2m":
             kwargs["organization_id"] = "org_01ABC"
         elif application_type == "oauth":
-            kwargs["redirect_uris"] = [{"uri": "https://example.com/callback", "default": True}]
+            kwargs["redirect_uris"] = [
+                {"uri": "https://example.com/callback", "default": True}
+            ]
             kwargs["uses_pkce"] = True
             kwargs["is_first_party"] = True
             kwargs["was_dynamically_registered"] = False

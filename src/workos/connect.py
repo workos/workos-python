@@ -57,9 +57,7 @@ class ConnectModule(Protocol):
         """
         ...
 
-    def get_application(
-        self, application_id: str
-    ) -> SyncOrAsync[ConnectApplication]:
+    def get_application(self, application_id: str) -> SyncOrAsync[ConnectApplication]:
         """Gets details for a single connect application.
 
         Args:
@@ -133,9 +131,7 @@ class ConnectModule(Protocol):
         """
         ...
 
-    def create_client_secret(
-        self, application_id: str
-    ) -> SyncOrAsync[ClientSecret]:
+    def create_client_secret(self, application_id: str) -> SyncOrAsync[ClientSecret]:
         """Create a client secret for a connect application.
 
         Args:
@@ -320,9 +316,7 @@ class Connect(ConnectModule):
             params=list_params,
         )
 
-        return WorkOSListResource[
-            ClientSecret, ClientSecretListFilters, ListMetadata
-        ](
+        return WorkOSListResource[ClientSecret, ClientSecretListFilters, ListMetadata](
             list_method=partial(self.list_client_secrets, application_id),
             list_args=list_params,
             **ListPage[ClientSecret](**response).model_dump(),
@@ -472,9 +466,7 @@ class AsyncConnect(ConnectModule):
             params=list_params,
         )
 
-        return WorkOSListResource[
-            ClientSecret, ClientSecretListFilters, ListMetadata
-        ](
+        return WorkOSListResource[ClientSecret, ClientSecretListFilters, ListMetadata](
             list_method=partial(self.list_client_secrets, application_id),
             list_args=list_params,
             **ListPage[ClientSecret](**response).model_dump(),

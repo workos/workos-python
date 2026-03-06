@@ -25,9 +25,7 @@ class TestConnect:
 
     @pytest.fixture
     def mock_applications(self):
-        application_list = [
-            MockConnectApplication(id=str(i)).dict() for i in range(10)
-        ]
+        application_list = [MockConnectApplication(id=str(i)).dict() for i in range(10)]
         return {
             "data": application_list,
             "list_metadata": {"before": None, "after": None},
@@ -56,9 +54,7 @@ class TestConnect:
 
     @pytest.fixture
     def mock_client_secrets_multiple_data_pages(self):
-        secrets_list = [
-            MockClientSecret(id=f"cs_{i + 1}").dict() for i in range(40)
-        ]
+        secrets_list = [MockClientSecret(id=f"cs_{i + 1}").dict() for i in range(40)]
         return list_response_of(data=secrets_list)
 
     # --- Application Tests ---
@@ -247,17 +243,14 @@ class TestConnect:
             self.http_client, mock_client_secrets, 200
         )
 
-        response = syncify(
-            self.connect.list_client_secrets(application_id="app_01ABC")
-        )
+        response = syncify(self.connect.list_client_secrets(application_id="app_01ABC"))
 
         assert request_kwargs["method"] == "get"
         assert request_kwargs["url"].endswith(
             "/connect/applications/app_01ABC/client_secrets"
         )
         assert (
-            list(map(lambda x: x.dict(), response.data))
-            == mock_client_secrets["data"]
+            list(map(lambda x: x.dict(), response.data)) == mock_client_secrets["data"]
         )
 
     def test_delete_client_secret(self, capture_and_mock_http_client_request):

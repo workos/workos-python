@@ -1,10 +1,11 @@
 import datetime
 
 from workos.types.connect import ConnectApplication
+from workos.types.connect.connect_application import ApplicationType
 
 
 class MockConnectApplication(ConnectApplication):
-    def __init__(self, id: str, application_type: str = "m2m"):
+    def __init__(self, id: str, application_type: ApplicationType = "m2m"):
         now = datetime.datetime.now().isoformat()
         kwargs = {
             "object": "connect_application",

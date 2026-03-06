@@ -184,6 +184,7 @@ class TestConnect:
     def test_delete_application(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(
             self.http_client,
+            None,
             202,
             headers={"content-type": "text/plain; charset=utf-8"},
         )
@@ -256,6 +257,7 @@ class TestConnect:
     def test_delete_client_secret(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(
             self.http_client,
+            None,
             202,
             headers={"content-type": "text/plain; charset=utf-8"},
         )

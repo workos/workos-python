@@ -111,7 +111,7 @@ class ConnectModule(Protocol):
         Kwargs:
             application_id (str): Application ID or client ID.
             name (str): Updated application name. (Optional)
-            description (str): Updated description. Pass None to clear. (Optional)
+            description (str): Updated description. (Optional)
             scopes (Sequence[str]): Updated permission slugs. (Optional)
             redirect_uris (Sequence[str]): Updated OAuth redirect URIs. (Optional)
 

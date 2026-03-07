@@ -45,17 +45,7 @@ class TestConnect:
 
     @pytest.fixture
     def mock_client_secrets(self):
-        secret_list = [MockClientSecret(id=f"cs_{i}").dict() for i in range(10)]
-        return {
-            "data": secret_list,
-            "list_metadata": {"before": None, "after": None},
-            "object": "list",
-        }
-
-    @pytest.fixture
-    def mock_client_secrets_multiple_data_pages(self):
-        secrets_list = [MockClientSecret(id=f"cs_{i + 1}").dict() for i in range(40)]
-        return list_response_of(data=secrets_list)
+        return [MockClientSecret(id=f"cs_{i}").dict() for i in range(10)]
 
     # --- Application Tests ---
 
@@ -250,9 +240,7 @@ class TestConnect:
         assert request_kwargs["url"].endswith(
             "/connect/applications/app_01ABC/client_secrets"
         )
-        assert (
-            list(map(lambda x: x.dict(), response.data)) == mock_client_secrets["data"]
-        )
+        assert [secret.dict() for secret in response] == mock_client_secrets
 
     def test_delete_client_secret(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(
@@ -269,29 +257,3 @@ class TestConnect:
         assert request_kwargs["url"].endswith("/connect/client_secrets/cs_01ABC")
         assert request_kwargs["method"] == "delete"
         assert response is None
-
-    def test_list_client_secrets_auto_pagination_for_single_page(
-        self,
-        mock_client_secrets,
-        test_auto_pagination: TestAutoPaginationFunction,
-    ):
-        test_auto_pagination(
-            http_client=self.http_client,
-            list_function=self.connect.list_client_secrets,
-            expected_all_page_data=mock_client_secrets["data"],
-            list_function_params={"application_id": "app_01ABC"},
-            url_path_keys=["application_id"],
-        )
-
-    def test_list_client_secrets_auto_pagination_for_multiple_pages(
-        self,
-        mock_client_secrets_multiple_data_pages,
-        test_auto_pagination: TestAutoPaginationFunction,
-    ):
-        test_auto_pagination(
-            http_client=self.http_client,
-            list_function=self.connect.list_client_secrets,
-            expected_all_page_data=mock_client_secrets_multiple_data_pages["data"],
-            list_function_params={"application_id": "app_01ABC"},
-            url_path_keys=["application_id"],
-        )

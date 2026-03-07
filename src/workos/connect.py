@@ -1,12 +1,8 @@
-from functools import partial
 from typing import Optional, Protocol, Sequence
 
 from workos.types.connect import ClientSecret, ConnectApplication
 from workos.types.connect.connect_application import ApplicationType
-from workos.types.connect.list_filters import (
-    ClientSecretListFilters,
-    ConnectApplicationListFilters,
-)
+from workos.types.connect.list_filters import ConnectApplicationListFilters
 from workos.types.list_resource import ListMetadata, ListPage, WorkOSListResource
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
@@ -24,10 +20,6 @@ CONNECT_CLIENT_SECRETS_PATH = "connect/client_secrets"
 
 ConnectApplicationsListResource = WorkOSListResource[
     ConnectApplication, ConnectApplicationListFilters, ListMetadata
-]
-
-ClientSecretsListResource = WorkOSListResource[
-    ClientSecret, ClientSecretListFilters, ListMetadata
 ]
 
 
@@ -145,25 +137,14 @@ class ConnectModule(Protocol):
     def list_client_secrets(
         self,
         application_id: str,
-        *,
-        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: PaginationOrder = "desc",
-    ) -> SyncOrAsync[ClientSecretsListResource]:
+    ) -> SyncOrAsync[Sequence[ClientSecret]]:
         """List client secrets for a connect application.
 
         Args:
             application_id (str): Application ID or client ID.
 
-        Kwargs:
-            limit (int): Maximum number of records to return. (Optional)
-            before (str): Pagination cursor to receive records before a provided ID. (Optional)
-            after (str): Pagination cursor to receive records after a provided ID. (Optional)
-            order (Literal["asc","desc"]): Sort records in either ascending or descending order. (Optional)
-
         Returns:
-            ClientSecretsListResource: Client secrets list response from WorkOS.
+            Sequence[ClientSecret]: Client secrets for the application.
         """
         ...
 
@@ -297,30 +278,13 @@ class Connect(ConnectModule):
     def list_client_secrets(
         self,
         application_id: str,
-        *,
-        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: PaginationOrder = "desc",
-    ) -> ClientSecretsListResource:
-        list_params: ClientSecretListFilters = {
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order,
-        }
-
+    ) -> Sequence[ClientSecret]:
         response = self._http_client.request(
             f"{CONNECT_APPLICATIONS_PATH}/{application_id}/client_secrets",
             method=REQUEST_METHOD_GET,
-            params=list_params,
         )
 
-        return WorkOSListResource[ClientSecret, ClientSecretListFilters, ListMetadata](
-            list_method=partial(self.list_client_secrets, application_id),
-            list_args=list_params,
-            **ListPage[ClientSecret](**response).model_dump(),
-        )
+        return [ClientSecret.model_validate(secret) for secret in response]
 
     def delete_client_secret(self, client_secret_id: str) -> None:
         self._http_client.request(
@@ -447,30 +411,13 @@ class AsyncConnect(ConnectModule):
     async def list_client_secrets(
         self,
         application_id: str,
-        *,
-        limit: int = DEFAULT_LIST_RESPONSE_LIMIT,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: PaginationOrder = "desc",
-    ) -> ClientSecretsListResource:
-        list_params: ClientSecretListFilters = {
-            "limit": limit,
-            "before": before,
-            "after": after,
-            "order": order,
-        }
-
+    ) -> Sequence[ClientSecret]:
         response = await self._http_client.request(
             f"{CONNECT_APPLICATIONS_PATH}/{application_id}/client_secrets",
             method=REQUEST_METHOD_GET,
-            params=list_params,
         )
 
-        return WorkOSListResource[ClientSecret, ClientSecretListFilters, ListMetadata](
-            list_method=partial(self.list_client_secrets, application_id),
-            list_args=list_params,
-            **ListPage[ClientSecret](**response).model_dump(),
-        )
+        return [ClientSecret.model_validate(secret) for secret in response]
 
     async def delete_client_secret(self, client_secret_id: str) -> None:
         await self._http_client.request(

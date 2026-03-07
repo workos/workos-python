@@ -3,6 +3,7 @@ from typing import Optional, Protocol, Sequence
 from workos.types.connect import ClientSecret, ConnectApplication
 from workos.types.connect.connect_application import ApplicationType
 from workos.types.connect.list_filters import ConnectApplicationListFilters
+from workos.types.connect.redirect_uri_input import RedirectUriInput
 from workos.types.list_resource import ListMetadata, ListPage, WorkOSListResource
 from workos.typing.sync_or_async import SyncOrAsync
 from workos.utils.http_client import AsyncHTTPClient, SyncHTTPClient
@@ -68,7 +69,7 @@ class ConnectModule(Protocol):
         is_first_party: bool,
         description: Optional[str] = None,
         scopes: Optional[Sequence[str]] = None,
-        redirect_uris: Optional[Sequence[str]] = None,
+        redirect_uris: Optional[Sequence[RedirectUriInput]] = None,
         uses_pkce: Optional[bool] = None,
         organization_id: Optional[str] = None,
     ) -> SyncOrAsync[ConnectApplication]:
@@ -96,7 +97,7 @@ class ConnectModule(Protocol):
         name: Optional[str] = None,
         description: Optional[str] = None,
         scopes: Optional[Sequence[str]] = None,
-        redirect_uris: Optional[Sequence[str]] = None,
+        redirect_uris: Optional[Sequence[RedirectUriInput]] = None,
     ) -> SyncOrAsync[ConnectApplication]:
         """Update a connect application.
 
@@ -213,7 +214,7 @@ class Connect(ConnectModule):
         is_first_party: bool,
         description: Optional[str] = None,
         scopes: Optional[Sequence[str]] = None,
-        redirect_uris: Optional[Sequence[str]] = None,
+        redirect_uris: Optional[Sequence[RedirectUriInput]] = None,
         uses_pkce: Optional[bool] = None,
         organization_id: Optional[str] = None,
     ) -> ConnectApplication:
@@ -243,7 +244,7 @@ class Connect(ConnectModule):
         name: Optional[str] = None,
         description: Optional[str] = None,
         scopes: Optional[Sequence[str]] = None,
-        redirect_uris: Optional[Sequence[str]] = None,
+        redirect_uris: Optional[Sequence[RedirectUriInput]] = None,
     ) -> ConnectApplication:
         json = {
             "name": name,
@@ -346,7 +347,7 @@ class AsyncConnect(ConnectModule):
         is_first_party: bool,
         description: Optional[str] = None,
         scopes: Optional[Sequence[str]] = None,
-        redirect_uris: Optional[Sequence[str]] = None,
+        redirect_uris: Optional[Sequence[RedirectUriInput]] = None,
         uses_pkce: Optional[bool] = None,
         organization_id: Optional[str] = None,
     ) -> ConnectApplication:
@@ -376,7 +377,7 @@ class AsyncConnect(ConnectModule):
         name: Optional[str] = None,
         description: Optional[str] = None,
         scopes: Optional[Sequence[str]] = None,
-        redirect_uris: Optional[Sequence[str]] = None,
+        redirect_uris: Optional[Sequence[RedirectUriInput]] = None,
     ) -> ConnectApplication:
         json = {
             "name": name,

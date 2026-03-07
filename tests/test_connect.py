@@ -139,7 +139,7 @@ class TestConnect:
                 name="Test Application",
                 application_type="oauth",
                 is_first_party=True,
-                redirect_uris=["https://example.com/callback"],
+                redirect_uris=[{"uri": "https://example.com/callback", "default": True}],
                 uses_pkce=True,
             )
         )
@@ -148,7 +148,7 @@ class TestConnect:
         assert request_kwargs["method"] == "post"
         assert request_kwargs["json"]["application_type"] == "oauth"
         assert request_kwargs["json"]["redirect_uris"] == [
-            "https://example.com/callback"
+            {"uri": "https://example.com/callback", "default": True}
         ]
 
     def test_update_application(

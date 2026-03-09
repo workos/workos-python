@@ -1,8 +1,9 @@
-from typing import Optional
-
 from typing_extensions import TypedDict
 
 
-class RedirectUriInput(TypedDict, total=False):
+class _RedirectUriInputRequired(TypedDict):
     uri: str
-    default: Optional[bool]
+
+
+class RedirectUriInput(_RedirectUriInputRequired, total=False):
+    default: bool

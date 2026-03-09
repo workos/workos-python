@@ -139,7 +139,9 @@ class TestConnect:
                 name="Test Application",
                 application_type="oauth",
                 is_first_party=True,
-                redirect_uris=[{"uri": "https://example.com/callback", "default": True}],
+                redirect_uris=[
+                    {"uri": "https://example.com/callback", "default": True}
+                ],
                 uses_pkce=True,
             )
         )

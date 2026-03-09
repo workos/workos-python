@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.45.0](https://github.com/workos/workos-python/compare/v5.44.0...v5.45.0) (2026-03-09)
+
+
+### Features
+
+* return organization_name on OrganizationMembership ([#574](https://github.com/workos/workos-python/issues/574)) ([dae4dab](https://github.com/workos/workos-python/commit/dae4daba638660be13b6fd8bcaff03ce63ed6f00))
+
+
+### Bug Fixes
+
+* list_client_secrets returns raw list, not paginated response ([#586](https://github.com/workos/workos-python/issues/586)) ([ccc8cd5](https://github.com/workos/workos-python/commit/ccc8cd5f82802cdd275d8fab06390747b33544cd))
+
 ## [5.44.0](https://github.com/workos/workos-python/compare/v5.43.0...v5.44.0) (2026-03-06)
 
 

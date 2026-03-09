@@ -59,6 +59,7 @@ class TestEvents(object):
                         "id": "om_01234",
                         "user_id": "user_01234",
                         "organization_id": "org_01234",
+                        "organization_name": "Foo Corp",
                         "role": {"slug": "member"},
                         "status": "active",
                         "created_at": "2024-01-01T00:00:00.000Z",

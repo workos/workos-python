@@ -13,6 +13,7 @@ class BaseOrganizationMembership(WorkOSModel):
     id: str
     user_id: str
     organization_id: str
+    organization_name: str
     status: LiteralOrUntyped[OrganizationMembershipStatus]
     directory_managed: bool = False
     created_at: str

@@ -17,6 +17,7 @@ class MockOrganizationRole(OrganizationRole):
             name="Admin",
             slug="admin",
             description="Organization admin role",
+            resource_type_slug="organization",
             permissions=["documents:read", "documents:write"],
             type="OrganizationRole",
             created_at=now,

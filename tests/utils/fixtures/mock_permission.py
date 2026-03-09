@@ -12,6 +12,7 @@ class MockPermission(Permission):
             slug=slug,
             name="Read Documents",
             description="Allows reading documents",
+            resource_type_slug="organization",
             system=False,
             created_at=now,
             updated_at=now,

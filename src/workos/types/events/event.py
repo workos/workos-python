@@ -53,6 +53,15 @@ from workos.types.events.session_payload import (
     SessionCreatedPayload,
     SessionRevokedPayload,
 )
+from workos.types.events.vault_payload import (
+    VaultDataCreatedPayload,
+    VaultDataDeletedPayload,
+    VaultDataReadPayload,
+    VaultDekDecryptedPayload,
+    VaultDekReadPayload,
+    VaultKekCreatedPayload,
+    VaultNamesListedPayload,
+)
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organization_domains import OrganizationDomain
 from workos.types.roles.role import EventRole
@@ -372,6 +381,42 @@ class UserUpdatedEvent(EventModel[User]):
     event: Literal["user.updated"]
 
 
+class VaultDataCreatedEvent(EventModel[VaultDataCreatedPayload]):
+    event: Literal["vault.data.created"]
+
+
+class VaultDataDeletedEvent(EventModel[VaultDataDeletedPayload]):
+    event: Literal["vault.data.deleted"]
+
+
+class VaultDataReadEvent(EventModel[VaultDataReadPayload]):
+    event: Literal["vault.data.read"]
+
+
+class VaultDataUpdatedEvent(EventModel[VaultDataCreatedPayload]):
+    event: Literal["vault.data.updated"]
+
+
+class VaultDekDecryptedEvent(EventModel[VaultDekDecryptedPayload]):
+    event: Literal["vault.dek.decrypted"]
+
+
+class VaultDekReadEvent(EventModel[VaultDekReadPayload]):
+    event: Literal["vault.dek.read"]
+
+
+class VaultKekCreatedEvent(EventModel[VaultKekCreatedPayload]):
+    event: Literal["vault.kek.created"]
+
+
+class VaultMetadataReadEvent(EventModel[VaultDataDeletedPayload]):
+    event: Literal["vault.metadata.read"]
+
+
+class VaultNamesListedEvent(EventModel[VaultNamesListedPayload]):
+    event: Literal["vault.names.listed"]
+
+
 Event = Annotated[
     Union[
         ApiKeyCreatedEvent,
@@ -443,6 +488,15 @@ Event = Annotated[
         UserCreatedEvent,
         UserDeletedEvent,
         UserUpdatedEvent,
+        VaultDataCreatedEvent,
+        VaultDataDeletedEvent,
+        VaultDataReadEvent,
+        VaultDataUpdatedEvent,
+        VaultDekDecryptedEvent,
+        VaultDekReadEvent,
+        VaultKekCreatedEvent,
+        VaultMetadataReadEvent,
+        VaultNamesListedEvent,
     ],
     Field(..., discriminator="event"),
 ]

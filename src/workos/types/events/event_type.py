@@ -74,6 +74,15 @@ EventType = Literal[
     "user.created",
     "user.deleted",
     "user.updated",
+    "vault.data.created",
+    "vault.data.deleted",
+    "vault.data.read",
+    "vault.data.updated",
+    "vault.dek.decrypted",
+    "vault.dek.read",
+    "vault.kek.created",
+    "vault.metadata.read",
+    "vault.names.listed",
 ]
 
 EventTypeDiscriminator = TypeVar("EventTypeDiscriminator", bound=EventType)

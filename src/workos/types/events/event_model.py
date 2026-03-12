@@ -50,6 +50,15 @@ from workos.types.events.session_payload import (
     SessionCreatedPayload,
     SessionRevokedPayload,
 )
+from workos.types.events.vault_payload import (
+    VaultDataCreatedPayload,
+    VaultDataDeletedPayload,
+    VaultDataReadPayload,
+    VaultDekDecryptedPayload,
+    VaultDekReadPayload,
+    VaultKekCreatedPayload,
+    VaultNamesListedPayload,
+)
 from workos.types.organizations.organization_common import OrganizationCommon
 from workos.types.organization_domains import OrganizationDomain
 from workos.types.authorization.organization_role import OrganizationRoleEvent
@@ -110,6 +119,13 @@ EventPayload = TypeVar(
     SessionCreatedPayload,
     SessionRevokedPayload,
     User,
+    VaultDataCreatedPayload,
+    VaultDataDeletedPayload,
+    VaultDataReadPayload,
+    VaultDekDecryptedPayload,
+    VaultDekReadPayload,
+    VaultKekCreatedPayload,
+    VaultNamesListedPayload,
 )
 
 

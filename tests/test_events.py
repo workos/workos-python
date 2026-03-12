@@ -154,6 +154,7 @@ class TestEvents(object):
                     "data": {
                         "actor_id": "user_01234",
                         "actor_source": "api",
+                        "actor_name": "API Client",
                         "key_ids": ["key_01", "key_02"],
                         "key_context": {"tenant": "acme"},
                     },
@@ -178,8 +179,9 @@ class TestEvents(object):
         event = events.data[0]
         assert isinstance(event, VaultDekReadEvent)
         assert event.data.key_ids == ["key_01", "key_02"]
+        assert event.data.key_context is not None
         assert event.data.key_context.root == {"tenant": "acme"}
-        assert event.data.actor_name is None
+        assert event.data.actor_name == "API Client"
 
     def test_list_events_vault_names_listed(
         self,

@@ -9,5 +9,4 @@ class Organization(OrganizationCommon):
     allow_profiles_outside_organization: bool
     domains: Sequence[OrganizationDomain]
     stripe_customer_id: Optional[str] = None
-    external_id: Optional[str] = None
     metadata: Metadata = field(default_factory=dict)

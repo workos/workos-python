@@ -57,9 +57,11 @@ from workos.types.events.vault_payload import (
     VaultDataCreatedPayload,
     VaultDataDeletedPayload,
     VaultDataReadPayload,
+    VaultDataUpdatedPayload,
     VaultDekDecryptedPayload,
     VaultDekReadPayload,
     VaultKekCreatedPayload,
+    VaultMetadataReadPayload,
     VaultNamesListedPayload,
 )
 from workos.types.organizations.organization_common import OrganizationCommon
@@ -393,7 +395,7 @@ class VaultDataReadEvent(EventModel[VaultDataReadPayload]):
     event: Literal["vault.data.read"]
 
 
-class VaultDataUpdatedEvent(EventModel[VaultDataCreatedPayload]):
+class VaultDataUpdatedEvent(EventModel[VaultDataUpdatedPayload]):
     event: Literal["vault.data.updated"]
 
 
@@ -409,7 +411,7 @@ class VaultKekCreatedEvent(EventModel[VaultKekCreatedPayload]):
     event: Literal["vault.kek.created"]
 
 
-class VaultMetadataReadEvent(EventModel[VaultDataDeletedPayload]):
+class VaultMetadataReadEvent(EventModel[VaultMetadataReadPayload]):
     event: Literal["vault.metadata.read"]
 
 

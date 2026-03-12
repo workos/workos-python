@@ -55,3 +55,9 @@ class VaultKekCreatedPayload(WorkOSModel):
     actor_name: str
     key_name: str
     key_id: str
+
+
+# Type aliases for events that reuse another event's payload shape.
+# These give the .data field a semantically correct name for consumers.
+VaultDataUpdatedPayload = VaultDataCreatedPayload
+VaultMetadataReadPayload = VaultDataDeletedPayload

@@ -7,7 +7,13 @@ from workos.events import AsyncEvents, Events, EventsListResource
 from workos.types.events import OrganizationMembershipCreatedEvent
 from workos.types.events.event import (
     VaultDataCreatedEvent,
+    VaultDataDeletedEvent,
+    VaultDataReadEvent,
+    VaultDataUpdatedEvent,
+    VaultDekDecryptedEvent,
     VaultDekReadEvent,
+    VaultKekCreatedEvent,
+    VaultMetadataReadEvent,
     VaultNamesListedEvent,
 )
 
@@ -223,3 +229,239 @@ class TestEvents(object):
         assert event.data.actor_id == "user_01234"
         assert event.data.actor_source == "api"
         assert event.data.actor_name == "Service Account"
+
+    def test_list_events_vault_data_read(
+        self,
+        module_instance: Union[Events, AsyncEvents],
+        capture_and_mock_http_client_request,
+    ):
+        mock_response = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "event",
+                    "id": "event_vault_09",
+                    "event": "vault.data.read",
+                    "data": {
+                        "actor_id": "user_01234",
+                        "actor_source": "api",
+                        "actor_name": "Read Service",
+                        "kv_name": "db-password",
+                        "key_id": "key_55",
+                    },
+                    "created_at": "2024-01-01T00:00:00.000Z",
+                }
+            ],
+            "list_metadata": {"after": None},
+        }
+
+        capture_and_mock_http_client_request(
+            http_client=module_instance._http_client,
+            status_code=200,
+            response_dict=mock_response,
+        )
+
+        events: EventsListResource = syncify(
+            module_instance.list_events(events=["vault.data.read"])
+        )
+
+        event = events.data[0]
+        assert isinstance(event, VaultDataReadEvent)
+        assert event.data.kv_name == "db-password"
+        assert event.data.key_id == "key_55"
+
+    def test_list_events_vault_dek_decrypted(
+        self,
+        module_instance: Union[Events, AsyncEvents],
+        capture_and_mock_http_client_request,
+    ):
+        mock_response = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "event",
+                    "id": "event_vault_04",
+                    "event": "vault.dek.decrypted",
+                    "data": {
+                        "actor_id": "user_01234",
+                        "actor_source": "api",
+                        "actor_name": "Decryption Service",
+                        "key_id": "key_99",
+                    },
+                    "created_at": "2024-01-01T00:00:00.000Z",
+                }
+            ],
+            "list_metadata": {"after": None},
+        }
+
+        capture_and_mock_http_client_request(
+            http_client=module_instance._http_client,
+            status_code=200,
+            response_dict=mock_response,
+        )
+
+        events: EventsListResource = syncify(
+            module_instance.list_events(events=["vault.dek.decrypted"])
+        )
+
+        event = events.data[0]
+        assert isinstance(event, VaultDekDecryptedEvent)
+        assert event.data.key_id == "key_99"
+        assert event.data.actor_name == "Decryption Service"
+
+    def test_list_events_vault_kek_created(
+        self,
+        module_instance: Union[Events, AsyncEvents],
+        capture_and_mock_http_client_request,
+    ):
+        mock_response = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "event",
+                    "id": "event_vault_05",
+                    "event": "vault.kek.created",
+                    "data": {
+                        "actor_id": "user_01234",
+                        "actor_source": "dashboard",
+                        "actor_name": "Admin",
+                        "key_name": "production-kek",
+                        "key_id": "kek_01",
+                    },
+                    "created_at": "2024-01-01T00:00:00.000Z",
+                }
+            ],
+            "list_metadata": {"after": None},
+        }
+
+        capture_and_mock_http_client_request(
+            http_client=module_instance._http_client,
+            status_code=200,
+            response_dict=mock_response,
+        )
+
+        events: EventsListResource = syncify(
+            module_instance.list_events(events=["vault.kek.created"])
+        )
+
+        event = events.data[0]
+        assert isinstance(event, VaultKekCreatedEvent)
+        assert event.data.key_name == "production-kek"
+        assert event.data.key_id == "kek_01"
+
+    def test_list_events_vault_data_deleted(
+        self,
+        module_instance: Union[Events, AsyncEvents],
+        capture_and_mock_http_client_request,
+    ):
+        mock_response = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "event",
+                    "id": "event_vault_06",
+                    "event": "vault.data.deleted",
+                    "data": {
+                        "actor_id": "user_01234",
+                        "actor_source": "api",
+                        "actor_name": "Cleanup Job",
+                        "kv_name": "old-secret",
+                    },
+                    "created_at": "2024-01-01T00:00:00.000Z",
+                }
+            ],
+            "list_metadata": {"after": None},
+        }
+
+        capture_and_mock_http_client_request(
+            http_client=module_instance._http_client,
+            status_code=200,
+            response_dict=mock_response,
+        )
+
+        events: EventsListResource = syncify(
+            module_instance.list_events(events=["vault.data.deleted"])
+        )
+
+        event = events.data[0]
+        assert isinstance(event, VaultDataDeletedEvent)
+        assert event.data.kv_name == "old-secret"
+
+    def test_list_events_vault_data_updated(
+        self,
+        module_instance: Union[Events, AsyncEvents],
+        capture_and_mock_http_client_request,
+    ):
+        mock_response = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "event",
+                    "id": "event_vault_07",
+                    "event": "vault.data.updated",
+                    "data": {
+                        "actor_id": "user_01234",
+                        "actor_source": "api",
+                        "actor_name": "Rotation Job",
+                        "kv_name": "api-key",
+                        "key_id": "key_02",
+                        "key_context": {"env": "staging"},
+                    },
+                    "created_at": "2024-01-01T00:00:00.000Z",
+                }
+            ],
+            "list_metadata": {"after": None},
+        }
+
+        capture_and_mock_http_client_request(
+            http_client=module_instance._http_client,
+            status_code=200,
+            response_dict=mock_response,
+        )
+
+        events: EventsListResource = syncify(
+            module_instance.list_events(events=["vault.data.updated"])
+        )
+
+        event = events.data[0]
+        assert isinstance(event, VaultDataUpdatedEvent)
+        assert event.data.kv_name == "api-key"
+        assert event.data.key_id == "key_02"
+
+    def test_list_events_vault_metadata_read(
+        self,
+        module_instance: Union[Events, AsyncEvents],
+        capture_and_mock_http_client_request,
+    ):
+        mock_response = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "event",
+                    "id": "event_vault_08",
+                    "event": "vault.metadata.read",
+                    "data": {
+                        "actor_id": "user_01234",
+                        "actor_source": "api",
+                        "actor_name": "Audit Service",
+                        "kv_name": "config-store",
+                    },
+                    "created_at": "2024-01-01T00:00:00.000Z",
+                }
+            ],
+            "list_metadata": {"after": None},
+        }
+
+        capture_and_mock_http_client_request(
+            http_client=module_instance._http_client,
+            status_code=200,
+            response_dict=mock_response,
+        )
+
+        events: EventsListResource = syncify(
+            module_instance.list_events(events=["vault.metadata.read"])
+        )
+
+        event = events.data[0]
+        assert isinstance(event, VaultMetadataReadEvent)
+        assert event.data.kv_name == "config-store"

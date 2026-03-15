@@ -30,7 +30,7 @@ dev = [
 test = [
   "pytest==8.3.4",
   "pytest-asyncio==0.23.8",
-  "pytest-cov==5.0.0",
+  "pytest-cov==7.0.0",
   "six==1.17.0",
 ]
 lint = ["ruff==0.14.5"]

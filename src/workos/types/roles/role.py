@@ -11,6 +11,8 @@ class RoleCommon(WorkOSModel):
 
 class EventRole(RoleCommon):
     permissions: Optional[Sequence[str]] = None
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
 
 
 class Role(RoleCommon):

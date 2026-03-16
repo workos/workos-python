@@ -130,4 +130,5 @@ class TestEvents(object):
 
         event = events.data[0]
         assert isinstance(event, OrganizationMembershipCreatedEvent)
+        assert event.data.organization_name is None
         assert event.data.custom_attributes == {}

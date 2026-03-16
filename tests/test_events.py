@@ -1,4 +1,5 @@
 from typing import Union
+
 import pytest
 
 from tests.utils.fixtures.mock_event import MockEvent
@@ -60,6 +61,50 @@ class TestEvents(object):
                         "user_id": "user_01234",
                         "organization_id": "org_01234",
                         "organization_name": "Foo Corp",
+                        "role": {"slug": "member"},
+                        "status": "active",
+                        "created_at": "2024-01-01T00:00:00.000Z",
+                        "updated_at": "2024-01-01T00:00:00.000Z",
+                    },
+                    "created_at": "2024-01-01T00:00:00.000Z",
+                }
+            ],
+            "list_metadata": {
+                "after": None,
+            },
+        }
+
+        capture_and_mock_http_client_request(
+            http_client=module_instance._http_client,
+            status_code=200,
+            response_dict=mock_response,
+        )
+
+        events: EventsListResource = syncify(
+            module_instance.list_events(events=["organization_membership.created"])
+        )
+
+        event = events.data[0]
+        assert isinstance(event, OrganizationMembershipCreatedEvent)
+        assert event.data.custom_attributes == {}
+
+    def test_list_events_organization_membership_missing_organization_name(
+        self,
+        module_instance: Union[Events, AsyncEvents],
+        capture_and_mock_http_client_request,
+    ):
+        mock_response = {
+            "object": "list",
+            "data": [
+                {
+                    "object": "event",
+                    "id": "event_01234",
+                    "event": "organization_membership.created",
+                    "data": {
+                        "object": "organization_membership",
+                        "id": "om_01234",
+                        "user_id": "user_01234",
+                        "organization_id": "org_01234",
                         "role": {"slug": "member"},
                         "status": "active",
                         "created_at": "2024-01-01T00:00:00.000Z",

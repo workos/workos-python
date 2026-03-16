@@ -54,9 +54,11 @@ from workos.types.events.vault_payload import (
     VaultDataCreatedPayload,
     VaultDataDeletedPayload,
     VaultDataReadPayload,
+    VaultDataUpdatedPayload,
     VaultDekDecryptedPayload,
     VaultDekReadPayload,
     VaultKekCreatedPayload,
+    VaultMetadataReadPayload,
     VaultNamesListedPayload,
 )
 from workos.types.organizations.organization_common import OrganizationCommon
@@ -122,9 +124,11 @@ EventPayload = TypeVar(
     VaultDataCreatedPayload,
     VaultDataDeletedPayload,
     VaultDataReadPayload,
+    VaultDataUpdatedPayload,
     VaultDekDecryptedPayload,
     VaultDekReadPayload,
     VaultKekCreatedPayload,
+    VaultMetadataReadPayload,
     VaultNamesListedPayload,
 )
 

@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.46.0](https://github.com/workos/workos-python/compare/v5.45.0...v5.46.0) (2026-03-16)
+
+
+### Features
+
+* make vault events available in SDK ([#588](https://github.com/workos/workos-python/issues/588)) ([75322fb](https://github.com/workos/workos-python/commit/75322fb2863ad28b333184348c88fae11031ffdf))
+
+
+### Bug Fixes
+
+* Allow organization_name to be empty on organization membership events ([#595](https://github.com/workos/workos-python/issues/595)) ([865aeb5](https://github.com/workos/workos-python/commit/865aeb514daf701c7d899963e0d247d48b565b4e))
+* **deps:** update dependency pyjwt to v2.12.0 [security] ([#589](https://github.com/workos/workos-python/issues/589)) ([0d50534](https://github.com/workos/workos-python/commit/0d5053403ea2c56203793becaab43fc50d66db43))
+
 ## [5.45.0](https://github.com/workos/workos-python/compare/v5.44.0...v5.45.0) (2026-03-09)
 
 

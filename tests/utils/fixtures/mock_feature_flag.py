@@ -4,7 +4,7 @@ from workos.types.feature_flags.feature_flag import FeatureFlag
 
 
 class MockFeatureFlag(FeatureFlag):
-    def __init__(self, id):
+    def __init__(self, id, enabled=True):
         now = datetime.datetime.now().isoformat()
         super().__init__(
             object="feature_flag",
@@ -12,6 +12,14 @@ class MockFeatureFlag(FeatureFlag):
             slug="test-feature",
             name="Test Feature",
             description="A test feature flag",
+            tags=["test"],
+            owner={
+                "email": "admin@example.com",
+                "first_name": "Test",
+                "last_name": "User",
+            },
+            enabled=enabled,
+            default_value=False,
             created_at=now,
             updated_at=now,
         )

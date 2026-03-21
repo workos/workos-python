@@ -3,6 +3,7 @@ from urllib.parse import urlencode
 
 from workos._client_configuration import ClientConfiguration
 from workos.session import AsyncSession, Session
+from workos.feature_flags import FeatureFlagsListResource
 from workos.types.feature_flags import FeatureFlag
 from workos.types.feature_flags.list_filters import FeatureFlagListFilters
 from workos.types.list_resource import (
@@ -117,10 +118,6 @@ AuthenticationFactorsListResource = WorkOSListResource[
 
 InvitationsListResource = WorkOSListResource[
     Invitation, InvitationsListFilters, ListMetadata
-]
-
-FeatureFlagsListResource = WorkOSListResource[
-    FeatureFlag, FeatureFlagListFilters, ListMetadata
 ]
 
 SessionsListResource = WorkOSListResource[

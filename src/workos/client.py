@@ -6,6 +6,7 @@ from workos.audit_logs import AuditLogs
 from workos.authorization import Authorization
 from workos.connect import Connect
 from workos.directory_sync import DirectorySync
+from workos.feature_flags import FeatureFlags
 from workos.fga import FGA
 from workos.organizations import Organizations
 from workos.organization_domains import OrganizationDomains
@@ -92,6 +93,12 @@ class SyncClient(BaseClient):
         if not getattr(self, "_events", None):
             self._events = Events(self._http_client)
         return self._events
+
+    @property
+    def feature_flags(self) -> FeatureFlags:
+        if not getattr(self, "_feature_flags", None):
+            self._feature_flags = FeatureFlags(self._http_client)
+        return self._feature_flags
 
     @property
     def fga(self) -> FGA:

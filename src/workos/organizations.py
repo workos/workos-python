@@ -3,6 +3,7 @@ from typing import Optional, Protocol, Sequence
 
 from workos.types.api_keys import ApiKey, ApiKeyWithValue
 from workos.types.api_keys.list_filters import ApiKeyListFilters
+from workos.feature_flags import FeatureFlagsListResource
 from workos.types.feature_flags import FeatureFlag
 from workos.types.feature_flags.list_filters import FeatureFlagListFilters
 from workos.types.metadata import Metadata
@@ -27,10 +28,6 @@ ORGANIZATIONS_PATH = "organizations"
 
 OrganizationsListResource = WorkOSListResource[
     Organization, OrganizationListFilters, ListMetadata
-]
-
-FeatureFlagsListResource = WorkOSListResource[
-    FeatureFlag, FeatureFlagListFilters, ListMetadata
 ]
 
 ApiKeysListResource = WorkOSListResource[ApiKey, ApiKeyListFilters, ListMetadata]

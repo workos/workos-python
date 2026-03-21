@@ -7,6 +7,7 @@ from workos.authorization import AsyncAuthorization
 from workos.connect import AsyncConnect
 from workos.directory_sync import AsyncDirectorySync
 from workos.events import AsyncEvents
+from workos.feature_flags import AsyncFeatureFlags
 from workos.fga import FGAModule
 from workos.mfa import MFAModule
 from workos.organizations import AsyncOrganizations
@@ -94,6 +95,12 @@ class AsyncClient(BaseClient):
         if not getattr(self, "_events", None):
             self._events = AsyncEvents(self._http_client)
         return self._events
+
+    @property
+    def feature_flags(self) -> AsyncFeatureFlags:
+        if not getattr(self, "_feature_flags", None):
+            self._feature_flags = AsyncFeatureFlags(self._http_client)
+        return self._feature_flags
 
     @property
     def fga(self) -> FGAModule:

@@ -13,8 +13,13 @@ class MockFeatureFlag(FeatureFlag):
             name="Test Feature",
             description="A test feature flag",
             tags=["test"],
+            owner={
+                "email": "admin@example.com",
+                "first_name": "Test",
+                "last_name": "User",
+            },
             enabled=enabled,
-            default_value=None,
+            default_value=False,
             created_at=now,
             updated_at=now,
         )

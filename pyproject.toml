@@ -5,14 +5,13 @@ description = "WorkOS Python Client"
 readme = "README.md"
 license = "MIT"
 authors = [{ name = "WorkOS", email = "team@workos.com" }]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 
 dependencies = [
   "cryptography>=44.0.2",
   "httpx~=0.28.1",
   "pydantic>=2.10.4",
-  "pyjwt>=2.12.0 ; python_full_version >= '3.9'",
-  "pyjwt>=2.9.0,<2.10 ; python_full_version == '3.8.*'",
+  "pyjwt>=2.12.0",
 ]
 
 [project.urls]
@@ -36,8 +35,8 @@ test = [
 lint = ["ruff==0.14.5"]
 type_check = ["mypy==1.14.1"]
 nox = [
-  "nox>=2024.10.9 ; python_version >= '3.9'",
-  "nox-uv>=0.7.0 ; python_version >= '3.9'",
+  "nox>=2024.10.9",
+  "nox-uv>=0.7.0",
 ]
 
 

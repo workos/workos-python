@@ -45,6 +45,15 @@ wheels = [
 ]
 
 [[package]]
+name = "backports-asyncio-runner"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/ff/70dca7d7cb1cbc0edb2c6cc0c38b65cba36cccc491eca64cabd5fe7f8670/backports_asyncio_runner-1.2.0.tar.gz", hash = "sha256:a5aa7b2b7d8f8bfcaa2b57313f70792df84e32a2a746f585213373f900b42162", size = 69893, upload-time = "2025-07-02T02:27:15.685Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/59/76ab57e3fe74484f48a53f8e337171b4a2349e506eabe136d7e01d059086/backports_asyncio_runner-1.2.0-py3-none-any.whl", hash = "sha256:0da0a936a8aeb554eccb426dc55af3ba63bcdc69fa1a600b5bb305413a4477b5", size = 12313, upload-time = "2025-07-02T02:27:14.263Z" },
+]
+
+[[package]]
 name = "certifi"
 version = "2025.11.12"
 source = { registry = "https://pypi.org/simple" }
@@ -438,7 +447,7 @@ wheels = [
 
 [[package]]
 name = "nox"
-version = "2025.11.12"
+version = "2026.2.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "argcomplete" },
@@ -450,21 +459,21 @@ dependencies = [
     { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "virtualenv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b4/a8/e169497599266d176832e2232c08557ffba97eef87bf8a18f9f918e0c6aa/nox-2025.11.12.tar.gz", hash = "sha256:3d317f9e61f49d6bde39cf2f59695bb4e1722960457eee3ae19dacfe03c07259", size = 4030561, upload-time = "2025-11-12T18:39:03.319Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6e/8e/55a9679b31f1efc48facedd2448eb53c7f1e647fb592aa1403c9dd7a4590/nox-2026.2.9.tar.gz", hash = "sha256:1bc8a202ee8cd69be7aaada63b2a7019126899a06fc930a7aee75585bf8ee41b", size = 4031165, upload-time = "2026-02-10T04:38:58.878Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b9/34/434c594e0125a16b05a7bedaea33e63c90abbfbe47e5729a735a8a8a90ea/nox-2025.11.12-py3-none-any.whl", hash = "sha256:707171f9f63bc685da9d00edd8c2ceec8405b8e38b5fb4e46114a860070ef0ff", size = 74447, upload-time = "2025-11-12T18:39:01.575Z" },
+    { url = "https://files.pythonhosted.org/packages/8d/58/0d5e5a044f1868bdc45f38afdc2d90ff9867ce398b4e8fa9e666bfc9bfba/nox-2026.2.9-py3-none-any.whl", hash = "sha256:1b7143bc8ecdf25f2353201326152c5303ae4ae56ca097b1fb6179ad75164c47", size = 74615, upload-time = "2026-02-10T04:38:57.266Z" },
 ]
 
 [[package]]
 name = "nox-uv"
-version = "0.7.0"
+version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "nox" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9f/a2/be2f4d0fd1632213eb5962c8e5ee27def06305403786e21fc3179c7e26e6/nox_uv-0.7.0.tar.gz", hash = "sha256:60ac21c16650f05ebb520d737cc2e838c7a49be2ad1dbcd7165ffd3675560991", size = 5077, upload-time = "2026-01-03T19:54:59.283Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/04/e8/670919c513c22f4bf1656d84dd99a9ad1a5eaaeadf2457bab3efeeac14e0/nox_uv-0.7.1.tar.gz", hash = "sha256:f075d610b4648732fd17cbc9fa48be7d2c23df7b188fed3e4e6dde7bd1f14f20", size = 5124, upload-time = "2026-02-05T03:55:34.807Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/94/afa119b031c08e74a2e078260c5cdbb56b53949e5d2a0158215e8c265e12/nox_uv-0.7.0-py3-none-any.whl", hash = "sha256:51f9bb68ca6d721706f6372f0dec8ebfcc00408c2172b2bfeb6a6c06d9e3ab38", size = 5408, upload-time = "2026-01-03T19:54:57.798Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/0a/a6798a215366c9b034e92a9992d9013da5f544a488216fc54204ccf3c134/nox_uv-0.7.1-py3-none-any.whl", hash = "sha256:91361cc282a0a764de1b94ad002b67d5b43de4adc3f56e16d1b79928c8ec0433", size = 5457, upload-time = "2026-02-05T03:55:35.994Z" },
 ]
 
 [[package]]
@@ -680,27 +689,30 @@ wheels = [
 
 [[package]]
 name = "pytest-asyncio"
-version = "0.23.8"
+version = "1.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "backports-asyncio-runner", marker = "python_full_version < '3.11'" },
     { name = "pytest" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/de/b4/0b378b7bf26a8ae161c3890c0b48a91a04106c5713ce81b4b080ea2f4f18/pytest_asyncio-0.23.8.tar.gz", hash = "sha256:759b10b33a6dc61cce40a8bd5205e302978bbbcc00e279a8b61d9a6a3c82e4d3", size = 46920, upload-time = "2024-07-17T17:39:34.617Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/90/2c/8af215c0f776415f3590cac4f9086ccefd6fd463befeae41cd4d3f193e5a/pytest_asyncio-1.3.0.tar.gz", hash = "sha256:d7f52f36d231b80ee124cd216ffb19369aa168fc10095013c6b014a34d3ee9e5", size = 50087, upload-time = "2025-11-10T16:07:47.256Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ee/82/62e2d63639ecb0fbe8a7ee59ef0bc69a4669ec50f6d3459f74ad4e4189a2/pytest_asyncio-0.23.8-py3-none-any.whl", hash = "sha256:50265d892689a5faefb84df80819d1ecef566eb3549cf915dfb33569359d1ce2", size = 17663, upload-time = "2024-07-17T17:39:32.478Z" },
+    { url = "https://files.pythonhosted.org/packages/e5/35/f8b19922b6a25bc0880171a2f1a003eaeb93657475193ab516fd87cac9da/pytest_asyncio-1.3.0-py3-none-any.whl", hash = "sha256:611e26147c7f77640e6d0a92a38ed17c3e9848063698d5c93d5aa7aa11cebff5", size = 15075, upload-time = "2025-11-10T16:07:45.537Z" },
 ]
 
 [[package]]
 name = "pytest-cov"
-version = "5.0.0"
+version = "7.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "coverage", extra = ["toml"] },
+    { name = "pluggy" },
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/74/67/00efc8d11b630c56f15f4ad9c7f9223f1e5ec275aaae3fa9118c6a223ad2/pytest-cov-5.0.0.tar.gz", hash = "sha256:5837b58e9f6ebd335b0f8060eecce69b662415b16dc503883a02f45dfeb14857", size = 63042, upload-time = "2024-03-24T20:16:34.856Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/51/a849f96e117386044471c8ec2bd6cfebacda285da9525c9106aeb28da671/pytest_cov-7.1.0.tar.gz", hash = "sha256:30674f2b5f6351aa09702a9c8c364f6a01c27aae0c1366ae8016160d1efc56b2", size = 55592, upload-time = "2026-03-21T20:11:16.284Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl", hash = "sha256:4f0764a1219df53214206bf1feea4633c3b558a2925c8b59f144f682861ce652", size = 21990, upload-time = "2024-03-24T20:16:32.444Z" },
+    { url = "https://files.pythonhosted.org/packages/9d/7a/d968e294073affff457b041c2be9868a40c1c71f4a35fcc1e45e5493067b/pytest_cov-7.1.0-py3-none-any.whl", hash = "sha256:a0461110b7865f9a271aa1b51e516c9a95de9d696734a2f71e3e78f46e1d4678", size = 22876, upload-time = "2026-03-21T20:11:14.438Z" },
 ]
 
 [[package]]
@@ -727,15 +739,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/cc/f1/7119e42aa1d3bf036ffc9478885c2e248812b7de9abea4eae89163d2929d/ruff-0.14.5-py3-none-win32.whl", hash = "sha256:c83642e6fccfb6dea8b785eb9f456800dcd6a63f362238af5fc0c83d027dd08b", size = 12925808, upload-time = "2025-11-13T19:58:42.779Z" },
     { url = "https://files.pythonhosted.org/packages/3b/9d/7c0a255d21e0912114784e4a96bf62af0618e2190cae468cd82b13625ad2/ruff-0.14.5-py3-none-win_amd64.whl", hash = "sha256:9d55d7af7166f143c94eae1db3312f9ea8f95a4defef1979ed516dbb38c27621", size = 14331546, upload-time = "2025-11-13T19:58:45.691Z" },
     { url = "https://files.pythonhosted.org/packages/e5/80/69756670caedcf3b9be597a6e12276a6cf6197076eb62aad0c608f8efce0/ruff-0.14.5-py3-none-win_arm64.whl", hash = "sha256:4b700459d4649e2594b31f20a9de33bc7c19976d4746d8d0798ad959621d64a4", size = 13433331, upload-time = "2025-11-13T19:58:48.434Z" },
-]
-
-[[package]]
-name = "six"
-version = "1.17.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
 ]
 
 [[package]]
@@ -852,7 +855,6 @@ dev = [
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
     { name = "ruff" },
-    { name = "six" },
 ]
 lint = [
     { name = "ruff" },
@@ -865,7 +867,6 @@ test = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
-    { name = "six" },
 ]
 type-check = [
     { name = "pyright" },
@@ -881,24 +882,22 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "nox", specifier = ">=2024.10.9" },
-    { name = "nox-uv", specifier = ">=0.7.0" },
-    { name = "pyright", specifier = ">=1.1.408" },
-    { name = "pytest", specifier = "==8.3.4" },
-    { name = "pytest-asyncio", specifier = "==0.23.8" },
-    { name = "pytest-cov", specifier = "==5.0.0" },
+    { name = "nox", specifier = "~=2026.2" },
+    { name = "nox-uv", specifier = "~=0.7" },
+    { name = "pyright", specifier = "~=1.1" },
+    { name = "pytest", specifier = "~=8.3" },
+    { name = "pytest-asyncio", specifier = "~=1.3" },
+    { name = "pytest-cov", specifier = "~=7.0" },
     { name = "ruff", specifier = "==0.14.5" },
-    { name = "six", specifier = "==1.17.0" },
 ]
 lint = [{ name = "ruff", specifier = "==0.14.5" }]
 nox = [
-    { name = "nox", specifier = ">=2024.10.9" },
-    { name = "nox-uv", specifier = ">=0.7.0" },
+    { name = "nox", specifier = "~=2026.2" },
+    { name = "nox-uv", specifier = "~=0.7" },
 ]
 test = [
-    { name = "pytest", specifier = "==8.3.4" },
-    { name = "pytest-asyncio", specifier = "==0.23.8" },
-    { name = "pytest-cov", specifier = "==5.0.0" },
-    { name = "six", specifier = "==1.17.0" },
+    { name = "pytest", specifier = "~=8.3" },
+    { name = "pytest-asyncio", specifier = "~=1.3" },
+    { name = "pytest-cov", specifier = "~=7.0" },
 ]
-type-check = [{ name = "pyright", specifier = ">=1.1.408" }]
+type-check = [{ name = "pyright", specifier = "~=1.1" }]

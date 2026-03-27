@@ -1,7 +1,7 @@
 import json
 from typing import Union
 
-from six.moves.urllib.parse import parse_qsl, urlparse
+from urllib.parse import parse_qsl, urlparse
 import pytest
 
 from tests.utils.fixtures.mock_auth_factor_totp import MockAuthenticationFactorTotp

@@ -1,6 +1,6 @@
 import json
 from typing import Union
-from six.moves.urllib.parse import parse_qsl, urlparse
+from urllib.parse import parse_qsl, urlparse
 import pytest
 from tests.types.test_auto_pagination_function import TestAutoPaginationFunction
 from tests.utils.fixtures.mock_profile import MockProfile

@@ -56,8 +56,8 @@ def format_fix(s: nox.Session) -> None:
 
 @session(uv_groups=["type_check"])
 def typecheck(s: nox.Session) -> None:
-    """Run type checking with mypy."""
-    s.run("mypy")
+    """Run type checking with pyright."""
+    s.run("pyright")
 
 
 @session(uv_groups=["test", "lint", "type_check"])
@@ -68,5 +68,5 @@ def ci(s: nox.Session) -> None:
     """
     s.run("ruff", "format", "--check", ".")
     s.run("ruff", "check", ".")
-    s.run("mypy")
+    s.run("pyright")
     s.run("pytest")

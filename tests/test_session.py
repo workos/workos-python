@@ -249,12 +249,14 @@ class TestSessionBase(SessionFixtures):
             "feature_flags": ["flag1", "flag2"],
         }
 
-        with patch.object(Session, "unseal_data", return_value=mock_session), patch(
-            "jwt.decode", return_value=mock_jwt_payload
-        ), patch.object(
-            session.jwks,
-            "get_signing_key_from_jwt",
-            return_value=Mock(key=session_constants["PUBLIC_KEY"]),
+        with (
+            patch.object(Session, "unseal_data", return_value=mock_session),
+            patch("jwt.decode", return_value=mock_jwt_payload),
+            patch.object(
+                session.jwks,
+                "get_signing_key_from_jwt",
+                return_value=Mock(key=session_constants["PUBLIC_KEY"]),
+            ),
         ):
             response = session.authenticate()
 
@@ -319,12 +321,14 @@ class TestSessionBase(SessionFixtures):
             "feature_flags": ["flag1", "flag2"],
         }
 
-        with patch.object(Session, "unseal_data", return_value=mock_session), patch(
-            "jwt.decode", return_value=mock_jwt_payload
-        ), patch.object(
-            session.jwks,
-            "get_signing_key_from_jwt",
-            return_value=Mock(key=session_constants["PUBLIC_KEY"]),
+        with (
+            patch.object(Session, "unseal_data", return_value=mock_session),
+            patch("jwt.decode", return_value=mock_jwt_payload),
+            patch.object(
+                session.jwks,
+                "get_signing_key_from_jwt",
+                return_value=Mock(key=session_constants["PUBLIC_KEY"]),
+            ),
         ):
             response = session.authenticate()
 

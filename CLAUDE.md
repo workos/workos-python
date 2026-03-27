@@ -21,7 +21,7 @@ uv run mypy                   # Type checking
 
 ### Testing
 
-The SDK uses [nox](https://nox.thea.codes/) with [nox-uv](https://github.com/dantebben/nox-uv) for multi-version Python testing. This ensures compatibility across all supported Python versions (3.8-3.14).
+The SDK uses [nox](https://nox.thea.codes/) with [nox-uv](https://github.com/dantebben/nox-uv) for multi-version Python testing. This ensures compatibility across all supported Python versions (3.10-3.14).
 
 **Quick testing with the test script:**
 
@@ -116,4 +116,3 @@ When adding new features:
 2. Add Pydantic models in appropriate `types/` subdirectory
 3. Implement comprehensive tests using the sync_and_async marker
 4. Follow existing patterns for pagination, error handling, and type annotations
-

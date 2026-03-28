@@ -33,6 +33,9 @@ type_check = ["pyright~=1.1"]
 nox = ["nox~=2026.2", "nox-uv~=0.7"]
 
 
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
 [tool.ruff.lint.per-file-ignores]
 "*/__init__.py" = ["F401", "F403"]
 

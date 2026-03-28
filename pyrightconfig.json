@@ -1,0 +1,5 @@
+{
+  "include": ["src", "tests"],
+  "exclude": ["noxfile.py", ".nox", ".venv", "**/__pycache__"],
+  "reportIncompatibleVariableOverride": false
+}

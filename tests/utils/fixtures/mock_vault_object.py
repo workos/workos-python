@@ -20,7 +20,7 @@ class MockVaultObject(VaultObject):
             name=name,
             value=value,
             metadata=ObjectMetadata(
-                context=KeyContext(key="test-key"),
+                context=KeyContext({"key": "test-key"}),
                 environment_id="env_01234567890abcdef",
                 id=id,
                 key_id="key_01234567890abcdef",
@@ -43,7 +43,7 @@ class MockObjectMetadata(ObjectMetadata):
     def __init__(self, id="vault_01234567890abcdef"):
         now = datetime.datetime.now().isoformat()
         super().__init__(
-            context=KeyContext(key="test-key"),
+            context=KeyContext({"key": "test-key"}),
             environment_id="env_01234567890abcdef",
             id=id,
             key_id="key_01234567890abcdef",

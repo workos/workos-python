@@ -189,6 +189,7 @@ class TestEvents(object):
         assert event.data.actor_name == "Test User"
         assert event.data.kv_name == "my-secret"
         assert event.data.key_id == "key_01234"
+        assert event.data.key_context is not None
         assert event.data.key_context.root == {"env": "production"}
 
     def test_list_events_vault_dek_read(

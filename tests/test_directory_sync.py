@@ -17,6 +17,10 @@ from workos.directory_sync import (
     AsyncDirectorySync,
     DirectorySync,
 )
+from workos.types.directory_sync.list_filters import (
+    DirectoryGroupListFilters,
+    DirectoryUserListFilters,
+)
 
 
 def api_directory_to_sdk(directory):
@@ -389,28 +393,28 @@ class TestPrepareRequestParams:
     """
 
     def test_translates_directory_id_to_directory(self):
-        params = {"directory_id": "dir_123", "limit": 10}
+        params: DirectoryUserListFilters = {"directory_id": "dir_123", "limit": 10}
         result = _prepare_request_params(params)
         assert "directory" in result
         assert "directory_id" not in result
         assert result["directory"] == "dir_123"
 
     def test_translates_group_id_to_group(self):
-        params = {"group_id": "grp_123", "limit": 10}
+        params: DirectoryUserListFilters = {"group_id": "grp_123", "limit": 10}
         result = _prepare_request_params(params)
         assert "group" in result
         assert "group_id" not in result
         assert result["group"] == "grp_123"
 
     def test_translates_user_id_to_user(self):
-        params = {"user_id": "usr_123", "limit": 10}
+        params: DirectoryGroupListFilters = {"user_id": "usr_123", "limit": 10}
         result = _prepare_request_params(params)
         assert "user" in result
         assert "user_id" not in result
         assert result["user"] == "usr_123"
 
     def test_preserves_non_id_params(self):
-        params = {
+        params: DirectoryUserListFilters = {
             "directory_id": "dir_123",
             "limit": 10,
             "order": "desc",
@@ -422,6 +426,6 @@ class TestPrepareRequestParams:
         assert result["after"] == "cursor"
 
     def test_handles_empty_params(self):
-        params = {"limit": 10, "order": "desc"}
+        params: DirectoryUserListFilters = {"limit": 10, "order": "desc"}
         result = _prepare_request_params(params)
         assert result == {"limit": 10, "order": "desc"}

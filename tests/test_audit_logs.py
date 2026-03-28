@@ -162,12 +162,12 @@ class TestAuditLogs:
                         organization_id=organization_id, event=mock_audit_log_event
                     )
                 )
-                assert excinfo.code == "invalid_audit_log"
-                assert excinfo.errors == ["error in a field"]
-                assert (
-                    excinfo.message
-                    == "Audit Log could not be processed due to missing or incorrect data."
-                )
+            assert excinfo.value.code == "invalid_audit_log"
+            assert excinfo.value.errors == ["error in a field"]
+            assert (
+                excinfo.value.message
+                == "Audit Log could not be processed due to missing or incorrect data."
+            )
 
     class TestCreateExport:
         def test_succeeds(

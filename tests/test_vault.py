@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 import pytest
 
 from tests.utils.fixtures.mock_vault_object import (
@@ -105,7 +107,7 @@ class TestVault:
         with pytest.raises(
             ValueError, match="Incomplete arguments: 'object_id' is a required argument"
         ):
-            self.vault.read_object(object_id=None)
+            self.vault.read_object(object_id=cast(str, None))
 
     def test_read_object_by_name_success(
         self, mock_vault_object, capture_and_mock_http_client_request
@@ -133,7 +135,7 @@ class TestVault:
         with pytest.raises(
             ValueError, match="Incomplete arguments: 'name' is a required argument"
         ):
-            self.vault.read_object_by_name(name=None)
+            self.vault.read_object_by_name(name=cast(str, None))
 
     def test_list_objects_default_params(
         self, mock_vault_objects_list, capture_and_mock_http_client_request
@@ -297,7 +299,8 @@ class TestVault:
         with pytest.raises(
             TypeError, match="missing 1 required keyword-only argument: 'value'"
         ):
-            self.vault.update_object(object_id="vault_01234567890abcdef")
+            kwargs: dict[str, Any] = {"object_id": "vault_01234567890abcdef"}
+            self.vault.update_object(**kwargs)
 
     def test_update_object_missing_object_id(self):
         with pytest.raises(
@@ -310,7 +313,7 @@ class TestVault:
             ValueError,
             match="Incomplete arguments: 'object_id' is a required argument",
         ):
-            self.vault.update_object(object_id=None, value="updated-value")
+            self.vault.update_object(object_id=cast(str, None), value="updated-value")
 
     def test_delete_object_success(self, capture_and_mock_http_client_request):
         request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 204)
@@ -331,7 +334,7 @@ class TestVault:
         with pytest.raises(
             ValueError, match="Incomplete arguments: 'object_id' is a required argument"
         ):
-            self.vault.delete_object(object_id=None)
+            self.vault.delete_object(object_id=cast(str, None))
 
     def test_create_data_key_success(
         self, mock_data_key_pair, capture_and_mock_http_client_request

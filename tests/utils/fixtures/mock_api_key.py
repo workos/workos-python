@@ -1,6 +1,7 @@
 import datetime
 
 from workos.types.api_keys import ApiKey, ApiKeyWithValue
+from workos.types.api_keys.api_keys import ApiKeyOwner
 
 
 class MockApiKey(ApiKey):
@@ -9,7 +10,7 @@ class MockApiKey(ApiKey):
         super().__init__(
             object="api_key",
             id=id,
-            owner={"type": "organization", "id": "org_1337"},
+            owner=ApiKeyOwner(type="organization", id="org_1337"),
             name="Development API Key",
             obfuscated_value="api_..0",
             permissions=[],
@@ -25,7 +26,7 @@ class MockApiKeyWithValue(ApiKeyWithValue):
         super().__init__(
             object="api_key",
             id=id,
-            owner={"type": "organization", "id": "org_1337"},
+            owner=ApiKeyOwner(type="organization", id="org_1337"),
             name="Development API Key",
             obfuscated_value="sk_...xyz",
             value="sk_live_abc123xyz",

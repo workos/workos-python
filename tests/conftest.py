@@ -87,6 +87,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc):
             module_classes = marker.args
             ids = []
             arg_values = []
+            arg_names = ["module_instance"]
 
             for module_class in module_classes:
                 if module_class is None:
@@ -110,7 +111,6 @@ def pytest_generate_tests(metafunc: pytest.Metafunc):
                 module_instance = module_class(**class_kwargs)
 
                 ids.append(setup_name)  # sync or async will be the test ID
-                arg_names = ["module_instance"]
                 arg_values.append([module_instance])
 
             metafunc.parametrize(

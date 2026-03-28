@@ -1,5 +1,5 @@
 import json
-from typing import Union
+from typing import Any, Union
 
 from urllib.parse import parse_qsl, urlparse
 import pytest
@@ -510,7 +510,7 @@ class TestUserManagement(UserManagementFixtures):
             self.http_client, mock_user, 200
         )
 
-        params = {
+        params: dict[str, Any] = {
             "first_name": "Marcelina",
             "locale": "fr-FR",
         }
@@ -700,7 +700,7 @@ class TestUserManagement(UserManagementFixtures):
         mock_auth_response,
         base_authentication_params,
     ):
-        params = {
+        params: dict[str, Any] = {
             "code": "test_code",
             "code_verifier": "test_code_verifier",
             "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
@@ -730,7 +730,7 @@ class TestUserManagement(UserManagementFixtures):
         mock_auth_response_with_impersonator,
         base_authentication_params,
     ):
-        params = {"code": "test_code"}
+        params: dict[str, Any] = {"code": "test_code"}
 
         request_kwargs = capture_and_mock_http_client_request(
             self.http_client, mock_auth_response_with_impersonator, 200
@@ -758,7 +758,7 @@ class TestUserManagement(UserManagementFixtures):
         mock_auth_response,
         base_authentication_params,
     ):
-        params = {
+        params: dict[str, Any] = {
             "code": "test_code",
             "code_verifier": "test_code_verifier",
             "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
@@ -916,7 +916,7 @@ class TestUserManagement(UserManagementFixtures):
         mock_auth_refresh_token_response,
         base_authentication_params,
     ):
-        params = {
+        params: dict[str, Any] = {
             "refresh_token": "refresh_token_98765",
             "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
             "ip_address": "192.0.0.1",

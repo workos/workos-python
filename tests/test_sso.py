@@ -375,6 +375,7 @@ class TestSSO(SSOFixtures):
         }
         assert updated_connection.id == "conn_01FHT48Z8J8295GZNQ4ZP1J81T"
         assert updated_connection.name == "Foo Corporation"
+        assert updated_connection.options is not None
         assert updated_connection.options.signing_cert == "signing_cert"
 
     def test_delete_connection(self, capture_and_mock_http_client_request):

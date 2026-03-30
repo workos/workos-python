@@ -31,4 +31,4 @@ jobs:
         run: uv run ruff check --extend-exclude .devbox
 
       - name: Type check
-        run: uv run mypy
+        run: uv run pyright

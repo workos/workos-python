@@ -4,14 +4,14 @@ version = "5.46.0"
 description = "WorkOS Python Client"
 readme = "README.md"
 license = "MIT"
-authors = [{ name = "WorkOS", email = "team@workos.com" }]
+authors = [{ name = "WorkOS", email = "sdk@workos.com" }]
 requires-python = ">=3.10"
 
 dependencies = [
-  "cryptography>=44.0.2",
-  "httpx~=0.28.1",
-  "pydantic>=2.10.4",
-  "pyjwt>=2.12.0",
+  "cryptography~=46.0",
+  "httpx~=0.28",
+  "pydantic~=2.12",
+  "pyjwt~=2.12",
 ]
 
 [project.urls]
@@ -27,8 +27,13 @@ dev = [
   { include-group = "nox" },
   "pyright>=1.1.408",
 ]
-test = ["pytest~=8.3", "pytest-asyncio~=1.3", "pytest-cov~=7.0", "pytest-httpx~=0.35.0"]
-lint = ["ruff==0.14.5"]
+test = [
+  "pytest~=9.0",
+  "pytest-asyncio~=1.3",
+  "pytest-cov~=7.1",
+  "pytest-httpx~=0.36",
+  ]
+lint = ["ruff~=0.15"]
 type_check = ["pyright~=1.1"]
 nox = ["nox~=2026.2", "nox-uv~=0.7"]
 
@@ -51,5 +56,5 @@ typeCheckingMode = "strict"
 include = ["workos"]
 
 [build-system]
-requires = ["uv_build>=0.8.15,<0.9.0"]
+requires = ["uv_build~=0.11"]
 build-backend = "uv_build"

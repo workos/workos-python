@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
-import hmac
-import json
-import time
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
@@ -20,6 +16,10 @@ from workos.common.models import (
 )
 from .._pagination import AsyncPage, SyncPage
 from .._types import RequestOptions
+import hashlib
+import hmac
+import json
+import time
 
 
 class Webhooks:
@@ -249,7 +249,9 @@ class Webhooks:
 
         issued_timestamp = issued_timestamp[2:]
         signature_hash = signature_hash[3:]
-        max_seconds_since_issued = tolerance if tolerance is not None else self.DEFAULT_TOLERANCE
+        max_seconds_since_issued = (
+            tolerance if tolerance is not None else self.DEFAULT_TOLERANCE
+        )
         current_time = time.time()
         timestamp_in_seconds = int(issued_timestamp) / 1000
         seconds_since_issued = current_time - timestamp_in_seconds
@@ -258,9 +260,7 @@ class Webhooks:
             raise ValueError("Timestamp outside the tolerance zone")
 
         body_str = (
-            event_body.decode("utf-8")
-            if isinstance(event_body, bytes)
-            else event_body
+            event_body.decode("utf-8") if isinstance(event_body, bytes) else event_body
         )
         unhashed_string = f"{issued_timestamp}.{body_str}"
         expected_signature = hmac.new(
@@ -273,6 +273,7 @@ class Webhooks:
             raise ValueError(
                 "Signature hash does not match the expected signature hash for payload"
             )
+
     # @oagen-ignore-end
 
 

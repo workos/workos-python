@@ -9,9 +9,9 @@ if TYPE_CHECKING:
 
 from .models import Profile, SSOLogoutAuthorizeResponse, SSOTokenResponse
 from .models import SSOProvider
+from .._types import RequestOptions
 from ..connections.models import Connection, ConnectionsConnectionType, ConnectionsOrder
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions
 
 
 class SSO:
@@ -325,6 +325,7 @@ class SSO:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
         """
         self._client.connections.delete(id, request_options=request_options)
+
     # @oagen-ignore-end
 
 
@@ -639,4 +640,5 @@ class AsyncSSO:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
         """
         await self._client.connections.delete(id, request_options=request_options)
+
     # @oagen-ignore-end

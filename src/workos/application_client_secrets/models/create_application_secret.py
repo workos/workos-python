@@ -11,8 +11,6 @@ from workos._errors import BaseRequestException
 class CreateApplicationSecret:
     """Create Application Secret model."""
 
-    pass
-
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "CreateApplicationSecret":
         """Deserialize from a dictionary."""

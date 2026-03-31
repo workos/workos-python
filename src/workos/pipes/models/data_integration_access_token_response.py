@@ -11,8 +11,6 @@ from workos._errors import BaseRequestException
 class DataIntegrationAccessTokenResponse:
     """Data Integration Access Token Response model."""
 
-    pass
-
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationAccessTokenResponse":
         """Deserialize from a dictionary."""

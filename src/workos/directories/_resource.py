@@ -107,8 +107,6 @@ class Directories:
             request_options=request_options,
         )
 
-    find = get
-
     def delete(
         self,
         id: str,
@@ -134,8 +132,6 @@ class Directories:
             path=f"directories/{id}",
             request_options=request_options,
         )
-
-    delete_directory = delete
 
 
 class AsyncDirectories:
@@ -232,8 +228,6 @@ class AsyncDirectories:
             request_options=request_options,
         )
 
-    find = get
-
     async def delete(
         self,
         id: str,
@@ -259,5 +253,3 @@ class AsyncDirectories:
             path=f"directories/{id}",
             request_options=request_options,
         )
-
-    delete_directory = delete

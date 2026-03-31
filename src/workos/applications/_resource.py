@@ -137,8 +137,6 @@ class Applications:
             request_options=request_options,
         )
 
-    find = get
-
     def update(
         self,
         id: str,
@@ -336,8 +334,6 @@ class AsyncApplications:
             model=ConnectApplication,
             request_options=request_options,
         )
-
-    find = get
 
     async def update(
         self,

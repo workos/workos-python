@@ -105,8 +105,6 @@ class DirectoryUsers:
             request_options=request_options,
         )
 
-    find = get
-
 
 class AsyncDirectoryUsers:
     """Directory Users API resources (async)."""
@@ -199,5 +197,3 @@ class AsyncDirectoryUsers:
             model=DirectoryUserWithGroups,
             request_options=request_options,
         )
-
-    find = get

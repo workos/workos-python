@@ -292,8 +292,6 @@ class Authorization:
             request_options=request_options,
         )
 
-    remove_role_by_criteria = remove_role
-
     def remove_role_by_id(
         self,
         organization_membership_id: str,
@@ -436,8 +434,6 @@ class Authorization:
             model=Role,
             request_options=request_options,
         )
-
-    get_roles_organizations = get_roles_organization
 
     def update_roles_organizations(
         self,
@@ -959,8 +955,6 @@ class Authorization:
             request_options=request_options,
         )
 
-    create_resources = create_resource
-
     def get_by_id(
         self,
         resource_id: str,
@@ -992,8 +986,6 @@ class Authorization:
             model=AuthorizationResource,
             request_options=request_options,
         )
-
-    find_by_id = get_by_id
 
     def update_resource(
         self,
@@ -1051,8 +1043,6 @@ class Authorization:
             request_options=request_options,
         )
 
-    update_resources = update_resource
-
     def delete_resource(
         self,
         resource_id: str,
@@ -1091,8 +1081,6 @@ class Authorization:
             params=params,
             request_options=request_options,
         )
-
-    delete_resources = delete_resource
 
     def list_organization_memberships_for_resource(
         self,
@@ -1655,8 +1643,6 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    remove_role_by_criteria = remove_role
-
     async def remove_role_by_id(
         self,
         organization_membership_id: str,
@@ -1799,8 +1785,6 @@ class AsyncAuthorization:
             model=Role,
             request_options=request_options,
         )
-
-    get_roles_organizations = get_roles_organization
 
     async def update_roles_organizations(
         self,
@@ -2322,8 +2306,6 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    create_resources = create_resource
-
     async def get_by_id(
         self,
         resource_id: str,
@@ -2355,8 +2337,6 @@ class AsyncAuthorization:
             model=AuthorizationResource,
             request_options=request_options,
         )
-
-    find_by_id = get_by_id
 
     async def update_resource(
         self,
@@ -2414,8 +2394,6 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    update_resources = update_resource
-
     async def delete_resource(
         self,
         resource_id: str,
@@ -2454,8 +2432,6 @@ class AsyncAuthorization:
             params=params,
             request_options=request_options,
         )
-
-    delete_resources = delete_resource
 
     async def list_organization_memberships_for_resource(
         self,

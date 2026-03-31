@@ -245,8 +245,6 @@ class SSO:
             request_options=request_options,
         )
 
-    token = get_profile_and_token
-
     # @oagen-ignore-start
     def list_connections(
         self,
@@ -559,8 +557,6 @@ class AsyncSSO:
             model=SSOTokenResponse,
             request_options=request_options,
         )
-
-    token = get_profile_and_token
 
     # @oagen-ignore-start
     async def list_connections(

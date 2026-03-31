@@ -28,9 +28,9 @@ class TestApiKeys:
         body = json.loads(request.content)
         assert body["value"] == "test_value"
 
-    def test_delete_api_key(self, workos, httpx_mock):
+    def test_delete(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.api_keys.delete_api_key("test_id")
+        result = workos.api_keys.delete("test_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
@@ -86,9 +86,9 @@ class TestAsyncApiKeys:
         assert request.method == "POST"
         assert request.url.path.endswith("/api_keys/validations")
 
-    async def test_delete_api_key(self, async_workos, httpx_mock):
+    async def test_delete(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.api_keys.delete_api_key("test_id")
+        result = await async_workos.api_keys.delete("test_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"

@@ -137,8 +137,6 @@ class UserManagementDataProviders:
             request_options=request_options,
         )
 
-    get_user_data_integrations = get_user_data_integration
-
 
 class AsyncUserManagementDataProviders:
     """User Management Data Providers API resources (async)."""
@@ -265,5 +263,3 @@ class AsyncUserManagementDataProviders:
             model=DataIntegrationsListResponse,
             request_options=request_options,
         )
-
-    get_user_data_integrations = get_user_data_integration

@@ -51,7 +51,7 @@ class ApiKeys:
             request_options=request_options,
         )
 
-    def delete_api_key(
+    def delete(
         self,
         id: str,
         *,
@@ -76,8 +76,6 @@ class ApiKeys:
             path=f"api_keys/{id}",
             request_options=request_options,
         )
-
-    delete = delete_api_key
 
 
 class AsyncApiKeys:
@@ -120,7 +118,7 @@ class AsyncApiKeys:
             request_options=request_options,
         )
 
-    async def delete_api_key(
+    async def delete(
         self,
         id: str,
         *,
@@ -145,5 +143,3 @@ class AsyncApiKeys:
             path=f"api_keys/{id}",
             request_options=request_options,
         )
-
-    delete = delete_api_key

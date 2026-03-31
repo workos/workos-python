@@ -110,8 +110,6 @@ class Connections:
             request_options=request_options,
         )
 
-    find = get
-
     def delete(
         self,
         id: str,
@@ -236,8 +234,6 @@ class AsyncConnections:
             model=Connection,
             request_options=request_options,
         )
-
-    find = get
 
     async def delete(
         self,

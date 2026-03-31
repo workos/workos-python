@@ -79,8 +79,6 @@ class Events:
             request_options=request_options,
         )
 
-    list = list_events
-
 
 class AsyncEvents:
     """Events API resources (async)."""
@@ -147,5 +145,3 @@ class AsyncEvents:
             params=params,
             request_options=request_options,
         )
-
-    list = list_events

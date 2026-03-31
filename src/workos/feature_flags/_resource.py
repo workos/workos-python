@@ -98,8 +98,6 @@ class FeatureFlags:
             request_options=request_options,
         )
 
-    find_by_slug = get_by_slug
-
     def disable_flag(
         self,
         slug: str,
@@ -245,8 +243,6 @@ class AsyncFeatureFlags:
             model=Flag,
             request_options=request_options,
         )
-
-    find_by_slug = get_by_slug
 
     async def disable_flag(
         self,

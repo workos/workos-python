@@ -348,8 +348,6 @@ class UserManagementUsers:
             request_options=request_options,
         )
 
-    get_users = get_user
-
     def update(
         self,
         id: str,
@@ -545,8 +543,6 @@ class UserManagementUsers:
             UserIdentitiesGetItem.from_dict(cast(Dict[str, Any], item))
             for item in (raw if isinstance(raw, list) else [])
         ]
-
-    get_identities = get_identity
 
     def list_sessions(
         self,
@@ -921,8 +917,6 @@ class AsyncUserManagementUsers:
             request_options=request_options,
         )
 
-    get_users = get_user
-
     async def update(
         self,
         id: str,
@@ -1118,8 +1112,6 @@ class AsyncUserManagementUsers:
             UserIdentitiesGetItem.from_dict(cast(Dict[str, Any], item))
             for item in (raw if isinstance(raw, list) else [])
         ]
-
-    get_identities = get_identity
 
     async def list_sessions(
         self,

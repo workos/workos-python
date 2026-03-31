@@ -17,7 +17,7 @@ class OrganizationDomains:
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
-    def create_organization_domain(
+    def create(
         self,
         *,
         domain: str,
@@ -54,9 +54,7 @@ class OrganizationDomains:
             request_options=request_options,
         )
 
-    create = create_organization_domain
-
-    def get_organization_domain(
+    def get(
         self,
         id: str,
         *,
@@ -86,9 +84,7 @@ class OrganizationDomains:
             request_options=request_options,
         )
 
-    get = get_organization_domain
-
-    def delete_organization_domain(
+    def delete(
         self,
         id: str,
         *,
@@ -113,8 +109,6 @@ class OrganizationDomains:
             path=f"organization_domains/{id}",
             request_options=request_options,
         )
-
-    delete = delete_organization_domain
 
     def verify_organization_domain(
         self,
@@ -146,8 +140,6 @@ class OrganizationDomains:
             request_options=request_options,
         )
 
-    verify = verify_organization_domain
-
 
 class AsyncOrganizationDomains:
     """Organization Domains API resources (async)."""
@@ -155,7 +147,7 @@ class AsyncOrganizationDomains:
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
-    async def create_organization_domain(
+    async def create(
         self,
         *,
         domain: str,
@@ -192,9 +184,7 @@ class AsyncOrganizationDomains:
             request_options=request_options,
         )
 
-    create = create_organization_domain
-
-    async def get_organization_domain(
+    async def get(
         self,
         id: str,
         *,
@@ -224,9 +214,7 @@ class AsyncOrganizationDomains:
             request_options=request_options,
         )
 
-    get = get_organization_domain
-
-    async def delete_organization_domain(
+    async def delete(
         self,
         id: str,
         *,
@@ -251,8 +239,6 @@ class AsyncOrganizationDomains:
             path=f"organization_domains/{id}",
             request_options=request_options,
         )
-
-    delete = delete_organization_domain
 
     async def verify_organization_domain(
         self,
@@ -283,5 +269,3 @@ class AsyncOrganizationDomains:
             model=OrganizationDomainStandAlone,
             request_options=request_options,
         )
-
-    verify = verify_organization_domain

@@ -90,7 +90,7 @@ class TestOrganizations:
         assert request.method == "GET"
         assert request.url.path.endswith("/organizations/test_id")
 
-    def test_update_organization(self, workos, httpx_mock):
+    def test_update(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization.json"),
         )
@@ -102,7 +102,7 @@ class TestOrganizations:
         assert request.method == "PUT"
         assert request.url.path.endswith("/organizations/test_id")
 
-    def test_delete_organization(self, workos, httpx_mock):
+    def test_delete(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = workos.organizations.delete("test_id")
         assert result is None
@@ -250,7 +250,7 @@ class TestAsyncOrganizations:
         assert request.method == "GET"
         assert request.url.path.endswith("/organizations/test_id")
 
-    async def test_update_organization(self, async_workos, httpx_mock):
+    async def test_update(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization.json"))
         result = await async_workos.organizations.update("test_id")
         assert isinstance(result, Organization)
@@ -260,7 +260,7 @@ class TestAsyncOrganizations:
         assert request.method == "PUT"
         assert request.url.path.endswith("/organizations/test_id")
 
-    async def test_delete_organization(self, async_workos, httpx_mock):
+    async def test_delete(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.organizations.delete("test_id")
         assert result is None

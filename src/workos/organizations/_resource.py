@@ -194,8 +194,6 @@ class Organizations:
             request_options=request_options,
         )
 
-    find = get
-
     def update(
         self,
         id: str,
@@ -559,8 +557,6 @@ class AsyncOrganizations:
             model=Organization,
             request_options=request_options,
         )
-
-    find = get
 
     async def update(
         self,

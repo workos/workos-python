@@ -146,8 +146,6 @@ class Permissions:
             request_options=request_options,
         )
 
-    find = get
-
     def update(
         self,
         slug: str,
@@ -353,8 +351,6 @@ class AsyncPermissions:
             model=AuthorizationPermission,
             request_options=request_options,
         )
-
-    find = get
 
     async def update(
         self,

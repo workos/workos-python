@@ -105,8 +105,6 @@ class DirectoryGroups:
             request_options=request_options,
         )
 
-    find = get
-
 
 class AsyncDirectoryGroups:
     """Directory Groups API resources (async)."""
@@ -199,5 +197,3 @@ class AsyncDirectoryGroups:
             model=DirectoryGroup,
             request_options=request_options,
         )
-
-    find = get

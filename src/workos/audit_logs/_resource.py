@@ -125,8 +125,6 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    schemas = list_schemas
-
     def create_schema(
         self,
         action_name: str,
@@ -172,8 +170,6 @@ class AuditLogs:
             model=AuditLogSchemaJson,
             request_options=request_options,
         )
-
-    create_schemas = create_schema
 
     def create_event(
         self,
@@ -222,8 +218,6 @@ class AuditLogs:
             idempotency_key=idempotency_key,
             request_options=request_options,
         )
-
-    create_events = create_event
 
     def exports(
         self,
@@ -419,8 +413,6 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    schemas = list_schemas
-
     async def create_schema(
         self,
         action_name: str,
@@ -466,8 +458,6 @@ class AsyncAuditLogs:
             model=AuditLogSchemaJson,
             request_options=request_options,
         )
-
-    create_schemas = create_schema
 
     async def create_event(
         self,
@@ -516,8 +506,6 @@ class AsyncAuditLogs:
             idempotency_key=idempotency_key,
             request_options=request_options,
         )
-
-    create_events = create_event
 
     async def exports(
         self,

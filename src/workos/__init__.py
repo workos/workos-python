@@ -17,18 +17,12 @@ from ._errors import (
     WorkOSConnectionException,
     WorkOSTimeoutException,
 )
-from ._pagination import AsyncPage, SyncPage, WorkOSListResource
+from ._pagination import AsyncPage, SyncPage
 from ._types import RequestOptions
-
-# Backward-compatible aliases
-WorkOS = WorkOSClient
-AsyncWorkOS = AsyncWorkOSClient
 
 __all__ = [
     "WorkOSClient",
     "AsyncWorkOSClient",
-    "WorkOS",
-    "AsyncWorkOS",
     "RequestOptions",
     "BaseRequestException",
     "AuthenticationException",
@@ -44,5 +38,4 @@ __all__ = [
     "WorkOSTimeoutException",
     "AsyncPage",
     "SyncPage",
-    "WorkOSListResource",
 ]

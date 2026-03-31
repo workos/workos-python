@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .models import ApplicationCredentialsListItem, NewConnectApplicationSecret
 from .._types import RequestOptions
+from .models import ApplicationCredentialsListItem, NewConnectApplicationSecret
 
 
 class ApplicationClientSecrets:

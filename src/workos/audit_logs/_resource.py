@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import (
     AuditLogActionJson,
     AuditLogEventCreateResponse,
@@ -18,7 +19,6 @@ from .models import (
 )
 from .models import AuditLogsOrder
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions
 
 
 class AuditLogs:
@@ -33,7 +33,7 @@ class AuditLogs:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuditLogsOrder] = None,
+        order: Optional[Union[AuditLogsOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuditLogActionJson]:
         """List Actions
@@ -63,7 +63,7 @@ class AuditLogs:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -75,14 +75,14 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def list_schemas(
+    def schemas(
         self,
         action_name: str,
         *,
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuditLogsOrder] = None,
+        order: Optional[Union[AuditLogsOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuditLogSchemaJson]:
         """List Schemas
@@ -113,7 +113,7 @@ class AuditLogs:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -125,7 +125,7 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def create_schema(
+    def create_schemas(
         self,
         action_name: str,
         *,
@@ -171,7 +171,7 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def create_event(
+    def create_events(
         self,
         *,
         organization_id: str,
@@ -321,7 +321,7 @@ class AsyncAuditLogs:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuditLogsOrder] = None,
+        order: Optional[Union[AuditLogsOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuditLogActionJson]:
         """List Actions
@@ -351,7 +351,7 @@ class AsyncAuditLogs:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -363,14 +363,14 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def list_schemas(
+    async def schemas(
         self,
         action_name: str,
         *,
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuditLogsOrder] = None,
+        order: Optional[Union[AuditLogsOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuditLogSchemaJson]:
         """List Schemas
@@ -401,7 +401,7 @@ class AsyncAuditLogs:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -413,7 +413,7 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def create_schema(
+    async def create_schemas(
         self,
         action_name: str,
         *,
@@ -459,7 +459,7 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def create_event(
+    async def create_events(
         self,
         *,
         organization_id: str,

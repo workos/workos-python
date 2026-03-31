@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from ..._client import AsyncWorkOSClient, WorkOSClient
 
-from .models import JwksResponse
 from ..._types import RequestOptions
+from .models import JwksResponse
 
 
 class UserManagementSessionTokens:

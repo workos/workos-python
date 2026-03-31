@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import Profile, SSOLogoutAuthorizeResponse, SSOTokenResponse
 from .models import SSOProvider
-from .._types import RequestOptions
 from ..connections.models import Connection, ConnectionsConnectionType, ConnectionsOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -25,9 +25,9 @@ class SSO:
         *,
         provider_scopes: Optional[List[str]] = None,
         provider_query_params: Optional[Dict[str, str]] = None,
-        client_id: str,
+        client_id: Optional[str] = None,
         domain: Optional[str] = None,
-        provider: Optional[SSOProvider] = None,
+        provider: Optional[Union[SSOProvider, str]] = None,
         redirect_uri: str,
         response_type: Literal["code"],
         state: Optional[str] = None,
@@ -79,7 +79,7 @@ class SSO:
                 "provider_query_params": provider_query_params,
                 "client_id": client_id,
                 "domain": domain,
-                "provider": provider.value if provider else None,
+                "provider": enum_value(provider) if provider is not None else None,
                 "redirect_uri": redirect_uri,
                 "response_type": response_type,
                 "state": state,
@@ -91,6 +91,7 @@ class SSO:
             }.items()
             if v is not None
         }
+        params["client_id"] = params.get("client_id") or self._client.client_id
         return self._client.build_url("sso/authorize", params)
 
     def logout(
@@ -200,11 +201,11 @@ class SSO:
             request_options=request_options,
         )
 
-    def get_profile_and_token(
+    def token(
         self,
         *,
-        client_id: str,
-        client_secret: str,
+        client_id: Optional[str] = None,
+        client_secret: Optional[str] = None,
         code: str,
         grant_type: Literal["authorization_code"],
         request_options: Optional[RequestOptions] = None,
@@ -237,6 +238,8 @@ class SSO:
             "code": code,
             "grant_type": grant_type,
         }
+        body["client_id"] = body.get("client_id") or self._client.client_id
+        body["client_secret"] = body.get("client_secret") or self._client._api_key
         return self._client.request(
             method="post",
             path="sso/token",
@@ -338,9 +341,9 @@ class AsyncSSO:
         *,
         provider_scopes: Optional[List[str]] = None,
         provider_query_params: Optional[Dict[str, str]] = None,
-        client_id: str,
+        client_id: Optional[str] = None,
         domain: Optional[str] = None,
-        provider: Optional[SSOProvider] = None,
+        provider: Optional[Union[SSOProvider, str]] = None,
         redirect_uri: str,
         response_type: Literal["code"],
         state: Optional[str] = None,
@@ -392,7 +395,7 @@ class AsyncSSO:
                 "provider_query_params": provider_query_params,
                 "client_id": client_id,
                 "domain": domain,
-                "provider": provider.value if provider else None,
+                "provider": enum_value(provider) if provider is not None else None,
                 "redirect_uri": redirect_uri,
                 "response_type": response_type,
                 "state": state,
@@ -404,6 +407,7 @@ class AsyncSSO:
             }.items()
             if v is not None
         }
+        params["client_id"] = params.get("client_id") or self._client.client_id
         return self._client.build_url("sso/authorize", params)
 
     async def logout(
@@ -513,11 +517,11 @@ class AsyncSSO:
             request_options=request_options,
         )
 
-    async def get_profile_and_token(
+    async def token(
         self,
         *,
-        client_id: str,
-        client_secret: str,
+        client_id: Optional[str] = None,
+        client_secret: Optional[str] = None,
         code: str,
         grant_type: Literal["authorization_code"],
         request_options: Optional[RequestOptions] = None,
@@ -550,6 +554,8 @@ class AsyncSSO:
             "code": code,
             "grant_type": grant_type,
         }
+        body["client_id"] = body.get("client_id") or self._client.client_id
+        body["client_secret"] = body.get("client_secret") or self._client._api_key
         return await self._client.request(
             method="post",
             path="sso/token",

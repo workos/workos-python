@@ -2,8 +2,10 @@
 
 from .add_role_permission import AddRolePermission as AddRolePermission
 from .assign_role import AssignRole as AssignRole
-from .assignment import Assignment as Assignment
 from .authorization_assignment import AuthorizationAssignment as AuthorizationAssignment
+from .authorization_assignment_literal import (
+    AuthorizationAssignmentLiteral as AuthorizationAssignmentLiteral,
+)
 from .authorization_check import AuthorizationCheck as AuthorizationCheck
 from .authorization_order import AuthorizationOrder as AuthorizationOrder
 from .authorization_resource import AuthorizationResource as AuthorizationResource

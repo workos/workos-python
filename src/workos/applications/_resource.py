@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import (
     ConnectApplication,
     CreateM2MApplication,
@@ -15,7 +16,6 @@ from .models import (
 )
 from .models import ApplicationsOrder
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions
 
 
 class Applications:
@@ -30,7 +30,7 @@ class Applications:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[ApplicationsOrder] = None,
+        order: Optional[Union[ApplicationsOrder, str]] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[ConnectApplication]:
@@ -61,7 +61,7 @@ class Applications:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
             }.items()
             if v is not None
@@ -228,7 +228,7 @@ class AsyncApplications:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[ApplicationsOrder] = None,
+        order: Optional[Union[ApplicationsOrder, str]] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[ConnectApplication]:
@@ -259,7 +259,7 @@ class AsyncApplications:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
             }.items()
             if v is not None

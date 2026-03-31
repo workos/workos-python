@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, Any, Dict, Optional
 if TYPE_CHECKING:
     from ..._client import AsyncWorkOSClient, WorkOSClient
 
-from .models import RedirectUri
 from ..._types import RequestOptions
+from .models import RedirectUri
 
 
 class UserManagementRedirectUris:

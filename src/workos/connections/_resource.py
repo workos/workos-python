@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import Connection
 from .models import ConnectionsConnectionType, ConnectionsOrder
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions
 
 
 class Connections:
@@ -25,8 +25,8 @@ class Connections:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[ConnectionsOrder] = None,
-        connection_type: Optional[ConnectionsConnectionType] = None,
+        order: Optional[Union[ConnectionsOrder, str]] = None,
+        connection_type: Optional[Union[ConnectionsConnectionType, str]] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
         search: Optional[str] = None,
@@ -63,8 +63,10 @@ class Connections:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
-                "connection_type": connection_type.value if connection_type else None,
+                "order": enum_value(order) if order is not None else None,
+                "connection_type": enum_value(connection_type)
+                if connection_type is not None
+                else None,
                 "domain": domain,
                 "organization_id": organization_id,
                 "search": search,
@@ -150,8 +152,8 @@ class AsyncConnections:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[ConnectionsOrder] = None,
-        connection_type: Optional[ConnectionsConnectionType] = None,
+        order: Optional[Union[ConnectionsOrder, str]] = None,
+        connection_type: Optional[Union[ConnectionsConnectionType, str]] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
         search: Optional[str] = None,
@@ -188,8 +190,10 @@ class AsyncConnections:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
-                "connection_type": connection_type.value if connection_type else None,
+                "order": enum_value(order) if order is not None else None,
+                "connection_type": enum_value(connection_type)
+                if connection_type is not None
+                else None,
                 "domain": domain,
                 "organization_id": organization_id,
                 "search": search,

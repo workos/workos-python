@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from enum import Enum
 from typing import Any, Dict, Protocol, TypeVar
 from typing_extensions import Self, TypedDict
 
@@ -21,6 +22,11 @@ class Deserializable(Protocol):
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> Self: ...
+
+
+def enum_value(value: Any) -> Any:
+    """Serialize enum-like values without rejecting raw string inputs."""
+    return value.value if isinstance(value, Enum) else value
 
 
 D = TypeVar("D", bound=Deserializable)

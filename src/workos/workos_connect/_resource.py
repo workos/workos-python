@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .models import ExternalAuthCompleteResponse, UserConsentOption, UserObject
 from .._types import RequestOptions
+from .models import ExternalAuthCompleteResponse, UserConsentOption, UserObject
 
 
 class WorkosConnect:

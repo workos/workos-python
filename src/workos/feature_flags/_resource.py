@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import FeatureFlag, Flag
 from .models import FeatureFlagsOrder
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions
 
 
 class FeatureFlags:
@@ -25,7 +25,7 @@ class FeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[FeatureFlagsOrder] = None,
+        order: Optional[Union[FeatureFlagsOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List feature flags
@@ -56,7 +56,7 @@ class FeatureFlags:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -171,7 +171,7 @@ class AsyncFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[FeatureFlagsOrder] = None,
+        order: Optional[Union[FeatureFlagsOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List feature flags
@@ -202,7 +202,7 @@ class AsyncFeatureFlags:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }

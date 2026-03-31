@@ -3,42 +3,21 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Dict
 from workos._errors import BaseRequestException
 
 
 @dataclass(slots=True)
 class Event:
-    """Event model."""
+    """An event emitted by WorkOS."""
 
-    object: Literal["event"]
-    """Distinguishes the Event object."""
-    id: str
-    """Unique identifier for the Event."""
-    event: str
-    """The type of event that occurred."""
-    data: Dict[str, Any]
-    """The event payload."""
-    created_at: datetime
-    """An ISO 8601 timestamp."""
-    context: Optional[Dict[str, Any]] = None
-    """Additional context about the event."""
+    pass
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Event":
         """Deserialize from a dictionary."""
         try:
-            return cls(
-                object=data["object"],
-                id=data["id"],
-                event=data["event"],
-                data=data["data"],
-                created_at=datetime.fromisoformat(
-                    data["created_at"].replace("Z", "+00:00")
-                ),
-                context=data.get("context"),
-            )
+            return cls()
         except (KeyError, ValueError) as e:
             raise BaseRequestException(
                 f"Unexpected API response while parsing Event: {e!s}"
@@ -47,13 +26,4 @@ class Event:
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["object"] = self.object
-        result["id"] = self.id
-        result["event"] = self.event
-        result["data"] = self.data
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        if self.context is not None:
-            result["context"] = self.context
         return result

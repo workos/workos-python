@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING, Any, Dict, Optional
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .models import OrganizationDomain, OrganizationDomainStandAlone
 from .._types import RequestOptions
+from .models import OrganizationDomain, OrganizationDomainStandAlone
 
 
 class OrganizationDomains:
@@ -110,7 +110,7 @@ class OrganizationDomains:
             request_options=request_options,
         )
 
-    def verify_organization_domain(
+    def verify(
         self,
         id: str,
         *,
@@ -240,7 +240,7 @@ class AsyncOrganizationDomains:
             request_options=request_options,
         )
 
-    async def verify_organization_domain(
+    async def verify(
         self,
         id: str,
         *,

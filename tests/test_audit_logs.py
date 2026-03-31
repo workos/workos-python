@@ -51,23 +51,23 @@ class TestAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    def test_list_schemas(self, workos, httpx_mock):
+    def test_schemas(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_audit_log_schema_json.json"),
         )
-        page = workos.audit_logs.list_schemas("test_actionName")
+        page = workos.audit_logs.schemas("test_actionName")
         assert isinstance(page, SyncPage)
         assert isinstance(page.data, list)
 
-    def test_list_schemas_empty_page(self, workos, httpx_mock):
+    def test_schemas_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.audit_logs.list_schemas("test_actionName")
+        page = workos.audit_logs.schemas("test_actionName")
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_schemas_encodes_query_params(self, workos, httpx_mock):
+    def test_schemas_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.audit_logs.list_schemas(
+        workos.audit_logs.schemas(
             "test_actionName",
             limit=10,
             before="cursor before",
@@ -80,11 +80,11 @@ class TestAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    def test_create_schema(self, workos, httpx_mock):
+    def test_create_schemas(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_schema_json.json"),
         )
-        result = workos.audit_logs.create_schema("test_actionName", targets=[])
+        result = workos.audit_logs.create_schemas("test_actionName", targets=[])
         assert isinstance(result, AuditLogSchemaJson)
         assert result.object == "audit_log_schema"
         assert result.version == 1
@@ -94,11 +94,11 @@ class TestAuditLogs:
         body = json.loads(request.content)
         assert "targets" in body
 
-    def test_create_event(self, workos, httpx_mock):
+    def test_create_events(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_event_create_response.json"),
         )
-        result = workos.audit_logs.create_event(
+        result = workos.audit_logs.create_events(
             organization_id="test_organization_id",
             event=AuditLogEvent.from_dict(load_fixture("audit_log_event.json")),
         )
@@ -211,21 +211,21 @@ class TestAsyncAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    async def test_list_schemas(self, async_workos, httpx_mock):
+    async def test_schemas(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_audit_log_schema_json.json"))
-        page = await async_workos.audit_logs.list_schemas("test_actionName")
+        page = await async_workos.audit_logs.schemas("test_actionName")
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
-    async def test_list_schemas_empty_page(self, async_workos, httpx_mock):
+    async def test_schemas_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.audit_logs.list_schemas("test_actionName")
+        page = await async_workos.audit_logs.schemas("test_actionName")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
-    async def test_list_schemas_encodes_query_params(self, async_workos, httpx_mock):
+    async def test_schemas_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.audit_logs.list_schemas(
+        await async_workos.audit_logs.schemas(
             "test_actionName",
             limit=10,
             before="cursor before",
@@ -238,9 +238,9 @@ class TestAsyncAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    async def test_create_schema(self, async_workos, httpx_mock):
+    async def test_create_schemas(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_schema_json.json"))
-        result = await async_workos.audit_logs.create_schema(
+        result = await async_workos.audit_logs.create_schemas(
             "test_actionName", targets=[]
         )
         assert isinstance(result, AuditLogSchemaJson)
@@ -250,11 +250,11 @@ class TestAsyncAuditLogs:
         assert request.method == "POST"
         assert request.url.path.endswith("/audit_logs/actions/test_actionName/schemas")
 
-    async def test_create_event(self, async_workos, httpx_mock):
+    async def test_create_events(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_event_create_response.json")
         )
-        result = await async_workos.audit_logs.create_event(
+        result = await async_workos.audit_logs.create_events(
             organization_id="test_organization_id",
             event=AuditLogEvent.from_dict(load_fixture("audit_log_event.json")),
         )

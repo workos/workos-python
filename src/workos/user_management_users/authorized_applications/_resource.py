@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from ..._client import AsyncWorkOSClient, WorkOSClient
 
+from ..._types import RequestOptions, enum_value
 from .models import AuthorizedConnectApplicationListData
 from .models import UserManagementUsersAuthorizedApplicationsOrder
 from ..._pagination import AsyncPage, SyncPage
-from ..._types import RequestOptions
 
 
 class UserManagementUsersAuthorizedApplications:
@@ -26,7 +26,9 @@ class UserManagementUsersAuthorizedApplications:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementUsersAuthorizedApplicationsOrder] = None,
+        order: Optional[
+            Union[UserManagementUsersAuthorizedApplicationsOrder, str]
+        ] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizedConnectApplicationListData]:
         """List authorized applications
@@ -57,7 +59,7 @@ class UserManagementUsersAuthorizedApplications:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -111,7 +113,9 @@ class AsyncUserManagementUsersAuthorizedApplications:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementUsersAuthorizedApplicationsOrder] = None,
+        order: Optional[
+            Union[UserManagementUsersAuthorizedApplicationsOrder, str]
+        ] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizedConnectApplicationListData]:
         """List authorized applications
@@ -142,7 +146,7 @@ class AsyncUserManagementUsersAuthorizedApplications:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }

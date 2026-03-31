@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Literal, Optional
+from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
 
 if TYPE_CHECKING:
     from ..._client import AsyncWorkOSClient, WorkOSClient
 
+from ..._types import RequestOptions, enum_value
 from .models import UserAuthenticationFactorEnrollResponse
 from workos.multi_factor_auth.models import AuthenticationFactor
 from .models import UserManagementMultiFactorAuthenticationOrder
 from ..._pagination import AsyncPage, SyncPage
-from ..._types import RequestOptions
 
 
 class UserManagementMultiFactorAuthentication:
@@ -27,7 +27,9 @@ class UserManagementMultiFactorAuthentication:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementMultiFactorAuthenticationOrder] = None,
+        order: Optional[
+            Union[UserManagementMultiFactorAuthenticationOrder, str]
+        ] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthenticationFactor]:
         """List authentication factors
@@ -57,7 +59,7 @@ class UserManagementMultiFactorAuthentication:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -132,7 +134,9 @@ class AsyncUserManagementMultiFactorAuthentication:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementMultiFactorAuthenticationOrder] = None,
+        order: Optional[
+            Union[UserManagementMultiFactorAuthenticationOrder, str]
+        ] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthenticationFactor]:
         """List authentication factors
@@ -162,7 +166,7 @@ class AsyncUserManagementMultiFactorAuthentication:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }

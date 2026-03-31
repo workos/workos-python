@@ -16,11 +16,11 @@ from workos._errors import (
 
 
 class TestAdminPortal:
-    def test_create(self, workos, httpx_mock):
+    def test_generate_link(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("portal_link_response.json"),
         )
-        result = workos.admin_portal.create(organization="test_organization")
+        result = workos.admin_portal.generate_link(organization="test_organization")
         assert isinstance(result, PortalLinkResponse)
         assert (
             result.link
@@ -32,24 +32,24 @@ class TestAdminPortal:
         body = json.loads(request.content)
         assert body["organization"] == "test_organization"
 
-    def test_create_unauthorized(self, workos, httpx_mock):
+    def test_generate_link_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationException):
-            workos.admin_portal.create(organization="test_organization")
+            workos.admin_portal.generate_link(organization="test_organization")
 
-    def test_create_not_found(self, httpx_mock):
+    def test_generate_link_not_found(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundException):
-                workos.admin_portal.create(organization="test_organization")
+                workos.admin_portal.generate_link(organization="test_organization")
         finally:
             workos.close()
 
-    def test_create_rate_limited(self, httpx_mock):
+    def test_generate_link_rate_limited(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(
@@ -58,25 +58,25 @@ class TestAdminPortal:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededException):
-                workos.admin_portal.create(organization="test_organization")
+                workos.admin_portal.generate_link(organization="test_organization")
         finally:
             workos.close()
 
-    def test_create_server_error(self, httpx_mock):
+    def test_generate_link_server_error(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerException):
-                workos.admin_portal.create(organization="test_organization")
+                workos.admin_portal.generate_link(organization="test_organization")
         finally:
             workos.close()
 
 
 @pytest.mark.asyncio
 class TestAsyncAdminPortal:
-    async def test_create(self, async_workos, httpx_mock):
+    async def test_generate_link(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("portal_link_response.json"))
-        result = await async_workos.admin_portal.create(
+        result = await async_workos.admin_portal.generate_link(
             organization="test_organization"
         )
         assert isinstance(result, PortalLinkResponse)
@@ -88,23 +88,27 @@ class TestAsyncAdminPortal:
         assert request.method == "POST"
         assert request.url.path.endswith("/portal/generate_link")
 
-    async def test_create_unauthorized(self, async_workos, httpx_mock):
+    async def test_generate_link_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationException):
-            await async_workos.admin_portal.create(organization="test_organization")
+            await async_workos.admin_portal.generate_link(
+                organization="test_organization"
+            )
 
-    async def test_create_not_found(self, httpx_mock):
+    async def test_generate_link_not_found(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundException):
-                await workos.admin_portal.create(organization="test_organization")
+                await workos.admin_portal.generate_link(
+                    organization="test_organization"
+                )
         finally:
             await workos.close()
 
-    async def test_create_rate_limited(self, httpx_mock):
+    async def test_generate_link_rate_limited(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -115,17 +119,21 @@ class TestAsyncAdminPortal:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededException):
-                await workos.admin_portal.create(organization="test_organization")
+                await workos.admin_portal.generate_link(
+                    organization="test_organization"
+                )
         finally:
             await workos.close()
 
-    async def test_create_server_error(self, httpx_mock):
+    async def test_generate_link_server_error(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerException):
-                await workos.admin_portal.create(organization="test_organization")
+                await workos.admin_portal.generate_link(
+                    organization="test_organization"
+                )
         finally:
             await workos.close()

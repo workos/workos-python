@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 if TYPE_CHECKING:
     from ..._client import AsyncWorkOSClient, WorkOSClient
 
+from ..._types import RequestOptions, enum_value
 from .models import Invitation, UserInvite
 from .models import UserManagementInvitationsOrder
 from workos.common.models import (
@@ -14,7 +15,6 @@ from workos.common.models import (
     ResendUserInviteOptionsDtoLocale,
 )
 from ..._pagination import AsyncPage, SyncPage
-from ..._types import RequestOptions
 
 
 class UserManagementInvitations:
@@ -29,7 +29,7 @@ class UserManagementInvitations:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementInvitationsOrder] = None,
+        order: Optional[Union[UserManagementInvitationsOrder, str]] = None,
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -62,7 +62,7 @@ class UserManagementInvitations:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
                 "email": email,
             }.items()
@@ -84,7 +84,7 @@ class UserManagementInvitations:
         role_slug: Optional[str] = None,
         expires_in_days: Optional[int] = None,
         inviter_user_id: Optional[str] = None,
-        locale: Optional[CreateUserInviteOptionsDtoLocale] = None,
+        locale: Optional[Union[CreateUserInviteOptionsDtoLocale, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserInvite:
         """Send an invitation
@@ -119,7 +119,7 @@ class UserManagementInvitations:
                 "role_slug": role_slug,
                 "expires_in_days": expires_in_days,
                 "inviter_user_id": inviter_user_id,
-                "locale": locale,
+                "locale": enum_value(locale) if locale is not None else None,
             }.items()
             if v is not None
         }
@@ -226,7 +226,7 @@ class UserManagementInvitations:
         self,
         id: str,
         *,
-        locale: Optional[ResendUserInviteOptionsDtoLocale] = None,
+        locale: Optional[Union[ResendUserInviteOptionsDtoLocale, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserInvite:
         """Resend an invitation
@@ -252,7 +252,7 @@ class UserManagementInvitations:
         body: Dict[str, Any] = {
             k: v
             for k, v in {
-                "locale": locale,
+                "locale": enum_value(locale) if locale is not None else None,
             }.items()
             if v is not None
         }
@@ -307,7 +307,7 @@ class AsyncUserManagementInvitations:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementInvitationsOrder] = None,
+        order: Optional[Union[UserManagementInvitationsOrder, str]] = None,
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -340,7 +340,7 @@ class AsyncUserManagementInvitations:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
                 "email": email,
             }.items()
@@ -362,7 +362,7 @@ class AsyncUserManagementInvitations:
         role_slug: Optional[str] = None,
         expires_in_days: Optional[int] = None,
         inviter_user_id: Optional[str] = None,
-        locale: Optional[CreateUserInviteOptionsDtoLocale] = None,
+        locale: Optional[Union[CreateUserInviteOptionsDtoLocale, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserInvite:
         """Send an invitation
@@ -397,7 +397,7 @@ class AsyncUserManagementInvitations:
                 "role_slug": role_slug,
                 "expires_in_days": expires_in_days,
                 "inviter_user_id": inviter_user_id,
-                "locale": locale,
+                "locale": enum_value(locale) if locale is not None else None,
             }.items()
             if v is not None
         }
@@ -504,7 +504,7 @@ class AsyncUserManagementInvitations:
         self,
         id: str,
         *,
-        locale: Optional[ResendUserInviteOptionsDtoLocale] = None,
+        locale: Optional[Union[ResendUserInviteOptionsDtoLocale, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserInvite:
         """Resend an invitation
@@ -530,7 +530,7 @@ class AsyncUserManagementInvitations:
         body: Dict[str, Any] = {
             k: v
             for k, v in {
-                "locale": locale,
+                "locale": enum_value(locale) if locale is not None else None,
             }.items()
             if v is not None
         }

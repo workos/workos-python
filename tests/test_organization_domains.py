@@ -56,11 +56,11 @@ class TestOrganizationDomains:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/organization_domains/test_id")
 
-    def test_verify_organization_domain(self, workos, httpx_mock):
+    def test_verify(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization_domain_stand_alone.json"),
         )
-        result = workos.organization_domains.verify_organization_domain("test_id")
+        result = workos.organization_domains.verify("test_id")
         assert isinstance(result, OrganizationDomainStandAlone)
         assert result.object == "organization_domain"
         assert result.id == "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A"
@@ -150,13 +150,11 @@ class TestAsyncOrganizationDomains:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/organization_domains/test_id")
 
-    async def test_verify_organization_domain(self, async_workos, httpx_mock):
+    async def test_verify(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization_domain_stand_alone.json")
         )
-        result = await async_workos.organization_domains.verify_organization_domain(
-            "test_id"
-        )
+        result = await async_workos.organization_domains.verify("test_id")
         assert isinstance(result, OrganizationDomainStandAlone)
         assert result.object == "organization_domain"
         assert result.id == "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A"

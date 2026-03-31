@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import AuthenticationFactor, AuthenticationFactorEnrolled
 from workos.multi_factor_auth.challenges.models import AuthenticationChallenge
 from workos.common.models import AuthenticationFactorsCreateRequestType
-from .._types import RequestOptions
 
 
 class MultiFactorAuth:
@@ -22,7 +22,7 @@ class MultiFactorAuth:
     def create(
         self,
         *,
-        type: AuthenticationFactorsCreateRequestType,
+        type: Union[AuthenticationFactorsCreateRequestType, str],
         phone_number: Optional[str] = None,
         totp_issuer: Optional[str] = None,
         totp_user: Optional[str] = None,
@@ -53,7 +53,7 @@ class MultiFactorAuth:
         body: Dict[str, Any] = {
             k: v
             for k, v in {
-                "type": type,
+                "type": enum_value(type),
                 "phone_number": phone_number,
                 "totp_issuer": totp_issuer,
                 "totp_user": totp_user,
@@ -176,7 +176,7 @@ class AsyncMultiFactorAuth:
     async def create(
         self,
         *,
-        type: AuthenticationFactorsCreateRequestType,
+        type: Union[AuthenticationFactorsCreateRequestType, str],
         phone_number: Optional[str] = None,
         totp_issuer: Optional[str] = None,
         totp_user: Optional[str] = None,
@@ -207,7 +207,7 @@ class AsyncMultiFactorAuth:
         body: Dict[str, Any] = {
             k: v
             for k, v in {
-                "type": type,
+                "type": enum_value(type),
                 "phone_number": phone_number,
                 "totp_issuer": totp_issuer,
                 "totp_user": totp_user,

@@ -31,10 +31,10 @@ class Organization:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    allow_profiles_outside_organization: bool
-    """Whether the Organization allows profiles outside of its managed domains."""
     stripe_customer_id: Optional[str] = None
     """The Stripe customer ID of the Organization."""
+    allow_profiles_outside_organization: Optional[bool] = None
+    """Whether the Organization allows profiles outside of its managed domains."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Organization":
@@ -56,10 +56,10 @@ class Organization:
                 updated_at=datetime.fromisoformat(
                     data["updated_at"].replace("Z", "+00:00")
                 ),
-                allow_profiles_outside_organization=data[
-                    "allow_profiles_outside_organization"
-                ],
                 stripe_customer_id=data.get("stripe_customer_id"),
+                allow_profiles_outside_organization=data.get(
+                    "allow_profiles_outside_organization"
+                ),
             )
         except (KeyError, ValueError) as e:
             raise BaseRequestException(
@@ -84,9 +84,10 @@ class Organization:
         result["updated_at"] = self.updated_at.isoformat(
             timespec="milliseconds"
         ).replace("+00:00", "Z")
-        result["allow_profiles_outside_organization"] = (
-            self.allow_profiles_outside_organization
-        )
         if self.stripe_customer_id is not None:
             result["stripe_customer_id"] = self.stripe_customer_id
+        if self.allow_profiles_outside_organization is not None:
+            result["allow_profiles_outside_organization"] = (
+                self.allow_profiles_outside_organization
+            )
         return result

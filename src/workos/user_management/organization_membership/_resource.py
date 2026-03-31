@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from ..._client import AsyncWorkOSClient, WorkOSClient
 
+from ..._types import RequestOptions, enum_value
 from .models import OrganizationMembership, UserOrganizationMembership
 from .models import (
     UserManagementOrganizationMembershipOrder,
     UserManagementOrganizationMembershipStatuses,
 )
 from ..._pagination import AsyncPage, SyncPage
-from ..._types import RequestOptions
 
 
 class UserManagementOrganizationMembership:
@@ -28,9 +28,11 @@ class UserManagementOrganizationMembership:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementOrganizationMembershipOrder] = None,
+        order: Optional[Union[UserManagementOrganizationMembershipOrder, str]] = None,
         organization_id: Optional[str] = None,
-        statuses: Optional[List[UserManagementOrganizationMembershipStatuses]] = None,
+        statuses: Optional[
+            List[Union[UserManagementOrganizationMembershipStatuses, str]]
+        ] = None,
         user_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserOrganizationMembership]:
@@ -65,7 +67,7 @@ class UserManagementOrganizationMembership:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
                 "statuses": statuses,
                 "user_id": user_id,
@@ -318,9 +320,11 @@ class AsyncUserManagementOrganizationMembership:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementOrganizationMembershipOrder] = None,
+        order: Optional[Union[UserManagementOrganizationMembershipOrder, str]] = None,
         organization_id: Optional[str] = None,
-        statuses: Optional[List[UserManagementOrganizationMembershipStatuses]] = None,
+        statuses: Optional[
+            List[Union[UserManagementOrganizationMembershipStatuses, str]]
+        ] = None,
         user_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserOrganizationMembership]:
@@ -355,7 +359,7 @@ class AsyncUserManagementOrganizationMembership:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
                 "statuses": statuses,
                 "user_id": user_id,

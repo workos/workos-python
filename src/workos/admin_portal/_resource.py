@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import IntentOptions, PortalLinkResponse
 from workos.common.models import GenerateLinkDtoIntent
-from .._types import RequestOptions
 
 
 class AdminPortal:
@@ -18,13 +18,13 @@ class AdminPortal:
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
-    def create(
+    def generate_link(
         self,
         *,
         organization: str,
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
-        intent: Optional[GenerateLinkDtoIntent] = None,
+        intent: Optional[Union[GenerateLinkDtoIntent, str]] = None,
         intent_options: Optional[IntentOptions] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> PortalLinkResponse:
@@ -66,7 +66,7 @@ class AdminPortal:
                 "return_url": return_url,
                 "success_url": success_url,
                 "organization": organization,
-                "intent": intent,
+                "intent": enum_value(intent) if intent is not None else None,
                 "intent_options": intent_options.to_dict()
                 if intent_options is not None
                 else None,
@@ -81,6 +81,10 @@ class AdminPortal:
             request_options=request_options,
         )
 
+    def create(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `generate_link`."""
+        return self.generate_link(*args, **kwargs)
+
 
 class AsyncAdminPortal:
     """Admin Portal API resources (async)."""
@@ -88,13 +92,13 @@ class AsyncAdminPortal:
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
-    async def create(
+    async def generate_link(
         self,
         *,
         organization: str,
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
-        intent: Optional[GenerateLinkDtoIntent] = None,
+        intent: Optional[Union[GenerateLinkDtoIntent, str]] = None,
         intent_options: Optional[IntentOptions] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> PortalLinkResponse:
@@ -136,7 +140,7 @@ class AsyncAdminPortal:
                 "return_url": return_url,
                 "success_url": success_url,
                 "organization": organization,
-                "intent": intent,
+                "intent": enum_value(intent) if intent is not None else None,
                 "intent_options": intent_options.to_dict()
                 if intent_options is not None
                 else None,
@@ -150,3 +154,7 @@ class AsyncAdminPortal:
             model=PortalLinkResponse,
             request_options=request_options,
         )
+
+    async def create(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `generate_link`."""
+        return await self.generate_link(*args, **kwargs)

@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from ..._client import AsyncWorkOSClient, WorkOSClient
 
+from ..._types import RequestOptions, enum_value
 from .models import ApiKeyWithValue
 from workos.api_keys.models import ApiKey
 from .models import OrganizationsApiKeysOrder
 from ..._pagination import AsyncPage, SyncPage
-from ..._types import RequestOptions
 
 
 class OrganizationsApiKeys:
@@ -27,7 +27,7 @@ class OrganizationsApiKeys:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[OrganizationsApiKeysOrder] = None,
+        order: Optional[Union[OrganizationsApiKeysOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[ApiKey]:
         """List API keys for an organization
@@ -57,7 +57,7 @@ class OrganizationsApiKeys:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -127,7 +127,7 @@ class AsyncOrganizationsApiKeys:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[OrganizationsApiKeysOrder] = None,
+        order: Optional[Union[OrganizationsApiKeysOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[ApiKey]:
         """List API keys for an organization
@@ -157,7 +157,7 @@ class AsyncOrganizationsApiKeys:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }

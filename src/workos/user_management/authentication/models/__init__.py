@@ -23,7 +23,6 @@ from .revoke_session import RevokeSession as RevokeSession
 from .sso_device_authorization_request import (
     SSODeviceAuthorizationRequest as SSODeviceAuthorizationRequest,
 )
-from .screen_hint_type import ScreenHintType as ScreenHintType
 from .urn_ietf_params_oauth_grant_type_device_code_session_authenticate_request import (
     UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest as UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest,
 )
@@ -43,6 +42,12 @@ from .user import User as User
 from .user_management_authentication_provider import (
     UserManagementAuthenticationProvider as UserManagementAuthenticationProvider,
 )
+from .user_management_authentication_provider_literal import (
+    UserManagementAuthenticationProviderLiteral as UserManagementAuthenticationProviderLiteral,
+)
 from .user_management_authentication_screen_hint import (
     UserManagementAuthenticationScreenHint as UserManagementAuthenticationScreenHint,
+)
+from .user_management_authentication_screen_hint_literal import (
+    UserManagementAuthenticationScreenHintLiteral as UserManagementAuthenticationScreenHintLiteral,
 )

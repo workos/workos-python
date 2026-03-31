@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
 
 if TYPE_CHECKING:
     from ..._client import AsyncWorkOSClient, WorkOSClient
 
+from ..._types import RequestOptions, enum_value
 from .models import (
     EmailVerification,
     PasswordReset,
@@ -23,7 +24,6 @@ from workos.common.models import (
     UpdateUserDtoPasswordHashType,
 )
 from ..._pagination import AsyncPage, SyncPage
-from ..._types import RequestOptions
 
 
 class UserManagementUsers:
@@ -174,7 +174,7 @@ class UserManagementUsers:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementUsersOrder] = None,
+        order: Optional[Union[UserManagementUsersOrder, str]] = None,
         organization: Optional[str] = None,
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
@@ -209,7 +209,7 @@ class UserManagementUsers:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "organization": organization,
                 "organization_id": organization_id,
                 "email": email,
@@ -230,7 +230,7 @@ class UserManagementUsers:
         email: str,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
-        password_hash_type: Optional[CreateUserDtoPasswordHashType] = None,
+        password_hash_type: Optional[Union[CreateUserDtoPasswordHashType, str]] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
@@ -271,7 +271,9 @@ class UserManagementUsers:
                 "email": email,
                 "password": password,
                 "password_hash": password_hash,
-                "password_hash_type": password_hash_type,
+                "password_hash_type": enum_value(password_hash_type)
+                if password_hash_type is not None
+                else None,
                 "first_name": first_name,
                 "last_name": last_name,
                 "email_verified": email_verified,
@@ -358,7 +360,7 @@ class UserManagementUsers:
         email_verified: Optional[bool] = None,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
-        password_hash_type: Optional[UpdateUserDtoPasswordHashType] = None,
+        password_hash_type: Optional[Union[UpdateUserDtoPasswordHashType, str]] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
         locale: Optional[str] = None,
@@ -401,7 +403,9 @@ class UserManagementUsers:
                 "email_verified": email_verified,
                 "password": password,
                 "password_hash": password_hash,
-                "password_hash_type": password_hash_type,
+                "password_hash_type": enum_value(password_hash_type)
+                if password_hash_type is not None
+                else None,
                 "metadata": metadata,
                 "external_id": external_id,
                 "locale": locale,
@@ -551,7 +555,7 @@ class UserManagementUsers:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementUsersOrder] = None,
+        order: Optional[Union[UserManagementUsersOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserSessionsListItem]:
         """List sessions
@@ -582,7 +586,7 @@ class UserManagementUsers:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -743,7 +747,7 @@ class AsyncUserManagementUsers:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementUsersOrder] = None,
+        order: Optional[Union[UserManagementUsersOrder, str]] = None,
         organization: Optional[str] = None,
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
@@ -778,7 +782,7 @@ class AsyncUserManagementUsers:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "organization": organization,
                 "organization_id": organization_id,
                 "email": email,
@@ -799,7 +803,7 @@ class AsyncUserManagementUsers:
         email: str,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
-        password_hash_type: Optional[CreateUserDtoPasswordHashType] = None,
+        password_hash_type: Optional[Union[CreateUserDtoPasswordHashType, str]] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
@@ -840,7 +844,9 @@ class AsyncUserManagementUsers:
                 "email": email,
                 "password": password,
                 "password_hash": password_hash,
-                "password_hash_type": password_hash_type,
+                "password_hash_type": enum_value(password_hash_type)
+                if password_hash_type is not None
+                else None,
                 "first_name": first_name,
                 "last_name": last_name,
                 "email_verified": email_verified,
@@ -927,7 +933,7 @@ class AsyncUserManagementUsers:
         email_verified: Optional[bool] = None,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
-        password_hash_type: Optional[UpdateUserDtoPasswordHashType] = None,
+        password_hash_type: Optional[Union[UpdateUserDtoPasswordHashType, str]] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
         locale: Optional[str] = None,
@@ -970,7 +976,9 @@ class AsyncUserManagementUsers:
                 "email_verified": email_verified,
                 "password": password,
                 "password_hash": password_hash,
-                "password_hash_type": password_hash_type,
+                "password_hash_type": enum_value(password_hash_type)
+                if password_hash_type is not None
+                else None,
                 "metadata": metadata,
                 "external_id": external_id,
                 "locale": locale,
@@ -1120,7 +1128,7 @@ class AsyncUserManagementUsers:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[UserManagementUsersOrder] = None,
+        order: Optional[Union[UserManagementUsersOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserSessionsListItem]:
         """List sessions
@@ -1151,7 +1159,7 @@ class AsyncUserManagementUsers:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }

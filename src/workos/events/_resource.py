@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import Event
 from .models import EventsOrder
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions
 
 
 class Events:
@@ -19,13 +19,13 @@ class Events:
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
-    def list_events(
+    def list(
         self,
         *,
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[EventsOrder] = None,
+        order: Optional[Union[EventsOrder, str]] = None,
         events: Optional[List[str]] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
@@ -63,7 +63,7 @@ class Events:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "events": events,
                 "range_start": range_start,
                 "range_end": range_end,
@@ -86,13 +86,13 @@ class AsyncEvents:
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
-    async def list_events(
+    async def list(
         self,
         *,
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[EventsOrder] = None,
+        order: Optional[Union[EventsOrder, str]] = None,
         events: Optional[List[str]] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
@@ -130,7 +130,7 @@ class AsyncEvents:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "events": events,
                 "range_start": range_start,
                 "range_end": range_end,

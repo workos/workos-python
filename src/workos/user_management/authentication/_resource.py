@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
 if TYPE_CHECKING:
     from ..._client import AsyncWorkOSClient, WorkOSClient
 
+from ..._types import RequestOptions, enum_value
 from .models import (
     AuthenticateResponse,
     AuthorizationCodeSessionAuthenticateRequest,
@@ -23,7 +24,6 @@ from .models import (
     UserManagementAuthenticationProvider,
     UserManagementAuthenticationScreenHint,
 )
-from ..._types import RequestOptions
 
 
 class UserManagementAuthentication:
@@ -87,9 +87,11 @@ class UserManagementAuthentication:
         provider_query_params: Optional[Dict[str, str]] = None,
         provider_scopes: Optional[List[str]] = None,
         invitation_token: Optional[str] = None,
-        screen_hint: Optional[UserManagementAuthenticationScreenHint] = None,
+        screen_hint: Optional[
+            Union[UserManagementAuthenticationScreenHint, str]
+        ] = None,
         login_hint: Optional[str] = None,
-        provider: Optional[UserManagementAuthenticationProvider] = None,
+        provider: Optional[Union[UserManagementAuthenticationProvider, str]] = None,
         prompt: Optional[str] = None,
         state: Optional[str] = None,
         organization_id: Optional[str] = None,
@@ -139,9 +141,11 @@ class UserManagementAuthentication:
                 "provider_query_params": provider_query_params,
                 "provider_scopes": provider_scopes,
                 "invitation_token": invitation_token,
-                "screen_hint": screen_hint.value if screen_hint else None,
+                "screen_hint": enum_value(screen_hint)
+                if screen_hint is not None
+                else None,
                 "login_hint": login_hint,
-                "provider": provider.value if provider else None,
+                "provider": enum_value(provider) if provider is not None else None,
                 "prompt": prompt,
                 "state": state,
                 "organization_id": organization_id,
@@ -322,9 +326,11 @@ class AsyncUserManagementAuthentication:
         provider_query_params: Optional[Dict[str, str]] = None,
         provider_scopes: Optional[List[str]] = None,
         invitation_token: Optional[str] = None,
-        screen_hint: Optional[UserManagementAuthenticationScreenHint] = None,
+        screen_hint: Optional[
+            Union[UserManagementAuthenticationScreenHint, str]
+        ] = None,
         login_hint: Optional[str] = None,
-        provider: Optional[UserManagementAuthenticationProvider] = None,
+        provider: Optional[Union[UserManagementAuthenticationProvider, str]] = None,
         prompt: Optional[str] = None,
         state: Optional[str] = None,
         organization_id: Optional[str] = None,
@@ -374,9 +380,11 @@ class AsyncUserManagementAuthentication:
                 "provider_query_params": provider_query_params,
                 "provider_scopes": provider_scopes,
                 "invitation_token": invitation_token,
-                "screen_hint": screen_hint.value if screen_hint else None,
+                "screen_hint": enum_value(screen_hint)
+                if screen_hint is not None
+                else None,
                 "login_hint": login_hint,
-                "provider": provider.value if provider else None,
+                "provider": enum_value(provider) if provider is not None else None,
                 "prompt": prompt,
                 "state": state,
                 "organization_id": organization_id,

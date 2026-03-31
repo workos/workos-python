@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Literal, Optional
+from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import RadarListEntryAlreadyPresentResponse, RadarStandaloneResponse
 from .models import RadarAction, RadarType
 from workos.common.models import (
     RadarStandaloneAssessRequestAction,
     RadarStandaloneAssessRequestAuthMethod,
 )
-from .._types import RequestOptions
 
 
 class Radar:
@@ -28,8 +28,8 @@ class Radar:
         ip_address: str,
         user_agent: str,
         email: str,
-        auth_method: RadarStandaloneAssessRequestAuthMethod,
-        action: RadarStandaloneAssessRequestAction,
+        auth_method: Union[RadarStandaloneAssessRequestAuthMethod, str],
+        action: Union[RadarStandaloneAssessRequestAction, str],
         device_fingerprint: Optional[str] = None,
         bot_score: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -63,8 +63,8 @@ class Radar:
                 "ip_address": ip_address,
                 "user_agent": user_agent,
                 "email": email,
-                "auth_method": auth_method,
-                "action": action,
+                "auth_method": enum_value(auth_method),
+                "action": enum_value(action),
                 "device_fingerprint": device_fingerprint,
                 "bot_score": bot_score,
             }.items()
@@ -120,8 +120,8 @@ class Radar:
 
     def update_radar_list(
         self,
-        type: RadarType,
-        action: RadarAction,
+        type: Union[RadarType, str],
+        action: Union[RadarAction, str],
         *,
         entry: str,
         request_options: Optional[RequestOptions] = None,
@@ -158,8 +158,8 @@ class Radar:
 
     def delete_radar_list_entry(
         self,
-        type: RadarType,
-        action: RadarAction,
+        type: Union[RadarType, str],
+        action: Union[RadarAction, str],
         *,
         entry: str,
         request_options: Optional[RequestOptions] = None,
@@ -204,8 +204,8 @@ class AsyncRadar:
         ip_address: str,
         user_agent: str,
         email: str,
-        auth_method: RadarStandaloneAssessRequestAuthMethod,
-        action: RadarStandaloneAssessRequestAction,
+        auth_method: Union[RadarStandaloneAssessRequestAuthMethod, str],
+        action: Union[RadarStandaloneAssessRequestAction, str],
         device_fingerprint: Optional[str] = None,
         bot_score: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -239,8 +239,8 @@ class AsyncRadar:
                 "ip_address": ip_address,
                 "user_agent": user_agent,
                 "email": email,
-                "auth_method": auth_method,
-                "action": action,
+                "auth_method": enum_value(auth_method),
+                "action": enum_value(action),
                 "device_fingerprint": device_fingerprint,
                 "bot_score": bot_score,
             }.items()
@@ -296,8 +296,8 @@ class AsyncRadar:
 
     async def update_radar_list(
         self,
-        type: RadarType,
-        action: RadarAction,
+        type: Union[RadarType, str],
+        action: Union[RadarAction, str],
         *,
         entry: str,
         request_options: Optional[RequestOptions] = None,
@@ -334,8 +334,8 @@ class AsyncRadar:
 
     async def delete_radar_list_entry(
         self,
-        type: RadarType,
-        action: RadarAction,
+        type: Union[RadarType, str],
+        action: Union[RadarAction, str],
         *,
         entry: str,
         request_options: Optional[RequestOptions] = None,

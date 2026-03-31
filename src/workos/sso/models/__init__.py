@@ -11,6 +11,7 @@ from .sso_logout_authorize_response import (
     SSOLogoutAuthorizeResponse as SSOLogoutAuthorizeResponse,
 )
 from .sso_provider import SSOProvider as SSOProvider
+from .sso_provider_literal import SSOProviderLiteral as SSOProviderLiteral
 from .sso_token_response import SSOTokenResponse as SSOTokenResponse
 from .sso_token_response_oauth_token import (
     SSOTokenResponseOAuthToken as SSOTokenResponseOAuthToken,

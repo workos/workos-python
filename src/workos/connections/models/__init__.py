@@ -6,4 +6,7 @@ from .connection_option import ConnectionOption as ConnectionOption
 from .connections_connection_type import (
     ConnectionsConnectionType as ConnectionsConnectionType,
 )
+from .connections_connection_type_literal import (
+    ConnectionsConnectionTypeLiteral as ConnectionsConnectionTypeLiteral,
+)
 from .connections_order import ConnectionsOrder as ConnectionsOrder

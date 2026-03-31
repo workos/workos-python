@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import WebhookEndpointJson
 from .models import WebhooksOrder
 from workos.common.models import (
@@ -15,7 +16,6 @@ from workos.common.models import (
     UpdateWebhookEndpointDtoStatus,
 )
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions
 import hashlib
 import hmac
 import json
@@ -34,7 +34,7 @@ class Webhooks:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[WebhooksOrder] = None,
+        order: Optional[Union[WebhooksOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[WebhookEndpointJson]:
         """List Webhook Endpoints
@@ -62,7 +62,7 @@ class Webhooks:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -78,7 +78,7 @@ class Webhooks:
         self,
         *,
         endpoint_url: str,
-        events: List[CreateWebhookEndpointDtoEvents],
+        events: List[Union[CreateWebhookEndpointDtoEvents, str]],
         request_options: Optional[RequestOptions] = None,
     ) -> WebhookEndpointJson:
         """Create a Webhook Endpoint
@@ -117,8 +117,8 @@ class Webhooks:
         id: str,
         *,
         endpoint_url: Optional[str] = None,
-        status: Optional[UpdateWebhookEndpointDtoStatus] = None,
-        events: Optional[List[UpdateWebhookEndpointDtoEvents]] = None,
+        status: Optional[Union[UpdateWebhookEndpointDtoStatus, str]] = None,
+        events: Optional[List[Union[UpdateWebhookEndpointDtoEvents, str]]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> WebhookEndpointJson:
         """Update a Webhook Endpoint
@@ -147,7 +147,7 @@ class Webhooks:
             k: v
             for k, v in {
                 "endpoint_url": endpoint_url,
-                "status": status,
+                "status": enum_value(status) if status is not None else None,
                 "events": events,
             }.items()
             if v is not None
@@ -289,7 +289,7 @@ class AsyncWebhooks:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[WebhooksOrder] = None,
+        order: Optional[Union[WebhooksOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[WebhookEndpointJson]:
         """List Webhook Endpoints
@@ -317,7 +317,7 @@ class AsyncWebhooks:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -333,7 +333,7 @@ class AsyncWebhooks:
         self,
         *,
         endpoint_url: str,
-        events: List[CreateWebhookEndpointDtoEvents],
+        events: List[Union[CreateWebhookEndpointDtoEvents, str]],
         request_options: Optional[RequestOptions] = None,
     ) -> WebhookEndpointJson:
         """Create a Webhook Endpoint
@@ -372,8 +372,8 @@ class AsyncWebhooks:
         id: str,
         *,
         endpoint_url: Optional[str] = None,
-        status: Optional[UpdateWebhookEndpointDtoStatus] = None,
-        events: Optional[List[UpdateWebhookEndpointDtoEvents]] = None,
+        status: Optional[Union[UpdateWebhookEndpointDtoStatus, str]] = None,
+        events: Optional[List[Union[UpdateWebhookEndpointDtoEvents, str]]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> WebhookEndpointJson:
         """Update a Webhook Endpoint
@@ -402,7 +402,7 @@ class AsyncWebhooks:
             k: v
             for k, v in {
                 "endpoint_url": endpoint_url,
-                "status": status,
+                "status": enum_value(status) if status is not None else None,
                 "events": events,
             }.items()
             if v is not None

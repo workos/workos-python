@@ -4,78 +4,148 @@ from .models import (
     AuditLogConfigurationLogStreamState as AuditLogConfigurationLogStreamState,
 )
 from .models import (
+    AuditLogConfigurationLogStreamStateLiteral as AuditLogConfigurationLogStreamStateLiteral,
+)
+from .models import (
     AuditLogConfigurationLogStreamType as AuditLogConfigurationLogStreamType,
 )
+from .models import (
+    AuditLogConfigurationLogStreamTypeLiteral as AuditLogConfigurationLogStreamTypeLiteral,
+)
 from .models import AuditLogConfigurationState as AuditLogConfigurationState
+from .models import (
+    AuditLogConfigurationStateLiteral as AuditLogConfigurationStateLiteral,
+)
 from .models import AuditLogExportJsonState as AuditLogExportJsonState
-from .models import AuditLogExportState as AuditLogExportState
-from .models import AuditLogStreamState as AuditLogStreamState
-from .models import AuditLogTrailState as AuditLogTrailState
-from .models import AuthMethodType as AuthMethodType
+from .models import AuditLogExportJsonStateLiteral as AuditLogExportJsonStateLiteral
 from .models import (
     AuthenticateResponseAuthenticationMethod as AuthenticateResponseAuthenticationMethod,
 )
+from .models import (
+    AuthenticateResponseAuthenticationMethodLiteral as AuthenticateResponseAuthenticationMethodLiteral,
+)
 from .models import AuthenticationFactorEnrolledType as AuthenticationFactorEnrolledType
+from .models import (
+    AuthenticationFactorEnrolledTypeLiteral as AuthenticationFactorEnrolledTypeLiteral,
+)
 from .models import AuthenticationFactorType as AuthenticationFactorType
 from .models import (
     AuthenticationFactorsCreateRequestType as AuthenticationFactorsCreateRequestType,
 )
+from .models import (
+    AuthenticationFactorsCreateRequestTypeLiteral as AuthenticationFactorsCreateRequestTypeLiteral,
+)
 from .models import ConnectedAccountState as ConnectedAccountState
+from .models import ConnectedAccountStateLiteral as ConnectedAccountStateLiteral
 from .models import ConnectionState as ConnectionState
+from .models import ConnectionStateLiteral as ConnectionStateLiteral
 from .models import ConnectionStatus as ConnectionStatus
+from .models import ConnectionStatusLiteral as ConnectionStatusLiteral
 from .models import ConnectionType as ConnectionType
+from .models import ConnectionTypeLiteral as ConnectionTypeLiteral
 from .models import CreateUserDtoPasswordHashType as CreateUserDtoPasswordHashType
+from .models import (
+    CreateUserDtoPasswordHashTypeLiteral as CreateUserDtoPasswordHashTypeLiteral,
+)
 from .models import CreateUserInviteOptionsDtoLocale as CreateUserInviteOptionsDtoLocale
+from .models import (
+    CreateUserInviteOptionsDtoLocaleLiteral as CreateUserInviteOptionsDtoLocaleLiteral,
+)
 from .models import CreateWebhookEndpointDtoEvents as CreateWebhookEndpointDtoEvents
+from .models import (
+    CreateWebhookEndpointDtoEventsLiteral as CreateWebhookEndpointDtoEventsLiteral,
+)
 from .models import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
 )
 from .models import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
 )
+from .models import (
+    DataIntegrationsListResponseDataOwnershipLiteral as DataIntegrationsListResponseDataOwnershipLiteral,
+)
 from .models import DirectoryState as DirectoryState
+from .models import DirectoryStateLiteral as DirectoryStateLiteral
 from .models import DirectoryType as DirectoryType
+from .models import DirectoryTypeLiteral as DirectoryTypeLiteral
 from .models import DirectoryUserWithGroupsState as DirectoryUserWithGroupsState
+from .models import (
+    DirectoryUserWithGroupsStateLiteral as DirectoryUserWithGroupsStateLiteral,
+)
 from .models import GenerateLinkDtoIntent as GenerateLinkDtoIntent
+from .models import GenerateLinkDtoIntentLiteral as GenerateLinkDtoIntentLiteral
 from .models import InvitationState as InvitationState
+from .models import InvitationStateLiteral as InvitationStateLiteral
 from .models import ListDataType as ListDataType
+from .models import ListDataTypeLiteral as ListDataTypeLiteral
 from .models import OrganizationDomainDataDtoState as OrganizationDomainDataDtoState
+from .models import (
+    OrganizationDomainDataDtoStateLiteral as OrganizationDomainDataDtoStateLiteral,
+)
 from .models import (
     OrganizationDomainStandAloneState as OrganizationDomainStandAloneState,
 )
 from .models import (
+    OrganizationDomainStandAloneStateLiteral as OrganizationDomainStandAloneStateLiteral,
+)
+from .models import (
     OrganizationDomainStandAloneVerificationStrategy as OrganizationDomainStandAloneVerificationStrategy,
+)
+from .models import (
+    OrganizationDomainStandAloneVerificationStrategyLiteral as OrganizationDomainStandAloneVerificationStrategyLiteral,
 )
 from .models import OrganizationDomainState as OrganizationDomainState
 from .models import (
     OrganizationDomainVerificationStrategy as OrganizationDomainVerificationStrategy,
 )
 from .models import OrganizationMembershipStatus as OrganizationMembershipStatus
-from .models import PasswordHashType as PasswordHashType
 from .models import ProfileConnectionType as ProfileConnectionType
 from .models import (
     RadarStandaloneAssessRequestAction as RadarStandaloneAssessRequestAction,
 )
 from .models import (
+    RadarStandaloneAssessRequestActionLiteral as RadarStandaloneAssessRequestActionLiteral,
+)
+from .models import (
     RadarStandaloneAssessRequestAuthMethod as RadarStandaloneAssessRequestAuthMethod,
+)
+from .models import (
+    RadarStandaloneAssessRequestAuthMethodLiteral as RadarStandaloneAssessRequestAuthMethodLiteral,
 )
 from .models import (
     RadarStandaloneResponseBlocklistType as RadarStandaloneResponseBlocklistType,
 )
 from .models import RadarStandaloneResponseControl as RadarStandaloneResponseControl
+from .models import (
+    RadarStandaloneResponseControlLiteral as RadarStandaloneResponseControlLiteral,
+)
 from .models import RadarStandaloneResponseVerdict as RadarStandaloneResponseVerdict
+from .models import (
+    RadarStandaloneResponseVerdictLiteral as RadarStandaloneResponseVerdictLiteral,
+)
 from .models import ResendUserInviteOptionsDtoLocale as ResendUserInviteOptionsDtoLocale
 from .models import RoleType as RoleType
 from .models import UpdateUserDtoPasswordHashType as UpdateUserDtoPasswordHashType
 from .models import UpdateWebhookEndpointDtoEvents as UpdateWebhookEndpointDtoEvents
 from .models import UpdateWebhookEndpointDtoStatus as UpdateWebhookEndpointDtoStatus
+from .models import (
+    UpdateWebhookEndpointDtoStatusLiteral as UpdateWebhookEndpointDtoStatusLiteral,
+)
 from .models import UserIdentitiesGetItemProvider as UserIdentitiesGetItemProvider
+from .models import (
+    UserIdentitiesGetItemProviderLiteral as UserIdentitiesGetItemProviderLiteral,
+)
 from .models import UserInviteState as UserInviteState
 from .models import (
     UserOrganizationMembershipBaseListDataStatus as UserOrganizationMembershipBaseListDataStatus,
 )
 from .models import UserOrganizationMembershipStatus as UserOrganizationMembershipStatus
 from .models import UserSessionsAuthMethod as UserSessionsAuthMethod
+from .models import UserSessionsAuthMethodLiteral as UserSessionsAuthMethodLiteral
 from .models import UserSessionsStatus as UserSessionsStatus
+from .models import UserSessionsStatusLiteral as UserSessionsStatusLiteral
 from .models import WebhookEndpointJsonStatus as WebhookEndpointJsonStatus
 from .models import WidgetSessionTokenDtoScopes as WidgetSessionTokenDtoScopes
+from .models import (
+    WidgetSessionTokenDtoScopesLiteral as WidgetSessionTokenDtoScopesLiteral,
+)

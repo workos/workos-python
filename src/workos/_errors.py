@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Optional, Type
+from typing import Any, Dict, Mapping, Optional, Type, cast
 
 
 class BaseRequestException(Exception):
@@ -16,11 +16,15 @@ class BaseRequestException(Exception):
     raw_body: Optional[str]
     request_url: Optional[str]
     request_method: Optional[str]
+    response: Optional[Any]
+    response_json: Optional[Mapping[str, Any]]
+    error: Optional[str]
+    errors: Optional[Any]
+    error_description: Optional[str]
 
     def __init__(
         self,
-        message: str,
-        *,
+        *args: Any,
         status_code: Optional[int] = None,
         request_id: Optional[str] = None,
         code: Optional[str] = None,
@@ -28,7 +32,55 @@ class BaseRequestException(Exception):
         raw_body: Optional[str] = None,
         request_url: Optional[str] = None,
         request_method: Optional[str] = None,
+        response: Optional[Any] = None,
+        response_json: Optional[Mapping[str, Any]] = None,
+        error: Optional[str] = None,
+        errors: Optional[Any] = None,
+        error_description: Optional[str] = None,
     ) -> None:
+        message: Optional[str] = None
+        if args:
+            first = args[0]
+            if isinstance(first, str):
+                message = first
+            else:
+                response = first
+                if len(args) > 1:
+                    response_json = cast(Optional[Mapping[str, Any]], args[1])
+        if response is not None and status_code is None:
+            status_code = cast(Optional[int], getattr(response, "status_code", None))
+        headers = getattr(response, "headers", None)
+        if request_id is None and headers is not None:
+            request_id = headers.get("X-Request-ID") or headers.get("x-request-id")
+        if (
+            request_url is None
+            and response is not None
+            and getattr(response, "request", None) is not None
+        ):
+            request_url = str(response.request.url)
+        if (
+            request_method is None
+            and response is not None
+            and getattr(response, "request", None) is not None
+        ):
+            request_method = response.request.method
+        if response_json is not None:
+            if message is None:
+                message = str(response_json.get("message", "No message"))
+            if error is None:
+                error = cast(Optional[str], response_json.get("error"))
+            if errors is None:
+                errors = response_json.get("errors")
+            if code is None:
+                code = cast(Optional[str], response_json.get("code"))
+            if error_description is None:
+                error_description = cast(
+                    Optional[str], response_json.get("error_description")
+                )
+            if param is None:
+                param = cast(Optional[str], response_json.get("param"))
+        if message is None:
+            message = "No message"
         super().__init__(message)
         self.message = message
         self.status_code = status_code
@@ -38,84 +90,45 @@ class BaseRequestException(Exception):
         self.raw_body = raw_body
         self.request_url = request_url
         self.request_method = request_method
+        self.response = response
+        self.response_json = response_json
+        self.error = error
+        self.errors = errors
+        self.error_description = error_description
+
+    def __str__(self) -> str:
+        exception = f"(message={self.message}, request_id={self.request_id}"
+        if self.response_json is not None:
+            for key, value in self.response_json.items():
+                if key != "message":
+                    exception += f", {key}={value}"
+        elif self.code is not None:
+            exception += f", code={self.code}"
+        return exception + ")"
 
 
 class BadRequestException(BaseRequestException):
     """400 Bad Request."""
 
-    def __init__(
-        self,
-        message: str = "Bad request",
-        *,
-        request_id: Optional[str] = None,
-        code: Optional[str] = None,
-        param: Optional[str] = None,
-        raw_body: Optional[str] = None,
-        request_url: Optional[str] = None,
-        request_method: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=400,
-            request_id=request_id,
-            code=code,
-            param=param,
-            raw_body=raw_body,
-            request_url=request_url,
-            request_method=request_method,
-        )
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        kwargs.setdefault("status_code", 400)
+        super().__init__(*args, **kwargs)
 
 
 class AuthenticationException(BaseRequestException):
     """401 Unauthorized."""
 
-    def __init__(
-        self,
-        message: str = "Unauthorized",
-        *,
-        request_id: Optional[str] = None,
-        code: Optional[str] = None,
-        param: Optional[str] = None,
-        raw_body: Optional[str] = None,
-        request_url: Optional[str] = None,
-        request_method: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=401,
-            request_id=request_id,
-            code=code,
-            param=param,
-            raw_body=raw_body,
-            request_url=request_url,
-            request_method=request_method,
-        )
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        kwargs.setdefault("status_code", 401)
+        super().__init__(*args, **kwargs)
 
 
 class AuthorizationException(BaseRequestException):
     """403 Forbidden."""
 
-    def __init__(
-        self,
-        message: str = "Forbidden",
-        *,
-        request_id: Optional[str] = None,
-        code: Optional[str] = None,
-        param: Optional[str] = None,
-        raw_body: Optional[str] = None,
-        request_url: Optional[str] = None,
-        request_method: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=403,
-            request_id=request_id,
-            code=code,
-            param=param,
-            raw_body=raw_body,
-            request_url=request_url,
-            request_method=request_method,
-        )
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        kwargs.setdefault("status_code", 403)
+        super().__init__(*args, **kwargs)
 
 
 class EmailVerificationRequiredException(AuthorizationException):
@@ -124,105 +137,39 @@ class EmailVerificationRequiredException(AuthorizationException):
     email_verification_id: Optional[str]
 
     def __init__(
-        self,
-        message: str = "Email verification required",
-        *,
-        email_verification_id: Optional[str] = None,
-        request_id: Optional[str] = None,
-        code: Optional[str] = None,
-        param: Optional[str] = None,
-        raw_body: Optional[str] = None,
-        request_url: Optional[str] = None,
-        request_method: Optional[str] = None,
+        self, *args: Any, email_verification_id: Optional[str] = None, **kwargs: Any
     ) -> None:
-        super().__init__(
-            message,
-            request_id=request_id,
-            code=code,
-            param=param,
-            raw_body=raw_body,
-            request_url=request_url,
-            request_method=request_method,
-        )
+        response_json = cast(Optional[Mapping[str, Any]], kwargs.get("response_json"))
+        if email_verification_id is None and response_json is not None:
+            email_verification_id = cast(
+                Optional[str], response_json.get("email_verification_id")
+            )
+        super().__init__(*args, **kwargs)
         self.email_verification_id = email_verification_id
 
 
 class NotFoundException(BaseRequestException):
     """404 Not Found."""
 
-    def __init__(
-        self,
-        message: str = "Not found",
-        *,
-        request_id: Optional[str] = None,
-        code: Optional[str] = None,
-        param: Optional[str] = None,
-        raw_body: Optional[str] = None,
-        request_url: Optional[str] = None,
-        request_method: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=404,
-            request_id=request_id,
-            code=code,
-            param=param,
-            raw_body=raw_body,
-            request_url=request_url,
-            request_method=request_method,
-        )
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        kwargs.setdefault("status_code", 404)
+        super().__init__(*args, **kwargs)
 
 
 class ConflictException(BaseRequestException):
     """409 Conflict."""
 
-    def __init__(
-        self,
-        message: str = "Conflict",
-        *,
-        request_id: Optional[str] = None,
-        code: Optional[str] = None,
-        param: Optional[str] = None,
-        raw_body: Optional[str] = None,
-        request_url: Optional[str] = None,
-        request_method: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=409,
-            request_id=request_id,
-            code=code,
-            param=param,
-            raw_body=raw_body,
-            request_url=request_url,
-            request_method=request_method,
-        )
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        kwargs.setdefault("status_code", 409)
+        super().__init__(*args, **kwargs)
 
 
 class UnprocessableEntityException(BaseRequestException):
     """422 Unprocessable Entity."""
 
-    def __init__(
-        self,
-        message: str = "Unprocessable entity",
-        *,
-        request_id: Optional[str] = None,
-        code: Optional[str] = None,
-        param: Optional[str] = None,
-        raw_body: Optional[str] = None,
-        request_url: Optional[str] = None,
-        request_method: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=422,
-            request_id=request_id,
-            code=code,
-            param=param,
-            raw_body=raw_body,
-            request_url=request_url,
-            request_method=request_method,
-        )
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        kwargs.setdefault("status_code", 422)
+        super().__init__(*args, **kwargs)
 
 
 class RateLimitExceededException(BaseRequestException):
@@ -231,55 +178,19 @@ class RateLimitExceededException(BaseRequestException):
     retry_after: Optional[float]
 
     def __init__(
-        self,
-        message: str = "Too many requests",
-        *,
-        retry_after: Optional[float] = None,
-        request_id: Optional[str] = None,
-        code: Optional[str] = None,
-        param: Optional[str] = None,
-        raw_body: Optional[str] = None,
-        request_url: Optional[str] = None,
-        request_method: Optional[str] = None,
+        self, *args: Any, retry_after: Optional[float] = None, **kwargs: Any
     ) -> None:
-        super().__init__(
-            message,
-            status_code=429,
-            request_id=request_id,
-            code=code,
-            param=param,
-            raw_body=raw_body,
-            request_url=request_url,
-            request_method=request_method,
-        )
+        kwargs.setdefault("status_code", 429)
+        super().__init__(*args, **kwargs)
         self.retry_after = retry_after
 
 
 class ServerException(BaseRequestException):
     """500+ Server Error."""
 
-    def __init__(
-        self,
-        message: str = "Server error",
-        *,
-        status_code: int = 500,
-        request_id: Optional[str] = None,
-        code: Optional[str] = None,
-        param: Optional[str] = None,
-        raw_body: Optional[str] = None,
-        request_url: Optional[str] = None,
-        request_method: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=status_code,
-            request_id=request_id,
-            code=code,
-            param=param,
-            raw_body=raw_body,
-            request_url=request_url,
-            request_method=request_method,
-        )
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        kwargs.setdefault("status_code", 500)
+        super().__init__(*args, **kwargs)
 
 
 class ConfigurationException(BaseRequestException):

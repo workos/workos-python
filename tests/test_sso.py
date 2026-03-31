@@ -62,11 +62,11 @@ class TestSSO:
         assert request.method == "GET"
         assert request.url.path.endswith("/sso/profile")
 
-    def test_get_profile_and_token(self, workos, httpx_mock):
+    def test_token(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("sso_token_response.json"),
         )
-        result = workos.sso.get_profile_and_token(
+        result = workos.sso.token(
             client_id="test_client_id",
             client_secret="test_client_secret",
             code="test_code",
@@ -166,9 +166,9 @@ class TestAsyncSSO:
         assert request.method == "GET"
         assert request.url.path.endswith("/sso/profile")
 
-    async def test_get_profile_and_token(self, async_workos, httpx_mock):
+    async def test_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("sso_token_response.json"))
-        result = await async_workos.sso.get_profile_and_token(
+        result = await async_workos.sso.token(
             client_id="test_client_id",
             client_secret="test_client_secret",
             code="test_code",

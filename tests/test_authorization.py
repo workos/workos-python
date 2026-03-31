@@ -145,9 +145,9 @@ class TestAuthorization:
         body = json.loads(request.content)
         assert body["role_slug"] == "test_role_slug"
 
-    def test_remove_role(self, workos, httpx_mock):
+    def test_remove_role_by_criteria(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.authorization.remove_role(
+        result = workos.authorization.remove_role_by_criteria(
             "test_organization_membership_id", role_slug="test_role_slug"
         )
         assert result is None
@@ -169,11 +169,11 @@ class TestAuthorization:
             "/authorization/organization_memberships/test_organization_membership_id/role_assignments/test_role_assignment_id"
         )
 
-    def test_list_roles_organizations(self, workos, httpx_mock):
+    def test_list_organization_roles(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list.json"),
         )
-        result = workos.authorization.list_roles_organizations("test_organizationId")
+        result = workos.authorization.list_organization_roles("test_organizationId")
         assert isinstance(result, ListModel)
         assert result.object == "list"
         request = httpx_mock.get_request()
@@ -182,11 +182,11 @@ class TestAuthorization:
             "/authorization/organizations/test_organizationId/roles"
         )
 
-    def test_create_roles_organizations(self, workos, httpx_mock):
+    def test_create_organization_role(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.create_roles_organizations(
+        result = workos.authorization.create_organization_role(
             "test_organizationId", slug="test_slug", name="test_name"
         )
         assert isinstance(result, Role)
@@ -201,11 +201,11 @@ class TestAuthorization:
         assert body["slug"] == "test_slug"
         assert body["name"] == "test_name"
 
-    def test_get_roles_organization(self, workos, httpx_mock):
+    def test_get_organization_role(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.get_roles_organization(
+        result = workos.authorization.get_organization_role(
             "test_organizationId", "test_slug"
         )
         assert isinstance(result, Role)
@@ -217,11 +217,11 @@ class TestAuthorization:
             "/authorization/organizations/test_organizationId/roles/test_slug"
         )
 
-    def test_update_roles_organizations(self, workos, httpx_mock):
+    def test_update_organization_role(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.update_roles_organizations(
+        result = workos.authorization.update_organization_role(
             "test_organizationId", "test_slug"
         )
         assert isinstance(result, Role)
@@ -233,9 +233,11 @@ class TestAuthorization:
             "/authorization/organizations/test_organizationId/roles/test_slug"
         )
 
-    def test_delete_roles(self, workos, httpx_mock):
+    def test_delete_organization_role(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.authorization.delete_roles("test_organizationId", "test_slug")
+        result = workos.authorization.delete_organization_role(
+            "test_organizationId", "test_slug"
+        )
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
@@ -446,11 +448,11 @@ class TestAuthorization:
         )
         assert request.url.params["search"] == "value search/test"
 
-    def test_create_resource(self, workos, httpx_mock):
+    def test_create_resources(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("authorization_resource.json"),
         )
-        result = workos.authorization.create_resource(
+        result = workos.authorization.create_resources(
             external_id="test_external_id",
             name="test_name",
             resource_type_slug="test_resource_type_slug",
@@ -480,11 +482,11 @@ class TestAuthorization:
         assert request.method == "GET"
         assert request.url.path.endswith("/authorization/resources/test_resource_id")
 
-    def test_update_resource(self, workos, httpx_mock):
+    def test_update_resources(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("authorization_resource.json"),
         )
-        result = workos.authorization.update_resource("test_resource_id")
+        result = workos.authorization.update_resources("test_resource_id")
         assert isinstance(result, AuthorizationResource)
         assert result.object == "authorization_resource"
         assert result.name == "Website Redesign"
@@ -492,17 +494,17 @@ class TestAuthorization:
         assert request.method == "PATCH"
         assert request.url.path.endswith("/authorization/resources/test_resource_id")
 
-    def test_delete_resource(self, workos, httpx_mock):
+    def test_delete_resources(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.authorization.delete_resource("test_resource_id")
+        result = workos.authorization.delete_resources("test_resource_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/authorization/resources/test_resource_id")
 
-    def test_delete_resource_encodes_query_params(self, workos, httpx_mock):
+    def test_delete_resources_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        workos.authorization.delete_resource("test_resource_id", cascade_delete=True)
+        workos.authorization.delete_resources("test_resource_id", cascade_delete=True)
         request = httpx_mock.get_request()
         assert request.url.params["cascade_delete"] == "true"
 
@@ -794,9 +796,9 @@ class TestAsyncAuthorization:
             "/authorization/organization_memberships/test_organization_membership_id/role_assignments"
         )
 
-    async def test_remove_role(self, async_workos, httpx_mock):
+    async def test_remove_role_by_criteria(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.authorization.remove_role(
+        result = await async_workos.authorization.remove_role_by_criteria(
             "test_organization_membership_id", role_slug="test_role_slug"
         )
         assert result is None
@@ -818,9 +820,9 @@ class TestAsyncAuthorization:
             "/authorization/organization_memberships/test_organization_membership_id/role_assignments/test_role_assignment_id"
         )
 
-    async def test_list_roles_organizations(self, async_workos, httpx_mock):
+    async def test_list_organization_roles(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list.json"))
-        result = await async_workos.authorization.list_roles_organizations(
+        result = await async_workos.authorization.list_organization_roles(
             "test_organizationId"
         )
         assert isinstance(result, ListModel)
@@ -831,9 +833,9 @@ class TestAsyncAuthorization:
             "/authorization/organizations/test_organizationId/roles"
         )
 
-    async def test_create_roles_organizations(self, async_workos, httpx_mock):
+    async def test_create_organization_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.create_roles_organizations(
+        result = await async_workos.authorization.create_organization_role(
             "test_organizationId", slug="test_slug", name="test_name"
         )
         assert isinstance(result, Role)
@@ -845,9 +847,9 @@ class TestAsyncAuthorization:
             "/authorization/organizations/test_organizationId/roles"
         )
 
-    async def test_get_roles_organization(self, async_workos, httpx_mock):
+    async def test_get_organization_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.get_roles_organization(
+        result = await async_workos.authorization.get_organization_role(
             "test_organizationId", "test_slug"
         )
         assert isinstance(result, Role)
@@ -859,9 +861,9 @@ class TestAsyncAuthorization:
             "/authorization/organizations/test_organizationId/roles/test_slug"
         )
 
-    async def test_update_roles_organizations(self, async_workos, httpx_mock):
+    async def test_update_organization_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.update_roles_organizations(
+        result = await async_workos.authorization.update_organization_role(
             "test_organizationId", "test_slug"
         )
         assert isinstance(result, Role)
@@ -873,9 +875,9 @@ class TestAsyncAuthorization:
             "/authorization/organizations/test_organizationId/roles/test_slug"
         )
 
-    async def test_delete_roles(self, async_workos, httpx_mock):
+    async def test_delete_organization_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.authorization.delete_roles(
+        result = await async_workos.authorization.delete_organization_role(
             "test_organizationId", "test_slug"
         )
         assert result is None
@@ -1080,9 +1082,9 @@ class TestAsyncAuthorization:
         )
         assert request.url.params["search"] == "value search/test"
 
-    async def test_create_resource(self, async_workos, httpx_mock):
+    async def test_create_resources(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authorization_resource.json"))
-        result = await async_workos.authorization.create_resource(
+        result = await async_workos.authorization.create_resources(
             external_id="test_external_id",
             name="test_name",
             resource_type_slug="test_resource_type_slug",
@@ -1105,9 +1107,9 @@ class TestAsyncAuthorization:
         assert request.method == "GET"
         assert request.url.path.endswith("/authorization/resources/test_resource_id")
 
-    async def test_update_resource(self, async_workos, httpx_mock):
+    async def test_update_resources(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authorization_resource.json"))
-        result = await async_workos.authorization.update_resource("test_resource_id")
+        result = await async_workos.authorization.update_resources("test_resource_id")
         assert isinstance(result, AuthorizationResource)
         assert result.object == "authorization_resource"
         assert result.name == "Website Redesign"
@@ -1115,17 +1117,19 @@ class TestAsyncAuthorization:
         assert request.method == "PATCH"
         assert request.url.path.endswith("/authorization/resources/test_resource_id")
 
-    async def test_delete_resource(self, async_workos, httpx_mock):
+    async def test_delete_resources(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.authorization.delete_resource("test_resource_id")
+        result = await async_workos.authorization.delete_resources("test_resource_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/authorization/resources/test_resource_id")
 
-    async def test_delete_resource_encodes_query_params(self, async_workos, httpx_mock):
+    async def test_delete_resources_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
         httpx_mock.add_response(status_code=204)
-        await async_workos.authorization.delete_resource(
+        await async_workos.authorization.delete_resources(
             "test_resource_id", cascade_delete=True
         )
         request = httpx_mock.get_request()

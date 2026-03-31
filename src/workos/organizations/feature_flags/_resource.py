@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from ..._client import AsyncWorkOSClient, WorkOSClient
 
+from ..._types import RequestOptions, enum_value
 from workos.feature_flags.models import Flag
 from .models import OrganizationsFeatureFlagsOrder
 from ..._pagination import AsyncPage, SyncPage
-from ..._types import RequestOptions
 
 
 class OrganizationsFeatureFlags:
@@ -26,7 +26,7 @@ class OrganizationsFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[OrganizationsFeatureFlagsOrder] = None,
+        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List enabled feature flags for an organization
@@ -56,7 +56,7 @@ class OrganizationsFeatureFlags:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -82,7 +82,7 @@ class AsyncOrganizationsFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[OrganizationsFeatureFlagsOrder] = None,
+        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List enabled feature flags for an organization
@@ -112,7 +112,7 @@ class AsyncOrganizationsFeatureFlags:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }

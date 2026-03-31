@@ -121,7 +121,9 @@ from .user_management.multi_factor_authentication._resource import (
 from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
+from .passwordless import AsyncPasswordless, Passwordless
 from .session import AsyncSession, Session
+from .vault import AsyncVault, Vault
 
 try:
     from importlib.metadata import version as _pkg_version
@@ -146,6 +148,17 @@ class MultiFactorAuthNamespace(MultiFactorAuth):
     @functools.cached_property
     def challenges(self) -> MultiFactorAuthChallenges:
         return MultiFactorAuthChallenges(self._client)
+
+    def verify_challenge(
+        self,
+        *,
+        authentication_challenge_id: str,
+        code: str,
+        request_options: Optional[RequestOptions] = None,
+    ) -> Any:
+        return self.challenges.verify(
+            authentication_challenge_id, code=code, request_options=request_options
+        )
 
 
 class FeatureFlagsNamespace(FeatureFlags):
@@ -258,6 +271,17 @@ class AsyncMultiFactorAuthNamespace(AsyncMultiFactorAuth):
     @functools.cached_property
     def challenges(self) -> AsyncMultiFactorAuthChallenges:
         return AsyncMultiFactorAuthChallenges(self._client)
+
+    async def verify_challenge(
+        self,
+        *,
+        authentication_challenge_id: str,
+        code: str,
+        request_options: Optional[RequestOptions] = None,
+    ) -> Any:
+        return await self.challenges.verify(
+            authentication_challenge_id, code=code, request_options=request_options
+        )
 
 
 class AsyncFeatureFlagsNamespace(AsyncFeatureFlags):
@@ -513,14 +537,25 @@ class _BaseWorkOSClient:
         request = response.request
         request_url = str(request.url) if request is not None else None
         request_method = request.method if request is not None else None
+        response_json: Optional[Dict[str, Any]] = None
         try:
-            body: Dict[str, Any] = response.json()
-            message: str = str(body.get("message", response.text))
-            code: Optional[str] = str(body["code"]) if "code" in body else None
-            param = cast(Optional[str], body.get("param"))
+            response_json = cast(Dict[str, Any], response.json())
+            message: str = str(response_json.get("message", response.text))
+            error = cast(Optional[str], response_json.get("error"))
+            errors = response_json.get("errors")
+            code: Optional[str] = (
+                str(response_json["code"]) if "code" in response_json else None
+            )
+            error_description = cast(
+                Optional[str], response_json.get("error_description")
+            )
+            param = cast(Optional[str], response_json.get("param"))
         except Exception:
             message = response.text
+            error = None
+            errors = None
             code = None
+            error_description = None
             param = None
 
         error_class = STATUS_CODE_TO_EXCEPTION.get(response.status_code)
@@ -535,6 +570,11 @@ class _BaseWorkOSClient:
                     request_id=request_id,
                     code=code,
                     param=param,
+                    response=response,
+                    response_json=response_json,
+                    error=error,
+                    errors=errors,
+                    error_description=error_description,
                     raw_body=raw_body,
                     request_url=request_url,
                     request_method=request_method,
@@ -544,6 +584,11 @@ class _BaseWorkOSClient:
                 request_id=request_id,
                 code=code,
                 param=param,
+                response=response,
+                response_json=response_json,
+                error=error,
+                errors=errors,
+                error_description=error_description,
                 raw_body=raw_body,
                 request_url=request_url,
                 request_method=request_method,
@@ -556,6 +601,11 @@ class _BaseWorkOSClient:
                 request_id=request_id,
                 code=code,
                 param=param,
+                response=response,
+                response_json=response_json,
+                error=error,
+                errors=errors,
+                error_description=error_description,
                 raw_body=raw_body,
                 request_url=request_url,
                 request_method=request_method,
@@ -567,6 +617,11 @@ class _BaseWorkOSClient:
             request_id=request_id,
             code=code,
             param=param,
+            response=response,
+            response_json=response_json,
+            error=error,
+            errors=errors,
+            error_description=error_description,
             raw_body=raw_body,
             request_url=request_url,
             request_method=request_method,
@@ -716,6 +771,18 @@ class WorkOSClient(_BaseWorkOSClient):
     @functools.cached_property
     def user_management_users(self) -> UserManagementUsersNamespace:
         return UserManagementUsersNamespace(self)
+
+    @functools.cached_property
+    def mfa(self) -> Any:
+        return self.multi_factor_auth
+
+    @functools.cached_property
+    def passwordless(self) -> Passwordless:
+        return Passwordless(self)
+
+    @functools.cached_property
+    def vault(self) -> Vault:
+        return Vault(self)
 
     @overload
     def request(
@@ -983,6 +1050,18 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
     @functools.cached_property
     def user_management_users(self) -> AsyncUserManagementUsersNamespace:
         return AsyncUserManagementUsersNamespace(self)
+
+    @functools.cached_property
+    def mfa(self) -> Any:
+        return self.multi_factor_auth
+
+    @functools.cached_property
+    def passwordless(self) -> AsyncPasswordless:
+        return AsyncPasswordless(self)
+
+    @functools.cached_property
+    def vault(self) -> AsyncVault:
+        return AsyncVault(self)
 
     @overload
     async def request(

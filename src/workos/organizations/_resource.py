@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import (
     AuditLogConfiguration,
     AuditLogsRetentionJson,
@@ -15,7 +16,6 @@ from .models import (
 )
 from .models import OrganizationsOrder
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions
 
 
 class Organizations:
@@ -30,7 +30,7 @@ class Organizations:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[OrganizationsOrder] = None,
+        order: Optional[Union[OrganizationsOrder, str]] = None,
         domains: Optional[List[str]] = None,
         search: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -63,7 +63,7 @@ class Organizations:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "domains": domains,
                 "search": search,
             }.items()
@@ -394,7 +394,7 @@ class AsyncOrganizations:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[OrganizationsOrder] = None,
+        order: Optional[Union[OrganizationsOrder, str]] = None,
         domains: Optional[List[str]] = None,
         search: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -427,7 +427,7 @@ class AsyncOrganizations:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "domains": domains,
                 "search": search,
             }.items()

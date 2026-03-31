@@ -16,23 +16,23 @@ from workos._errors import (
 
 
 class TestEvents:
-    def test_list_events(self, workos, httpx_mock):
+    def test_list(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_event.json"),
         )
-        page = workos.events.list_events()
+        page = workos.events.list()
         assert isinstance(page, SyncPage)
         assert isinstance(page.data, list)
 
-    def test_list_events_empty_page(self, workos, httpx_mock):
+    def test_list_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.events.list_events()
+        page = workos.events.list()
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_events_encodes_query_params(self, workos, httpx_mock):
+    def test_list_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.events.list_events(
+        workos.events.list(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -50,24 +50,24 @@ class TestEvents:
         assert request.url.params["range_end"] == "value range_end/test"
         assert request.url.params["organization_id"] == "value organization_id/test"
 
-    def test_list_events_unauthorized(self, workos, httpx_mock):
+    def test_list_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationException):
-            workos.events.list_events()
+            workos.events.list()
 
-    def test_list_events_not_found(self, httpx_mock):
+    def test_list_not_found(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundException):
-                workos.events.list_events()
+                workos.events.list()
         finally:
             workos.close()
 
-    def test_list_events_rate_limited(self, httpx_mock):
+    def test_list_rate_limited(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(
@@ -76,37 +76,37 @@ class TestEvents:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededException):
-                workos.events.list_events()
+                workos.events.list()
         finally:
             workos.close()
 
-    def test_list_events_server_error(self, httpx_mock):
+    def test_list_server_error(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerException):
-                workos.events.list_events()
+                workos.events.list()
         finally:
             workos.close()
 
 
 @pytest.mark.asyncio
 class TestAsyncEvents:
-    async def test_list_events(self, async_workos, httpx_mock):
+    async def test_list(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_event.json"))
-        page = await async_workos.events.list_events()
+        page = await async_workos.events.list()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
-    async def test_list_events_empty_page(self, async_workos, httpx_mock):
+    async def test_list_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.events.list_events()
+        page = await async_workos.events.list()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
-    async def test_list_events_encodes_query_params(self, async_workos, httpx_mock):
+    async def test_list_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.events.list_events(
+        await async_workos.events.list(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -124,23 +124,23 @@ class TestAsyncEvents:
         assert request.url.params["range_end"] == "value range_end/test"
         assert request.url.params["organization_id"] == "value organization_id/test"
 
-    async def test_list_events_unauthorized(self, async_workos, httpx_mock):
+    async def test_list_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationException):
-            await async_workos.events.list_events()
+            await async_workos.events.list()
 
-    async def test_list_events_not_found(self, httpx_mock):
+    async def test_list_not_found(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundException):
-                await workos.events.list_events()
+                await workos.events.list()
         finally:
             await workos.close()
 
-    async def test_list_events_rate_limited(self, httpx_mock):
+    async def test_list_rate_limited(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -151,17 +151,17 @@ class TestAsyncEvents:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededException):
-                await workos.events.list_events()
+                await workos.events.list()
         finally:
             await workos.close()
 
-    async def test_list_events_server_error(self, httpx_mock):
+    async def test_list_server_error(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerException):
-                await workos.events.list_events()
+                await workos.events.list()
         finally:
             await workos.close()

@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
+from .._types import RequestOptions, enum_value
 from .models import (
     AuthorizationCheck,
     AuthorizationResource,
@@ -18,7 +19,6 @@ from .models import (
 )
 from .models import AuthorizationAssignment, AuthorizationOrder
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions
 
 
 class Authorization:
@@ -85,7 +85,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuthorizationOrder] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = None,
         permission_slug: str,
         parent_resource_id: Optional[str] = None,
         parent_resource_type_slug: Optional[str] = None,
@@ -128,7 +128,7 @@ class Authorization:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "permission_slug": permission_slug,
                 "parent_resource_id": parent_resource_id,
                 "parent_resource_type_slug": parent_resource_type_slug,
@@ -151,7 +151,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuthorizationOrder] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[RoleAssignment]:
         """List role assignments
@@ -182,7 +182,7 @@ class Authorization:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -245,7 +245,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def remove_role(
+    def remove_role_by_criteria(
         self,
         organization_membership_id: str,
         *,
@@ -321,7 +321,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_roles_organizations(
+    def list_organization_roles(
         self,
         organization_id: str,
         *,
@@ -352,7 +352,11 @@ class Authorization:
             request_options=request_options,
         )
 
-    def create_roles_organizations(
+    def list_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `list_organization_roles`."""
+        return self.list_organization_roles(*args, **kwargs)
+
+    def create_organization_role(
         self,
         organization_id: str,
         *,
@@ -402,7 +406,11 @@ class Authorization:
             request_options=request_options,
         )
 
-    def get_roles_organization(
+    def create_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `create_organization_role`."""
+        return self.create_organization_role(*args, **kwargs)
+
+    def get_organization_role(
         self,
         organization_id: str,
         slug: str,
@@ -435,7 +443,11 @@ class Authorization:
             request_options=request_options,
         )
 
-    def update_roles_organizations(
+    def get_roles_organization(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `get_organization_role`."""
+        return self.get_organization_role(*args, **kwargs)
+
+    def update_organization_role(
         self,
         organization_id: str,
         slug: str,
@@ -483,7 +495,11 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_roles(
+    def update_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `update_organization_role`."""
+        return self.update_organization_role(*args, **kwargs)
+
+    def delete_organization_role(
         self,
         organization_id: str,
         slug: str,
@@ -513,6 +529,10 @@ class Authorization:
             path=f"authorization/organizations/{organization_id}/roles/{slug}",
             request_options=request_options,
         )
+
+    def delete_roles(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `delete_organization_role`."""
+        return self.delete_organization_role(*args, **kwargs)
 
     def add_permission_permissions_organizations_roles(
         self,
@@ -773,9 +793,9 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuthorizationOrder] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = None,
         permission_slug: str,
-        assignment: Optional[AuthorizationAssignment] = None,
+        assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserOrganizationMembershipBaseListData]:
         """List memberships for a resource by external ID
@@ -812,9 +832,11 @@ class Authorization:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "permission_slug": permission_slug,
-                "assignment": assignment.value if assignment else None,
+                "assignment": enum_value(assignment)
+                if assignment is not None
+                else None,
             }.items()
             if v is not None
         }
@@ -832,7 +854,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuthorizationOrder] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = None,
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
         parent_resource_id: Optional[str] = None,
@@ -874,7 +896,7 @@ class Authorization:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
                 "resource_type_slug": resource_type_slug,
                 "parent_resource_id": parent_resource_id,
@@ -892,7 +914,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def create_resource(
+    def create_resources(
         self,
         *,
         external_id: str,
@@ -987,7 +1009,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def update_resource(
+    def update_resources(
         self,
         resource_id: str,
         *,
@@ -1043,7 +1065,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_resource(
+    def delete_resources(
         self,
         resource_id: str,
         *,
@@ -1089,9 +1111,9 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuthorizationOrder] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = None,
         permission_slug: str,
-        assignment: Optional[AuthorizationAssignment] = None,
+        assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserOrganizationMembershipBaseListData]:
         """List organization memberships for resource
@@ -1126,9 +1148,11 @@ class Authorization:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "permission_slug": permission_slug,
-                "assignment": assignment.value if assignment else None,
+                "assignment": enum_value(assignment)
+                if assignment is not None
+                else None,
             }.items()
             if v is not None
         }
@@ -1436,7 +1460,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuthorizationOrder] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = None,
         permission_slug: str,
         parent_resource_id: Optional[str] = None,
         parent_resource_type_slug: Optional[str] = None,
@@ -1479,7 +1503,7 @@ class AsyncAuthorization:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "permission_slug": permission_slug,
                 "parent_resource_id": parent_resource_id,
                 "parent_resource_type_slug": parent_resource_type_slug,
@@ -1502,7 +1526,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuthorizationOrder] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[RoleAssignment]:
         """List role assignments
@@ -1533,7 +1557,7 @@ class AsyncAuthorization:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
@@ -1596,7 +1620,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def remove_role(
+    async def remove_role_by_criteria(
         self,
         organization_membership_id: str,
         *,
@@ -1672,7 +1696,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_roles_organizations(
+    async def list_organization_roles(
         self,
         organization_id: str,
         *,
@@ -1703,7 +1727,11 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def create_roles_organizations(
+    async def list_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `list_organization_roles`."""
+        return await self.list_organization_roles(*args, **kwargs)
+
+    async def create_organization_role(
         self,
         organization_id: str,
         *,
@@ -1753,7 +1781,11 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def get_roles_organization(
+    async def create_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `create_organization_role`."""
+        return await self.create_organization_role(*args, **kwargs)
+
+    async def get_organization_role(
         self,
         organization_id: str,
         slug: str,
@@ -1786,7 +1818,11 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def update_roles_organizations(
+    async def get_roles_organization(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `get_organization_role`."""
+        return await self.get_organization_role(*args, **kwargs)
+
+    async def update_organization_role(
         self,
         organization_id: str,
         slug: str,
@@ -1834,7 +1870,11 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_roles(
+    async def update_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `update_organization_role`."""
+        return await self.update_organization_role(*args, **kwargs)
+
+    async def delete_organization_role(
         self,
         organization_id: str,
         slug: str,
@@ -1864,6 +1904,10 @@ class AsyncAuthorization:
             path=f"authorization/organizations/{organization_id}/roles/{slug}",
             request_options=request_options,
         )
+
+    async def delete_roles(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `delete_organization_role`."""
+        return await self.delete_organization_role(*args, **kwargs)
 
     async def add_permission_permissions_organizations_roles(
         self,
@@ -2124,9 +2168,9 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuthorizationOrder] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = None,
         permission_slug: str,
-        assignment: Optional[AuthorizationAssignment] = None,
+        assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserOrganizationMembershipBaseListData]:
         """List memberships for a resource by external ID
@@ -2163,9 +2207,11 @@ class AsyncAuthorization:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "permission_slug": permission_slug,
-                "assignment": assignment.value if assignment else None,
+                "assignment": enum_value(assignment)
+                if assignment is not None
+                else None,
             }.items()
             if v is not None
         }
@@ -2183,7 +2229,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuthorizationOrder] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = None,
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
         parent_resource_id: Optional[str] = None,
@@ -2225,7 +2271,7 @@ class AsyncAuthorization:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
                 "resource_type_slug": resource_type_slug,
                 "parent_resource_id": parent_resource_id,
@@ -2243,7 +2289,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def create_resource(
+    async def create_resources(
         self,
         *,
         external_id: str,
@@ -2338,7 +2384,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def update_resource(
+    async def update_resources(
         self,
         resource_id: str,
         *,
@@ -2394,7 +2440,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_resource(
+    async def delete_resources(
         self,
         resource_id: str,
         *,
@@ -2440,9 +2486,9 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[AuthorizationOrder] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = None,
         permission_slug: str,
-        assignment: Optional[AuthorizationAssignment] = None,
+        assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserOrganizationMembershipBaseListData]:
         """List organization memberships for resource
@@ -2477,9 +2523,11 @@ class AsyncAuthorization:
                 "limit": limit,
                 "before": before,
                 "after": after,
-                "order": order.value if order else None,
+                "order": enum_value(order) if order is not None else None,
                 "permission_slug": permission_slug,
-                "assignment": assignment.value if assignment else None,
+                "assignment": enum_value(assignment)
+                if assignment is not None
+                else None,
             }.items()
             if v is not None
         }

@@ -1630,6 +1630,86 @@ class TestModelRoundTrip:
         instance = DirectoryUserWithGroups.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_user_round_trip(self):
+        data = load_fixture("user.json")
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = User.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_minimal_payload(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "last_sign_in_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+        assert serialized["profile_picture_url"] == data["profile_picture_url"]
+        assert serialized["email"] == data["email"]
+        assert serialized["email_verified"] == data["email_verified"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_user_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+            "locale": "en-US",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert "metadata" not in serialized
+
+    def test_user_preserves_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "metadata": {"timezone": "America/New_York"},
+            "last_sign_in_at": None,
+            "locale": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["profile_picture_url"] is None
+        assert serialized["external_id"] is None
+        assert serialized["last_sign_in_at"] is None
+        assert serialized["locale"] is None
+
     def test_event_round_trip(self):
         data = load_fixture("event.json")
         instance = Event.from_dict(data)
@@ -1639,60 +1719,9 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_event_minimal_payload(self):
-        data = {
-            "object": "event",
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.user.created",
-            "data": {
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "state": "active",
-                "emails": [{"primary": True, "value": "veda@foo-corp.com"}],
-                "idp_id": "2836",
-                "object": "directory_user",
-                "username": "veda@foo-corp.com",
-                "last_name": "Torp",
-                "first_name": "Veda",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "raw_attributes": {},
-                "custom_attributes": {},
-                "created_at": "2021-06-25T19:07:33.155Z",
-                "updated_at": "2021-06-25T19:07:33.155Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {}
         instance = Event.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["event"] == data["event"]
-        assert serialized["data"] == data["data"]
-        assert serialized["created_at"] == data["created_at"]
-
-    def test_event_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "event",
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.user.created",
-            "data": {
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "state": "active",
-                "emails": [{"primary": True, "value": "veda@foo-corp.com"}],
-                "idp_id": "2836",
-                "object": "directory_user",
-                "username": "veda@foo-corp.com",
-                "last_name": "Torp",
-                "first_name": "Veda",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "raw_attributes": {},
-                "custom_attributes": {},
-                "created_at": "2021-06-25T19:07:33.155Z",
-                "updated_at": "2021-06-25T19:07:33.155Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = Event.from_dict(data)
-        serialized = instance.to_dict()
-        assert "context" not in serialized
+        assert instance.to_dict() is not None
 
     def test_jwt_template_response_round_trip(self):
         data = load_fixture("jwt_template_response.json")
@@ -1913,7 +1942,6 @@ class TestModelRoundTrip:
             "external_id": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
-            "allow_profiles_outside_organization": False,
         }
         instance = Organization.from_dict(data)
         serialized = instance.to_dict()
@@ -1925,10 +1953,6 @@ class TestModelRoundTrip:
         assert serialized["external_id"] == data["external_id"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
-        assert (
-            serialized["allow_profiles_outside_organization"]
-            == data["allow_profiles_outside_organization"]
-        )
 
     def test_organization_omits_absent_optional_non_nullable_fields(self):
         data = {
@@ -1953,11 +1977,11 @@ class TestModelRoundTrip:
             "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
-            "allow_profiles_outside_organization": False,
         }
         instance = Organization.from_dict(data)
         serialized = instance.to_dict()
         assert "stripe_customer_id" not in serialized
+        assert "allow_profiles_outside_organization" not in serialized
 
     def test_organization_preserves_nullable_fields(self):
         data = {
@@ -2498,86 +2522,6 @@ class TestModelRoundTrip:
         }
         instance = UserOrganizationMembership.from_dict(data)
         assert instance.to_dict() == data
-
-    def test_user_round_trip(self):
-        data = load_fixture("user.json")
-        instance = User.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = User.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_minimal_payload(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "last_sign_in_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = User.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["first_name"] == data["first_name"]
-        assert serialized["last_name"] == data["last_name"]
-        assert serialized["profile_picture_url"] == data["profile_picture_url"]
-        assert serialized["email"] == data["email"]
-        assert serialized["email_verified"] == data["email_verified"]
-        assert serialized["external_id"] == data["external_id"]
-        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_user_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-            "locale": "en-US",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = User.from_dict(data)
-        serialized = instance.to_dict()
-        assert "metadata" not in serialized
-
-    def test_user_preserves_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "metadata": {"timezone": "America/New_York"},
-            "last_sign_in_at": None,
-            "locale": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = User.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["profile_picture_url"] is None
-        assert serialized["external_id"] is None
-        assert serialized["last_sign_in_at"] is None
-        assert serialized["locale"] is None
 
     def test_email_verification_round_trip(self):
         data = load_fixture("email_verification.json")

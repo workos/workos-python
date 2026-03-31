@@ -111,11 +111,11 @@ class TestAuditLogs:
         assert body["organization_id"] == "test_organization_id"
         assert "event" in body
 
-    def test_exports(self, workos, httpx_mock):
+    def test_create_export(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_export_json.json"),
         )
-        result = workos.audit_logs.exports(
+        result = workos.audit_logs.create_export(
             organization_id="test_organization_id",
             range_start="test_range_start",
             range_end="test_range_end",
@@ -131,11 +131,11 @@ class TestAuditLogs:
         assert body["range_start"] == "test_range_start"
         assert body["range_end"] == "test_range_end"
 
-    def test_export(self, workos, httpx_mock):
+    def test_get_export(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_export_json.json"),
         )
-        result = workos.audit_logs.export("test_auditLogExportId")
+        result = workos.audit_logs.get_export("test_auditLogExportId")
         assert isinstance(result, AuditLogExportJson)
         assert result.object == "audit_log_export"
         assert result.id == "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V"
@@ -264,9 +264,9 @@ class TestAsyncAuditLogs:
         assert request.method == "POST"
         assert request.url.path.endswith("/audit_logs/events")
 
-    async def test_exports(self, async_workos, httpx_mock):
+    async def test_create_export(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_export_json.json"))
-        result = await async_workos.audit_logs.exports(
+        result = await async_workos.audit_logs.create_export(
             organization_id="test_organization_id",
             range_start="test_range_start",
             range_end="test_range_end",
@@ -278,9 +278,9 @@ class TestAsyncAuditLogs:
         assert request.method == "POST"
         assert request.url.path.endswith("/audit_logs/exports")
 
-    async def test_export(self, async_workos, httpx_mock):
+    async def test_get_export(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_export_json.json"))
-        result = await async_workos.audit_logs.export("test_auditLogExportId")
+        result = await async_workos.audit_logs.get_export("test_auditLogExportId")
         assert isinstance(result, AuditLogExportJson)
         assert result.object == "audit_log_export"
         assert result.id == "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V"

@@ -219,7 +219,7 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def exports(
+    def create_export(
         self,
         *,
         organization_id: str,
@@ -278,7 +278,11 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def export(
+    def exports(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `create_export`."""
+        return self.create_export(*args, **kwargs)
+
+    def get_export(
         self,
         audit_log_export_id: str,
         *,
@@ -307,6 +311,10 @@ class AuditLogs:
             model=AuditLogExportJson,
             request_options=request_options,
         )
+
+    def export(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `get_export`."""
+        return self.get_export(*args, **kwargs)
 
 
 class AsyncAuditLogs:
@@ -507,7 +515,7 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def exports(
+    async def create_export(
         self,
         *,
         organization_id: str,
@@ -566,7 +574,11 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def export(
+    async def exports(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `create_export`."""
+        return await self.create_export(*args, **kwargs)
+
+    async def get_export(
         self,
         audit_log_export_id: str,
         *,
@@ -595,3 +607,7 @@ class AsyncAuditLogs:
             model=AuditLogExportJson,
             request_options=request_options,
         )
+
+    async def export(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `get_export`."""
+        return await self.get_export(*args, **kwargs)

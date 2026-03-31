@@ -245,11 +245,11 @@ class TestAuthorization:
             "/authorization/organizations/test_organizationId/roles/test_slug"
         )
 
-    def test_add_permission_permissions_organizations_roles(self, workos, httpx_mock):
+    def test_add_organization_role_permission(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.add_permission_permissions_organizations_roles(
+        result = workos.authorization.add_organization_role_permission(
             "test_organizationId", "test_slug", body_slug="test_slug"
         )
         assert isinstance(result, Role)
@@ -263,11 +263,11 @@ class TestAuthorization:
         body = json.loads(request.content)
         assert body["slug"] == "test_slug"
 
-    def test_set_permissions_permissions_organizations_roles(self, workos, httpx_mock):
+    def test_set_organization_role_permissions(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.set_permissions_permissions_organizations_roles(
+        result = workos.authorization.set_organization_role_permissions(
             "test_organizationId", "test_slug", permissions=[]
         )
         assert isinstance(result, Role)
@@ -281,9 +281,9 @@ class TestAuthorization:
         body = json.loads(request.content)
         assert "permissions" in body
 
-    def test_remove_permission(self, workos, httpx_mock):
+    def test_remove_organization_role_permission(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.authorization.remove_permission(
+        result = workos.authorization.remove_organization_role_permission(
             "test_organizationId", "test_slug", "test_permissionSlug"
         )
         assert result is None
@@ -599,11 +599,11 @@ class TestAuthorization:
         assert request.method == "PATCH"
         assert request.url.path.endswith("/authorization/roles/test_slug")
 
-    def test_add_permission_permissions_roles(self, workos, httpx_mock):
+    def test_add_environment_role_permission(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.add_permission_permissions_roles(
+        result = workos.authorization.add_environment_role_permission(
             "test_slug", body_slug="test_slug"
         )
         assert isinstance(result, Role)
@@ -615,11 +615,11 @@ class TestAuthorization:
         body = json.loads(request.content)
         assert body["slug"] == "test_slug"
 
-    def test_set_permissions_permissions_roles(self, workos, httpx_mock):
+    def test_set_environment_role_permissions(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.set_permissions_permissions_roles(
+        result = workos.authorization.set_environment_role_permissions(
             "test_slug", permissions=[]
         )
         assert isinstance(result, Role)
@@ -887,11 +887,9 @@ class TestAsyncAuthorization:
             "/authorization/organizations/test_organizationId/roles/test_slug"
         )
 
-    async def test_add_permission_permissions_organizations_roles(
-        self, async_workos, httpx_mock
-    ):
+    async def test_add_organization_role_permission(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.add_permission_permissions_organizations_roles(
+        result = await async_workos.authorization.add_organization_role_permission(
             "test_organizationId", "test_slug", body_slug="test_slug"
         )
         assert isinstance(result, Role)
@@ -903,11 +901,9 @@ class TestAsyncAuthorization:
             "/authorization/organizations/test_organizationId/roles/test_slug/permissions"
         )
 
-    async def test_set_permissions_permissions_organizations_roles(
-        self, async_workos, httpx_mock
-    ):
+    async def test_set_organization_role_permissions(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.set_permissions_permissions_organizations_roles(
+        result = await async_workos.authorization.set_organization_role_permissions(
             "test_organizationId", "test_slug", permissions=[]
         )
         assert isinstance(result, Role)
@@ -919,9 +915,9 @@ class TestAsyncAuthorization:
             "/authorization/organizations/test_organizationId/roles/test_slug/permissions"
         )
 
-    async def test_remove_permission(self, async_workos, httpx_mock):
+    async def test_remove_organization_role_permission(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.authorization.remove_permission(
+        result = await async_workos.authorization.remove_organization_role_permission(
             "test_organizationId", "test_slug", "test_permissionSlug"
         )
         assert result is None
@@ -1223,9 +1219,9 @@ class TestAsyncAuthorization:
         assert request.method == "PATCH"
         assert request.url.path.endswith("/authorization/roles/test_slug")
 
-    async def test_add_permission_permissions_roles(self, async_workos, httpx_mock):
+    async def test_add_environment_role_permission(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.add_permission_permissions_roles(
+        result = await async_workos.authorization.add_environment_role_permission(
             "test_slug", body_slug="test_slug"
         )
         assert isinstance(result, Role)
@@ -1235,9 +1231,9 @@ class TestAsyncAuthorization:
         assert request.method == "POST"
         assert request.url.path.endswith("/authorization/roles/test_slug/permissions")
 
-    async def test_set_permissions_permissions_roles(self, async_workos, httpx_mock):
+    async def test_set_environment_role_permissions(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.set_permissions_permissions_roles(
+        result = await async_workos.authorization.set_environment_role_permissions(
             "test_slug", permissions=[]
         )
         assert isinstance(result, Role)

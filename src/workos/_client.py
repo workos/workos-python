@@ -420,7 +420,7 @@ class _BaseWorkOSClient:
         self._request_timeout = (
             request_timeout
             if request_timeout is not None
-            else int(os.environ.get("WORKOS_REQUEST_TIMEOUT", "25"))
+            else int(os.environ.get("WORKOS_REQUEST_TIMEOUT", "30"))
         )
         self._max_retries = max_retries
         self._jwt_leeway = jwt_leeway
@@ -647,7 +647,7 @@ class WorkOSClient(_BaseWorkOSClient):
             api_key: WorkOS API key. Falls back to the WORKOS_API_KEY environment variable.
             client_id: WorkOS client ID. Falls back to the WORKOS_CLIENT_ID environment variable.
             base_url: Base URL for API requests. Falls back to WORKOS_BASE_URL or "https://api.workos.com".
-            request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 25.
+            request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 30.
             jwt_leeway: JWT clock skew leeway in seconds.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
 
@@ -926,7 +926,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             api_key: WorkOS API key. Falls back to the WORKOS_API_KEY environment variable.
             client_id: WorkOS client ID. Falls back to the WORKOS_CLIENT_ID environment variable.
             base_url: Base URL for API requests. Falls back to WORKOS_BASE_URL or "https://api.workos.com".
-            request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 25.
+            request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 30.
             jwt_leeway: JWT clock skew leeway in seconds.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
 

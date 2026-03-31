@@ -1,6 +1,14 @@
 {
   "data": [
-    {}
+    {
+      "id": "event_01FGCPNV312FHFRCX0BYQVBMEQ",
+      "event": "dsync.activated",
+      "data": {
+        "id": "directory_01FGCPNV312FHFRCX0BYQVBMEQ",
+        "name": "Foo Corp's Directory"
+      },
+      "created_at": "2021-10-28T15:13:51.486Z"
+    }
   ],
   "list_metadata": {
     "before": null,

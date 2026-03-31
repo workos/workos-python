@@ -3,21 +3,34 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from workos._errors import BaseRequestException
 
 
+# @oagen-ignore-start
 @dataclass(slots=True)
 class Event:
-    """An event emitted by WorkOS."""
+    """An event emitted by WorkOS.
 
-    pass
+    The ``event`` field is the discriminator (e.g. ``"dsync.activated"``).
+    ``data`` contains the event-specific payload as a dictionary.
+    """
+
+    id: str
+    event: str
+    data: Dict[str, Any]
+    created_at: Optional[str] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Event":
         """Deserialize from a dictionary."""
         try:
-            return cls()
+            return cls(
+                id=data["id"],
+                event=data["event"],
+                data=data.get("data", {}),
+                created_at=data.get("created_at"),
+            )
         except (KeyError, ValueError) as e:
             raise BaseRequestException(
                 f"Unexpected API response while parsing Event: {e!s}"
@@ -25,5 +38,14 @@ class Event:
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
+        result: Dict[str, Any] = {
+            "id": self.id,
+            "event": self.event,
+            "data": self.data,
+        }
+        if self.created_at is not None:
+            result["created_at"] = self.created_at
         return result
+
+
+# @oagen-ignore-end

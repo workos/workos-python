@@ -534,7 +534,7 @@ class Authorization:
         """Compatibility alias for `delete_organization_role`."""
         return self.delete_organization_role(*args, **kwargs)
 
-    def add_permission_permissions_organizations_roles(
+    def add_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -575,7 +575,13 @@ class Authorization:
             request_options=request_options,
         )
 
-    def set_permissions_permissions_organizations_roles(
+    def add_permission_permissions_organizations_roles(
+        self, *args: Any, **kwargs: Any
+    ) -> Any:
+        """Compatibility alias for `add_organization_role_permission`."""
+        return self.add_organization_role_permission(*args, **kwargs)
+
+    def set_organization_role_permissions(
         self,
         organization_id: str,
         slug: str,
@@ -615,7 +621,13 @@ class Authorization:
             request_options=request_options,
         )
 
-    def remove_permission(
+    def set_permissions_permissions_organizations_roles(
+        self, *args: Any, **kwargs: Any
+    ) -> Any:
+        """Compatibility alias for `set_organization_role_permissions`."""
+        return self.set_organization_role_permissions(*args, **kwargs)
+
+    def remove_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -645,6 +657,10 @@ class Authorization:
             path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions/{permission_slug}",
             request_options=request_options,
         )
+
+    def remove_permission(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `remove_organization_role_permission`."""
+        return self.remove_organization_role_permission(*args, **kwargs)
 
     def get_by_external_id(
         self,
@@ -1317,7 +1333,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def add_permission_permissions_roles(
+    def add_environment_role_permission(
         self,
         slug: str,
         *,
@@ -1356,7 +1372,11 @@ class Authorization:
             request_options=request_options,
         )
 
-    def set_permissions_permissions_roles(
+    def add_permission_permissions_roles(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `add_environment_role_permission`."""
+        return self.add_environment_role_permission(*args, **kwargs)
+
+    def set_environment_role_permissions(
         self,
         slug: str,
         *,
@@ -1394,6 +1414,10 @@ class Authorization:
             model=Role,
             request_options=request_options,
         )
+
+    def set_permissions_permissions_roles(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `set_environment_role_permissions`."""
+        return self.set_environment_role_permissions(*args, **kwargs)
 
 
 class AsyncAuthorization:
@@ -1909,7 +1933,7 @@ class AsyncAuthorization:
         """Compatibility alias for `delete_organization_role`."""
         return await self.delete_organization_role(*args, **kwargs)
 
-    async def add_permission_permissions_organizations_roles(
+    async def add_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -1950,7 +1974,13 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def set_permissions_permissions_organizations_roles(
+    async def add_permission_permissions_organizations_roles(
+        self, *args: Any, **kwargs: Any
+    ) -> Any:
+        """Compatibility alias for `add_organization_role_permission`."""
+        return await self.add_organization_role_permission(*args, **kwargs)
+
+    async def set_organization_role_permissions(
         self,
         organization_id: str,
         slug: str,
@@ -1990,7 +2020,13 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def remove_permission(
+    async def set_permissions_permissions_organizations_roles(
+        self, *args: Any, **kwargs: Any
+    ) -> Any:
+        """Compatibility alias for `set_organization_role_permissions`."""
+        return await self.set_organization_role_permissions(*args, **kwargs)
+
+    async def remove_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -2020,6 +2056,10 @@ class AsyncAuthorization:
             path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions/{permission_slug}",
             request_options=request_options,
         )
+
+    async def remove_permission(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `remove_organization_role_permission`."""
+        return await self.remove_organization_role_permission(*args, **kwargs)
 
     async def get_by_external_id(
         self,
@@ -2692,7 +2732,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def add_permission_permissions_roles(
+    async def add_environment_role_permission(
         self,
         slug: str,
         *,
@@ -2731,7 +2771,11 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def set_permissions_permissions_roles(
+    async def add_permission_permissions_roles(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `add_environment_role_permission`."""
+        return await self.add_environment_role_permission(*args, **kwargs)
+
+    async def set_environment_role_permissions(
         self,
         slug: str,
         *,
@@ -2769,3 +2813,7 @@ class AsyncAuthorization:
             model=Role,
             request_options=request_options,
         )
+
+    async def set_permissions_permissions_roles(self, *args: Any, **kwargs: Any) -> Any:
+        """Compatibility alias for `set_environment_role_permissions`."""
+        return await self.set_environment_role_permissions(*args, **kwargs)

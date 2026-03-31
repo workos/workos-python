@@ -1719,7 +1719,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_event_minimal_payload(self):
-        data = {}
+        data = {"id": "event_123", "event": "dsync.activated", "data": {}}
         instance = Event.from_dict(data)
         assert instance.to_dict() is not None
 

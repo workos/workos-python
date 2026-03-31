@@ -1,0 +1,3 @@
+{
+  "sms_template": "Your verification code is {{code}}."
+}

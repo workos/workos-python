@@ -1,0 +1,35 @@
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "data_provider",
+      "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+      "name": "GitHub",
+      "description": "Connect your GitHub account to access repositories.",
+      "slug": "github",
+      "integration_type": "github",
+      "credentials_type": "oauth2",
+      "scopes": [
+        "repo",
+        "user:email"
+      ],
+      "ownership": "userland_user",
+      "created_at": "2024-01-15T10:30:00.000Z",
+      "updated_at": "2024-01-15T10:30:00.000Z",
+      "connected_account": {
+        "object": "connected_account",
+        "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+        "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+        "organization_id": null,
+        "scopes": [
+          "repo",
+          "user:email"
+        ],
+        "state": "connected",
+        "created_at": "2024-01-16T14:20:00.000Z",
+        "updated_at": "2024-01-16T14:20:00.000Z",
+        "userlandUserId": "test_userlandUserId"
+      }
+    }
+  ]
+}

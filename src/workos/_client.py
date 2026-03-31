@@ -11,7 +11,7 @@ import uuid
 import random
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
-from typing import Any, Dict, Optional, Type, cast, overload
+from typing import Any, Dict, List, Literal, Optional, Type, cast, overload
 
 import httpx
 
@@ -121,6 +121,16 @@ from .user_management.multi_factor_authentication._resource import (
 from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
+from .session import AsyncSession, Session
+from .directory_users.models import DirectoryUsersOrder
+from .directory_groups.models import DirectoryGroupsOrder
+from .directories.models import DirectoriesOrder
+from .user_management.users.models import UserManagementUsersOrder
+from .user_management.authentication.models import (
+    UserManagementAuthenticationProvider,
+    UserManagementAuthenticationScreenHint,
+)
+from .common.models import CreateUserDtoPasswordHashType, UpdateUserDtoPasswordHashType
 
 try:
     from importlib.metadata import version as _pkg_version
@@ -223,6 +233,140 @@ class UserManagementNamespace(object):
     def multi_factor_authentication(self) -> UserManagementMultiFactorAuthentication:
         return UserManagementMultiFactorAuthentication(self._client)
 
+    def load_sealed_session(
+        self, *, sealed_session: str, cookie_password: str
+    ) -> Session:
+        return Session(
+            client=self._client,
+            session_data=sealed_session,
+            cookie_password=cookie_password,
+        )
+
+    def get_user(self, user_id: str):
+        return self.users.get_user(user_id)
+
+    def get_user_by_external_id(self, external_id: str):
+        return self.users.get_by_external_id(external_id)
+
+    def list_users(
+        self,
+        *,
+        email: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[UserManagementUsersOrder] = None,
+    ):
+        return self.users.list_users(
+            email=email,
+            organization_id=organization_id,
+            limit=limit,
+            before=before,
+            after=after,
+            order=order,
+        )
+
+    def create_user(
+        self,
+        *,
+        email: str,
+        password: Optional[str] = None,
+        password_hash: Optional[str] = None,
+        password_hash_type: Optional[CreateUserDtoPasswordHashType] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        email_verified: Optional[bool] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Dict[str, str]] = None,
+    ):
+        return self.users.create(
+            email=email,
+            password=password,
+            password_hash=password_hash,
+            password_hash_type=password_hash_type,
+            first_name=first_name,
+            last_name=last_name,
+            email_verified=email_verified,
+            external_id=external_id,
+            metadata=metadata,
+        )
+
+    def update_user(
+        self,
+        *,
+        user_id: str,
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        email_verified: Optional[bool] = None,
+        password: Optional[str] = None,
+        password_hash: Optional[str] = None,
+        password_hash_type: Optional[UpdateUserDtoPasswordHashType] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Dict[str, str]] = None,
+        locale: Optional[str] = None,
+    ):
+        return self.users.update(
+            user_id,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            email_verified=email_verified,
+            password=password,
+            password_hash=password_hash,
+            password_hash_type=password_hash_type,
+            external_id=external_id,
+            metadata=metadata,
+            locale=locale,
+        )
+
+    def delete_user(self, user_id: str) -> None:
+        self.users.delete(user_id)
+
+    def get_authorization_url(
+        self,
+        *,
+        redirect_uri: str,
+        domain_hint: Optional[str] = None,
+        login_hint: Optional[str] = None,
+        state: Optional[str] = None,
+        provider: Optional[UserManagementAuthenticationProvider] = None,
+        connection_id: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        code_challenge: Optional[str] = None,
+        code_challenge_method: Optional[Literal["S256"]] = None,
+        provider_query_params: Optional[Dict[str, str]] = None,
+        provider_scopes: Optional[List[str]] = None,
+        invitation_token: Optional[str] = None,
+        screen_hint: Optional[UserManagementAuthenticationScreenHint] = None,
+        prompt: Optional[str] = None,
+    ) -> str:
+        return self.authentication.authorize(
+            redirect_uri=redirect_uri,
+            client_id=self._client.client_id or "",
+            response_type="code",
+            domain_hint=domain_hint,
+            login_hint=login_hint,
+            state=state,
+            provider=provider,
+            connection_id=connection_id,
+            organization_id=organization_id,
+            code_challenge=code_challenge,
+            code_challenge_method=code_challenge_method,
+            provider_query_params=provider_query_params,
+            provider_scopes=provider_scopes,
+            invitation_token=invitation_token,
+            screen_hint=screen_hint,
+            prompt=prompt,
+        )
+
+    def get_jwks_url(self) -> str:
+        return self._client.build_url(f"sso/jwks/{self._client.client_id}")
+
+    def get_logout_url(self, session_id: str, return_to: Optional[str] = None) -> str:
+        return self.authentication.logout(session_id=session_id, return_to=return_to)
+
 
 class UserManagementUsersNamespace(object):
     """UserManagementUsers resources."""
@@ -237,6 +381,84 @@ class UserManagementUsersNamespace(object):
     @functools.cached_property
     def authorized_applications(self) -> UserManagementUsersAuthorizedApplications:
         return UserManagementUsersAuthorizedApplications(self._client)
+
+
+class DirectorySyncNamespace(object):
+    """Directory Sync compatibility resources."""
+
+    def __init__(self, client: "WorkOSClient") -> None:
+        self._client = client
+
+    def list_users(
+        self,
+        *,
+        directory_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[DirectoryUsersOrder] = None,
+    ):
+        return self._client.directory_users.list(
+            directory=directory_id,
+            group=group_id,
+            limit=limit,
+            before=before,
+            after=after,
+            order=order,
+        )
+
+    def list_groups(
+        self,
+        *,
+        directory_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[DirectoryGroupsOrder] = None,
+    ):
+        return self._client.directory_groups.list(
+            directory=directory_id,
+            user=user_id,
+            limit=limit,
+            before=before,
+            after=after,
+            order=order,
+        )
+
+    def list_directories(
+        self,
+        *,
+        search: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        order: Optional[DirectoriesOrder] = None,
+        domain: Optional[str] = None,
+    ):
+        return self._client.directories.list(
+            search=search,
+            limit=limit,
+            before=before,
+            after=after,
+            organization_id=organization_id,
+            order=order,
+            domain=domain,
+        )
+
+    def get_user(self, user_id: str):
+        return self._client.directory_users.get(user_id)
+
+    def get_group(self, group_id: str):
+        return self._client.directory_groups.get(group_id)
+
+    def get_directory(self, directory_id: str):
+        return self._client.directories.get(directory_id)
+
+    def delete_directory(self, directory_id: str) -> None:
+        self._client.directories.delete(directory_id)
 
 
 class AsyncMultiFactorAuthNamespace(AsyncMultiFactorAuth):
@@ -328,6 +550,144 @@ class AsyncUserManagementNamespace(object):
     ) -> AsyncUserManagementMultiFactorAuthentication:
         return AsyncUserManagementMultiFactorAuthentication(self._client)
 
+    def load_sealed_session(
+        self, *, sealed_session: str, cookie_password: str
+    ) -> AsyncSession:
+        return AsyncSession(
+            client=self._client,
+            session_data=sealed_session,
+            cookie_password=cookie_password,
+        )
+
+    async def get_user(self, user_id: str):
+        return await self.users.get_user(user_id)
+
+    async def get_user_by_external_id(self, external_id: str):
+        return await self.users.get_by_external_id(external_id)
+
+    async def list_users(
+        self,
+        *,
+        email: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[UserManagementUsersOrder] = None,
+    ):
+        return await self.users.list_users(
+            email=email,
+            organization_id=organization_id,
+            limit=limit,
+            before=before,
+            after=after,
+            order=order,
+        )
+
+    async def create_user(
+        self,
+        *,
+        email: str,
+        password: Optional[str] = None,
+        password_hash: Optional[str] = None,
+        password_hash_type: Optional[CreateUserDtoPasswordHashType] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        email_verified: Optional[bool] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Dict[str, str]] = None,
+    ):
+        return await self.users.create(
+            email=email,
+            password=password,
+            password_hash=password_hash,
+            password_hash_type=password_hash_type,
+            first_name=first_name,
+            last_name=last_name,
+            email_verified=email_verified,
+            external_id=external_id,
+            metadata=metadata,
+        )
+
+    async def update_user(
+        self,
+        *,
+        user_id: str,
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        email_verified: Optional[bool] = None,
+        password: Optional[str] = None,
+        password_hash: Optional[str] = None,
+        password_hash_type: Optional[UpdateUserDtoPasswordHashType] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[Dict[str, str]] = None,
+        locale: Optional[str] = None,
+    ):
+        return await self.users.update(
+            user_id,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            email_verified=email_verified,
+            password=password,
+            password_hash=password_hash,
+            password_hash_type=password_hash_type,
+            external_id=external_id,
+            metadata=metadata,
+            locale=locale,
+        )
+
+    async def delete_user(self, user_id: str) -> None:
+        await self.users.delete(user_id)
+
+    async def get_authorization_url(
+        self,
+        *,
+        redirect_uri: str,
+        domain_hint: Optional[str] = None,
+        login_hint: Optional[str] = None,
+        state: Optional[str] = None,
+        provider: Optional[UserManagementAuthenticationProvider] = None,
+        connection_id: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        code_challenge: Optional[str] = None,
+        code_challenge_method: Optional[Literal["S256"]] = None,
+        provider_query_params: Optional[Dict[str, str]] = None,
+        provider_scopes: Optional[List[str]] = None,
+        invitation_token: Optional[str] = None,
+        screen_hint: Optional[UserManagementAuthenticationScreenHint] = None,
+        prompt: Optional[str] = None,
+    ) -> str:
+        return await self.authentication.authorize(
+            redirect_uri=redirect_uri,
+            client_id=self._client.client_id or "",
+            response_type="code",
+            domain_hint=domain_hint,
+            login_hint=login_hint,
+            state=state,
+            provider=provider,
+            connection_id=connection_id,
+            organization_id=organization_id,
+            code_challenge=code_challenge,
+            code_challenge_method=code_challenge_method,
+            provider_query_params=provider_query_params,
+            provider_scopes=provider_scopes,
+            invitation_token=invitation_token,
+            screen_hint=screen_hint,
+            prompt=prompt,
+        )
+
+    def get_jwks_url(self) -> str:
+        return self._client.build_url(f"sso/jwks/{self._client.client_id}")
+
+    async def get_logout_url(
+        self, session_id: str, return_to: Optional[str] = None
+    ) -> str:
+        return await self.authentication.logout(
+            session_id=session_id, return_to=return_to
+        )
+
 
 class AsyncUserManagementUsersNamespace(object):
     """UserManagementUsers resources (async)."""
@@ -344,6 +704,84 @@ class AsyncUserManagementUsersNamespace(object):
         return AsyncUserManagementUsersAuthorizedApplications(self._client)
 
 
+class AsyncDirectorySyncNamespace(object):
+    """Directory Sync compatibility resources (async)."""
+
+    def __init__(self, client: "AsyncWorkOSClient") -> None:
+        self._client = client
+
+    async def list_users(
+        self,
+        *,
+        directory_id: Optional[str] = None,
+        group_id: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[DirectoryUsersOrder] = None,
+    ):
+        return await self._client.directory_users.list(
+            directory=directory_id,
+            group=group_id,
+            limit=limit,
+            before=before,
+            after=after,
+            order=order,
+        )
+
+    async def list_groups(
+        self,
+        *,
+        directory_id: Optional[str] = None,
+        user_id: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[DirectoryGroupsOrder] = None,
+    ):
+        return await self._client.directory_groups.list(
+            directory=directory_id,
+            user=user_id,
+            limit=limit,
+            before=before,
+            after=after,
+            order=order,
+        )
+
+    async def list_directories(
+        self,
+        *,
+        search: Optional[str] = None,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        order: Optional[DirectoriesOrder] = None,
+        domain: Optional[str] = None,
+    ):
+        return await self._client.directories.list(
+            search=search,
+            limit=limit,
+            before=before,
+            after=after,
+            organization_id=organization_id,
+            order=order,
+            domain=domain,
+        )
+
+    async def get_user(self, user_id: str):
+        return await self._client.directory_users.get(user_id)
+
+    async def get_group(self, group_id: str):
+        return await self._client.directory_groups.get(group_id)
+
+    async def get_directory(self, directory_id: str):
+        return await self._client.directories.get(directory_id)
+
+    async def delete_directory(self, directory_id: str) -> None:
+        await self._client.directories.delete(directory_id)
+
+
 class _BaseWorkOSClient:
     """Shared WorkOS client implementation."""
 
@@ -352,8 +790,9 @@ class _BaseWorkOSClient:
         *,
         api_key: Optional[str] = None,
         client_id: Optional[str] = None,
-        base_url: str = "https://api.workos.com",
-        request_timeout: int = 25,
+        base_url: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+        jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
     ) -> None:
         self._api_key = api_key or os.environ.get("WORKOS_API_KEY")
@@ -368,11 +807,18 @@ class _BaseWorkOSClient:
                 "WorkOS client ID must be provided when instantiating the client "
                 "or via the WORKOS_CLIENT_ID environment variable."
             )
+        resolved_base_url = base_url or os.environ.get(
+            "WORKOS_BASE_URL", "https://api.workos.com"
+        )
         # Ensure base_url has a trailing slash for backward compatibility
-        self._base_url = base_url.rstrip("/") + "/"
-        self._request_timeout = request_timeout
+        self._base_url = resolved_base_url.rstrip("/") + "/"
+        self._request_timeout = (
+            request_timeout
+            if request_timeout is not None
+            else int(os.environ.get("WORKOS_REQUEST_TIMEOUT", "25"))
+        )
         self._max_retries = max_retries
-        self._jwt_leeway: float = 0.0
+        self._jwt_leeway = jwt_leeway
 
     @property
     def base_url(self) -> str:
@@ -554,8 +1000,9 @@ class WorkOSClient(_BaseWorkOSClient):
         *,
         api_key: Optional[str] = None,
         client_id: Optional[str] = None,
-        base_url: str = "https://api.workos.com",
-        request_timeout: int = 25,
+        base_url: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+        jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
     ) -> None:
         """Initialize the WorkOS client.
@@ -563,8 +1010,9 @@ class WorkOSClient(_BaseWorkOSClient):
         Args:
             api_key: WorkOS API key. Falls back to the WORKOS_API_KEY environment variable.
             client_id: WorkOS client ID. Falls back to the WORKOS_CLIENT_ID environment variable.
-            base_url: Base URL for API requests. Defaults to "https://api.workos.com".
-            request_timeout: HTTP request timeout in seconds. Defaults to 25.
+            base_url: Base URL for API requests. Falls back to WORKOS_BASE_URL or "https://api.workos.com".
+            request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 25.
+            jwt_leeway: JWT clock skew leeway in seconds.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
 
         Raises:
@@ -575,9 +1023,12 @@ class WorkOSClient(_BaseWorkOSClient):
             client_id=client_id,
             base_url=base_url,
             request_timeout=request_timeout,
+            jwt_leeway=jwt_leeway,
             max_retries=max_retries,
         )
-        self._client = httpx.Client(timeout=request_timeout, follow_redirects=True)
+        self._client = httpx.Client(
+            timeout=self._request_timeout, follow_redirects=True
+        )
 
     def close(self) -> None:
         """Close the underlying HTTP client and release resources."""
@@ -686,12 +1137,12 @@ class WorkOSClient(_BaseWorkOSClient):
         return UserManagementUsersNamespace(self)
 
     @functools.cached_property
-    def connect(self) -> Any:
-        return self.workos_connect
+    def directory_sync(self) -> DirectorySyncNamespace:
+        return DirectorySyncNamespace(self)
 
     @functools.cached_property
-    def directory_sync(self) -> Any:
-        return self.directories
+    def connect(self) -> Any:
+        return self.workos_connect
 
     @functools.cached_property
     def fga(self) -> Any:
@@ -703,7 +1154,9 @@ class WorkOSClient(_BaseWorkOSClient):
 
     @functools.cached_property
     def passwordless(self) -> Any:
-        return object()  # Backward-compatible stub
+        from .passwordless import Passwordless
+
+        return Passwordless(self)
 
     @functools.cached_property
     def portal(self) -> Any:
@@ -711,7 +1164,9 @@ class WorkOSClient(_BaseWorkOSClient):
 
     @functools.cached_property
     def vault(self) -> Any:
-        return object()  # Backward-compatible stub
+        from .vault import Vault
+
+        return Vault(self)
 
     @overload
     def request(
@@ -844,8 +1299,9 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         *,
         api_key: Optional[str] = None,
         client_id: Optional[str] = None,
-        base_url: str = "https://api.workos.com",
-        request_timeout: int = 25,
+        base_url: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+        jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
     ) -> None:
         """Initialize the async WorkOS client.
@@ -853,8 +1309,9 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         Args:
             api_key: WorkOS API key. Falls back to the WORKOS_API_KEY environment variable.
             client_id: WorkOS client ID. Falls back to the WORKOS_CLIENT_ID environment variable.
-            base_url: Base URL for API requests. Defaults to "https://api.workos.com".
-            request_timeout: HTTP request timeout in seconds. Defaults to 25.
+            base_url: Base URL for API requests. Falls back to WORKOS_BASE_URL or "https://api.workos.com".
+            request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 25.
+            jwt_leeway: JWT clock skew leeway in seconds.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
 
         Raises:
@@ -865,9 +1322,12 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             client_id=client_id,
             base_url=base_url,
             request_timeout=request_timeout,
+            jwt_leeway=jwt_leeway,
             max_retries=max_retries,
         )
-        self._client = httpx.AsyncClient(timeout=request_timeout, follow_redirects=True)
+        self._client = httpx.AsyncClient(
+            timeout=self._request_timeout, follow_redirects=True
+        )
 
     async def close(self) -> None:
         """Close the underlying HTTP client and release resources."""
@@ -976,12 +1436,12 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         return AsyncUserManagementUsersNamespace(self)
 
     @functools.cached_property
-    def connect(self) -> Any:
-        return self.workos_connect
+    def directory_sync(self) -> AsyncDirectorySyncNamespace:
+        return AsyncDirectorySyncNamespace(self)
 
     @functools.cached_property
-    def directory_sync(self) -> Any:
-        return self.directories
+    def connect(self) -> Any:
+        return self.workos_connect
 
     @functools.cached_property
     def fga(self) -> Any:
@@ -993,7 +1453,9 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
 
     @functools.cached_property
     def passwordless(self) -> Any:
-        return object()  # Backward-compatible stub
+        from .passwordless import AsyncPasswordless
+
+        return AsyncPasswordless(self)
 
     @functools.cached_property
     def portal(self) -> Any:
@@ -1001,7 +1463,9 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
 
     @functools.cached_property
     def vault(self) -> Any:
-        return object()  # Backward-compatible stub
+        from .vault import AsyncVault
+
+        return AsyncVault(self)
 
     @overload
     async def request(
@@ -1124,3 +1588,8 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             )
 
         return AsyncPage(data=items, list_metadata=list_metadata, _fetch_page=_fetch)
+
+
+# Backward-compatible aliases
+WorkOS = WorkOSClient
+AsyncWorkOS = AsyncWorkOSClient

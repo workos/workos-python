@@ -121,6 +121,7 @@ from .user_management.multi_factor_authentication._resource import (
 from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
+from .session import AsyncSession, Session
 
 try:
     from importlib.metadata import version as _pkg_version
@@ -222,6 +223,15 @@ class UserManagementNamespace(object):
     @functools.cached_property
     def multi_factor_authentication(self) -> UserManagementMultiFactorAuthentication:
         return UserManagementMultiFactorAuthentication(self._client)
+
+    def load_sealed_session(
+        self, *, sealed_session: str, cookie_password: str
+    ) -> Session:
+        return Session(
+            client=self._client,
+            session_data=sealed_session,
+            cookie_password=cookie_password,
+        )
 
 
 class UserManagementUsersNamespace(object):
@@ -327,6 +337,15 @@ class AsyncUserManagementNamespace(object):
         self,
     ) -> AsyncUserManagementMultiFactorAuthentication:
         return AsyncUserManagementMultiFactorAuthentication(self._client)
+
+    def load_sealed_session(
+        self, *, sealed_session: str, cookie_password: str
+    ) -> AsyncSession:
+        return AsyncSession(
+            client=self._client,
+            session_data=sealed_session,
+            cookie_password=cookie_password,
+        )
 
 
 class AsyncUserManagementUsersNamespace(object):
@@ -1086,3 +1105,8 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             )
 
         return AsyncPage(data=items, list_metadata=list_metadata, _fetch_page=_fetch)
+
+
+# Top-level client aliases retained for SDK ergonomics and internal typing
+WorkOS = WorkOSClient
+AsyncWorkOS = AsyncWorkOSClient

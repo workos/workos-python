@@ -20,9 +20,14 @@ from ._errors import (
 from ._pagination import AsyncPage, SyncPage
 from ._types import RequestOptions
 
+WorkOS = WorkOSClient
+AsyncWorkOS = AsyncWorkOSClient
+
 __all__ = [
     "WorkOSClient",
     "AsyncWorkOSClient",
+    "WorkOS",
+    "AsyncWorkOS",
     "RequestOptions",
     "BaseRequestException",
     "AuthenticationException",

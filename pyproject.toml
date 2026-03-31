@@ -10,7 +10,6 @@ requires-python = ">=3.10"
 dependencies = [
   "cryptography~=46.0",
   "httpx~=0.28",
-  "pydantic~=2.12",
   "pyjwt~=2.12",
 ]
 

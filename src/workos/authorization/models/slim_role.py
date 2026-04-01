@@ -9,7 +9,7 @@ from workos._errors import BaseRequestException
 
 @dataclass(slots=True)
 class SlimRole:
-    """The role included in the assignment."""
+    """The primary role assigned to the user."""
 
     slug: str
     """The slug of the assigned role."""

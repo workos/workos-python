@@ -53,7 +53,6 @@ class DirectoryUserWithGroups:
     username: Optional[str] = None
     """The username of the user."""
     role: Optional["SlimRole"] = None
-    """The primary role assigned to the user."""
     roles: Optional[List["SlimRole"]] = None
     """All roles assigned to the user."""
 

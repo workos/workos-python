@@ -10,7 +10,7 @@ from workos._errors import BaseRequestException
 
 @dataclass(slots=True)
 class AuthenticationChallenge:
-    """The authentication challenge object."""
+    """Authentication Challenge model."""
 
     object: Literal["authentication_challenge"]
     """Distinguishes the authentication challenge object."""

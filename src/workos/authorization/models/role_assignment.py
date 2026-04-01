@@ -21,6 +21,7 @@ class RoleAssignment:
     id: str
     """Unique identifier of the role assignment."""
     role: "SlimRole"
+    """The role included in the assignment."""
     resource: "RoleAssignmentResource"
     """The resource to which the role is assigned."""
     created_at: datetime

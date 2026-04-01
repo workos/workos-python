@@ -22,6 +22,7 @@ class SSOTokenResponse:
     expires_in: int
     """The lifetime of the access token in seconds."""
     profile: "Profile"
+    """The user profile returned by the identity provider."""
     oauth_tokens: Optional["SSOTokenResponseOAuthToken"] = None
     """OAuth tokens issued by the identity provider, if available."""
 

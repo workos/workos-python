@@ -15,7 +15,7 @@ from workos.common.models import AuthenticationFactorEnrolledType
 
 @dataclass(slots=True)
 class AuthenticationFactorEnrolled:
-    """The [authentication factor](https://workos.com/docs/reference/authkit/mfa/authentication-factor) object that represents the additional authentication method used on top of the existing authentication strategy."""
+    """Authentication Factor Enrolled model."""
 
     object: Literal["authentication_factor"]
     """Distinguishes the authentication factor object."""

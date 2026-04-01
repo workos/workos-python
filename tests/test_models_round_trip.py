@@ -52,6 +52,7 @@ from workos.directory_users.models import (
     DirectoryUserWithGroups,
     DirectoryUserWithGroupsEmail,
 )
+from workos.events.models import EventSchema
 from workos.feature_flags.models import FeatureFlag, FeatureFlagOwner, Flag, FlagOwner
 from workos.multi_factor_auth.models import (
     AuthenticationFactor,
@@ -1626,85 +1627,77 @@ class TestModelRoundTrip:
         instance = DirectoryUserWithGroups.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_user_round_trip(self):
-        data = load_fixture("user.json")
-        instance = User.from_dict(data)
+    def test_event_schema_round_trip(self):
+        data = load_fixture("event_schema.json")
+        instance = EventSchema.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = User.from_dict(serialized)
+        restored = EventSchema.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_user_minimal_payload(self):
+    def test_event_schema_minimal_payload(self):
         data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "last_sign_in_at": None,
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.user.created",
+            "data": {
+                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "state": "active",
+                "email": "veda@foo-corp.com",
+                "emails": [
+                    {"primary": True, "type": "work", "value": "veda@foo-corp.com"}
+                ],
+                "idp_id": "2836",
+                "object": "directory_user",
+                "username": "veda@foo-corp.com",
+                "last_name": "Torp",
+                "first_name": "Veda",
+                "raw_attributes": {},
+                "custom_attributes": {},
+                "created_at": "2021-06-25T19:07:33.155Z",
+                "updated_at": "2021-06-25T19:07:33.155Z",
+            },
             "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
         }
-        instance = User.from_dict(data)
+        instance = EventSchema.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
         assert serialized["id"] == data["id"]
-        assert serialized["first_name"] == data["first_name"]
-        assert serialized["last_name"] == data["last_name"]
-        assert serialized["profile_picture_url"] == data["profile_picture_url"]
-        assert serialized["email"] == data["email"]
-        assert serialized["email_verified"] == data["email_verified"]
-        assert serialized["external_id"] == data["external_id"]
-        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
         assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
 
-    def test_user_omits_absent_optional_non_nullable_fields(self):
+    def test_event_schema_omits_absent_optional_non_nullable_fields(self):
         data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-            "locale": "en-US",
+            "object": "event",
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.user.created",
+            "data": {
+                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "state": "active",
+                "email": "veda@foo-corp.com",
+                "emails": [
+                    {"primary": True, "type": "work", "value": "veda@foo-corp.com"}
+                ],
+                "idp_id": "2836",
+                "object": "directory_user",
+                "username": "veda@foo-corp.com",
+                "last_name": "Torp",
+                "first_name": "Veda",
+                "raw_attributes": {},
+                "custom_attributes": {},
+                "created_at": "2021-06-25T19:07:33.155Z",
+                "updated_at": "2021-06-25T19:07:33.155Z",
+            },
             "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
         }
-        instance = User.from_dict(data)
+        instance = EventSchema.from_dict(data)
         serialized = instance.to_dict()
-        assert "metadata" not in serialized
-
-    def test_user_preserves_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "metadata": {"timezone": "America/New_York"},
-            "last_sign_in_at": None,
-            "locale": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = User.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["profile_picture_url"] is None
-        assert serialized["external_id"] is None
-        assert serialized["last_sign_in_at"] is None
-        assert serialized["locale"] is None
+        assert "context" not in serialized
 
     def test_jwt_template_response_round_trip(self):
         data = load_fixture("jwt_template_response.json")
@@ -2492,6 +2485,86 @@ class TestModelRoundTrip:
         }
         instance = UserOrganizationMembership.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_user_round_trip(self):
+        data = load_fixture("user.json")
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = User.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_minimal_payload(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "last_sign_in_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+        assert serialized["profile_picture_url"] == data["profile_picture_url"]
+        assert serialized["email"] == data["email"]
+        assert serialized["email_verified"] == data["email_verified"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_user_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+            "locale": "en-US",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert "metadata" not in serialized
+
+    def test_user_preserves_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "metadata": {"timezone": "America/New_York"},
+            "last_sign_in_at": None,
+            "locale": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["profile_picture_url"] is None
+        assert serialized["external_id"] is None
+        assert serialized["last_sign_in_at"] is None
+        assert serialized["locale"] is None
 
     def test_email_verification_round_trip(self):
         data = load_fixture("email_verification.json")
@@ -3675,7 +3748,7 @@ class TestModelRoundTrip:
     def test_authorized_connect_application_list_data_minimal_payload(self):
         data = {
             "object": "authorized_connect_application",
-            "id": "aca_01HXYZ123456789ABCDEFGHIJ",
+            "id": "authorized_connect_app_01HXYZ123456789ABCDEFGHIJ",
             "granted_scopes": ["openid", "profile", "email"],
             "application": {
                 "object": "connect_application",

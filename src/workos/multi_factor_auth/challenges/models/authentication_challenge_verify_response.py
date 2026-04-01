@@ -15,6 +15,7 @@ class AuthenticationChallengeVerifyResponse:
     """Authentication Challenge Verify Response model."""
 
     challenge: "AuthenticationChallenge"
+    """The authentication challenge object."""
     valid: bool
     """Whether the code was valid."""
 

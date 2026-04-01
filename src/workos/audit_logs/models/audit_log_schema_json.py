@@ -14,7 +14,7 @@ from .audit_log_schema_json_target import AuditLogSchemaJsonTarget
 
 @dataclass(slots=True)
 class AuditLogSchemaJson:
-    """The schema associated with the action."""
+    """Audit Log Schema Json model."""
 
     object: Literal["audit_log_schema"]
     """Distinguishes the Audit Log Schema object."""

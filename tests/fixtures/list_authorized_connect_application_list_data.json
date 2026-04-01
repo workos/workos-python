@@ -2,7 +2,7 @@
   "data": [
     {
       "object": "authorized_connect_application",
-      "id": "aca_01HXYZ123456789ABCDEFGHIJ",
+      "id": "authorized_connect_app_01HXYZ123456789ABCDEFGHIJ",
       "granted_scopes": [
         "openid",
         "profile",

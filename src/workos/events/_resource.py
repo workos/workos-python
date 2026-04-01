@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import Event
+from .models import EventSchema
 from .models import EventsOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -31,7 +31,7 @@ class Events:
         range_end: Optional[str] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[Event]:
+    ) -> SyncPage[EventSchema]:
         """List events
 
         List events for the current environment.
@@ -48,7 +48,7 @@ class Events:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Returns:
-                    SyncPage[Event]
+                    SyncPage[EventSchema]
 
                 Raises:
                     BadRequestException: If the request is malformed (400).
@@ -74,7 +74,7 @@ class Events:
         return self._client.request_page(
             method="get",
             path="events",
-            model=Event,
+            model=EventSchema,
             params=params,
             request_options=request_options,
         )
@@ -98,7 +98,7 @@ class AsyncEvents:
         range_end: Optional[str] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[Event]:
+    ) -> AsyncPage[EventSchema]:
         """List events
 
         List events for the current environment.
@@ -115,7 +115,7 @@ class AsyncEvents:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Returns:
-                    AsyncPage[Event]
+                    AsyncPage[EventSchema]
 
                 Raises:
                     BadRequestException: If the request is malformed (400).
@@ -141,7 +141,7 @@ class AsyncEvents:
         return await self._client.request_page(
             method="get",
             path="events",
-            model=Event,
+            model=EventSchema,
             params=params,
             request_options=request_options,
         )

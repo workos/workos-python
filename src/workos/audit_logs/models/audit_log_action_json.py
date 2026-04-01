@@ -20,6 +20,7 @@ class AuditLogActionJson:
     name: str
     """Identifier of what action was taken."""
     schema: "AuditLogSchemaJson"
+    """The schema associated with the action."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime

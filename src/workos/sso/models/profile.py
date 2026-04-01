@@ -13,7 +13,7 @@ from workos.common.models import ProfileConnectionType
 
 @dataclass(slots=True)
 class Profile:
-    """The user profile returned by the identity provider."""
+    """Profile model."""
 
     object: Literal["profile"]
     """Distinguishes the profile object."""

@@ -15,8 +15,6 @@ Read this as the migration guide for the generated-surface major release, not as
     - [Python 3.10+ is now required](#python-310-is-now-required)
     - [`client_id` is only required for flows that use it](#client_id-is-only-required-for-flows-that-use-it)
     - [Legacy client modules were removed](#legacy-client-modules-were-removed)
-    - [SDK exceptions now come from `workos`, not `workos.exceptions`](#sdk-exceptions-now-come-from-workos-not-workosexceptions)
-    - [Models no longer live under `workos.types.*`](#models-no-longer-live-under-workostypes)
     - [SDK models are no longer Pydantic models](#sdk-models-are-no-longer-pydantic-models)
     - [`client.connect` was split into explicit resources](#clientconnect-was-split-into-explicit-resources)
     - [`client.directory_sync` was split into directories, groups, and users](#clientdirectory_sync-was-split-into-directories-groups-and-users)
@@ -36,7 +34,7 @@ Read this as the migration guide for the generated-surface major release, not as
 
 1. Upgrade to Python 3.10 or newer.
 2. Update to the v6 release.
-3. Replace legacy imports from `workos.client`, `workos.async_client`, `workos.exceptions`, and `workos.types.*`.
+3. Replace legacy imports from `workos.client` and `workos.async_client`.
 4. Update any uses of `connect`, `portal`, `directory_sync`, `fga`, `authorization` permission helpers, and old `user_management` convenience helpers.
 5. Run your tests and look specifically for import errors, missing methods, and model serialization issues.
 
@@ -104,52 +102,6 @@ client = WorkOSClient(api_key="sk_test_123", client_id="client_123")
 
 **Affected users:** Anyone importing `SyncClient`, `AsyncClient`, or other client classes from legacy client modules
 **Migration:** Import clients from the top-level `workos` package instead of `workos.client` or `workos.async_client`
-
-### SDK exceptions now come from `workos`, not `workos.exceptions`
-
-**5.x (old):**
-
-```python
-from workos.exceptions import BaseRequestException
-
-try:
-    client.organizations.get_organization("org_123")
-except BaseRequestException as exc:
-    print(exc.request_id)
-```
-
-**6.x (new):**
-
-```python
-from workos import BaseRequestException
-
-try:
-    client.organizations.get("org_123")
-except BaseRequestException as exc:
-    print(exc.request_id)
-```
-
-**Affected users:** Anyone importing exception classes from `workos.exceptions`
-**Migration:** Import exception classes directly from `workos`
-
-### Models no longer live under `workos.types.*`
-
-**5.x (old):**
-
-```python
-from workos.types.organizations import Organization
-from workos.types.connect import ConnectApplication
-```
-
-**6.x (new):**
-
-```python
-from workos.organizations.models import Organization
-from workos.applications.models import ConnectApplication
-```
-
-**Affected users:** Anyone importing SDK models from `workos.types.*`
-**Migration:** Import models from the generated `workos.<resource>.models` packages
 
 ### SDK models are no longer Pydantic models
 
@@ -456,7 +408,7 @@ organization = client.organizations.get("org_123")
 
 1. Upgrade Python to 3.10+.
 2. Review which flows need `client_id` and either pass it explicitly or configure it on the client / environment.
-3. Fix imports from `workos.client`, `workos.async_client`, `workos.exceptions`, and `workos.types.*`.
+3. Fix imports from `workos.client` and `workos.async_client`.
 4. Replace old namespaces: `connect`, `directory_sync`, `portal`, `fga`, and handwritten `user_management` helpers.
 5. Move permission CRUD from `client.authorization` to `client.permissions`.
 6. Update model serialization code away from Pydantic helpers.
@@ -466,8 +418,6 @@ organization = client.organizations.get("org_123")
 
 - No imports from `workos.client`
 - No imports from `workos.async_client`
-- No imports from `workos.exceptions`
-- No imports from `workos.types.*`
 - Client-ID-based flows explicitly pass `client_id` or configure it on the client / environment
 - No remaining uses of `client.connect`
 - No remaining uses of `client.directory_sync`
@@ -476,4 +426,4 @@ organization = client.organizations.get("org_123")
 - No remaining uses of `client.authorization.create_permission`, `list_permissions`, `get_permission`, `update_permission`, or `delete_permission`
 - No remaining uses of removed Pydantic helpers like `model_dump()` or `model_validate()`
 
-Once those are cleaned up, most integrations should be in good shape for v6.
+Once those are cleaned up, integrations should be in good shape for v6.

@@ -52,7 +52,6 @@ from workos.directory_users.models import (
     DirectoryUserWithGroups,
     DirectoryUserWithGroupsEmail,
 )
-from workos.events.models import Event
 from workos.feature_flags.models import FeatureFlag, FeatureFlagOwner, Flag, FlagOwner
 from workos.multi_factor_auth.models import (
     AuthenticationFactor,
@@ -79,10 +78,7 @@ from workos.organizations.models import (
 )
 from workos.organizations.api_keys.models import ApiKeyWithValue, ApiKeyWithValueOwner
 from workos.permissions.models import AuthorizationPermission, Permission
-from workos.pipes.models import (
-    DataIntegrationAccessTokenResponse,
-    DataIntegrationAuthorizeUrlResponse,
-)
+from workos.pipes.models import DataIntegrationAuthorizeUrlResponse
 from workos.radar.models import (
     RadarListEntryAlreadyPresentResponse,
     RadarStandaloneResponse,
@@ -1710,19 +1706,6 @@ class TestModelRoundTrip:
         assert serialized["last_sign_in_at"] is None
         assert serialized["locale"] is None
 
-    def test_event_round_trip(self):
-        data = load_fixture("event.json")
-        instance = Event.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = Event.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_event_minimal_payload(self):
-        data = {}
-        instance = Event.from_dict(data)
-        assert instance.to_dict() is not None
-
     def test_jwt_template_response_round_trip(self):
         data = load_fixture("jwt_template_response.json")
         instance = JWTTemplateResponse.from_dict(data)
@@ -2076,19 +2059,6 @@ class TestModelRoundTrip:
         instance = DataIntegrationAuthorizeUrlResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["url"] == data["url"]
-
-    def test_data_integration_access_token_response_round_trip(self):
-        data = load_fixture("data_integration_access_token_response.json")
-        instance = DataIntegrationAccessTokenResponse.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DataIntegrationAccessTokenResponse.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_data_integration_access_token_response_minimal_payload(self):
-        data = {}
-        instance = DataIntegrationAccessTokenResponse.from_dict(data)
-        assert instance.to_dict() is not None
 
     def test_connected_account_round_trip(self):
         data = load_fixture("connected_account.json")

@@ -17,6 +17,7 @@ import httpx
 
 from ._errors import (
     BaseRequestException,
+    ConfigurationException,
     RateLimitExceededException,
     ServerException,
     WorkOSConnectionException,
@@ -401,16 +402,12 @@ class _BaseWorkOSClient:
         max_retries: int = MAX_RETRIES,
     ) -> None:
         self._api_key = api_key or os.environ.get("WORKOS_API_KEY")
-        if not self._api_key:
-            raise ValueError(
-                "WorkOS API key must be provided when instantiating the client "
-                "or via the WORKOS_API_KEY environment variable."
-            )
         self.client_id = client_id or os.environ.get("WORKOS_CLIENT_ID")
-        if not self.client_id:
+        if not self._api_key and not self.client_id:
             raise ValueError(
-                "WorkOS client ID must be provided when instantiating the client "
-                "or via the WORKOS_CLIENT_ID environment variable."
+                "WorkOS requires either an API key or a client ID. "
+                "Provide api_key / WORKOS_API_KEY for authenticated server-side usage, "
+                "or client_id / WORKOS_CLIENT_ID for flows that require a client ID."
             )
         resolved_base_url = base_url or os.environ.get(
             "WORKOS_BASE_URL", "https://api.workos.com"
@@ -493,6 +490,22 @@ class _BaseWorkOSClient:
                 return retries
         return self._max_retries
 
+    def _require_api_key(self) -> str:
+        if not self._api_key:
+            raise ConfigurationException(
+                "This operation requires a WorkOS API key. Provide api_key when instantiating the client "
+                "or via the WORKOS_API_KEY environment variable."
+            )
+        return self._api_key
+
+    def _require_client_id(self) -> str:
+        if not self.client_id:
+            raise ConfigurationException(
+                "This operation requires a WorkOS client ID. Provide client_id when instantiating the client "
+                "or via the WORKOS_CLIENT_ID environment variable."
+            )
+        return self.client_id
+
     def _build_headers(
         self,
         method: str,
@@ -500,10 +513,11 @@ class _BaseWorkOSClient:
         request_options: Optional[RequestOptions],
     ) -> Dict[str, str]:
         headers: Dict[str, str] = {
-            "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
             "User-Agent": f"workos-python/{VERSION} python/{platform.python_version()}",
         }
+        if self._api_key:
+            headers["Authorization"] = f"Bearer {self._api_key}"
         effective_idempotency_key = idempotency_key
         if effective_idempotency_key is None and request_options:
             request_option_idempotency_key = request_options.get("idempotency_key")
@@ -652,7 +666,7 @@ class WorkOSClient(_BaseWorkOSClient):
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
 
         Raises:
-            ValueError: If api_key is not provided and WORKOS_API_KEY is not set.
+            ValueError: If neither api_key nor client_id is provided, directly or via environment variables.
         """
         super().__init__(
             api_key=api_key,
@@ -931,7 +945,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
 
         Raises:
-            ValueError: If api_key is not provided and WORKOS_API_KEY is not set.
+            ValueError: If neither api_key nor client_id is provided, directly or via environment variables.
         """
         super().__init__(
             api_key=api_key,

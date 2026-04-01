@@ -20,17 +20,24 @@ from workos._errors import (
 
 
 class TestWorkOSClient:
-    def test_missing_api_key_raises(self):
+    def test_missing_credentials_raise(self):
         with pytest.raises(ValueError):
-            WorkOS(client_id="client_test")
+            WorkOS()
 
     def test_context_manager(self):
         with WorkOS(api_key="sk_test_123", client_id="client_test") as client:
             assert client._api_key == "sk_test_123"
 
+    def test_api_key_only_initializes(self):
+        client = WorkOS(api_key="sk_test_123")
+        assert client._api_key == "sk_test_123"
+        assert client.client_id is None
+        client.close()
+
     def test_client_id_from_constructor(self):
-        client = WorkOS(api_key="sk_test_123", client_id="client_test_456")
+        client = WorkOS(client_id="client_test_456")
         assert client.client_id == "client_test_456"
+        assert client._api_key is None
         client.close()
 
     def test_raises_400(self, httpx_mock):
@@ -127,6 +134,14 @@ class TestWorkOSClient:
         client.request("GET", "test")
         request = httpx_mock.get_request()
         assert "Idempotency-Key" not in request.headers
+        client.close()
+
+    def test_no_authorization_header_without_api_key(self, httpx_mock):
+        httpx_mock.add_response(json={})
+        client = WorkOS(client_id="client_test")
+        client.request("GET", "test")
+        request = httpx_mock.get_request()
+        assert "Authorization" not in request.headers
         client.close()
 
     def test_empty_body_sends_json(self, httpx_mock):

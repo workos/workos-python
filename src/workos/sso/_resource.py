@@ -91,7 +91,9 @@ class SSO:
             }.items()
             if v is not None
         }
-        params["client_id"] = params.get("client_id") or self._client.client_id
+        params["client_id"] = (
+            params.get("client_id") or self._client._require_client_id()
+        )
         return self._client.build_url("sso/authorize", params)
 
     def logout(
@@ -238,8 +240,10 @@ class SSO:
             "code": code,
             "grant_type": grant_type,
         }
-        body["client_id"] = body.get("client_id") or self._client.client_id
-        body["client_secret"] = body.get("client_secret") or self._client._api_key
+        body["client_id"] = body.get("client_id") or self._client._require_client_id()
+        body["client_secret"] = (
+            body.get("client_secret") or self._client._require_api_key()
+        )
         return self._client.request(
             method="post",
             path="sso/token",
@@ -407,7 +411,9 @@ class AsyncSSO:
             }.items()
             if v is not None
         }
-        params["client_id"] = params.get("client_id") or self._client.client_id
+        params["client_id"] = (
+            params.get("client_id") or self._client._require_client_id()
+        )
         return self._client.build_url("sso/authorize", params)
 
     async def logout(
@@ -554,8 +560,10 @@ class AsyncSSO:
             "code": code,
             "grant_type": grant_type,
         }
-        body["client_id"] = body.get("client_id") or self._client.client_id
-        body["client_secret"] = body.get("client_secret") or self._client._api_key
+        body["client_id"] = body.get("client_id") or self._client._require_client_id()
+        body["client_secret"] = (
+            body.get("client_secret") or self._client._require_api_key()
+        )
         return await self._client.request(
             method="post",
             path="sso/token",

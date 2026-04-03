@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict
 from workos._errors import WorkOSError
-from workos.common.models import OrganizationDomainDataDtoState
+from workos.common.models import OrganizationDomainDataState
 
 
 @dataclass(slots=True)
@@ -14,7 +14,7 @@ class OrganizationDomainData:
 
     domain: str
     """The domain value."""
-    state: "OrganizationDomainDataDtoState"
+    state: "OrganizationDomainDataState"
     """The verification state of the domain."""
 
     @classmethod
@@ -23,7 +23,7 @@ class OrganizationDomainData:
         try:
             return cls(
                 domain=data["domain"],
-                state=OrganizationDomainDataDtoState(data["state"]),
+                state=OrganizationDomainDataState(data["state"]),
             )
         except (KeyError, ValueError) as e:
             raise WorkOSError(

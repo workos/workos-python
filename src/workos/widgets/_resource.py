@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 from .._types import RequestOptions
 from .models import WidgetSessionTokenResponse
-from workos.common.models import WidgetSessionTokenDtoScopes
+from workos.common.models import WidgetSessionTokenScopes
 
 
 class Widgets:
@@ -23,7 +23,7 @@ class Widgets:
         *,
         organization_id: str,
         user_id: Optional[str] = None,
-        scopes: Optional[List[Union[WidgetSessionTokenDtoScopes, str]]] = None,
+        scopes: Optional[List[Union[WidgetSessionTokenScopes, str]]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> WidgetSessionTokenResponse:
         """Generate a widget token
@@ -76,7 +76,7 @@ class AsyncWidgets:
         *,
         organization_id: str,
         user_id: Optional[str] = None,
-        scopes: Optional[List[Union[WidgetSessionTokenDtoScopes, str]]] = None,
+        scopes: Optional[List[Union[WidgetSessionTokenScopes, str]]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> WidgetSessionTokenResponse:
         """Generate a widget token

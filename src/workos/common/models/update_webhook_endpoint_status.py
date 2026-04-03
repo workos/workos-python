@@ -9,14 +9,14 @@ from typing import Optional
 from typing_extensions import Literal, TypeAlias
 
 
-class UpdateWebhookEndpointDtoStatus(str, Enum):
-    """Known values for UpdateWebhookEndpointDtoStatus."""
+class UpdateWebhookEndpointStatus(str, Enum):
+    """Known values for UpdateWebhookEndpointStatus."""
 
     ENABLED = "enabled"
     DISABLED = "disabled"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["UpdateWebhookEndpointDtoStatus"]:
+    def _missing_(cls, value: object) -> Optional["UpdateWebhookEndpointStatus"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -25,4 +25,4 @@ class UpdateWebhookEndpointDtoStatus(str, Enum):
         return unknown
 
 
-UpdateWebhookEndpointDtoStatusLiteral: TypeAlias = Literal["enabled", "disabled"]
+UpdateWebhookEndpointStatusLiteral: TypeAlias = Literal["enabled", "disabled"]

@@ -20,9 +20,9 @@ from .models import ConnectedAccountState as ConnectedAccountState
 from .models import ConnectionState as ConnectionState
 from .models import ConnectionStatus as ConnectionStatus
 from .models import ConnectionType as ConnectionType
-from .models import CreateUserDtoPasswordHashType as CreateUserDtoPasswordHashType
-from .models import CreateUserInviteOptionsDtoLocale as CreateUserInviteOptionsDtoLocale
-from .models import CreateWebhookEndpointDtoEvents as CreateWebhookEndpointDtoEvents
+from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
+from .models import CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale
+from .models import CreateWebhookEndpointEvents as CreateWebhookEndpointEvents
 from .models import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
 )
@@ -32,10 +32,10 @@ from .models import (
 from .models import DirectoryState as DirectoryState
 from .models import DirectoryType as DirectoryType
 from .models import DirectoryUserWithGroupsState as DirectoryUserWithGroupsState
-from .models import GenerateLinkDtoIntent as GenerateLinkDtoIntent
+from .models import GenerateLinkIntent as GenerateLinkIntent
 from .models import InvitationState as InvitationState
 from .models import ListDataType as ListDataType
-from .models import OrganizationDomainDataDtoState as OrganizationDomainDataDtoState
+from .models import OrganizationDomainDataState as OrganizationDomainDataState
 from .models import (
     OrganizationDomainStandAloneState as OrganizationDomainStandAloneState,
 )
@@ -59,11 +59,11 @@ from .models import (
 )
 from .models import RadarStandaloneResponseControl as RadarStandaloneResponseControl
 from .models import RadarStandaloneResponseVerdict as RadarStandaloneResponseVerdict
-from .models import ResendUserInviteOptionsDtoLocale as ResendUserInviteOptionsDtoLocale
+from .models import ResendUserInviteOptionsLocale as ResendUserInviteOptionsLocale
 from .models import RoleType as RoleType
-from .models import UpdateUserDtoPasswordHashType as UpdateUserDtoPasswordHashType
-from .models import UpdateWebhookEndpointDtoEvents as UpdateWebhookEndpointDtoEvents
-from .models import UpdateWebhookEndpointDtoStatus as UpdateWebhookEndpointDtoStatus
+from .models import UpdateUserPasswordHashType as UpdateUserPasswordHashType
+from .models import UpdateWebhookEndpointEvents as UpdateWebhookEndpointEvents
+from .models import UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus
 from .models import UserIdentitiesGetItemProvider as UserIdentitiesGetItemProvider
 from .models import UserInviteState as UserInviteState
 from .models import (
@@ -73,4 +73,4 @@ from .models import UserOrganizationMembershipStatus as UserOrganizationMembersh
 from .models import UserSessionsAuthMethod as UserSessionsAuthMethod
 from .models import UserSessionsStatus as UserSessionsStatus
 from .models import WebhookEndpointJsonStatus as WebhookEndpointJsonStatus
-from .models import WidgetSessionTokenDtoScopes as WidgetSessionTokenDtoScopes
+from .models import WidgetSessionTokenScopes as WidgetSessionTokenScopes

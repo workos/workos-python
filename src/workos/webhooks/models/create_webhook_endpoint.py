@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List
 from workos._errors import WorkOSError
-from workos.common.models import CreateWebhookEndpointDtoEvents
+from workos.common.models import CreateWebhookEndpointEvents
 
 
 @dataclass(slots=True)
@@ -15,7 +15,7 @@ class CreateWebhookEndpoint:
 
     endpoint_url: str
     """The HTTPS URL where webhooks will be sent."""
-    events: List["CreateWebhookEndpointDtoEvents"]
+    events: List["CreateWebhookEndpointEvents"]
     """The events that the Webhook Endpoint is subscribed to."""
 
     @classmethod
@@ -25,7 +25,7 @@ class CreateWebhookEndpoint:
             return cls(
                 endpoint_url=data["endpoint_url"],
                 events=[
-                    CreateWebhookEndpointDtoEvents(item)
+                    CreateWebhookEndpointEvents(item)
                     for item in cast(list[Any], data["events"])
                 ],
             )

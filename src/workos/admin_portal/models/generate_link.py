@@ -8,7 +8,7 @@ from typing import Any, Dict, Optional
 from workos._errors import WorkOSError
 
 from .intent_options import IntentOptions
-from workos.common.models import GenerateLinkDtoIntent
+from workos.common.models import GenerateLinkIntent
 
 
 @dataclass(slots=True)
@@ -21,7 +21,7 @@ class GenerateLink:
     """The URL to go to when an admin clicks on your logo in the Admin Portal. If not specified, the return URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used."""
     success_url: Optional[str] = None
     """The URL to redirect the admin to when they finish setup. If not specified, the success URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used."""
-    intent: Optional["GenerateLinkDtoIntent"] = None
+    intent: Optional["GenerateLinkIntent"] = None
     """
       The intent of the Admin Portal.
         - `sso` - Launch Admin Portal for creating SSO connections
@@ -42,7 +42,7 @@ class GenerateLink:
                 organization=data["organization"],
                 return_url=data.get("return_url"),
                 success_url=data.get("success_url"),
-                intent=GenerateLinkDtoIntent(_v)
+                intent=GenerateLinkIntent(_v)
                 if (_v := data.get("intent")) is not None
                 else None,
                 intent_options=IntentOptions.from_dict(cast(Dict[str, Any], _v))

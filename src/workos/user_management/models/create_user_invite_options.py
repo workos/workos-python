@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 from workos._errors import WorkOSError
-from workos.common.models import CreateUserInviteOptionsDtoLocale
+from workos.common.models import CreateUserInviteOptionsLocale
 
 
 @dataclass(slots=True)
@@ -22,7 +22,7 @@ class CreateUserInviteOptions:
     """How many days the invitations will be valid for. Must be between 1 and 30 days. Defaults to 7 days if not specified."""
     inviter_user_id: Optional[str] = None
     """The ID of the [user](https://workos.com/docs/reference/authkit/user) who invites the recipient. The invitation email will mention the name of this user."""
-    locale: Optional["CreateUserInviteOptionsDtoLocale"] = None
+    locale: Optional["CreateUserInviteOptionsLocale"] = None
     """The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization)."""
 
     @classmethod
@@ -35,7 +35,7 @@ class CreateUserInviteOptions:
                 role_slug=data.get("role_slug"),
                 expires_in_days=data.get("expires_in_days"),
                 inviter_user_id=data.get("inviter_user_id"),
-                locale=CreateUserInviteOptionsDtoLocale(_v)
+                locale=CreateUserInviteOptionsLocale(_v)
                 if (_v := data.get("locale")) is not None
                 else None,
             )

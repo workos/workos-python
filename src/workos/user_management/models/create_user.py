@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 from workos._errors import WorkOSError
-from workos.common.models import CreateUserDtoPasswordHashType
+from workos.common.models import CreateUserPasswordHashType
 
 
 @dataclass(slots=True)
@@ -18,7 +18,7 @@ class CreateUser:
     """The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`."""
     password_hash: Optional[str] = None
     """The hashed password to set for the user. Mutually exclusive with `password`."""
-    password_hash_type: Optional["CreateUserDtoPasswordHashType"] = None
+    password_hash_type: Optional["CreateUserPasswordHashType"] = None
     """The algorithm originally used to hash the password, used when providing a `password_hash`."""
     first_name: Optional[str] = None
     """The first name of the user."""
@@ -39,7 +39,7 @@ class CreateUser:
                 email=data["email"],
                 password=data.get("password"),
                 password_hash=data.get("password_hash"),
-                password_hash_type=CreateUserDtoPasswordHashType(_v)
+                password_hash_type=CreateUserPasswordHashType(_v)
                 if (_v := data.get("password_hash_type")) is not None
                 else None,
                 first_name=data.get("first_name"),

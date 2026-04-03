@@ -11,9 +11,9 @@ from .._types import RequestOptions, enum_value
 from .models import WebhookEndpointJson
 from .models import WebhooksOrder
 from workos.common.models import (
-    CreateWebhookEndpointDtoEvents,
-    UpdateWebhookEndpointDtoEvents,
-    UpdateWebhookEndpointDtoStatus,
+    CreateWebhookEndpointEvents,
+    UpdateWebhookEndpointEvents,
+    UpdateWebhookEndpointStatus,
 )
 from .._pagination import AsyncPage, SyncPage
 import hashlib
@@ -78,7 +78,7 @@ class Webhooks:
         self,
         *,
         endpoint_url: str,
-        events: List[Union[CreateWebhookEndpointDtoEvents, str]],
+        events: List[Union[CreateWebhookEndpointEvents, str]],
         request_options: Optional[RequestOptions] = None,
     ) -> WebhookEndpointJson:
         """Create a Webhook Endpoint
@@ -117,8 +117,8 @@ class Webhooks:
         id: str,
         *,
         endpoint_url: Optional[str] = None,
-        status: Optional[Union[UpdateWebhookEndpointDtoStatus, str]] = None,
-        events: Optional[List[Union[UpdateWebhookEndpointDtoEvents, str]]] = None,
+        status: Optional[Union[UpdateWebhookEndpointStatus, str]] = None,
+        events: Optional[List[Union[UpdateWebhookEndpointEvents, str]]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> WebhookEndpointJson:
         """Update a Webhook Endpoint
@@ -333,7 +333,7 @@ class AsyncWebhooks:
         self,
         *,
         endpoint_url: str,
-        events: List[Union[CreateWebhookEndpointDtoEvents, str]],
+        events: List[Union[CreateWebhookEndpointEvents, str]],
         request_options: Optional[RequestOptions] = None,
     ) -> WebhookEndpointJson:
         """Create a Webhook Endpoint
@@ -372,8 +372,8 @@ class AsyncWebhooks:
         id: str,
         *,
         endpoint_url: Optional[str] = None,
-        status: Optional[Union[UpdateWebhookEndpointDtoStatus, str]] = None,
-        events: Optional[List[Union[UpdateWebhookEndpointDtoEvents, str]]] = None,
+        status: Optional[Union[UpdateWebhookEndpointStatus, str]] = None,
+        events: Optional[List[Union[UpdateWebhookEndpointEvents, str]]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> WebhookEndpointJson:
         """Update a Webhook Endpoint

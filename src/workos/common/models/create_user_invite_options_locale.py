@@ -9,8 +9,8 @@ from typing import Optional
 from typing_extensions import Literal, TypeAlias
 
 
-class CreateUserInviteOptionsDtoLocale(str, Enum):
-    """Known values for CreateUserInviteOptionsDtoLocale."""
+class CreateUserInviteOptionsLocale(str, Enum):
+    """Known values for CreateUserInviteOptionsLocale."""
 
     AF = "af"
     AM = "am"
@@ -104,7 +104,7 @@ class CreateUserInviteOptionsDtoLocale(str, Enum):
     ZU = "zu"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["CreateUserInviteOptionsDtoLocale"]:
+    def _missing_(cls, value: object) -> Optional["CreateUserInviteOptionsLocale"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -113,7 +113,7 @@ class CreateUserInviteOptionsDtoLocale(str, Enum):
         return unknown
 
 
-CreateUserInviteOptionsDtoLocaleLiteral: TypeAlias = Literal[
+CreateUserInviteOptionsLocaleLiteral: TypeAlias = Literal[
     "af",
     "am",
     "ar",

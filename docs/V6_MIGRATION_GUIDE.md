@@ -212,7 +212,7 @@ from workos.types.portal.portal_link_intent import PortalLinkIntent
 
 ```python
 from workos.organizations.models import Organization
-from workos.common.models import GenerateLinkDtoIntent
+from workos.common.models import GenerateLinkIntent
 ```
 
 **Migration:** Move imports to `workos.<resource>.models` wherever possible. If you are importing a shared enum or common helper type, look in `workos.common.models`.

@@ -28,14 +28,14 @@ from .connected_account_state import ConnectedAccountState as ConnectedAccountSt
 from .connection_state import ConnectionState as ConnectionState
 from .connection_status import ConnectionStatus as ConnectionStatus
 from .connection_type import ConnectionType as ConnectionType
-from .create_user_dto_password_hash_type import (
-    CreateUserDtoPasswordHashType as CreateUserDtoPasswordHashType,
+from .create_user_password_hash_type import (
+    CreateUserPasswordHashType as CreateUserPasswordHashType,
 )
-from .create_user_invite_options_dto_locale import (
-    CreateUserInviteOptionsDtoLocale as CreateUserInviteOptionsDtoLocale,
+from .create_user_invite_options_locale import (
+    CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale,
 )
-from .create_webhook_endpoint_dto_events import (
-    CreateWebhookEndpointDtoEvents as CreateWebhookEndpointDtoEvents,
+from .create_webhook_endpoint_events import (
+    CreateWebhookEndpointEvents as CreateWebhookEndpointEvents,
 )
 from .data_integrations_list_response_data_connected_account_state import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
@@ -48,11 +48,11 @@ from .directory_type import DirectoryType as DirectoryType
 from .directory_user_with_groups_state import (
     DirectoryUserWithGroupsState as DirectoryUserWithGroupsState,
 )
-from .generate_link_dto_intent import GenerateLinkDtoIntent as GenerateLinkDtoIntent
+from .generate_link_intent import GenerateLinkIntent as GenerateLinkIntent
 from .invitation_state import InvitationState as InvitationState
 from .list_data_type import ListDataType as ListDataType
-from .organization_domain_data_dto_state import (
-    OrganizationDomainDataDtoState as OrganizationDomainDataDtoState,
+from .organization_domain_data_state import (
+    OrganizationDomainDataState as OrganizationDomainDataState,
 )
 from .organization_domain_stand_alone_state import (
     OrganizationDomainStandAloneState as OrganizationDomainStandAloneState,
@@ -85,18 +85,18 @@ from .radar_standalone_response_control import (
 from .radar_standalone_response_verdict import (
     RadarStandaloneResponseVerdict as RadarStandaloneResponseVerdict,
 )
-from .resend_user_invite_options_dto_locale import (
-    ResendUserInviteOptionsDtoLocale as ResendUserInviteOptionsDtoLocale,
+from .resend_user_invite_options_locale import (
+    ResendUserInviteOptionsLocale as ResendUserInviteOptionsLocale,
 )
 from .role_type import RoleType as RoleType
-from .update_user_dto_password_hash_type import (
-    UpdateUserDtoPasswordHashType as UpdateUserDtoPasswordHashType,
+from .update_user_password_hash_type import (
+    UpdateUserPasswordHashType as UpdateUserPasswordHashType,
 )
-from .update_webhook_endpoint_dto_events import (
-    UpdateWebhookEndpointDtoEvents as UpdateWebhookEndpointDtoEvents,
+from .update_webhook_endpoint_events import (
+    UpdateWebhookEndpointEvents as UpdateWebhookEndpointEvents,
 )
-from .update_webhook_endpoint_dto_status import (
-    UpdateWebhookEndpointDtoStatus as UpdateWebhookEndpointDtoStatus,
+from .update_webhook_endpoint_status import (
+    UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus,
 )
 from .user_identities_get_item_provider import (
     UserIdentitiesGetItemProvider as UserIdentitiesGetItemProvider,
@@ -113,6 +113,6 @@ from .user_sessions_status import UserSessionsStatus as UserSessionsStatus
 from .webhook_endpoint_json_status import (
     WebhookEndpointJsonStatus as WebhookEndpointJsonStatus,
 )
-from .widget_session_token_dto_scopes import (
-    WidgetSessionTokenDtoScopes as WidgetSessionTokenDtoScopes,
+from .widget_session_token_scopes import (
+    WidgetSessionTokenScopes as WidgetSessionTokenScopes,
 )

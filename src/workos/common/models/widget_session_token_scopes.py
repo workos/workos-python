@@ -9,8 +9,8 @@ from typing import Optional
 from typing_extensions import Literal, TypeAlias
 
 
-class WidgetSessionTokenDtoScopes(str, Enum):
-    """Known values for WidgetSessionTokenDtoScopes."""
+class WidgetSessionTokenScopes(str, Enum):
+    """Known values for WidgetSessionTokenScopes."""
 
     WIDGETS_USERS_TABLE_MANAGE = "widgets:users-table:manage"
     WIDGETS_DOMAIN_VERIFICATION_MANAGE = "widgets:domain-verification:manage"
@@ -20,7 +20,7 @@ class WidgetSessionTokenDtoScopes(str, Enum):
     WIDGETS_AUDIT_LOG_STREAMING_MANAGE = "widgets:audit-log-streaming:manage"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["WidgetSessionTokenDtoScopes"]:
+    def _missing_(cls, value: object) -> Optional["WidgetSessionTokenScopes"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -29,7 +29,7 @@ class WidgetSessionTokenDtoScopes(str, Enum):
         return unknown
 
 
-WidgetSessionTokenDtoScopesLiteral: TypeAlias = Literal[
+WidgetSessionTokenScopesLiteral: TypeAlias = Literal[
     "widgets:users-table:manage",
     "widgets:domain-verification:manage",
     "widgets:sso:manage",

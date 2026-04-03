@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 from workos._errors import WorkOSError
-from workos.common.models import UpdateUserDtoPasswordHashType
+from workos.common.models import UpdateUserPasswordHashType
 
 
 @dataclass(slots=True)
@@ -24,7 +24,7 @@ class UpdateUser:
     """The password to set for the user."""
     password_hash: Optional[str] = None
     """The hashed password to set for the user. Mutually exclusive with `password`."""
-    password_hash_type: Optional["UpdateUserDtoPasswordHashType"] = None
+    password_hash_type: Optional["UpdateUserPasswordHashType"] = None
     """The algorithm originally used to hash the password, used when providing a `password_hash`."""
     metadata: Optional[Dict[str, str]] = None
     """Object containing metadata key/value pairs associated with the user."""
@@ -44,7 +44,7 @@ class UpdateUser:
                 email_verified=data.get("email_verified"),
                 password=data.get("password"),
                 password_hash=data.get("password_hash"),
-                password_hash_type=UpdateUserDtoPasswordHashType(_v)
+                password_hash_type=UpdateUserPasswordHashType(_v)
                 if (_v := data.get("password_hash_type")) is not None
                 else None,
                 metadata=data.get("metadata"),

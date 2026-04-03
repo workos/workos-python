@@ -56,10 +56,10 @@ from .models import (
     UserManagementUsersOrder,
 )
 from workos.common.models import (
-    CreateUserDtoPasswordHashType,
-    CreateUserInviteOptionsDtoLocale,
-    ResendUserInviteOptionsDtoLocale,
-    UpdateUserDtoPasswordHashType,
+    CreateUserPasswordHashType,
+    CreateUserInviteOptionsLocale,
+    ResendUserInviteOptionsLocale,
+    UpdateUserPasswordHashType,
 )
 from .._pagination import AsyncPage, SyncPage
 
@@ -795,7 +795,7 @@ class UserManagement:
         email: str,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
-        password_hash_type: Optional[Union[CreateUserDtoPasswordHashType, str]] = None,
+        password_hash_type: Optional[Union[CreateUserPasswordHashType, str]] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
@@ -925,7 +925,7 @@ class UserManagement:
         email_verified: Optional[bool] = None,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
-        password_hash_type: Optional[Union[UpdateUserDtoPasswordHashType, str]] = None,
+        password_hash_type: Optional[Union[UpdateUserPasswordHashType, str]] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
         locale: Optional[str] = None,
@@ -1301,7 +1301,7 @@ class UserManagement:
         role_slug: Optional[str] = None,
         expires_in_days: Optional[int] = None,
         inviter_user_id: Optional[str] = None,
-        locale: Optional[Union[CreateUserInviteOptionsDtoLocale, str]] = None,
+        locale: Optional[Union[CreateUserInviteOptionsLocale, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserInvite:
         """Send an invitation
@@ -1443,7 +1443,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        locale: Optional[Union[ResendUserInviteOptionsDtoLocale, str]] = None,
+        locale: Optional[Union[ResendUserInviteOptionsLocale, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserInvite:
         """Resend an invitation
@@ -2868,7 +2868,7 @@ class AsyncUserManagement:
         email: str,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
-        password_hash_type: Optional[Union[CreateUserDtoPasswordHashType, str]] = None,
+        password_hash_type: Optional[Union[CreateUserPasswordHashType, str]] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
@@ -2998,7 +2998,7 @@ class AsyncUserManagement:
         email_verified: Optional[bool] = None,
         password: Optional[str] = None,
         password_hash: Optional[str] = None,
-        password_hash_type: Optional[Union[UpdateUserDtoPasswordHashType, str]] = None,
+        password_hash_type: Optional[Union[UpdateUserPasswordHashType, str]] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
         locale: Optional[str] = None,
@@ -3374,7 +3374,7 @@ class AsyncUserManagement:
         role_slug: Optional[str] = None,
         expires_in_days: Optional[int] = None,
         inviter_user_id: Optional[str] = None,
-        locale: Optional[Union[CreateUserInviteOptionsDtoLocale, str]] = None,
+        locale: Optional[Union[CreateUserInviteOptionsLocale, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserInvite:
         """Send an invitation
@@ -3516,7 +3516,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        locale: Optional[Union[ResendUserInviteOptionsDtoLocale, str]] = None,
+        locale: Optional[Union[ResendUserInviteOptionsLocale, str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserInvite:
         """Resend an invitation

@@ -9,8 +9,8 @@ from typing import Optional
 from typing_extensions import Literal, TypeAlias
 
 
-class CreateUserDtoPasswordHashType(str, Enum):
-    """Known values for CreateUserDtoPasswordHashType."""
+class CreateUserPasswordHashType(str, Enum):
+    """Known values for CreateUserPasswordHashType."""
 
     BCRYPT = "bcrypt"
     FIREBASE_SCRYPT = "firebase-scrypt"
@@ -20,7 +20,7 @@ class CreateUserDtoPasswordHashType(str, Enum):
     ARGON_2 = "argon2"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["CreateUserDtoPasswordHashType"]:
+    def _missing_(cls, value: object) -> Optional["CreateUserPasswordHashType"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -29,6 +29,6 @@ class CreateUserDtoPasswordHashType(str, Enum):
         return unknown
 
 
-CreateUserDtoPasswordHashTypeLiteral: TypeAlias = Literal[
+CreateUserPasswordHashTypeLiteral: TypeAlias = Literal[
     "bcrypt", "firebase-scrypt", "ssha", "scrypt", "pbkdf2", "argon2"
 ]

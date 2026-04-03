@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 from .._types import RequestOptions, enum_value
 from .models import IntentOptions, PortalLinkResponse
-from workos.common.models import GenerateLinkDtoIntent
+from workos.common.models import GenerateLinkIntent
 
 
 class AdminPortal:
@@ -24,7 +24,7 @@ class AdminPortal:
         organization: str,
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
-        intent: Optional[Union[GenerateLinkDtoIntent, str]] = None,
+        intent: Optional[Union[GenerateLinkIntent, str]] = None,
         intent_options: Optional[IntentOptions] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> PortalLinkResponse:
@@ -94,7 +94,7 @@ class AsyncAdminPortal:
         organization: str,
         return_url: Optional[str] = None,
         success_url: Optional[str] = None,
-        intent: Optional[Union[GenerateLinkDtoIntent, str]] = None,
+        intent: Optional[Union[GenerateLinkIntent, str]] = None,
         intent_options: Optional[IntentOptions] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> PortalLinkResponse:

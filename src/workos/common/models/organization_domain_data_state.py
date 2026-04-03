@@ -9,14 +9,14 @@ from typing import Optional
 from typing_extensions import Literal, TypeAlias
 
 
-class OrganizationDomainDataDtoState(str, Enum):
-    """Known values for OrganizationDomainDataDtoState."""
+class OrganizationDomainDataState(str, Enum):
+    """Known values for OrganizationDomainDataState."""
 
     PENDING = "pending"
     VERIFIED = "verified"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["OrganizationDomainDataDtoState"]:
+    def _missing_(cls, value: object) -> Optional["OrganizationDomainDataState"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -25,4 +25,4 @@ class OrganizationDomainDataDtoState(str, Enum):
         return unknown
 
 
-OrganizationDomainDataDtoStateLiteral: TypeAlias = Literal["pending", "verified"]
+OrganizationDomainDataStateLiteral: TypeAlias = Literal["pending", "verified"]

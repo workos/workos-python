@@ -5,14 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 from workos._errors import WorkOSError
-from workos.common.models import ResendUserInviteOptionsDtoLocale
+from workos.common.models import ResendUserInviteOptionsLocale
 
 
 @dataclass(slots=True)
 class ResendUserInviteOptions:
     """Resend User Invite Options model."""
 
-    locale: Optional["ResendUserInviteOptionsDtoLocale"] = None
+    locale: Optional["ResendUserInviteOptionsLocale"] = None
     """The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization)."""
 
     @classmethod
@@ -20,7 +20,7 @@ class ResendUserInviteOptions:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                locale=ResendUserInviteOptionsDtoLocale(_v)
+                locale=ResendUserInviteOptionsLocale(_v)
                 if (_v := data.get("locale")) is not None
                 else None,
             )

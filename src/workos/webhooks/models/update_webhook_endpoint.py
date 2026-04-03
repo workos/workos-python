@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List, Optional
 from workos._errors import WorkOSError
-from workos.common.models import UpdateWebhookEndpointDtoEvents
-from workos.common.models import UpdateWebhookEndpointDtoStatus
+from workos.common.models import UpdateWebhookEndpointEvents
+from workos.common.models import UpdateWebhookEndpointStatus
 
 
 @dataclass(slots=True)
@@ -16,9 +16,9 @@ class UpdateWebhookEndpoint:
 
     endpoint_url: Optional[str] = None
     """The HTTPS URL where webhooks will be sent."""
-    status: Optional["UpdateWebhookEndpointDtoStatus"] = None
+    status: Optional["UpdateWebhookEndpointStatus"] = None
     """Whether the Webhook Endpoint is enabled or disabled."""
-    events: Optional[List["UpdateWebhookEndpointDtoEvents"]] = None
+    events: Optional[List["UpdateWebhookEndpointEvents"]] = None
     """The events that the Webhook Endpoint is subscribed to."""
 
     @classmethod
@@ -27,11 +27,11 @@ class UpdateWebhookEndpoint:
         try:
             return cls(
                 endpoint_url=data.get("endpoint_url"),
-                status=UpdateWebhookEndpointDtoStatus(_v)
+                status=UpdateWebhookEndpointStatus(_v)
                 if (_v := data.get("status")) is not None
                 else None,
                 events=[
-                    UpdateWebhookEndpointDtoEvents(item) for item in cast(list[Any], _v)
+                    UpdateWebhookEndpointEvents(item) for item in cast(list[Any], _v)
                 ]
                 if (_v := data.get("events")) is not None
                 else None,

@@ -9,8 +9,8 @@ from typing import Optional
 from typing_extensions import Literal, TypeAlias
 
 
-class GenerateLinkDtoIntent(str, Enum):
-    """Known values for GenerateLinkDtoIntent."""
+class GenerateLinkIntent(str, Enum):
+    """Known values for GenerateLinkIntent."""
 
     SSO = "sso"
     DSYNC = "dsync"
@@ -21,7 +21,7 @@ class GenerateLinkDtoIntent(str, Enum):
     BRING_YOUR_OWN_KEY = "bring_your_own_key"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["GenerateLinkDtoIntent"]:
+    def _missing_(cls, value: object) -> Optional["GenerateLinkIntent"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -30,7 +30,7 @@ class GenerateLinkDtoIntent(str, Enum):
         return unknown
 
 
-GenerateLinkDtoIntentLiteral: TypeAlias = Literal[
+GenerateLinkIntentLiteral: TypeAlias = Literal[
     "sso",
     "dsync",
     "audit_logs",

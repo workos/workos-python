@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List, Optional
 from workos._errors import WorkOSError
-from workos.common.models import WidgetSessionTokenDtoScopes
+from workos.common.models import WidgetSessionTokenScopes
 
 
 @dataclass(slots=True)
@@ -17,7 +17,7 @@ class WidgetSessionToken:
     """The ID of the organization to scope the widget session to."""
     user_id: Optional[str] = None
     """The ID of the user to issue the widget session token for."""
-    scopes: Optional[List["WidgetSessionTokenDtoScopes"]] = None
+    scopes: Optional[List["WidgetSessionTokenScopes"]] = None
     """The scopes to grant the widget session."""
 
     @classmethod
@@ -27,9 +27,7 @@ class WidgetSessionToken:
             return cls(
                 organization_id=data["organization_id"],
                 user_id=data.get("user_id"),
-                scopes=[
-                    WidgetSessionTokenDtoScopes(item) for item in cast(list[Any], _v)
-                ]
+                scopes=[WidgetSessionTokenScopes(item) for item in cast(list[Any], _v)]
                 if (_v := data.get("scopes")) is not None
                 else None,
             )

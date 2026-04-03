@@ -9,8 +9,8 @@ from typing import Optional
 from typing_extensions import Literal, TypeAlias
 
 
-class CreateWebhookEndpointDtoEvents(str, Enum):
-    """Known values for CreateWebhookEndpointDtoEvents."""
+class CreateWebhookEndpointEvents(str, Enum):
+    """Known values for CreateWebhookEndpointEvents."""
 
     AUTHENTICATION_EMAIL_VERIFICATION_SUCCEEDED = (
         "authentication.email_verification_succeeded"
@@ -87,7 +87,7 @@ class CreateWebhookEndpointDtoEvents(str, Enum):
     SESSION_REVOKED = "session.revoked"
 
     @classmethod
-    def _missing_(cls, value: object) -> Optional["CreateWebhookEndpointDtoEvents"]:
+    def _missing_(cls, value: object) -> Optional["CreateWebhookEndpointEvents"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -96,7 +96,7 @@ class CreateWebhookEndpointDtoEvents(str, Enum):
         return unknown
 
 
-CreateWebhookEndpointDtoEventsLiteral: TypeAlias = Literal[
+CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "authentication.email_verification_succeeded",
     "authentication.magic_auth_failed",
     "authentication.magic_auth_succeeded",

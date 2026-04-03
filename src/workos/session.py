@@ -105,6 +105,37 @@ def unseal_data(sealed_data: str, key: str) -> Dict[str, Any]:
     return cast(Dict[str, Any], json.loads(decrypted_str))
 
 
+def seal_session_from_auth_response(
+    *,
+    access_token: str,
+    refresh_token: str,
+    user: Optional[Dict[str, Any]] = None,
+    impersonator: Optional[Dict[str, Any]] = None,
+    cookie_password: str,
+) -> str:
+    """Seal session data from an authentication response into a cookie-safe string.
+
+    Args:
+        access_token: The access token from the auth response.
+        refresh_token: The refresh token from the auth response.
+        user: The user dict from the auth response.
+        impersonator: The impersonator dict, if present.
+        cookie_password: The Fernet key used to seal the session.
+
+    Returns:
+        A sealed session string suitable for storing in a cookie.
+    """
+    session_data: Dict[str, Any] = {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    }
+    if user is not None:
+        session_data["user"] = user
+    if impersonator is not None:
+        session_data["impersonator"] = impersonator
+    return seal_data(session_data, cookie_password)
+
+
 # ---------------------------------------------------------------------------
 # Session (sync)
 # ---------------------------------------------------------------------------

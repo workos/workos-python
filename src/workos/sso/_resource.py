@@ -364,6 +364,80 @@ class SSO:
             request_options=request_options,
         )
 
+    # @oagen-ignore-start
+
+    def get_authorization_url_with_pkce(
+        self,
+        *,
+        redirect_uri: str,
+        client_id: Optional[str] = None,
+        connection: Optional[str] = None,
+        organization: Optional[str] = None,
+        provider: Optional[Union[SSOProvider, str]] = None,
+        domain_hint: Optional[str] = None,
+        login_hint: Optional[str] = None,
+        provider_scopes: Optional[List[str]] = None,
+        provider_query_params: Optional[Dict[str, str]] = None,
+    ) -> Dict[str, str]:
+        """Generate an SSO authorization URL with auto-generated PKCE parameters."""
+        from ..pkce import PKCE
+
+        pkce = PKCE()
+        pair = pkce.generate()
+        state = pkce.generate_code_verifier(43)
+        resolved_client_id = client_id or self._client._require_client_id()
+
+        params = {
+            k: v
+            for k, v in {
+                "client_id": resolved_client_id,
+                "redirect_uri": redirect_uri,
+                "response_type": "code",
+                "code_challenge": pair.code_challenge,
+                "code_challenge_method": "S256",
+                "state": state,
+                "connection": connection,
+                "organization": organization,
+                "provider": enum_value(provider) if provider is not None else None,
+                "domain_hint": domain_hint,
+                "login_hint": login_hint,
+                "provider_scopes": provider_scopes,
+                "provider_query_params": provider_query_params,
+            }.items()
+            if v is not None
+        }
+        url = self._client.build_url("sso/authorize", params)
+        return {"url": url, "state": state, "code_verifier": pair.code_verifier}
+
+    def get_profile_and_token_pkce(
+        self,
+        *,
+        code: str,
+        code_verifier: str,
+        client_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SSOTokenResponse:
+        """Exchange an authorization code using a PKCE code_verifier for SSO."""
+        resolved_client_id = client_id or self._client._require_client_id()
+        body: Dict[str, Any] = {
+            "client_id": resolved_client_id,
+            "code": code,
+            "grant_type": "authorization_code",
+            "code_verifier": code_verifier,
+        }
+        if self._client._api_key:
+            body["client_secret"] = self._client._api_key
+
+        return self._client.request(
+            method="post",
+            path="sso/token",
+            body=body,
+            model=SSOTokenResponse,
+            request_options=request_options,
+        )
+
+    # @oagen-ignore-end
+
 
 class AsyncSSO:
     """SSO API resources (async)."""
@@ -715,3 +789,77 @@ class AsyncSSO:
             model=SSOTokenResponse,
             request_options=request_options,
         )
+
+    # @oagen-ignore-start
+
+    async def get_authorization_url_with_pkce(
+        self,
+        *,
+        redirect_uri: str,
+        client_id: Optional[str] = None,
+        connection: Optional[str] = None,
+        organization: Optional[str] = None,
+        provider: Optional[Union[SSOProvider, str]] = None,
+        domain_hint: Optional[str] = None,
+        login_hint: Optional[str] = None,
+        provider_scopes: Optional[List[str]] = None,
+        provider_query_params: Optional[Dict[str, str]] = None,
+    ) -> Dict[str, str]:
+        """Generate an SSO authorization URL with auto-generated PKCE parameters."""
+        from ..pkce import PKCE
+
+        pkce = PKCE()
+        pair = pkce.generate()
+        state = pkce.generate_code_verifier(43)
+        resolved_client_id = client_id or self._client._require_client_id()
+
+        params = {
+            k: v
+            for k, v in {
+                "client_id": resolved_client_id,
+                "redirect_uri": redirect_uri,
+                "response_type": "code",
+                "code_challenge": pair.code_challenge,
+                "code_challenge_method": "S256",
+                "state": state,
+                "connection": connection,
+                "organization": organization,
+                "provider": enum_value(provider) if provider is not None else None,
+                "domain_hint": domain_hint,
+                "login_hint": login_hint,
+                "provider_scopes": provider_scopes,
+                "provider_query_params": provider_query_params,
+            }.items()
+            if v is not None
+        }
+        url = self._client.build_url("sso/authorize", params)
+        return {"url": url, "state": state, "code_verifier": pair.code_verifier}
+
+    async def get_profile_and_token_pkce(
+        self,
+        *,
+        code: str,
+        code_verifier: str,
+        client_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SSOTokenResponse:
+        """Exchange an authorization code using a PKCE code_verifier for SSO."""
+        resolved_client_id = client_id or self._client._require_client_id()
+        body: Dict[str, Any] = {
+            "client_id": resolved_client_id,
+            "code": code,
+            "grant_type": "authorization_code",
+            "code_verifier": code_verifier,
+        }
+        if self._client._api_key:
+            body["client_secret"] = self._client._api_key
+
+        return await self._client.request(
+            method="post",
+            path="sso/token",
+            body=body,
+            model=SSOTokenResponse,
+            request_options=request_options,
+        )
+
+    # @oagen-ignore-end

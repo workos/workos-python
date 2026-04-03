@@ -2011,6 +2011,125 @@ class UserManagement:
             request_options=request_options,
         )
 
+    # @oagen-ignore-start
+
+    def load_sealed_session(
+        self,
+        *,
+        session_data: str,
+        cookie_password: str,
+    ) -> "Session":
+        """Create a Session object from sealed session data."""
+        from ..session import Session
+
+        return Session(
+            client=self._client,
+            session_data=session_data,
+            cookie_password=cookie_password,
+        )
+
+    def authenticate_with_session_cookie(
+        self,
+        *,
+        session_data: str,
+        cookie_password: str,
+    ) -> Union[
+        "AuthenticateWithSessionCookieSuccessResponse",
+        "AuthenticateWithSessionCookieErrorResponse",
+    ]:
+        """One-shot authenticate a sealed session cookie."""
+        from ..session import Session
+
+        session = Session(
+            client=self._client,
+            session_data=session_data,
+            cookie_password=cookie_password,
+        )
+        return session.authenticate()
+
+    def get_authorization_url_with_pkce(
+        self,
+        *,
+        redirect_uri: str,
+        client_id: Optional[str] = None,
+        provider: Optional[Union[UserManagementAuthenticationProvider, str]] = None,
+        connection_id: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        domain_hint: Optional[str] = None,
+        login_hint: Optional[str] = None,
+        screen_hint: Optional[
+            Union[UserManagementAuthenticationScreenHint, str]
+        ] = None,
+        prompt: Optional[str] = None,
+        provider_scopes: Optional[List[str]] = None,
+        provider_query_params: Optional[Dict[str, str]] = None,
+        invitation_token: Optional[str] = None,
+    ) -> Dict[str, str]:
+        """Generate an AuthKit authorization URL with auto-generated PKCE parameters.
+
+        Returns:
+            Dict with keys 'url', 'state', and 'code_verifier'.
+        """
+        from ..pkce import PKCE
+
+        pkce = PKCE()
+        pair = pkce.generate()
+        state = pkce.generate_code_verifier(43)
+
+        resolved_client_id = client_id or self._client._require_client_id()
+
+        url = self.get_authorization_url(
+            response_type="code",
+            redirect_uri=redirect_uri,
+            client_id=resolved_client_id,
+            code_challenge=pair.code_challenge,
+            code_challenge_method="S256",
+            state=state,
+            provider=provider,
+            connection_id=connection_id,
+            organization_id=organization_id,
+            domain_hint=domain_hint,
+            login_hint=login_hint,
+            screen_hint=screen_hint,
+            prompt=prompt,
+            provider_scopes=provider_scopes,
+            provider_query_params=provider_query_params,
+            invitation_token=invitation_token,
+        )
+        return {"url": url, "state": state, "code_verifier": pair.code_verifier}
+
+    def authenticate_with_code_pkce(
+        self,
+        *,
+        code: str,
+        code_verifier: str,
+        client_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthenticateResponse:
+        """Exchange an authorization code using a PKCE code_verifier."""
+        resolved_client_id = client_id or (self._client.client_id or "")
+        body: Dict[str, Any] = {
+            "grant_type": "authorization_code",
+            "client_id": resolved_client_id,
+            "code": code,
+            "code_verifier": code_verifier,
+        }
+        if self._client._api_key:
+            body["client_secret"] = self._client._api_key
+
+        return cast(
+            AuthenticateResponse,
+            self._client.request(
+                method="POST",
+                path="user_management/authenticate",
+                body=body,
+                model=AuthenticateResponse,
+                request_options=request_options,
+            ),
+        )
+
+    # @oagen-ignore-end
+
 
 class AsyncUserManagement:
     """User Management API resources (async)."""
@@ -3964,3 +4083,122 @@ class AsyncUserManagement:
             path=f"user_management/users/{user_id}/authorized_applications/{application_id}",
             request_options=request_options,
         )
+
+    # @oagen-ignore-start
+
+    def load_sealed_session(
+        self,
+        *,
+        session_data: str,
+        cookie_password: str,
+    ) -> "AsyncSession":
+        """Create an AsyncSession object from sealed session data."""
+        from ..session import AsyncSession
+
+        return AsyncSession(
+            client=self._client,
+            session_data=session_data,
+            cookie_password=cookie_password,
+        )
+
+    def authenticate_with_session_cookie(
+        self,
+        *,
+        session_data: str,
+        cookie_password: str,
+    ) -> Union[
+        "AuthenticateWithSessionCookieSuccessResponse",
+        "AuthenticateWithSessionCookieErrorResponse",
+    ]:
+        """One-shot authenticate a sealed session cookie."""
+        from ..session import AsyncSession
+
+        session = AsyncSession(
+            client=self._client,
+            session_data=session_data,
+            cookie_password=cookie_password,
+        )
+        return session.authenticate()
+
+    async def get_authorization_url_with_pkce(
+        self,
+        *,
+        redirect_uri: str,
+        client_id: Optional[str] = None,
+        provider: Optional[Union[UserManagementAuthenticationProvider, str]] = None,
+        connection_id: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        domain_hint: Optional[str] = None,
+        login_hint: Optional[str] = None,
+        screen_hint: Optional[
+            Union[UserManagementAuthenticationScreenHint, str]
+        ] = None,
+        prompt: Optional[str] = None,
+        provider_scopes: Optional[List[str]] = None,
+        provider_query_params: Optional[Dict[str, str]] = None,
+        invitation_token: Optional[str] = None,
+    ) -> Dict[str, str]:
+        """Generate an AuthKit authorization URL with auto-generated PKCE parameters.
+
+        Returns:
+            Dict with keys 'url', 'state', and 'code_verifier'.
+        """
+        from ..pkce import PKCE
+
+        pkce = PKCE()
+        pair = pkce.generate()
+        state = pkce.generate_code_verifier(43)
+
+        resolved_client_id = client_id or self._client._require_client_id()
+
+        url = await self.get_authorization_url(
+            response_type="code",
+            redirect_uri=redirect_uri,
+            client_id=resolved_client_id,
+            code_challenge=pair.code_challenge,
+            code_challenge_method="S256",
+            state=state,
+            provider=provider,
+            connection_id=connection_id,
+            organization_id=organization_id,
+            domain_hint=domain_hint,
+            login_hint=login_hint,
+            screen_hint=screen_hint,
+            prompt=prompt,
+            provider_scopes=provider_scopes,
+            provider_query_params=provider_query_params,
+            invitation_token=invitation_token,
+        )
+        return {"url": url, "state": state, "code_verifier": pair.code_verifier}
+
+    async def authenticate_with_code_pkce(
+        self,
+        *,
+        code: str,
+        code_verifier: str,
+        client_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthenticateResponse:
+        """Exchange an authorization code using a PKCE code_verifier."""
+        resolved_client_id = client_id or (self._client.client_id or "")
+        body: Dict[str, Any] = {
+            "grant_type": "authorization_code",
+            "client_id": resolved_client_id,
+            "code": code,
+            "code_verifier": code_verifier,
+        }
+        if self._client._api_key:
+            body["client_secret"] = self._client._api_key
+
+        return cast(
+            AuthenticateResponse,
+            await self._client.request(
+                method="POST",
+                path="user_management/authenticate",
+                body=body,
+                model=AuthenticateResponse,
+                request_options=request_options,
+            ),
+        )
+
+    # @oagen-ignore-end

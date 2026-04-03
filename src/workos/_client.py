@@ -47,7 +47,9 @@ from .user_management._resource import UserManagement, AsyncUserManagement
 from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
+from .actions import Actions, AsyncActions
 from .passwordless import AsyncPasswordless, Passwordless
+from .pkce import PKCE
 from .vault import AsyncVault, Vault
 
 try:
@@ -446,6 +448,14 @@ class WorkOS(_BaseWorkOS):
     def vault(self) -> Vault:
         return Vault(self)
 
+    @functools.cached_property
+    def actions(self) -> Actions:
+        return Actions()
+
+    @functools.cached_property
+    def pkce(self) -> PKCE:
+        return PKCE()
+
     @overload
     def request(
         self,
@@ -696,6 +706,14 @@ class AsyncWorkOS(_BaseWorkOS):
     @functools.cached_property
     def vault(self) -> AsyncVault:
         return AsyncVault(self)
+
+    @functools.cached_property
+    def actions(self) -> AsyncActions:
+        return AsyncActions()
+
+    @functools.cached_property
+    def pkce(self) -> PKCE:
+        return PKCE()
 
     @overload
     async def request(

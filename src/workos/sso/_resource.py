@@ -8,9 +8,8 @@ if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import Profile, SSOLogoutAuthorizeResponse, SSOTokenResponse
-from .models import SSOProvider
-from ..connections.models import Connection, ConnectionsConnectionType, ConnectionsOrder
+from .models import Connection, Profile, SSOLogoutAuthorizeResponse, SSOTokenResponse
+from .models import ConnectionsConnectionType, ConnectionsOrder, SSOProvider
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -20,12 +19,132 @@ class SSO:
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
-    def authorize(
+    def list_connections(
+        self,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[ConnectionsOrder, str]] = None,
+        connection_type: Optional[Union[ConnectionsConnectionType, str]] = None,
+        domain: Optional[str] = None,
+        organization_id: Optional[str] = None,
+        search: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[Connection]:
+        """List Connections
+
+        Get a list of all of your existing connections matching the criteria specified.
+
+                Args:
+                    connection_type: Filter Connections by their type.
+                    domain: Filter Connections by their associated domain.
+                    organization_id: Filter Connections by their associated organization.
+                    search: Searchable text to match against Connection names.
+                    limit: Maximum number of records to return.
+                    before: Pagination cursor for previous page.
+                    after: Pagination cursor for next page.
+                    order: Sort order.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    SyncPage[Connection]
+
+                Raises:
+                    AuthorizationException: If the request is forbidden (403).
+                    UnprocessableEntityException: If the request data is unprocessable (422).
+                    AuthenticationException: If the API key is invalid (401).
+                    RateLimitExceededException: If rate limited (429).
+                    ServerException: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "connection_type": enum_value(connection_type)
+                if connection_type is not None
+                else None,
+                "domain": domain,
+                "organization_id": organization_id,
+                "search": search,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path="connections",
+            model=Connection,
+            params=params,
+            request_options=request_options,
+        )
+
+    def get_connection(
+        self,
+        id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> Connection:
+        """Get a Connection
+
+        Get the details of an existing connection.
+
+                Args:
+                    id: Unique identifier for the Connection.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    Connection
+
+                Raises:
+                    AuthorizationException: If the request is forbidden (403).
+                    NotFoundException: If the resource is not found (404).
+                    AuthenticationException: If the API key is invalid (401).
+                    RateLimitExceededException: If rate limited (429).
+                    ServerException: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=f"connections/{id}",
+            model=Connection,
+            request_options=request_options,
+        )
+
+    def delete_connection(
+        self,
+        id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Delete a Connection
+
+        Permanently deletes an existing connection. It cannot be undone.
+
+                Args:
+                    id: Unique identifier for the Connection.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Raises:
+                    AuthorizationException: If the request is forbidden (403).
+                    NotFoundException: If the resource is not found (404).
+                    AuthenticationException: If the API key is invalid (401).
+                    RateLimitExceededException: If rate limited (429).
+                    ServerException: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=f"connections/{id}",
+            request_options=request_options,
+        )
+
+    def get_authorization_url(
         self,
         *,
         provider_scopes: Optional[List[str]] = None,
         provider_query_params: Optional[Dict[str, str]] = None,
-        client_id: Optional[str] = None,
+        client_id: str,
         domain: Optional[str] = None,
         provider: Optional[Union[SSOProvider, str]] = None,
         redirect_uri: str,
@@ -91,12 +210,9 @@ class SSO:
             }.items()
             if v is not None
         }
-        params["client_id"] = (
-            params.get("client_id") or self._client._require_client_id()
-        )
         return self._client.build_url("sso/authorize", params)
 
-    def logout(
+    def get_logout_url(
         self,
         *,
         token: str,
@@ -130,7 +246,7 @@ class SSO:
         }
         return self._client.build_url("sso/logout", params)
 
-    def logout_authorize(
+    def authorize_logout(
         self,
         *,
         profile_id: str,
@@ -203,11 +319,11 @@ class SSO:
             request_options=request_options,
         )
 
-    def token(
+    def get_profile_and_token(
         self,
         *,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
+        client_id: str,
+        client_secret: str,
         code: str,
         grant_type: Literal["authorization_code"],
         request_options: Optional[RequestOptions] = None,
@@ -240,10 +356,6 @@ class SSO:
             "code": code,
             "grant_type": grant_type,
         }
-        body["client_id"] = body.get("client_id") or self._client._require_client_id()
-        body["client_secret"] = (
-            body.get("client_secret") or self._client._require_api_key()
-        )
         return self._client.request(
             method="post",
             path="sso/token",
@@ -252,20 +364,26 @@ class SSO:
             request_options=request_options,
         )
 
-    # @oagen-ignore-start
-    def list_connections(
+
+class AsyncSSO:
+    """SSO API resources (async)."""
+
+    def __init__(self, client: "AsyncWorkOSClient") -> None:
+        self._client = client
+
+    async def list_connections(
         self,
         *,
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[ConnectionsOrder] = None,
-        connection_type: Optional[ConnectionsConnectionType] = None,
+        order: Optional[Union[ConnectionsOrder, str]] = None,
+        connection_type: Optional[Union[ConnectionsConnectionType, str]] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
         search: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[Connection]:
+    ) -> AsyncPage[Connection]:
         """List Connections
 
         Get a list of all of your existing connections matching the criteria specified.
@@ -282,21 +400,40 @@ class SSO:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Returns:
-                    SyncPage[Connection]
+                    AsyncPage[Connection]
+
+                Raises:
+                    AuthorizationException: If the request is forbidden (403).
+                    UnprocessableEntityException: If the request data is unprocessable (422).
+                    AuthenticationException: If the API key is invalid (401).
+                    RateLimitExceededException: If rate limited (429).
+                    ServerException: If the server returns a 5xx error.
         """
-        return self._client.connections.list(
-            limit=limit,
-            before=before,
-            after=after,
-            order=order,
-            connection_type=connection_type,
-            domain=domain,
-            organization_id=organization_id,
-            search=search,
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "connection_type": enum_value(connection_type)
+                if connection_type is not None
+                else None,
+                "domain": domain,
+                "organization_id": organization_id,
+                "search": search,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path="connections",
+            model=Connection,
+            params=params,
             request_options=request_options,
         )
 
-    def get_connection(
+    async def get_connection(
         self,
         id: str,
         *,
@@ -312,10 +449,22 @@ class SSO:
 
                 Returns:
                     Connection
-        """
-        return self._client.connections.get(id, request_options=request_options)
 
-    def delete_connection(
+                Raises:
+                    AuthorizationException: If the request is forbidden (403).
+                    NotFoundException: If the resource is not found (404).
+                    AuthenticationException: If the API key is invalid (401).
+                    RateLimitExceededException: If rate limited (429).
+                    ServerException: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=f"connections/{id}",
+            model=Connection,
+            request_options=request_options,
+        )
+
+    async def delete_connection(
         self,
         id: str,
         *,
@@ -328,24 +477,26 @@ class SSO:
                 Args:
                     id: Unique identifier for the Connection.
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Raises:
+                    AuthorizationException: If the request is forbidden (403).
+                    NotFoundException: If the resource is not found (404).
+                    AuthenticationException: If the API key is invalid (401).
+                    RateLimitExceededException: If rate limited (429).
+                    ServerException: If the server returns a 5xx error.
         """
-        self._client.connections.delete(id, request_options=request_options)
+        await self._client.request(
+            method="delete",
+            path=f"connections/{id}",
+            request_options=request_options,
+        )
 
-    # @oagen-ignore-end
-
-
-class AsyncSSO:
-    """SSO API resources (async)."""
-
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
-        self._client = client
-
-    async def authorize(
+    async def get_authorization_url(
         self,
         *,
         provider_scopes: Optional[List[str]] = None,
         provider_query_params: Optional[Dict[str, str]] = None,
-        client_id: Optional[str] = None,
+        client_id: str,
         domain: Optional[str] = None,
         provider: Optional[Union[SSOProvider, str]] = None,
         redirect_uri: str,
@@ -411,12 +562,9 @@ class AsyncSSO:
             }.items()
             if v is not None
         }
-        params["client_id"] = (
-            params.get("client_id") or self._client._require_client_id()
-        )
         return self._client.build_url("sso/authorize", params)
 
-    async def logout(
+    async def get_logout_url(
         self,
         *,
         token: str,
@@ -450,7 +598,7 @@ class AsyncSSO:
         }
         return self._client.build_url("sso/logout", params)
 
-    async def logout_authorize(
+    async def authorize_logout(
         self,
         *,
         profile_id: str,
@@ -523,11 +671,11 @@ class AsyncSSO:
             request_options=request_options,
         )
 
-    async def token(
+    async def get_profile_and_token(
         self,
         *,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
+        client_id: str,
+        client_secret: str,
         code: str,
         grant_type: Literal["authorization_code"],
         request_options: Optional[RequestOptions] = None,
@@ -560,10 +708,6 @@ class AsyncSSO:
             "code": code,
             "grant_type": grant_type,
         }
-        body["client_id"] = body.get("client_id") or self._client._require_client_id()
-        body["client_secret"] = (
-            body.get("client_secret") or self._client._require_api_key()
-        )
         return await self._client.request(
             method="post",
             path="sso/token",
@@ -571,84 +715,3 @@ class AsyncSSO:
             model=SSOTokenResponse,
             request_options=request_options,
         )
-
-    # @oagen-ignore-start
-    async def list_connections(
-        self,
-        *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[ConnectionsOrder] = None,
-        connection_type: Optional[ConnectionsConnectionType] = None,
-        domain: Optional[str] = None,
-        organization_id: Optional[str] = None,
-        search: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[Connection]:
-        """List Connections
-
-        Get a list of all of your existing connections matching the criteria specified.
-
-                Args:
-                    connection_type: Filter Connections by their type.
-                    domain: Filter Connections by their associated domain.
-                    organization_id: Filter Connections by their associated organization.
-                    search: Searchable text to match against Connection names.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-                Returns:
-                    AsyncPage[Connection]
-        """
-        return await self._client.connections.list(
-            limit=limit,
-            before=before,
-            after=after,
-            order=order,
-            connection_type=connection_type,
-            domain=domain,
-            organization_id=organization_id,
-            search=search,
-            request_options=request_options,
-        )
-
-    async def get_connection(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> Connection:
-        """Get a Connection
-
-        Get the details of an existing connection.
-
-                Args:
-                    id: Unique identifier for the Connection.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-                Returns:
-                    Connection
-        """
-        return await self._client.connections.get(id, request_options=request_options)
-
-    async def delete_connection(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> None:
-        """Delete a Connection
-
-        Permanently deletes an existing connection. It cannot be undone.
-
-                Args:
-                    id: Unique identifier for the Connection.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-        """
-        await self._client.connections.delete(id, request_options=request_options)
-
-    # @oagen-ignore-end

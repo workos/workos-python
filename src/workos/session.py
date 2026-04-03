@@ -277,7 +277,7 @@ class Session:
                 f"Failed to extract session ID for logout URL: {auth_response.reason}"
             )
 
-        return self._client.user_management.authentication.logout(
+        return self._client.user_management.get_logout_url(
             session_id=auth_response.session_id,
             return_to=return_to,
         )
@@ -456,7 +456,7 @@ class AsyncSession:
                 f"Failed to extract session ID for logout URL: {auth_response.reason}"
             )
 
-        return await self._client.user_management.authentication.logout(
+        return await self._client.user_management.get_logout_url(
             session_id=auth_response.session_id,
             return_to=return_to,
         )

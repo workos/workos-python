@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 from workos.common.models import ResendUserInviteOptionsLocale
 
 
@@ -25,13 +26,13 @@ class ResendUserInviteOptions:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing ResendUserInviteOptions: {e!s}"
-            ) from e
+            _raise_deserialize_error("ResendUserInviteOptions", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         if self.locale is not None:
-            result["locale"] = self.locale
+            result["locale"] = (
+                self.locale.value if isinstance(self.locale, Enum) else self.locale
+            )
         return result

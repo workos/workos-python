@@ -5,8 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 
 @dataclass(slots=True)
@@ -48,9 +48,7 @@ class DirectoryGroup:
                 raw_attributes=data.get("raw_attributes"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing DirectoryGroup: {e!s}"
-            ) from e
+            _raise_deserialize_error("DirectoryGroup", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -61,12 +59,8 @@ class DirectoryGroup:
         result["directory_id"] = self.directory_id
         result["organization_id"] = self.organization_id
         result["name"] = self.name
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         if self.raw_attributes is not None:
             result["raw_attributes"] = self.raw_attributes
         return result

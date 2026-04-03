@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from .audit_log_schema_json_actor import AuditLogSchemaJsonActor
 from .audit_log_schema_json_target import AuditLogSchemaJsonTarget
@@ -48,9 +48,7 @@ class AuditLogSchemaJson:
                 metadata=data.get("metadata"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing AuditLogSchemaJson: {e!s}"
-            ) from e
+            _raise_deserialize_error("AuditLogSchemaJson", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -58,9 +56,7 @@ class AuditLogSchemaJson:
         result["object"] = self.object
         result["version"] = self.version
         result["targets"] = [item.to_dict() for item in self.targets]
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
         if self.actor is not None:
             result["actor"] = self.actor.to_dict()
         if self.metadata is not None:

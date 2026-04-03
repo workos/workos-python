@@ -14,9 +14,11 @@ from workos.pipes.models import (
 )
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -163,6 +165,32 @@ class TestPipes:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
+                workos.pipes.authorize_data_integration(
+                    "test_slug", user_id="test_user_id"
+                )
+        finally:
+            workos.close()
+
+    def test_authorize_data_integration_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.pipes.authorize_data_integration(
+                    "test_slug", user_id="test_user_id"
+                )
+        finally:
+            workos.close()
+
+    def test_authorize_data_integration_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
                 workos.pipes.authorize_data_integration(
                     "test_slug", user_id="test_user_id"
                 )
@@ -317,6 +345,32 @@ class TestAsyncPipes:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
+                await workos.pipes.authorize_data_integration(
+                    "test_slug", user_id="test_user_id"
+                )
+        finally:
+            await workos.close()
+
+    async def test_authorize_data_integration_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.pipes.authorize_data_integration(
+                    "test_slug", user_id="test_user_id"
+                )
+        finally:
+            await workos.close()
+
+    async def test_authorize_data_integration_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
                 await workos.pipes.authorize_data_integration(
                     "test_slug", user_id="test_user_id"
                 )

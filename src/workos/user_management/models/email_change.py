@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
 from typing import Any, Dict, Literal
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from .user import User
 
@@ -38,9 +38,7 @@ class EmailChange:
                 created_at=_parse_datetime(data["created_at"]),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing EmailChange: {e!s}"
-            ) from e
+            _raise_deserialize_error("EmailChange", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -48,10 +46,6 @@ class EmailChange:
         result["object"] = self.object
         result["user"] = self.user.to_dict()
         result["new_email"] = self.new_email
-        result["expires_at"] = self.expires_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["expires_at"] = _format_datetime(self.expires_at)
+        result["created_at"] = _format_datetime(self.created_at)
         return result

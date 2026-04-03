@@ -261,7 +261,7 @@ class Session:
             if organization_id is not None:
                 body["organization_id"] = organization_id
 
-            auth_response: Dict[str, Any] = self._client.request(  # type: ignore[assignment]
+            auth_response = self._client.request_raw(
                 method="post",
                 path="user_management/authenticate",
                 body=body,
@@ -440,7 +440,7 @@ class AsyncSession:
             if organization_id is not None:
                 body["organization_id"] = organization_id
 
-            auth_response: Dict[str, Any] = await self._client.request(  # type: ignore[assignment]
+            auth_response = await self._client.request_raw(
                 method="post",
                 path="user_management/authenticate",
                 body=body,

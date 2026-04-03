@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from .user_consent_option import UserConsentOption
 from .user_object import UserObject
@@ -37,9 +37,7 @@ class UserManagementLoginRequest:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing UserManagementLoginRequest: {e!s}"
-            ) from e
+            _raise_deserialize_error("UserManagementLoginRequest", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

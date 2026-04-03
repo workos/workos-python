@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from .authenticate_response_impersonator import AuthenticateResponseImpersonator
 from .authenticate_response_oauth_token import AuthenticateResponseOAuthToken
@@ -59,9 +60,7 @@ class AuthenticateResponse:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing AuthenticateResponse: {e!s}"
-            ) from e
+            _raise_deserialize_error("AuthenticateResponse", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -74,7 +73,11 @@ class AuthenticateResponse:
         if self.authkit_authorization_code is not None:
             result["authkit_authorization_code"] = self.authkit_authorization_code
         if self.authentication_method is not None:
-            result["authentication_method"] = self.authentication_method
+            result["authentication_method"] = (
+                self.authentication_method.value
+                if isinstance(self.authentication_method, Enum)
+                else self.authentication_method
+            )
         if self.impersonator is not None:
             result["impersonator"] = self.impersonator.to_dict()
         if self.oauth_tokens is not None:

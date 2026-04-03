@@ -29,18 +29,18 @@ class ApiKeys:
 
         Validate an API key value and return the API key object if valid.
 
-                Args:
-                    value: The value for an API key.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            value: The value for an API key.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ApiKeyValidationResponse
+        Returns:
+            ApiKeyValidationResponse
 
-                Raises:
-                    AuthenticationError: If the API key is invalid (401).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "value": value,
@@ -63,15 +63,15 @@ class ApiKeys:
 
         Permanently deletes an API key. This action cannot be undone. Once deleted, any requests using this API key will fail authentication.
 
-                Args:
-                    id: The unique ID of the API key.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the API key.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -93,22 +93,22 @@ class ApiKeys:
 
         Get a list of all API keys for an organization.
 
-                Args:
-                    organization_id: Unique identifier of the Organization.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: Unique identifier of the Organization.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[ApiKey]
+        Returns:
+            SyncPage[ApiKey]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -140,21 +140,21 @@ class ApiKeys:
 
         Create a new API key for an organization.
 
-                Args:
-                    organization_id: Unique identifier of the Organization.
-                    name: The name for the API key.
-                    permissions: The permission slugs to assign to the API key.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: Unique identifier of the Organization.
+            name: The name for the API key.
+            permissions: The permission slugs to assign to the API key.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ApiKeyWithValue
+        Returns:
+            ApiKeyWithValue
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -189,18 +189,18 @@ class AsyncApiKeys:
 
         Validate an API key value and return the API key object if valid.
 
-                Args:
-                    value: The value for an API key.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            value: The value for an API key.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ApiKeyValidationResponse
+        Returns:
+            ApiKeyValidationResponse
 
-                Raises:
-                    AuthenticationError: If the API key is invalid (401).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "value": value,
@@ -223,15 +223,15 @@ class AsyncApiKeys:
 
         Permanently deletes an API key. This action cannot be undone. Once deleted, any requests using this API key will fail authentication.
 
-                Args:
-                    id: The unique ID of the API key.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the API key.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -253,22 +253,22 @@ class AsyncApiKeys:
 
         Get a list of all API keys for an organization.
 
-                Args:
-                    organization_id: Unique identifier of the Organization.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: Unique identifier of the Organization.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[ApiKey]
+        Returns:
+            AsyncPage[ApiKey]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -300,21 +300,21 @@ class AsyncApiKeys:
 
         Create a new API key for an organization.
 
-                Args:
-                    organization_id: Unique identifier of the Organization.
-                    name: The name for the API key.
-                    permissions: The permission slugs to assign to the API key.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: Unique identifier of the Organization.
+            name: The name for the API key.
+            permissions: The permission slugs to assign to the API key.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ApiKeyWithValue
+        Returns:
+            ApiKeyWithValue
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v

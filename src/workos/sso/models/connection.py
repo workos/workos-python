@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from .connection_domain import ConnectionDomain
 from .connection_option import ConnectionOption
@@ -68,29 +69,31 @@ class Connection:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing Connection: {e!s}"
-            ) from e
+            _raise_deserialize_error("Connection", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
-        result["connection_type"] = self.connection_type
+        result["connection_type"] = (
+            self.connection_type.value
+            if isinstance(self.connection_type, Enum)
+            else self.connection_type
+        )
         result["name"] = self.name
-        result["state"] = self.state
+        result["state"] = (
+            self.state.value if isinstance(self.state, Enum) else self.state
+        )
         result["domains"] = [item.to_dict() for item in self.domains]
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         if self.status is not None:
-            result["status"] = self.status
+            result["status"] = (
+                self.status.value if isinstance(self.status, Enum) else self.status
+            )
         if self.options is not None:
             result["options"] = self.options.to_dict()
         return result

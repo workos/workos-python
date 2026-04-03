@@ -36,26 +36,26 @@ class SSO:
 
         Get a list of all of your existing connections matching the criteria specified.
 
-                Args:
-                    connection_type: Filter Connections by their type.
-                    domain: Filter Connections by their associated domain.
-                    organization_id: Filter Connections by their associated organization.
-                    search: Searchable text to match against Connection names.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            connection_type: Filter Connections by their type.
+            domain: Filter Connections by their associated domain.
+            organization_id: Filter Connections by their associated organization.
+            search: Searchable text to match against Connection names.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[Connection]
+        Returns:
+            SyncPage[Connection]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -91,19 +91,19 @@ class SSO:
 
         Get the details of an existing connection.
 
-                Args:
-                    id: Unique identifier for the Connection.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Connection
+        Returns:
+            Connection
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -122,16 +122,16 @@ class SSO:
 
         Permanently deletes an existing connection. It cannot be undone.
 
-                Args:
-                    id: Unique identifier for the Connection.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -159,7 +159,7 @@ class SSO:
     ) -> str:
         """Initiate SSO
 
-        Initiates the single sign-on flow.
+                Initiates the single sign-on flow.
 
                 Args:
                     provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
@@ -224,18 +224,18 @@ class SSO:
 
         Before redirecting to this endpoint, you need to generate a short-lived logout token using the [Logout Authorize](https://workos.com/docs/reference/sso/logout/authorize) endpoint.
 
-                Args:
-                    token: The logout token returned from the [Logout Authorize](https://workos.com/docs/reference/sso/logout/authorize) endpoint.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            token: The logout token returned from the [Logout Authorize](https://workos.com/docs/reference/sso/logout/authorize) endpoint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    str
+        Returns:
+            str
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -256,19 +256,19 @@ class SSO:
 
         You should call this endpoint from your server to generate a logout token which is required for the [Logout Redirect](https://workos.com/docs/reference/sso/logout) endpoint.
 
-                Args:
-                    profile_id: The unique ID of the profile to log out.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            profile_id: The unique ID of the profile to log out.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SSOLogoutAuthorizeResponse
+        Returns:
+            SSOLogoutAuthorizeResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "profile_id": profile_id,
@@ -291,18 +291,18 @@ class SSO:
 
         Exchange an access token for a user's [Profile](https://workos.com/docs/reference/sso/profile). Because this profile is returned in the [Get a Profile and Token endpoint](https://workos.com/docs/reference/sso/profile/get-profile-and-token) your application usually does not need to call this endpoint. It is available for any authentication flows that require an additional endpoint to retrieve a user's profile.
 
-                Args:
-                    access_token: The bearer token for authentication.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            access_token: The bearer token for authentication.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Profile
+        Returns:
+            Profile
 
-                Raises:
-                    AuthenticationError: If the API key is invalid (401).
-                    NotFoundError: If the resource is not found (404).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         request_options = request_options or {}
         request_options = {
@@ -332,23 +332,23 @@ class SSO:
 
         Get an access token along with the user [Profile](https://workos.com/docs/reference/sso/profile) using the code passed to your [Redirect URI](https://workos.com/docs/reference/sso/get-authorization-url/redirect-uri).
 
-                Args:
-                    client_id: The client ID of the WorkOS environment.
-                    client_secret: The client secret of the WorkOS environment.
-                    code: The authorization code received from the authorization callback.
-                    grant_type: The grant type for the token request.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            client_id: The client ID of the WorkOS environment.
+            client_secret: The client secret of the WorkOS environment.
+            code: The authorization code received from the authorization callback.
+            grant_type: The grant type for the token request.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SSOTokenResponse
+        Returns:
+            SSOTokenResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "client_id": client_id,
@@ -462,26 +462,26 @@ class AsyncSSO:
 
         Get a list of all of your existing connections matching the criteria specified.
 
-                Args:
-                    connection_type: Filter Connections by their type.
-                    domain: Filter Connections by their associated domain.
-                    organization_id: Filter Connections by their associated organization.
-                    search: Searchable text to match against Connection names.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            connection_type: Filter Connections by their type.
+            domain: Filter Connections by their associated domain.
+            organization_id: Filter Connections by their associated organization.
+            search: Searchable text to match against Connection names.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[Connection]
+        Returns:
+            AsyncPage[Connection]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -517,19 +517,19 @@ class AsyncSSO:
 
         Get the details of an existing connection.
 
-                Args:
-                    id: Unique identifier for the Connection.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Connection
+        Returns:
+            Connection
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -548,16 +548,16 @@ class AsyncSSO:
 
         Permanently deletes an existing connection. It cannot be undone.
 
-                Args:
-                    id: Unique identifier for the Connection.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Connection.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -585,7 +585,7 @@ class AsyncSSO:
     ) -> str:
         """Initiate SSO
 
-        Initiates the single sign-on flow.
+                Initiates the single sign-on flow.
 
                 Args:
                     provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
@@ -650,18 +650,18 @@ class AsyncSSO:
 
         Before redirecting to this endpoint, you need to generate a short-lived logout token using the [Logout Authorize](https://workos.com/docs/reference/sso/logout/authorize) endpoint.
 
-                Args:
-                    token: The logout token returned from the [Logout Authorize](https://workos.com/docs/reference/sso/logout/authorize) endpoint.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            token: The logout token returned from the [Logout Authorize](https://workos.com/docs/reference/sso/logout/authorize) endpoint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    str
+        Returns:
+            str
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -682,19 +682,19 @@ class AsyncSSO:
 
         You should call this endpoint from your server to generate a logout token which is required for the [Logout Redirect](https://workos.com/docs/reference/sso/logout) endpoint.
 
-                Args:
-                    profile_id: The unique ID of the profile to log out.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            profile_id: The unique ID of the profile to log out.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SSOLogoutAuthorizeResponse
+        Returns:
+            SSOLogoutAuthorizeResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "profile_id": profile_id,
@@ -717,18 +717,18 @@ class AsyncSSO:
 
         Exchange an access token for a user's [Profile](https://workos.com/docs/reference/sso/profile). Because this profile is returned in the [Get a Profile and Token endpoint](https://workos.com/docs/reference/sso/profile/get-profile-and-token) your application usually does not need to call this endpoint. It is available for any authentication flows that require an additional endpoint to retrieve a user's profile.
 
-                Args:
-                    access_token: The bearer token for authentication.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            access_token: The bearer token for authentication.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Profile
+        Returns:
+            Profile
 
-                Raises:
-                    AuthenticationError: If the API key is invalid (401).
-                    NotFoundError: If the resource is not found (404).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         request_options = request_options or {}
         request_options = {
@@ -758,23 +758,23 @@ class AsyncSSO:
 
         Get an access token along with the user [Profile](https://workos.com/docs/reference/sso/profile) using the code passed to your [Redirect URI](https://workos.com/docs/reference/sso/get-authorization-url/redirect-uri).
 
-                Args:
-                    client_id: The client ID of the WorkOS environment.
-                    client_secret: The client secret of the WorkOS environment.
-                    code: The authorization code received from the authorization callback.
-                    grant_type: The grant type for the token request.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            client_id: The client ID of the WorkOS environment.
+            client_secret: The client secret of the WorkOS environment.
+            code: The authorization code received from the authorization callback.
+            grant_type: The grant type for the token request.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SSOTokenResponse
+        Returns:
+            SSOTokenResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "client_id": client_id,

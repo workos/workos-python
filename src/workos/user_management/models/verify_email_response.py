@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from .user import User
 
@@ -25,9 +25,7 @@ class VerifyEmailResponse:
                 user=User.from_dict(cast(Dict[str, Any], data["user"])),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing VerifyEmailResponse: {e!s}"
-            ) from e
+            _raise_deserialize_error("VerifyEmailResponse", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

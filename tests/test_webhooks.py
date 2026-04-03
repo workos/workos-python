@@ -10,9 +10,11 @@ from workos.webhooks.models import WebhookEndpointJson, WebhooksOrder
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -127,6 +129,32 @@ class TestWebhooks:
         finally:
             workos.close()
 
+    def test_create_webhook_endpoints_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.webhooks.create_webhook_endpoints(
+                    endpoint_url="test_endpoint_url", events=[]
+                )
+        finally:
+            workos.close()
+
+    def test_create_webhook_endpoints_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                workos.webhooks.create_webhook_endpoints(
+                    endpoint_url="test_endpoint_url", events=[]
+                )
+        finally:
+            workos.close()
+
 
 @pytest.mark.asyncio
 class TestAsyncWebhooks:
@@ -227,5 +255,31 @@ class TestAsyncWebhooks:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
                 await workos.webhooks.list_webhook_endpoints()
+        finally:
+            await workos.close()
+
+    async def test_create_webhook_endpoints_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.webhooks.create_webhook_endpoints(
+                    endpoint_url="test_endpoint_url", events=[]
+                )
+        finally:
+            await workos.close()
+
+    async def test_create_webhook_endpoints_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                await workos.webhooks.create_webhook_endpoints(
+                    endpoint_url="test_endpoint_url", events=[]
+                )
         finally:
             await workos.close()

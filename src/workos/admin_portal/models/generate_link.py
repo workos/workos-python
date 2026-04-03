@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from .intent_options import IntentOptions
 from workos.common.models import GenerateLinkIntent
@@ -50,9 +51,7 @@ class GenerateLink:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing GenerateLink: {e!s}"
-            ) from e
+            _raise_deserialize_error("GenerateLink", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -63,7 +62,9 @@ class GenerateLink:
         if self.success_url is not None:
             result["success_url"] = self.success_url
         if self.intent is not None:
-            result["intent"] = self.intent
+            result["intent"] = (
+                self.intent.value if isinstance(self.intent, Enum) else self.intent
+            )
         if self.intent_options is not None:
             result["intent_options"] = self.intent_options.to_dict()
         return result

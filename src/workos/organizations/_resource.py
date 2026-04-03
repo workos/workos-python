@@ -34,23 +34,23 @@ class Organizations:
 
         Get a list of all of your existing organizations matching the criteria specified.
 
-                Args:
-                    domains: The domains of an Organization. Any Organization with a matching domain will be returned.
-                    search: Searchable text for an Organization. Matches against the organization name.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            domains: The domains of an Organization. Any Organization with a matching domain will be returned.
+            search: Searchable text for an Organization. Matches against the organization name.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[Organization]
+        Returns:
+            SyncPage[Organization]
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -87,25 +87,25 @@ class Organizations:
 
         Creates a new organization in the current environment.
 
-                Args:
-                    name: The name of the organization.
-                    allow_profiles_outside_organization: Whether the organization allows profiles from outside the organization to sign in.
-                    domains: The domains associated with the organization. Deprecated in favor of `domain_data`.
-                    domain_data: The domains associated with the organization, including verification state.
-                    metadata: Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization.
-                    external_id: An external identifier for the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            name: The name of the organization.
+            allow_profiles_outside_organization: Whether the organization allows profiles from outside the organization to sign in.
+            domains: The domains associated with the organization. Deprecated in favor of `domain_data`.
+            domain_data: The domains associated with the organization, including verification state.
+            metadata: Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization.
+            external_id: An external identifier for the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Organization
+        Returns:
+            Organization
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -139,18 +139,18 @@ class Organizations:
 
         Get the details of an existing organization by an [external identifier](https://workos.com/docs/authkit/metadata/external-identifiers).
 
-                Args:
-                    external_id: The external ID of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            external_id: The external ID of the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Organization
+        Returns:
+            Organization
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -169,18 +169,18 @@ class Organizations:
 
         Get the details of an existing organization.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Organization
+        Returns:
+            Organization
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -206,29 +206,29 @@ class Organizations:
 
         Updates an organization in the current environment.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    name: The name of the organization.
-                    allow_profiles_outside_organization: Whether the organization allows profiles from outside the organization to sign in.
-                    domains: The domains associated with the organization. Deprecated in favor of `domain_data`.
-                    domain_data: The domains associated with the organization, including verification state.
-                    stripe_customer_id: The Stripe customer ID associated with the organization.
-                    metadata: Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization.
-                    external_id: An external identifier for the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            name: The name of the organization.
+            allow_profiles_outside_organization: Whether the organization allows profiles from outside the organization to sign in.
+            domains: The domains associated with the organization. Deprecated in favor of `domain_data`.
+            domain_data: The domains associated with the organization, including verification state.
+            stripe_customer_id: The Stripe customer ID associated with the organization.
+            metadata: Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization.
+            external_id: An external identifier for the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Organization
+        Returns:
+            Organization
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -263,15 +263,15 @@ class Organizations:
 
         Permanently deletes an organization in the current environment. It cannot be undone.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -289,18 +289,18 @@ class Organizations:
 
         Get the unified view of audit log trail and stream configuration for an organization.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogConfiguration
+        Returns:
+            AuditLogConfiguration
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -331,23 +331,23 @@ class AsyncOrganizations:
 
         Get a list of all of your existing organizations matching the criteria specified.
 
-                Args:
-                    domains: The domains of an Organization. Any Organization with a matching domain will be returned.
-                    search: Searchable text for an Organization. Matches against the organization name.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            domains: The domains of an Organization. Any Organization with a matching domain will be returned.
+            search: Searchable text for an Organization. Matches against the organization name.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[Organization]
+        Returns:
+            AsyncPage[Organization]
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -384,25 +384,25 @@ class AsyncOrganizations:
 
         Creates a new organization in the current environment.
 
-                Args:
-                    name: The name of the organization.
-                    allow_profiles_outside_organization: Whether the organization allows profiles from outside the organization to sign in.
-                    domains: The domains associated with the organization. Deprecated in favor of `domain_data`.
-                    domain_data: The domains associated with the organization, including verification state.
-                    metadata: Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization.
-                    external_id: An external identifier for the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            name: The name of the organization.
+            allow_profiles_outside_organization: Whether the organization allows profiles from outside the organization to sign in.
+            domains: The domains associated with the organization. Deprecated in favor of `domain_data`.
+            domain_data: The domains associated with the organization, including verification state.
+            metadata: Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization.
+            external_id: An external identifier for the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Organization
+        Returns:
+            Organization
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -436,18 +436,18 @@ class AsyncOrganizations:
 
         Get the details of an existing organization by an [external identifier](https://workos.com/docs/authkit/metadata/external-identifiers).
 
-                Args:
-                    external_id: The external ID of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            external_id: The external ID of the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Organization
+        Returns:
+            Organization
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -466,18 +466,18 @@ class AsyncOrganizations:
 
         Get the details of an existing organization.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Organization
+        Returns:
+            Organization
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -503,29 +503,29 @@ class AsyncOrganizations:
 
         Updates an organization in the current environment.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    name: The name of the organization.
-                    allow_profiles_outside_organization: Whether the organization allows profiles from outside the organization to sign in.
-                    domains: The domains associated with the organization. Deprecated in favor of `domain_data`.
-                    domain_data: The domains associated with the organization, including verification state.
-                    stripe_customer_id: The Stripe customer ID associated with the organization.
-                    metadata: Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization.
-                    external_id: An external identifier for the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            name: The name of the organization.
+            allow_profiles_outside_organization: Whether the organization allows profiles from outside the organization to sign in.
+            domains: The domains associated with the organization. Deprecated in favor of `domain_data`.
+            domain_data: The domains associated with the organization, including verification state.
+            stripe_customer_id: The Stripe customer ID associated with the organization.
+            metadata: Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization.
+            external_id: An external identifier for the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Organization
+        Returns:
+            Organization
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -560,15 +560,15 @@ class AsyncOrganizations:
 
         Permanently deletes an organization in the current environment. It cannot be undone.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -586,18 +586,18 @@ class AsyncOrganizations:
 
         Get the unified view of audit log trail and stream configuration for an organization.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogConfiguration
+        Returns:
+            AuditLogConfiguration
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",

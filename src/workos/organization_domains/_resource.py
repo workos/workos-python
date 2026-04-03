@@ -28,19 +28,19 @@ class OrganizationDomains:
 
         Creates a new Organization Domain.
 
-                Args:
-                    domain: The domain to add to the organization.
-                    organization_id: The ID of the organization to add the domain to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            domain: The domain to add to the organization.
+            organization_id: The ID of the organization to add the domain to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    OrganizationDomain
+        Returns:
+            OrganizationDomain
 
-                Raises:
-                    ConflictError: If a conflict occurs (409).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "domain": domain,
@@ -64,18 +64,18 @@ class OrganizationDomains:
 
         Get the details of an existing organization domain.
 
-                Args:
-                    id: Unique identifier of the organization domain.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the organization domain.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    OrganizationDomainStandAlone
+        Returns:
+            OrganizationDomainStandAlone
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -94,15 +94,15 @@ class OrganizationDomains:
 
         Permanently deletes an organization domain. It cannot be undone.
 
-                Args:
-                    id: Unique identifier of the organization domain.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the organization domain.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -120,18 +120,18 @@ class OrganizationDomains:
 
         Initiates verification process for an Organization Domain.
 
-                Args:
-                    id: Unique identifier of the organization domain.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the organization domain.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    OrganizationDomainStandAlone
+        Returns:
+            OrganizationDomainStandAlone
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="post",
@@ -158,19 +158,19 @@ class AsyncOrganizationDomains:
 
         Creates a new Organization Domain.
 
-                Args:
-                    domain: The domain to add to the organization.
-                    organization_id: The ID of the organization to add the domain to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            domain: The domain to add to the organization.
+            organization_id: The ID of the organization to add the domain to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    OrganizationDomain
+        Returns:
+            OrganizationDomain
 
-                Raises:
-                    ConflictError: If a conflict occurs (409).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "domain": domain,
@@ -194,18 +194,18 @@ class AsyncOrganizationDomains:
 
         Get the details of an existing organization domain.
 
-                Args:
-                    id: Unique identifier of the organization domain.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the organization domain.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    OrganizationDomainStandAlone
+        Returns:
+            OrganizationDomainStandAlone
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -224,15 +224,15 @@ class AsyncOrganizationDomains:
 
         Permanently deletes an organization domain. It cannot be undone.
 
-                Args:
-                    id: Unique identifier of the organization domain.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the organization domain.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -250,18 +250,18 @@ class AsyncOrganizationDomains:
 
         Initiates verification process for an Organization Domain.
 
-                Args:
-                    id: Unique identifier of the organization domain.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the organization domain.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    OrganizationDomainStandAlone
+        Returns:
+            OrganizationDomainStandAlone
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="post",

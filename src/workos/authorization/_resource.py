@@ -43,24 +43,24 @@ class Authorization:
 
         Check if an organization membership has a specific permission on a resource. Supports identification by resource_id OR by resource_external_id + resource_type_slug.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership to check.
-                    permission_slug: The slug of the permission to check.
-                    resource_id: The ID of the resource.
-                    resource_external_id: The external ID of the resource.
-                    resource_type_slug: The slug of the resource type.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership to check.
+            permission_slug: The slug of the permission to check.
+            resource_id: The ID of the resource.
+            resource_external_id: The external ID of the resource.
+            resource_type_slug: The slug of the resource type.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationCheck
+        Returns:
+            AuthorizationCheck
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -100,29 +100,29 @@ class Authorization:
 
         You must provide either `parent_resource_id` or both `parent_resource_external_id` and `parent_resource_type_slug` to identify the parent resource.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership.
-                    permission_slug: The permission slug to filter by. Only child resources where the organization membership has this permission are returned.
-                    parent_resource_id: The WorkOS ID of the parent resource. Provide this or both `parent_resource_external_id` and `parent_resource_type_slug`, but not both.
-                    parent_resource_type_slug: The slug of the parent resource type. Must be provided together with `parent_resource_external_id`.
-                    parent_resource_external_id: The application-specific external identifier of the parent resource. Must be provided together with `parent_resource_type_slug`.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            permission_slug: The permission slug to filter by. Only child resources where the organization membership has this permission are returned.
+            parent_resource_id: The WorkOS ID of the parent resource. Provide this or both `parent_resource_external_id` and `parent_resource_type_slug`, but not both.
+            parent_resource_type_slug: The slug of the parent resource type. Must be provided together with `parent_resource_external_id`.
+            parent_resource_external_id: The application-specific external identifier of the parent resource. Must be provided together with `parent_resource_type_slug`.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[AuthorizationResource]
+        Returns:
+            SyncPage[AuthorizationResource]
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -160,23 +160,23 @@ class Authorization:
 
         List all role assignments for an organization membership. This returns all roles that have been assigned to the user on resources, including organization-level and sub-resource roles.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[RoleAssignment]
+        Returns:
+            SyncPage[RoleAssignment]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -210,24 +210,24 @@ class Authorization:
 
         Assign a role to an organization membership on a specific resource.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership.
-                    role_slug: The slug of the role to assign.
-                    resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
-                    resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
-                    resource_type_slug: The resource type slug. Required with `resource_external_id`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            role_slug: The slug of the role to assign.
+            resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
+            resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
+            resource_type_slug: The resource type slug. Required with `resource_external_id`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    RoleAssignment
+        Returns:
+            RoleAssignment
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -261,21 +261,21 @@ class Authorization:
 
         Remove a role assignment by role slug and resource.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership.
-                    role_slug: The slug of the role to remove.
-                    resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
-                    resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
-                    resource_type_slug: The resource type slug. Required with `resource_external_id`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            role_slug: The slug of the role to remove.
+            resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
+            resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
+            resource_type_slug: The resource type slug. Required with `resource_external_id`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -305,17 +305,17 @@ class Authorization:
 
         Remove a role assignment using its ID.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership.
-                    role_assignment_id: The ID of the role assignment to remove.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            role_assignment_id: The ID of the role assignment to remove.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -333,19 +333,19 @@ class Authorization:
 
         Get a list of all roles that apply to an organization. This includes both environment roles and organization-specific roles, returned in priority order.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ListModel
+        Returns:
+            ListModel
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -367,25 +367,25 @@ class Authorization:
 
         Create a new custom organization role. When slug is omitted, it is auto-generated from the role name.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix.
-                    name: A descriptive name for the role.
-                    description: An optional description of the role's purpose.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix.
+            name: A descriptive name for the role.
+            description: An optional description of the role's purpose.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -415,20 +415,20 @@ class Authorization:
 
         Retrieve a role that applies to an organization by its slug. This can return either an environment role or an organization-specific role.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -450,24 +450,24 @@ class Authorization:
 
         Update an existing custom organization role. Only the fields provided in the request body will be updated.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    name: A descriptive name for the role.
-                    description: An optional description of the role's purpose.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            name: A descriptive name for the role.
+            description: An optional description of the role's purpose.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -496,19 +496,19 @@ class Authorization:
 
         Delete an existing custom organization role.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -528,23 +528,23 @@ class Authorization:
 
         Add a single permission to an organization role. If the permission is already assigned to the role, this operation has no effect.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    body_slug: The slug of the permission to add to the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            body_slug: The slug of the permission to add to the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "slug": body_slug,
@@ -569,22 +569,22 @@ class Authorization:
 
         Replace all permissions on a role with the provided list.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    permissions: The permission slugs to assign to the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            permissions: The permission slugs to assign to the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "permissions": permissions,
@@ -609,18 +609,18 @@ class Authorization:
 
         Remove a single permission from an organization role by its slug.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    permission_slug: The slug of the permission to remove.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            permission_slug: The slug of the permission to remove.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -640,21 +640,21 @@ class Authorization:
 
         Retrieve the details of an authorization resource by its external ID, organization, and resource type. This is useful when you only have the external ID from your system and need to fetch the full resource details.
 
-                Args:
-                    organization_id: The ID of the organization that owns the resource.
-                    resource_type_slug: The slug of the resource type.
-                    external_id: An identifier you provide to reference the resource in your system.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization that owns the resource.
+            resource_type_slug: The slug of the resource type.
+            external_id: An identifier you provide to reference the resource in your system.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationResource
+        Returns:
+            AuthorizationResource
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -680,29 +680,29 @@ class Authorization:
 
         Update an existing authorization resource using its external ID.
 
-                Args:
-                    organization_id: The ID of the organization that owns the resource.
-                    resource_type_slug: The slug of the resource type.
-                    external_id: An identifier you provide to reference the resource in your system.
-                    name: A display name for the resource.
-                    description: An optional description of the resource.
-                    parent_resource_id: The ID of the parent resource.
-                    parent_resource_external_id: The external ID of the parent resource.
-                    parent_resource_type_slug: The resource type slug of the parent resource.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization that owns the resource.
+            resource_type_slug: The slug of the resource type.
+            external_id: An identifier you provide to reference the resource in your system.
+            name: A display name for the resource.
+            description: An optional description of the resource.
+            parent_resource_id: The ID of the parent resource.
+            parent_resource_external_id: The external ID of the parent resource.
+            parent_resource_type_slug: The resource type slug of the parent resource.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationResource
+        Returns:
+            AuthorizationResource
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -736,21 +736,21 @@ class Authorization:
 
         Delete an authorization resource by organization, resource type, and external ID. This also deletes all descendant resources.
 
-                Args:
-                    organization_id: The ID of the organization that owns the resource.
-                    resource_type_slug: The slug of the resource type.
-                    external_id: An identifier you provide to reference the resource in your system.
-                    cascade_delete: If true, deletes all descendant resources and role assignments. If not set and the resource has children or assignments, the request will fail.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization that owns the resource.
+            resource_type_slug: The slug of the resource type.
+            external_id: An identifier you provide to reference the resource in your system.
+            cascade_delete: If true, deletes all descendant resources and role assignments. If not set and the resource has children or assignments, the request will fail.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params: Dict[str, Any] = {
             k: v
@@ -784,29 +784,29 @@ class Authorization:
 
         Returns all organization memberships that have a specific permission on a resource, using the resource's external ID. This is useful for answering "Who can access this resource?" when you only have the external ID.
 
-                Args:
-                    organization_id: The ID of the organization that owns the resource.
-                    resource_type_slug: The slug of the resource type this resource belongs to.
-                    external_id: An identifier you provide to reference the resource in your system.
-                    permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
-                    assignment: Filter by assignment type. Use "direct" for direct assignments only, or "indirect" to include inherited assignments.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization that owns the resource.
+            resource_type_slug: The slug of the resource type this resource belongs to.
+            external_id: An identifier you provide to reference the resource in your system.
+            permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
+            assignment: Filter by assignment type. Use "direct" for direct assignments only, or "indirect" to include inherited assignments.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[UserOrganizationMembershipBaseListData]
+        Returns:
+            SyncPage[UserOrganizationMembershipBaseListData]
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -849,28 +849,28 @@ class Authorization:
 
         Get a paginated list of authorization resources.
 
-                Args:
-                    organization_id: Filter resources by organization ID.
-                    resource_type_slug: Filter resources by resource type slug.
-                    parent_resource_id: Filter resources by parent resource ID.
-                    parent_resource_type_slug: Filter resources by parent resource type slug.
-                    parent_external_id: Filter resources by parent external ID.
-                    search: Search resources by name.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: Filter resources by organization ID.
+            resource_type_slug: Filter resources by resource type slug.
+            parent_resource_id: Filter resources by parent resource ID.
+            parent_resource_type_slug: Filter resources by parent resource type slug.
+            parent_external_id: Filter resources by parent external ID.
+            search: Search resources by name.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[AuthorizationResource]
+        Returns:
+            SyncPage[AuthorizationResource]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -913,29 +913,29 @@ class Authorization:
 
         Create a new authorization resource.
 
-                Args:
-                    external_id: An external identifier for the resource.
-                    name: A display name for the resource.
-                    description: An optional description of the resource.
-                    resource_type_slug: The slug of the resource type.
-                    organization_id: The ID of the organization this resource belongs to.
-                    parent_resource_id: The ID of the parent resource.
-                    parent_resource_external_id: The external ID of the parent resource.
-                    parent_resource_type_slug: The resource type slug of the parent resource.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            external_id: An external identifier for the resource.
+            name: A display name for the resource.
+            description: An optional description of the resource.
+            resource_type_slug: The slug of the resource type.
+            organization_id: The ID of the organization this resource belongs to.
+            parent_resource_id: The ID of the parent resource.
+            parent_resource_external_id: The external ID of the parent resource.
+            parent_resource_type_slug: The resource type slug of the parent resource.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationResource
+        Returns:
+            AuthorizationResource
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -969,20 +969,20 @@ class Authorization:
 
         Retrieve the details of an authorization resource by its ID.
 
-                Args:
-                    resource_id: The ID of the authorization resource.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            resource_id: The ID of the authorization resource.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationResource
+        Returns:
+            AuthorizationResource
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1006,27 +1006,27 @@ class Authorization:
 
         Update an existing authorization resource.
 
-                Args:
-                    resource_id: The ID of the authorization resource.
-                    name: A display name for the resource.
-                    description: An optional description of the resource.
-                    parent_resource_id: The ID of the parent resource.
-                    parent_resource_external_id: The external ID of the parent resource.
-                    parent_resource_type_slug: The resource type slug of the parent resource.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            resource_id: The ID of the authorization resource.
+            name: A display name for the resource.
+            description: An optional description of the resource.
+            parent_resource_id: The ID of the parent resource.
+            parent_resource_external_id: The external ID of the parent resource.
+            parent_resource_type_slug: The resource type slug of the parent resource.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationResource
+        Returns:
+            AuthorizationResource
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1058,19 +1058,19 @@ class Authorization:
 
         Delete an authorization resource and all its descendants.
 
-                Args:
-                    resource_id: The ID of the authorization resource.
-                    cascade_delete: If true, deletes all descendant resources and role assignments. If not set and the resource has children or assignments, the request will fail.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            resource_id: The ID of the authorization resource.
+            cascade_delete: If true, deletes all descendant resources and role assignments. If not set and the resource has children or assignments, the request will fail.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params: Dict[str, Any] = {
             k: v
@@ -1102,27 +1102,27 @@ class Authorization:
 
         Returns all organization memberships that have a specific permission on a resource instance. This is useful for answering "Who can access this resource?".
 
-                Args:
-                    resource_id: The ID of the authorization resource.
-                    permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
-                    assignment: Filter by assignment type. Use `direct` for direct assignments only, or `indirect` to include inherited assignments.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            resource_id: The ID of the authorization resource.
+            permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
+            assignment: Filter by assignment type. Use `direct` for direct assignments only, or `indirect` to include inherited assignments.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[UserOrganizationMembershipBaseListData]
+        Returns:
+            SyncPage[UserOrganizationMembershipBaseListData]
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -1155,14 +1155,14 @@ class Authorization:
 
         List all environment roles in priority order.
 
-                Returns:
-                    RoleList
+        Returns:
+            RoleList
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1184,25 +1184,25 @@ class Authorization:
 
         Create a new environment role.
 
-                Args:
-                    slug: A unique slug for the role.
-                    name: A descriptive name for the role.
-                    description: An optional description of the role.
-                    resource_type_slug: The slug of the resource type the role is scoped to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: A unique slug for the role.
+            name: A descriptive name for the role.
+            description: An optional description of the role.
+            resource_type_slug: The slug of the resource type the role is scoped to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1232,19 +1232,19 @@ class Authorization:
 
         Get an environment role by its slug.
 
-                Args:
-                    slug: The slug of the environment role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: The slug of the environment role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1265,23 +1265,23 @@ class Authorization:
 
         Update an existing environment role.
 
-                Args:
-                    slug: The slug of the environment role.
-                    name: A descriptive name for the role.
-                    description: An optional description of the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: The slug of the environment role.
+            name: A descriptive name for the role.
+            description: An optional description of the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1310,22 +1310,22 @@ class Authorization:
 
         Add a single permission to an environment role. If the permission is already assigned to the role, this operation has no effect.
 
-                Args:
-                    slug: The slug of the environment role.
-                    body_slug: The slug of the permission to add to the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: The slug of the environment role.
+            body_slug: The slug of the permission to add to the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "slug": body_slug,
@@ -1349,22 +1349,22 @@ class Authorization:
 
         Replace all permissions on an environment role with the provided list.
 
-                Args:
-                    slug: The slug of the environment role.
-                    permissions: The permission slugs to assign to the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: The slug of the environment role.
+            permissions: The permission slugs to assign to the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "permissions": permissions,
@@ -1390,21 +1390,21 @@ class Authorization:
 
         Get a list of all permissions in your WorkOS environment.
 
-                Args:
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[AuthorizationPermission]
+        Returns:
+            SyncPage[AuthorizationPermission]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -1437,24 +1437,24 @@ class Authorization:
 
         Create a new permission in your WorkOS environment. The permission can then be assigned to environment roles and organization roles.
 
-                Args:
-                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
-                    name: A descriptive name for the Permission.
-                    description: An optional description of the Permission.
-                    resource_type_slug: The slug of the resource type this permission is scoped to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+            name: A descriptive name for the Permission.
+            description: An optional description of the Permission.
+            resource_type_slug: The slug of the resource type this permission is scoped to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Permission
+        Returns:
+            Permission
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1484,18 +1484,18 @@ class Authorization:
 
         Retrieve a permission by its unique slug.
 
-                Args:
-                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationPermission
+        Returns:
+            AuthorizationPermission
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1516,22 +1516,22 @@ class Authorization:
 
         Update an existing permission. Only the fields provided in the request body will be updated.
 
-                Args:
-                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
-                    name: A descriptive name for the Permission.
-                    description: An optional description of the Permission.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+            name: A descriptive name for the Permission.
+            description: An optional description of the Permission.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationPermission
+        Returns:
+            AuthorizationPermission
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1559,16 +1559,16 @@ class Authorization:
 
         Delete an existing permission. System permissions cannot be deleted.
 
-                Args:
-                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -1597,24 +1597,24 @@ class AsyncAuthorization:
 
         Check if an organization membership has a specific permission on a resource. Supports identification by resource_id OR by resource_external_id + resource_type_slug.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership to check.
-                    permission_slug: The slug of the permission to check.
-                    resource_id: The ID of the resource.
-                    resource_external_id: The external ID of the resource.
-                    resource_type_slug: The slug of the resource type.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership to check.
+            permission_slug: The slug of the permission to check.
+            resource_id: The ID of the resource.
+            resource_external_id: The external ID of the resource.
+            resource_type_slug: The slug of the resource type.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationCheck
+        Returns:
+            AuthorizationCheck
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1654,29 +1654,29 @@ class AsyncAuthorization:
 
         You must provide either `parent_resource_id` or both `parent_resource_external_id` and `parent_resource_type_slug` to identify the parent resource.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership.
-                    permission_slug: The permission slug to filter by. Only child resources where the organization membership has this permission are returned.
-                    parent_resource_id: The WorkOS ID of the parent resource. Provide this or both `parent_resource_external_id` and `parent_resource_type_slug`, but not both.
-                    parent_resource_type_slug: The slug of the parent resource type. Must be provided together with `parent_resource_external_id`.
-                    parent_resource_external_id: The application-specific external identifier of the parent resource. Must be provided together with `parent_resource_type_slug`.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            permission_slug: The permission slug to filter by. Only child resources where the organization membership has this permission are returned.
+            parent_resource_id: The WorkOS ID of the parent resource. Provide this or both `parent_resource_external_id` and `parent_resource_type_slug`, but not both.
+            parent_resource_type_slug: The slug of the parent resource type. Must be provided together with `parent_resource_external_id`.
+            parent_resource_external_id: The application-specific external identifier of the parent resource. Must be provided together with `parent_resource_type_slug`.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[AuthorizationResource]
+        Returns:
+            AsyncPage[AuthorizationResource]
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -1714,23 +1714,23 @@ class AsyncAuthorization:
 
         List all role assignments for an organization membership. This returns all roles that have been assigned to the user on resources, including organization-level and sub-resource roles.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[RoleAssignment]
+        Returns:
+            AsyncPage[RoleAssignment]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -1764,24 +1764,24 @@ class AsyncAuthorization:
 
         Assign a role to an organization membership on a specific resource.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership.
-                    role_slug: The slug of the role to assign.
-                    resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
-                    resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
-                    resource_type_slug: The resource type slug. Required with `resource_external_id`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            role_slug: The slug of the role to assign.
+            resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
+            resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
+            resource_type_slug: The resource type slug. Required with `resource_external_id`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    RoleAssignment
+        Returns:
+            RoleAssignment
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1815,21 +1815,21 @@ class AsyncAuthorization:
 
         Remove a role assignment by role slug and resource.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership.
-                    role_slug: The slug of the role to remove.
-                    resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
-                    resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
-                    resource_type_slug: The resource type slug. Required with `resource_external_id`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            role_slug: The slug of the role to remove.
+            resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
+            resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
+            resource_type_slug: The resource type slug. Required with `resource_external_id`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1859,17 +1859,17 @@ class AsyncAuthorization:
 
         Remove a role assignment using its ID.
 
-                Args:
-                    organization_membership_id: The ID of the organization membership.
-                    role_assignment_id: The ID of the role assignment to remove.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            role_assignment_id: The ID of the role assignment to remove.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -1887,19 +1887,19 @@ class AsyncAuthorization:
 
         Get a list of all roles that apply to an organization. This includes both environment roles and organization-specific roles, returned in priority order.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ListModel
+        Returns:
+            ListModel
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -1921,25 +1921,25 @@ class AsyncAuthorization:
 
         Create a new custom organization role. When slug is omitted, it is auto-generated from the role name.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix.
-                    name: A descriptive name for the role.
-                    description: An optional description of the role's purpose.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix.
+            name: A descriptive name for the role.
+            description: An optional description of the role's purpose.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1969,20 +1969,20 @@ class AsyncAuthorization:
 
         Retrieve a role that applies to an organization by its slug. This can return either an environment role or an organization-specific role.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2004,24 +2004,24 @@ class AsyncAuthorization:
 
         Update an existing custom organization role. Only the fields provided in the request body will be updated.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    name: A descriptive name for the role.
-                    description: An optional description of the role's purpose.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            name: A descriptive name for the role.
+            description: An optional description of the role's purpose.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2050,19 +2050,19 @@ class AsyncAuthorization:
 
         Delete an existing custom organization role.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -2082,23 +2082,23 @@ class AsyncAuthorization:
 
         Add a single permission to an organization role. If the permission is already assigned to the role, this operation has no effect.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    body_slug: The slug of the permission to add to the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            body_slug: The slug of the permission to add to the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "slug": body_slug,
@@ -2123,22 +2123,22 @@ class AsyncAuthorization:
 
         Replace all permissions on a role with the provided list.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    permissions: The permission slugs to assign to the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            permissions: The permission slugs to assign to the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "permissions": permissions,
@@ -2163,18 +2163,18 @@ class AsyncAuthorization:
 
         Remove a single permission from an organization role by its slug.
 
-                Args:
-                    organization_id: The ID of the organization.
-                    slug: The slug of the role.
-                    permission_slug: The slug of the permission to remove.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization.
+            slug: The slug of the role.
+            permission_slug: The slug of the permission to remove.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -2194,21 +2194,21 @@ class AsyncAuthorization:
 
         Retrieve the details of an authorization resource by its external ID, organization, and resource type. This is useful when you only have the external ID from your system and need to fetch the full resource details.
 
-                Args:
-                    organization_id: The ID of the organization that owns the resource.
-                    resource_type_slug: The slug of the resource type.
-                    external_id: An identifier you provide to reference the resource in your system.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization that owns the resource.
+            resource_type_slug: The slug of the resource type.
+            external_id: An identifier you provide to reference the resource in your system.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationResource
+        Returns:
+            AuthorizationResource
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2234,29 +2234,29 @@ class AsyncAuthorization:
 
         Update an existing authorization resource using its external ID.
 
-                Args:
-                    organization_id: The ID of the organization that owns the resource.
-                    resource_type_slug: The slug of the resource type.
-                    external_id: An identifier you provide to reference the resource in your system.
-                    name: A display name for the resource.
-                    description: An optional description of the resource.
-                    parent_resource_id: The ID of the parent resource.
-                    parent_resource_external_id: The external ID of the parent resource.
-                    parent_resource_type_slug: The resource type slug of the parent resource.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization that owns the resource.
+            resource_type_slug: The slug of the resource type.
+            external_id: An identifier you provide to reference the resource in your system.
+            name: A display name for the resource.
+            description: An optional description of the resource.
+            parent_resource_id: The ID of the parent resource.
+            parent_resource_external_id: The external ID of the parent resource.
+            parent_resource_type_slug: The resource type slug of the parent resource.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationResource
+        Returns:
+            AuthorizationResource
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2290,21 +2290,21 @@ class AsyncAuthorization:
 
         Delete an authorization resource by organization, resource type, and external ID. This also deletes all descendant resources.
 
-                Args:
-                    organization_id: The ID of the organization that owns the resource.
-                    resource_type_slug: The slug of the resource type.
-                    external_id: An identifier you provide to reference the resource in your system.
-                    cascade_delete: If true, deletes all descendant resources and role assignments. If not set and the resource has children or assignments, the request will fail.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization that owns the resource.
+            resource_type_slug: The slug of the resource type.
+            external_id: An identifier you provide to reference the resource in your system.
+            cascade_delete: If true, deletes all descendant resources and role assignments. If not set and the resource has children or assignments, the request will fail.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params: Dict[str, Any] = {
             k: v
@@ -2338,29 +2338,29 @@ class AsyncAuthorization:
 
         Returns all organization memberships that have a specific permission on a resource, using the resource's external ID. This is useful for answering "Who can access this resource?" when you only have the external ID.
 
-                Args:
-                    organization_id: The ID of the organization that owns the resource.
-                    resource_type_slug: The slug of the resource type this resource belongs to.
-                    external_id: An identifier you provide to reference the resource in your system.
-                    permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
-                    assignment: Filter by assignment type. Use "direct" for direct assignments only, or "indirect" to include inherited assignments.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization that owns the resource.
+            resource_type_slug: The slug of the resource type this resource belongs to.
+            external_id: An identifier you provide to reference the resource in your system.
+            permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
+            assignment: Filter by assignment type. Use "direct" for direct assignments only, or "indirect" to include inherited assignments.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[UserOrganizationMembershipBaseListData]
+        Returns:
+            AsyncPage[UserOrganizationMembershipBaseListData]
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2403,28 +2403,28 @@ class AsyncAuthorization:
 
         Get a paginated list of authorization resources.
 
-                Args:
-                    organization_id: Filter resources by organization ID.
-                    resource_type_slug: Filter resources by resource type slug.
-                    parent_resource_id: Filter resources by parent resource ID.
-                    parent_resource_type_slug: Filter resources by parent resource type slug.
-                    parent_external_id: Filter resources by parent external ID.
-                    search: Search resources by name.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: Filter resources by organization ID.
+            resource_type_slug: Filter resources by resource type slug.
+            parent_resource_id: Filter resources by parent resource ID.
+            parent_resource_type_slug: Filter resources by parent resource type slug.
+            parent_external_id: Filter resources by parent external ID.
+            search: Search resources by name.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[AuthorizationResource]
+        Returns:
+            AsyncPage[AuthorizationResource]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2467,29 +2467,29 @@ class AsyncAuthorization:
 
         Create a new authorization resource.
 
-                Args:
-                    external_id: An external identifier for the resource.
-                    name: A display name for the resource.
-                    description: An optional description of the resource.
-                    resource_type_slug: The slug of the resource type.
-                    organization_id: The ID of the organization this resource belongs to.
-                    parent_resource_id: The ID of the parent resource.
-                    parent_resource_external_id: The external ID of the parent resource.
-                    parent_resource_type_slug: The resource type slug of the parent resource.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            external_id: An external identifier for the resource.
+            name: A display name for the resource.
+            description: An optional description of the resource.
+            resource_type_slug: The slug of the resource type.
+            organization_id: The ID of the organization this resource belongs to.
+            parent_resource_id: The ID of the parent resource.
+            parent_resource_external_id: The external ID of the parent resource.
+            parent_resource_type_slug: The resource type slug of the parent resource.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationResource
+        Returns:
+            AuthorizationResource
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2523,20 +2523,20 @@ class AsyncAuthorization:
 
         Retrieve the details of an authorization resource by its ID.
 
-                Args:
-                    resource_id: The ID of the authorization resource.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            resource_id: The ID of the authorization resource.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationResource
+        Returns:
+            AuthorizationResource
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2560,27 +2560,27 @@ class AsyncAuthorization:
 
         Update an existing authorization resource.
 
-                Args:
-                    resource_id: The ID of the authorization resource.
-                    name: A display name for the resource.
-                    description: An optional description of the resource.
-                    parent_resource_id: The ID of the parent resource.
-                    parent_resource_external_id: The external ID of the parent resource.
-                    parent_resource_type_slug: The resource type slug of the parent resource.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            resource_id: The ID of the authorization resource.
+            name: A display name for the resource.
+            description: An optional description of the resource.
+            parent_resource_id: The ID of the parent resource.
+            parent_resource_external_id: The external ID of the parent resource.
+            parent_resource_type_slug: The resource type slug of the parent resource.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationResource
+        Returns:
+            AuthorizationResource
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2612,19 +2612,19 @@ class AsyncAuthorization:
 
         Delete an authorization resource and all its descendants.
 
-                Args:
-                    resource_id: The ID of the authorization resource.
-                    cascade_delete: If true, deletes all descendant resources and role assignments. If not set and the resource has children or assignments, the request will fail.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            resource_id: The ID of the authorization resource.
+            cascade_delete: If true, deletes all descendant resources and role assignments. If not set and the resource has children or assignments, the request will fail.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params: Dict[str, Any] = {
             k: v
@@ -2656,27 +2656,27 @@ class AsyncAuthorization:
 
         Returns all organization memberships that have a specific permission on a resource instance. This is useful for answering "Who can access this resource?".
 
-                Args:
-                    resource_id: The ID of the authorization resource.
-                    permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
-                    assignment: Filter by assignment type. Use `direct` for direct assignments only, or `indirect` to include inherited assignments.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            resource_id: The ID of the authorization resource.
+            permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
+            assignment: Filter by assignment type. Use `direct` for direct assignments only, or `indirect` to include inherited assignments.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[UserOrganizationMembershipBaseListData]
+        Returns:
+            AsyncPage[UserOrganizationMembershipBaseListData]
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2709,14 +2709,14 @@ class AsyncAuthorization:
 
         List all environment roles in priority order.
 
-                Returns:
-                    RoleList
+        Returns:
+            RoleList
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2738,25 +2738,25 @@ class AsyncAuthorization:
 
         Create a new environment role.
 
-                Args:
-                    slug: A unique slug for the role.
-                    name: A descriptive name for the role.
-                    description: An optional description of the role.
-                    resource_type_slug: The slug of the resource type the role is scoped to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: A unique slug for the role.
+            name: A descriptive name for the role.
+            description: An optional description of the role.
+            resource_type_slug: The slug of the resource type the role is scoped to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2786,19 +2786,19 @@ class AsyncAuthorization:
 
         Get an environment role by its slug.
 
-                Args:
-                    slug: The slug of the environment role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: The slug of the environment role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2819,23 +2819,23 @@ class AsyncAuthorization:
 
         Update an existing environment role.
 
-                Args:
-                    slug: The slug of the environment role.
-                    name: A descriptive name for the role.
-                    description: An optional description of the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: The slug of the environment role.
+            name: A descriptive name for the role.
+            description: An optional description of the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2864,22 +2864,22 @@ class AsyncAuthorization:
 
         Add a single permission to an environment role. If the permission is already assigned to the role, this operation has no effect.
 
-                Args:
-                    slug: The slug of the environment role.
-                    body_slug: The slug of the permission to add to the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: The slug of the environment role.
+            body_slug: The slug of the permission to add to the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "slug": body_slug,
@@ -2903,22 +2903,22 @@ class AsyncAuthorization:
 
         Replace all permissions on an environment role with the provided list.
 
-                Args:
-                    slug: The slug of the environment role.
-                    permissions: The permission slugs to assign to the role.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: The slug of the environment role.
+            permissions: The permission slugs to assign to the role.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Role
+        Returns:
+            Role
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "permissions": permissions,
@@ -2944,21 +2944,21 @@ class AsyncAuthorization:
 
         Get a list of all permissions in your WorkOS environment.
 
-                Args:
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[AuthorizationPermission]
+        Returns:
+            AsyncPage[AuthorizationPermission]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2991,24 +2991,24 @@ class AsyncAuthorization:
 
         Create a new permission in your WorkOS environment. The permission can then be assigned to environment roles and organization roles.
 
-                Args:
-                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
-                    name: A descriptive name for the Permission.
-                    description: An optional description of the Permission.
-                    resource_type_slug: The slug of the resource type this permission is scoped to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+            name: A descriptive name for the Permission.
+            description: An optional description of the Permission.
+            resource_type_slug: The slug of the resource type this permission is scoped to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Permission
+        Returns:
+            Permission
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -3038,18 +3038,18 @@ class AsyncAuthorization:
 
         Retrieve a permission by its unique slug.
 
-                Args:
-                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationPermission
+        Returns:
+            AuthorizationPermission
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -3070,22 +3070,22 @@ class AsyncAuthorization:
 
         Update an existing permission. Only the fields provided in the request body will be updated.
 
-                Args:
-                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
-                    name: A descriptive name for the Permission.
-                    description: An optional description of the Permission.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+            name: A descriptive name for the Permission.
+            description: An optional description of the Permission.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthorizationPermission
+        Returns:
+            AuthorizationPermission
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -3113,16 +3113,16 @@ class AsyncAuthorization:
 
         Delete an existing permission. System permissions cannot be deleted.
 
-                Args:
-                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",

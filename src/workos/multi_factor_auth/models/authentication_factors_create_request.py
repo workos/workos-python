@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 from workos.common.models import AuthenticationFactorsCreateRequestType
 
 
@@ -35,14 +36,12 @@ class AuthenticationFactorsCreateRequest:
                 user_id=data.get("user_id"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing AuthenticationFactorsCreateRequest: {e!s}"
-            ) from e
+            _raise_deserialize_error("AuthenticationFactorsCreateRequest", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["type"] = self.type
+        result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
         if self.phone_number is not None:
             result["phone_number"] = self.phone_number
         if self.totp_issuer is not None:

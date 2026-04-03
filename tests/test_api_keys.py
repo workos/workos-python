@@ -14,9 +14,11 @@ from workos.api_keys.models import (
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -131,6 +133,28 @@ class TestApiKeys:
         finally:
             workos.close()
 
+    def test_create_validations_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.api_keys.create_validations(value="test_value")
+        finally:
+            workos.close()
+
+    def test_create_validations_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                workos.api_keys.create_validations(value="test_value")
+        finally:
+            workos.close()
+
 
 @pytest.mark.asyncio
 class TestAsyncApiKeys:
@@ -235,6 +259,28 @@ class TestAsyncApiKeys:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
+                await workos.api_keys.create_validations(value="test_value")
+        finally:
+            await workos.close()
+
+    async def test_create_validations_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.api_keys.create_validations(value="test_value")
+        finally:
+            await workos.close()
+
+    async def test_create_validations_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
                 await workos.api_keys.create_validations(value="test_value")
         finally:
             await workos.close()

@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from workos.authorization.models import SlimRole
 from workos.common.models import OrganizationMembershipStatus
@@ -58,9 +59,7 @@ class OrganizationMembership:
                 custom_attributes=data.get("custom_attributes"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing OrganizationMembership: {e!s}"
-            ) from e
+            _raise_deserialize_error("OrganizationMembership", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -69,14 +68,12 @@ class OrganizationMembership:
         result["id"] = self.id
         result["user_id"] = self.user_id
         result["organization_id"] = self.organization_id
-        result["status"] = self.status
+        result["status"] = (
+            self.status.value if isinstance(self.status, Enum) else self.status
+        )
         result["directory_managed"] = self.directory_managed
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         result["role"] = self.role.to_dict()
         if self.organization_name is not None:
             result["organization_name"] = self.organization_name

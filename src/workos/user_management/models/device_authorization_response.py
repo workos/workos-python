@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -37,9 +37,7 @@ class DeviceAuthorizationResponse:
                 interval=data.get("interval"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing DeviceAuthorizationResponse: {e!s}"
-            ) from e
+            _raise_deserialize_error("DeviceAuthorizationResponse", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

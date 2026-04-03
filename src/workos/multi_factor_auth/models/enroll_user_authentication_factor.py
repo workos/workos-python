@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Literal, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -31,9 +31,7 @@ class EnrollUserAuthenticationFactor:
                 totp_secret=data.get("totp_secret"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing EnrollUserAuthenticationFactor: {e!s}"
-            ) from e
+            _raise_deserialize_error("EnrollUserAuthenticationFactor", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 from workos.common.models import ListDataType
 
 
@@ -52,9 +53,7 @@ class ListData:
                 updated_at=_parse_datetime(data["updated_at"]),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing ListData: {e!s}"
-            ) from e
+            _raise_deserialize_error("ListData", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -67,13 +66,9 @@ class ListData:
             result["description"] = self.description
         else:
             result["description"] = None
-        result["type"] = self.type
+        result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
         result["resource_type_slug"] = self.resource_type_slug
         result["permissions"] = self.permissions
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         return result

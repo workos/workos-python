@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 from workos.common.models import DataIntegrationsListResponseDataConnectedAccountState
 
 
@@ -54,9 +55,9 @@ class DataIntegrationsListResponseDataConnectedAccount:
                 userland_user_id=data.get("userlandUserId"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing DataIntegrationsListResponseDataConnectedAccount: {e!s}"
-            ) from e
+            _raise_deserialize_error(
+                "DataIntegrationsListResponseDataConnectedAccount", e
+            )
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -72,7 +73,9 @@ class DataIntegrationsListResponseDataConnectedAccount:
         else:
             result["organization_id"] = None
         result["scopes"] = self.scopes
-        result["state"] = self.state
+        result["state"] = (
+            self.state.value if isinstance(self.state, Enum) else self.state
+        )
         result["created_at"] = self.created_at
         result["updated_at"] = self.updated_at
         if self.userland_user_id is not None:

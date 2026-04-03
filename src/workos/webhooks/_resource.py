@@ -41,20 +41,20 @@ class Webhooks:
 
         Get a list of all of your existing webhook endpoints.
 
-                Args:
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[WebhookEndpointJson]
+        Returns:
+            SyncPage[WebhookEndpointJson]
 
-                Raises:
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -85,20 +85,20 @@ class Webhooks:
 
         Create a new webhook endpoint to receive event notifications.
 
-                Args:
-                    endpoint_url: The HTTPS URL where webhooks will be sent.
-                    events: The events that the Webhook Endpoint is subscribed to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            endpoint_url: The HTTPS URL where webhooks will be sent.
+            events: The events that the Webhook Endpoint is subscribed to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    WebhookEndpointJson
+        Returns:
+            WebhookEndpointJson
 
-                Raises:
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "endpoint_url": endpoint_url,
@@ -125,23 +125,23 @@ class Webhooks:
 
         Update the properties of an existing webhook endpoint.
 
-                Args:
-                    id: Unique identifier of the Webhook Endpoint.
-                    endpoint_url: The HTTPS URL where webhooks will be sent.
-                    status: Whether the Webhook Endpoint is enabled or disabled.
-                    events: The events that the Webhook Endpoint is subscribed to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Webhook Endpoint.
+            endpoint_url: The HTTPS URL where webhooks will be sent.
+            status: Whether the Webhook Endpoint is enabled or disabled.
+            events: The events that the Webhook Endpoint is subscribed to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    WebhookEndpointJson
+        Returns:
+            WebhookEndpointJson
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -170,15 +170,15 @@ class Webhooks:
 
         Delete an existing webhook endpoint.
 
-                Args:
-                    id: Unique identifier of the Webhook Endpoint.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Webhook Endpoint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -296,20 +296,20 @@ class AsyncWebhooks:
 
         Get a list of all of your existing webhook endpoints.
 
-                Args:
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[WebhookEndpointJson]
+        Returns:
+            AsyncPage[WebhookEndpointJson]
 
-                Raises:
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -340,20 +340,20 @@ class AsyncWebhooks:
 
         Create a new webhook endpoint to receive event notifications.
 
-                Args:
-                    endpoint_url: The HTTPS URL where webhooks will be sent.
-                    events: The events that the Webhook Endpoint is subscribed to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            endpoint_url: The HTTPS URL where webhooks will be sent.
+            events: The events that the Webhook Endpoint is subscribed to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    WebhookEndpointJson
+        Returns:
+            WebhookEndpointJson
 
-                Raises:
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "endpoint_url": endpoint_url,
@@ -380,23 +380,23 @@ class AsyncWebhooks:
 
         Update the properties of an existing webhook endpoint.
 
-                Args:
-                    id: Unique identifier of the Webhook Endpoint.
-                    endpoint_url: The HTTPS URL where webhooks will be sent.
-                    status: Whether the Webhook Endpoint is enabled or disabled.
-                    events: The events that the Webhook Endpoint is subscribed to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Webhook Endpoint.
+            endpoint_url: The HTTPS URL where webhooks will be sent.
+            status: Whether the Webhook Endpoint is enabled or disabled.
+            events: The events that the Webhook Endpoint is subscribed to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    WebhookEndpointJson
+        Returns:
+            WebhookEndpointJson
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -425,15 +425,15 @@ class AsyncWebhooks:
 
         Delete an existing webhook endpoint.
 
-                Args:
-                    id: Unique identifier of the Webhook Endpoint.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Webhook Endpoint.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",

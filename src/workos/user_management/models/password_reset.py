@@ -5,8 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, Literal
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 
 @dataclass(slots=True)
@@ -45,9 +45,7 @@ class PasswordReset:
                 password_reset_url=data["password_reset_url"],
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing PasswordReset: {e!s}"
-            ) from e
+            _raise_deserialize_error("PasswordReset", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -56,12 +54,8 @@ class PasswordReset:
         result["id"] = self.id
         result["user_id"] = self.user_id
         result["email"] = self.email
-        result["expires_at"] = self.expires_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["expires_at"] = _format_datetime(self.expires_at)
+        result["created_at"] = _format_datetime(self.created_at)
         result["password_reset_token"] = self.password_reset_token
         result["password_reset_url"] = self.password_reset_url
         return result

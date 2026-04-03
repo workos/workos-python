@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import Any, Dict, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 from workos.common.models import InvitationState
 
 
@@ -68,9 +69,7 @@ class Invitation:
                 accept_invitation_url=data["accept_invitation_url"],
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing Invitation: {e!s}"
-            ) from e
+            _raise_deserialize_error("Invitation", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -78,22 +77,18 @@ class Invitation:
         result["object"] = self.object
         result["id"] = self.id
         result["email"] = self.email
-        result["state"] = self.state
+        result["state"] = (
+            self.state.value if isinstance(self.state, Enum) else self.state
+        )
         if self.accepted_at is not None:
-            result["accepted_at"] = self.accepted_at.isoformat(
-                timespec="milliseconds"
-            ).replace("+00:00", "Z")
+            result["accepted_at"] = _format_datetime(self.accepted_at)
         else:
             result["accepted_at"] = None
         if self.revoked_at is not None:
-            result["revoked_at"] = self.revoked_at.isoformat(
-                timespec="milliseconds"
-            ).replace("+00:00", "Z")
+            result["revoked_at"] = _format_datetime(self.revoked_at)
         else:
             result["revoked_at"] = None
-        result["expires_at"] = self.expires_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["expires_at"] = _format_datetime(self.expires_at)
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         else:
@@ -106,12 +101,8 @@ class Invitation:
             result["accepted_user_id"] = self.accepted_user_id
         else:
             result["accepted_user_id"] = None
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         result["token"] = self.token
         result["accept_invitation_url"] = self.accept_invitation_url
         return result

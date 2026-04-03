@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from workos.organization_domains.models import OrganizationDomain
 
@@ -59,9 +59,7 @@ class Organization:
                 ),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing Organization: {e!s}"
-            ) from e
+            _raise_deserialize_error("Organization", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -75,12 +73,8 @@ class Organization:
             result["external_id"] = self.external_id
         else:
             result["external_id"] = None
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         if self.stripe_customer_id is not None:
             result["stripe_customer_id"] = self.stripe_customer_id
         if self.allow_profiles_outside_organization is not None:

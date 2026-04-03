@@ -9,9 +9,11 @@ from tests.generated_helpers import load_fixture
 from workos.widgets.models import WidgetSessionTokenResponse
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -74,6 +76,28 @@ class TestWidgets:
         finally:
             workos.close()
 
+    def test_create_token_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.widgets.create_token(organization_id="test_organization_id")
+        finally:
+            workos.close()
+
+    def test_create_token_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                workos.widgets.create_token(organization_id="test_organization_id")
+        finally:
+            workos.close()
+
 
 @pytest.mark.asyncio
 class TestAsyncWidgets:
@@ -132,6 +156,32 @@ class TestAsyncWidgets:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
+                await workos.widgets.create_token(
+                    organization_id="test_organization_id"
+                )
+        finally:
+            await workos.close()
+
+    async def test_create_token_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.widgets.create_token(
+                    organization_id="test_organization_id"
+                )
+        finally:
+            await workos.close()
+
+    async def test_create_token_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
                 await workos.widgets.create_token(
                     organization_id="test_organization_id"
                 )

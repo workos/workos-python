@@ -6,12 +6,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union, cas
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
-    from ..session import (
-        AsyncSession,
-        AuthenticateWithSessionCookieErrorResponse,
-        AuthenticateWithSessionCookieSuccessResponse,
-        Session,
-    )
 
 from .._types import RequestOptions, enum_value
 from .models import (
@@ -62,6 +56,12 @@ from workos.common.models import (
     UpdateUserPasswordHashType,
 )
 from .._pagination import AsyncPage, SyncPage
+from ..session import (
+    AsyncSession,
+    AuthenticateWithSessionCookieErrorResponse,
+    AuthenticateWithSessionCookieSuccessResponse,
+    Session,
+)
 
 
 class UserManagement:
@@ -80,18 +80,18 @@ class UserManagement:
 
         Returns the JSON Web Key Set (JWKS) containing the public keys used for verifying access tokens.
 
-                Args:
-                    client_id: Identifies the application making the request to the WorkOS server. You can obtain your client ID from the [API Keys](https://dashboard.workos.com/api-keys) page in the dashboard.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            client_id: Identifies the application making the request to the WorkOS server. You can obtain your client ID from the [API Keys](https://dashboard.workos.com/api-keys) page in the dashboard.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    JwksResponse
+        Returns:
+            JwksResponse
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -120,21 +120,21 @@ class UserManagement:
 
         Authenticate a user with a specified [authentication method](https://workos.com/docs/reference/authkit/authentication).
 
-                Args:
-                    body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest, UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest, or a plain dict.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest, UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest, or a plain dict.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthenticateResponse
+        Returns:
+            AuthenticateResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return self._client.request(
@@ -166,14 +166,13 @@ class UserManagement:
         if invitation_token is not None:
             body["invitation_token"] = invitation_token
 
-        response = self._client.request(
+        return self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     def authenticate_with_code(
         self,
@@ -192,14 +191,13 @@ class UserManagement:
         if code is not None:
             body["code"] = code
 
-        response = self._client.request(
+        return self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     def authenticate_with_refresh_token(
         self,
@@ -220,14 +218,13 @@ class UserManagement:
         if organization_id is not None:
             body["organization_id"] = organization_id
 
-        response = self._client.request(
+        return self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     def authenticate_with_magic_auth(
         self,
@@ -252,14 +249,13 @@ class UserManagement:
         if invitation_token is not None:
             body["invitation_token"] = invitation_token
 
-        response = self._client.request(
+        return self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     def authenticate_with_email_verification(
         self,
@@ -281,14 +277,13 @@ class UserManagement:
         if pending_authentication_token is not None:
             body["pending_authentication_token"] = pending_authentication_token
 
-        response = self._client.request(
+        return self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     def authenticate_with_totp(
         self,
@@ -313,14 +308,13 @@ class UserManagement:
         if authentication_challenge_id is not None:
             body["authentication_challenge_id"] = authentication_challenge_id
 
-        response = self._client.request(
+        return self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     def authenticate_with_organization_selection(
         self,
@@ -342,14 +336,13 @@ class UserManagement:
         if organization_id is not None:
             body["organization_id"] = organization_id
 
-        response = self._client.request(
+        return self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     def authenticate_with_device_code(
         self,
@@ -366,14 +359,13 @@ class UserManagement:
         if device_code is not None:
             body["device_code"] = device_code
 
-        response = self._client.request(
+        return self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     def get_authorization_url(
         self,
@@ -402,32 +394,32 @@ class UserManagement:
 
         Generates an OAuth 2.0 authorization URL to authenticate a user with AuthKit or SSO.
 
-                Args:
-                    code_challenge_method: The only valid PKCE code challenge method is `"S256"`. Required when specifying a `code_challenge`.
-                    code_challenge: Code challenge derived from the code verifier used for the PKCE flow.
-                    domain_hint: A domain hint for SSO connection lookup.
-                    connection_id: The ID of an SSO connection to use for authentication.
-                    provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider.
-                    provider_scopes: Additional OAuth scopes to request from the identity provider.
-                    invitation_token: A token representing a user invitation to redeem during authentication.
-                    screen_hint: Used to specify which screen to display when the provider is `authkit`.
-                    login_hint: A hint to the authorization server about the login identifier the user might use.
-                    provider: The OAuth provider to authenticate with (e.g., GoogleOAuth, MicrosoftOAuth, GitHubOAuth).
-                    prompt: Controls the authentication flow behavior for the user.
-                    state: An opaque value used to maintain state between the request and the callback.
-                    organization_id: The ID of the organization to authenticate the user against.
-                    response_type: The response type of the application.
-                    redirect_uri: The callback URI where the authorization code will be sent after authentication.
-                    client_id: The unique identifier of the WorkOS environment client.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            code_challenge_method: The only valid PKCE code challenge method is `"S256"`. Required when specifying a `code_challenge`.
+            code_challenge: Code challenge derived from the code verifier used for the PKCE flow.
+            domain_hint: A domain hint for SSO connection lookup.
+            connection_id: The ID of an SSO connection to use for authentication.
+            provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider.
+            provider_scopes: Additional OAuth scopes to request from the identity provider.
+            invitation_token: A token representing a user invitation to redeem during authentication.
+            screen_hint: Used to specify which screen to display when the provider is `authkit`.
+            login_hint: A hint to the authorization server about the login identifier the user might use.
+            provider: The OAuth provider to authenticate with (e.g., GoogleOAuth, MicrosoftOAuth, GitHubOAuth).
+            prompt: Controls the authentication flow behavior for the user.
+            state: An opaque value used to maintain state between the request and the callback.
+            organization_id: The ID of the organization to authenticate the user against.
+            response_type: The response type of the application.
+            redirect_uri: The callback URI where the authorization code will be sent after authentication.
+            client_id: The unique identifier of the WorkOS environment client.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    str
+        Returns:
+            str
 
-                Raises:
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -465,19 +457,19 @@ class UserManagement:
 
         Initiates the CLI Auth flow by requesting a device code and verification URLs. This endpoint implements the OAuth 2.0 Device Authorization Flow ([RFC 8628](https://datatracker.ietf.org/doc/html/rfc8628)) and is designed for command-line applications or other devices with limited input capabilities.
 
-                Args:
-                    client_id: The WorkOS client ID for your application.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            client_id: The WorkOS client ID for your application.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    DeviceAuthorizationResponse
+        Returns:
+            DeviceAuthorizationResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "client_id": client_id,
@@ -501,19 +493,19 @@ class UserManagement:
 
         Logout a user from the current [session](https://workos.com/docs/reference/authkit/session).
 
-                Args:
-                    session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
-                    return_to: The URL to redirect the user to after session revocation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
+            return_to: The URL to redirect the user to after session revocation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    str
+        Returns:
+            str
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -536,16 +528,16 @@ class UserManagement:
 
         Revoke a [user session](https://workos.com/docs/reference/authkit/session).
 
-                Args:
-                    session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
-                    return_to: The URL to redirect the user to after session revocation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
+            return_to: The URL to redirect the user to after session revocation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -572,19 +564,19 @@ class UserManagement:
 
         Creates a new CORS origin for the current environment. CORS origins allow browser-based applications to make requests to the WorkOS API.
 
-                Args:
-                    origin: The origin URL to allow for CORS requests.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            origin: The origin URL to allow for CORS requests.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    CORSOriginResponse
+        Returns:
+            CORSOriginResponse
 
-                Raises:
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "origin": origin,
@@ -607,18 +599,18 @@ class UserManagement:
 
         Get the details of an existing email verification code that can be used to send an email to a user for verification.
 
-                Args:
-                    id: The ID of the email verification code.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The ID of the email verification code.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    EmailVerification
+        Returns:
+            EmailVerification
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -637,20 +629,20 @@ class UserManagement:
 
         Creates a one-time token that can be used to reset a user's password.
 
-                Args:
-                    email: The email address of the user requesting a password reset.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            email: The email address of the user requesting a password reset.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    PasswordReset
+        Returns:
+            PasswordReset
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "email": email,
@@ -674,22 +666,22 @@ class UserManagement:
 
         Sets a new password using the `token` query parameter from the link that the user received. Successfully resetting the password will verify a user's email, if it hasn't been verified yet.
 
-                Args:
-                    token: The password reset token.
-                    new_password: The new password to set for the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            token: The password reset token.
+            new_password: The new password to set for the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ResetPasswordResponse
+        Returns:
+            ResetPasswordResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "token": token,
@@ -713,18 +705,18 @@ class UserManagement:
 
         Get the details of an existing password reset token that can be used to reset a user's password.
 
-                Args:
-                    id: The ID of the password reset token.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The ID of the password reset token.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    PasswordReset
+        Returns:
+            PasswordReset
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -749,24 +741,24 @@ class UserManagement:
 
         Get a list of all of your existing users matching the criteria specified.
 
-                Args:
-                    organization: Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
-                    organization_id: Filter users by the organization they are a member of.
-                    email: Filter users by their email address.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization: Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
+            organization_id: Filter users by the organization they are a member of.
+            email: Filter users by their email address.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[User]
+        Returns:
+            SyncPage[User]
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -807,28 +799,28 @@ class UserManagement:
 
         Create a new user in the current environment.
 
-                Args:
-                    email: The email address of the user.
-                    password: The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`.
-                    password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
-                    password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
-                    first_name: The first name of the user.
-                    last_name: The last name of the user.
-                    email_verified: Whether the user's email has been verified.
-                    metadata: Object containing metadata key/value pairs associated with the user.
-                    external_id: The external ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            email: The email address of the user.
+            password: The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`.
+            password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
+            password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
+            first_name: The first name of the user.
+            last_name: The last name of the user.
+            email_verified: Whether the user's email has been verified.
+            metadata: Object containing metadata key/value pairs associated with the user.
+            external_id: The external ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    User
+        Returns:
+            User
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -865,18 +857,18 @@ class UserManagement:
 
         Get the details of an existing user by an [external identifier](https://workos.com/docs/authkit/metadata/external-identifiers).
 
-                Args:
-                    external_id: The external ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            external_id: The external ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    User
+        Returns:
+            User
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -895,18 +887,18 @@ class UserManagement:
 
         Get the details of an existing user.
 
-                Args:
-                    id: The unique ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    User
+        Returns:
+            User
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -935,29 +927,29 @@ class UserManagement:
 
         Updates properties of a user. The omitted properties will be left unchanged.
 
-                Args:
-                    id: The unique ID of the user.
-                    email: The email address of the user.
-                    first_name: The first name of the user.
-                    last_name: The last name of the user.
-                    email_verified: Whether the user's email has been verified.
-                    password: The password to set for the user.
-                    password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
-                    password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
-                    metadata: Object containing metadata key/value pairs associated with the user.
-                    external_id: The external ID of the user.
-                    locale: The user's preferred locale.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            email: The email address of the user.
+            first_name: The first name of the user.
+            last_name: The last name of the user.
+            email_verified: Whether the user's email has been verified.
+            password: The password to set for the user.
+            password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
+            password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
+            metadata: Object containing metadata key/value pairs associated with the user.
+            external_id: The external ID of the user.
+            locale: The user's preferred locale.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    User
+        Returns:
+            User
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -995,15 +987,15 @@ class UserManagement:
 
         Permanently deletes a user in the current environment. It cannot be undone.
 
-                Args:
-                    id: The unique ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -1022,22 +1014,22 @@ class UserManagement:
 
         Confirms an email change using the one-time code received by the user.
 
-                Args:
-                    id: The unique ID of the user.
-                    code: The one-time code used to confirm the email change.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            code: The one-time code used to confirm the email change.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    EmailChangeConfirmation
+        Returns:
+            EmailChangeConfirmation
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "code": code,
@@ -1061,21 +1053,21 @@ class UserManagement:
 
         Sends an email that contains a one-time code used to change a user's email address.
 
-                Args:
-                    id: The unique ID of the user.
-                    new_email: The new email address to change to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            new_email: The new email address to change to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    EmailChange
+        Returns:
+            EmailChange
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "new_email": new_email,
@@ -1099,21 +1091,21 @@ class UserManagement:
 
         Verifies an email address using the one-time code received by the user.
 
-                Args:
-                    id: The ID of the user.
-                    code: The one-time email verification code.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The ID of the user.
+            code: The one-time email verification code.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    VerifyEmailResponse
+        Returns:
+            VerifyEmailResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "code": code,
@@ -1136,19 +1128,19 @@ class UserManagement:
 
         Sends an email that contains a one-time code used to verify a user’s email address.
 
-                Args:
-                    id: The ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SendVerificationEmailResponse
+        Returns:
+            SendVerificationEmailResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="post",
@@ -1167,18 +1159,18 @@ class UserManagement:
 
         Get a list of identities associated with the user. A user can have multiple associated identities after going through [identity linking](https://workos.com/docs/authkit/identity-linking). Currently only OAuth identities are supported. More provider types may be added in the future.
 
-                Args:
-                    id: The unique ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    List[UserIdentitiesGetItem]
+        Returns:
+            List[UserIdentitiesGetItem]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         raw = self._client.request(
             method="get",
@@ -1204,23 +1196,23 @@ class UserManagement:
 
         Get a list of all active sessions for a specific user.
 
-                Args:
-                    id: The ID of the user.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The ID of the user.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[UserSessionsListItem]
+        Returns:
+            SyncPage[UserSessionsListItem]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -1255,23 +1247,23 @@ class UserManagement:
 
         Get a list of all of invitations matching the criteria specified.
 
-                Args:
-                    organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
-                    email: The email address of the recipient.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
+            email: The email address of the recipient.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[UserInvite]
+        Returns:
+            SyncPage[UserInvite]
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -1308,25 +1300,25 @@ class UserManagement:
 
         Sends an invitation email to the recipient.
 
-                Args:
-                    email: The email address of the recipient.
-                    organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
-                    role_slug: The [role](https://workos.com/docs/authkit/roles) that the recipient will receive when they join the organization in the invitation.
-                    expires_in_days: How many days the invitations will be valid for. Must be between 1 and 30 days. Defaults to 7 days if not specified.
-                    inviter_user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user) who invites the recipient. The invitation email will mention the name of this user.
-                    locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            email: The email address of the recipient.
+            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
+            role_slug: The [role](https://workos.com/docs/authkit/roles) that the recipient will receive when they join the organization in the invitation.
+            expires_in_days: How many days the invitations will be valid for. Must be between 1 and 30 days. Defaults to 7 days if not specified.
+            inviter_user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user) who invites the recipient. The invitation email will mention the name of this user.
+            locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserInvite
+        Returns:
+            UserInvite
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1358,18 +1350,18 @@ class UserManagement:
 
         Retrieve an existing invitation using the token.
 
-                Args:
-                    token: The token used to accept the invitation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            token: The token used to accept the invitation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserInvite
+        Returns:
+            UserInvite
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1388,18 +1380,18 @@ class UserManagement:
 
         Get the details of an existing invitation.
 
-                Args:
-                    id: The unique ID of the invitation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the invitation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserInvite
+        Returns:
+            UserInvite
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1418,19 +1410,19 @@ class UserManagement:
 
         Accepts an invitation and, if linked to an organization, activates the user's membership in that organization.
 
-                Args:
-                    id: The unique ID of the invitation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the invitation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Invitation
+        Returns:
+            Invitation
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="post",
@@ -1450,21 +1442,21 @@ class UserManagement:
 
         Resends an invitation email to the recipient. The invitation must be in a pending state.
 
-                Args:
-                    id: The unique ID of the invitation.
-                    locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the invitation.
+            locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserInvite
+        Returns:
+            UserInvite
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1491,18 +1483,18 @@ class UserManagement:
 
         Revokes an existing invitation.
 
-                Args:
-                    id: The unique ID of the invitation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the invitation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Invitation
+        Returns:
+            Invitation
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="post",
@@ -1521,18 +1513,18 @@ class UserManagement:
 
         Update the JWT template for the current environment.
 
-                Args:
-                    content: The JWT template content as a Liquid template string.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            content: The JWT template content as a Liquid template string.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    JWTTemplateResponse
+        Returns:
+            JWTTemplateResponse
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "content": content,
@@ -1556,20 +1548,20 @@ class UserManagement:
 
         Creates a one-time authentication code that can be sent to the user's email address. The code expires in 10 minutes. To verify the code, [authenticate the user with Magic Auth](https://workos.com/docs/reference/authkit/authentication/magic-auth).
 
-                Args:
-                    email: The email address to send the magic code to.
-                    invitation_token: The invitation token to associate with this magic code.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            email: The email address to send the magic code to.
+            invitation_token: The invitation token to associate with this magic code.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    MagicAuth
+        Returns:
+            MagicAuth
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1597,18 +1589,18 @@ class UserManagement:
 
         Get the details of an existing [Magic Auth](https://workos.com/docs/reference/authkit/magic-auth) code that can be used to send an email to a user for authentication.
 
-                Args:
-                    id: The unique ID of the Magic Auth code.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the Magic Auth code.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    MagicAuth
+        Returns:
+            MagicAuth
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1635,26 +1627,26 @@ class UserManagement:
 
         Get a list of all organization memberships matching the criteria specified. At least one of `user_id` or `organization_id` must be provided. By default only active memberships are returned. Use the `statuses` parameter to filter by other statuses.
 
-                Args:
-                    organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
-                    statuses: Filter by the status of the organization membership. Array including any of `active`, `inactive`, or `pending`.
-                    user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
+            statuses: Filter by the status of the organization membership. Array including any of `active`, `inactive`, or `pending`.
+            user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[UserOrganizationMembership]
+        Returns:
+            SyncPage[UserOrganizationMembership]
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -1692,23 +1684,23 @@ class UserManagement:
 
         Calling this API with an organization and user that match an `inactive` organization membership will activate the membership with the specified role(s).
 
-                Args:
-                    user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
-                    organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
-                    role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
-                    role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
+            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
+            role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
+            role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    OrganizationMembership
+        Returns:
+            OrganizationMembership
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1738,18 +1730,18 @@ class UserManagement:
 
         Get the details of an existing organization membership.
 
-                Args:
-                    id: The unique ID of the organization membership.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the organization membership.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserOrganizationMembership
+        Returns:
+            UserOrganizationMembership
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1770,21 +1762,21 @@ class UserManagement:
 
         Update the details of an existing organization membership.
 
-                Args:
-                    id: The unique ID of the organization membership.
-                    role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
-                    role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the organization membership.
+            role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
+            role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserOrganizationMembership
+        Returns:
+            UserOrganizationMembership
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1812,15 +1804,15 @@ class UserManagement:
 
         Permanently deletes an existing organization membership. It cannot be undone.
 
-                Args:
-                    id: The unique ID of the organization membership.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the organization membership.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -1843,20 +1835,20 @@ class UserManagement:
 
         See the [membership management documentation](https://workos.com/docs/authkit/users-organizations/organizations/membership-management) for additional details.
 
-                Args:
-                    id: The unique ID of the organization membership.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the organization membership.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    OrganizationMembership
+        Returns:
+            OrganizationMembership
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="put",
@@ -1880,20 +1872,20 @@ class UserManagement:
 
         See the [membership management documentation](https://workos.com/docs/authkit/users-organizations/organizations/membership-management) for additional details.
 
-                Args:
-                    id: The unique ID of the organization membership.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the organization membership.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserOrganizationMembership
+        Returns:
+            UserOrganizationMembership
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="put",
@@ -1912,19 +1904,19 @@ class UserManagement:
 
         Creates a new redirect URI for an environment.
 
-                Args:
-                    uri: The redirect URI to create.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            uri: The redirect URI to create.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    RedirectUri
+        Returns:
+            RedirectUri
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "uri": uri,
@@ -1953,23 +1945,23 @@ class UserManagement:
 
         Get a list of all Connect applications that the user has authorized.
 
-                Args:
-                    user_id: The ID of the user.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            user_id: The ID of the user.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[AuthorizedConnectApplicationListData]
+        Returns:
+            SyncPage[AuthorizedConnectApplicationListData]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2000,16 +1992,16 @@ class UserManagement:
 
         Delete an existing Authorized Connect Application.
 
-                Args:
-                    application_id: The ID or client ID of the application.
-                    user_id: The ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            application_id: The ID or client ID of the application.
+            user_id: The ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -2153,18 +2145,18 @@ class AsyncUserManagement:
 
         Returns the JSON Web Key Set (JWKS) containing the public keys used for verifying access tokens.
 
-                Args:
-                    client_id: Identifies the application making the request to the WorkOS server. You can obtain your client ID from the [API Keys](https://dashboard.workos.com/api-keys) page in the dashboard.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            client_id: Identifies the application making the request to the WorkOS server. You can obtain your client ID from the [API Keys](https://dashboard.workos.com/api-keys) page in the dashboard.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    JwksResponse
+        Returns:
+            JwksResponse
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2193,21 +2185,21 @@ class AsyncUserManagement:
 
         Authenticate a user with a specified [authentication method](https://workos.com/docs/reference/authkit/authentication).
 
-                Args:
-                    body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest, UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest, or a plain dict.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest, UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest, or a plain dict.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuthenticateResponse
+        Returns:
+            AuthenticateResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return await self._client.request(
@@ -2239,14 +2231,13 @@ class AsyncUserManagement:
         if invitation_token is not None:
             body["invitation_token"] = invitation_token
 
-        response = await self._client.request(
+        return await self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     async def authenticate_with_code(
         self,
@@ -2265,14 +2256,13 @@ class AsyncUserManagement:
         if code is not None:
             body["code"] = code
 
-        response = await self._client.request(
+        return await self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     async def authenticate_with_refresh_token(
         self,
@@ -2293,14 +2283,13 @@ class AsyncUserManagement:
         if organization_id is not None:
             body["organization_id"] = organization_id
 
-        response = await self._client.request(
+        return await self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     async def authenticate_with_magic_auth(
         self,
@@ -2325,14 +2314,13 @@ class AsyncUserManagement:
         if invitation_token is not None:
             body["invitation_token"] = invitation_token
 
-        response = await self._client.request(
+        return await self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     async def authenticate_with_email_verification(
         self,
@@ -2354,14 +2342,13 @@ class AsyncUserManagement:
         if pending_authentication_token is not None:
             body["pending_authentication_token"] = pending_authentication_token
 
-        response = await self._client.request(
+        return await self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     async def authenticate_with_totp(
         self,
@@ -2386,14 +2373,13 @@ class AsyncUserManagement:
         if authentication_challenge_id is not None:
             body["authentication_challenge_id"] = authentication_challenge_id
 
-        response = await self._client.request(
+        return await self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     async def authenticate_with_organization_selection(
         self,
@@ -2415,14 +2401,13 @@ class AsyncUserManagement:
         if organization_id is not None:
             body["organization_id"] = organization_id
 
-        response = await self._client.request(
+        return await self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     async def authenticate_with_device_code(
         self,
@@ -2439,14 +2424,13 @@ class AsyncUserManagement:
         if device_code is not None:
             body["device_code"] = device_code
 
-        response = await self._client.request(
+        return await self._client.request(
             method="POST",
             path="user_management/authenticate",
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
         )
-        return cast(AuthenticateResponse, response)
 
     async def get_authorization_url(
         self,
@@ -2475,32 +2459,32 @@ class AsyncUserManagement:
 
         Generates an OAuth 2.0 authorization URL to authenticate a user with AuthKit or SSO.
 
-                Args:
-                    code_challenge_method: The only valid PKCE code challenge method is `"S256"`. Required when specifying a `code_challenge`.
-                    code_challenge: Code challenge derived from the code verifier used for the PKCE flow.
-                    domain_hint: A domain hint for SSO connection lookup.
-                    connection_id: The ID of an SSO connection to use for authentication.
-                    provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider.
-                    provider_scopes: Additional OAuth scopes to request from the identity provider.
-                    invitation_token: A token representing a user invitation to redeem during authentication.
-                    screen_hint: Used to specify which screen to display when the provider is `authkit`.
-                    login_hint: A hint to the authorization server about the login identifier the user might use.
-                    provider: The OAuth provider to authenticate with (e.g., GoogleOAuth, MicrosoftOAuth, GitHubOAuth).
-                    prompt: Controls the authentication flow behavior for the user.
-                    state: An opaque value used to maintain state between the request and the callback.
-                    organization_id: The ID of the organization to authenticate the user against.
-                    response_type: The response type of the application.
-                    redirect_uri: The callback URI where the authorization code will be sent after authentication.
-                    client_id: The unique identifier of the WorkOS environment client.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            code_challenge_method: The only valid PKCE code challenge method is `"S256"`. Required when specifying a `code_challenge`.
+            code_challenge: Code challenge derived from the code verifier used for the PKCE flow.
+            domain_hint: A domain hint for SSO connection lookup.
+            connection_id: The ID of an SSO connection to use for authentication.
+            provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider.
+            provider_scopes: Additional OAuth scopes to request from the identity provider.
+            invitation_token: A token representing a user invitation to redeem during authentication.
+            screen_hint: Used to specify which screen to display when the provider is `authkit`.
+            login_hint: A hint to the authorization server about the login identifier the user might use.
+            provider: The OAuth provider to authenticate with (e.g., GoogleOAuth, MicrosoftOAuth, GitHubOAuth).
+            prompt: Controls the authentication flow behavior for the user.
+            state: An opaque value used to maintain state between the request and the callback.
+            organization_id: The ID of the organization to authenticate the user against.
+            response_type: The response type of the application.
+            redirect_uri: The callback URI where the authorization code will be sent after authentication.
+            client_id: The unique identifier of the WorkOS environment client.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    str
+        Returns:
+            str
 
-                Raises:
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2538,19 +2522,19 @@ class AsyncUserManagement:
 
         Initiates the CLI Auth flow by requesting a device code and verification URLs. This endpoint implements the OAuth 2.0 Device Authorization Flow ([RFC 8628](https://datatracker.ietf.org/doc/html/rfc8628)) and is designed for command-line applications or other devices with limited input capabilities.
 
-                Args:
-                    client_id: The WorkOS client ID for your application.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            client_id: The WorkOS client ID for your application.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    DeviceAuthorizationResponse
+        Returns:
+            DeviceAuthorizationResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "client_id": client_id,
@@ -2574,19 +2558,19 @@ class AsyncUserManagement:
 
         Logout a user from the current [session](https://workos.com/docs/reference/authkit/session).
 
-                Args:
-                    session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
-                    return_to: The URL to redirect the user to after session revocation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
+            return_to: The URL to redirect the user to after session revocation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    str
+        Returns:
+            str
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2609,16 +2593,16 @@ class AsyncUserManagement:
 
         Revoke a [user session](https://workos.com/docs/reference/authkit/session).
 
-                Args:
-                    session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
-                    return_to: The URL to redirect the user to after session revocation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            session_id: The ID of the session to revoke. This can be extracted from the `sid` claim of the access token.
+            return_to: The URL to redirect the user to after session revocation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2645,19 +2629,19 @@ class AsyncUserManagement:
 
         Creates a new CORS origin for the current environment. CORS origins allow browser-based applications to make requests to the WorkOS API.
 
-                Args:
-                    origin: The origin URL to allow for CORS requests.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            origin: The origin URL to allow for CORS requests.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    CORSOriginResponse
+        Returns:
+            CORSOriginResponse
 
-                Raises:
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "origin": origin,
@@ -2680,18 +2664,18 @@ class AsyncUserManagement:
 
         Get the details of an existing email verification code that can be used to send an email to a user for verification.
 
-                Args:
-                    id: The ID of the email verification code.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The ID of the email verification code.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    EmailVerification
+        Returns:
+            EmailVerification
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2710,20 +2694,20 @@ class AsyncUserManagement:
 
         Creates a one-time token that can be used to reset a user's password.
 
-                Args:
-                    email: The email address of the user requesting a password reset.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            email: The email address of the user requesting a password reset.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    PasswordReset
+        Returns:
+            PasswordReset
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "email": email,
@@ -2747,22 +2731,22 @@ class AsyncUserManagement:
 
         Sets a new password using the `token` query parameter from the link that the user received. Successfully resetting the password will verify a user's email, if it hasn't been verified yet.
 
-                Args:
-                    token: The password reset token.
-                    new_password: The new password to set for the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            token: The password reset token.
+            new_password: The new password to set for the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ResetPasswordResponse
+        Returns:
+            ResetPasswordResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "token": token,
@@ -2786,18 +2770,18 @@ class AsyncUserManagement:
 
         Get the details of an existing password reset token that can be used to reset a user's password.
 
-                Args:
-                    id: The ID of the password reset token.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The ID of the password reset token.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    PasswordReset
+        Returns:
+            PasswordReset
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2822,24 +2806,24 @@ class AsyncUserManagement:
 
         Get a list of all of your existing users matching the criteria specified.
 
-                Args:
-                    organization: Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
-                    organization_id: Filter users by the organization they are a member of.
-                    email: Filter users by their email address.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization: Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
+            organization_id: Filter users by the organization they are a member of.
+            email: Filter users by their email address.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[User]
+        Returns:
+            AsyncPage[User]
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2880,28 +2864,28 @@ class AsyncUserManagement:
 
         Create a new user in the current environment.
 
-                Args:
-                    email: The email address of the user.
-                    password: The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`.
-                    password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
-                    password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
-                    first_name: The first name of the user.
-                    last_name: The last name of the user.
-                    email_verified: Whether the user's email has been verified.
-                    metadata: Object containing metadata key/value pairs associated with the user.
-                    external_id: The external ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            email: The email address of the user.
+            password: The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`.
+            password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
+            password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
+            first_name: The first name of the user.
+            last_name: The last name of the user.
+            email_verified: Whether the user's email has been verified.
+            metadata: Object containing metadata key/value pairs associated with the user.
+            external_id: The external ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    User
+        Returns:
+            User
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2938,18 +2922,18 @@ class AsyncUserManagement:
 
         Get the details of an existing user by an [external identifier](https://workos.com/docs/authkit/metadata/external-identifiers).
 
-                Args:
-                    external_id: The external ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            external_id: The external ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    User
+        Returns:
+            User
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2968,18 +2952,18 @@ class AsyncUserManagement:
 
         Get the details of an existing user.
 
-                Args:
-                    id: The unique ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    User
+        Returns:
+            User
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -3008,29 +2992,29 @@ class AsyncUserManagement:
 
         Updates properties of a user. The omitted properties will be left unchanged.
 
-                Args:
-                    id: The unique ID of the user.
-                    email: The email address of the user.
-                    first_name: The first name of the user.
-                    last_name: The last name of the user.
-                    email_verified: Whether the user's email has been verified.
-                    password: The password to set for the user.
-                    password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
-                    password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
-                    metadata: Object containing metadata key/value pairs associated with the user.
-                    external_id: The external ID of the user.
-                    locale: The user's preferred locale.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            email: The email address of the user.
+            first_name: The first name of the user.
+            last_name: The last name of the user.
+            email_verified: Whether the user's email has been verified.
+            password: The password to set for the user.
+            password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
+            password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
+            metadata: Object containing metadata key/value pairs associated with the user.
+            external_id: The external ID of the user.
+            locale: The user's preferred locale.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    User
+        Returns:
+            User
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -3068,15 +3052,15 @@ class AsyncUserManagement:
 
         Permanently deletes a user in the current environment. It cannot be undone.
 
-                Args:
-                    id: The unique ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -3095,22 +3079,22 @@ class AsyncUserManagement:
 
         Confirms an email change using the one-time code received by the user.
 
-                Args:
-                    id: The unique ID of the user.
-                    code: The one-time code used to confirm the email change.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            code: The one-time code used to confirm the email change.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    EmailChangeConfirmation
+        Returns:
+            EmailChangeConfirmation
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "code": code,
@@ -3134,21 +3118,21 @@ class AsyncUserManagement:
 
         Sends an email that contains a one-time code used to change a user's email address.
 
-                Args:
-                    id: The unique ID of the user.
-                    new_email: The new email address to change to.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            new_email: The new email address to change to.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    EmailChange
+        Returns:
+            EmailChange
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    ConflictError: If a conflict occurs (409).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "new_email": new_email,
@@ -3172,21 +3156,21 @@ class AsyncUserManagement:
 
         Verifies an email address using the one-time code received by the user.
 
-                Args:
-                    id: The ID of the user.
-                    code: The one-time email verification code.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The ID of the user.
+            code: The one-time email verification code.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    VerifyEmailResponse
+        Returns:
+            VerifyEmailResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "code": code,
@@ -3209,19 +3193,19 @@ class AsyncUserManagement:
 
         Sends an email that contains a one-time code used to verify a user’s email address.
 
-                Args:
-                    id: The ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SendVerificationEmailResponse
+        Returns:
+            SendVerificationEmailResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="post",
@@ -3240,18 +3224,18 @@ class AsyncUserManagement:
 
         Get a list of identities associated with the user. A user can have multiple associated identities after going through [identity linking](https://workos.com/docs/authkit/identity-linking). Currently only OAuth identities are supported. More provider types may be added in the future.
 
-                Args:
-                    id: The unique ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    List[UserIdentitiesGetItem]
+        Returns:
+            List[UserIdentitiesGetItem]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         raw = await self._client.request(
             method="get",
@@ -3277,23 +3261,23 @@ class AsyncUserManagement:
 
         Get a list of all active sessions for a specific user.
 
-                Args:
-                    id: The ID of the user.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The ID of the user.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[UserSessionsListItem]
+        Returns:
+            AsyncPage[UserSessionsListItem]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -3328,23 +3312,23 @@ class AsyncUserManagement:
 
         Get a list of all of invitations matching the criteria specified.
 
-                Args:
-                    organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
-                    email: The email address of the recipient.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
+            email: The email address of the recipient.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[UserInvite]
+        Returns:
+            AsyncPage[UserInvite]
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -3381,25 +3365,25 @@ class AsyncUserManagement:
 
         Sends an invitation email to the recipient.
 
-                Args:
-                    email: The email address of the recipient.
-                    organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
-                    role_slug: The [role](https://workos.com/docs/authkit/roles) that the recipient will receive when they join the organization in the invitation.
-                    expires_in_days: How many days the invitations will be valid for. Must be between 1 and 30 days. Defaults to 7 days if not specified.
-                    inviter_user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user) who invites the recipient. The invitation email will mention the name of this user.
-                    locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            email: The email address of the recipient.
+            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
+            role_slug: The [role](https://workos.com/docs/authkit/roles) that the recipient will receive when they join the organization in the invitation.
+            expires_in_days: How many days the invitations will be valid for. Must be between 1 and 30 days. Defaults to 7 days if not specified.
+            inviter_user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user) who invites the recipient. The invitation email will mention the name of this user.
+            locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserInvite
+        Returns:
+            UserInvite
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -3431,18 +3415,18 @@ class AsyncUserManagement:
 
         Retrieve an existing invitation using the token.
 
-                Args:
-                    token: The token used to accept the invitation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            token: The token used to accept the invitation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserInvite
+        Returns:
+            UserInvite
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -3461,18 +3445,18 @@ class AsyncUserManagement:
 
         Get the details of an existing invitation.
 
-                Args:
-                    id: The unique ID of the invitation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the invitation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserInvite
+        Returns:
+            UserInvite
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -3491,19 +3475,19 @@ class AsyncUserManagement:
 
         Accepts an invitation and, if linked to an organization, activates the user's membership in that organization.
 
-                Args:
-                    id: The unique ID of the invitation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the invitation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Invitation
+        Returns:
+            Invitation
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="post",
@@ -3523,21 +3507,21 @@ class AsyncUserManagement:
 
         Resends an invitation email to the recipient. The invitation must be in a pending state.
 
-                Args:
-                    id: The unique ID of the invitation.
-                    locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the invitation.
+            locale: The locale to use when rendering the invitation email. See [supported locales](https://workos.com/docs/authkit/hosted-ui/localization).
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserInvite
+        Returns:
+            UserInvite
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -3564,18 +3548,18 @@ class AsyncUserManagement:
 
         Revokes an existing invitation.
 
-                Args:
-                    id: The unique ID of the invitation.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the invitation.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Invitation
+        Returns:
+            Invitation
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="post",
@@ -3594,18 +3578,18 @@ class AsyncUserManagement:
 
         Update the JWT template for the current environment.
 
-                Args:
-                    content: The JWT template content as a Liquid template string.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            content: The JWT template content as a Liquid template string.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    JWTTemplateResponse
+        Returns:
+            JWTTemplateResponse
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "content": content,
@@ -3629,20 +3613,20 @@ class AsyncUserManagement:
 
         Creates a one-time authentication code that can be sent to the user's email address. The code expires in 10 minutes. To verify the code, [authenticate the user with Magic Auth](https://workos.com/docs/reference/authkit/authentication/magic-auth).
 
-                Args:
-                    email: The email address to send the magic code to.
-                    invitation_token: The invitation token to associate with this magic code.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            email: The email address to send the magic code to.
+            invitation_token: The invitation token to associate with this magic code.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    MagicAuth
+        Returns:
+            MagicAuth
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -3670,18 +3654,18 @@ class AsyncUserManagement:
 
         Get the details of an existing [Magic Auth](https://workos.com/docs/reference/authkit/magic-auth) code that can be used to send an email to a user for authentication.
 
-                Args:
-                    id: The unique ID of the Magic Auth code.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the Magic Auth code.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    MagicAuth
+        Returns:
+            MagicAuth
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -3708,26 +3692,26 @@ class AsyncUserManagement:
 
         Get a list of all organization memberships matching the criteria specified. At least one of `user_id` or `organization_id` must be provided. By default only active memberships are returned. Use the `statuses` parameter to filter by other statuses.
 
-                Args:
-                    organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
-                    statuses: Filter by the status of the organization membership. Array including any of `active`, `inactive`, or `pending`.
-                    user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
+            statuses: Filter by the status of the organization membership. Array including any of `active`, `inactive`, or `pending`.
+            user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[UserOrganizationMembership]
+        Returns:
+            AsyncPage[UserOrganizationMembership]
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -3765,23 +3749,23 @@ class AsyncUserManagement:
 
         Calling this API with an organization and user that match an `inactive` organization membership will activate the membership with the specified role(s).
 
-                Args:
-                    user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
-                    organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
-                    role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
-                    role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
+            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
+            role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
+            role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    OrganizationMembership
+        Returns:
+            OrganizationMembership
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -3811,18 +3795,18 @@ class AsyncUserManagement:
 
         Get the details of an existing organization membership.
 
-                Args:
-                    id: The unique ID of the organization membership.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the organization membership.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserOrganizationMembership
+        Returns:
+            UserOrganizationMembership
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -3843,21 +3827,21 @@ class AsyncUserManagement:
 
         Update the details of an existing organization membership.
 
-                Args:
-                    id: The unique ID of the organization membership.
-                    role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
-                    role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the organization membership.
+            role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
+            role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserOrganizationMembership
+        Returns:
+            UserOrganizationMembership
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -3885,15 +3869,15 @@ class AsyncUserManagement:
 
         Permanently deletes an existing organization membership. It cannot be undone.
 
-                Args:
-                    id: The unique ID of the organization membership.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the organization membership.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -3916,20 +3900,20 @@ class AsyncUserManagement:
 
         See the [membership management documentation](https://workos.com/docs/authkit/users-organizations/organizations/membership-management) for additional details.
 
-                Args:
-                    id: The unique ID of the organization membership.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the organization membership.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    OrganizationMembership
+        Returns:
+            OrganizationMembership
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="put",
@@ -3953,20 +3937,20 @@ class AsyncUserManagement:
 
         See the [membership management documentation](https://workos.com/docs/authkit/users-organizations/organizations/membership-management) for additional details.
 
-                Args:
-                    id: The unique ID of the organization membership.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the organization membership.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    UserOrganizationMembership
+        Returns:
+            UserOrganizationMembership
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="put",
@@ -3985,19 +3969,19 @@ class AsyncUserManagement:
 
         Creates a new redirect URI for an environment.
 
-                Args:
-                    uri: The redirect URI to create.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            uri: The redirect URI to create.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    RedirectUri
+        Returns:
+            RedirectUri
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "uri": uri,
@@ -4026,23 +4010,23 @@ class AsyncUserManagement:
 
         Get a list of all Connect applications that the user has authorized.
 
-                Args:
-                    user_id: The ID of the user.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            user_id: The ID of the user.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[AuthorizedConnectApplicationListData]
+        Returns:
+            AsyncPage[AuthorizedConnectApplicationListData]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -4073,16 +4057,16 @@ class AsyncUserManagement:
 
         Delete an existing Authorized Connect Application.
 
-                Args:
-                    application_id: The ID or client ID of the application.
-                    user_id: The ID of the user.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            application_id: The ID or client ID of the application.
+            user_id: The ID of the user.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",

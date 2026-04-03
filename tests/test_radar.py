@@ -16,9 +16,11 @@ from workos.radar.models import (
 )
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -148,6 +150,40 @@ class TestRadar:
         finally:
             workos.close()
 
+    def test_create_attempts_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.radar.create_attempts(
+                    ip_address="test_ip_address",
+                    user_agent="test_user_agent",
+                    email="test_email",
+                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
+                    action=RadarStandaloneAssessRequestAction("login"),
+                )
+        finally:
+            workos.close()
+
+    def test_create_attempts_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                workos.radar.create_attempts(
+                    ip_address="test_ip_address",
+                    user_agent="test_user_agent",
+                    email="test_email",
+                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
+                    action=RadarStandaloneAssessRequestAction("login"),
+                )
+        finally:
+            workos.close()
+
 
 @pytest.mark.asyncio
 class TestAsyncRadar:
@@ -253,6 +289,40 @@ class TestAsyncRadar:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
+                await workos.radar.create_attempts(
+                    ip_address="test_ip_address",
+                    user_agent="test_user_agent",
+                    email="test_email",
+                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
+                    action=RadarStandaloneAssessRequestAction("login"),
+                )
+        finally:
+            await workos.close()
+
+    async def test_create_attempts_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.radar.create_attempts(
+                    ip_address="test_ip_address",
+                    user_agent="test_user_agent",
+                    email="test_email",
+                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
+                    action=RadarStandaloneAssessRequestAction("login"),
+                )
+        finally:
+            await workos.close()
+
+    async def test_create_attempts_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
                 await workos.radar.create_attempts(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",

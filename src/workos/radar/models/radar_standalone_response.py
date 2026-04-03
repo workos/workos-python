@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 from workos.common.models import RadarStandaloneResponseBlocklistType
 from workos.common.models import RadarStandaloneResponseControl
 from workos.common.models import RadarStandaloneResponseVerdict
@@ -41,18 +42,24 @@ class RadarStandaloneResponse:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing RadarStandaloneResponse: {e!s}"
-            ) from e
+            _raise_deserialize_error("RadarStandaloneResponse", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["verdict"] = self.verdict
+        result["verdict"] = (
+            self.verdict.value if isinstance(self.verdict, Enum) else self.verdict
+        )
         result["reason"] = self.reason
         result["attempt_id"] = self.attempt_id
         if self.control is not None:
-            result["control"] = self.control
+            result["control"] = (
+                self.control.value if isinstance(self.control, Enum) else self.control
+            )
         if self.blocklist_type is not None:
-            result["blocklist_type"] = self.blocklist_type
+            result["blocklist_type"] = (
+                self.blocklist_type.value
+                if isinstance(self.blocklist_type, Enum)
+                else self.blocklist_type
+            )
         return result

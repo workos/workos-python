@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 from workos.common.models import AuditLogConfigurationLogStreamState
 from workos.common.models import AuditLogConfigurationLogStreamType
 
@@ -38,21 +39,19 @@ class AuditLogConfigurationLogStream:
                 created_at=_parse_datetime(data["created_at"]),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing AuditLogConfigurationLogStream: {e!s}"
-            ) from e
+            _raise_deserialize_error("AuditLogConfigurationLogStream", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["id"] = self.id
-        result["type"] = self.type
-        result["state"] = self.state
+        result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
+        result["state"] = (
+            self.state.value if isinstance(self.state, Enum) else self.state
+        )
         if self.last_synced_at is not None:
             result["last_synced_at"] = self.last_synced_at
         else:
             result["last_synced_at"] = None
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
         return result

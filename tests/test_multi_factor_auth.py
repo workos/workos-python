@@ -18,9 +18,11 @@ from workos.multi_factor_auth.models import (
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -176,6 +178,28 @@ class TestMultiFactorAuth:
         finally:
             workos.close()
 
+    def test_verify_challenge_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
+        finally:
+            workos.close()
+
+    def test_verify_challenge_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
+        finally:
+            workos.close()
+
 
 @pytest.mark.asyncio
 class TestAsyncMultiFactorAuth:
@@ -325,6 +349,32 @@ class TestAsyncMultiFactorAuth:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
+                await workos.multi_factor_auth.verify_challenge(
+                    "test_id", code="test_code"
+                )
+        finally:
+            await workos.close()
+
+    async def test_verify_challenge_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.multi_factor_auth.verify_challenge(
+                    "test_id", code="test_code"
+                )
+        finally:
+            await workos.close()
+
+    async def test_verify_challenge_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
                 await workos.multi_factor_auth.verify_challenge(
                     "test_id", code="test_code"
                 )

@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from .audit_log_event import AuditLogEvent
 
@@ -28,9 +28,7 @@ class AuditLogEventIngestion:
                 event=AuditLogEvent.from_dict(cast(Dict[str, Any], data["event"])),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing AuditLogEventIngestion: {e!s}"
-            ) from e
+            _raise_deserialize_error("AuditLogEventIngestion", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

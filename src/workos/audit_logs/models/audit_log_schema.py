@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from .audit_log_schema_actor import AuditLogSchemaActor
 from .audit_log_schema_target import AuditLogSchemaTarget
@@ -37,9 +37,7 @@ class AuditLogSchema:
                 metadata=data.get("metadata"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing AuditLogSchema: {e!s}"
-            ) from e
+            _raise_deserialize_error("AuditLogSchema", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

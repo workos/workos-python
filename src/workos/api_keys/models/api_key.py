@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from .api_key_owner import ApiKeyOwner
 
@@ -51,9 +51,7 @@ class ApiKey:
                 updated_at=_parse_datetime(data["updated_at"]),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing ApiKey: {e!s}"
-            ) from e
+            _raise_deserialize_error("ApiKey", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -68,10 +66,6 @@ class ApiKey:
         else:
             result["last_used_at"] = None
         result["permissions"] = self.permissions
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         return result

@@ -35,9 +35,11 @@ from workos.user_management.models import (
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -731,6 +733,36 @@ class TestUserManagement:
         finally:
             workos.close()
 
+    def test_create_authenticate_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.user_management.create_authenticate(
+                    body=load_fixture(
+                        "authorization_code_session_authenticate_request.json"
+                    )
+                )
+        finally:
+            workos.close()
+
+    def test_create_authenticate_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                workos.user_management.create_authenticate(
+                    body=load_fixture(
+                        "authorization_code_session_authenticate_request.json"
+                    )
+                )
+        finally:
+            workos.close()
+
 
 @pytest.mark.asyncio
 class TestAsyncUserManagement:
@@ -1361,5 +1393,35 @@ class TestAsyncUserManagement:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
                 await workos.user_management.get_jwks("test_clientId")
+        finally:
+            await workos.close()
+
+    async def test_create_authenticate_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.user_management.create_authenticate(
+                    body=load_fixture(
+                        "authorization_code_session_authenticate_request.json"
+                    )
+                )
+        finally:
+            await workos.close()
+
+    async def test_create_authenticate_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                await workos.user_management.create_authenticate(
+                    body=load_fixture(
+                        "authorization_code_session_authenticate_request.json"
+                    )
+                )
         finally:
             await workos.close()

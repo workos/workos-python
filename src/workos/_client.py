@@ -370,74 +370,92 @@ class WorkOSClient(_BaseWorkOSClient):
 
     @functools.cached_property
     def api_keys(self) -> ApiKeys:
+        """Api Keys API resources."""
         return ApiKeys(self)
 
     @functools.cached_property
     def multi_factor_auth(self) -> MultiFactorAuth:
+        """Multi Factor Auth API resources."""
         return MultiFactorAuth(self)
 
     @functools.cached_property
     def connect(self) -> Connect:
+        """Connect API resources."""
         return Connect(self)
 
     @functools.cached_property
     def authorization(self) -> Authorization:
+        """Authorization API resources."""
         return Authorization(self)
 
     @functools.cached_property
     def sso(self) -> SSO:
+        """SSO API resources."""
         return SSO(self)
 
     @functools.cached_property
     def pipes(self) -> Pipes:
+        """Pipes API resources."""
         return Pipes(self)
 
     @functools.cached_property
     def directory_sync(self) -> DirectorySync:
+        """Directory Sync API resources."""
         return DirectorySync(self)
 
     @functools.cached_property
     def events(self) -> Events:
+        """Events API resources."""
         return Events(self)
 
     @functools.cached_property
     def feature_flags(self) -> FeatureFlags:
+        """Feature Flags API resources."""
         return FeatureFlags(self)
 
     @functools.cached_property
     def organization_domains(self) -> OrganizationDomains:
+        """Organization Domains API resources."""
         return OrganizationDomains(self)
 
     @functools.cached_property
     def organizations(self) -> Organizations:
+        """Organizations API resources."""
         return Organizations(self)
 
     @functools.cached_property
     def admin_portal(self) -> AdminPortal:
+        """Admin Portal API resources."""
         return AdminPortal(self)
 
     @functools.cached_property
     def radar(self) -> Radar:
+        """Radar API resources."""
         return Radar(self)
 
     @functools.cached_property
     def user_management(self) -> UserManagement:
+        """User Management API resources."""
         return UserManagement(self)
 
     @functools.cached_property
     def webhooks(self) -> Webhooks:
+        """Webhooks API resources."""
         return Webhooks(self)
 
     @functools.cached_property
     def widgets(self) -> Widgets:
+        """Widgets API resources."""
         return Widgets(self)
 
     @functools.cached_property
     def audit_logs(self) -> AuditLogs:
+        """Audit Logs API resources."""
         return AuditLogs(self)
 
     @functools.cached_property
-    def mfa(self) -> Any:
+    def mfa(self) -> MultiFactorAuth:
+        """Alias for multi_factor_auth."""
         return self.multi_factor_auth
 
     @functools.cached_property
@@ -538,6 +556,31 @@ class WorkOSClient(_BaseWorkOSClient):
                 raise WorkOSError(f"Network error: {e}") from e
         raise WorkOSError("Max retries exceeded") from last_error
 
+    def request_raw(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: Optional[Dict[str, Any]] = None,
+        body: Optional[Dict[str, Any]] = None,
+        idempotency_key: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> Dict[str, Any]:
+        """Make an HTTP request without model deserialization.
+
+        Returns the raw JSON dict. Use this when you need the raw
+        response without mapping through a model class.
+        """
+        result = self.request(
+            method=method,
+            path=path,
+            params=params,
+            body=body,
+            idempotency_key=idempotency_key,
+            request_options=request_options,
+        )
+        return result if isinstance(result, dict) else {}
+
     def request_page(
         self,
         method: str,
@@ -629,74 +672,92 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
 
     @functools.cached_property
     def api_keys(self) -> AsyncApiKeys:
+        """Api Keys API resources."""
         return AsyncApiKeys(self)
 
     @functools.cached_property
     def multi_factor_auth(self) -> AsyncMultiFactorAuth:
+        """Multi Factor Auth API resources."""
         return AsyncMultiFactorAuth(self)
 
     @functools.cached_property
     def connect(self) -> AsyncConnect:
+        """Connect API resources."""
         return AsyncConnect(self)
 
     @functools.cached_property
     def authorization(self) -> AsyncAuthorization:
+        """Authorization API resources."""
         return AsyncAuthorization(self)
 
     @functools.cached_property
     def sso(self) -> AsyncSSO:
+        """SSO API resources."""
         return AsyncSSO(self)
 
     @functools.cached_property
     def pipes(self) -> AsyncPipes:
+        """Pipes API resources."""
         return AsyncPipes(self)
 
     @functools.cached_property
     def directory_sync(self) -> AsyncDirectorySync:
+        """Directory Sync API resources."""
         return AsyncDirectorySync(self)
 
     @functools.cached_property
     def events(self) -> AsyncEvents:
+        """Events API resources."""
         return AsyncEvents(self)
 
     @functools.cached_property
     def feature_flags(self) -> AsyncFeatureFlags:
+        """Feature Flags API resources."""
         return AsyncFeatureFlags(self)
 
     @functools.cached_property
     def organization_domains(self) -> AsyncOrganizationDomains:
+        """Organization Domains API resources."""
         return AsyncOrganizationDomains(self)
 
     @functools.cached_property
     def organizations(self) -> AsyncOrganizations:
+        """Organizations API resources."""
         return AsyncOrganizations(self)
 
     @functools.cached_property
     def admin_portal(self) -> AsyncAdminPortal:
+        """Admin Portal API resources."""
         return AsyncAdminPortal(self)
 
     @functools.cached_property
     def radar(self) -> AsyncRadar:
+        """Radar API resources."""
         return AsyncRadar(self)
 
     @functools.cached_property
     def user_management(self) -> AsyncUserManagement:
+        """User Management API resources."""
         return AsyncUserManagement(self)
 
     @functools.cached_property
     def webhooks(self) -> AsyncWebhooks:
+        """Webhooks API resources."""
         return AsyncWebhooks(self)
 
     @functools.cached_property
     def widgets(self) -> AsyncWidgets:
+        """Widgets API resources."""
         return AsyncWidgets(self)
 
     @functools.cached_property
     def audit_logs(self) -> AsyncAuditLogs:
+        """Audit Logs API resources."""
         return AsyncAuditLogs(self)
 
     @functools.cached_property
-    def mfa(self) -> Any:
+    def mfa(self) -> AsyncMultiFactorAuth:
+        """Alias for multi_factor_auth."""
         return self.multi_factor_auth
 
     @functools.cached_property
@@ -796,6 +857,31 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
                     continue
                 raise WorkOSError(f"Network error: {e}") from e
         raise WorkOSError("Max retries exceeded") from last_error
+
+    async def request_raw(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: Optional[Dict[str, Any]] = None,
+        body: Optional[Dict[str, Any]] = None,
+        idempotency_key: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> Dict[str, Any]:
+        """Make an async HTTP request without model deserialization.
+
+        Returns the raw JSON dict. Use this when you need the raw
+        response without mapping through a model class.
+        """
+        result = await self.request(
+            method=method,
+            path=path,
+            params=params,
+            body=body,
+            idempotency_key=idempotency_key,
+            request_options=request_options,
+        )
+        return result if isinstance(result, dict) else {}
 
     async def request_page(
         self,

@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Dict, Literal
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 from workos.common.models import UserIdentitiesGetItemProvider
 
 
@@ -29,14 +30,14 @@ class UserIdentitiesGetItem:
                 provider=UserIdentitiesGetItemProvider(data["provider"]),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing UserIdentitiesGetItem: {e!s}"
-            ) from e
+            _raise_deserialize_error("UserIdentitiesGetItem", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["idp_id"] = self.idp_id
         result["type"] = self.type
-        result["provider"] = self.provider
+        result["provider"] = (
+            self.provider.value if isinstance(self.provider, Enum) else self.provider
+        )
         return result

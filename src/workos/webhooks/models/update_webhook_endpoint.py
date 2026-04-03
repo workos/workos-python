@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, List, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 from workos.common.models import UpdateWebhookEndpointEvents
 from workos.common.models import UpdateWebhookEndpointStatus
 
@@ -37,9 +38,7 @@ class UpdateWebhookEndpoint:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing UpdateWebhookEndpoint: {e!s}"
-            ) from e
+            _raise_deserialize_error("UpdateWebhookEndpoint", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -47,7 +46,11 @@ class UpdateWebhookEndpoint:
         if self.endpoint_url is not None:
             result["endpoint_url"] = self.endpoint_url
         if self.status is not None:
-            result["status"] = self.status
+            result["status"] = (
+                self.status.value if isinstance(self.status, Enum) else self.status
+            )
         if self.events is not None:
-            result["events"] = self.events
+            result["events"] = [
+                item.value if isinstance(item, Enum) else item for item in self.events
+            ]
         return result

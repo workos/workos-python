@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from .jwks_response_keys import JwksResponseKeys
 
@@ -28,9 +28,7 @@ class JwksResponse:
                 ],
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing JwksResponse: {e!s}"
-            ) from e
+            _raise_deserialize_error("JwksResponse", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

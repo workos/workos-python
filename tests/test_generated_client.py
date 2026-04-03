@@ -265,6 +265,102 @@ class TestAsyncWorkOSClient:
         assert client.widgets is not None
         await client.close()
 
+    async def test_raises_400(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=400,
+            json={"message": "Error"},
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(BadRequestError):
+            await client.request("GET", "test")
+        await client.close()
+
+    async def test_raises_401(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=401,
+            json={"message": "Error"},
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(AuthenticationError):
+            await client.request("GET", "test")
+        await client.close()
+
+    async def test_raises_403(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={"message": "Error"},
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(AuthorizationError):
+            await client.request("GET", "test")
+        await client.close()
+
+    async def test_raises_404(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=404,
+            json={"message": "Error"},
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(NotFoundError):
+            await client.request("GET", "test")
+        await client.close()
+
+    async def test_raises_409(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=409,
+            json={"message": "Error"},
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(ConflictError):
+            await client.request("GET", "test")
+        await client.close()
+
+    async def test_raises_422(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=422,
+            json={"message": "Error"},
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(UnprocessableEntityError):
+            await client.request("GET", "test")
+        await client.close()
+
+    async def test_raises_429(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=429,
+            json={"message": "Error"},
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(RateLimitExceededError):
+            await client.request("GET", "test")
+        await client.close()
+
+    async def test_raises_500(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=500,
+            json={"message": "Error"},
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(ServerError):
+            await client.request("GET", "test")
+        await client.close()
+
     async def test_timeout_error_is_wrapped(self, httpx_mock, monkeypatch):
         async def _sleep(_: float) -> None:
             return None

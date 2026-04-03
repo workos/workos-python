@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from .user_sessions_impersonator import UserSessionsImpersonator
 from workos.common.models import UserSessionsAuthMethod
@@ -71,9 +72,7 @@ class UserSessionsListItem:
                 organization_id=data.get("organization_id"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing UserSessionsListItem: {e!s}"
-            ) from e
+            _raise_deserialize_error("UserSessionsListItem", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -89,23 +88,21 @@ class UserSessionsListItem:
         else:
             result["user_agent"] = None
         result["user_id"] = self.user_id
-        result["auth_method"] = self.auth_method
-        result["status"] = self.status
-        result["expires_at"] = self.expires_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["auth_method"] = (
+            self.auth_method.value
+            if isinstance(self.auth_method, Enum)
+            else self.auth_method
+        )
+        result["status"] = (
+            self.status.value if isinstance(self.status, Enum) else self.status
+        )
+        result["expires_at"] = _format_datetime(self.expires_at)
         if self.ended_at is not None:
-            result["ended_at"] = self.ended_at.isoformat(
-                timespec="milliseconds"
-            ).replace("+00:00", "Z")
+            result["ended_at"] = _format_datetime(self.ended_at)
         else:
             result["ended_at"] = None
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         if self.impersonator is not None:
             result["impersonator"] = self.impersonator.to_dict()
         if self.organization_id is not None:

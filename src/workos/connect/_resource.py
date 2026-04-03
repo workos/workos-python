@@ -50,22 +50,22 @@ class Connect:
 
         If you provide a new `id` with an `email` that already belongs to an existing user, the request will fail with an error as email addresses are unique to a user.
 
-                Args:
-                    external_auth_id: Identifier provided when AuthKit redirected to your login page.
-                    user: The user to create or update in AuthKit.
-                    user_consent_options: Array of [User Consent Options](https://workos.com/docs/reference/workos-connect/standalone/user-consent-options) to store with the session.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            external_auth_id: Identifier provided when AuthKit redirected to your login page.
+            user: The user to create or update in AuthKit.
+            user_consent_options: Array of [User Consent Options](https://workos.com/docs/reference/workos-connect/standalone/user-consent-options) to store with the session.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ExternalAuthCompleteResponse
+        Returns:
+            ExternalAuthCompleteResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -102,22 +102,22 @@ class Connect:
 
         List all Connect Applications in the current environment with optional filtering.
 
-                Args:
-                    organization_id: Filter Connect Applications by organization ID.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: Filter Connect Applications by organization ID.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[ConnectApplication]
+        Returns:
+            SyncPage[ConnectApplication]
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -148,19 +148,19 @@ class Connect:
 
         Create a new Connect Application. Supports both OAuth and Machine-to-Machine (M2M) application types.
 
-                Args:
-                    body: The request body. Accepts: CreateOAuthApplication, CreateM2MApplication, or a plain dict.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            body: The request body. Accepts: CreateOAuthApplication, CreateM2MApplication, or a plain dict.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ConnectApplication
+        Returns:
+            ConnectApplication
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return self._client.request(
@@ -202,14 +202,13 @@ class Connect:
         if organization_id is not None:
             body["organization_id"] = organization_id
 
-        response = self._client.request(
+        return self._client.request(
             method="POST",
             path="connect/applications",
             body=body,
             model=ConnectApplication,
             request_options=request_options,
         )
-        return cast(ConnectApplication, response)
 
     def create_m2m_application(
         self,
@@ -233,14 +232,13 @@ class Connect:
         if scopes is not None:
             body["scopes"] = scopes
 
-        response = self._client.request(
+        return self._client.request(
             method="POST",
             path="connect/applications",
             body=body,
             model=ConnectApplication,
             request_options=request_options,
         )
-        return cast(ConnectApplication, response)
 
     def get_application(
         self,
@@ -252,18 +250,18 @@ class Connect:
 
         Retrieve details for a specific Connect Application by ID or client ID.
 
-                Args:
-                    id: The application ID or client ID of the Connect Application.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The application ID or client ID of the Connect Application.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ConnectApplication
+        Returns:
+            ConnectApplication
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -286,23 +284,23 @@ class Connect:
 
         Update an existing Connect Application. For OAuth applications, you can update redirect URIs. For all applications, you can update the name, description, and scopes.
 
-                Args:
-                    id: The application ID or client ID of the Connect Application.
-                    name: The name of the application.
-                    description: A description for the application.
-                    scopes: The OAuth scopes granted to the application.
-                    redirect_uris: Updated redirect URIs for the application. OAuth applications only.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The application ID or client ID of the Connect Application.
+            name: The name of the application.
+            description: A description for the application.
+            scopes: The OAuth scopes granted to the application.
+            redirect_uris: Updated redirect URIs for the application. OAuth applications only.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ConnectApplication
+        Returns:
+            ConnectApplication
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -334,15 +332,15 @@ class Connect:
 
         Delete an existing Connect Application.
 
-                Args:
-                    id: The application ID or client ID of the Connect Application.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The application ID or client ID of the Connect Application.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -360,18 +358,18 @@ class Connect:
 
         List all client secrets associated with a Connect Application.
 
-                Args:
-                    id: The application ID or client ID of the Connect Application.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The application ID or client ID of the Connect Application.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    List[ApplicationCredentialsListItem]
+        Returns:
+            List[ApplicationCredentialsListItem]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         raw = self._client.request(
             method="get",
@@ -393,19 +391,19 @@ class Connect:
 
         Create new secrets for a Connect Application.
 
-                Args:
-                    id: The application ID or client ID of the Connect Application.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The application ID or client ID of the Connect Application.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    NewConnectApplicationSecret
+        Returns:
+            NewConnectApplicationSecret
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {}
         return self._client.request(
@@ -426,15 +424,15 @@ class Connect:
 
         Delete (revoke) an existing client secret.
 
-                Args:
-                    id: The unique ID of the client secret.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the client secret.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -470,22 +468,22 @@ class AsyncConnect:
 
         If you provide a new `id` with an `email` that already belongs to an existing user, the request will fail with an error as email addresses are unique to a user.
 
-                Args:
-                    external_auth_id: Identifier provided when AuthKit redirected to your login page.
-                    user: The user to create or update in AuthKit.
-                    user_consent_options: Array of [User Consent Options](https://workos.com/docs/reference/workos-connect/standalone/user-consent-options) to store with the session.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            external_auth_id: Identifier provided when AuthKit redirected to your login page.
+            user: The user to create or update in AuthKit.
+            user_consent_options: Array of [User Consent Options](https://workos.com/docs/reference/workos-connect/standalone/user-consent-options) to store with the session.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ExternalAuthCompleteResponse
+        Returns:
+            ExternalAuthCompleteResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -522,22 +520,22 @@ class AsyncConnect:
 
         List all Connect Applications in the current environment with optional filtering.
 
-                Args:
-                    organization_id: Filter Connect Applications by organization ID.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: Filter Connect Applications by organization ID.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[ConnectApplication]
+        Returns:
+            AsyncPage[ConnectApplication]
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -568,19 +566,19 @@ class AsyncConnect:
 
         Create a new Connect Application. Supports both OAuth and Machine-to-Machine (M2M) application types.
 
-                Args:
-                    body: The request body. Accepts: CreateOAuthApplication, CreateM2MApplication, or a plain dict.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            body: The request body. Accepts: CreateOAuthApplication, CreateM2MApplication, or a plain dict.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ConnectApplication
+        Returns:
+            ConnectApplication
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return await self._client.request(
@@ -622,14 +620,13 @@ class AsyncConnect:
         if organization_id is not None:
             body["organization_id"] = organization_id
 
-        response = await self._client.request(
+        return await self._client.request(
             method="POST",
             path="connect/applications",
             body=body,
             model=ConnectApplication,
             request_options=request_options,
         )
-        return cast(ConnectApplication, response)
 
     async def create_m2m_application(
         self,
@@ -653,14 +650,13 @@ class AsyncConnect:
         if scopes is not None:
             body["scopes"] = scopes
 
-        response = await self._client.request(
+        return await self._client.request(
             method="POST",
             path="connect/applications",
             body=body,
             model=ConnectApplication,
             request_options=request_options,
         )
-        return cast(ConnectApplication, response)
 
     async def get_application(
         self,
@@ -672,18 +668,18 @@ class AsyncConnect:
 
         Retrieve details for a specific Connect Application by ID or client ID.
 
-                Args:
-                    id: The application ID or client ID of the Connect Application.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The application ID or client ID of the Connect Application.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ConnectApplication
+        Returns:
+            ConnectApplication
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -706,23 +702,23 @@ class AsyncConnect:
 
         Update an existing Connect Application. For OAuth applications, you can update redirect URIs. For all applications, you can update the name, description, and scopes.
 
-                Args:
-                    id: The application ID or client ID of the Connect Application.
-                    name: The name of the application.
-                    description: A description for the application.
-                    scopes: The OAuth scopes granted to the application.
-                    redirect_uris: Updated redirect URIs for the application. OAuth applications only.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The application ID or client ID of the Connect Application.
+            name: The name of the application.
+            description: A description for the application.
+            scopes: The OAuth scopes granted to the application.
+            redirect_uris: Updated redirect URIs for the application. OAuth applications only.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    ConnectApplication
+        Returns:
+            ConnectApplication
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -754,15 +750,15 @@ class AsyncConnect:
 
         Delete an existing Connect Application.
 
-                Args:
-                    id: The application ID or client ID of the Connect Application.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The application ID or client ID of the Connect Application.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -780,18 +776,18 @@ class AsyncConnect:
 
         List all client secrets associated with a Connect Application.
 
-                Args:
-                    id: The application ID or client ID of the Connect Application.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The application ID or client ID of the Connect Application.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    List[ApplicationCredentialsListItem]
+        Returns:
+            List[ApplicationCredentialsListItem]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         raw = await self._client.request(
             method="get",
@@ -813,19 +809,19 @@ class AsyncConnect:
 
         Create new secrets for a Connect Application.
 
-                Args:
-                    id: The application ID or client ID of the Connect Application.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The application ID or client ID of the Connect Application.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    NewConnectApplicationSecret
+        Returns:
+            NewConnectApplicationSecret
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {}
         return await self._client.request(
@@ -846,15 +842,15 @@ class AsyncConnect:
 
         Delete (revoke) an existing client secret.
 
-                Args:
-                    id: The unique ID of the client secret.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique ID of the client secret.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",

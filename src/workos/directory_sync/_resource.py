@@ -35,25 +35,25 @@ class DirectorySync:
 
         Get a list of all of your existing directories matching the criteria specified.
 
-                Args:
-                    organization_id: Filter Directories by their associated organization.
-                    search: Searchable text to match against Directory names.
-                    domain: Filter Directories by their associated domain.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: Filter Directories by their associated organization.
+            search: Searchable text to match against Directory names.
+            domain: Filter Directories by their associated domain.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[Directory]
+        Returns:
+            SyncPage[Directory]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -86,19 +86,19 @@ class DirectorySync:
 
         Get the details of an existing directory.
 
-                Args:
-                    id: Unique identifier for the Directory.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Directory.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Directory
+        Returns:
+            Directory
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -117,15 +117,15 @@ class DirectorySync:
 
         Permanently deletes an existing directory. It cannot be undone.
 
-                Args:
-                    id: Unique identifier for the Directory.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Directory.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -148,25 +148,25 @@ class DirectorySync:
 
         Get a list of all of existing directory groups matching the criteria specified.
 
-                Args:
-                    directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
-                    user: Unique identifier of the WorkOS Directory User. This value can be obtained from the WorkOS API.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
+            user: Unique identifier of the WorkOS Directory User. This value can be obtained from the WorkOS API.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[DirectoryGroup]
+        Returns:
+            SyncPage[DirectoryGroup]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -198,19 +198,19 @@ class DirectorySync:
 
         Get the details of an existing Directory Group.
 
-                Args:
-                    id: Unique identifier for the Directory Group.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Directory Group.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    DirectoryGroup
+        Returns:
+            DirectoryGroup
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -234,25 +234,25 @@ class DirectorySync:
 
         Get a list of all of existing Directory Users matching the criteria specified.
 
-                Args:
-                    directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
-                    group: Unique identifier of the WorkOS Directory Group. This value can be obtained from the WorkOS API.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
+            group: Unique identifier of the WorkOS Directory Group. This value can be obtained from the WorkOS API.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[DirectoryUserWithGroups]
+        Returns:
+            SyncPage[DirectoryUserWithGroups]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -284,19 +284,19 @@ class DirectorySync:
 
         Get the details of an existing Directory User.
 
-                Args:
-                    id: Unique identifier for the Directory User.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Directory User.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    DirectoryUserWithGroups
+        Returns:
+            DirectoryUserWithGroups
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -328,25 +328,25 @@ class AsyncDirectorySync:
 
         Get a list of all of your existing directories matching the criteria specified.
 
-                Args:
-                    organization_id: Filter Directories by their associated organization.
-                    search: Searchable text to match against Directory names.
-                    domain: Filter Directories by their associated domain.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: Filter Directories by their associated organization.
+            search: Searchable text to match against Directory names.
+            domain: Filter Directories by their associated domain.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[Directory]
+        Returns:
+            AsyncPage[Directory]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -379,19 +379,19 @@ class AsyncDirectorySync:
 
         Get the details of an existing directory.
 
-                Args:
-                    id: Unique identifier for the Directory.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Directory.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    Directory
+        Returns:
+            Directory
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -410,15 +410,15 @@ class AsyncDirectorySync:
 
         Permanently deletes an existing directory. It cannot be undone.
 
-                Args:
-                    id: Unique identifier for the Directory.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Directory.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -441,25 +441,25 @@ class AsyncDirectorySync:
 
         Get a list of all of existing directory groups matching the criteria specified.
 
-                Args:
-                    directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
-                    user: Unique identifier of the WorkOS Directory User. This value can be obtained from the WorkOS API.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
+            user: Unique identifier of the WorkOS Directory User. This value can be obtained from the WorkOS API.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[DirectoryGroup]
+        Returns:
+            AsyncPage[DirectoryGroup]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -491,19 +491,19 @@ class AsyncDirectorySync:
 
         Get the details of an existing Directory Group.
 
-                Args:
-                    id: Unique identifier for the Directory Group.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Directory Group.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    DirectoryGroup
+        Returns:
+            DirectoryGroup
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -527,25 +527,25 @@ class AsyncDirectorySync:
 
         Get a list of all of existing Directory Users matching the criteria specified.
 
-                Args:
-                    directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
-                    group: Unique identifier of the WorkOS Directory Group. This value can be obtained from the WorkOS API.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
+            group: Unique identifier of the WorkOS Directory Group. This value can be obtained from the WorkOS API.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[DirectoryUserWithGroups]
+        Returns:
+            AsyncPage[DirectoryUserWithGroups]
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -577,19 +577,19 @@ class AsyncDirectorySync:
 
         Get the details of an existing Directory User.
 
-                Args:
-                    id: Unique identifier for the Directory User.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier for the Directory User.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    DirectoryUserWithGroups
+        Returns:
+            DirectoryUserWithGroups
 
-                Raises:
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",

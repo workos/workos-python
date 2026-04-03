@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from .directory_group import DirectoryGroup
 from .directory_user_with_groups_email import DirectoryUserWithGroupsEmail
@@ -98,9 +99,7 @@ class DirectoryUserWithGroups:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing DirectoryUserWithGroups: {e!s}"
-            ) from e
+            _raise_deserialize_error("DirectoryUserWithGroups", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -114,15 +113,13 @@ class DirectoryUserWithGroups:
             result["email"] = self.email
         else:
             result["email"] = None
-        result["state"] = self.state
+        result["state"] = (
+            self.state.value if isinstance(self.state, Enum) else self.state
+        )
         result["raw_attributes"] = self.raw_attributes
         result["custom_attributes"] = self.custom_attributes
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         result["groups"] = [item.to_dict() for item in self.groups]
         if self.first_name is not None:
             result["first_name"] = self.first_name

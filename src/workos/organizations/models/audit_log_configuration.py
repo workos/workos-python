@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from .audit_log_configuration_log_stream import AuditLogConfigurationLogStream
 from workos.common.models import AuditLogConfigurationState
@@ -39,16 +40,16 @@ class AuditLogConfiguration:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing AuditLogConfiguration: {e!s}"
-            ) from e
+            _raise_deserialize_error("AuditLogConfiguration", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["organization_id"] = self.organization_id
         result["retention_period_in_days"] = self.retention_period_in_days
-        result["state"] = self.state
+        result["state"] = (
+            self.state.value if isinstance(self.state, Enum) else self.state
+        )
         if self.log_stream is not None:
             result["log_stream"] = self.log_stream.to_dict()
         return result

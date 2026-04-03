@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -43,9 +43,7 @@ class CreateAuthorizationResource:
                 parent_resource_type_slug=data.get("parent_resource_type_slug"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing CreateAuthorizationResource: {e!s}"
-            ) from e
+            _raise_deserialize_error("CreateAuthorizationResource", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

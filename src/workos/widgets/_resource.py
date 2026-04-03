@@ -30,22 +30,22 @@ class Widgets:
 
         Generate a widget token scoped to an organization and user with the specified scopes.
 
-                Args:
-                    organization_id: The ID of the organization to scope the widget session to.
-                    user_id: The ID of the user to issue the widget session token for.
-                    scopes: The scopes to grant the widget session.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization to scope the widget session to.
+            user_id: The ID of the user to issue the widget session token for.
+            scopes: The scopes to grant the widget session.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    WidgetSessionTokenResponse
+        Returns:
+            WidgetSessionTokenResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -83,22 +83,22 @@ class AsyncWidgets:
 
         Generate a widget token scoped to an organization and user with the specified scopes.
 
-                Args:
-                    organization_id: The ID of the organization to scope the widget session to.
-                    user_id: The ID of the user to issue the widget session token for.
-                    scopes: The scopes to grant the widget session.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The ID of the organization to scope the widget session to.
+            user_id: The ID of the user to issue the widget session token for.
+            scopes: The scopes to grant the widget session.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    WidgetSessionTokenResponse
+        Returns:
+            WidgetSessionTokenResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v

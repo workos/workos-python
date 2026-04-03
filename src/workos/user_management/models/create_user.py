@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 from workos.common.models import CreateUserPasswordHashType
 
 
@@ -49,9 +50,7 @@ class CreateUser:
                 external_id=data.get("external_id"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing CreateUser: {e!s}"
-            ) from e
+            _raise_deserialize_error("CreateUser", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -64,7 +63,11 @@ class CreateUser:
         if self.password_hash is not None:
             result["password_hash"] = self.password_hash
         if self.password_hash_type is not None:
-            result["password_hash_type"] = self.password_hash_type
+            result["password_hash_type"] = (
+                self.password_hash_type.value
+                if isinstance(self.password_hash_type, Enum)
+                else self.password_hash_type
+            )
         if self.first_name is not None:
             result["first_name"] = self.first_name
         else:

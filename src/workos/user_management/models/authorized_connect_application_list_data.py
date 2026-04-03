@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List, Literal
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from workos.connect.models import ConnectApplication
 
@@ -35,9 +35,7 @@ class AuthorizedConnectApplicationListData:
                 ),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing AuthorizedConnectApplicationListData: {e!s}"
-            ) from e
+            _raise_deserialize_error("AuthorizedConnectApplicationListData", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

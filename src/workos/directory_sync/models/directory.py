@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from .directory_metadata import DirectoryMetadata
 from workos.common.models import DirectoryState
@@ -61,9 +62,7 @@ class Directory:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing Directory: {e!s}"
-            ) from e
+            _raise_deserialize_error("Directory", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -72,15 +71,13 @@ class Directory:
         result["id"] = self.id
         result["organization_id"] = self.organization_id
         result["external_key"] = self.external_key
-        result["type"] = self.type
-        result["state"] = self.state
+        result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
+        result["state"] = (
+            self.state.value if isinstance(self.state, Enum) else self.state
+        )
         result["name"] = self.name
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         if self.domain is not None:
             result["domain"] = self.domain
         if self.metadata is not None:

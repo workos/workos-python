@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Dict
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 from workos.common.models import OrganizationDomainDataState
 
 
@@ -26,13 +27,13 @@ class OrganizationDomainData:
                 state=OrganizationDomainDataState(data["state"]),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing OrganizationDomainData: {e!s}"
-            ) from e
+            _raise_deserialize_error("OrganizationDomainData", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["domain"] = self.domain
-        result["state"] = self.state
+        result["state"] = (
+            self.state.value if isinstance(self.state, Enum) else self.state
+        )
         return result

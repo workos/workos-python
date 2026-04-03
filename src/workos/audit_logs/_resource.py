@@ -38,18 +38,18 @@ class AuditLogs:
 
         Get the configured event retention period for the given Organization.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogsRetentionJson
+        Returns:
+            AuditLogsRetentionJson
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -69,20 +69,20 @@ class AuditLogs:
 
         Set the event retention period for the given Organization.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    retention_period_in_days: The number of days Audit Log events will be retained. Valid values are `30` and `365`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            retention_period_in_days: The number of days Audit Log events will be retained. Valid values are `30` and `365`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogsRetentionJson
+        Returns:
+            AuditLogsRetentionJson
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "retention_period_in_days": retention_period_in_days,
@@ -108,22 +108,22 @@ class AuditLogs:
 
         Get a list of all Audit Log actions in the current environment.
 
-                Args:
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[AuditLogActionJson]
+        Returns:
+            SyncPage[AuditLogActionJson]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -157,23 +157,23 @@ class AuditLogs:
 
         Get a list of all schemas for the Audit Logs action identified by `:name`.
 
-                Args:
-                    action_name: The name of the Audit Log action.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            action_name: The name of the Audit Log action.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[AuditLogSchemaJson]
+        Returns:
+            SyncPage[AuditLogSchemaJson]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -206,21 +206,21 @@ class AuditLogs:
 
         Creates a new Audit Log schema used to validate the payload of incoming Audit Log Events. If the `action` does not exist, it will also be created.
 
-                Args:
-                    action_name: The name of the Audit Log action.
-                    actor: The metadata schema for the actor.
-                    targets: The list of targets for the schema.
-                    metadata: Optional JSON schema for event metadata.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            action_name: The name of the Audit Log action.
+            actor: The metadata schema for the actor.
+            targets: The list of targets for the schema.
+            metadata: Optional JSON schema for event metadata.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogSchemaJson
+        Returns:
+            AuditLogSchemaJson
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -257,22 +257,22 @@ class AuditLogs:
 
         Idempotency keys expire after 24 hours. The API will generate a new response if you submit a request with an expired key.
 
-                Args:
-                    organization_id: The unique ID of the Organization.
-                    event: The audit log event to create.
-                    idempotency_key: Optional idempotency key for safe retries.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The unique ID of the Organization.
+            event: The audit log event to create.
+            idempotency_key: Optional idempotency key for safe retries.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogEventCreateResponse
+        Returns:
+            AuditLogEventCreateResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "organization_id": organization_id,
@@ -304,25 +304,25 @@ class AuditLogs:
 
         Create an Audit Log Export. Exports are scoped to a single organization within a specified date range.
 
-                Args:
-                    organization_id: The unique ID of the Organization.
-                    range_start: ISO-8601 value for start of the export range.
-                    range_end: ISO-8601 value for end of the export range.
-                    actions: List of actions to filter against.
-                    actors: Deprecated. Use `actor_names` instead.
-                    actor_names: List of actor names to filter against.
-                    actor_ids: List of actor IDs to filter against.
-                    targets: List of target types to filter against.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The unique ID of the Organization.
+            range_start: ISO-8601 value for start of the export range.
+            range_end: ISO-8601 value for end of the export range.
+            actions: List of actions to filter against.
+            actors: Deprecated. Use `actor_names` instead.
+            actor_names: List of actor names to filter against.
+            actor_ids: List of actor IDs to filter against.
+            targets: List of target types to filter against.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogExportJson
+        Returns:
+            AuditLogExportJson
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -356,18 +356,18 @@ class AuditLogs:
 
         Get an Audit Log Export. The URL will expire after 10 minutes. If the export is needed again at a later time, refetching the export will regenerate the URL.
 
-                Args:
-                    audit_log_export_id: The unique ID of the Audit Log Export.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            audit_log_export_id: The unique ID of the Audit Log Export.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogExportJson
+        Returns:
+            AuditLogExportJson
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -393,18 +393,18 @@ class AsyncAuditLogs:
 
         Get the configured event retention period for the given Organization.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogsRetentionJson
+        Returns:
+            AuditLogsRetentionJson
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -424,20 +424,20 @@ class AsyncAuditLogs:
 
         Set the event retention period for the given Organization.
 
-                Args:
-                    id: Unique identifier of the Organization.
-                    retention_period_in_days: The number of days Audit Log events will be retained. Valid values are `30` and `365`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: Unique identifier of the Organization.
+            retention_period_in_days: The number of days Audit Log events will be retained. Valid values are `30` and `365`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogsRetentionJson
+        Returns:
+            AuditLogsRetentionJson
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "retention_period_in_days": retention_period_in_days,
@@ -463,22 +463,22 @@ class AsyncAuditLogs:
 
         Get a list of all Audit Log actions in the current environment.
 
-                Args:
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[AuditLogActionJson]
+        Returns:
+            AsyncPage[AuditLogActionJson]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -512,23 +512,23 @@ class AsyncAuditLogs:
 
         Get a list of all schemas for the Audit Logs action identified by `:name`.
 
-                Args:
-                    action_name: The name of the Audit Log action.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            action_name: The name of the Audit Log action.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[AuditLogSchemaJson]
+        Returns:
+            AsyncPage[AuditLogSchemaJson]
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -561,21 +561,21 @@ class AsyncAuditLogs:
 
         Creates a new Audit Log schema used to validate the payload of incoming Audit Log Events. If the `action` does not exist, it will also be created.
 
-                Args:
-                    action_name: The name of the Audit Log action.
-                    actor: The metadata schema for the actor.
-                    targets: The list of targets for the schema.
-                    metadata: Optional JSON schema for event metadata.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            action_name: The name of the Audit Log action.
+            actor: The metadata schema for the actor.
+            targets: The list of targets for the schema.
+            metadata: Optional JSON schema for event metadata.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogSchemaJson
+        Returns:
+            AuditLogSchemaJson
 
-                Raises:
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -612,22 +612,22 @@ class AsyncAuditLogs:
 
         Idempotency keys expire after 24 hours. The API will generate a new response if you submit a request with an expired key.
 
-                Args:
-                    organization_id: The unique ID of the Organization.
-                    event: The audit log event to create.
-                    idempotency_key: Optional idempotency key for safe retries.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The unique ID of the Organization.
+            event: The audit log event to create.
+            idempotency_key: Optional idempotency key for safe retries.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogEventCreateResponse
+        Returns:
+            AuditLogEventCreateResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    RateLimitExceededError: If rate limited (429).
-                    AuthenticationError: If the API key is invalid (401).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            RateLimitExceededError: If rate limited (429).
+            AuthenticationError: If the API key is invalid (401).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "organization_id": organization_id,
@@ -659,25 +659,25 @@ class AsyncAuditLogs:
 
         Create an Audit Log Export. Exports are scoped to a single organization within a specified date range.
 
-                Args:
-                    organization_id: The unique ID of the Organization.
-                    range_start: ISO-8601 value for start of the export range.
-                    range_end: ISO-8601 value for end of the export range.
-                    actions: List of actions to filter against.
-                    actors: Deprecated. Use `actor_names` instead.
-                    actor_names: List of actor names to filter against.
-                    actor_ids: List of actor IDs to filter against.
-                    targets: List of target types to filter against.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            organization_id: The unique ID of the Organization.
+            range_start: ISO-8601 value for start of the export range.
+            range_end: ISO-8601 value for end of the export range.
+            actions: List of actions to filter against.
+            actors: Deprecated. Use `actor_names` instead.
+            actor_names: List of actor names to filter against.
+            actor_ids: List of actor IDs to filter against.
+            targets: List of target types to filter against.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogExportJson
+        Returns:
+            AuditLogExportJson
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -711,18 +711,18 @@ class AsyncAuditLogs:
 
         Get an Audit Log Export. The URL will expire after 10 minutes. If the export is needed again at a later time, refetching the export will regenerate the URL.
 
-                Args:
-                    audit_log_export_id: The unique ID of the Audit Log Export.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            audit_log_export_id: The unique ID of the Audit Log Export.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AuditLogExportJson
+        Returns:
+            AuditLogExportJson
 
-                Raises:
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",

@@ -30,35 +30,35 @@ class AdminPortal:
     ) -> PortalLinkResponse:
         """Generate a Portal Link
 
-        Generate a Portal Link scoped to an Organization.
+          Generate a Portal Link scoped to an Organization.
 
-                Args:
-                    return_url: The URL to go to when an admin clicks on your logo in the Admin Portal. If not specified, the return URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used.
-                    success_url: The URL to redirect the admin to when they finish setup. If not specified, the success URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used.
-                    organization: An [Organization](https://workos.com/docs/reference/organization) identifier.
-                    intent:
-              The intent of the Admin Portal.
-                - `sso` - Launch Admin Portal for creating SSO connections
-                - `dsync` - Launch Admin Portal for creating Directory Sync connections
-                - `audit_logs` - Launch Admin Portal for viewing Audit Logs
-                - `log_streams` - Launch Admin Portal for creating Log Streams
-                - `domain_verification` - Launch Admin Portal for Domain Verification
-                - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
-                - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key
-                    intent_options: Options to configure the Admin Portal based on the intent.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+          Args:
+              return_url: The URL to go to when an admin clicks on your logo in the Admin Portal. If not specified, the return URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used.
+              success_url: The URL to redirect the admin to when they finish setup. If not specified, the success URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used.
+              organization: An [Organization](https://workos.com/docs/reference/organization) identifier.
+              intent:
+        The intent of the Admin Portal.
+          - `sso` - Launch Admin Portal for creating SSO connections
+          - `dsync` - Launch Admin Portal for creating Directory Sync connections
+          - `audit_logs` - Launch Admin Portal for viewing Audit Logs
+          - `log_streams` - Launch Admin Portal for creating Log Streams
+          - `domain_verification` - Launch Admin Portal for Domain Verification
+          - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
+          - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key
+              intent_options: Options to configure the Admin Portal based on the intent.
+              request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    PortalLinkResponse
+          Returns:
+              PortalLinkResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+          Raises:
+              BadRequestError: If the request is malformed (400).
+              AuthorizationError: If the request is forbidden (403).
+              NotFoundError: If the resource is not found (404).
+              UnprocessableEntityError: If the request data is unprocessable (422).
+              AuthenticationError: If the API key is invalid (401).
+              RateLimitExceededError: If rate limited (429).
+              ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -100,35 +100,35 @@ class AsyncAdminPortal:
     ) -> PortalLinkResponse:
         """Generate a Portal Link
 
-        Generate a Portal Link scoped to an Organization.
+          Generate a Portal Link scoped to an Organization.
 
-                Args:
-                    return_url: The URL to go to when an admin clicks on your logo in the Admin Portal. If not specified, the return URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used.
-                    success_url: The URL to redirect the admin to when they finish setup. If not specified, the success URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used.
-                    organization: An [Organization](https://workos.com/docs/reference/organization) identifier.
-                    intent:
-              The intent of the Admin Portal.
-                - `sso` - Launch Admin Portal for creating SSO connections
-                - `dsync` - Launch Admin Portal for creating Directory Sync connections
-                - `audit_logs` - Launch Admin Portal for viewing Audit Logs
-                - `log_streams` - Launch Admin Portal for creating Log Streams
-                - `domain_verification` - Launch Admin Portal for Domain Verification
-                - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
-                - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key
-                    intent_options: Options to configure the Admin Portal based on the intent.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+          Args:
+              return_url: The URL to go to when an admin clicks on your logo in the Admin Portal. If not specified, the return URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used.
+              success_url: The URL to redirect the admin to when they finish setup. If not specified, the success URL configured on the [Redirects](https://dashboard.workos.com/redirects) page will be used.
+              organization: An [Organization](https://workos.com/docs/reference/organization) identifier.
+              intent:
+        The intent of the Admin Portal.
+          - `sso` - Launch Admin Portal for creating SSO connections
+          - `dsync` - Launch Admin Portal for creating Directory Sync connections
+          - `audit_logs` - Launch Admin Portal for viewing Audit Logs
+          - `log_streams` - Launch Admin Portal for creating Log Streams
+          - `domain_verification` - Launch Admin Portal for Domain Verification
+          - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
+          - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key
+              intent_options: Options to configure the Admin Portal based on the intent.
+              request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    PortalLinkResponse
+          Returns:
+              PortalLinkResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthorizationError: If the request is forbidden (403).
-                    NotFoundError: If the resource is not found (404).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+          Raises:
+              BadRequestError: If the request is malformed (400).
+              AuthorizationError: If the request is forbidden (403).
+              NotFoundError: If the resource is not found (404).
+              UnprocessableEntityError: If the request data is unprocessable (422).
+              AuthenticationError: If the API key is invalid (401).
+              RateLimitExceededError: If rate limited (429).
+              ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v

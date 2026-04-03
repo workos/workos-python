@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from .organization_domain_data import OrganizationDomainData
 
@@ -47,9 +47,7 @@ class OrganizationDto:
                 external_id=data.get("external_id"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing OrganizationDto: {e!s}"
-            ) from e
+            _raise_deserialize_error("OrganizationDto", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

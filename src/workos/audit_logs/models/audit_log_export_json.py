@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import Any, Dict, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 from workos.common.models import AuditLogExportJsonState
 
 
@@ -40,22 +41,18 @@ class AuditLogExportJson:
                 url=data.get("url"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing AuditLogExportJson: {e!s}"
-            ) from e
+            _raise_deserialize_error("AuditLogExportJson", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
-        result["state"] = self.state
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["state"] = (
+            self.state.value if isinstance(self.state, Enum) else self.state
+        )
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         if self.url is not None:
             result["url"] = self.url
         else:

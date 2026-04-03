@@ -38,24 +38,24 @@ class Radar:
 
         Assess a request for risk using the Radar engine and receive a verdict.
 
-                Args:
-                    ip_address: The IP address of the request to assess.
-                    user_agent: The user agent string of the request to assess.
-                    email: The email address of the user making the request.
-                    auth_method: The authentication method being used.
-                    action: The action being performed.
-                    device_fingerprint: An optional device fingerprint for the request.
-                    bot_score: An optional bot detection score for the request.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            ip_address: The IP address of the request to assess.
+            user_agent: The user agent string of the request to assess.
+            email: The email address of the user making the request.
+            auth_method: The authentication method being used.
+            action: The action being performed.
+            device_fingerprint: An optional device fingerprint for the request.
+            bot_score: An optional bot detection score for the request.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    RadarStandaloneResponse
+        Returns:
+            RadarStandaloneResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -90,18 +90,18 @@ class Radar:
 
         You may optionally inform Radar that an authentication attempt or challenge was successful using this endpoint. Some Radar controls depend on tracking recent successful attempts, such as impossible travel.
 
-                Args:
-                    id: The unique identifier of the Radar attempt to update.
-                    challenge_status: Set to `"success"` to mark the challenge as completed.
-                    attempt_status: Set to `"success"` to mark the authentication attempt as successful.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique identifier of the Radar attempt to update.
+            challenge_status: Set to `"success"` to mark the challenge as completed.
+            attempt_status: Set to `"success"` to mark the authentication attempt as successful.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -130,20 +130,20 @@ class Radar:
 
         Add an entry to a Radar list.
 
-                Args:
-                    type: The type of the Radar list (e.g. ip_address, domain, email).
-                    action: The list action indicating whether to add the entry to the allow or block list.
-                    entry: The value to add to the list. Must match the format of the list type (e.g. a valid IP address for `ip_address`, a valid email for `email`).
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            type: The type of the Radar list (e.g. ip_address, domain, email).
+            action: The list action indicating whether to add the entry to the allow or block list.
+            entry: The value to add to the list. Must match the format of the list type (e.g. a valid IP address for `ip_address`, a valid email for `email`).
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    RadarListEntryAlreadyPresentResponse
+        Returns:
+            RadarListEntryAlreadyPresentResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "entry": entry,
@@ -168,18 +168,18 @@ class Radar:
 
         Remove an entry from a Radar list.
 
-                Args:
-                    type: The type of the Radar list (e.g. ip_address, domain, email).
-                    action: The list action indicating whether to remove the entry from the allow or block list.
-                    entry: The value to remove from the list. Must match an existing entry.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            type: The type of the Radar list (e.g. ip_address, domain, email).
+            action: The list action indicating whether to remove the entry from the allow or block list.
+            entry: The value to remove from the list. Must match an existing entry.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "entry": entry,
@@ -214,24 +214,24 @@ class AsyncRadar:
 
         Assess a request for risk using the Radar engine and receive a verdict.
 
-                Args:
-                    ip_address: The IP address of the request to assess.
-                    user_agent: The user agent string of the request to assess.
-                    email: The email address of the user making the request.
-                    auth_method: The authentication method being used.
-                    action: The action being performed.
-                    device_fingerprint: An optional device fingerprint for the request.
-                    bot_score: An optional bot detection score for the request.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            ip_address: The IP address of the request to assess.
+            user_agent: The user agent string of the request to assess.
+            email: The email address of the user making the request.
+            auth_method: The authentication method being used.
+            action: The action being performed.
+            device_fingerprint: An optional device fingerprint for the request.
+            bot_score: An optional bot detection score for the request.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    RadarStandaloneResponse
+        Returns:
+            RadarStandaloneResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -266,18 +266,18 @@ class AsyncRadar:
 
         You may optionally inform Radar that an authentication attempt or challenge was successful using this endpoint. Some Radar controls depend on tracking recent successful attempts, such as impossible travel.
 
-                Args:
-                    id: The unique identifier of the Radar attempt to update.
-                    challenge_status: Set to `"success"` to mark the challenge as completed.
-                    attempt_status: Set to `"success"` to mark the authentication attempt as successful.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            id: The unique identifier of the Radar attempt to update.
+            challenge_status: Set to `"success"` to mark the challenge as completed.
+            attempt_status: Set to `"success"` to mark the authentication attempt as successful.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -306,20 +306,20 @@ class AsyncRadar:
 
         Add an entry to a Radar list.
 
-                Args:
-                    type: The type of the Radar list (e.g. ip_address, domain, email).
-                    action: The list action indicating whether to add the entry to the allow or block list.
-                    entry: The value to add to the list. Must match the format of the list type (e.g. a valid IP address for `ip_address`, a valid email for `email`).
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            type: The type of the Radar list (e.g. ip_address, domain, email).
+            action: The list action indicating whether to add the entry to the allow or block list.
+            entry: The value to add to the list. Must match the format of the list type (e.g. a valid IP address for `ip_address`, a valid email for `email`).
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    RadarListEntryAlreadyPresentResponse
+        Returns:
+            RadarListEntryAlreadyPresentResponse
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "entry": entry,
@@ -344,18 +344,18 @@ class AsyncRadar:
 
         Remove an entry from a Radar list.
 
-                Args:
-                    type: The type of the Radar list (e.g. ip_address, domain, email).
-                    action: The list action indicating whether to remove the entry from the allow or block list.
-                    entry: The value to remove from the list. Must match an existing entry.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            type: The type of the Radar list (e.g. ip_address, domain, email).
+            action: The list action indicating whether to remove the entry from the allow or block list.
+            entry: The value to remove from the list. Must match an existing entry.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    NotFoundError: If the resource is not found (404).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "entry": entry,

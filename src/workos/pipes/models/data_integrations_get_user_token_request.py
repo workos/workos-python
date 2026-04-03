@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 
 @dataclass(slots=True)
@@ -25,9 +25,7 @@ class DataIntegrationsGetUserTokenRequest:
                 organization_id=data.get("organization_id"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing DataIntegrationsGetUserTokenRequest: {e!s}"
-            ) from e
+            _raise_deserialize_error("DataIntegrationsGetUserTokenRequest", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

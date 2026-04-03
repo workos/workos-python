@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from typing import Any, Dict, Literal, Optional
-from workos._errors import WorkOSError
-from workos._types import _parse_datetime
+from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 from workos.common.models import OrganizationDomainState
 from workos.common.models import OrganizationDomainVerificationStrategy
 
@@ -57,9 +58,7 @@ class OrganizationDomain:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing OrganizationDomain: {e!s}"
-            ) from e
+            _raise_deserialize_error("OrganizationDomain", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -68,18 +67,20 @@ class OrganizationDomain:
         result["id"] = self.id
         result["organization_id"] = self.organization_id
         result["domain"] = self.domain
-        result["created_at"] = self.created_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
-        result["updated_at"] = self.updated_at.isoformat(
-            timespec="milliseconds"
-        ).replace("+00:00", "Z")
+        result["created_at"] = _format_datetime(self.created_at)
+        result["updated_at"] = _format_datetime(self.updated_at)
         if self.state is not None:
-            result["state"] = self.state
+            result["state"] = (
+                self.state.value if isinstance(self.state, Enum) else self.state
+            )
         if self.verification_prefix is not None:
             result["verification_prefix"] = self.verification_prefix
         if self.verification_token is not None:
             result["verification_token"] = self.verification_token
         if self.verification_strategy is not None:
-            result["verification_strategy"] = self.verification_strategy
+            result["verification_strategy"] = (
+                self.verification_strategy.value
+                if isinstance(self.verification_strategy, Enum)
+                else self.verification_strategy
+            )
         return result

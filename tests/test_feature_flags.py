@@ -15,9 +15,11 @@ from workos.feature_flags.models import (
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -216,6 +218,28 @@ class TestFeatureFlags:
         finally:
             workos.close()
 
+    def test_disable_feature_flag_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.feature_flags.disable_feature_flag("test_slug")
+        finally:
+            workos.close()
+
+    def test_disable_feature_flag_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                workos.feature_flags.disable_feature_flag("test_slug")
+        finally:
+            workos.close()
+
 
 @pytest.mark.asyncio
 class TestAsyncFeatureFlags:
@@ -403,5 +427,27 @@ class TestAsyncFeatureFlags:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
                 await workos.feature_flags.list_feature_flags()
+        finally:
+            await workos.close()
+
+    async def test_disable_feature_flag_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.feature_flags.disable_feature_flag("test_slug")
+        finally:
+            await workos.close()
+
+    async def test_disable_feature_flag_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                await workos.feature_flags.disable_feature_flag("test_slug")
         finally:
             await workos.close()

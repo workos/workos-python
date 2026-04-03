@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, List, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 from workos.common.models import WidgetSessionTokenScopes
 
 
@@ -32,9 +33,7 @@ class WidgetSessionToken:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing WidgetSessionToken: {e!s}"
-            ) from e
+            _raise_deserialize_error("WidgetSessionToken", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -43,5 +42,7 @@ class WidgetSessionToken:
         if self.user_id is not None:
             result["user_id"] = self.user_id
         if self.scopes is not None:
-            result["scopes"] = self.scopes
+            result["scopes"] = [
+                item.value if isinstance(item, Enum) else item for item in self.scopes
+            ]
         return result

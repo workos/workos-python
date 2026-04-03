@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from .data_integrations_list_response_data_connected_account import (
     DataIntegrationsListResponseDataConnectedAccount,
@@ -65,9 +66,7 @@ class DataIntegrationsListResponseData:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing DataIntegrationsListResponseData: {e!s}"
-            ) from e
+            _raise_deserialize_error("DataIntegrationsListResponseData", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -86,7 +85,9 @@ class DataIntegrationsListResponseData:
             result["scopes"] = self.scopes
         else:
             result["scopes"] = None
-        result["ownership"] = self.ownership
+        result["ownership"] = (
+            self.ownership.value if isinstance(self.ownership, Enum) else self.ownership
+        )
         result["created_at"] = self.created_at
         result["updated_at"] = self.updated_at
         if self.connected_account is not None:

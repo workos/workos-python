@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import WorkOSError
+from workos._types import _raise_deserialize_error
 
 from workos.authorization.models import SlimRole
 from workos.common.models import ProfileConnectionType
@@ -72,9 +73,7 @@ class Profile:
                 custom_attributes=data.get("custom_attributes"),
             )
         except (KeyError, ValueError) as e:
-            raise WorkOSError(
-                f"Unexpected API response while parsing Profile: {e!s}"
-            ) from e
+            _raise_deserialize_error("Profile", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -86,7 +85,11 @@ class Profile:
         else:
             result["organization_id"] = None
         result["connection_id"] = self.connection_id
-        result["connection_type"] = self.connection_type
+        result["connection_type"] = (
+            self.connection_type.value
+            if isinstance(self.connection_type, Enum)
+            else self.connection_type
+        )
         result["idp_id"] = self.idp_id
         result["email"] = self.email
         if self.first_name is not None:

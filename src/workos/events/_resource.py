@@ -36,26 +36,26 @@ class Events:
 
         List events for the current environment.
 
-                Args:
-                    events: Filter events by one or more event types (e.g. `dsync.user.created`).
-                    range_start: ISO-8601 date string to filter events created after this date.
-                    range_end: ISO-8601 date string to filter events created before this date.
-                    organization_id: Filter events by the [Organization](https://workos.com/docs/reference/organization) that the event is associated with.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            events: Filter events by one or more event types (e.g. `dsync.user.created`).
+            range_start: ISO-8601 date string to filter events created after this date.
+            range_end: ISO-8601 date string to filter events created before this date.
+            organization_id: Filter events by the [Organization](https://workos.com/docs/reference/organization) that the event is associated with.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    SyncPage[EventSchema]
+        Returns:
+            SyncPage[EventSchema]
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -103,26 +103,26 @@ class AsyncEvents:
 
         List events for the current environment.
 
-                Args:
-                    events: Filter events by one or more event types (e.g. `dsync.user.created`).
-                    range_start: ISO-8601 date string to filter events created after this date.
-                    range_end: ISO-8601 date string to filter events created before this date.
-                    organization_id: Filter events by the [Organization](https://workos.com/docs/reference/organization) that the event is associated with.
-                    limit: Maximum number of records to return.
-                    before: Pagination cursor for previous page.
-                    after: Pagination cursor for next page.
-                    order: Sort order.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+        Args:
+            events: Filter events by one or more event types (e.g. `dsync.user.created`).
+            range_start: ISO-8601 date string to filter events created after this date.
+            range_end: ISO-8601 date string to filter events created before this date.
+            organization_id: Filter events by the [Organization](https://workos.com/docs/reference/organization) that the event is associated with.
+            limit: Maximum number of records to return (1-100, default: 10).
+            before: Pagination cursor for previous page.
+            after: Pagination cursor for next page.
+            order: Sort order.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-                Returns:
-                    AsyncPage[EventSchema]
+        Returns:
+            AsyncPage[EventSchema]
 
-                Raises:
-                    BadRequestError: If the request is malformed (400).
-                    UnprocessableEntityError: If the request data is unprocessable (422).
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v

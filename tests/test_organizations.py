@@ -14,9 +14,11 @@ from workos.organizations.models import (
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -172,6 +174,28 @@ class TestOrganizations:
         finally:
             workos.close()
 
+    def test_create_organizations_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.organizations.create_organizations(name="test_name")
+        finally:
+            workos.close()
+
+    def test_create_organizations_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                workos.organizations.create_organizations(name="test_name")
+        finally:
+            workos.close()
+
 
 @pytest.mark.asyncio
 class TestAsyncOrganizations:
@@ -312,5 +336,27 @@ class TestAsyncOrganizations:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
                 await workos.organizations.list_organizations()
+        finally:
+            await workos.close()
+
+    async def test_create_organizations_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.organizations.create_organizations(name="test_name")
+        finally:
+            await workos.close()
+
+    async def test_create_organizations_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                await workos.organizations.create_organizations(name="test_name")
         finally:
             await workos.close()

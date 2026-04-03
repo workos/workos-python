@@ -38,14 +38,18 @@ class TestActions:
     def test_verify_header_valid(self):
         sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, SECRET)
         self.actions.verify_header(
-            payload=SAMPLE_ACTION_PAYLOAD, sig_header=sig, secret=SECRET,
+            payload=SAMPLE_ACTION_PAYLOAD,
+            sig_header=sig,
+            secret=SECRET,
         )
 
     def test_verify_header_invalid_signature(self):
         sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, SECRET)
         with pytest.raises(ValueError, match="does not match"):
             self.actions.verify_header(
-                payload='{"tampered": true}', sig_header=sig, secret=SECRET,
+                payload='{"tampered": true}',
+                sig_header=sig,
+                secret=SECRET,
             )
 
     def test_verify_header_stale_timestamp(self):
@@ -53,32 +57,44 @@ class TestActions:
         sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, SECRET, old_ts)
         with pytest.raises(ValueError, match="tolerance zone"):
             self.actions.verify_header(
-                payload=SAMPLE_ACTION_PAYLOAD, sig_header=sig, secret=SECRET, tolerance=30,
+                payload=SAMPLE_ACTION_PAYLOAD,
+                sig_header=sig,
+                secret=SECRET,
+                tolerance=30,
             )
 
     def test_verify_header_custom_tolerance(self):
         old_ts = int((time.time() - 10) * 1000)
         sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, SECRET, old_ts)
         self.actions.verify_header(
-            payload=SAMPLE_ACTION_PAYLOAD, sig_header=sig, secret=SECRET, tolerance=60,
+            payload=SAMPLE_ACTION_PAYLOAD,
+            sig_header=sig,
+            secret=SECRET,
+            tolerance=60,
         )
 
     def test_verify_header_malformed_header(self):
         with pytest.raises(ValueError, match="Unable to extract"):
             self.actions.verify_header(
-                payload=SAMPLE_ACTION_PAYLOAD, sig_header="invalid-header", secret=SECRET,
+                payload=SAMPLE_ACTION_PAYLOAD,
+                sig_header="invalid-header",
+                secret=SECRET,
             )
 
     def test_verify_header_bytes_payload(self):
         sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, SECRET)
         self.actions.verify_header(
-            payload=SAMPLE_ACTION_PAYLOAD.encode("utf-8"), sig_header=sig, secret=SECRET,
+            payload=SAMPLE_ACTION_PAYLOAD.encode("utf-8"),
+            sig_header=sig,
+            secret=SECRET,
         )
 
     def test_construct_action_valid(self):
         sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, SECRET)
         result = self.actions.construct_action(
-            payload=SAMPLE_ACTION_PAYLOAD, sig_header=sig, secret=SECRET,
+            payload=SAMPLE_ACTION_PAYLOAD,
+            sig_header=sig,
+            secret=SECRET,
         )
         assert result["type"] == "authentication"
         assert result["user"]["id"] == "user_01"
@@ -87,12 +103,16 @@ class TestActions:
         sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, "wrong_secret")
         with pytest.raises(ValueError):
             self.actions.construct_action(
-                payload=SAMPLE_ACTION_PAYLOAD, sig_header=sig, secret=SECRET,
+                payload=SAMPLE_ACTION_PAYLOAD,
+                sig_header=sig,
+                secret=SECRET,
             )
 
     def test_sign_response_authentication_allow(self):
         result = self.actions.sign_response(
-            action_type="authentication", verdict="Allow", secret=SECRET,
+            action_type="authentication",
+            verdict="Allow",
+            secret=SECRET,
         )
         assert result["object"] == "authentication_action_response"
         assert result["payload"]["verdict"] == "Allow"
@@ -101,8 +121,10 @@ class TestActions:
 
     def test_sign_response_user_registration_deny(self):
         result = self.actions.sign_response(
-            action_type="user_registration", verdict="Deny",
-            error_message="Account suspended", secret=SECRET,
+            action_type="user_registration",
+            verdict="Deny",
+            error_message="Account suspended",
+            secret=SECRET,
         )
         assert result["object"] == "user_registration_action_response"
         assert result["payload"]["verdict"] == "Deny"
@@ -110,13 +132,16 @@ class TestActions:
 
     def test_sign_response_signature_is_verifiable(self):
         result = self.actions.sign_response(
-            action_type="authentication", verdict="Allow", secret=SECRET,
+            action_type="authentication",
+            verdict="Allow",
+            secret=SECRET,
         )
         ts = result["payload"]["timestamp"]
         payload_json = json.dumps(result["payload"], separators=(",", ":"))
         signed_payload = f"{ts}.{payload_json}"
         expected = hmac.new(
-            SECRET.encode("utf-8"), signed_payload.encode("utf-8"),
+            SECRET.encode("utf-8"),
+            signed_payload.encode("utf-8"),
             digestmod=hashlib.sha256,
         ).hexdigest()
         assert result["signature"] == expected
@@ -129,18 +154,24 @@ class TestAsyncActions:
     def test_verify_header_valid(self):
         sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, SECRET)
         self.actions.verify_header(
-            payload=SAMPLE_ACTION_PAYLOAD, sig_header=sig, secret=SECRET,
+            payload=SAMPLE_ACTION_PAYLOAD,
+            sig_header=sig,
+            secret=SECRET,
         )
 
     def test_construct_action_valid(self):
         sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, SECRET)
         result = self.actions.construct_action(
-            payload=SAMPLE_ACTION_PAYLOAD, sig_header=sig, secret=SECRET,
+            payload=SAMPLE_ACTION_PAYLOAD,
+            sig_header=sig,
+            secret=SECRET,
         )
         assert result["type"] == "authentication"
 
     def test_sign_response(self):
         result = self.actions.sign_response(
-            action_type="authentication", verdict="Allow", secret=SECRET,
+            action_type="authentication",
+            verdict="Allow",
+            secret=SECRET,
         )
         assert result["object"] == "authentication_action_response"

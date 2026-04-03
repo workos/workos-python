@@ -19,24 +19,33 @@ from workos.session import (
     unseal_data,
 )
 
+
 def _generate_rsa_key_pair():
     private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     public_key = private_key.public_key()
     return private_key, public_key
 
+
 def _make_jwt(private_key, claims=None, expired=False):
     now = time.time()
     payload = {
-        "sid": "session_01", "org_id": "org_01", "role": "admin",
-        "roles": ["admin"], "permissions": ["read", "write"],
-        "entitlements": ["premium"], "feature_flags": ["beta"],
-        "iat": int(now), "exp": int(now - 300) if expired else int(now + 3600),
+        "sid": "session_01",
+        "org_id": "org_01",
+        "role": "admin",
+        "roles": ["admin"],
+        "permissions": ["read", "write"],
+        "entitlements": ["premium"],
+        "feature_flags": ["beta"],
+        "iat": int(now),
+        "exp": int(now - 300) if expired else int(now + 3600),
     }
     if claims:
         payload.update(claims)
     return pyjwt.encode(payload, private_key, algorithm="RS256")
 
+
 COOKIE_PASSWORD = Fernet.generate_key().decode("utf-8")
+
 
 class TestSealUnseal:
     def test_seal_unseal_roundtrip(self):
@@ -60,10 +69,12 @@ class TestSealUnseal:
         with pytest.raises(Exception):
             unseal_data("not-valid-fernet-data", COOKIE_PASSWORD)
 
+
 class TestSealSessionFromAuthResponse:
     def test_seal_and_unseal(self):
         sealed = seal_session_from_auth_response(
-            access_token="at_123", refresh_token="rt_456",
+            access_token="at_123",
+            refresh_token="rt_456",
             user={"id": "user_01", "email": "test@example.com"},
             cookie_password=COOKIE_PASSWORD,
         )
@@ -73,23 +84,30 @@ class TestSealSessionFromAuthResponse:
 
     def test_seal_without_optional_fields(self):
         sealed = seal_session_from_auth_response(
-            access_token="at_123", refresh_token="rt_456", cookie_password=COOKIE_PASSWORD,
+            access_token="at_123",
+            refresh_token="rt_456",
+            cookie_password=COOKIE_PASSWORD,
         )
         data = unseal_data(sealed, COOKIE_PASSWORD)
         assert "user" not in data
 
     def test_seal_with_impersonator(self):
         sealed = seal_session_from_auth_response(
-            access_token="at_123", refresh_token="rt_456",
-            impersonator={"email": "admin@example.com"}, cookie_password=COOKIE_PASSWORD,
+            access_token="at_123",
+            refresh_token="rt_456",
+            impersonator={"email": "admin@example.com"},
+            cookie_password=COOKIE_PASSWORD,
         )
         data = unseal_data(sealed, COOKIE_PASSWORD)
         assert data["impersonator"]["email"] == "admin@example.com"
 
+
 class TestSession:
     def setup_method(self):
         self.private_key, self.public_key = _generate_rsa_key_pair()
-        self.workos = WorkOS(api_key="sk_test_123", client_id="client_test_123", max_retries=0)
+        self.workos = WorkOS(
+            api_key="sk_test_123", client_id="client_test_123", max_retries=0
+        )
 
     def teardown_method(self):
         self.workos.close()
@@ -112,28 +130,49 @@ class TestSession:
             Session(client=self.workos, session_data="anything", cookie_password="")
 
     def test_session_authenticate_no_session_data(self):
-        session = Session(client=self.workos, session_data="", cookie_password=COOKIE_PASSWORD)
+        session = Session(
+            client=self.workos, session_data="", cookie_password=COOKIE_PASSWORD
+        )
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
-        assert result.reason == AuthenticateWithSessionCookieFailureReason.NO_SESSION_COOKIE_PROVIDED
+        assert (
+            result.reason
+            == AuthenticateWithSessionCookieFailureReason.NO_SESSION_COOKIE_PROVIDED
+        )
 
     def test_session_authenticate_invalid_sealed_data(self):
-        session = Session(client=self.workos, session_data="garbage-data", cookie_password=COOKIE_PASSWORD)
+        session = Session(
+            client=self.workos,
+            session_data="garbage-data",
+            cookie_password=COOKIE_PASSWORD,
+        )
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
-        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE
+        assert (
+            result.reason
+            == AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE
+        )
 
     def test_session_authenticate_no_access_token(self):
         sealed = seal_data({"refresh_token": "rt"}, COOKIE_PASSWORD)
-        session = Session(client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD)
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
-        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE
+        assert (
+            result.reason
+            == AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE
+        )
 
     def test_session_authenticate_success(self):
         token = _make_jwt(self.private_key)
-        sealed = self._make_sealed_session(access_token=token, user={"id": "user_01", "email": "test@example.com"})
-        session = Session(client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD)
+        sealed = self._make_sealed_session(
+            access_token=token, user={"id": "user_01", "email": "test@example.com"}
+        )
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
         session.jwks = self._mock_jwks()
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieSuccessResponse)
@@ -146,23 +185,30 @@ class TestSession:
     def test_session_authenticate_expired_jwt(self):
         token = _make_jwt(self.private_key, expired=True)
         sealed = self._make_sealed_session(access_token=token)
-        session = Session(client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD)
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
         session.jwks = self._mock_jwks()
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
         assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_JWT
 
     def test_session_refresh_invalid_session(self):
-        session = Session(client=self.workos, session_data="garbage", cookie_password=COOKIE_PASSWORD)
+        session = Session(
+            client=self.workos, session_data="garbage", cookie_password=COOKIE_PASSWORD
+        )
         result = session.refresh()
         assert isinstance(result, RefreshWithSessionCookieErrorResponse)
         assert not result.authenticated
 
     def test_session_refresh_missing_refresh_token(self):
         sealed = seal_data({"access_token": "at"}, COOKIE_PASSWORD)
-        session = Session(client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD)
+        session = Session(
+            client=self.workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
         result = session.refresh()
         assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+
 
 @pytest.mark.asyncio
 class TestAsyncSession:
@@ -174,15 +220,22 @@ class TestAsyncSession:
         return mock_jwks
 
     async def test_async_session_authenticate_no_data(self, async_workos):
-        session = AsyncSession(client=async_workos, session_data="", cookie_password=COOKIE_PASSWORD)
+        session = AsyncSession(
+            client=async_workos, session_data="", cookie_password=COOKIE_PASSWORD
+        )
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
 
     async def test_async_session_authenticate_success(self, async_workos):
         private_key, public_key = _generate_rsa_key_pair()
         token = _make_jwt(private_key)
-        sealed = seal_data({"access_token": token, "refresh_token": "rt", "user": {"id": "u1"}}, COOKIE_PASSWORD)
-        session = AsyncSession(client=async_workos, session_data=sealed, cookie_password=COOKIE_PASSWORD)
+        sealed = seal_data(
+            {"access_token": token, "refresh_token": "rt", "user": {"id": "u1"}},
+            COOKIE_PASSWORD,
+        )
+        session = AsyncSession(
+            client=async_workos, session_data=sealed, cookie_password=COOKIE_PASSWORD
+        )
         session.jwks = self._mock_jwks(public_key)
         result = session.authenticate()
         assert isinstance(result, AuthenticateWithSessionCookieSuccessResponse)

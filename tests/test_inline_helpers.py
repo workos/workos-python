@@ -18,67 +18,97 @@ COOKIE_PASSWORD = Fernet.generate_key().decode("utf-8")
 
 class TestSessionCookieInline:
     def test_load_sealed_session(self, workos):
-        session = workos.user_management.load_sealed_session(session_data="sealed-data", cookie_password=COOKIE_PASSWORD)
+        session = workos.user_management.load_sealed_session(
+            session_data="sealed-data", cookie_password=COOKIE_PASSWORD
+        )
         assert isinstance(session, Session)
 
     def test_authenticate_with_session_cookie_no_data(self, workos):
-        result = workos.user_management.authenticate_with_session_cookie(session_data="", cookie_password=COOKIE_PASSWORD)
+        result = workos.user_management.authenticate_with_session_cookie(
+            session_data="", cookie_password=COOKIE_PASSWORD
+        )
         assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
-        assert result.reason == AuthenticateWithSessionCookieFailureReason.NO_SESSION_COOKIE_PROVIDED
+        assert (
+            result.reason
+            == AuthenticateWithSessionCookieFailureReason.NO_SESSION_COOKIE_PROVIDED
+        )
 
     def test_authenticate_with_session_cookie_invalid(self, workos):
-        result = workos.user_management.authenticate_with_session_cookie(session_data="garbage", cookie_password=COOKIE_PASSWORD)
+        result = workos.user_management.authenticate_with_session_cookie(
+            session_data="garbage", cookie_password=COOKIE_PASSWORD
+        )
         assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
-        assert result.reason == AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE
+        assert (
+            result.reason
+            == AuthenticateWithSessionCookieFailureReason.INVALID_SESSION_COOKIE
+        )
 
 
 @pytest.mark.asyncio
 class TestAsyncSessionCookieInline:
     async def test_load_sealed_session(self, async_workos):
-        session = async_workos.user_management.load_sealed_session(session_data="sealed-data", cookie_password=COOKIE_PASSWORD)
+        session = async_workos.user_management.load_sealed_session(
+            session_data="sealed-data", cookie_password=COOKIE_PASSWORD
+        )
         assert isinstance(session, AsyncSession)
 
     async def test_authenticate_with_session_cookie_no_data(self, async_workos):
-        result = async_workos.user_management.authenticate_with_session_cookie(session_data="", cookie_password=COOKIE_PASSWORD)
+        result = async_workos.user_management.authenticate_with_session_cookie(
+            session_data="", cookie_password=COOKIE_PASSWORD
+        )
         assert isinstance(result, AuthenticateWithSessionCookieErrorResponse)
 
 
 class TestAuthKitPKCEAuthorizationUrl:
     def test_returns_required_keys(self, workos):
-        result = workos.user_management.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback")
+        result = workos.user_management.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback"
+        )
         assert "url" in result
         assert "state" in result
         assert "code_verifier" in result
 
     def test_url_contains_pkce_params(self, workos):
-        result = workos.user_management.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback")
+        result = workos.user_management.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback"
+        )
         assert "code_challenge=" in result["url"]
         assert "code_challenge_method=S256" in result["url"]
 
     def test_code_verifier_length(self, workos):
-        result = workos.user_management.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback")
+        result = workos.user_management.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback"
+        )
         assert len(result["code_verifier"]) == 43
         assert len(result["state"]) == 43
 
     def test_with_provider(self, workos):
-        result = workos.user_management.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback", provider="GoogleOAuth")
+        result = workos.user_management.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback", provider="GoogleOAuth"
+        )
         assert "provider=GoogleOAuth" in result["url"]
 
     def test_with_organization_id(self, workos):
-        result = workos.user_management.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback", organization_id="org_01")
+        result = workos.user_management.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback", organization_id="org_01"
+        )
         assert "organization_id=org_01" in result["url"]
 
 
 @pytest.mark.asyncio
 class TestAsyncAuthKitPKCEAuthorizationUrl:
     async def test_returns_required_keys(self, async_workos):
-        result = await async_workos.user_management.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback")
+        result = await async_workos.user_management.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback"
+        )
         assert "url" in result
         assert "state" in result
         assert "code_verifier" in result
 
     async def test_url_contains_pkce_params(self, async_workos):
-        result = await async_workos.user_management.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback")
+        result = await async_workos.user_management.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback"
+        )
         assert "code_challenge=" in result["url"]
         assert "code_challenge_method=S256" in result["url"]
 
@@ -86,7 +116,9 @@ class TestAsyncAuthKitPKCEAuthorizationUrl:
 class TestAuthKitPKCECodeExchange:
     def test_sends_code_verifier(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = workos.user_management.authenticate_with_code_pkce(code="auth_code_123", code_verifier="test_verifier_abc")
+        result = workos.user_management.authenticate_with_code_pkce(
+            code="auth_code_123", code_verifier="test_verifier_abc"
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         body = json.loads(request.content)
@@ -96,7 +128,9 @@ class TestAuthKitPKCECodeExchange:
 
     def test_includes_client_secret_when_api_key_present(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        workos.user_management.authenticate_with_code_pkce(code="auth_code_123", code_verifier="test_verifier_abc")
+        workos.user_management.authenticate_with_code_pkce(
+            code="auth_code_123", code_verifier="test_verifier_abc"
+        )
         request = httpx_mock.get_request()
         body = json.loads(request.content)
         assert "client_secret" in body
@@ -106,7 +140,9 @@ class TestAuthKitPKCECodeExchange:
 class TestAsyncAuthKitPKCECodeExchange:
     async def test_sends_code_verifier(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = await async_workos.user_management.authenticate_with_code_pkce(code="auth_code_123", code_verifier="test_verifier_abc")
+        result = await async_workos.user_management.authenticate_with_code_pkce(
+            code="auth_code_123", code_verifier="test_verifier_abc"
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         body = json.loads(request.content)
@@ -115,26 +151,34 @@ class TestAsyncAuthKitPKCECodeExchange:
 
 class TestSSOPKCEAuthorizationUrl:
     def test_returns_required_keys(self, workos):
-        result = workos.sso.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback")
+        result = workos.sso.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback"
+        )
         assert "url" in result
         assert "state" in result
         assert "code_verifier" in result
 
     def test_url_contains_pkce_params(self, workos):
-        result = workos.sso.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback")
+        result = workos.sso.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback"
+        )
         assert "code_challenge=" in result["url"]
         assert "code_challenge_method=S256" in result["url"]
         assert "sso/authorize" in result["url"]
 
     def test_with_connection(self, workos):
-        result = workos.sso.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback", connection="conn_01")
+        result = workos.sso.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback", connection="conn_01"
+        )
         assert "connection=conn_01" in result["url"]
 
 
 @pytest.mark.asyncio
 class TestAsyncSSOPKCEAuthorizationUrl:
     async def test_returns_required_keys(self, async_workos):
-        result = await async_workos.sso.get_authorization_url_with_pkce(redirect_uri="https://example.com/callback")
+        result = await async_workos.sso.get_authorization_url_with_pkce(
+            redirect_uri="https://example.com/callback"
+        )
         assert "url" in result
         assert "state" in result
         assert "code_verifier" in result
@@ -143,7 +187,9 @@ class TestAsyncSSOPKCEAuthorizationUrl:
 class TestSSOPKCECodeExchange:
     def test_sends_code_verifier(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("sso_token_response.json"))
-        result = workos.sso.get_profile_and_token_pkce(code="auth_code_123", code_verifier="test_verifier_abc")
+        result = workos.sso.get_profile_and_token_pkce(
+            code="auth_code_123", code_verifier="test_verifier_abc"
+        )
         assert isinstance(result, SSOTokenResponse)
         request = httpx_mock.get_request()
         body = json.loads(request.content)
@@ -152,7 +198,9 @@ class TestSSOPKCECodeExchange:
 
     def test_includes_client_secret_when_api_key_present(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("sso_token_response.json"))
-        workos.sso.get_profile_and_token_pkce(code="auth_code_123", code_verifier="test_verifier_abc")
+        workos.sso.get_profile_and_token_pkce(
+            code="auth_code_123", code_verifier="test_verifier_abc"
+        )
         request = httpx_mock.get_request()
         body = json.loads(request.content)
         assert "client_secret" in body
@@ -162,7 +210,9 @@ class TestSSOPKCECodeExchange:
 class TestAsyncSSOPKCECodeExchange:
     async def test_sends_code_verifier(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("sso_token_response.json"))
-        result = await async_workos.sso.get_profile_and_token_pkce(code="auth_code_123", code_verifier="test_verifier_abc")
+        result = await async_workos.sso.get_profile_and_token_pkce(
+            code="auth_code_123", code_verifier="test_verifier_abc"
+        )
         assert isinstance(result, SSOTokenResponse)
         request = httpx_mock.get_request()
         body = json.loads(request.content)

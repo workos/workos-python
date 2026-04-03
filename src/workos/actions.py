@@ -83,7 +83,10 @@ class Actions:
     ) -> None:
         """Verify the signature of an Actions request."""
         _verify_signature(
-            payload=payload, sig_header=sig_header, secret=secret, tolerance=tolerance,
+            payload=payload,
+            sig_header=sig_header,
+            secret=secret,
+            tolerance=tolerance,
         )
 
     def construct_action(
@@ -96,7 +99,10 @@ class Actions:
     ) -> Dict[str, Any]:
         """Verify and deserialize an Actions request payload."""
         self.verify_header(
-            payload=payload, sig_header=sig_header, secret=secret, tolerance=tolerance,
+            payload=payload,
+            sig_header=sig_header,
+            secret=secret,
+            tolerance=tolerance,
         )
         body = payload.decode("utf-8") if isinstance(payload, bytes) else payload
         return json.loads(body)
@@ -143,7 +149,10 @@ class AsyncActions:
     ) -> None:
         """Verify the signature of an Actions request."""
         _verify_signature(
-            payload=payload, sig_header=sig_header, secret=secret, tolerance=tolerance,
+            payload=payload,
+            sig_header=sig_header,
+            secret=secret,
+            tolerance=tolerance,
         )
 
     def construct_action(
@@ -156,7 +165,10 @@ class AsyncActions:
     ) -> Dict[str, Any]:
         """Verify and deserialize an Actions request payload."""
         self.verify_header(
-            payload=payload, sig_header=sig_header, secret=secret, tolerance=tolerance,
+            payload=payload,
+            sig_header=sig_header,
+            secret=secret,
+            tolerance=tolerance,
         )
         body = payload.decode("utf-8") if isinstance(payload, bytes) else payload
         return json.loads(body)

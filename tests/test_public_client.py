@@ -25,7 +25,8 @@ class TestPublicClient:
         client = create_public_client(client_id="client_test_123")
         try:
             url = client.user_management.get_authorization_url(
-                response_type="code", redirect_uri="https://example.com/callback",
+                response_type="code",
+                redirect_uri="https://example.com/callback",
                 client_id="client_test_123",
             )
             assert "user_management/authorize" in url

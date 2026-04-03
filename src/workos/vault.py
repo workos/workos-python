@@ -302,6 +302,15 @@ class Vault:
         )
         return response
 
+    def describe_object(self, *, object_id: str) -> VaultObject:
+        """Get a Vault object's metadata without decrypting the value."""
+        response = self._client.request(
+            method="get",
+            path=f"vault/v1/kv/{object_id}/metadata",
+            model=VaultObject,
+        )
+        return response
+
     def list_objects(
         self,
         *,
@@ -471,6 +480,14 @@ class AsyncVault:
         response = await self._client.request(
             method="get",
             path=f"vault/v1/kv/name/{name}",
+            model=VaultObject,
+        )
+        return response
+
+    async def describe_object(self, *, object_id: str) -> VaultObject:
+        response = await self._client.request(
+            method="get",
+            path=f"vault/v1/kv/{object_id}/metadata",
             model=VaultObject,
         )
         return response

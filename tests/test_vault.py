@@ -44,9 +44,9 @@ class TestVault:
         assert request.method == "GET"
         assert request.url.path.endswith("/vault/v1/kv/name/my-secret")
 
-    def test_describe_object(self, workos, httpx_mock):
+    def test_get_object_metadata(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("vault_object_metadata.json"))
-        result = workos.vault.describe_object(
+        result = workos.vault.get_object_metadata(
             object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
         )
         assert isinstance(result, VaultObject)
@@ -246,9 +246,9 @@ class TestAsyncVault:
         request = httpx_mock.get_request()
         assert request.url.path.endswith("/vault/v1/kv/name/my-secret")
 
-    async def test_describe_object(self, async_workos, httpx_mock):
+    async def test_get_object_metadata(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("vault_object_metadata.json"))
-        result = await async_workos.vault.describe_object(
+        result = await async_workos.vault.get_object_metadata(
             object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
         )
         assert isinstance(result, VaultObject)

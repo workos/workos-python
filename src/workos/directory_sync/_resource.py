@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOS, WorkOS
+    from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
 from .models import Directory, DirectoryGroup, DirectoryUserWithGroups
@@ -16,7 +16,7 @@ from .._pagination import AsyncPage, SyncPage
 class DirectorySync:
     """Directory Sync API resources."""
 
-    def __init__(self, client: "WorkOS") -> None:
+    def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
     def list_directories(
@@ -309,7 +309,7 @@ class DirectorySync:
 class AsyncDirectorySync:
     """Directory Sync API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOS") -> None:
+    def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
     async def list_directories(

@@ -3,7 +3,7 @@
 import json
 
 import pytest
-from workos import WorkOS, AsyncWorkOS
+from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.authorization.models import (
@@ -728,7 +728,9 @@ class TestAuthorization:
             )
 
     def test_check_organization_membership_not_found(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -740,7 +742,9 @@ class TestAuthorization:
             workos.close()
 
     def test_check_organization_membership_rate_limited(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(
                 status_code=429,
@@ -756,7 +760,9 @@ class TestAuthorization:
             workos.close()
 
     def test_check_organization_membership_server_error(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -1417,7 +1423,7 @@ class TestAsyncAuthorization:
             )
 
     async def test_check_organization_membership_not_found(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -1431,7 +1437,7 @@ class TestAsyncAuthorization:
             await workos.close()
 
     async def test_check_organization_membership_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -1449,7 +1455,7 @@ class TestAsyncAuthorization:
             await workos.close()
 
     async def test_check_organization_membership_server_error(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:

@@ -23,7 +23,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
 if TYPE_CHECKING:
-    from ._client import AsyncWorkOS, WorkOS
+    from ._client import AsyncWorkOSClient, WorkOSClient
 
 # ---------------------------------------------------------------------------
 # Types
@@ -279,7 +279,7 @@ DEFAULT_RESPONSE_LIMIT = 10
 class Vault:
     """WorkOS Vault service — encryption, key management, and secret storage."""
 
-    def __init__(self, client: "WorkOS") -> None:
+    def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
     # -- KV operations --
@@ -465,7 +465,7 @@ class Vault:
 class AsyncVault:
     """Async WorkOS Vault service."""
 
-    def __init__(self, client: "AsyncWorkOS") -> None:
+    def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
     async def read_object(self, *, object_id: str) -> VaultObject:

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOS, WorkOS
+    from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
 from .models import WebhookEndpointJson
@@ -25,7 +25,7 @@ import time
 class Webhooks:
     """Webhooks API resources."""
 
-    def __init__(self, client: "WorkOS") -> None:
+    def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
     def list_webhook_endpoints(
@@ -280,7 +280,7 @@ class Webhooks:
 class AsyncWebhooks:
     """Webhooks API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOS") -> None:
+    def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
     async def list_webhook_endpoints(

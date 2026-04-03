@@ -66,7 +66,7 @@ MAX_RETRY_DELAY = 30
 RETRY_MULTIPLIER = 2
 
 
-class _BaseWorkOS:
+class _BaseWorkOSClient:
     """Shared WorkOS client implementation."""
 
     def __init__(
@@ -140,7 +140,7 @@ class _BaseWorkOS:
         attempt: int, retry_after: Optional[str] = None
     ) -> float:
         """Calculate retry delay with exponential backoff and jitter."""
-        parsed_retry_after = _BaseWorkOS._parse_retry_after(retry_after)
+        parsed_retry_after = _BaseWorkOSClient._parse_retry_after(retry_after)
         if parsed_retry_after is not None:
             return parsed_retry_after
         delay = min(INITIAL_RETRY_DELAY * (RETRY_MULTIPLIER**attempt), MAX_RETRY_DELAY)
@@ -253,7 +253,7 @@ class _BaseWorkOS:
         error_class = STATUS_CODE_TO_ERROR.get(response.status_code)
         if error_class:
             if error_class is RateLimitExceededError:
-                retry_after = _BaseWorkOS._parse_retry_after(
+                retry_after = _BaseWorkOSClient._parse_retry_after(
                     response.headers.get("Retry-After")
                 )
                 raise RateLimitExceededError(
@@ -320,7 +320,7 @@ class _BaseWorkOS:
         )
 
 
-class WorkOS(_BaseWorkOS):
+class WorkOSClient(_BaseWorkOSClient):
     """Synchronous WorkOS API client."""
 
     def __init__(
@@ -362,7 +362,7 @@ class WorkOS(_BaseWorkOS):
         """Close the underlying HTTP client and release resources."""
         self._client.close()
 
-    def __enter__(self) -> "WorkOS":
+    def __enter__(self) -> "WorkOSClient":
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
@@ -579,7 +579,7 @@ class WorkOS(_BaseWorkOS):
         return SyncPage(data=items, list_metadata=list_metadata, _fetch_page=_fetch)
 
 
-class AsyncWorkOS(_BaseWorkOS):
+class AsyncWorkOSClient(_BaseWorkOSClient):
     """Asynchronous WorkOS API client."""
 
     def __init__(
@@ -621,7 +621,7 @@ class AsyncWorkOS(_BaseWorkOS):
         """Close the underlying HTTP client and release resources."""
         await self._client.aclose()
 
-    async def __aenter__(self) -> "AsyncWorkOS":
+    async def __aenter__(self) -> "AsyncWorkOSClient":
         return self
 
     async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:

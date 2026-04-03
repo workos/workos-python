@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from workos import WorkOS, AsyncWorkOS
+from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.vault import (
@@ -186,7 +186,9 @@ class TestVault:
             workos.vault.read_object(object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C")
 
     def test_read_object_not_found(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -197,7 +199,9 @@ class TestVault:
             workos.close()
 
     def test_read_object_rate_limited(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(
                 status_code=429,
@@ -212,7 +216,9 @@ class TestVault:
             workos.close()
 
     def test_read_object_server_error(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -351,7 +357,7 @@ class TestAsyncVault:
             )
 
     async def test_read_object_not_found(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -364,7 +370,7 @@ class TestAsyncVault:
             await workos.close()
 
     async def test_read_object_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -381,7 +387,7 @@ class TestAsyncVault:
             await workos.close()
 
     async def test_read_object_server_error(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:

@@ -25,7 +25,7 @@ from cryptography.fernet import Fernet
 from jwt import PyJWKClient
 
 if TYPE_CHECKING:
-    from ._client import AsyncWorkOS, WorkOS
+    from ._client import AsyncWorkOSClient, WorkOSClient
 
 
 # ---------------------------------------------------------------------------
@@ -149,7 +149,7 @@ class Session:
     def __init__(
         self,
         *,
-        client: "WorkOS",
+        client: "WorkOSClient",
         session_data: str,
         cookie_password: str,
     ) -> None:
@@ -327,7 +327,7 @@ class AsyncSession:
     def __init__(
         self,
         *,
-        client: "AsyncWorkOS",
+        client: "AsyncWorkOSClient",
         session_data: str,
         cookie_password: str,
     ) -> None:

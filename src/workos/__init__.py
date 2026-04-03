@@ -2,14 +2,14 @@
 
 """WorkOS Python SDK."""
 
-from ._client import AsyncWorkOS, WorkOS
+from ._client import AsyncWorkOSClient, WorkOSClient
 from ._errors import WorkOSError
 from ._pagination import AsyncPage, ListMetadata, SyncPage
 from ._types import RequestOptions
 
 __all__ = [
-    "WorkOS",
-    "AsyncWorkOS",
+    "WorkOSClient",
+    "AsyncWorkOSClient",
     "WorkOSError",
     "SyncPage",
     "AsyncPage",

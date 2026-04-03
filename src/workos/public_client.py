@@ -4,7 +4,10 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from ._client import WorkOSClient
 
 
 def create_public_client(
@@ -12,7 +15,7 @@ def create_public_client(
     client_id: str,
     base_url: Optional[str] = None,
     request_timeout: Optional[int] = None,
-) -> "WorkOS":
+) -> "WorkOSClient":
     """Create a WorkOS client configured for public/PKCE-only usage.
 
     For browser, mobile, CLI, and desktop applications that cannot securely
@@ -25,11 +28,11 @@ def create_public_client(
         request_timeout: HTTP request timeout in seconds.
 
     Returns:
-        A WorkOS client instance with only ``client_id`` configured.
+        A WorkOSClient instance with only ``client_id`` configured.
     """
-    from ._client import WorkOS
+    from ._client import WorkOSClient
 
-    return WorkOS(
+    return WorkOSClient(
         client_id=client_id,
         base_url=base_url,
         request_timeout=request_timeout,

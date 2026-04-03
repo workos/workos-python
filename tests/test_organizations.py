@@ -3,7 +3,7 @@
 import json
 
 import pytest
-from workos import WorkOS, AsyncWorkOS
+from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.organizations.models import (
@@ -136,7 +136,9 @@ class TestOrganizations:
             workos.organizations.list_organizations()
 
     def test_list_organizations_not_found(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -145,7 +147,9 @@ class TestOrganizations:
             workos.close()
 
     def test_list_organizations_rate_limited(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(
                 status_code=429,
@@ -158,7 +162,9 @@ class TestOrganizations:
             workos.close()
 
     def test_list_organizations_server_error(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -273,7 +279,7 @@ class TestAsyncOrganizations:
             await async_workos.organizations.list_organizations()
 
     async def test_list_organizations_not_found(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -284,7 +290,7 @@ class TestAsyncOrganizations:
             await workos.close()
 
     async def test_list_organizations_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -299,7 +305,7 @@ class TestAsyncOrganizations:
             await workos.close()
 
     async def test_list_organizations_server_error(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:

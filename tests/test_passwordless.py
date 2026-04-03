@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from workos import WorkOS, AsyncWorkOS
+from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.passwordless import PasswordlessSession
@@ -73,7 +73,9 @@ class TestPasswordless:
             )
 
     def test_create_session_not_found(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -84,7 +86,9 @@ class TestPasswordless:
             workos.close()
 
     def test_create_session_rate_limited(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(
                 status_code=429,
@@ -99,7 +103,9 @@ class TestPasswordless:
             workos.close()
 
     def test_create_session_server_error(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -160,7 +166,7 @@ class TestAsyncPasswordless:
             )
 
     async def test_create_session_not_found(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -173,7 +179,7 @@ class TestAsyncPasswordless:
             await workos.close()
 
     async def test_create_session_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -190,7 +196,7 @@ class TestAsyncPasswordless:
             await workos.close()
 
     async def test_create_session_server_error(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:

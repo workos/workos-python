@@ -3,7 +3,7 @@
 import json
 
 import pytest
-from workos import WorkOS, AsyncWorkOS
+from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.user_management.models import (
@@ -695,7 +695,9 @@ class TestUserManagement:
             workos.user_management.get_jwks("test_clientId")
 
     def test_get_jwks_not_found(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -704,7 +706,9 @@ class TestUserManagement:
             workos.close()
 
     def test_get_jwks_rate_limited(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(
                 status_code=429,
@@ -717,7 +721,9 @@ class TestUserManagement:
             workos.close()
 
     def test_get_jwks_server_error(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -1322,7 +1328,7 @@ class TestAsyncUserManagement:
             await async_workos.user_management.get_jwks("test_clientId")
 
     async def test_get_jwks_not_found(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -1333,7 +1339,7 @@ class TestAsyncUserManagement:
             await workos.close()
 
     async def test_get_jwks_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -1348,7 +1354,7 @@ class TestAsyncUserManagement:
             await workos.close()
 
     async def test_get_jwks_server_error(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOS, WorkOS
+    from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions
 from .models import OrganizationDomain, OrganizationDomainStandAlone
@@ -14,7 +14,7 @@ from .models import OrganizationDomain, OrganizationDomainStandAlone
 class OrganizationDomains:
     """Organization Domains API resources."""
 
-    def __init__(self, client: "WorkOS") -> None:
+    def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
     def create_organization_domains(
@@ -144,7 +144,7 @@ class OrganizationDomains:
 class AsyncOrganizationDomains:
     """Organization Domains API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOS") -> None:
+    def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
     async def create_organization_domains(

@@ -6,7 +6,7 @@ import pytest
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives.asymmetric import rsa
 
-from workos import AsyncWorkOS, WorkOS
+from workos import WorkOSClient
 from workos.session import (
     AsyncSession,
     AuthenticateWithSessionCookieErrorResponse,
@@ -105,7 +105,7 @@ class TestSealSessionFromAuthResponse:
 class TestSession:
     def setup_method(self):
         self.private_key, self.public_key = _generate_rsa_key_pair()
-        self.workos = WorkOS(
+        self.workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test_123", max_retries=0
         )
 

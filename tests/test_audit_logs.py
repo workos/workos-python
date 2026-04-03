@@ -3,7 +3,7 @@
 import json
 
 import pytest
-from workos import WorkOS, AsyncWorkOS
+from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.audit_logs.models import (
@@ -181,7 +181,9 @@ class TestAuditLogs:
             workos.audit_logs.list_organization_audit_logs_retention("test_id")
 
     def test_list_organization_audit_logs_retention_not_found(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -190,7 +192,9 @@ class TestAuditLogs:
             workos.close()
 
     def test_list_organization_audit_logs_retention_rate_limited(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(
                 status_code=429,
@@ -203,7 +207,9 @@ class TestAuditLogs:
             workos.close()
 
     def test_list_organization_audit_logs_retention_server_error(self, httpx_mock):
-        workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -355,7 +361,7 @@ class TestAsyncAuditLogs:
             )
 
     async def test_list_organization_audit_logs_retention_not_found(self, httpx_mock):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -370,7 +376,7 @@ class TestAsyncAuditLogs:
     async def test_list_organization_audit_logs_retention_rate_limited(
         self, httpx_mock
     ):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
@@ -389,7 +395,7 @@ class TestAsyncAuditLogs:
     async def test_list_organization_audit_logs_retention_server_error(
         self, httpx_mock
     ):
-        workos = AsyncWorkOS(
+        workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:

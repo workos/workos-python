@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOS, WorkOS
+    from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
 from .models import (
@@ -26,7 +26,7 @@ from .._pagination import AsyncPage, SyncPage
 class Connect:
     """Connect API resources."""
 
-    def __init__(self, client: "WorkOS") -> None:
+    def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
     def complete_oauth2(
@@ -446,7 +446,7 @@ class Connect:
 class AsyncConnect:
     """Connect API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOS") -> None:
+    def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
     async def complete_oauth2(

@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 from workos.common.models import UpdateWebhookEndpointDtoEvents
 from workos.common.models import UpdateWebhookEndpointDtoStatus
 
@@ -37,7 +37,7 @@ class UpdateWebhookEndpoint:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing UpdateWebhookEndpoint: {e!s}"
             ) from e
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 
 @dataclass(slots=True)
@@ -30,7 +30,7 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
                 return_to=data.get("return_to"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing DataIntegrationsGetDataIntegrationAuthorizeUrlRequest: {e!s}"
             ) from e
 

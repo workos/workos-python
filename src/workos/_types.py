@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import sys
+from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Protocol, TypeVar
 from typing_extensions import Self, TypedDict
@@ -30,3 +32,14 @@ def enum_value(value: Any) -> Any:
 
 
 D = TypeVar("D", bound=Deserializable)
+
+
+def _parse_datetime(value: str) -> datetime:
+    """Parse an ISO 8601 datetime string, handling 'Z' suffix.
+
+    On Python 3.11+ fromisoformat handles 'Z' natively;
+    on older versions we replace 'Z' with '+00:00'.
+    """
+    if sys.version_info >= (3, 11):
+        return datetime.fromisoformat(value)
+    return datetime.fromisoformat(value.replace("Z", "+00:00"))

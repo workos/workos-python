@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Literal
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 
 @dataclass(slots=True)
@@ -31,7 +31,7 @@ class TokenQuery:
                 grant_type=data["grant_type"],
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing TokenQuery: {e!s}"
             ) from e
 

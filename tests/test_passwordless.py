@@ -6,10 +6,10 @@ from tests.generated_helpers import load_fixture
 
 from workos.passwordless import PasswordlessSession
 from workos._errors import (
-    AuthenticationException,
-    NotFoundException,
-    RateLimitExceededException,
-    ServerException,
+    AuthenticationError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
 )
 
 
@@ -67,7 +67,7 @@ class TestPasswordless:
             status_code=401,
             json={"message": "Unauthorized"},
         )
-        with pytest.raises(AuthenticationException):
+        with pytest.raises(AuthenticationError):
             workos.passwordless.create_session(
                 email="user@example.com", type="MagicLink"
             )
@@ -76,7 +76,7 @@ class TestPasswordless:
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
+            with pytest.raises(NotFoundError):
                 workos.passwordless.create_session(
                     email="user@example.com", type="MagicLink"
                 )
@@ -91,7 +91,7 @@ class TestPasswordless:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
+            with pytest.raises(RateLimitExceededError):
                 workos.passwordless.create_session(
                     email="user@example.com", type="MagicLink"
                 )
@@ -102,7 +102,7 @@ class TestPasswordless:
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
+            with pytest.raises(ServerError):
                 workos.passwordless.create_session(
                     email="user@example.com", type="MagicLink"
                 )
@@ -154,7 +154,7 @@ class TestAsyncPasswordless:
 
     async def test_create_session_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
-        with pytest.raises(AuthenticationException):
+        with pytest.raises(AuthenticationError):
             await async_workos.passwordless.create_session(
                 email="user@example.com", type="MagicLink"
             )
@@ -165,7 +165,7 @@ class TestAsyncPasswordless:
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
+            with pytest.raises(NotFoundError):
                 await workos.passwordless.create_session(
                     email="user@example.com", type="MagicLink"
                 )
@@ -182,7 +182,7 @@ class TestAsyncPasswordless:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
+            with pytest.raises(RateLimitExceededError):
                 await workos.passwordless.create_session(
                     email="user@example.com", type="MagicLink"
                 )
@@ -195,7 +195,7 @@ class TestAsyncPasswordless:
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
+            with pytest.raises(ServerError):
                 await workos.passwordless.create_session(
                     email="user@example.com", type="MagicLink"
                 )

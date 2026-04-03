@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions, enum_value
 from .models import Connection, Profile, SSOLogoutAuthorizeResponse, SSOTokenResponse
@@ -16,7 +16,7 @@ from .._pagination import AsyncPage, SyncPage
 class SSO:
     """SSO API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
     def list_connections(
@@ -51,11 +51,11 @@ class SSO:
                     SyncPage[Connection]
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -99,11 +99,11 @@ class SSO:
                     Connection
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -127,11 +127,11 @@ class SSO:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -187,9 +187,9 @@ class SSO:
                     str
 
                 Raises:
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -232,10 +232,10 @@ class SSO:
                     str
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -264,11 +264,11 @@ class SSO:
                     SSOLogoutAuthorizeResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "profile_id": profile_id,
@@ -299,10 +299,10 @@ class SSO:
                     Profile
 
                 Raises:
-                    AuthenticationException: If the API key is invalid (401).
-                    NotFoundException: If the resource is not found (404).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthenticationError: If the API key is invalid (401).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         request_options = request_options or {}
         request_options = {
@@ -343,12 +343,12 @@ class SSO:
                     SSOTokenResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "client_id": client_id,
@@ -368,7 +368,7 @@ class SSO:
 class AsyncSSO:
     """SSO API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
     async def list_connections(
@@ -403,11 +403,11 @@ class AsyncSSO:
                     AsyncPage[Connection]
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -451,11 +451,11 @@ class AsyncSSO:
                     Connection
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -479,11 +479,11 @@ class AsyncSSO:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -539,9 +539,9 @@ class AsyncSSO:
                     str
 
                 Raises:
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -584,10 +584,10 @@ class AsyncSSO:
                     str
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -616,11 +616,11 @@ class AsyncSSO:
                     SSOLogoutAuthorizeResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "profile_id": profile_id,
@@ -651,10 +651,10 @@ class AsyncSSO:
                     Profile
 
                 Raises:
-                    AuthenticationException: If the API key is invalid (401).
-                    NotFoundException: If the resource is not found (404).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthenticationError: If the API key is invalid (401).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         request_options = request_options or {}
         request_options = {
@@ -695,12 +695,12 @@ class AsyncSSO:
                     SSOTokenResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "client_id": client_id,

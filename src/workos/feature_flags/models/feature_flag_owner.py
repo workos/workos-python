@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 
 @dataclass(slots=True)
@@ -28,7 +28,7 @@ class FeatureFlagOwner:
                 last_name=data["last_name"],
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing FeatureFlagOwner: {e!s}"
             ) from e
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions, enum_value
 from .models import RadarListEntryAlreadyPresentResponse, RadarStandaloneResponse
@@ -19,10 +19,10 @@ from workos.common.models import (
 class Radar:
     """Radar API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def assess(
+    def create_attempts(
         self,
         *,
         ip_address: str,
@@ -52,10 +52,10 @@ class Radar:
                     RadarStandaloneResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -78,7 +78,7 @@ class Radar:
             request_options=request_options,
         )
 
-    def update_radar_attempt(
+    def update_attempt(
         self,
         id: str,
         *,
@@ -97,11 +97,11 @@ class Radar:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -118,7 +118,7 @@ class Radar:
             request_options=request_options,
         )
 
-    def update_radar_list(
+    def add_list_entry(
         self,
         type: Union[RadarType, str],
         action: Union[RadarAction, str],
@@ -140,10 +140,10 @@ class Radar:
                     RadarListEntryAlreadyPresentResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "entry": entry,
@@ -156,7 +156,7 @@ class Radar:
             request_options=request_options,
         )
 
-    def delete_radar_list_entry(
+    def remove_list_entry(
         self,
         type: Union[RadarType, str],
         action: Union[RadarAction, str],
@@ -175,11 +175,11 @@ class Radar:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "entry": entry,
@@ -195,10 +195,10 @@ class Radar:
 class AsyncRadar:
     """Radar API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def assess(
+    async def create_attempts(
         self,
         *,
         ip_address: str,
@@ -228,10 +228,10 @@ class AsyncRadar:
                     RadarStandaloneResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -254,7 +254,7 @@ class AsyncRadar:
             request_options=request_options,
         )
 
-    async def update_radar_attempt(
+    async def update_attempt(
         self,
         id: str,
         *,
@@ -273,11 +273,11 @@ class AsyncRadar:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -294,7 +294,7 @@ class AsyncRadar:
             request_options=request_options,
         )
 
-    async def update_radar_list(
+    async def add_list_entry(
         self,
         type: Union[RadarType, str],
         action: Union[RadarAction, str],
@@ -316,10 +316,10 @@ class AsyncRadar:
                     RadarListEntryAlreadyPresentResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "entry": entry,
@@ -332,7 +332,7 @@ class AsyncRadar:
             request_options=request_options,
         )
 
-    async def delete_radar_list_entry(
+    async def remove_list_entry(
         self,
         type: Union[RadarType, str],
         action: Union[RadarAction, str],
@@ -351,11 +351,11 @@ class AsyncRadar:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "entry": entry,

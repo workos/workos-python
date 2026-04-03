@@ -5,29 +5,31 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions, enum_value
 from .models import (
     AuthorizationCheck,
+    AuthorizationPermission,
     AuthorizationResource,
     ListModel,
+    Permission,
     Role,
     RoleAssignment,
     RoleList,
     UserOrganizationMembershipBaseListData,
 )
-from .models import AuthorizationAssignment, AuthorizationOrder
+from .models import AuthorizationAssignment, AuthorizationOrder, PermissionsOrder
 from .._pagination import AsyncPage, SyncPage
 
 
 class Authorization:
     """Authorization API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def check(
+    def check_organization_membership(
         self,
         organization_membership_id: str,
         *,
@@ -53,12 +55,12 @@ class Authorization:
                     AuthorizationCheck
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -78,7 +80,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_resources_for_membership(
+    def list_organization_membership_resources(
         self,
         organization_membership_id: str,
         *,
@@ -114,13 +116,13 @@ class Authorization:
                     SyncPage[AuthorizationResource]
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -144,7 +146,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_role_assignments(
+    def list_organization_membership_role_assignments(
         self,
         organization_membership_id: str,
         *,
@@ -170,11 +172,11 @@ class Authorization:
                     SyncPage[RoleAssignment]
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -194,7 +196,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def assign_role(
+    def create_organization_membership_role_assignments(
         self,
         organization_membership_id: str,
         *,
@@ -220,12 +222,12 @@ class Authorization:
                     RoleAssignment
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -245,7 +247,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def remove_role_by_criteria(
+    def delete_organization_membership_role_assignments(
         self,
         organization_membership_id: str,
         *,
@@ -268,12 +270,12 @@ class Authorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -292,7 +294,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def remove_role_by_id(
+    def delete_organization_membership_role_assignment(
         self,
         organization_membership_id: str,
         role_assignment_id: str,
@@ -309,11 +311,11 @@ class Authorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -339,11 +341,11 @@ class Authorization:
                     ListModel
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -352,26 +354,22 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `list_organization_roles`."""
-        return self.list_organization_roles(*args, **kwargs)
-
-    def create_organization_role(
+    def create_organization_roles(
         self,
         organization_id: str,
         *,
-        slug: str,
         name: str,
+        slug: Optional[str] = None,
         description: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
         """Create a custom organization role
 
-        Create a new custom organization role.
+        Create a new custom organization role. When slug is omitted, it is auto-generated from the role name.
 
                 Args:
                     organization_id: The ID of the organization.
-                    slug: A unique identifier for the role within the organization. Must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores.
+                    slug: A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix.
                     name: A descriptive name for the role.
                     description: An optional description of the role's purpose.
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -380,14 +378,14 @@ class Authorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -405,10 +403,6 @@ class Authorization:
             model=Role,
             request_options=request_options,
         )
-
-    def create_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `create_organization_role`."""
-        return self.create_organization_role(*args, **kwargs)
 
     def get_organization_role(
         self,
@@ -430,11 +424,11 @@ class Authorization:
                     Role
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -442,10 +436,6 @@ class Authorization:
             model=Role,
             request_options=request_options,
         )
-
-    def get_roles_organization(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `get_organization_role`."""
-        return self.get_organization_role(*args, **kwargs)
 
     def update_organization_role(
         self,
@@ -471,13 +461,13 @@ class Authorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -494,10 +484,6 @@ class Authorization:
             model=Role,
             request_options=request_options,
         )
-
-    def update_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `update_organization_role`."""
-        return self.update_organization_role(*args, **kwargs)
 
     def delete_organization_role(
         self,
@@ -516,13 +502,13 @@ class Authorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -530,11 +516,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_roles(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `delete_organization_role`."""
-        return self.delete_organization_role(*args, **kwargs)
-
-    def add_organization_role_permission(
+    def create_role_permissions(
         self,
         organization_id: str,
         slug: str,
@@ -556,13 +538,13 @@ class Authorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "slug": body_slug,
@@ -575,13 +557,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def add_permission_permissions_organizations_roles(
-        self, *args: Any, **kwargs: Any
-    ) -> Any:
-        """Compatibility alias for `add_organization_role_permission`."""
-        return self.add_organization_role_permission(*args, **kwargs)
-
-    def set_organization_role_permissions(
+    def update_role_permissions(
         self,
         organization_id: str,
         slug: str,
@@ -603,12 +579,12 @@ class Authorization:
                     Role
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "permissions": permissions,
@@ -621,13 +597,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def set_permissions_permissions_organizations_roles(
-        self, *args: Any, **kwargs: Any
-    ) -> Any:
-        """Compatibility alias for `set_organization_role_permissions`."""
-        return self.set_organization_role_permissions(*args, **kwargs)
-
-    def remove_organization_role_permission(
+    def delete_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -646,11 +616,11 @@ class Authorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -658,11 +628,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def remove_permission(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `remove_organization_role_permission`."""
-        return self.remove_organization_role_permission(*args, **kwargs)
-
-    def get_by_external_id(
+    def get_organization_resource(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -684,11 +650,11 @@ class Authorization:
                     AuthorizationResource
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -697,7 +663,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def update_by_external_id(
+    def update_organization_resource(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -729,14 +695,14 @@ class Authorization:
                     AuthorizationResource
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -757,7 +723,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_by_external_id(
+    def delete_organization_resource(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -778,13 +744,13 @@ class Authorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params: Dict[str, Any] = {
             k: v
@@ -800,7 +766,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_organization_memberships_for_resource_by_external_id(
+    def list_resource_organization_memberships(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -834,13 +800,13 @@ class Authorization:
                     SyncPage[UserOrganizationMembershipBaseListData]
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -900,11 +866,11 @@ class Authorization:
                     SyncPage[AuthorizationResource]
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -962,14 +928,14 @@ class Authorization:
                     AuthorizationResource
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -993,7 +959,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def get_by_id(
+    def get_resource(
         self,
         resource_id: str,
         *,
@@ -1011,12 +977,12 @@ class Authorization:
                     AuthorizationResource
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1025,7 +991,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def update_resources(
+    def update_resource(
         self,
         resource_id: str,
         *,
@@ -1053,14 +1019,14 @@ class Authorization:
                     AuthorizationResource
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1081,7 +1047,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_resources(
+    def delete_resource(
         self,
         resource_id: str,
         *,
@@ -1098,13 +1064,13 @@ class Authorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params: Dict[str, Any] = {
             k: v
@@ -1150,13 +1116,13 @@ class Authorization:
                     SyncPage[UserOrganizationMembershipBaseListData]
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -1193,10 +1159,10 @@ class Authorization:
                     RoleList
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1229,14 +1195,14 @@ class Authorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1256,7 +1222,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def get_roles(
+    def get_role(
         self,
         slug: str,
         *,
@@ -1274,11 +1240,11 @@ class Authorization:
                     Role
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -1287,7 +1253,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def update_roles(
+    def update_role(
         self,
         slug: str,
         *,
@@ -1309,13 +1275,13 @@ class Authorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1333,7 +1299,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def add_environment_role_permission(
+    def add_permission_permissions_roles(
         self,
         slug: str,
         *,
@@ -1353,13 +1319,13 @@ class Authorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "slug": body_slug,
@@ -1372,11 +1338,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def add_permission_permissions_roles(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `add_environment_role_permission`."""
-        return self.add_environment_role_permission(*args, **kwargs)
-
-    def set_environment_role_permissions(
+    def set_permissions_permissions_roles(
         self,
         slug: str,
         *,
@@ -1396,13 +1358,13 @@ class Authorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "permissions": permissions,
@@ -1415,18 +1377,213 @@ class Authorization:
             request_options=request_options,
         )
 
-    def set_permissions_permissions_roles(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `set_environment_role_permissions`."""
-        return self.set_environment_role_permissions(*args, **kwargs)
+    def list_permissions(
+        self,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PermissionsOrder, str]] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[AuthorizationPermission]:
+        """List permissions
+
+        Get a list of all permissions in your WorkOS environment.
+
+                Args:
+                    limit: Maximum number of records to return.
+                    before: Pagination cursor for previous page.
+                    after: Pagination cursor for next page.
+                    order: Sort order.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    SyncPage[AuthorizationPermission]
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path="authorization/permissions",
+            model=AuthorizationPermission,
+            params=params,
+            request_options=request_options,
+        )
+
+    def create_permissions(
+        self,
+        *,
+        slug: str,
+        name: str,
+        description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> Permission:
+        """Create a permission
+
+        Create a new permission in your WorkOS environment. The permission can then be assigned to environment roles and organization roles.
+
+                Args:
+                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+                    name: A descriptive name for the Permission.
+                    description: An optional description of the Permission.
+                    resource_type_slug: The slug of the resource type this permission is scoped to.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    Permission
+
+                Raises:
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "slug": slug,
+                "name": name,
+                "description": description,
+                "resource_type_slug": resource_type_slug,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path="authorization/permissions",
+            body=body,
+            model=Permission,
+            request_options=request_options,
+        )
+
+    def get_permission(
+        self,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthorizationPermission:
+        """Get a permission
+
+        Retrieve a permission by its unique slug.
+
+                Args:
+                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AuthorizationPermission
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=f"authorization/permissions/{slug}",
+            model=AuthorizationPermission,
+            request_options=request_options,
+        )
+
+    def update_permission(
+        self,
+        slug: str,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthorizationPermission:
+        """Update a permission
+
+        Update an existing permission. Only the fields provided in the request body will be updated.
+
+                Args:
+                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+                    name: A descriptive name for the Permission.
+                    description: An optional description of the Permission.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AuthorizationPermission
+
+                Raises:
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "description": description,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="patch",
+            path=f"authorization/permissions/{slug}",
+            body=body,
+            model=AuthorizationPermission,
+            request_options=request_options,
+        )
+
+    def delete_permission(
+        self,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Delete a permission
+
+        Delete an existing permission. System permissions cannot be deleted.
+
+                Args:
+                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Raises:
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=f"authorization/permissions/{slug}",
+            request_options=request_options,
+        )
 
 
 class AsyncAuthorization:
     """Authorization API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def check(
+    async def check_organization_membership(
         self,
         organization_membership_id: str,
         *,
@@ -1452,12 +1609,12 @@ class AsyncAuthorization:
                     AuthorizationCheck
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1477,7 +1634,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_resources_for_membership(
+    async def list_organization_membership_resources(
         self,
         organization_membership_id: str,
         *,
@@ -1513,13 +1670,13 @@ class AsyncAuthorization:
                     AsyncPage[AuthorizationResource]
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -1543,7 +1700,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_role_assignments(
+    async def list_organization_membership_role_assignments(
         self,
         organization_membership_id: str,
         *,
@@ -1569,11 +1726,11 @@ class AsyncAuthorization:
                     AsyncPage[RoleAssignment]
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -1593,7 +1750,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def assign_role(
+    async def create_organization_membership_role_assignments(
         self,
         organization_membership_id: str,
         *,
@@ -1619,12 +1776,12 @@ class AsyncAuthorization:
                     RoleAssignment
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1644,7 +1801,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def remove_role_by_criteria(
+    async def delete_organization_membership_role_assignments(
         self,
         organization_membership_id: str,
         *,
@@ -1667,12 +1824,12 @@ class AsyncAuthorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1691,7 +1848,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def remove_role_by_id(
+    async def delete_organization_membership_role_assignment(
         self,
         organization_membership_id: str,
         role_assignment_id: str,
@@ -1708,11 +1865,11 @@ class AsyncAuthorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -1738,11 +1895,11 @@ class AsyncAuthorization:
                     ListModel
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -1751,26 +1908,22 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `list_organization_roles`."""
-        return await self.list_organization_roles(*args, **kwargs)
-
-    async def create_organization_role(
+    async def create_organization_roles(
         self,
         organization_id: str,
         *,
-        slug: str,
         name: str,
+        slug: Optional[str] = None,
         description: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
         """Create a custom organization role
 
-        Create a new custom organization role.
+        Create a new custom organization role. When slug is omitted, it is auto-generated from the role name.
 
                 Args:
                     organization_id: The ID of the organization.
-                    slug: A unique identifier for the role within the organization. Must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores.
+                    slug: A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix.
                     name: A descriptive name for the role.
                     description: An optional description of the role's purpose.
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1779,14 +1932,14 @@ class AsyncAuthorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1804,10 +1957,6 @@ class AsyncAuthorization:
             model=Role,
             request_options=request_options,
         )
-
-    async def create_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `create_organization_role`."""
-        return await self.create_organization_role(*args, **kwargs)
 
     async def get_organization_role(
         self,
@@ -1829,11 +1978,11 @@ class AsyncAuthorization:
                     Role
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -1841,10 +1990,6 @@ class AsyncAuthorization:
             model=Role,
             request_options=request_options,
         )
-
-    async def get_roles_organization(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `get_organization_role`."""
-        return await self.get_organization_role(*args, **kwargs)
 
     async def update_organization_role(
         self,
@@ -1870,13 +2015,13 @@ class AsyncAuthorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -1893,10 +2038,6 @@ class AsyncAuthorization:
             model=Role,
             request_options=request_options,
         )
-
-    async def update_roles_organizations(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `update_organization_role`."""
-        return await self.update_organization_role(*args, **kwargs)
 
     async def delete_organization_role(
         self,
@@ -1915,13 +2056,13 @@ class AsyncAuthorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -1929,11 +2070,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_roles(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `delete_organization_role`."""
-        return await self.delete_organization_role(*args, **kwargs)
-
-    async def add_organization_role_permission(
+    async def create_role_permissions(
         self,
         organization_id: str,
         slug: str,
@@ -1955,13 +2092,13 @@ class AsyncAuthorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "slug": body_slug,
@@ -1974,13 +2111,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def add_permission_permissions_organizations_roles(
-        self, *args: Any, **kwargs: Any
-    ) -> Any:
-        """Compatibility alias for `add_organization_role_permission`."""
-        return await self.add_organization_role_permission(*args, **kwargs)
-
-    async def set_organization_role_permissions(
+    async def update_role_permissions(
         self,
         organization_id: str,
         slug: str,
@@ -2002,12 +2133,12 @@ class AsyncAuthorization:
                     Role
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "permissions": permissions,
@@ -2020,13 +2151,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def set_permissions_permissions_organizations_roles(
-        self, *args: Any, **kwargs: Any
-    ) -> Any:
-        """Compatibility alias for `set_organization_role_permissions`."""
-        return await self.set_organization_role_permissions(*args, **kwargs)
-
-    async def remove_organization_role_permission(
+    async def delete_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -2045,11 +2170,11 @@ class AsyncAuthorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -2057,11 +2182,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def remove_permission(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `remove_organization_role_permission`."""
-        return await self.remove_organization_role_permission(*args, **kwargs)
-
-    async def get_by_external_id(
+    async def get_organization_resource(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2083,11 +2204,11 @@ class AsyncAuthorization:
                     AuthorizationResource
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2096,7 +2217,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def update_by_external_id(
+    async def update_organization_resource(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2128,14 +2249,14 @@ class AsyncAuthorization:
                     AuthorizationResource
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2156,7 +2277,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_by_external_id(
+    async def delete_organization_resource(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2177,13 +2298,13 @@ class AsyncAuthorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params: Dict[str, Any] = {
             k: v
@@ -2199,7 +2320,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_organization_memberships_for_resource_by_external_id(
+    async def list_resource_organization_memberships(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2233,13 +2354,13 @@ class AsyncAuthorization:
                     AsyncPage[UserOrganizationMembershipBaseListData]
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2299,11 +2420,11 @@ class AsyncAuthorization:
                     AsyncPage[AuthorizationResource]
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2361,14 +2482,14 @@ class AsyncAuthorization:
                     AuthorizationResource
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2392,7 +2513,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def get_by_id(
+    async def get_resource(
         self,
         resource_id: str,
         *,
@@ -2410,12 +2531,12 @@ class AsyncAuthorization:
                     AuthorizationResource
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2424,7 +2545,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def update_resources(
+    async def update_resource(
         self,
         resource_id: str,
         *,
@@ -2452,14 +2573,14 @@ class AsyncAuthorization:
                     AuthorizationResource
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2480,7 +2601,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_resources(
+    async def delete_resource(
         self,
         resource_id: str,
         *,
@@ -2497,13 +2618,13 @@ class AsyncAuthorization:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params: Dict[str, Any] = {
             k: v
@@ -2549,13 +2670,13 @@ class AsyncAuthorization:
                     AsyncPage[UserOrganizationMembershipBaseListData]
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -2592,10 +2713,10 @@ class AsyncAuthorization:
                     RoleList
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2628,14 +2749,14 @@ class AsyncAuthorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2655,7 +2776,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def get_roles(
+    async def get_role(
         self,
         slug: str,
         *,
@@ -2673,11 +2794,11 @@ class AsyncAuthorization:
                     Role
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -2686,7 +2807,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def update_roles(
+    async def update_role(
         self,
         slug: str,
         *,
@@ -2708,13 +2829,13 @@ class AsyncAuthorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -2732,7 +2853,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def add_environment_role_permission(
+    async def add_permission_permissions_roles(
         self,
         slug: str,
         *,
@@ -2752,13 +2873,13 @@ class AsyncAuthorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "slug": body_slug,
@@ -2771,11 +2892,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def add_permission_permissions_roles(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `add_environment_role_permission`."""
-        return await self.add_environment_role_permission(*args, **kwargs)
-
-    async def set_environment_role_permissions(
+    async def set_permissions_permissions_roles(
         self,
         slug: str,
         *,
@@ -2795,13 +2912,13 @@ class AsyncAuthorization:
                     Role
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "permissions": permissions,
@@ -2814,6 +2931,201 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def set_permissions_permissions_roles(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `set_environment_role_permissions`."""
-        return await self.set_environment_role_permissions(*args, **kwargs)
+    async def list_permissions(
+        self,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PermissionsOrder, str]] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[AuthorizationPermission]:
+        """List permissions
+
+        Get a list of all permissions in your WorkOS environment.
+
+                Args:
+                    limit: Maximum number of records to return.
+                    before: Pagination cursor for previous page.
+                    after: Pagination cursor for next page.
+                    order: Sort order.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AsyncPage[AuthorizationPermission]
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path="authorization/permissions",
+            model=AuthorizationPermission,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def create_permissions(
+        self,
+        *,
+        slug: str,
+        name: str,
+        description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> Permission:
+        """Create a permission
+
+        Create a new permission in your WorkOS environment. The permission can then be assigned to environment roles and organization roles.
+
+                Args:
+                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+                    name: A descriptive name for the Permission.
+                    description: An optional description of the Permission.
+                    resource_type_slug: The slug of the resource type this permission is scoped to.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    Permission
+
+                Raises:
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "slug": slug,
+                "name": name,
+                "description": description,
+                "resource_type_slug": resource_type_slug,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path="authorization/permissions",
+            body=body,
+            model=Permission,
+            request_options=request_options,
+        )
+
+    async def get_permission(
+        self,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthorizationPermission:
+        """Get a permission
+
+        Retrieve a permission by its unique slug.
+
+                Args:
+                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AuthorizationPermission
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=f"authorization/permissions/{slug}",
+            model=AuthorizationPermission,
+            request_options=request_options,
+        )
+
+    async def update_permission(
+        self,
+        slug: str,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthorizationPermission:
+        """Update a permission
+
+        Update an existing permission. Only the fields provided in the request body will be updated.
+
+                Args:
+                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+                    name: A descriptive name for the Permission.
+                    description: An optional description of the Permission.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AuthorizationPermission
+
+                Raises:
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "description": description,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="patch",
+            path=f"authorization/permissions/{slug}",
+            body=body,
+            model=AuthorizationPermission,
+            request_options=request_options,
+        )
+
+    async def delete_permission(
+        self,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Delete a permission
+
+        Delete an existing permission. System permissions cannot be deleted.
+
+                Args:
+                    slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Raises:
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=f"authorization/permissions/{slug}",
+            request_options=request_options,
+        )

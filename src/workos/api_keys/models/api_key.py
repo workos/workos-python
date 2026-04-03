@@ -6,7 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
+from workos._types import _parse_datetime
 
 from .api_key_owner import ApiKeyOwner
 
@@ -46,15 +47,11 @@ class ApiKey:
                 obfuscated_value=data["obfuscated_value"],
                 last_used_at=data["last_used_at"],
                 permissions=data["permissions"],
-                created_at=datetime.fromisoformat(
-                    data["created_at"].replace("Z", "+00:00")
-                ),
-                updated_at=datetime.fromisoformat(
-                    data["updated_at"].replace("Z", "+00:00")
-                ),
+                created_at=_parse_datetime(data["created_at"]),
+                updated_at=_parse_datetime(data["updated_at"]),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing ApiKey: {e!s}"
             ) from e
 

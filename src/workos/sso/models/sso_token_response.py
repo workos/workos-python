@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, Literal, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 from .profile import Profile
 from .sso_token_response_oauth_token import SSOTokenResponseOAuthToken
@@ -42,7 +42,7 @@ class SSOTokenResponse:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing SSOTokenResponse: {e!s}"
             ) from e
 

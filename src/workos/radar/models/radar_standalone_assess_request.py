@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 from workos.common.models import RadarStandaloneAssessRequestAction
 from workos.common.models import RadarStandaloneAssessRequestAuthMethod
 
@@ -42,7 +42,7 @@ class RadarStandaloneAssessRequest:
                 bot_score=data.get("bot_score"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing RadarStandaloneAssessRequest: {e!s}"
             ) from e
 

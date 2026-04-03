@@ -6,7 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
 from typing import Any, Dict, Literal
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
+from workos._types import _parse_datetime
 
 from .role_assignment_resource import RoleAssignmentResource
 from .slim_role import SlimRole
@@ -40,15 +41,11 @@ class RoleAssignment:
                 resource=RoleAssignmentResource.from_dict(
                     cast(Dict[str, Any], data["resource"])
                 ),
-                created_at=datetime.fromisoformat(
-                    data["created_at"].replace("Z", "+00:00")
-                ),
-                updated_at=datetime.fromisoformat(
-                    data["updated_at"].replace("Z", "+00:00")
-                ),
+                created_at=_parse_datetime(data["created_at"]),
+                updated_at=_parse_datetime(data["updated_at"]),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing RoleAssignment: {e!s}"
             ) from e
 

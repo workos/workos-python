@@ -2,24 +2,69 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions, enum_value
-from .models import AuthenticationFactor, AuthenticationFactorEnrolled
-from workos.multi_factor_auth.challenges.models import AuthenticationChallenge
+from .models import (
+    AuthenticationChallenge,
+    AuthenticationChallengeVerifyResponse,
+    AuthenticationFactor,
+    AuthenticationFactorEnrolled,
+    UserAuthenticationFactorEnrollResponse,
+)
+from .models import UserManagementMultiFactorAuthenticationOrder
 from workos.common.models import AuthenticationFactorsCreateRequestType
+from .._pagination import AsyncPage, SyncPage
 
 
 class MultiFactorAuth:
     """Multi Factor Auth API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def create(
+    def verify_challenge(
+        self,
+        id: str,
+        *,
+        code: str,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthenticationChallengeVerifyResponse:
+        """Verify Challenge
+
+        Verifies an Authentication Challenge.
+
+                Args:
+                    id: The unique ID of the Authentication Challenge.
+                    code: The one-time code to verify.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AuthenticationChallengeVerifyResponse
+
+                Raises:
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            "code": code,
+        }
+        return self._client.request(
+            method="post",
+            path=f"auth/challenges/{id}/verify",
+            body=body,
+            model=AuthenticationChallengeVerifyResponse,
+            request_options=request_options,
+        )
+
+    def enroll_factor(
         self,
         *,
         type: Union[AuthenticationFactorsCreateRequestType, str],
@@ -45,10 +90,10 @@ class MultiFactorAuth:
                     AuthenticationFactorEnrolled
 
                 Raises:
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -69,7 +114,7 @@ class MultiFactorAuth:
             request_options=request_options,
         )
 
-    def get(
+    def get_factor(
         self,
         id: str,
         *,
@@ -87,10 +132,10 @@ class MultiFactorAuth:
                     AuthenticationFactor
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -99,7 +144,7 @@ class MultiFactorAuth:
             request_options=request_options,
         )
 
-    def delete(
+    def delete_factor(
         self,
         id: str,
         *,
@@ -114,10 +159,10 @@ class MultiFactorAuth:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -125,7 +170,7 @@ class MultiFactorAuth:
             request_options=request_options,
         )
 
-    def challenge(
+    def challenge_factor(
         self,
         id: str,
         *,
@@ -145,11 +190,11 @@ class MultiFactorAuth:
                     AuthenticationChallenge
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -166,14 +211,152 @@ class MultiFactorAuth:
             request_options=request_options,
         )
 
+    def list_user_auth_factors(
+        self,
+        userland_user_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[
+            Union[UserManagementMultiFactorAuthenticationOrder, str]
+        ] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[AuthenticationFactor]:
+        """List authentication factors
+
+        Lists the [authentication factors](https://workos.com/docs/reference/authkit/mfa/authentication-factor) for a user.
+
+                Args:
+                    userland_user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
+                    limit: Maximum number of records to return.
+                    before: Pagination cursor for previous page.
+                    after: Pagination cursor for next page.
+                    order: Sort order.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    SyncPage[AuthenticationFactor]
+
+                Raises:
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=f"user_management/users/{userland_user_id}/auth_factors",
+            model=AuthenticationFactor,
+            params=params,
+            request_options=request_options,
+        )
+
+    def create_user_auth_factors(
+        self,
+        userland_user_id: str,
+        *,
+        type: Literal["totp"],
+        totp_issuer: Optional[str] = None,
+        totp_user: Optional[str] = None,
+        totp_secret: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> UserAuthenticationFactorEnrollResponse:
+        """Enroll an authentication factor
+
+        Enrolls a user in a new [authentication factor](https://workos.com/docs/reference/authkit/mfa/authentication-factor).
+
+                Args:
+                    userland_user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
+                    type: The type of the factor to enroll.
+                    totp_issuer: Your application or company name displayed in the user's authenticator app.
+                    totp_user: The user's account name displayed in their authenticator app.
+                    totp_secret: The Base32-encoded shared secret for TOTP factors. This can be provided when creating the auth factor, otherwise it will be generated. The algorithm used to derive TOTP codes is SHA-1, the code length is 6 digits, and the timestep is 30 seconds – the secret must be compatible with these parameters.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    UserAuthenticationFactorEnrollResponse
+
+                Raises:
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "type": type,
+                "totp_issuer": totp_issuer,
+                "totp_user": totp_user,
+                "totp_secret": totp_secret,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=f"user_management/users/{userland_user_id}/auth_factors",
+            body=body,
+            model=UserAuthenticationFactorEnrollResponse,
+            request_options=request_options,
+        )
+
 
 class AsyncMultiFactorAuth:
     """Multi Factor Auth API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def create(
+    async def verify_challenge(
+        self,
+        id: str,
+        *,
+        code: str,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuthenticationChallengeVerifyResponse:
+        """Verify Challenge
+
+        Verifies an Authentication Challenge.
+
+                Args:
+                    id: The unique ID of the Authentication Challenge.
+                    code: The one-time code to verify.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AuthenticationChallengeVerifyResponse
+
+                Raises:
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            "code": code,
+        }
+        return await self._client.request(
+            method="post",
+            path=f"auth/challenges/{id}/verify",
+            body=body,
+            model=AuthenticationChallengeVerifyResponse,
+            request_options=request_options,
+        )
+
+    async def enroll_factor(
         self,
         *,
         type: Union[AuthenticationFactorsCreateRequestType, str],
@@ -199,10 +382,10 @@ class AsyncMultiFactorAuth:
                     AuthenticationFactorEnrolled
 
                 Raises:
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -223,7 +406,7 @@ class AsyncMultiFactorAuth:
             request_options=request_options,
         )
 
-    async def get(
+    async def get_factor(
         self,
         id: str,
         *,
@@ -241,10 +424,10 @@ class AsyncMultiFactorAuth:
                     AuthenticationFactor
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -253,7 +436,7 @@ class AsyncMultiFactorAuth:
             request_options=request_options,
         )
 
-    async def delete(
+    async def delete_factor(
         self,
         id: str,
         *,
@@ -268,10 +451,10 @@ class AsyncMultiFactorAuth:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -279,7 +462,7 @@ class AsyncMultiFactorAuth:
             request_options=request_options,
         )
 
-    async def challenge(
+    async def challenge_factor(
         self,
         id: str,
         *,
@@ -299,11 +482,11 @@ class AsyncMultiFactorAuth:
                     AuthenticationChallenge
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -317,5 +500,105 @@ class AsyncMultiFactorAuth:
             path=f"auth/factors/{id}/challenge",
             body=body,
             model=AuthenticationChallenge,
+            request_options=request_options,
+        )
+
+    async def list_user_auth_factors(
+        self,
+        userland_user_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[
+            Union[UserManagementMultiFactorAuthenticationOrder, str]
+        ] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[AuthenticationFactor]:
+        """List authentication factors
+
+        Lists the [authentication factors](https://workos.com/docs/reference/authkit/mfa/authentication-factor) for a user.
+
+                Args:
+                    userland_user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
+                    limit: Maximum number of records to return.
+                    before: Pagination cursor for previous page.
+                    after: Pagination cursor for next page.
+                    order: Sort order.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AsyncPage[AuthenticationFactor]
+
+                Raises:
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=f"user_management/users/{userland_user_id}/auth_factors",
+            model=AuthenticationFactor,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def create_user_auth_factors(
+        self,
+        userland_user_id: str,
+        *,
+        type: Literal["totp"],
+        totp_issuer: Optional[str] = None,
+        totp_user: Optional[str] = None,
+        totp_secret: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> UserAuthenticationFactorEnrollResponse:
+        """Enroll an authentication factor
+
+        Enrolls a user in a new [authentication factor](https://workos.com/docs/reference/authkit/mfa/authentication-factor).
+
+                Args:
+                    userland_user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
+                    type: The type of the factor to enroll.
+                    totp_issuer: Your application or company name displayed in the user's authenticator app.
+                    totp_user: The user's account name displayed in their authenticator app.
+                    totp_secret: The Base32-encoded shared secret for TOTP factors. This can be provided when creating the auth factor, otherwise it will be generated. The algorithm used to derive TOTP codes is SHA-1, the code length is 6 digits, and the timestep is 30 seconds – the secret must be compatible with these parameters.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    UserAuthenticationFactorEnrollResponse
+
+                Raises:
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "type": type,
+                "totp_issuer": totp_issuer,
+                "totp_user": totp_user,
+                "totp_secret": totp_secret,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=f"user_management/users/{userland_user_id}/auth_factors",
+            body=body,
+            model=UserAuthenticationFactorEnrollResponse,
             request_options=request_options,
         )

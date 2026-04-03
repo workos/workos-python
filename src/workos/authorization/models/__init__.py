@@ -3,13 +3,14 @@
 from .add_role_permission import AddRolePermission as AddRolePermission
 from .assign_role import AssignRole as AssignRole
 from .authorization_assignment import AuthorizationAssignment as AuthorizationAssignment
-from .authorization_assignment_literal import (
-    AuthorizationAssignmentLiteral as AuthorizationAssignmentLiteral,
-)
 from .authorization_check import AuthorizationCheck as AuthorizationCheck
 from .authorization_order import AuthorizationOrder as AuthorizationOrder
+from .authorization_permission import AuthorizationPermission as AuthorizationPermission
 from .authorization_resource import AuthorizationResource as AuthorizationResource
 from .check_authorization import CheckAuthorization as CheckAuthorization
+from .create_authorization_permission import (
+    CreateAuthorizationPermission as CreateAuthorizationPermission,
+)
 from .create_authorization_resource import (
     CreateAuthorizationResource as CreateAuthorizationResource,
 )
@@ -17,6 +18,8 @@ from .create_organization_role import CreateOrganizationRole as CreateOrganizati
 from .create_role import CreateRole as CreateRole
 from .list import ListModel as ListModel
 from .list_data import ListData as ListData
+from .permission import Permission as Permission
+from .permissions_order import PermissionsOrder as PermissionsOrder
 from .remove_role import RemoveRole as RemoveRole
 from .role import Role as Role
 from .role_assignment import RoleAssignment as RoleAssignment
@@ -24,6 +27,9 @@ from .role_assignment_resource import RoleAssignmentResource as RoleAssignmentRe
 from .role_list import RoleList as RoleList
 from .set_role_permissions import SetRolePermissions as SetRolePermissions
 from .slim_role import SlimRole as SlimRole
+from .update_authorization_permission import (
+    UpdateAuthorizationPermission as UpdateAuthorizationPermission,
+)
 from .update_authorization_resource import (
     UpdateAuthorizationResource as UpdateAuthorizationResource,
 )

@@ -5,15 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions, enum_value
-from .models import (
-    AuditLogConfiguration,
-    AuditLogsRetentionJson,
-    Organization,
-    OrganizationDomainData,
-)
+from .models import AuditLogConfiguration, Organization, OrganizationDomainData
 from .models import OrganizationsOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -21,10 +16,10 @@ from .._pagination import AsyncPage, SyncPage
 class Organizations:
     """Organizations API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def list(
+    def list_organizations(
         self,
         *,
         limit: Optional[int] = None,
@@ -52,10 +47,10 @@ class Organizations:
                     SyncPage[Organization]
 
                 Raises:
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -77,7 +72,7 @@ class Organizations:
             request_options=request_options,
         )
 
-    def create(
+    def create_organizations(
         self,
         *,
         name: str,
@@ -105,12 +100,12 @@ class Organizations:
                     Organization
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -134,7 +129,7 @@ class Organizations:
             request_options=request_options,
         )
 
-    def get_by_external_id(
+    def get_organization_by_external_id(
         self,
         external_id: str,
         *,
@@ -152,10 +147,10 @@ class Organizations:
                     Organization
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -164,7 +159,7 @@ class Organizations:
             request_options=request_options,
         )
 
-    def get(
+    def get_organization(
         self,
         id: str,
         *,
@@ -182,10 +177,10 @@ class Organizations:
                     Organization
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -194,7 +189,7 @@ class Organizations:
             request_options=request_options,
         )
 
-    def update(
+    def update_organization(
         self,
         id: str,
         *,
@@ -226,14 +221,14 @@ class Organizations:
                     Organization
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -258,7 +253,7 @@ class Organizations:
             request_options=request_options,
         )
 
-    def delete(
+    def delete_organization(
         self,
         id: str,
         *,
@@ -273,10 +268,10 @@ class Organizations:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -284,7 +279,7 @@ class Organizations:
             request_options=request_options,
         )
 
-    def get_audit_log_configuration(
+    def list_organization_audit_log_configuration(
         self,
         id: str,
         *,
@@ -302,10 +297,10 @@ class Organizations:
                     AuditLogConfiguration
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -314,81 +309,14 @@ class Organizations:
             request_options=request_options,
         )
 
-    def audit_logs_retention(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogsRetentionJson:
-        """Get Retention
-
-        Get the configured event retention period for the given Organization.
-
-                Args:
-                    id: Unique identifier of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-                Returns:
-                    AuditLogsRetentionJson
-
-                Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
-        """
-        return self._client.request(
-            method="get",
-            path=f"organizations/{id}/audit_logs_retention",
-            model=AuditLogsRetentionJson,
-            request_options=request_options,
-        )
-
-    def update_audit_logs_retention(
-        self,
-        id: str,
-        *,
-        retention_period_in_days: int,
-        request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogsRetentionJson:
-        """Set Retention
-
-        Set the event retention period for the given Organization.
-
-                Args:
-                    id: Unique identifier of the Organization.
-                    retention_period_in_days: The number of days Audit Log events will be retained. Valid values are `30` and `365`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-                Returns:
-                    AuditLogsRetentionJson
-
-                Raises:
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
-        """
-        body: Dict[str, Any] = {
-            "retention_period_in_days": retention_period_in_days,
-        }
-        return self._client.request(
-            method="put",
-            path=f"organizations/{id}/audit_logs_retention",
-            body=body,
-            model=AuditLogsRetentionJson,
-            request_options=request_options,
-        )
-
 
 class AsyncOrganizations:
     """Organizations API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def list(
+    async def list_organizations(
         self,
         *,
         limit: Optional[int] = None,
@@ -416,10 +344,10 @@ class AsyncOrganizations:
                     AsyncPage[Organization]
 
                 Raises:
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -441,7 +369,7 @@ class AsyncOrganizations:
             request_options=request_options,
         )
 
-    async def create(
+    async def create_organizations(
         self,
         *,
         name: str,
@@ -469,12 +397,12 @@ class AsyncOrganizations:
                     Organization
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -498,7 +426,7 @@ class AsyncOrganizations:
             request_options=request_options,
         )
 
-    async def get_by_external_id(
+    async def get_organization_by_external_id(
         self,
         external_id: str,
         *,
@@ -516,10 +444,10 @@ class AsyncOrganizations:
                     Organization
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -528,7 +456,7 @@ class AsyncOrganizations:
             request_options=request_options,
         )
 
-    async def get(
+    async def get_organization(
         self,
         id: str,
         *,
@@ -546,10 +474,10 @@ class AsyncOrganizations:
                     Organization
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -558,7 +486,7 @@ class AsyncOrganizations:
             request_options=request_options,
         )
 
-    async def update(
+    async def update_organization(
         self,
         id: str,
         *,
@@ -590,14 +518,14 @@ class AsyncOrganizations:
                     Organization
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -622,7 +550,7 @@ class AsyncOrganizations:
             request_options=request_options,
         )
 
-    async def delete(
+    async def delete_organization(
         self,
         id: str,
         *,
@@ -637,10 +565,10 @@ class AsyncOrganizations:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    AuthorizationException: If the request is forbidden (403).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthorizationError: If the request is forbidden (403).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -648,7 +576,7 @@ class AsyncOrganizations:
             request_options=request_options,
         )
 
-    async def get_audit_log_configuration(
+    async def list_organization_audit_log_configuration(
         self,
         id: str,
         *,
@@ -666,81 +594,14 @@ class AsyncOrganizations:
                     AuditLogConfiguration
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
             path=f"organizations/{id}/audit_log_configuration",
             model=AuditLogConfiguration,
-            request_options=request_options,
-        )
-
-    async def audit_logs_retention(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogsRetentionJson:
-        """Get Retention
-
-        Get the configured event retention period for the given Organization.
-
-                Args:
-                    id: Unique identifier of the Organization.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-                Returns:
-                    AuditLogsRetentionJson
-
-                Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
-        """
-        return await self._client.request(
-            method="get",
-            path=f"organizations/{id}/audit_logs_retention",
-            model=AuditLogsRetentionJson,
-            request_options=request_options,
-        )
-
-    async def update_audit_logs_retention(
-        self,
-        id: str,
-        *,
-        retention_period_in_days: int,
-        request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogsRetentionJson:
-        """Set Retention
-
-        Set the event retention period for the given Organization.
-
-                Args:
-                    id: Unique identifier of the Organization.
-                    retention_period_in_days: The number of days Audit Log events will be retained. Valid values are `30` and `365`.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-                Returns:
-                    AuditLogsRetentionJson
-
-                Raises:
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
-        """
-        body: Dict[str, Any] = {
-            "retention_period_in_days": retention_period_in_days,
-        }
-        return await self._client.request(
-            method="put",
-            path=f"organizations/{id}/audit_logs_retention",
-            body=body,
-            model=AuditLogsRetentionJson,
             request_options=request_options,
         )

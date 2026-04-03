@@ -6,7 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
+from workos._types import _parse_datetime
 
 from workos.organization_domains.models import OrganizationDomain
 
@@ -50,19 +51,15 @@ class Organization:
                 ],
                 metadata=data["metadata"],
                 external_id=data["external_id"],
-                created_at=datetime.fromisoformat(
-                    data["created_at"].replace("Z", "+00:00")
-                ),
-                updated_at=datetime.fromisoformat(
-                    data["updated_at"].replace("Z", "+00:00")
-                ),
+                created_at=_parse_datetime(data["created_at"]),
+                updated_at=_parse_datetime(data["updated_at"]),
                 stripe_customer_id=data.get("stripe_customer_id"),
                 allow_profiles_outside_organization=data.get(
                     "allow_profiles_outside_organization"
                 ),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing Organization: {e!s}"
             ) from e
 

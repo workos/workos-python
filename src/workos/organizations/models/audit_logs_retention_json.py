@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 
 @dataclass(slots=True)
@@ -22,7 +22,7 @@ class AuditLogsRetentionJson:
                 retention_period_in_days=data["retention_period_in_days"],
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing AuditLogsRetentionJson: {e!s}"
             ) from e
 

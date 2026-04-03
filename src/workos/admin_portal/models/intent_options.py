@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 from .sso_intent_options import SSOIntentOptions
 
@@ -25,7 +25,7 @@ class IntentOptions:
                 sso=SSOIntentOptions.from_dict(cast(Dict[str, Any], data["sso"])),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing IntentOptions: {e!s}"
             ) from e
 

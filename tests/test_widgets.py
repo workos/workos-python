@@ -8,21 +8,19 @@ from tests.generated_helpers import load_fixture
 
 from workos.widgets.models import WidgetSessionTokenResponse
 from workos._errors import (
-    AuthenticationException,
-    NotFoundException,
-    RateLimitExceededException,
-    ServerException,
+    AuthenticationError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
 )
 
 
 class TestWidgets:
-    def test_issue_widget_session_token(self, workos, httpx_mock):
+    def test_create_token(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("widget_session_token_response.json"),
         )
-        result = workos.widgets.issue_widget_session_token(
-            organization_id="test_organization_id"
-        )
+        result = workos.widgets.create_token(organization_id="test_organization_id")
         assert isinstance(result, WidgetSessionTokenResponse)
         assert result.token == "eyJhbGciOiJSUzI1NiIsImtpZCI6InNlc3Npb24..."
         request = httpx_mock.get_request()
@@ -31,28 +29,24 @@ class TestWidgets:
         body = json.loads(request.content)
         assert body["organization_id"] == "test_organization_id"
 
-    def test_issue_widget_session_token_unauthorized(self, workos, httpx_mock):
+    def test_create_token_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
-        with pytest.raises(AuthenticationException):
-            workos.widgets.issue_widget_session_token(
-                organization_id="test_organization_id"
-            )
+        with pytest.raises(AuthenticationError):
+            workos.widgets.create_token(organization_id="test_organization_id")
 
-    def test_issue_widget_session_token_not_found(self, httpx_mock):
+    def test_create_token_not_found(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
-                workos.widgets.issue_widget_session_token(
-                    organization_id="test_organization_id"
-                )
+            with pytest.raises(NotFoundError):
+                workos.widgets.create_token(organization_id="test_organization_id")
         finally:
             workos.close()
 
-    def test_issue_widget_session_token_rate_limited(self, httpx_mock):
+    def test_create_token_rate_limited(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(
@@ -60,30 +54,26 @@ class TestWidgets:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
-                workos.widgets.issue_widget_session_token(
-                    organization_id="test_organization_id"
-                )
+            with pytest.raises(RateLimitExceededError):
+                workos.widgets.create_token(organization_id="test_organization_id")
         finally:
             workos.close()
 
-    def test_issue_widget_session_token_server_error(self, httpx_mock):
+    def test_create_token_server_error(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
-                workos.widgets.issue_widget_session_token(
-                    organization_id="test_organization_id"
-                )
+            with pytest.raises(ServerError):
+                workos.widgets.create_token(organization_id="test_organization_id")
         finally:
             workos.close()
 
 
 @pytest.mark.asyncio
 class TestAsyncWidgets:
-    async def test_issue_widget_session_token(self, async_workos, httpx_mock):
+    async def test_create_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("widget_session_token_response.json"))
-        result = await async_workos.widgets.issue_widget_session_token(
+        result = await async_workos.widgets.create_token(
             organization_id="test_organization_id"
         )
         assert isinstance(result, WidgetSessionTokenResponse)
@@ -92,29 +82,27 @@ class TestAsyncWidgets:
         assert request.method == "POST"
         assert request.url.path.endswith("/widgets/token")
 
-    async def test_issue_widget_session_token_unauthorized(
-        self, async_workos, httpx_mock
-    ):
+    async def test_create_token_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
-        with pytest.raises(AuthenticationException):
-            await async_workos.widgets.issue_widget_session_token(
+        with pytest.raises(AuthenticationError):
+            await async_workos.widgets.create_token(
                 organization_id="test_organization_id"
             )
 
-    async def test_issue_widget_session_token_not_found(self, httpx_mock):
+    async def test_create_token_not_found(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
-                await workos.widgets.issue_widget_session_token(
+            with pytest.raises(NotFoundError):
+                await workos.widgets.create_token(
                     organization_id="test_organization_id"
                 )
         finally:
             await workos.close()
 
-    async def test_issue_widget_session_token_rate_limited(self, httpx_mock):
+    async def test_create_token_rate_limited(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -124,21 +112,21 @@ class TestAsyncWidgets:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
-                await workos.widgets.issue_widget_session_token(
+            with pytest.raises(RateLimitExceededError):
+                await workos.widgets.create_token(
                     organization_id="test_organization_id"
                 )
         finally:
             await workos.close()
 
-    async def test_issue_widget_session_token_server_error(self, httpx_mock):
+    async def test_create_token_server_error(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
-                await workos.widgets.issue_widget_session_token(
+            with pytest.raises(ServerError):
+                await workos.widgets.create_token(
                     organization_id="test_organization_id"
                 )
         finally:

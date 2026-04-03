@@ -2,45 +2,17 @@
 
 """WorkOS Python SDK."""
 
-from ._client import AsyncWorkOSClient, WorkOSClient
-from ._errors import (
-    BaseRequestException,
-    AuthenticationException,
-    BadRequestException,
-    ConflictException,
-    ConfigurationException,
-    AuthorizationException,
-    NotFoundException,
-    RateLimitExceededException,
-    ServerException,
-    UnprocessableEntityException,
-    WorkOSConnectionException,
-    WorkOSTimeoutException,
-)
-from ._pagination import AsyncPage, SyncPage
+from ._client import AsyncWorkOS, WorkOS
+from ._errors import WorkOSError
+from ._pagination import AsyncPage, ListMetadata, SyncPage
 from ._types import RequestOptions
 
-WorkOS = WorkOSClient
-AsyncWorkOS = AsyncWorkOSClient
-
 __all__ = [
-    "WorkOSClient",
-    "AsyncWorkOSClient",
     "WorkOS",
     "AsyncWorkOS",
-    "RequestOptions",
-    "BaseRequestException",
-    "AuthenticationException",
-    "BadRequestException",
-    "ConflictException",
-    "ConfigurationException",
-    "AuthorizationException",
-    "NotFoundException",
-    "RateLimitExceededException",
-    "ServerException",
-    "UnprocessableEntityException",
-    "WorkOSConnectionException",
-    "WorkOSTimeoutException",
-    "AsyncPage",
+    "WorkOSError",
     "SyncPage",
+    "AsyncPage",
+    "ListMetadata",
+    "RequestOptions",
 ]

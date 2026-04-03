@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions, enum_value
 from .models import WebhookEndpointJson
@@ -25,10 +25,10 @@ import time
 class Webhooks:
     """Webhooks API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def list(
+    def list_webhook_endpoints(
         self,
         *,
         limit: Optional[int] = None,
@@ -52,9 +52,9 @@ class Webhooks:
                     SyncPage[WebhookEndpointJson]
 
                 Raises:
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -74,7 +74,7 @@ class Webhooks:
             request_options=request_options,
         )
 
-    def create(
+    def create_webhook_endpoints(
         self,
         *,
         endpoint_url: str,
@@ -94,11 +94,11 @@ class Webhooks:
                     WebhookEndpointJson
 
                 Raises:
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "endpoint_url": endpoint_url,
@@ -112,7 +112,7 @@ class Webhooks:
             request_options=request_options,
         )
 
-    def update(
+    def update_webhook_endpoint(
         self,
         id: str,
         *,
@@ -136,12 +136,12 @@ class Webhooks:
                     WebhookEndpointJson
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -160,7 +160,7 @@ class Webhooks:
             request_options=request_options,
         )
 
-    def delete(
+    def delete_webhook_endpoint(
         self,
         id: str,
         *,
@@ -175,10 +175,10 @@ class Webhooks:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -280,10 +280,10 @@ class Webhooks:
 class AsyncWebhooks:
     """Webhooks API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def list(
+    async def list_webhook_endpoints(
         self,
         *,
         limit: Optional[int] = None,
@@ -307,9 +307,9 @@ class AsyncWebhooks:
                     AsyncPage[WebhookEndpointJson]
 
                 Raises:
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -329,7 +329,7 @@ class AsyncWebhooks:
             request_options=request_options,
         )
 
-    async def create(
+    async def create_webhook_endpoints(
         self,
         *,
         endpoint_url: str,
@@ -349,11 +349,11 @@ class AsyncWebhooks:
                     WebhookEndpointJson
 
                 Raises:
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "endpoint_url": endpoint_url,
@@ -367,7 +367,7 @@ class AsyncWebhooks:
             request_options=request_options,
         )
 
-    async def update(
+    async def update_webhook_endpoint(
         self,
         id: str,
         *,
@@ -391,12 +391,12 @@ class AsyncWebhooks:
                     WebhookEndpointJson
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    ConflictException: If a conflict occurs (409).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    ConflictError: If a conflict occurs (409).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -415,7 +415,7 @@ class AsyncWebhooks:
             request_options=request_options,
         )
 
-    async def delete(
+    async def delete_webhook_endpoint(
         self,
         id: str,
         *,
@@ -430,10 +430,10 @@ class AsyncWebhooks:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",

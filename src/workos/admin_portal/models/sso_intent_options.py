@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Literal, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 
 @dataclass(slots=True)
@@ -25,7 +25,7 @@ class SSOIntentOptions:
                 provider_type=data.get("provider_type"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing SSOIntentOptions: {e!s}"
             ) from e
 

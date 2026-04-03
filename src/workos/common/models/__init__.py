@@ -3,38 +3,20 @@
 from .audit_log_configuration_log_stream_state import (
     AuditLogConfigurationLogStreamState as AuditLogConfigurationLogStreamState,
 )
-from .audit_log_configuration_log_stream_state_literal import (
-    AuditLogConfigurationLogStreamStateLiteral as AuditLogConfigurationLogStreamStateLiteral,
-)
 from .audit_log_configuration_log_stream_type import (
     AuditLogConfigurationLogStreamType as AuditLogConfigurationLogStreamType,
-)
-from .audit_log_configuration_log_stream_type_literal import (
-    AuditLogConfigurationLogStreamTypeLiteral as AuditLogConfigurationLogStreamTypeLiteral,
 )
 from .audit_log_configuration_state import (
     AuditLogConfigurationState as AuditLogConfigurationState,
 )
-from .audit_log_configuration_state_literal import (
-    AuditLogConfigurationStateLiteral as AuditLogConfigurationStateLiteral,
-)
 from .audit_log_export_json_state import (
     AuditLogExportJsonState as AuditLogExportJsonState,
-)
-from .audit_log_export_json_state_literal import (
-    AuditLogExportJsonStateLiteral as AuditLogExportJsonStateLiteral,
 )
 from .authenticate_response_authentication_method import (
     AuthenticateResponseAuthenticationMethod as AuthenticateResponseAuthenticationMethod,
 )
-from .authenticate_response_authentication_method_literal import (
-    AuthenticateResponseAuthenticationMethodLiteral as AuthenticateResponseAuthenticationMethodLiteral,
-)
 from .authentication_factor_enrolled_type import (
     AuthenticationFactorEnrolledType as AuthenticationFactorEnrolledType,
-)
-from .authentication_factor_enrolled_type_literal import (
-    AuthenticationFactorEnrolledTypeLiteral as AuthenticationFactorEnrolledTypeLiteral,
 )
 from .authentication_factor_type import (
     AuthenticationFactorType as AuthenticationFactorType,
@@ -42,38 +24,18 @@ from .authentication_factor_type import (
 from .authentication_factors_create_request_type import (
     AuthenticationFactorsCreateRequestType as AuthenticationFactorsCreateRequestType,
 )
-from .authentication_factors_create_request_type_literal import (
-    AuthenticationFactorsCreateRequestTypeLiteral as AuthenticationFactorsCreateRequestTypeLiteral,
-)
 from .connected_account_state import ConnectedAccountState as ConnectedAccountState
-from .connected_account_state_literal import (
-    ConnectedAccountStateLiteral as ConnectedAccountStateLiteral,
-)
 from .connection_state import ConnectionState as ConnectionState
-from .connection_state_literal import ConnectionStateLiteral as ConnectionStateLiteral
 from .connection_status import ConnectionStatus as ConnectionStatus
-from .connection_status_literal import (
-    ConnectionStatusLiteral as ConnectionStatusLiteral,
-)
 from .connection_type import ConnectionType as ConnectionType
-from .connection_type_literal import ConnectionTypeLiteral as ConnectionTypeLiteral
 from .create_user_dto_password_hash_type import (
     CreateUserDtoPasswordHashType as CreateUserDtoPasswordHashType,
-)
-from .create_user_dto_password_hash_type_literal import (
-    CreateUserDtoPasswordHashTypeLiteral as CreateUserDtoPasswordHashTypeLiteral,
 )
 from .create_user_invite_options_dto_locale import (
     CreateUserInviteOptionsDtoLocale as CreateUserInviteOptionsDtoLocale,
 )
-from .create_user_invite_options_dto_locale_literal import (
-    CreateUserInviteOptionsDtoLocaleLiteral as CreateUserInviteOptionsDtoLocaleLiteral,
-)
 from .create_webhook_endpoint_dto_events import (
     CreateWebhookEndpointDtoEvents as CreateWebhookEndpointDtoEvents,
-)
-from .create_webhook_endpoint_dto_events_literal import (
-    CreateWebhookEndpointDtoEventsLiteral as CreateWebhookEndpointDtoEventsLiteral,
 )
 from .data_integrations_list_response_data_connected_account_state import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
@@ -81,44 +43,22 @@ from .data_integrations_list_response_data_connected_account_state import (
 from .data_integrations_list_response_data_ownership import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
 )
-from .data_integrations_list_response_data_ownership_literal import (
-    DataIntegrationsListResponseDataOwnershipLiteral as DataIntegrationsListResponseDataOwnershipLiteral,
-)
 from .directory_state import DirectoryState as DirectoryState
-from .directory_state_literal import DirectoryStateLiteral as DirectoryStateLiteral
 from .directory_type import DirectoryType as DirectoryType
-from .directory_type_literal import DirectoryTypeLiteral as DirectoryTypeLiteral
 from .directory_user_with_groups_state import (
     DirectoryUserWithGroupsState as DirectoryUserWithGroupsState,
 )
-from .directory_user_with_groups_state_literal import (
-    DirectoryUserWithGroupsStateLiteral as DirectoryUserWithGroupsStateLiteral,
-)
 from .generate_link_dto_intent import GenerateLinkDtoIntent as GenerateLinkDtoIntent
-from .generate_link_dto_intent_literal import (
-    GenerateLinkDtoIntentLiteral as GenerateLinkDtoIntentLiteral,
-)
 from .invitation_state import InvitationState as InvitationState
-from .invitation_state_literal import InvitationStateLiteral as InvitationStateLiteral
 from .list_data_type import ListDataType as ListDataType
-from .list_data_type_literal import ListDataTypeLiteral as ListDataTypeLiteral
 from .organization_domain_data_dto_state import (
     OrganizationDomainDataDtoState as OrganizationDomainDataDtoState,
-)
-from .organization_domain_data_dto_state_literal import (
-    OrganizationDomainDataDtoStateLiteral as OrganizationDomainDataDtoStateLiteral,
 )
 from .organization_domain_stand_alone_state import (
     OrganizationDomainStandAloneState as OrganizationDomainStandAloneState,
 )
-from .organization_domain_stand_alone_state_literal import (
-    OrganizationDomainStandAloneStateLiteral as OrganizationDomainStandAloneStateLiteral,
-)
 from .organization_domain_stand_alone_verification_strategy import (
     OrganizationDomainStandAloneVerificationStrategy as OrganizationDomainStandAloneVerificationStrategy,
-)
-from .organization_domain_stand_alone_verification_strategy_literal import (
-    OrganizationDomainStandAloneVerificationStrategyLiteral as OrganizationDomainStandAloneVerificationStrategyLiteral,
 )
 from .organization_domain_state import (
     OrganizationDomainState as OrganizationDomainState,
@@ -133,14 +73,8 @@ from .profile_connection_type import ProfileConnectionType as ProfileConnectionT
 from .radar_standalone_assess_request_action import (
     RadarStandaloneAssessRequestAction as RadarStandaloneAssessRequestAction,
 )
-from .radar_standalone_assess_request_action_literal import (
-    RadarStandaloneAssessRequestActionLiteral as RadarStandaloneAssessRequestActionLiteral,
-)
 from .radar_standalone_assess_request_auth_method import (
     RadarStandaloneAssessRequestAuthMethod as RadarStandaloneAssessRequestAuthMethod,
-)
-from .radar_standalone_assess_request_auth_method_literal import (
-    RadarStandaloneAssessRequestAuthMethodLiteral as RadarStandaloneAssessRequestAuthMethodLiteral,
 )
 from .radar_standalone_response_blocklist_type import (
     RadarStandaloneResponseBlocklistType as RadarStandaloneResponseBlocklistType,
@@ -148,14 +82,8 @@ from .radar_standalone_response_blocklist_type import (
 from .radar_standalone_response_control import (
     RadarStandaloneResponseControl as RadarStandaloneResponseControl,
 )
-from .radar_standalone_response_control_literal import (
-    RadarStandaloneResponseControlLiteral as RadarStandaloneResponseControlLiteral,
-)
 from .radar_standalone_response_verdict import (
     RadarStandaloneResponseVerdict as RadarStandaloneResponseVerdict,
-)
-from .radar_standalone_response_verdict_literal import (
-    RadarStandaloneResponseVerdictLiteral as RadarStandaloneResponseVerdictLiteral,
 )
 from .resend_user_invite_options_dto_locale import (
     ResendUserInviteOptionsDtoLocale as ResendUserInviteOptionsDtoLocale,
@@ -170,14 +98,8 @@ from .update_webhook_endpoint_dto_events import (
 from .update_webhook_endpoint_dto_status import (
     UpdateWebhookEndpointDtoStatus as UpdateWebhookEndpointDtoStatus,
 )
-from .update_webhook_endpoint_dto_status_literal import (
-    UpdateWebhookEndpointDtoStatusLiteral as UpdateWebhookEndpointDtoStatusLiteral,
-)
 from .user_identities_get_item_provider import (
     UserIdentitiesGetItemProvider as UserIdentitiesGetItemProvider,
-)
-from .user_identities_get_item_provider_literal import (
-    UserIdentitiesGetItemProviderLiteral as UserIdentitiesGetItemProviderLiteral,
 )
 from .user_invite_state import UserInviteState as UserInviteState
 from .user_organization_membership_base_list_data_status import (
@@ -187,19 +109,10 @@ from .user_organization_membership_status import (
     UserOrganizationMembershipStatus as UserOrganizationMembershipStatus,
 )
 from .user_sessions_auth_method import UserSessionsAuthMethod as UserSessionsAuthMethod
-from .user_sessions_auth_method_literal import (
-    UserSessionsAuthMethodLiteral as UserSessionsAuthMethodLiteral,
-)
 from .user_sessions_status import UserSessionsStatus as UserSessionsStatus
-from .user_sessions_status_literal import (
-    UserSessionsStatusLiteral as UserSessionsStatusLiteral,
-)
 from .webhook_endpoint_json_status import (
     WebhookEndpointJsonStatus as WebhookEndpointJsonStatus,
 )
 from .widget_session_token_dto_scopes import (
     WidgetSessionTokenDtoScopes as WidgetSessionTokenDtoScopes,
-)
-from .widget_session_token_dto_scopes_literal import (
-    WidgetSessionTokenDtoScopesLiteral as WidgetSessionTokenDtoScopesLiteral,
 )

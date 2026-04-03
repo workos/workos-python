@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 from .audit_log_event import AuditLogEvent
 
@@ -28,7 +28,7 @@ class AuditLogEventIngestion:
                 event=AuditLogEvent.from_dict(cast(Dict[str, Any], data["event"])),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing AuditLogEventIngestion: {e!s}"
             ) from e
 

@@ -12,10 +12,10 @@ from workos.vault import (
     VaultObject,
 )
 from workos._errors import (
-    AuthenticationException,
-    NotFoundException,
-    RateLimitExceededException,
-    ServerException,
+    AuthenticationError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
 )
 
 
@@ -182,14 +182,14 @@ class TestVault:
             status_code=401,
             json={"message": "Unauthorized"},
         )
-        with pytest.raises(AuthenticationException):
+        with pytest.raises(AuthenticationError):
             workos.vault.read_object(object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C")
 
     def test_read_object_not_found(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
+            with pytest.raises(NotFoundError):
                 workos.vault.read_object(
                     object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
                 )
@@ -204,7 +204,7 @@ class TestVault:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
+            with pytest.raises(RateLimitExceededError):
                 workos.vault.read_object(
                     object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
                 )
@@ -215,7 +215,7 @@ class TestVault:
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
+            with pytest.raises(ServerError):
                 workos.vault.read_object(
                     object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
                 )
@@ -345,7 +345,7 @@ class TestAsyncVault:
 
     async def test_read_object_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
-        with pytest.raises(AuthenticationException):
+        with pytest.raises(AuthenticationError):
             await async_workos.vault.read_object(
                 object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
             )
@@ -356,7 +356,7 @@ class TestAsyncVault:
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
+            with pytest.raises(NotFoundError):
                 await workos.vault.read_object(
                     object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
                 )
@@ -373,7 +373,7 @@ class TestAsyncVault:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
+            with pytest.raises(RateLimitExceededError):
                 await workos.vault.read_object(
                     object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
                 )
@@ -386,7 +386,7 @@ class TestAsyncVault:
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
+            with pytest.raises(ServerError):
                 await workos.vault.read_object(
                     object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
                 )

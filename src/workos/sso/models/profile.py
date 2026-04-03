@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 from workos.authorization.models import SlimRole
 from workos.common.models import ProfileConnectionType
@@ -72,7 +72,7 @@ class Profile:
                 custom_attributes=data.get("custom_attributes"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing Profile: {e!s}"
             ) from e
 

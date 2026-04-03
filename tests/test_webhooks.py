@@ -9,31 +9,31 @@ from tests.generated_helpers import load_fixture
 from workos.webhooks.models import WebhookEndpointJson, WebhooksOrder
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
-    AuthenticationException,
-    NotFoundException,
-    RateLimitExceededException,
-    ServerException,
+    AuthenticationError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
 )
 
 
 class TestWebhooks:
-    def test_list(self, workos, httpx_mock):
+    def test_list_webhook_endpoints(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_webhook_endpoint_json.json"),
         )
-        page = workos.webhooks.list()
+        page = workos.webhooks.list_webhook_endpoints()
         assert isinstance(page, SyncPage)
         assert isinstance(page.data, list)
 
-    def test_list_empty_page(self, workos, httpx_mock):
+    def test_list_webhook_endpoints_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.webhooks.list()
+        page = workos.webhooks.list_webhook_endpoints()
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_encodes_query_params(self, workos, httpx_mock):
+    def test_list_webhook_endpoints_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.webhooks.list(
+        workos.webhooks.list_webhook_endpoints(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -45,11 +45,13 @@ class TestWebhooks:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    def test_create(self, workos, httpx_mock):
+    def test_create_webhook_endpoints(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("webhook_endpoint_json.json"),
         )
-        result = workos.webhooks.create(endpoint_url="test_endpoint_url", events=[])
+        result = workos.webhooks.create_webhook_endpoints(
+            endpoint_url="test_endpoint_url", events=[]
+        )
         assert isinstance(result, WebhookEndpointJson)
         assert result.object == "webhook_endpoint"
         assert result.id == "we_0123456789"
@@ -60,11 +62,11 @@ class TestWebhooks:
         assert body["endpoint_url"] == "test_endpoint_url"
         assert "events" in body
 
-    def test_update(self, workos, httpx_mock):
+    def test_update_webhook_endpoint(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("webhook_endpoint_json.json"),
         )
-        result = workos.webhooks.update("test_id")
+        result = workos.webhooks.update_webhook_endpoint("test_id")
         assert isinstance(result, WebhookEndpointJson)
         assert result.object == "webhook_endpoint"
         assert result.id == "we_0123456789"
@@ -72,32 +74,32 @@ class TestWebhooks:
         assert request.method == "PATCH"
         assert request.url.path.endswith("/webhook_endpoints/test_id")
 
-    def test_delete(self, workos, httpx_mock):
+    def test_delete_webhook_endpoint(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.webhooks.delete("test_id")
+        result = workos.webhooks.delete_webhook_endpoint("test_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/webhook_endpoints/test_id")
 
-    def test_list_unauthorized(self, workos, httpx_mock):
+    def test_list_webhook_endpoints_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
-        with pytest.raises(AuthenticationException):
-            workos.webhooks.list()
+        with pytest.raises(AuthenticationError):
+            workos.webhooks.list_webhook_endpoints()
 
-    def test_list_not_found(self, httpx_mock):
+    def test_list_webhook_endpoints_not_found(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
-                workos.webhooks.list()
+            with pytest.raises(NotFoundError):
+                workos.webhooks.list_webhook_endpoints()
         finally:
             workos.close()
 
-    def test_list_rate_limited(self, httpx_mock):
+    def test_list_webhook_endpoints_rate_limited(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(
@@ -105,38 +107,40 @@ class TestWebhooks:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
-                workos.webhooks.list()
+            with pytest.raises(RateLimitExceededError):
+                workos.webhooks.list_webhook_endpoints()
         finally:
             workos.close()
 
-    def test_list_server_error(self, httpx_mock):
+    def test_list_webhook_endpoints_server_error(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
-                workos.webhooks.list()
+            with pytest.raises(ServerError):
+                workos.webhooks.list_webhook_endpoints()
         finally:
             workos.close()
 
 
 @pytest.mark.asyncio
 class TestAsyncWebhooks:
-    async def test_list(self, async_workos, httpx_mock):
+    async def test_list_webhook_endpoints(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_webhook_endpoint_json.json"))
-        page = await async_workos.webhooks.list()
+        page = await async_workos.webhooks.list_webhook_endpoints()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
-    async def test_list_empty_page(self, async_workos, httpx_mock):
+    async def test_list_webhook_endpoints_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.webhooks.list()
+        page = await async_workos.webhooks.list_webhook_endpoints()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
-    async def test_list_encodes_query_params(self, async_workos, httpx_mock):
+    async def test_list_webhook_endpoints_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.webhooks.list(
+        await async_workos.webhooks.list_webhook_endpoints(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -148,9 +152,9 @@ class TestAsyncWebhooks:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    async def test_create(self, async_workos, httpx_mock):
+    async def test_create_webhook_endpoints(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("webhook_endpoint_json.json"))
-        result = await async_workos.webhooks.create(
+        result = await async_workos.webhooks.create_webhook_endpoints(
             endpoint_url="test_endpoint_url", events=[]
         )
         assert isinstance(result, WebhookEndpointJson)
@@ -160,9 +164,9 @@ class TestAsyncWebhooks:
         assert request.method == "POST"
         assert request.url.path.endswith("/webhook_endpoints")
 
-    async def test_update(self, async_workos, httpx_mock):
+    async def test_update_webhook_endpoint(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("webhook_endpoint_json.json"))
-        result = await async_workos.webhooks.update("test_id")
+        result = await async_workos.webhooks.update_webhook_endpoint("test_id")
         assert isinstance(result, WebhookEndpointJson)
         assert result.object == "webhook_endpoint"
         assert result.id == "we_0123456789"
@@ -170,31 +174,31 @@ class TestAsyncWebhooks:
         assert request.method == "PATCH"
         assert request.url.path.endswith("/webhook_endpoints/test_id")
 
-    async def test_delete(self, async_workos, httpx_mock):
+    async def test_delete_webhook_endpoint(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.webhooks.delete("test_id")
+        result = await async_workos.webhooks.delete_webhook_endpoint("test_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/webhook_endpoints/test_id")
 
-    async def test_list_unauthorized(self, async_workos, httpx_mock):
+    async def test_list_webhook_endpoints_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
-        with pytest.raises(AuthenticationException):
-            await async_workos.webhooks.list()
+        with pytest.raises(AuthenticationError):
+            await async_workos.webhooks.list_webhook_endpoints()
 
-    async def test_list_not_found(self, httpx_mock):
+    async def test_list_webhook_endpoints_not_found(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
-                await workos.webhooks.list()
+            with pytest.raises(NotFoundError):
+                await workos.webhooks.list_webhook_endpoints()
         finally:
             await workos.close()
 
-    async def test_list_rate_limited(self, httpx_mock):
+    async def test_list_webhook_endpoints_rate_limited(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -204,18 +208,18 @@ class TestAsyncWebhooks:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
-                await workos.webhooks.list()
+            with pytest.raises(RateLimitExceededError):
+                await workos.webhooks.list_webhook_endpoints()
         finally:
             await workos.close()
 
-    async def test_list_server_error(self, httpx_mock):
+    async def test_list_webhook_endpoints_server_error(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
-                await workos.webhooks.list()
+            with pytest.raises(ServerError):
+                await workos.webhooks.list_webhook_endpoints()
         finally:
             await workos.close()

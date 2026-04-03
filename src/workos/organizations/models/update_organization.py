@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 from .organization_domain_data import OrganizationDomainData
 
@@ -50,7 +50,7 @@ class UpdateOrganization:
                 external_id=data.get("external_id"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing UpdateOrganization: {e!s}"
             ) from e
 

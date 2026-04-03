@@ -5,7 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, Literal, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
+from workos._types import _parse_datetime
 
 
 @dataclass(slots=True)
@@ -34,13 +35,11 @@ class EventSchema:
                 id=data["id"],
                 event=data["event"],
                 data=data["data"],
-                created_at=datetime.fromisoformat(
-                    data["created_at"].replace("Z", "+00:00")
-                ),
+                created_at=_parse_datetime(data["created_at"]),
                 context=data.get("context"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing EventSchema: {e!s}"
             ) from e
 

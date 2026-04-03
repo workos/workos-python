@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions
 from .models import WidgetSessionTokenResponse
@@ -15,10 +15,10 @@ from workos.common.models import WidgetSessionTokenDtoScopes
 class Widgets:
     """Widgets API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def issue_widget_session_token(
+    def create_token(
         self,
         *,
         organization_id: str,
@@ -40,12 +40,12 @@ class Widgets:
                     WidgetSessionTokenResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -68,10 +68,10 @@ class Widgets:
 class AsyncWidgets:
     """Widgets API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def issue_widget_session_token(
+    async def create_token(
         self,
         *,
         organization_id: str,
@@ -93,12 +93,12 @@ class AsyncWidgets:
                     WidgetSessionTokenResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v

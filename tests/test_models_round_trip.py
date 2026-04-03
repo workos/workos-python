@@ -9,12 +9,13 @@ from workos.admin_portal.models import (
     PortalLinkResponse,
     SSOIntentOptions,
 )
-from workos.api_keys.models import ApiKey, ApiKeyOwner, ApiKeyValidationResponse
-from workos.application_client_secrets.models import (
-    ApplicationCredentialsListItem,
-    NewConnectApplicationSecret,
+from workos.api_keys.models import (
+    ApiKey,
+    ApiKeyOwner,
+    ApiKeyValidationResponse,
+    ApiKeyWithValue,
+    ApiKeyWithValueOwner,
 )
-from workos.applications.models import ConnectApplication, RedirectUriDto
 from workos.audit_logs.models import (
     AuditLogActionJson,
     AuditLogEvent,
@@ -31,9 +32,11 @@ from workos.audit_logs.models import (
 )
 from workos.authorization.models import (
     AuthorizationCheck,
+    AuthorizationPermission,
     AuthorizationResource,
     ListData,
     ListModel,
+    Permission,
     Role,
     RoleAssignment,
     RoleAssignmentResource,
@@ -41,30 +44,36 @@ from workos.authorization.models import (
     SlimRole,
     UserOrganizationMembershipBaseListData,
 )
-from workos.connections.models import Connection, ConnectionDomain, ConnectionOption
-from workos.directories.models import (
+from workos.connect.models import (
+    ApplicationCredentialsListItem,
+    ConnectApplication,
+    ExternalAuthCompleteResponse,
+    NewConnectApplicationSecret,
+    RedirectUriDto,
+    UserConsentOption,
+    UserConsentOptionChoice,
+    UserObject,
+)
+from workos.directory_sync.models import (
     Directory,
+    DirectoryGroup,
     DirectoryMetadata,
     DirectoryMetadataUser,
-)
-from workos.directory_groups.models import DirectoryGroup
-from workos.directory_users.models import (
     DirectoryUserWithGroups,
     DirectoryUserWithGroupsEmail,
 )
 from workos.events.models import EventSchema
 from workos.feature_flags.models import FeatureFlag, FeatureFlagOwner, Flag, FlagOwner
 from workos.multi_factor_auth.models import (
+    AuthenticationChallenge,
+    AuthenticationChallengeVerifyResponse,
     AuthenticationFactor,
     AuthenticationFactorEnrolled,
     AuthenticationFactorEnrolledSms,
     AuthenticationFactorEnrolledTotp,
     AuthenticationFactorSms,
     AuthenticationFactorTotp,
-)
-from workos.multi_factor_auth.challenges.models import (
-    AuthenticationChallenge,
-    AuthenticationChallengeVerifyResponse,
+    UserAuthenticationFactorEnrollResponse,
 )
 from workos.organization_domains.models import (
     OrganizationDomain,
@@ -77,67 +86,58 @@ from workos.organizations.models import (
     Organization,
     OrganizationDomainData,
 )
-from workos.organizations.api_keys.models import ApiKeyWithValue, ApiKeyWithValueOwner
-from workos.permissions.models import AuthorizationPermission, Permission
-from workos.pipes.models import DataIntegrationAuthorizeUrlResponse
+from workos.pipes.models import (
+    ConnectedAccount,
+    DataIntegrationAuthorizeUrlResponse,
+    DataIntegrationsListResponse,
+    DataIntegrationsListResponseData,
+    DataIntegrationsListResponseDataConnectedAccount,
+)
 from workos.radar.models import (
     RadarListEntryAlreadyPresentResponse,
     RadarStandaloneResponse,
 )
 from workos.sso.models import (
+    Connection,
+    ConnectionDomain,
+    ConnectionOption,
     Profile,
     SSOAuthorizeUrlResponse,
     SSOLogoutAuthorizeResponse,
     SSOTokenResponse,
     SSOTokenResponseOAuthToken,
 )
-from workos.user_management.authentication.models import (
+from workos.user_management.models import (
     AuthenticateResponse,
     AuthenticateResponseImpersonator,
     AuthenticateResponseOAuthToken,
+    AuthorizedConnectApplicationListData,
+    CORSOriginResponse,
     DeviceAuthorizationResponse,
-    User,
-)
-from workos.user_management.cors_origins.models import CORSOriginResponse
-from workos.user_management.data_providers.models import (
-    ConnectedAccount,
-    DataIntegrationsListResponse,
-    DataIntegrationsListResponseData,
-    DataIntegrationsListResponseDataConnectedAccount,
-)
-from workos.user_management.invitations.models import Invitation, UserInvite
-from workos.user_management.jwt_template.models import JWTTemplateResponse
-from workos.user_management.magic_auth.models import MagicAuth
-from workos.user_management.multi_factor_authentication.models import (
-    UserAuthenticationFactorEnrollResponse,
-)
-from workos.user_management.organization_membership.models import (
-    OrganizationMembership,
-    UserOrganizationMembership,
-)
-from workos.user_management.redirect_uris.models import RedirectUri
-from workos.user_management.session_tokens.models import JwksResponse, JwksResponseKeys
-from workos.user_management.users.models import (
+    EmailChange,
+    EmailChangeConfirmation,
+    EmailChangeConfirmationUser,
     EmailVerification,
+    Invitation,
+    JWTTemplateResponse,
+    JwksResponse,
+    JwksResponseKeys,
+    MagicAuth,
+    OrganizationMembership,
     PasswordReset,
+    RedirectUri,
     ResetPasswordResponse,
     SendVerificationEmailResponse,
+    User,
     UserIdentitiesGetItem,
+    UserInvite,
+    UserOrganizationMembership,
     UserSessionsImpersonator,
     UserSessionsListItem,
     VerifyEmailResponse,
 )
-from workos.user_management_users.authorized_applications.models import (
-    AuthorizedConnectApplicationListData,
-)
 from workos.webhooks.models import WebhookEndpointJson
 from workos.widgets.models import WidgetSessionTokenResponse
-from workos.workos_connect.models import (
-    ExternalAuthCompleteResponse,
-    UserConsentOption,
-    UserConsentOptionChoice,
-    UserObject,
-)
 
 
 class TestModelRoundTrip:
@@ -2716,6 +2716,44 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["user"] == data["user"]
 
+    def test_email_change_round_trip(self):
+        data = load_fixture("email_change.json")
+        instance = EmailChange.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailChange.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_change_minimal_payload(self):
+        data = {
+            "object": "email_change",
+            "user": {
+                "object": "user",
+                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+                "email": "marcelina.davis@example.com",
+                "email_verified": True,
+                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+                "metadata": {"timezone": "America/New_York"},
+                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "locale": "en-US",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "new_email": "new.email@example.com",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = EmailChange.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["user"] == data["user"]
+        assert serialized["new_email"] == data["new_email"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["created_at"] == data["created_at"]
+
     def test_authenticate_response_round_trip(self):
         data = load_fixture("authenticate_response.json")
         instance = AuthenticateResponse.from_dict(data)
@@ -4222,6 +4260,120 @@ class TestModelRoundTrip:
         }
         instance = OrganizationMembership.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_email_change_confirmation_round_trip(self):
+        data = load_fixture("email_change_confirmation.json")
+        instance = EmailChangeConfirmation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailChangeConfirmation.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_change_confirmation_minimal_payload(self):
+        data = {
+            "object": "email_change_confirmation",
+            "user": {
+                "object": "user",
+                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+                "email": "new.email@example.com",
+                "email_verified": True,
+                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+                "metadata": {"timezone": "America/New_York"},
+                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "locale": "en-US",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+        }
+        instance = EmailChangeConfirmation.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["user"] == data["user"]
+
+    def test_email_change_confirmation_user_round_trip(self):
+        data = load_fixture("email_change_confirmation_user.json")
+        instance = EmailChangeConfirmationUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailChangeConfirmationUser.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_change_confirmation_user_minimal_payload(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "new.email@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "last_sign_in_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = EmailChangeConfirmationUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+        assert serialized["profile_picture_url"] == data["profile_picture_url"]
+        assert serialized["email"] == data["email"]
+        assert serialized["email_verified"] == data["email_verified"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_email_change_confirmation_user_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+            "email": "new.email@example.com",
+            "email_verified": True,
+            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+            "locale": "en-US",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = EmailChangeConfirmationUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert "metadata" not in serialized
+
+    def test_email_change_confirmation_user_preserves_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "new.email@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "metadata": {"timezone": "America/New_York"},
+            "last_sign_in_at": None,
+            "locale": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = EmailChangeConfirmationUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["profile_picture_url"] is None
+        assert serialized["external_id"] is None
+        assert serialized["last_sign_in_at"] is None
+        assert serialized["locale"] is None
 
     def test_user_identities_get_item_round_trip(self):
         data = load_fixture("user_identities_get_item.json")

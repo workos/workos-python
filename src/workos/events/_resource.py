@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions, enum_value
 from .models import EventSchema
@@ -16,10 +16,10 @@ from .._pagination import AsyncPage, SyncPage
 class Events:
     """Events API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def list(
+    def list_events(
         self,
         *,
         limit: Optional[int] = None,
@@ -51,11 +51,11 @@ class Events:
                     SyncPage[EventSchema]
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -83,10 +83,10 @@ class Events:
 class AsyncEvents:
     """Events API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def list(
+    async def list_events(
         self,
         *,
         limit: Optional[int] = None,
@@ -118,11 +118,11 @@ class AsyncEvents:
                     AsyncPage[EventSchema]
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v

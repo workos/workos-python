@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, List, Optional, Union
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 from .audit_log_event_actor import AuditLogEventActor
 from .audit_log_event_context import AuditLogEventContext
@@ -50,7 +50,7 @@ class AuditLogEvent:
                 version=data.get("version"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing AuditLogEvent: {e!s}"
             ) from e
 

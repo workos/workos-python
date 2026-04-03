@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 from workos.common.models import OrganizationDomainDataDtoState
 
 
@@ -26,7 +26,7 @@ class OrganizationDomainData:
                 state=OrganizationDomainDataDtoState(data["state"]),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing OrganizationDomainData: {e!s}"
             ) from e
 

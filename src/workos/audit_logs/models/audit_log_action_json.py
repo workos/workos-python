@@ -6,7 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
 from typing import Any, Dict, Literal
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
+from workos._types import _parse_datetime
 
 from .audit_log_schema_json import AuditLogSchemaJson
 
@@ -36,15 +37,11 @@ class AuditLogActionJson:
                 schema=AuditLogSchemaJson.from_dict(
                     cast(Dict[str, Any], data["schema"])
                 ),
-                created_at=datetime.fromisoformat(
-                    data["created_at"].replace("Z", "+00:00")
-                ),
-                updated_at=datetime.fromisoformat(
-                    data["updated_at"].replace("Z", "+00:00")
-                ),
+                created_at=_parse_datetime(data["created_at"]),
+                updated_at=_parse_datetime(data["updated_at"]),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing AuditLogActionJson: {e!s}"
             ) from e
 

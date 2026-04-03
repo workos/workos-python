@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 from workos.common.models import RadarStandaloneResponseBlocklistType
 from workos.common.models import RadarStandaloneResponseControl
 from workos.common.models import RadarStandaloneResponseVerdict
@@ -41,7 +41,7 @@ class RadarStandaloneResponse:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing RadarStandaloneResponse: {e!s}"
             ) from e
 

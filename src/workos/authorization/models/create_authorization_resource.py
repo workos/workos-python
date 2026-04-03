@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 
 @dataclass(slots=True)
@@ -43,7 +43,7 @@ class CreateAuthorizationResource:
                 parent_resource_type_slug=data.get("parent_resource_type_slug"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing CreateAuthorizationResource: {e!s}"
             ) from e
 

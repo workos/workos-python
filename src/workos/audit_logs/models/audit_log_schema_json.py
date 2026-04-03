@@ -6,7 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
+from workos._types import _parse_datetime
 
 from .audit_log_schema_json_actor import AuditLogSchemaJsonActor
 from .audit_log_schema_json_target import AuditLogSchemaJsonTarget
@@ -40,16 +41,14 @@ class AuditLogSchemaJson:
                     AuditLogSchemaJsonTarget.from_dict(cast(Dict[str, Any], item))
                     for item in cast(list[Any], data["targets"])
                 ],
-                created_at=datetime.fromisoformat(
-                    data["created_at"].replace("Z", "+00:00")
-                ),
+                created_at=_parse_datetime(data["created_at"]),
                 actor=AuditLogSchemaJsonActor.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("actor")) is not None
                 else None,
                 metadata=data.get("metadata"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing AuditLogSchemaJson: {e!s}"
             ) from e
 

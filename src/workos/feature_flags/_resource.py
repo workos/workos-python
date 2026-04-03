@@ -5,21 +5,25 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions, enum_value
 from .models import FeatureFlag, Flag
-from .models import FeatureFlagsOrder
+from .models import (
+    FeatureFlagsOrder,
+    OrganizationsFeatureFlagsOrder,
+    UserManagementUsersFeatureFlagsOrder,
+)
 from .._pagination import AsyncPage, SyncPage
 
 
 class FeatureFlags:
     """Feature Flags API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def list(
+    def list_feature_flags(
         self,
         *,
         limit: Optional[int] = None,
@@ -43,12 +47,12 @@ class FeatureFlags:
                     SyncPage[Flag]
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -68,7 +72,7 @@ class FeatureFlags:
             request_options=request_options,
         )
 
-    def get_by_slug(
+    def get_feature_flag(
         self,
         slug: str,
         *,
@@ -86,10 +90,10 @@ class FeatureFlags:
                     Flag
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -98,7 +102,7 @@ class FeatureFlags:
             request_options=request_options,
         )
 
-    def disable_flag(
+    def disable_feature_flag(
         self,
         slug: str,
         *,
@@ -116,10 +120,10 @@ class FeatureFlags:
                     FeatureFlag
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="put",
@@ -128,7 +132,7 @@ class FeatureFlags:
             request_options=request_options,
         )
 
-    def enable_flag(
+    def enable_feature_flag(
         self,
         slug: str,
         *,
@@ -146,10 +150,10 @@ class FeatureFlags:
                     FeatureFlag
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="put",
@@ -158,14 +162,172 @@ class FeatureFlags:
             request_options=request_options,
         )
 
+    def create_feature_flag_target(
+        self,
+        resource_id: str,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Add a feature flag target
+
+        Enables a feature flag for a specific target in the current environment. Currently, supported targets include users and organizations.
+
+                Args:
+                    resource_id: The resource ID in format "user_<id>" or "org_<id>".
+                    slug: The unique slug identifier of the feature flag.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Raises:
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="post",
+            path=f"feature-flags/{slug}/targets/{resource_id}",
+            request_options=request_options,
+        )
+
+    def delete_feature_flag_target(
+        self,
+        resource_id: str,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Remove a feature flag target
+
+        Removes a target from the feature flag's target list in the current environment. Currently, supported targets include users and organizations.
+
+                Args:
+                    resource_id: The resource ID in format "user_<id>" or "org_<id>".
+                    slug: The unique slug identifier of the feature flag.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Raises:
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        self._client.request(
+            method="delete",
+            path=f"feature-flags/{slug}/targets/{resource_id}",
+            request_options=request_options,
+        )
+
+    def list_organization_feature_flags(
+        self,
+        organization_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[Flag]:
+        """List enabled feature flags for an organization
+
+        Get a list of all enabled feature flags for an organization.
+
+                Args:
+                    organization_id: Unique identifier of the Organization.
+                    limit: Maximum number of records to return.
+                    before: Pagination cursor for previous page.
+                    after: Pagination cursor for next page.
+                    order: Sort order.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    SyncPage[Flag]
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=f"organizations/{organization_id}/feature-flags",
+            model=Flag,
+            params=params,
+            request_options=request_options,
+        )
+
+    def list_user_feature_flags(
+        self,
+        user_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[UserManagementUsersFeatureFlagsOrder, str]] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[Flag]:
+        """List enabled feature flags for a user
+
+        Get a list of all enabled feature flags for the provided user. This includes feature flags enabled specifically for the user as well as any organizations that the user is a member of.
+
+                Args:
+                    user_id: The ID of the user.
+                    limit: Maximum number of records to return.
+                    before: Pagination cursor for previous page.
+                    after: Pagination cursor for next page.
+                    order: Sort order.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    SyncPage[Flag]
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=f"user_management/users/{user_id}/feature-flags",
+            model=Flag,
+            params=params,
+            request_options=request_options,
+        )
+
 
 class AsyncFeatureFlags:
     """Feature Flags API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def list(
+    async def list_feature_flags(
         self,
         *,
         limit: Optional[int] = None,
@@ -189,12 +351,12 @@ class AsyncFeatureFlags:
                     AsyncPage[Flag]
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -214,7 +376,7 @@ class AsyncFeatureFlags:
             request_options=request_options,
         )
 
-    async def get_by_slug(
+    async def get_feature_flag(
         self,
         slug: str,
         *,
@@ -232,10 +394,10 @@ class AsyncFeatureFlags:
                     Flag
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -244,7 +406,7 @@ class AsyncFeatureFlags:
             request_options=request_options,
         )
 
-    async def disable_flag(
+    async def disable_feature_flag(
         self,
         slug: str,
         *,
@@ -262,10 +424,10 @@ class AsyncFeatureFlags:
                     FeatureFlag
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="put",
@@ -274,7 +436,7 @@ class AsyncFeatureFlags:
             request_options=request_options,
         )
 
-    async def enable_flag(
+    async def enable_feature_flag(
         self,
         slug: str,
         *,
@@ -292,14 +454,172 @@ class AsyncFeatureFlags:
                     FeatureFlag
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="put",
             path=f"feature-flags/{slug}/enable",
             model=FeatureFlag,
+            request_options=request_options,
+        )
+
+    async def create_feature_flag_target(
+        self,
+        resource_id: str,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Add a feature flag target
+
+        Enables a feature flag for a specific target in the current environment. Currently, supported targets include users and organizations.
+
+                Args:
+                    resource_id: The resource ID in format "user_<id>" or "org_<id>".
+                    slug: The unique slug identifier of the feature flag.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Raises:
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="post",
+            path=f"feature-flags/{slug}/targets/{resource_id}",
+            request_options=request_options,
+        )
+
+    async def delete_feature_flag_target(
+        self,
+        resource_id: str,
+        slug: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Remove a feature flag target
+
+        Removes a target from the feature flag's target list in the current environment. Currently, supported targets include users and organizations.
+
+                Args:
+                    resource_id: The resource ID in format "user_<id>" or "org_<id>".
+                    slug: The unique slug identifier of the feature flag.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Raises:
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        await self._client.request(
+            method="delete",
+            path=f"feature-flags/{slug}/targets/{resource_id}",
+            request_options=request_options,
+        )
+
+    async def list_organization_feature_flags(
+        self,
+        organization_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[Flag]:
+        """List enabled feature flags for an organization
+
+        Get a list of all enabled feature flags for an organization.
+
+                Args:
+                    organization_id: Unique identifier of the Organization.
+                    limit: Maximum number of records to return.
+                    before: Pagination cursor for previous page.
+                    after: Pagination cursor for next page.
+                    order: Sort order.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AsyncPage[Flag]
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=f"organizations/{organization_id}/feature-flags",
+            model=Flag,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def list_user_feature_flags(
+        self,
+        user_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[UserManagementUsersFeatureFlagsOrder, str]] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[Flag]:
+        """List enabled feature flags for a user
+
+        Get a list of all enabled feature flags for the provided user. This includes feature flags enabled specifically for the user as well as any organizations that the user is a member of.
+
+                Args:
+                    user_id: The ID of the user.
+                    limit: Maximum number of records to return.
+                    before: Pagination cursor for previous page.
+                    after: Pagination cursor for next page.
+                    order: Sort order.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AsyncPage[Flag]
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=f"user_management/users/{user_id}/feature-flags",
+            model=Flag,
+            params=params,
             request_options=request_options,
         )

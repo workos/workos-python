@@ -6,18 +6,82 @@ import pytest
 from workos import WorkOS, AsyncWorkOS
 from tests.generated_helpers import load_fixture
 
-from workos.sso.models import Profile, SSOLogoutAuthorizeResponse, SSOTokenResponse
+from workos.sso.models import (
+    Connection,
+    Profile,
+    SSOLogoutAuthorizeResponse,
+    SSOTokenResponse,
+    ConnectionsConnectionType,
+    ConnectionsOrder,
+)
+from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
-    AuthenticationException,
-    NotFoundException,
-    RateLimitExceededException,
-    ServerException,
+    AuthenticationError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
 )
 
 
 class TestSSO:
-    def test_authorize(self, workos):
-        result = workos.sso.authorize(
+    def test_list_connections(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_connection.json"),
+        )
+        page = workos.sso.list_connections()
+        assert isinstance(page, SyncPage)
+        assert isinstance(page.data, list)
+
+    def test_list_connections_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.sso.list_connections()
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_connections_encodes_query_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.sso.list_connections(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=ConnectionsOrder("normal"),
+            connection_type=ConnectionsConnectionType("ADFSSAML"),
+            domain="value domain/test",
+            organization_id="value organization_id/test",
+            search="value search/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "normal"
+        assert request.url.params["connection_type"] == "ADFSSAML"
+        assert request.url.params["domain"] == "value domain/test"
+        assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["search"] == "value search/test"
+
+    def test_get_connection(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("connection.json"),
+        )
+        result = workos.sso.get_connection("test_id")
+        assert isinstance(result, Connection)
+        assert result.object == "connection"
+        assert result.id == "conn_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/connections/test_id")
+
+    def test_delete_connection(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = workos.sso.delete_connection("test_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/connections/test_id")
+
+    def test_get_authorization_url(self, workos):
+        result = workos.sso.get_authorization_url(
             client_id="test_client_id",
             redirect_uri="test_redirect_uri",
             response_type="code",
@@ -25,16 +89,16 @@ class TestSSO:
         assert isinstance(result, str)
         assert result.startswith("http")
 
-    def test_logout(self, workos):
-        result = workos.sso.logout(token="test_token")
+    def test_get_logout_url(self, workos):
+        result = workos.sso.get_logout_url(token="test_token")
         assert isinstance(result, str)
         assert result.startswith("http")
 
-    def test_logout_authorize(self, workos, httpx_mock):
+    def test_authorize_logout(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("sso_logout_authorize_response.json"),
         )
-        result = workos.sso.logout_authorize(profile_id="test_profile_id")
+        result = workos.sso.authorize_logout(profile_id="test_profile_id")
         assert isinstance(result, SSOLogoutAuthorizeResponse)
         assert (
             result.logout_url
@@ -62,11 +126,11 @@ class TestSSO:
         assert request.method == "GET"
         assert request.url.path.endswith("/sso/profile")
 
-    def test_token(self, workos, httpx_mock):
+    def test_get_profile_and_token(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("sso_token_response.json"),
         )
-        result = workos.sso.token(
+        result = workos.sso.get_profile_and_token(
             client_id="test_client_id",
             client_secret="test_client_secret",
             code="test_code",
@@ -84,24 +148,24 @@ class TestSSO:
         assert body["code"] == "test_code"
         assert body["grant_type"] == "authorization_code"
 
-    def test_logout_authorize_unauthorized(self, workos, httpx_mock):
+    def test_list_connections_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
-        with pytest.raises(AuthenticationException):
-            workos.sso.logout_authorize(profile_id="test_profile_id")
+        with pytest.raises(AuthenticationError):
+            workos.sso.list_connections()
 
-    def test_logout_authorize_not_found(self, httpx_mock):
+    def test_list_connections_not_found(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
-                workos.sso.logout_authorize(profile_id="test_profile_id")
+            with pytest.raises(NotFoundError):
+                workos.sso.list_connections()
         finally:
             workos.close()
 
-    def test_logout_authorize_rate_limited(self, httpx_mock):
+    def test_list_connections_rate_limited(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(
@@ -109,25 +173,79 @@ class TestSSO:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
-                workos.sso.logout_authorize(profile_id="test_profile_id")
+            with pytest.raises(RateLimitExceededError):
+                workos.sso.list_connections()
         finally:
             workos.close()
 
-    def test_logout_authorize_server_error(self, httpx_mock):
+    def test_list_connections_server_error(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
-                workos.sso.logout_authorize(profile_id="test_profile_id")
+            with pytest.raises(ServerError):
+                workos.sso.list_connections()
         finally:
             workos.close()
 
 
 @pytest.mark.asyncio
 class TestAsyncSSO:
-    async def test_authorize(self, async_workos):
-        result = await async_workos.sso.authorize(
+    async def test_list_connections(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_connection.json"))
+        page = await async_workos.sso.list_connections()
+        assert isinstance(page, AsyncPage)
+        assert isinstance(page.data, list)
+
+    async def test_list_connections_empty_page(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.sso.list_connections()
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    async def test_list_connections_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.sso.list_connections(
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=ConnectionsOrder("normal"),
+            connection_type=ConnectionsConnectionType("ADFSSAML"),
+            domain="value domain/test",
+            organization_id="value organization_id/test",
+            search="value search/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "normal"
+        assert request.url.params["connection_type"] == "ADFSSAML"
+        assert request.url.params["domain"] == "value domain/test"
+        assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["search"] == "value search/test"
+
+    async def test_get_connection(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("connection.json"))
+        result = await async_workos.sso.get_connection("test_id")
+        assert isinstance(result, Connection)
+        assert result.object == "connection"
+        assert result.id == "conn_01E4ZCR3C56J083X43JQXF3JK5"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/connections/test_id")
+
+    async def test_delete_connection(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        result = await async_workos.sso.delete_connection("test_id")
+        assert result is None
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith("/connections/test_id")
+
+    async def test_get_authorization_url(self, async_workos):
+        result = await async_workos.sso.get_authorization_url(
             client_id="test_client_id",
             redirect_uri="test_redirect_uri",
             response_type="code",
@@ -135,14 +253,14 @@ class TestAsyncSSO:
         assert isinstance(result, str)
         assert result.startswith("http")
 
-    async def test_logout(self, async_workos):
-        result = await async_workos.sso.logout(token="test_token")
+    async def test_get_logout_url(self, async_workos):
+        result = await async_workos.sso.get_logout_url(token="test_token")
         assert isinstance(result, str)
         assert result.startswith("http")
 
-    async def test_logout_authorize(self, async_workos, httpx_mock):
+    async def test_authorize_logout(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("sso_logout_authorize_response.json"))
-        result = await async_workos.sso.logout_authorize(profile_id="test_profile_id")
+        result = await async_workos.sso.authorize_logout(profile_id="test_profile_id")
         assert isinstance(result, SSOLogoutAuthorizeResponse)
         assert (
             result.logout_url
@@ -166,9 +284,9 @@ class TestAsyncSSO:
         assert request.method == "GET"
         assert request.url.path.endswith("/sso/profile")
 
-    async def test_token(self, async_workos, httpx_mock):
+    async def test_get_profile_and_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("sso_token_response.json"))
-        result = await async_workos.sso.token(
+        result = await async_workos.sso.get_profile_and_token(
             client_id="test_client_id",
             client_secret="test_client_secret",
             code="test_code",
@@ -181,23 +299,23 @@ class TestAsyncSSO:
         assert request.method == "POST"
         assert request.url.path.endswith("/sso/token")
 
-    async def test_logout_authorize_unauthorized(self, async_workos, httpx_mock):
+    async def test_list_connections_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
-        with pytest.raises(AuthenticationException):
-            await async_workos.sso.logout_authorize(profile_id="test_profile_id")
+        with pytest.raises(AuthenticationError):
+            await async_workos.sso.list_connections()
 
-    async def test_logout_authorize_not_found(self, httpx_mock):
+    async def test_list_connections_not_found(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
-                await workos.sso.logout_authorize(profile_id="test_profile_id")
+            with pytest.raises(NotFoundError):
+                await workos.sso.list_connections()
         finally:
             await workos.close()
 
-    async def test_logout_authorize_rate_limited(self, httpx_mock):
+    async def test_list_connections_rate_limited(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -207,18 +325,18 @@ class TestAsyncSSO:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
-                await workos.sso.logout_authorize(profile_id="test_profile_id")
+            with pytest.raises(RateLimitExceededError):
+                await workos.sso.list_connections()
         finally:
             await workos.close()
 
-    async def test_logout_authorize_server_error(self, httpx_mock):
+    async def test_list_connections_server_error(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
-                await workos.sso.logout_authorize(profile_id="test_profile_id")
+            with pytest.raises(ServerError):
+                await workos.sso.list_connections()
         finally:
             await workos.close()

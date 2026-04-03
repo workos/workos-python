@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions
 from .models import OrganizationDomain, OrganizationDomainStandAlone
@@ -14,10 +14,10 @@ from .models import OrganizationDomain, OrganizationDomainStandAlone
 class OrganizationDomains:
     """Organization Domains API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def create(
+    def create_organization_domains(
         self,
         *,
         domain: str,
@@ -37,10 +37,10 @@ class OrganizationDomains:
                     OrganizationDomain
 
                 Raises:
-                    ConflictException: If a conflict occurs (409).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    ConflictError: If a conflict occurs (409).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "domain": domain,
@@ -54,7 +54,7 @@ class OrganizationDomains:
             request_options=request_options,
         )
 
-    def get(
+    def get_organization_domain(
         self,
         id: str,
         *,
@@ -72,10 +72,10 @@ class OrganizationDomains:
                     OrganizationDomainStandAlone
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -84,7 +84,7 @@ class OrganizationDomains:
             request_options=request_options,
         )
 
-    def delete(
+    def delete_organization_domain(
         self,
         id: str,
         *,
@@ -99,10 +99,10 @@ class OrganizationDomains:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         self._client.request(
             method="delete",
@@ -110,7 +110,7 @@ class OrganizationDomains:
             request_options=request_options,
         )
 
-    def verify(
+    def verify_organization_domain(
         self,
         id: str,
         *,
@@ -128,10 +128,10 @@ class OrganizationDomains:
                     OrganizationDomainStandAlone
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="post",
@@ -144,10 +144,10 @@ class OrganizationDomains:
 class AsyncOrganizationDomains:
     """Organization Domains API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def create(
+    async def create_organization_domains(
         self,
         *,
         domain: str,
@@ -167,10 +167,10 @@ class AsyncOrganizationDomains:
                     OrganizationDomain
 
                 Raises:
-                    ConflictException: If a conflict occurs (409).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    ConflictError: If a conflict occurs (409).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "domain": domain,
@@ -184,7 +184,7 @@ class AsyncOrganizationDomains:
             request_options=request_options,
         )
 
-    async def get(
+    async def get_organization_domain(
         self,
         id: str,
         *,
@@ -202,10 +202,10 @@ class AsyncOrganizationDomains:
                     OrganizationDomainStandAlone
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -214,7 +214,7 @@ class AsyncOrganizationDomains:
             request_options=request_options,
         )
 
-    async def delete(
+    async def delete_organization_domain(
         self,
         id: str,
         *,
@@ -229,10 +229,10 @@ class AsyncOrganizationDomains:
                     request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         await self._client.request(
             method="delete",
@@ -240,7 +240,7 @@ class AsyncOrganizationDomains:
             request_options=request_options,
         )
 
-    async def verify(
+    async def verify_organization_domain(
         self,
         id: str,
         *,
@@ -258,10 +258,10 @@ class AsyncOrganizationDomains:
                     OrganizationDomainStandAlone
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="post",

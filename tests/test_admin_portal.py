@@ -8,10 +8,10 @@ from tests.generated_helpers import load_fixture
 
 from workos.admin_portal.models import PortalLinkResponse
 from workos._errors import (
-    AuthenticationException,
-    NotFoundException,
-    RateLimitExceededException,
-    ServerException,
+    AuthenticationError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
 )
 
 
@@ -37,14 +37,14 @@ class TestAdminPortal:
             status_code=401,
             json={"message": "Unauthorized"},
         )
-        with pytest.raises(AuthenticationException):
+        with pytest.raises(AuthenticationError):
             workos.admin_portal.generate_link(organization="test_organization")
 
     def test_generate_link_not_found(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
+            with pytest.raises(NotFoundError):
                 workos.admin_portal.generate_link(organization="test_organization")
         finally:
             workos.close()
@@ -57,7 +57,7 @@ class TestAdminPortal:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
+            with pytest.raises(RateLimitExceededError):
                 workos.admin_portal.generate_link(organization="test_organization")
         finally:
             workos.close()
@@ -66,7 +66,7 @@ class TestAdminPortal:
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
+            with pytest.raises(ServerError):
                 workos.admin_portal.generate_link(organization="test_organization")
         finally:
             workos.close()
@@ -90,7 +90,7 @@ class TestAsyncAdminPortal:
 
     async def test_generate_link_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
-        with pytest.raises(AuthenticationException):
+        with pytest.raises(AuthenticationError):
             await async_workos.admin_portal.generate_link(
                 organization="test_organization"
             )
@@ -101,7 +101,7 @@ class TestAsyncAdminPortal:
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
+            with pytest.raises(NotFoundError):
                 await workos.admin_portal.generate_link(
                     organization="test_organization"
                 )
@@ -118,7 +118,7 @@ class TestAsyncAdminPortal:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
+            with pytest.raises(RateLimitExceededError):
                 await workos.admin_portal.generate_link(
                     organization="test_organization"
                 )
@@ -131,7 +131,7 @@ class TestAsyncAdminPortal:
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
+            with pytest.raises(ServerError):
                 await workos.admin_portal.generate_link(
                     organization="test_organization"
                 )

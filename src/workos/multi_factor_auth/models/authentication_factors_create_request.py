@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 from workos.common.models import AuthenticationFactorsCreateRequestType
 
 
@@ -35,7 +35,7 @@ class AuthenticationFactorsCreateRequest:
                 user_id=data.get("user_id"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing AuthenticationFactorsCreateRequest: {e!s}"
             ) from e
 

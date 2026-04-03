@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 from typing import Any, Dict, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 from .intent_options import IntentOptions
 from workos.common.models import GenerateLinkDtoIntent
@@ -50,7 +50,7 @@ class GenerateLink:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing GenerateLink: {e!s}"
             ) from e
 

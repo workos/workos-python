@@ -8,14 +8,14 @@ import pytest
 from workos import WorkOS, AsyncWorkOS
 from workos import _client as generated_client_module
 from workos._errors import (
-    AuthenticationException,
-    BadRequestException,
-    AuthorizationException,
-    NotFoundException,
-    ConflictException,
-    UnprocessableEntityException,
-    RateLimitExceededException,
-    ServerException,
+    AuthenticationError,
+    BadRequestError,
+    AuthorizationError,
+    NotFoundError,
+    ConflictError,
+    UnprocessableEntityError,
+    RateLimitExceededError,
+    ServerError,
 )
 
 
@@ -46,7 +46,7 @@ class TestWorkOSClient:
             json={"message": "Error"},
         )
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(BadRequestException):
+        with pytest.raises(BadRequestError):
             client.request("GET", "test")
         client.close()
 
@@ -56,7 +56,7 @@ class TestWorkOSClient:
             json={"message": "Error"},
         )
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(AuthenticationException):
+        with pytest.raises(AuthenticationError):
             client.request("GET", "test")
         client.close()
 
@@ -66,7 +66,7 @@ class TestWorkOSClient:
             json={"message": "Error"},
         )
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(AuthorizationException):
+        with pytest.raises(AuthorizationError):
             client.request("GET", "test")
         client.close()
 
@@ -76,7 +76,7 @@ class TestWorkOSClient:
             json={"message": "Error"},
         )
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(NotFoundException):
+        with pytest.raises(NotFoundError):
             client.request("GET", "test")
         client.close()
 
@@ -86,7 +86,7 @@ class TestWorkOSClient:
             json={"message": "Error"},
         )
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(ConflictException):
+        with pytest.raises(ConflictError):
             client.request("GET", "test")
         client.close()
 
@@ -96,7 +96,7 @@ class TestWorkOSClient:
             json={"message": "Error"},
         )
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(UnprocessableEntityException):
+        with pytest.raises(UnprocessableEntityError):
             client.request("GET", "test")
         client.close()
 
@@ -106,7 +106,7 @@ class TestWorkOSClient:
             json={"message": "Error"},
         )
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(RateLimitExceededException):
+        with pytest.raises(RateLimitExceededError):
             client.request("GET", "test")
         client.close()
 
@@ -116,7 +116,7 @@ class TestWorkOSClient:
             json={"message": "Error"},
         )
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(ServerException):
+        with pytest.raises(ServerError):
             client.request("GET", "test")
         client.close()
 
@@ -164,7 +164,7 @@ class TestWorkOSClient:
                 json={"message": "Slow down"},
             )
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=3)
-        with pytest.raises(RateLimitExceededException):
+        with pytest.raises(RateLimitExceededError):
             client.request("GET", "test")
         client.close()
 
@@ -175,7 +175,7 @@ class TestWorkOSClient:
             json={"message": "Slow down"},
         )
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(RateLimitExceededException) as exc_info:
+        with pytest.raises(RateLimitExceededError) as exc_info:
             client.request("GET", "test")
         assert exc_info.value.retry_after == 30.0
         client.close()
@@ -184,7 +184,7 @@ class TestWorkOSClient:
         monkeypatch.setattr(generated_client_module.time, "sleep", lambda _: None)
         httpx_mock.add_exception(httpx.TimeoutException("timed out"))
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(generated_client_module.WorkOSTimeoutException):
+        with pytest.raises(generated_client_module.WorkOSTimeoutError):
             client.request("GET", "test")
         client.close()
 
@@ -192,7 +192,7 @@ class TestWorkOSClient:
         monkeypatch.setattr(generated_client_module.time, "sleep", lambda _: None)
         httpx_mock.add_exception(httpx.ConnectError("connect failed"))
         client = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
-        with pytest.raises(generated_client_module.WorkOSConnectionException):
+        with pytest.raises(generated_client_module.WorkOSConnectionError):
             client.request("GET", "test")
         client.close()
 
@@ -200,43 +200,21 @@ class TestWorkOSClient:
         client = WorkOS(api_key="sk_test_123", client_id="client_test")
         assert client.admin_portal is not None
         assert client.api_keys is not None
-        assert client.application_client_secrets is not None
-        assert client.applications is not None
         assert client.audit_logs is not None
         assert client.authorization is not None
-        assert client.connections is not None
-        assert client.directories is not None
-        assert client.directory_groups is not None
-        assert client.directory_users is not None
+        assert client.connect is not None
+        assert client.directory_sync is not None
         assert client.events is not None
         assert client.feature_flags is not None
-        assert client.feature_flags.targets is not None
         assert client.multi_factor_auth is not None
-        assert client.multi_factor_auth.challenges is not None
         assert client.organization_domains is not None
         assert client.organizations is not None
-        assert client.organizations.api_keys is not None
-        assert client.organizations.feature_flags is not None
-        assert client.permissions is not None
         assert client.pipes is not None
         assert client.radar is not None
         assert client.sso is not None
-        assert client.user_management.authentication is not None
-        assert client.user_management.cors_origins is not None
-        assert client.user_management.data_providers is not None
-        assert client.user_management.invitations is not None
-        assert client.user_management.jwt_template is not None
-        assert client.user_management.magic_auth is not None
-        assert client.user_management.multi_factor_authentication is not None
-        assert client.user_management.organization_membership is not None
-        assert client.user_management.redirect_uris is not None
-        assert client.user_management.session_tokens is not None
-        assert client.user_management.users is not None
-        assert client.user_management_users.authorized_applications is not None
-        assert client.user_management_users.feature_flags is not None
+        assert client.user_management is not None
         assert client.webhooks is not None
         assert client.widgets is not None
-        assert client.workos_connect is not None
         client.close()
 
 
@@ -246,43 +224,21 @@ class TestAsyncWorkOSClient:
         client = AsyncWorkOS(api_key="sk_test_123", client_id="client_test")
         assert client.admin_portal is not None
         assert client.api_keys is not None
-        assert client.application_client_secrets is not None
-        assert client.applications is not None
         assert client.audit_logs is not None
         assert client.authorization is not None
-        assert client.connections is not None
-        assert client.directories is not None
-        assert client.directory_groups is not None
-        assert client.directory_users is not None
+        assert client.connect is not None
+        assert client.directory_sync is not None
         assert client.events is not None
         assert client.feature_flags is not None
-        assert client.feature_flags.targets is not None
         assert client.multi_factor_auth is not None
-        assert client.multi_factor_auth.challenges is not None
         assert client.organization_domains is not None
         assert client.organizations is not None
-        assert client.organizations.api_keys is not None
-        assert client.organizations.feature_flags is not None
-        assert client.permissions is not None
         assert client.pipes is not None
         assert client.radar is not None
         assert client.sso is not None
-        assert client.user_management.authentication is not None
-        assert client.user_management.cors_origins is not None
-        assert client.user_management.data_providers is not None
-        assert client.user_management.invitations is not None
-        assert client.user_management.jwt_template is not None
-        assert client.user_management.magic_auth is not None
-        assert client.user_management.multi_factor_authentication is not None
-        assert client.user_management.organization_membership is not None
-        assert client.user_management.redirect_uris is not None
-        assert client.user_management.session_tokens is not None
-        assert client.user_management.users is not None
-        assert client.user_management_users.authorized_applications is not None
-        assert client.user_management_users.feature_flags is not None
+        assert client.user_management is not None
         assert client.webhooks is not None
         assert client.widgets is not None
-        assert client.workos_connect is not None
         await client.close()
 
     async def test_timeout_error_is_wrapped(self, httpx_mock, monkeypatch):
@@ -294,7 +250,7 @@ class TestAsyncWorkOSClient:
         client = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
-        with pytest.raises(generated_client_module.WorkOSTimeoutException):
+        with pytest.raises(generated_client_module.WorkOSTimeoutError):
             await client.request("GET", "test")
         await client.close()
 
@@ -307,6 +263,6 @@ class TestAsyncWorkOSClient:
         client = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
-        with pytest.raises(generated_client_module.WorkOSConnectionException):
+        with pytest.raises(generated_client_module.WorkOSConnectionError):
             await client.request("GET", "test")
         await client.close()

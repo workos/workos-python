@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions, enum_value
 from .models import (
@@ -17,6 +17,7 @@ from .models import (
     AuditLogSchemaJson,
     AuditLogSchemaTarget,
 )
+from workos.organizations.models import AuditLogsRetentionJson
 from .models import AuditLogsOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -24,10 +25,77 @@ from .._pagination import AsyncPage, SyncPage
 class AuditLogs:
     """Audit Logs API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def list(
+    def list_organization_audit_logs_retention(
+        self,
+        id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuditLogsRetentionJson:
+        """Get Retention
+
+        Get the configured event retention period for the given Organization.
+
+                Args:
+                    id: Unique identifier of the Organization.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AuditLogsRetentionJson
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path=f"organizations/{id}/audit_logs_retention",
+            model=AuditLogsRetentionJson,
+            request_options=request_options,
+        )
+
+    def update_organization_audit_logs_retention(
+        self,
+        id: str,
+        *,
+        retention_period_in_days: int,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuditLogsRetentionJson:
+        """Set Retention
+
+        Set the event retention period for the given Organization.
+
+                Args:
+                    id: Unique identifier of the Organization.
+                    retention_period_in_days: The number of days Audit Log events will be retained. Valid values are `30` and `365`.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AuditLogsRetentionJson
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            "retention_period_in_days": retention_period_in_days,
+        }
+        return self._client.request(
+            method="put",
+            path=f"organizations/{id}/audit_logs_retention",
+            body=body,
+            model=AuditLogsRetentionJson,
+            request_options=request_options,
+        )
+
+    def list_actions(
         self,
         *,
         limit: Optional[int] = None,
@@ -51,11 +119,11 @@ class AuditLogs:
                     SyncPage[AuditLogActionJson]
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -75,7 +143,7 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def schemas(
+    def list_action_schemas(
         self,
         action_name: str,
         *,
@@ -101,11 +169,11 @@ class AuditLogs:
                     SyncPage[AuditLogSchemaJson]
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -125,7 +193,7 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def create_schemas(
+    def create_action_schemas(
         self,
         action_name: str,
         *,
@@ -149,10 +217,10 @@ class AuditLogs:
                     AuditLogSchemaJson
 
                 Raises:
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -199,12 +267,12 @@ class AuditLogs:
                     AuditLogEventCreateResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    RateLimitExceededException: If rate limited (429).
-                    AuthenticationException: If the API key is invalid (401).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    RateLimitExceededError: If rate limited (429).
+                    AuthenticationError: If the API key is invalid (401).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "organization_id": organization_id,
@@ -219,7 +287,7 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def create_export(
+    def create_exports(
         self,
         *,
         organization_id: str,
@@ -251,10 +319,10 @@ class AuditLogs:
                     AuditLogExportJson
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -278,10 +346,6 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def exports(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `create_export`."""
-        return self.create_export(*args, **kwargs)
-
     def get_export(
         self,
         audit_log_export_id: str,
@@ -300,10 +364,10 @@ class AuditLogs:
                     AuditLogExportJson
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return self._client.request(
             method="get",
@@ -312,18 +376,81 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def export(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `get_export`."""
-        return self.get_export(*args, **kwargs)
-
 
 class AsyncAuditLogs:
     """Audit Logs API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def list(
+    async def list_organization_audit_logs_retention(
+        self,
+        id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuditLogsRetentionJson:
+        """Get Retention
+
+        Get the configured event retention period for the given Organization.
+
+                Args:
+                    id: Unique identifier of the Organization.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AuditLogsRetentionJson
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path=f"organizations/{id}/audit_logs_retention",
+            model=AuditLogsRetentionJson,
+            request_options=request_options,
+        )
+
+    async def update_organization_audit_logs_retention(
+        self,
+        id: str,
+        *,
+        retention_period_in_days: int,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AuditLogsRetentionJson:
+        """Set Retention
+
+        Set the event retention period for the given Organization.
+
+                Args:
+                    id: Unique identifier of the Organization.
+                    retention_period_in_days: The number of days Audit Log events will be retained. Valid values are `30` and `365`.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    AuditLogsRetentionJson
+
+                Raises:
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            "retention_period_in_days": retention_period_in_days,
+        }
+        return await self._client.request(
+            method="put",
+            path=f"organizations/{id}/audit_logs_retention",
+            body=body,
+            model=AuditLogsRetentionJson,
+            request_options=request_options,
+        )
+
+    async def list_actions(
         self,
         *,
         limit: Optional[int] = None,
@@ -347,11 +474,11 @@ class AsyncAuditLogs:
                     AsyncPage[AuditLogActionJson]
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -371,7 +498,7 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def schemas(
+    async def list_action_schemas(
         self,
         action_name: str,
         *,
@@ -397,11 +524,11 @@ class AsyncAuditLogs:
                     AsyncPage[AuditLogSchemaJson]
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -421,7 +548,7 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def create_schemas(
+    async def create_action_schemas(
         self,
         action_name: str,
         *,
@@ -445,10 +572,10 @@ class AsyncAuditLogs:
                     AuditLogSchemaJson
 
                 Raises:
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -495,12 +622,12 @@ class AsyncAuditLogs:
                     AuditLogEventCreateResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    RateLimitExceededException: If rate limited (429).
-                    AuthenticationException: If the API key is invalid (401).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    RateLimitExceededError: If rate limited (429).
+                    AuthenticationError: If the API key is invalid (401).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             "organization_id": organization_id,
@@ -515,7 +642,7 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def create_export(
+    async def create_exports(
         self,
         *,
         organization_id: str,
@@ -547,10 +674,10 @@ class AsyncAuditLogs:
                     AuditLogExportJson
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -574,10 +701,6 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def exports(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `create_export`."""
-        return await self.create_export(*args, **kwargs)
-
     async def get_export(
         self,
         audit_log_export_id: str,
@@ -596,10 +719,10 @@ class AsyncAuditLogs:
                     AuditLogExportJson
 
                 Raises:
-                    NotFoundException: If the resource is not found (404).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    NotFoundError: If the resource is not found (404).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         return await self._client.request(
             method="get",
@@ -607,7 +730,3 @@ class AsyncAuditLogs:
             model=AuditLogExportJson,
             request_options=request_options,
         )
-
-    async def export(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `get_export`."""
-        return await self.get_export(*args, **kwargs)

@@ -4,17 +4,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
 
 
 @dataclass(slots=True)
 class CreateOrganizationRole:
     """Create Organization Role model."""
 
-    slug: str
-    """A unique identifier for the role within the organization. Must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores."""
     name: str
     """A descriptive name for the role."""
+    slug: Optional[str] = None
+    """A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix."""
     description: Optional[str] = None
     """An optional description of the role's purpose."""
 
@@ -23,20 +23,21 @@ class CreateOrganizationRole:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                slug=data["slug"],
                 name=data["name"],
+                slug=data.get("slug"),
                 description=data.get("description"),
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing CreateOrganizationRole: {e!s}"
             ) from e
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["slug"] = self.slug
         result["name"] = self.name
+        if self.slug is not None:
+            result["slug"] = self.slug
         if self.description is not None:
             result["description"] = self.description
         else:

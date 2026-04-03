@@ -13,33 +13,60 @@ from workos.audit_logs.models import (
     AuditLogSchemaJson,
     AuditLogsOrder,
 )
+from workos.organizations.models import AuditLogsRetentionJson
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
-    AuthenticationException,
-    NotFoundException,
-    RateLimitExceededException,
-    ServerException,
+    AuthenticationError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
 )
 
 
 class TestAuditLogs:
-    def test_list(self, workos, httpx_mock):
+    def test_list_organization_audit_logs_retention(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("audit_logs_retention_json.json"),
+        )
+        result = workos.audit_logs.list_organization_audit_logs_retention("test_id")
+        assert isinstance(result, AuditLogsRetentionJson)
+        assert result.retention_period_in_days == 30
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
+
+    def test_update_organization_audit_logs_retention(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("audit_logs_retention_json.json"),
+        )
+        result = workos.audit_logs.update_organization_audit_logs_retention(
+            "test_id", retention_period_in_days=1
+        )
+        assert isinstance(result, AuditLogsRetentionJson)
+        assert result.retention_period_in_days == 30
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
+        body = json.loads(request.content)
+        assert body["retention_period_in_days"] == 1
+
+    def test_list_actions(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_audit_log_action_json.json"),
         )
-        page = workos.audit_logs.list()
+        page = workos.audit_logs.list_actions()
         assert isinstance(page, SyncPage)
         assert isinstance(page.data, list)
 
-    def test_list_empty_page(self, workos, httpx_mock):
+    def test_list_actions_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.audit_logs.list()
+        page = workos.audit_logs.list_actions()
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_encodes_query_params(self, workos, httpx_mock):
+    def test_list_actions_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.audit_logs.list(
+        workos.audit_logs.list_actions(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -51,23 +78,23 @@ class TestAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    def test_schemas(self, workos, httpx_mock):
+    def test_list_action_schemas(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_audit_log_schema_json.json"),
         )
-        page = workos.audit_logs.schemas("test_actionName")
+        page = workos.audit_logs.list_action_schemas("test_actionName")
         assert isinstance(page, SyncPage)
         assert isinstance(page.data, list)
 
-    def test_schemas_empty_page(self, workos, httpx_mock):
+    def test_list_action_schemas_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.audit_logs.schemas("test_actionName")
+        page = workos.audit_logs.list_action_schemas("test_actionName")
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_schemas_encodes_query_params(self, workos, httpx_mock):
+    def test_list_action_schemas_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.audit_logs.schemas(
+        workos.audit_logs.list_action_schemas(
             "test_actionName",
             limit=10,
             before="cursor before",
@@ -80,11 +107,11 @@ class TestAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    def test_create_schemas(self, workos, httpx_mock):
+    def test_create_action_schemas(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_schema_json.json"),
         )
-        result = workos.audit_logs.create_schemas("test_actionName", targets=[])
+        result = workos.audit_logs.create_action_schemas("test_actionName", targets=[])
         assert isinstance(result, AuditLogSchemaJson)
         assert result.object == "audit_log_schema"
         assert result.version == 1
@@ -111,11 +138,11 @@ class TestAuditLogs:
         assert body["organization_id"] == "test_organization_id"
         assert "event" in body
 
-    def test_create_export(self, workos, httpx_mock):
+    def test_create_exports(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_export_json.json"),
         )
-        result = workos.audit_logs.create_export(
+        result = workos.audit_logs.create_exports(
             organization_id="test_organization_id",
             range_start="test_range_start",
             range_end="test_range_end",
@@ -143,24 +170,26 @@ class TestAuditLogs:
         assert request.method == "GET"
         assert request.url.path.endswith("/audit_logs/exports/test_auditLogExportId")
 
-    def test_list_unauthorized(self, workos, httpx_mock):
+    def test_list_organization_audit_logs_retention_unauthorized(
+        self, workos, httpx_mock
+    ):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
-        with pytest.raises(AuthenticationException):
-            workos.audit_logs.list()
+        with pytest.raises(AuthenticationError):
+            workos.audit_logs.list_organization_audit_logs_retention("test_id")
 
-    def test_list_not_found(self, httpx_mock):
+    def test_list_organization_audit_logs_retention_not_found(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
-                workos.audit_logs.list()
+            with pytest.raises(NotFoundError):
+                workos.audit_logs.list_organization_audit_logs_retention("test_id")
         finally:
             workos.close()
 
-    def test_list_rate_limited(self, httpx_mock):
+    def test_list_organization_audit_logs_retention_rate_limited(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(
@@ -168,38 +197,64 @@ class TestAuditLogs:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
-                workos.audit_logs.list()
+            with pytest.raises(RateLimitExceededError):
+                workos.audit_logs.list_organization_audit_logs_retention("test_id")
         finally:
             workos.close()
 
-    def test_list_server_error(self, httpx_mock):
+    def test_list_organization_audit_logs_retention_server_error(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
-                workos.audit_logs.list()
+            with pytest.raises(ServerError):
+                workos.audit_logs.list_organization_audit_logs_retention("test_id")
         finally:
             workos.close()
 
 
 @pytest.mark.asyncio
 class TestAsyncAuditLogs:
-    async def test_list(self, async_workos, httpx_mock):
+    async def test_list_organization_audit_logs_retention(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
+        result = await async_workos.audit_logs.list_organization_audit_logs_retention(
+            "test_id"
+        )
+        assert isinstance(result, AuditLogsRetentionJson)
+        assert result.retention_period_in_days == 30
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
+
+    async def test_update_organization_audit_logs_retention(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
+        result = await async_workos.audit_logs.update_organization_audit_logs_retention(
+            "test_id", retention_period_in_days=1
+        )
+        assert isinstance(result, AuditLogsRetentionJson)
+        assert result.retention_period_in_days == 30
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
+
+    async def test_list_actions(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_audit_log_action_json.json"))
-        page = await async_workos.audit_logs.list()
+        page = await async_workos.audit_logs.list_actions()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
-    async def test_list_empty_page(self, async_workos, httpx_mock):
+    async def test_list_actions_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.audit_logs.list()
+        page = await async_workos.audit_logs.list_actions()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
-    async def test_list_encodes_query_params(self, async_workos, httpx_mock):
+    async def test_list_actions_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.audit_logs.list(
+        await async_workos.audit_logs.list_actions(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -211,21 +266,23 @@ class TestAsyncAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    async def test_schemas(self, async_workos, httpx_mock):
+    async def test_list_action_schemas(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_audit_log_schema_json.json"))
-        page = await async_workos.audit_logs.schemas("test_actionName")
+        page = await async_workos.audit_logs.list_action_schemas("test_actionName")
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
-    async def test_schemas_empty_page(self, async_workos, httpx_mock):
+    async def test_list_action_schemas_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.audit_logs.schemas("test_actionName")
+        page = await async_workos.audit_logs.list_action_schemas("test_actionName")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
-    async def test_schemas_encodes_query_params(self, async_workos, httpx_mock):
+    async def test_list_action_schemas_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.audit_logs.schemas(
+        await async_workos.audit_logs.list_action_schemas(
             "test_actionName",
             limit=10,
             before="cursor before",
@@ -238,9 +295,9 @@ class TestAsyncAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    async def test_create_schemas(self, async_workos, httpx_mock):
+    async def test_create_action_schemas(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_schema_json.json"))
-        result = await async_workos.audit_logs.create_schemas(
+        result = await async_workos.audit_logs.create_action_schemas(
             "test_actionName", targets=[]
         )
         assert isinstance(result, AuditLogSchemaJson)
@@ -264,9 +321,9 @@ class TestAsyncAuditLogs:
         assert request.method == "POST"
         assert request.url.path.endswith("/audit_logs/events")
 
-    async def test_create_export(self, async_workos, httpx_mock):
+    async def test_create_exports(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_export_json.json"))
-        result = await async_workos.audit_logs.create_export(
+        result = await async_workos.audit_logs.create_exports(
             organization_id="test_organization_id",
             range_start="test_range_start",
             range_end="test_range_end",
@@ -288,23 +345,31 @@ class TestAsyncAuditLogs:
         assert request.method == "GET"
         assert request.url.path.endswith("/audit_logs/exports/test_auditLogExportId")
 
-    async def test_list_unauthorized(self, async_workos, httpx_mock):
+    async def test_list_organization_audit_logs_retention_unauthorized(
+        self, async_workos, httpx_mock
+    ):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
-        with pytest.raises(AuthenticationException):
-            await async_workos.audit_logs.list()
+        with pytest.raises(AuthenticationError):
+            await async_workos.audit_logs.list_organization_audit_logs_retention(
+                "test_id"
+            )
 
-    async def test_list_not_found(self, httpx_mock):
+    async def test_list_organization_audit_logs_retention_not_found(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
-                await workos.audit_logs.list()
+            with pytest.raises(NotFoundError):
+                await workos.audit_logs.list_organization_audit_logs_retention(
+                    "test_id"
+                )
         finally:
             await workos.close()
 
-    async def test_list_rate_limited(self, httpx_mock):
+    async def test_list_organization_audit_logs_retention_rate_limited(
+        self, httpx_mock
+    ):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -314,18 +379,24 @@ class TestAsyncAuditLogs:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
-                await workos.audit_logs.list()
+            with pytest.raises(RateLimitExceededError):
+                await workos.audit_logs.list_organization_audit_logs_retention(
+                    "test_id"
+                )
         finally:
             await workos.close()
 
-    async def test_list_server_error(self, httpx_mock):
+    async def test_list_organization_audit_logs_retention_server_error(
+        self, httpx_mock
+    ):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
-                await workos.audit_logs.list()
+            with pytest.raises(ServerError):
+                await workos.audit_logs.list_organization_audit_logs_retention(
+                    "test_id"
+                )
         finally:
             await workos.close()

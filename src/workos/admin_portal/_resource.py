@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions, enum_value
 from .models import IntentOptions, PortalLinkResponse
@@ -15,7 +15,7 @@ from workos.common.models import GenerateLinkDtoIntent
 class AdminPortal:
     """Admin Portal API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
     def generate_link(
@@ -52,13 +52,13 @@ class AdminPortal:
                     PortalLinkResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -81,15 +81,11 @@ class AdminPortal:
             request_options=request_options,
         )
 
-    def create(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `generate_link`."""
-        return self.generate_link(*args, **kwargs)
-
 
 class AsyncAdminPortal:
     """Admin Portal API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
     async def generate_link(
@@ -126,13 +122,13 @@ class AsyncAdminPortal:
                     PortalLinkResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    UnprocessableEntityException: If the request data is unprocessable (422).
-                    AuthenticationException: If the API key is invalid (401).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    UnprocessableEntityError: If the request data is unprocessable (422).
+                    AuthenticationError: If the API key is invalid (401).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -154,7 +150,3 @@ class AsyncAdminPortal:
             model=PortalLinkResponse,
             request_options=request_options,
         )
-
-    async def create(self, *args: Any, **kwargs: Any) -> Any:
-        """Compatibility alias for `generate_link`."""
-        return await self.generate_link(*args, **kwargs)

@@ -5,22 +5,24 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 if TYPE_CHECKING:
-    from .._client import AsyncWorkOSClient, WorkOSClient
+    from .._client import AsyncWorkOS, WorkOS
 
 from .._types import RequestOptions
 from .models import (
+    ConnectedAccount,
     DataIntegrationAccessTokenResponse,
     DataIntegrationAuthorizeUrlResponse,
+    DataIntegrationsListResponse,
 )
 
 
 class Pipes:
     """Pipes API resources."""
 
-    def __init__(self, client: "WorkOSClient") -> None:
+    def __init__(self, client: "WorkOS") -> None:
         self._client = client
 
-    def get_data_integration_authorize_url(
+    def authorize_data_integration(
         self,
         slug: str,
         *,
@@ -44,12 +46,12 @@ class Pipes:
                     DataIntegrationAuthorizeUrlResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -68,7 +70,7 @@ class Pipes:
             request_options=request_options,
         )
 
-    def get_userland_user_token(
+    def create_data_integration_token(
         self,
         slug: str,
         *,
@@ -90,11 +92,11 @@ class Pipes:
                     DataIntegrationAccessTokenResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    NotFoundException: If the resource is not found (404).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -109,6 +111,126 @@ class Pipes:
             path=f"data-integrations/{slug}/token",
             body=body,
             model=DataIntegrationAccessTokenResponse,
+            request_options=request_options,
+        )
+
+    def get_user_connected_account(
+        self,
+        user_id: str,
+        slug: str,
+        *,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> ConnectedAccount:
+        """Get a connected account
+
+        Retrieves a user's [connected account](https://workos.com/docs/reference/pipes/connected-account) for a specific provider.
+
+                Args:
+                    user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+                    slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+                    organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    ConnectedAccount
+
+                Raises:
+                    AuthenticationError: If the API key is invalid (401).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="get",
+            path=f"user_management/users/{user_id}/connected_accounts/{slug}",
+            params=params,
+            model=ConnectedAccount,
+            request_options=request_options,
+        )
+
+    def delete_user_connected_account(
+        self,
+        user_id: str,
+        slug: str,
+        *,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Delete a connected account
+
+        Disconnects WorkOS's account for the user, including removing any stored access and refresh tokens. The user will need to reauthorize if they want to reconnect. This does not revoke access on the provider side.
+
+                Args:
+                    user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+                    slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+                    organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Raises:
+                    AuthenticationError: If the API key is invalid (401).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        self._client.request(
+            method="delete",
+            path=f"user_management/users/{user_id}/connected_accounts/{slug}",
+            params=params,
+            request_options=request_options,
+        )
+
+    def list_user_data_providers(
+        self,
+        user_id: str,
+        *,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> DataIntegrationsListResponse:
+        """List providers
+
+        Retrieves a list of available providers and the user's connection status for each. Returns all providers configured for your environment, along with the user's [connected account](https://workos.com/docs/reference/pipes/connected-account) information where applicable.
+
+                Args:
+                    user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier to list providers and connected accounts for.
+                    organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to filter connections for a specific organization.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    DataIntegrationsListResponse
+
+                Raises:
+                    AuthenticationError: If the API key is invalid (401).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="get",
+            path=f"user_management/users/{user_id}/data_providers",
+            params=params,
+            model=DataIntegrationsListResponse,
             request_options=request_options,
         )
 
@@ -116,10 +238,10 @@ class Pipes:
 class AsyncPipes:
     """Pipes API resources (async)."""
 
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
+    def __init__(self, client: "AsyncWorkOS") -> None:
         self._client = client
 
-    async def get_data_integration_authorize_url(
+    async def authorize_data_integration(
         self,
         slug: str,
         *,
@@ -143,12 +265,12 @@ class AsyncPipes:
                     DataIntegrationAuthorizeUrlResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    AuthorizationException: If the request is forbidden (403).
-                    NotFoundException: If the resource is not found (404).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    AuthorizationError: If the request is forbidden (403).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -167,7 +289,7 @@ class AsyncPipes:
             request_options=request_options,
         )
 
-    async def get_userland_user_token(
+    async def create_data_integration_token(
         self,
         slug: str,
         *,
@@ -189,11 +311,11 @@ class AsyncPipes:
                     DataIntegrationAccessTokenResponse
 
                 Raises:
-                    BadRequestException: If the request is malformed (400).
-                    AuthenticationException: If the API key is invalid (401).
-                    NotFoundException: If the resource is not found (404).
-                    RateLimitExceededException: If rate limited (429).
-                    ServerException: If the server returns a 5xx error.
+                    BadRequestError: If the request is malformed (400).
+                    AuthenticationError: If the API key is invalid (401).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
             k: v
@@ -208,5 +330,125 @@ class AsyncPipes:
             path=f"data-integrations/{slug}/token",
             body=body,
             model=DataIntegrationAccessTokenResponse,
+            request_options=request_options,
+        )
+
+    async def get_user_connected_account(
+        self,
+        user_id: str,
+        slug: str,
+        *,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> ConnectedAccount:
+        """Get a connected account
+
+        Retrieves a user's [connected account](https://workos.com/docs/reference/pipes/connected-account) for a specific provider.
+
+                Args:
+                    user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+                    slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+                    organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    ConnectedAccount
+
+                Raises:
+                    AuthenticationError: If the API key is invalid (401).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="get",
+            path=f"user_management/users/{user_id}/connected_accounts/{slug}",
+            params=params,
+            model=ConnectedAccount,
+            request_options=request_options,
+        )
+
+    async def delete_user_connected_account(
+        self,
+        user_id: str,
+        slug: str,
+        *,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Delete a connected account
+
+        Disconnects WorkOS's account for the user, including removing any stored access and refresh tokens. The user will need to reauthorize if they want to reconnect. This does not revoke access on the provider side.
+
+                Args:
+                    user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier.
+                    slug: The slug identifier of the provider (e.g., `github`, `slack`, `notion`).
+                    organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter if the connection is scoped to an organization.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Raises:
+                    AuthenticationError: If the API key is invalid (401).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        await self._client.request(
+            method="delete",
+            path=f"user_management/users/{user_id}/connected_accounts/{slug}",
+            params=params,
+            request_options=request_options,
+        )
+
+    async def list_user_data_providers(
+        self,
+        user_id: str,
+        *,
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> DataIntegrationsListResponse:
+        """List providers
+
+        Retrieves a list of available providers and the user's connection status for each. Returns all providers configured for your environment, along with the user's [connected account](https://workos.com/docs/reference/pipes/connected-account) information where applicable.
+
+                Args:
+                    user_id: A [User](https://workos.com/docs/reference/authkit/user) identifier to list providers and connected accounts for.
+                    organization_id: An [Organization](https://workos.com/docs/reference/organization) identifier. Optional parameter to filter connections for a specific organization.
+                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+                Returns:
+                    DataIntegrationsListResponse
+
+                Raises:
+                    AuthenticationError: If the API key is invalid (401).
+                    NotFoundError: If the resource is not found (404).
+                    RateLimitExceededError: If rate limited (429).
+                    ServerError: If the server returns a 5xx error.
+        """
+        params: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="get",
+            path=f"user_management/users/{user_id}/data_providers",
+            params=params,
+            model=DataIntegrationsListResponse,
             request_options=request_options,
         )

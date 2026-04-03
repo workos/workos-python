@@ -5,3 +5,9 @@ from .feature_flag_owner import FeatureFlagOwner as FeatureFlagOwner
 from .feature_flags_order import FeatureFlagsOrder as FeatureFlagsOrder
 from .flag import Flag as Flag
 from .flag_owner import FlagOwner as FlagOwner
+from .organizations_feature_flags_order import (
+    OrganizationsFeatureFlagsOrder as OrganizationsFeatureFlagsOrder,
+)
+from .user_management_users_feature_flags_order import (
+    UserManagementUsersFeatureFlagsOrder as UserManagementUsersFeatureFlagsOrder,
+)

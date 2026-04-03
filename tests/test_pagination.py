@@ -4,7 +4,7 @@
 
 import pytest
 
-from workos._pagination import SyncPage, AsyncPage
+from workos._pagination import SyncPage, AsyncPage, ListMetadata
 from dataclasses import dataclass
 from typing import Any, Dict
 
@@ -25,7 +25,7 @@ class TestSyncPage:
     def test_has_more_with_after_cursor(self):
         page = SyncPage(
             data=[FakeItem(id="1")],
-            list_metadata={"after": "cursor_abc"},
+            list_metadata=ListMetadata(after="cursor_abc"),
         )
         assert page.has_more() is True
         assert page.after == "cursor_abc"
@@ -33,14 +33,14 @@ class TestSyncPage:
     def test_has_more_without_cursor(self):
         page = SyncPage(
             data=[FakeItem(id="1")],
-            list_metadata={},
+            list_metadata=ListMetadata(),
         )
         assert page.has_more() is False
 
     def test_auto_paging_iter_single_page(self):
         page = SyncPage(
             data=[FakeItem(id="1"), FakeItem(id="2")],
-            list_metadata={},
+            list_metadata=ListMetadata(),
         )
         items = list(page.auto_paging_iter())
         assert len(items) == 2
@@ -50,11 +50,11 @@ class TestSyncPage:
     def test_auto_paging_iter_multi_page(self):
         page2 = SyncPage(
             data=[FakeItem(id="3")],
-            list_metadata={},
+            list_metadata=ListMetadata(),
         )
         page1 = SyncPage(
             data=[FakeItem(id="1"), FakeItem(id="2")],
-            list_metadata={"after": "cursor_abc"},
+            list_metadata=ListMetadata(after="cursor_abc"),
             _fetch_page=lambda after=None: page2,
         )
         items = list(page1.auto_paging_iter())
@@ -67,7 +67,7 @@ class TestAsyncPage:
     async def test_has_more_with_after_cursor(self):
         page = AsyncPage(
             data=[FakeItem(id="1")],
-            list_metadata={"after": "cursor_abc"},
+            list_metadata=ListMetadata(after="cursor_abc"),
         )
         assert page.has_more() is True
         assert page.after == "cursor_abc"
@@ -75,14 +75,14 @@ class TestAsyncPage:
     async def test_has_more_without_cursor(self):
         page = AsyncPage(
             data=[FakeItem(id="1")],
-            list_metadata={},
+            list_metadata=ListMetadata(),
         )
         assert page.has_more() is False
 
     async def test_auto_paging_iter_single_page(self):
         page = AsyncPage(
             data=[FakeItem(id="1"), FakeItem(id="2")],
-            list_metadata={},
+            list_metadata=ListMetadata(),
         )
         items = [item async for item in page.auto_paging_iter()]
         assert len(items) == 2
@@ -92,7 +92,7 @@ class TestAsyncPage:
     async def test_auto_paging_iter_multi_page(self):
         page2 = AsyncPage(
             data=[FakeItem(id="3")],
-            list_metadata={},
+            list_metadata=ListMetadata(),
         )
 
         async def _fetch(after=None):
@@ -100,7 +100,7 @@ class TestAsyncPage:
 
         page1 = AsyncPage(
             data=[FakeItem(id="1"), FakeItem(id="2")],
-            list_metadata={"after": "cursor_abc"},
+            list_metadata=ListMetadata(after="cursor_abc"),
             _fetch_page=_fetch,
         )
         items = [item async for item in page1.auto_paging_iter()]

@@ -6,7 +6,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
 from typing import Any, Dict, Literal, Optional
-from workos._errors import BaseRequestException
+from workos._errors import WorkOSError
+from workos._types import _parse_datetime
 
 from .authentication_factor_enrolled_sms import AuthenticationFactorEnrolledSms
 from .authentication_factor_enrolled_totp import AuthenticationFactorEnrolledTotp
@@ -42,12 +43,8 @@ class AuthenticationFactorEnrolled:
                 object=data["object"],
                 id=data["id"],
                 type=AuthenticationFactorEnrolledType(data["type"]),
-                created_at=datetime.fromisoformat(
-                    data["created_at"].replace("Z", "+00:00")
-                ),
-                updated_at=datetime.fromisoformat(
-                    data["updated_at"].replace("Z", "+00:00")
-                ),
+                created_at=_parse_datetime(data["created_at"]),
+                updated_at=_parse_datetime(data["updated_at"]),
                 user_id=data.get("user_id"),
                 sms=AuthenticationFactorEnrolledSms.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("sms")) is not None
@@ -59,7 +56,7 @@ class AuthenticationFactorEnrolled:
                 else None,
             )
         except (KeyError, ValueError) as e:
-            raise BaseRequestException(
+            raise WorkOSError(
                 f"Unexpected API response while parsing AuthenticationFactorEnrolled: {e!s}"
             ) from e
 

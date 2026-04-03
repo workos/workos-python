@@ -8,37 +8,36 @@ from tests.generated_helpers import load_fixture
 
 from workos.organizations.models import (
     AuditLogConfiguration,
-    AuditLogsRetentionJson,
     Organization,
     OrganizationsOrder,
 )
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
-    AuthenticationException,
-    NotFoundException,
-    RateLimitExceededException,
-    ServerException,
+    AuthenticationError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
 )
 
 
 class TestOrganizations:
-    def test_list(self, workos, httpx_mock):
+    def test_list_organizations(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_organization.json"),
         )
-        page = workos.organizations.list()
+        page = workos.organizations.list_organizations()
         assert isinstance(page, SyncPage)
         assert isinstance(page.data, list)
 
-    def test_list_empty_page(self, workos, httpx_mock):
+    def test_list_organizations_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.organizations.list()
+        page = workos.organizations.list_organizations()
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_encodes_query_params(self, workos, httpx_mock):
+    def test_list_organizations_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.organizations.list(
+        workos.organizations.list_organizations(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -52,11 +51,11 @@ class TestOrganizations:
         assert request.url.params["order"] == "normal"
         assert request.url.params["search"] == "value search/test"
 
-    def test_create(self, workos, httpx_mock):
+    def test_create_organizations(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization.json"),
         )
-        result = workos.organizations.create(name="test_name")
+        result = workos.organizations.create_organizations(name="test_name")
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -66,11 +65,13 @@ class TestOrganizations:
         body = json.loads(request.content)
         assert body["name"] == "test_name"
 
-    def test_get_by_external_id(self, workos, httpx_mock):
+    def test_get_organization_by_external_id(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization.json"),
         )
-        result = workos.organizations.get_by_external_id("test_external_id")
+        result = workos.organizations.get_organization_by_external_id(
+            "test_external_id"
+        )
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -78,11 +79,11 @@ class TestOrganizations:
         assert request.method == "GET"
         assert request.url.path.endswith("/organizations/external_id/test_external_id")
 
-    def test_get(self, workos, httpx_mock):
+    def test_get_organization(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization.json"),
         )
-        result = workos.organizations.get("test_id")
+        result = workos.organizations.get_organization("test_id")
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -90,11 +91,11 @@ class TestOrganizations:
         assert request.method == "GET"
         assert request.url.path.endswith("/organizations/test_id")
 
-    def test_update(self, workos, httpx_mock):
+    def test_update_organization(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization.json"),
         )
-        result = workos.organizations.update("test_id")
+        result = workos.organizations.update_organization("test_id")
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -102,19 +103,21 @@ class TestOrganizations:
         assert request.method == "PUT"
         assert request.url.path.endswith("/organizations/test_id")
 
-    def test_delete(self, workos, httpx_mock):
+    def test_delete_organization(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.organizations.delete("test_id")
+        result = workos.organizations.delete_organization("test_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/organizations/test_id")
 
-    def test_get_audit_log_configuration(self, workos, httpx_mock):
+    def test_list_organization_audit_log_configuration(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_configuration.json"),
         )
-        result = workos.organizations.get_audit_log_configuration("test_id")
+        result = workos.organizations.list_organization_audit_log_configuration(
+            "test_id"
+        )
         assert isinstance(result, AuditLogConfiguration)
         assert result.organization_id == "org_01EHZNVPK3SFK441A1RGBFSHRT"
         assert result.retention_period_in_days == 30
@@ -124,50 +127,24 @@ class TestOrganizations:
             "/organizations/test_id/audit_log_configuration"
         )
 
-    def test_audit_logs_retention(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("audit_logs_retention_json.json"),
-        )
-        result = workos.organizations.audit_logs_retention("test_id")
-        assert isinstance(result, AuditLogsRetentionJson)
-        assert result.retention_period_in_days == 30
-        request = httpx_mock.get_request()
-        assert request.method == "GET"
-        assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
-
-    def test_update_audit_logs_retention(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("audit_logs_retention_json.json"),
-        )
-        result = workos.organizations.update_audit_logs_retention(
-            "test_id", retention_period_in_days=1
-        )
-        assert isinstance(result, AuditLogsRetentionJson)
-        assert result.retention_period_in_days == 30
-        request = httpx_mock.get_request()
-        assert request.method == "PUT"
-        assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
-        body = json.loads(request.content)
-        assert body["retention_period_in_days"] == 1
-
-    def test_list_unauthorized(self, workos, httpx_mock):
+    def test_list_organizations_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
-        with pytest.raises(AuthenticationException):
-            workos.organizations.list()
+        with pytest.raises(AuthenticationError):
+            workos.organizations.list_organizations()
 
-    def test_list_not_found(self, httpx_mock):
+    def test_list_organizations_not_found(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
-                workos.organizations.list()
+            with pytest.raises(NotFoundError):
+                workos.organizations.list_organizations()
         finally:
             workos.close()
 
-    def test_list_rate_limited(self, httpx_mock):
+    def test_list_organizations_rate_limited(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(
@@ -175,38 +152,40 @@ class TestOrganizations:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
-                workos.organizations.list()
+            with pytest.raises(RateLimitExceededError):
+                workos.organizations.list_organizations()
         finally:
             workos.close()
 
-    def test_list_server_error(self, httpx_mock):
+    def test_list_organizations_server_error(self, httpx_mock):
         workos = WorkOS(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
-                workos.organizations.list()
+            with pytest.raises(ServerError):
+                workos.organizations.list_organizations()
         finally:
             workos.close()
 
 
 @pytest.mark.asyncio
 class TestAsyncOrganizations:
-    async def test_list(self, async_workos, httpx_mock):
+    async def test_list_organizations(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_organization.json"))
-        page = await async_workos.organizations.list()
+        page = await async_workos.organizations.list_organizations()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
-    async def test_list_empty_page(self, async_workos, httpx_mock):
+    async def test_list_organizations_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.organizations.list()
+        page = await async_workos.organizations.list_organizations()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
-    async def test_list_encodes_query_params(self, async_workos, httpx_mock):
+    async def test_list_organizations_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.organizations.list(
+        await async_workos.organizations.list_organizations(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -220,9 +199,9 @@ class TestAsyncOrganizations:
         assert request.url.params["order"] == "normal"
         assert request.url.params["search"] == "value search/test"
 
-    async def test_create(self, async_workos, httpx_mock):
+    async def test_create_organizations(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization.json"))
-        result = await async_workos.organizations.create(name="test_name")
+        result = await async_workos.organizations.create_organizations(name="test_name")
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -230,9 +209,11 @@ class TestAsyncOrganizations:
         assert request.method == "POST"
         assert request.url.path.endswith("/organizations")
 
-    async def test_get_by_external_id(self, async_workos, httpx_mock):
+    async def test_get_organization_by_external_id(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization.json"))
-        result = await async_workos.organizations.get_by_external_id("test_external_id")
+        result = await async_workos.organizations.get_organization_by_external_id(
+            "test_external_id"
+        )
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -240,9 +221,9 @@ class TestAsyncOrganizations:
         assert request.method == "GET"
         assert request.url.path.endswith("/organizations/external_id/test_external_id")
 
-    async def test_get(self, async_workos, httpx_mock):
+    async def test_get_organization(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization.json"))
-        result = await async_workos.organizations.get("test_id")
+        result = await async_workos.organizations.get_organization("test_id")
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -250,9 +231,9 @@ class TestAsyncOrganizations:
         assert request.method == "GET"
         assert request.url.path.endswith("/organizations/test_id")
 
-    async def test_update(self, async_workos, httpx_mock):
+    async def test_update_organization(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization.json"))
-        result = await async_workos.organizations.update("test_id")
+        result = await async_workos.organizations.update_organization("test_id")
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -260,17 +241,23 @@ class TestAsyncOrganizations:
         assert request.method == "PUT"
         assert request.url.path.endswith("/organizations/test_id")
 
-    async def test_delete(self, async_workos, httpx_mock):
+    async def test_delete_organization(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.organizations.delete("test_id")
+        result = await async_workos.organizations.delete_organization("test_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/organizations/test_id")
 
-    async def test_get_audit_log_configuration(self, async_workos, httpx_mock):
+    async def test_list_organization_audit_log_configuration(
+        self, async_workos, httpx_mock
+    ):
         httpx_mock.add_response(json=load_fixture("audit_log_configuration.json"))
-        result = await async_workos.organizations.get_audit_log_configuration("test_id")
+        result = (
+            await async_workos.organizations.list_organization_audit_log_configuration(
+                "test_id"
+            )
+        )
         assert isinstance(result, AuditLogConfiguration)
         assert result.organization_id == "org_01EHZNVPK3SFK441A1RGBFSHRT"
         assert result.retention_period_in_days == 30
@@ -280,43 +267,23 @@ class TestAsyncOrganizations:
             "/organizations/test_id/audit_log_configuration"
         )
 
-    async def test_audit_logs_retention(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
-        result = await async_workos.organizations.audit_logs_retention("test_id")
-        assert isinstance(result, AuditLogsRetentionJson)
-        assert result.retention_period_in_days == 30
-        request = httpx_mock.get_request()
-        assert request.method == "GET"
-        assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
-
-    async def test_update_audit_logs_retention(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
-        result = await async_workos.organizations.update_audit_logs_retention(
-            "test_id", retention_period_in_days=1
-        )
-        assert isinstance(result, AuditLogsRetentionJson)
-        assert result.retention_period_in_days == 30
-        request = httpx_mock.get_request()
-        assert request.method == "PUT"
-        assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
-
-    async def test_list_unauthorized(self, async_workos, httpx_mock):
+    async def test_list_organizations_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
-        with pytest.raises(AuthenticationException):
-            await async_workos.organizations.list()
+        with pytest.raises(AuthenticationError):
+            await async_workos.organizations.list_organizations()
 
-    async def test_list_not_found(self, httpx_mock):
+    async def test_list_organizations_not_found(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
-            with pytest.raises(NotFoundException):
-                await workos.organizations.list()
+            with pytest.raises(NotFoundError):
+                await workos.organizations.list_organizations()
         finally:
             await workos.close()
 
-    async def test_list_rate_limited(self, httpx_mock):
+    async def test_list_organizations_rate_limited(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -326,18 +293,18 @@ class TestAsyncOrganizations:
                 headers={"Retry-After": "0"},
                 json={"message": "Slow down"},
             )
-            with pytest.raises(RateLimitExceededException):
-                await workos.organizations.list()
+            with pytest.raises(RateLimitExceededError):
+                await workos.organizations.list_organizations()
         finally:
             await workos.close()
 
-    async def test_list_server_error(self, httpx_mock):
+    async def test_list_organizations_server_error(self, httpx_mock):
         workos = AsyncWorkOS(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
-            with pytest.raises(ServerException):
-                await workos.organizations.list()
+            with pytest.raises(ServerError):
+                await workos.organizations.list_organizations()
         finally:
             await workos.close()

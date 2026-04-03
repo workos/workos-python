@@ -16,114 +16,38 @@ from typing import Any, Dict, Optional, Type, cast, overload
 import httpx
 
 from ._errors import (
-    BaseRequestException,
-    ConfigurationException,
-    RateLimitExceededException,
-    ServerException,
-    WorkOSConnectionException,
-    WorkOSTimeoutException,
-    STATUS_CODE_TO_EXCEPTION,
+    APIError,
+    WorkOSError,
+    ConfigurationError,
+    RateLimitExceededError,
+    ServerError,
+    WorkOSConnectionError,
+    WorkOSTimeoutError,
+    STATUS_CODE_TO_ERROR,
 )
-from ._pagination import AsyncPage, SyncPage
+from ._pagination import AsyncPage, ListMetadata, SyncPage
 from ._types import D, Deserializable, RequestOptions
 from .api_keys._resource import ApiKeys, AsyncApiKeys
-from .multi_factor_auth.challenges._resource import (
-    MultiFactorAuthChallenges,
-    AsyncMultiFactorAuthChallenges,
-)
 from .multi_factor_auth._resource import MultiFactorAuth, AsyncMultiFactorAuth
-from .workos_connect._resource import WorkosConnect, AsyncWorkosConnect
+from .connect._resource import Connect, AsyncConnect
 from .authorization._resource import Authorization, AsyncAuthorization
-from .permissions._resource import Permissions, AsyncPermissions
-from .applications._resource import Applications, AsyncApplications
-from .application_client_secrets._resource import (
-    ApplicationClientSecrets,
-    AsyncApplicationClientSecrets,
-)
-from .connections._resource import Connections, AsyncConnections
+from .sso._resource import SSO, AsyncSSO
 from .pipes._resource import Pipes, AsyncPipes
-from .directories._resource import Directories, AsyncDirectories
-from .directory_groups._resource import DirectoryGroups, AsyncDirectoryGroups
-from .directory_users._resource import DirectoryUsers, AsyncDirectoryUsers
+from .directory_sync._resource import DirectorySync, AsyncDirectorySync
 from .events._resource import Events, AsyncEvents
 from .feature_flags._resource import FeatureFlags, AsyncFeatureFlags
-from .feature_flags.targets._resource import (
-    FeatureFlagsTargets,
-    AsyncFeatureFlagsTargets,
-)
 from .organization_domains._resource import (
     OrganizationDomains,
     AsyncOrganizationDomains,
 )
 from .organizations._resource import Organizations, AsyncOrganizations
-from .organizations.api_keys._resource import (
-    OrganizationsApiKeys,
-    AsyncOrganizationsApiKeys,
-)
-from .organizations.feature_flags._resource import (
-    OrganizationsFeatureFlags,
-    AsyncOrganizationsFeatureFlags,
-)
 from .admin_portal._resource import AdminPortal, AsyncAdminPortal
 from .radar._resource import Radar, AsyncRadar
-from .sso._resource import SSO, AsyncSSO
-from .user_management.session_tokens._resource import (
-    UserManagementSessionTokens,
-    AsyncUserManagementSessionTokens,
-)
-from .user_management.authentication._resource import (
-    UserManagementAuthentication,
-    AsyncUserManagementAuthentication,
-)
-from .user_management.cors_origins._resource import (
-    UserManagementCorsOrigins,
-    AsyncUserManagementCorsOrigins,
-)
-from .user_management.users._resource import (
-    UserManagementUsers,
-    AsyncUserManagementUsers,
-)
-from .user_management.invitations._resource import (
-    UserManagementInvitations,
-    AsyncUserManagementInvitations,
-)
-from .user_management.jwt_template._resource import (
-    UserManagementJWTTemplate,
-    AsyncUserManagementJWTTemplate,
-)
-from .user_management.magic_auth._resource import (
-    UserManagementMagicAuth,
-    AsyncUserManagementMagicAuth,
-)
-from .user_management.organization_membership._resource import (
-    UserManagementOrganizationMembership,
-    AsyncUserManagementOrganizationMembership,
-)
-from .user_management.redirect_uris._resource import (
-    UserManagementRedirectUris,
-    AsyncUserManagementRedirectUris,
-)
-from .user_management_users.feature_flags._resource import (
-    UserManagementUsersFeatureFlags,
-    AsyncUserManagementUsersFeatureFlags,
-)
-from .user_management_users.authorized_applications._resource import (
-    UserManagementUsersAuthorizedApplications,
-    AsyncUserManagementUsersAuthorizedApplications,
-)
-from .user_management.data_providers._resource import (
-    UserManagementDataProviders,
-    AsyncUserManagementDataProviders,
-)
-from .user_management.multi_factor_authentication._resource import (
-    UserManagementMultiFactorAuthentication,
-    AsyncUserManagementMultiFactorAuthentication,
-)
+from .user_management._resource import UserManagement, AsyncUserManagement
 from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
 from .passwordless import AsyncPasswordless, Passwordless
-from .session import AsyncSession, Session
 from .vault import AsyncVault, Vault
 
 try:
@@ -135,260 +59,12 @@ except Exception:
 
 RETRY_STATUS_CODES = {429, 500, 502, 503, 504}
 MAX_RETRIES = 3
-INITIAL_RETRY_DELAY = 0.5
-MAX_RETRY_DELAY = 8.0
-RETRY_MULTIPLIER = 2.0
+INITIAL_RETRY_DELAY = 1
+MAX_RETRY_DELAY = 30
+RETRY_MULTIPLIER = 2
 
 
-class MultiFactorAuthNamespace(MultiFactorAuth):
-    """MultiFactorAuth resources."""
-
-    def __init__(self, client: "WorkOSClient") -> None:
-        super().__init__(client)
-
-    @functools.cached_property
-    def challenges(self) -> MultiFactorAuthChallenges:
-        return MultiFactorAuthChallenges(self._client)
-
-    def verify_challenge(
-        self,
-        *,
-        authentication_challenge_id: str,
-        code: str,
-        request_options: Optional[RequestOptions] = None,
-    ) -> Any:
-        return self.challenges.verify(
-            authentication_challenge_id, code=code, request_options=request_options
-        )
-
-
-class FeatureFlagsNamespace(FeatureFlags):
-    """FeatureFlags resources."""
-
-    def __init__(self, client: "WorkOSClient") -> None:
-        super().__init__(client)
-
-    @functools.cached_property
-    def targets(self) -> FeatureFlagsTargets:
-        return FeatureFlagsTargets(self._client)
-
-
-class OrganizationsNamespace(Organizations):
-    """Organizations resources."""
-
-    def __init__(self, client: "WorkOSClient") -> None:
-        super().__init__(client)
-
-    @functools.cached_property
-    def api_keys(self) -> OrganizationsApiKeys:
-        return OrganizationsApiKeys(self._client)
-
-    @functools.cached_property
-    def feature_flags(self) -> OrganizationsFeatureFlags:
-        return OrganizationsFeatureFlags(self._client)
-
-
-class UserManagementNamespace(object):
-    """UserManagement resources."""
-
-    def __init__(self, client: "WorkOSClient") -> None:
-        self._client = client
-
-    @functools.cached_property
-    def session_tokens(self) -> UserManagementSessionTokens:
-        return UserManagementSessionTokens(self._client)
-
-    @functools.cached_property
-    def authentication(self) -> UserManagementAuthentication:
-        return UserManagementAuthentication(self._client)
-
-    @functools.cached_property
-    def cors_origins(self) -> UserManagementCorsOrigins:
-        return UserManagementCorsOrigins(self._client)
-
-    @functools.cached_property
-    def users(self) -> UserManagementUsers:
-        return UserManagementUsers(self._client)
-
-    @functools.cached_property
-    def invitations(self) -> UserManagementInvitations:
-        return UserManagementInvitations(self._client)
-
-    @functools.cached_property
-    def jwt_template(self) -> UserManagementJWTTemplate:
-        return UserManagementJWTTemplate(self._client)
-
-    @functools.cached_property
-    def magic_auth(self) -> UserManagementMagicAuth:
-        return UserManagementMagicAuth(self._client)
-
-    @functools.cached_property
-    def organization_membership(self) -> UserManagementOrganizationMembership:
-        return UserManagementOrganizationMembership(self._client)
-
-    @functools.cached_property
-    def redirect_uris(self) -> UserManagementRedirectUris:
-        return UserManagementRedirectUris(self._client)
-
-    @functools.cached_property
-    def data_providers(self) -> UserManagementDataProviders:
-        return UserManagementDataProviders(self._client)
-
-    @functools.cached_property
-    def multi_factor_authentication(self) -> UserManagementMultiFactorAuthentication:
-        return UserManagementMultiFactorAuthentication(self._client)
-
-    def load_sealed_session(
-        self, *, sealed_session: str, cookie_password: str
-    ) -> Session:
-        return Session(
-            client=self._client,
-            session_data=sealed_session,
-            cookie_password=cookie_password,
-        )
-
-
-class UserManagementUsersNamespace(object):
-    """UserManagementUsers resources."""
-
-    def __init__(self, client: "WorkOSClient") -> None:
-        self._client = client
-
-    @functools.cached_property
-    def feature_flags(self) -> UserManagementUsersFeatureFlags:
-        return UserManagementUsersFeatureFlags(self._client)
-
-    @functools.cached_property
-    def authorized_applications(self) -> UserManagementUsersAuthorizedApplications:
-        return UserManagementUsersAuthorizedApplications(self._client)
-
-
-class AsyncMultiFactorAuthNamespace(AsyncMultiFactorAuth):
-    """MultiFactorAuth resources (async)."""
-
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
-        super().__init__(client)
-
-    @functools.cached_property
-    def challenges(self) -> AsyncMultiFactorAuthChallenges:
-        return AsyncMultiFactorAuthChallenges(self._client)
-
-    async def verify_challenge(
-        self,
-        *,
-        authentication_challenge_id: str,
-        code: str,
-        request_options: Optional[RequestOptions] = None,
-    ) -> Any:
-        return await self.challenges.verify(
-            authentication_challenge_id, code=code, request_options=request_options
-        )
-
-
-class AsyncFeatureFlagsNamespace(AsyncFeatureFlags):
-    """FeatureFlags resources (async)."""
-
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
-        super().__init__(client)
-
-    @functools.cached_property
-    def targets(self) -> AsyncFeatureFlagsTargets:
-        return AsyncFeatureFlagsTargets(self._client)
-
-
-class AsyncOrganizationsNamespace(AsyncOrganizations):
-    """Organizations resources (async)."""
-
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
-        super().__init__(client)
-
-    @functools.cached_property
-    def api_keys(self) -> AsyncOrganizationsApiKeys:
-        return AsyncOrganizationsApiKeys(self._client)
-
-    @functools.cached_property
-    def feature_flags(self) -> AsyncOrganizationsFeatureFlags:
-        return AsyncOrganizationsFeatureFlags(self._client)
-
-
-class AsyncUserManagementNamespace(object):
-    """UserManagement resources (async)."""
-
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
-        self._client = client
-
-    @functools.cached_property
-    def session_tokens(self) -> AsyncUserManagementSessionTokens:
-        return AsyncUserManagementSessionTokens(self._client)
-
-    @functools.cached_property
-    def authentication(self) -> AsyncUserManagementAuthentication:
-        return AsyncUserManagementAuthentication(self._client)
-
-    @functools.cached_property
-    def cors_origins(self) -> AsyncUserManagementCorsOrigins:
-        return AsyncUserManagementCorsOrigins(self._client)
-
-    @functools.cached_property
-    def users(self) -> AsyncUserManagementUsers:
-        return AsyncUserManagementUsers(self._client)
-
-    @functools.cached_property
-    def invitations(self) -> AsyncUserManagementInvitations:
-        return AsyncUserManagementInvitations(self._client)
-
-    @functools.cached_property
-    def jwt_template(self) -> AsyncUserManagementJWTTemplate:
-        return AsyncUserManagementJWTTemplate(self._client)
-
-    @functools.cached_property
-    def magic_auth(self) -> AsyncUserManagementMagicAuth:
-        return AsyncUserManagementMagicAuth(self._client)
-
-    @functools.cached_property
-    def organization_membership(self) -> AsyncUserManagementOrganizationMembership:
-        return AsyncUserManagementOrganizationMembership(self._client)
-
-    @functools.cached_property
-    def redirect_uris(self) -> AsyncUserManagementRedirectUris:
-        return AsyncUserManagementRedirectUris(self._client)
-
-    @functools.cached_property
-    def data_providers(self) -> AsyncUserManagementDataProviders:
-        return AsyncUserManagementDataProviders(self._client)
-
-    @functools.cached_property
-    def multi_factor_authentication(
-        self,
-    ) -> AsyncUserManagementMultiFactorAuthentication:
-        return AsyncUserManagementMultiFactorAuthentication(self._client)
-
-    def load_sealed_session(
-        self, *, sealed_session: str, cookie_password: str
-    ) -> AsyncSession:
-        return AsyncSession(
-            client=self._client,
-            session_data=sealed_session,
-            cookie_password=cookie_password,
-        )
-
-
-class AsyncUserManagementUsersNamespace(object):
-    """UserManagementUsers resources (async)."""
-
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
-        self._client = client
-
-    @functools.cached_property
-    def feature_flags(self) -> AsyncUserManagementUsersFeatureFlags:
-        return AsyncUserManagementUsersFeatureFlags(self._client)
-
-    @functools.cached_property
-    def authorized_applications(self) -> AsyncUserManagementUsersAuthorizedApplications:
-        return AsyncUserManagementUsersAuthorizedApplications(self._client)
-
-
-class _BaseWorkOSClient:
+class _BaseWorkOS:
     """Shared WorkOS client implementation."""
 
     def __init__(
@@ -417,7 +93,7 @@ class _BaseWorkOSClient:
         self._request_timeout = (
             request_timeout
             if request_timeout is not None
-            else int(os.environ.get("WORKOS_REQUEST_TIMEOUT", "30"))
+            else int(os.environ.get("WORKOS_REQUEST_TIMEOUT", "60"))
         )
         self._max_retries = max_retries
         self._jwt_leeway = jwt_leeway
@@ -462,7 +138,7 @@ class _BaseWorkOSClient:
         attempt: int, retry_after: Optional[str] = None
     ) -> float:
         """Calculate retry delay with exponential backoff and jitter."""
-        parsed_retry_after = _BaseWorkOSClient._parse_retry_after(retry_after)
+        parsed_retry_after = _BaseWorkOS._parse_retry_after(retry_after)
         if parsed_retry_after is not None:
             return parsed_retry_after
         delay = min(INITIAL_RETRY_DELAY * (RETRY_MULTIPLIER**attempt), MAX_RETRY_DELAY)
@@ -492,7 +168,7 @@ class _BaseWorkOSClient:
 
     def _require_api_key(self) -> str:
         if not self._api_key:
-            raise ConfigurationException(
+            raise ConfigurationError(
                 "This operation requires a WorkOS API key. Provide api_key when instantiating the client "
                 "or via the WORKOS_API_KEY environment variable."
             )
@@ -500,7 +176,7 @@ class _BaseWorkOSClient:
 
     def _require_client_id(self) -> str:
         if not self.client_id:
-            raise ConfigurationException(
+            raise ConfigurationError(
                 "This operation requires a WorkOS client ID. Provide client_id when instantiating the client "
                 "or via the WORKOS_CLIENT_ID environment variable."
             )
@@ -572,13 +248,13 @@ class _BaseWorkOSClient:
             error_description = None
             param = None
 
-        error_class = STATUS_CODE_TO_EXCEPTION.get(response.status_code)
+        error_class = STATUS_CODE_TO_ERROR.get(response.status_code)
         if error_class:
-            if error_class is RateLimitExceededException:
-                retry_after = _BaseWorkOSClient._parse_retry_after(
+            if error_class is RateLimitExceededError:
+                retry_after = _BaseWorkOS._parse_retry_after(
                     response.headers.get("Retry-After")
                 )
-                raise RateLimitExceededException(
+                raise RateLimitExceededError(
                     message,
                     retry_after=retry_after,
                     request_id=request_id,
@@ -609,7 +285,7 @@ class _BaseWorkOSClient:
             )
 
         if response.status_code >= 500:
-            raise ServerException(
+            raise ServerError(
                 message,
                 status_code=response.status_code,
                 request_id=request_id,
@@ -625,7 +301,7 @@ class _BaseWorkOSClient:
                 request_method=request_method,
             )
 
-        raise BaseRequestException(
+        raise APIError(
             message,
             status_code=response.status_code,
             request_id=request_id,
@@ -642,7 +318,7 @@ class _BaseWorkOSClient:
         )
 
 
-class WorkOSClient(_BaseWorkOSClient):
+class WorkOS(_BaseWorkOS):
     """Synchronous WorkOS API client."""
 
     def __init__(
@@ -661,7 +337,7 @@ class WorkOSClient(_BaseWorkOSClient):
             api_key: WorkOS API key. Falls back to the WORKOS_API_KEY environment variable.
             client_id: WorkOS client ID. Falls back to the WORKOS_CLIENT_ID environment variable.
             base_url: Base URL for API requests. Falls back to WORKOS_BASE_URL or "https://api.workos.com".
-            request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 30.
+            request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 60.
             jwt_leeway: JWT clock skew leeway in seconds.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
 
@@ -684,7 +360,7 @@ class WorkOSClient(_BaseWorkOSClient):
         """Close the underlying HTTP client and release resources."""
         self._client.close()
 
-    def __enter__(self) -> "WorkOSClient":
+    def __enter__(self) -> "WorkOS":
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
@@ -695,52 +371,44 @@ class WorkOSClient(_BaseWorkOSClient):
         return ApiKeys(self)
 
     @functools.cached_property
-    def workos_connect(self) -> WorkosConnect:
-        return WorkosConnect(self)
+    def multi_factor_auth(self) -> MultiFactorAuth:
+        return MultiFactorAuth(self)
+
+    @functools.cached_property
+    def connect(self) -> Connect:
+        return Connect(self)
 
     @functools.cached_property
     def authorization(self) -> Authorization:
         return Authorization(self)
 
     @functools.cached_property
-    def permissions(self) -> Permissions:
-        return Permissions(self)
-
-    @functools.cached_property
-    def applications(self) -> Applications:
-        return Applications(self)
-
-    @functools.cached_property
-    def application_client_secrets(self) -> ApplicationClientSecrets:
-        return ApplicationClientSecrets(self)
-
-    @functools.cached_property
-    def connections(self) -> Connections:
-        return Connections(self)
+    def sso(self) -> SSO:
+        return SSO(self)
 
     @functools.cached_property
     def pipes(self) -> Pipes:
         return Pipes(self)
 
     @functools.cached_property
-    def directories(self) -> Directories:
-        return Directories(self)
-
-    @functools.cached_property
-    def directory_groups(self) -> DirectoryGroups:
-        return DirectoryGroups(self)
-
-    @functools.cached_property
-    def directory_users(self) -> DirectoryUsers:
-        return DirectoryUsers(self)
+    def directory_sync(self) -> DirectorySync:
+        return DirectorySync(self)
 
     @functools.cached_property
     def events(self) -> Events:
         return Events(self)
 
     @functools.cached_property
+    def feature_flags(self) -> FeatureFlags:
+        return FeatureFlags(self)
+
+    @functools.cached_property
     def organization_domains(self) -> OrganizationDomains:
         return OrganizationDomains(self)
+
+    @functools.cached_property
+    def organizations(self) -> Organizations:
+        return Organizations(self)
 
     @functools.cached_property
     def admin_portal(self) -> AdminPortal:
@@ -751,8 +419,8 @@ class WorkOSClient(_BaseWorkOSClient):
         return Radar(self)
 
     @functools.cached_property
-    def sso(self) -> SSO:
-        return SSO(self)
+    def user_management(self) -> UserManagement:
+        return UserManagement(self)
 
     @functools.cached_property
     def webhooks(self) -> Webhooks:
@@ -765,26 +433,6 @@ class WorkOSClient(_BaseWorkOSClient):
     @functools.cached_property
     def audit_logs(self) -> AuditLogs:
         return AuditLogs(self)
-
-    @functools.cached_property
-    def multi_factor_auth(self) -> MultiFactorAuthNamespace:
-        return MultiFactorAuthNamespace(self)
-
-    @functools.cached_property
-    def feature_flags(self) -> FeatureFlagsNamespace:
-        return FeatureFlagsNamespace(self)
-
-    @functools.cached_property
-    def organizations(self) -> OrganizationsNamespace:
-        return OrganizationsNamespace(self)
-
-    @functools.cached_property
-    def user_management(self) -> UserManagementNamespace:
-        return UserManagementNamespace(self)
-
-    @functools.cached_property
-    def user_management_users(self) -> UserManagementUsersNamespace:
-        return UserManagementUsersNamespace(self)
 
     @functools.cached_property
     def mfa(self) -> Any:
@@ -865,20 +513,20 @@ class WorkOSClient(_BaseWorkOSClient):
                 if attempt < max_retries:
                     time.sleep(self._calculate_retry_delay(attempt))
                     continue
-                raise WorkOSTimeoutException(f"Request timed out: {e}") from e
+                raise WorkOSTimeoutError(f"Request timed out: {e}") from e
             except httpx.ConnectError as e:
                 last_error = e
                 if attempt < max_retries:
                     time.sleep(self._calculate_retry_delay(attempt))
                     continue
-                raise WorkOSConnectionException(f"Connection failed: {e}") from e
+                raise WorkOSConnectionError(f"Connection failed: {e}") from e
             except httpx.HTTPError as e:
                 last_error = e
                 if attempt < max_retries:
                     time.sleep(self._calculate_retry_delay(attempt))
                     continue
-                raise BaseRequestException(f"Network error: {e}") from e
-        raise BaseRequestException("Max retries exceeded") from last_error
+                raise WorkOSError(f"Network error: {e}") from e
+        raise WorkOSError("Max retries exceeded") from last_error
 
     def request_page(
         self,
@@ -903,8 +551,8 @@ class WorkOSClient(_BaseWorkOSClient):
         items: list[D] = [
             cast(D, model.from_dict(cast(Dict[str, Any], item))) for item in raw_items
         ]
-        list_metadata: Dict[str, Any] = cast(
-            Dict[str, Any], data.get("list_metadata", {})
+        list_metadata = ListMetadata.from_dict(
+            cast(Dict[str, Any], data.get("list_metadata", {}))
         )
 
         def _fetch(*, after: Optional[str] = None) -> SyncPage[D]:
@@ -921,7 +569,7 @@ class WorkOSClient(_BaseWorkOSClient):
         return SyncPage(data=items, list_metadata=list_metadata, _fetch_page=_fetch)
 
 
-class AsyncWorkOSClient(_BaseWorkOSClient):
+class AsyncWorkOS(_BaseWorkOS):
     """Asynchronous WorkOS API client."""
 
     def __init__(
@@ -940,7 +588,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             api_key: WorkOS API key. Falls back to the WORKOS_API_KEY environment variable.
             client_id: WorkOS client ID. Falls back to the WORKOS_CLIENT_ID environment variable.
             base_url: Base URL for API requests. Falls back to WORKOS_BASE_URL or "https://api.workos.com".
-            request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 30.
+            request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 60.
             jwt_leeway: JWT clock skew leeway in seconds.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
 
@@ -963,7 +611,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         """Close the underlying HTTP client and release resources."""
         await self._client.aclose()
 
-    async def __aenter__(self) -> "AsyncWorkOSClient":
+    async def __aenter__(self) -> "AsyncWorkOS":
         return self
 
     async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
@@ -974,52 +622,44 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         return AsyncApiKeys(self)
 
     @functools.cached_property
-    def workos_connect(self) -> AsyncWorkosConnect:
-        return AsyncWorkosConnect(self)
+    def multi_factor_auth(self) -> AsyncMultiFactorAuth:
+        return AsyncMultiFactorAuth(self)
+
+    @functools.cached_property
+    def connect(self) -> AsyncConnect:
+        return AsyncConnect(self)
 
     @functools.cached_property
     def authorization(self) -> AsyncAuthorization:
         return AsyncAuthorization(self)
 
     @functools.cached_property
-    def permissions(self) -> AsyncPermissions:
-        return AsyncPermissions(self)
-
-    @functools.cached_property
-    def applications(self) -> AsyncApplications:
-        return AsyncApplications(self)
-
-    @functools.cached_property
-    def application_client_secrets(self) -> AsyncApplicationClientSecrets:
-        return AsyncApplicationClientSecrets(self)
-
-    @functools.cached_property
-    def connections(self) -> AsyncConnections:
-        return AsyncConnections(self)
+    def sso(self) -> AsyncSSO:
+        return AsyncSSO(self)
 
     @functools.cached_property
     def pipes(self) -> AsyncPipes:
         return AsyncPipes(self)
 
     @functools.cached_property
-    def directories(self) -> AsyncDirectories:
-        return AsyncDirectories(self)
-
-    @functools.cached_property
-    def directory_groups(self) -> AsyncDirectoryGroups:
-        return AsyncDirectoryGroups(self)
-
-    @functools.cached_property
-    def directory_users(self) -> AsyncDirectoryUsers:
-        return AsyncDirectoryUsers(self)
+    def directory_sync(self) -> AsyncDirectorySync:
+        return AsyncDirectorySync(self)
 
     @functools.cached_property
     def events(self) -> AsyncEvents:
         return AsyncEvents(self)
 
     @functools.cached_property
+    def feature_flags(self) -> AsyncFeatureFlags:
+        return AsyncFeatureFlags(self)
+
+    @functools.cached_property
     def organization_domains(self) -> AsyncOrganizationDomains:
         return AsyncOrganizationDomains(self)
+
+    @functools.cached_property
+    def organizations(self) -> AsyncOrganizations:
+        return AsyncOrganizations(self)
 
     @functools.cached_property
     def admin_portal(self) -> AsyncAdminPortal:
@@ -1030,8 +670,8 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         return AsyncRadar(self)
 
     @functools.cached_property
-    def sso(self) -> AsyncSSO:
-        return AsyncSSO(self)
+    def user_management(self) -> AsyncUserManagement:
+        return AsyncUserManagement(self)
 
     @functools.cached_property
     def webhooks(self) -> AsyncWebhooks:
@@ -1044,26 +684,6 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
     @functools.cached_property
     def audit_logs(self) -> AsyncAuditLogs:
         return AsyncAuditLogs(self)
-
-    @functools.cached_property
-    def multi_factor_auth(self) -> AsyncMultiFactorAuthNamespace:
-        return AsyncMultiFactorAuthNamespace(self)
-
-    @functools.cached_property
-    def feature_flags(self) -> AsyncFeatureFlagsNamespace:
-        return AsyncFeatureFlagsNamespace(self)
-
-    @functools.cached_property
-    def organizations(self) -> AsyncOrganizationsNamespace:
-        return AsyncOrganizationsNamespace(self)
-
-    @functools.cached_property
-    def user_management(self) -> AsyncUserManagementNamespace:
-        return AsyncUserManagementNamespace(self)
-
-    @functools.cached_property
-    def user_management_users(self) -> AsyncUserManagementUsersNamespace:
-        return AsyncUserManagementUsersNamespace(self)
 
     @functools.cached_property
     def mfa(self) -> Any:
@@ -1144,20 +764,20 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
                 if attempt < max_retries:
                     await asyncio.sleep(self._calculate_retry_delay(attempt))
                     continue
-                raise WorkOSTimeoutException(f"Request timed out: {e}") from e
+                raise WorkOSTimeoutError(f"Request timed out: {e}") from e
             except httpx.ConnectError as e:
                 last_error = e
                 if attempt < max_retries:
                     await asyncio.sleep(self._calculate_retry_delay(attempt))
                     continue
-                raise WorkOSConnectionException(f"Connection failed: {e}") from e
+                raise WorkOSConnectionError(f"Connection failed: {e}") from e
             except httpx.HTTPError as e:
                 last_error = e
                 if attempt < max_retries:
                     await asyncio.sleep(self._calculate_retry_delay(attempt))
                     continue
-                raise BaseRequestException(f"Network error: {e}") from e
-        raise BaseRequestException("Max retries exceeded") from last_error
+                raise WorkOSError(f"Network error: {e}") from e
+        raise WorkOSError("Max retries exceeded") from last_error
 
     async def request_page(
         self,
@@ -1182,8 +802,8 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         items: list[D] = [
             cast(D, model.from_dict(cast(Dict[str, Any], item))) for item in raw_items
         ]
-        list_metadata: Dict[str, Any] = cast(
-            Dict[str, Any], data.get("list_metadata", {})
+        list_metadata = ListMetadata.from_dict(
+            cast(Dict[str, Any], data.get("list_metadata", {}))
         )
 
         async def _fetch(*, after: Optional[str] = None) -> AsyncPage[D]:
@@ -1198,8 +818,3 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             )
 
         return AsyncPage(data=items, list_metadata=list_metadata, _fetch_page=_fetch)
-
-
-# Top-level client aliases retained for SDK ergonomics and internal typing
-WorkOS = WorkOSClient
-AsyncWorkOS = AsyncWorkOSClient

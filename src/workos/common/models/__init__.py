@@ -28,11 +28,11 @@ from .connected_account_state import ConnectedAccountState as ConnectedAccountSt
 from .connection_state import ConnectionState as ConnectionState
 from .connection_status import ConnectionStatus as ConnectionStatus
 from .connection_type import ConnectionType as ConnectionType
-from .create_user_password_hash_type import (
-    CreateUserPasswordHashType as CreateUserPasswordHashType,
-)
 from .create_user_invite_options_locale import (
     CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale,
+)
+from .create_user_password_hash_type import (
+    CreateUserPasswordHashType as CreateUserPasswordHashType,
 )
 from .create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents as CreateWebhookEndpointEvents,

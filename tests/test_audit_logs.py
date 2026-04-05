@@ -7,8 +7,8 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.audit_logs.models import (
-    AuditLogEventCreateResponse,
     AuditLogEvent,
+    AuditLogEventCreateResponse,
     AuditLogExportJson,
     AuditLogSchemaJson,
     AuditLogsOrder,

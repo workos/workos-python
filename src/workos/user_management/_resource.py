@@ -50,8 +50,8 @@ from .models import (
     UserManagementUsersOrder,
 )
 from workos.common.models import (
-    CreateUserPasswordHashType,
     CreateUserInviteOptionsLocale,
+    CreateUserPasswordHashType,
     ResendUserInviteOptionsLocale,
     UpdateUserPasswordHashType,
 )

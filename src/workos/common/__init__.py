@@ -20,8 +20,8 @@ from .models import ConnectedAccountState as ConnectedAccountState
 from .models import ConnectionState as ConnectionState
 from .models import ConnectionStatus as ConnectionStatus
 from .models import ConnectionType as ConnectionType
-from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
 from .models import CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale
+from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
 from .models import CreateWebhookEndpointEvents as CreateWebhookEndpointEvents
 from .models import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,

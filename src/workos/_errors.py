@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Mapping, Optional, Type, cast
+from typing import Any, Dict, List, Mapping, Optional, Type, cast
 
 
 class WorkOSError(Exception):
@@ -142,21 +142,196 @@ class AuthorizationError(APIError):
         super().__init__(*args, **kwargs)
 
 
-class EmailVerificationRequiredError(AuthorizationError):
+class AuthenticationFlowError(AuthorizationError):
+    """Raised when authentication requires an additional step.
+
+    All auth-flow 403 errors carry a pending_authentication_token that
+    must be passed to the next step in the authentication flow.
+    """
+
+    pending_authentication_token: Optional[str]
+
+    def __init__(
+        self,
+        *args: Any,
+        pending_authentication_token: Optional[str] = None,
+        **kwargs: Any,
+    ) -> None:
+        response_json = cast(Optional[Mapping[str, Any]], kwargs.get("response_json"))
+        if pending_authentication_token is None and response_json is not None:
+            pending_authentication_token = cast(
+                Optional[str], response_json.get("pending_authentication_token")
+            )
+        super().__init__(*args, **kwargs)
+        self.pending_authentication_token = pending_authentication_token
+
+
+class EmailVerificationRequiredError(AuthenticationFlowError):
     """Raised when email verification is required before authentication."""
 
     email_verification_id: Optional[str]
+    email: Optional[str]
 
     def __init__(
-        self, *args: Any, email_verification_id: Optional[str] = None, **kwargs: Any
+        self,
+        *args: Any,
+        email_verification_id: Optional[str] = None,
+        email: Optional[str] = None,
+        **kwargs: Any,
     ) -> None:
         response_json = cast(Optional[Mapping[str, Any]], kwargs.get("response_json"))
         if email_verification_id is None and response_json is not None:
             email_verification_id = cast(
                 Optional[str], response_json.get("email_verification_id")
             )
+        if email is None and response_json is not None:
+            email = cast(Optional[str], response_json.get("email"))
         super().__init__(*args, **kwargs)
         self.email_verification_id = email_verification_id
+        self.email = email
+
+
+class MfaEnrollmentError(AuthenticationFlowError):
+    """Raised when MFA enrollment is required."""
+
+    user: Optional[Dict[str, Any]]
+
+    def __init__(
+        self, *args: Any, user: Optional[Dict[str, Any]] = None, **kwargs: Any
+    ) -> None:
+        response_json = cast(Optional[Mapping[str, Any]], kwargs.get("response_json"))
+        if user is None and response_json is not None:
+            user = cast(Optional[Dict[str, Any]], response_json.get("user"))
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+
+class MfaChallengeError(AuthenticationFlowError):
+    """Raised when an MFA challenge must be completed."""
+
+    user: Optional[Dict[str, Any]]
+    authentication_factors: Optional[List[Dict[str, Any]]]
+
+    def __init__(
+        self,
+        *args: Any,
+        user: Optional[Dict[str, Any]] = None,
+        authentication_factors: Optional[List[Dict[str, Any]]] = None,
+        **kwargs: Any,
+    ) -> None:
+        response_json = cast(Optional[Mapping[str, Any]], kwargs.get("response_json"))
+        if user is None and response_json is not None:
+            user = cast(Optional[Dict[str, Any]], response_json.get("user"))
+        if authentication_factors is None and response_json is not None:
+            authentication_factors = cast(
+                Optional[List[Dict[str, Any]]],
+                response_json.get("authentication_factors"),
+            )
+        super().__init__(*args, **kwargs)
+        self.user = user
+        self.authentication_factors = authentication_factors
+
+
+class OrganizationSelectionRequiredError(AuthenticationFlowError):
+    """Raised when the user must select an organization."""
+
+    user: Optional[Dict[str, Any]]
+    organizations: Optional[List[Dict[str, Any]]]
+
+    def __init__(
+        self,
+        *args: Any,
+        user: Optional[Dict[str, Any]] = None,
+        organizations: Optional[List[Dict[str, Any]]] = None,
+        **kwargs: Any,
+    ) -> None:
+        response_json = cast(Optional[Mapping[str, Any]], kwargs.get("response_json"))
+        if user is None and response_json is not None:
+            user = cast(Optional[Dict[str, Any]], response_json.get("user"))
+        if organizations is None and response_json is not None:
+            organizations = cast(
+                Optional[List[Dict[str, Any]]], response_json.get("organizations")
+            )
+        super().__init__(*args, **kwargs)
+        self.user = user
+        self.organizations = organizations
+
+
+class SsoRequiredError(AuthenticationFlowError):
+    """Raised when SSO authentication is required."""
+
+    email: Optional[str]
+    connection_ids: Optional[List[str]]
+
+    def __init__(
+        self,
+        *args: Any,
+        email: Optional[str] = None,
+        connection_ids: Optional[List[str]] = None,
+        **kwargs: Any,
+    ) -> None:
+        response_json = cast(Optional[Mapping[str, Any]], kwargs.get("response_json"))
+        if email is None and response_json is not None:
+            email = cast(Optional[str], response_json.get("email"))
+        if connection_ids is None and response_json is not None:
+            connection_ids = cast(
+                Optional[List[str]], response_json.get("connection_ids")
+            )
+        super().__init__(*args, **kwargs)
+        self.email = email
+        self.connection_ids = connection_ids
+
+
+class OrganizationAuthMethodsRequiredError(AuthenticationFlowError):
+    """Raised when organization-specific authentication methods are required."""
+
+    email: Optional[str]
+    sso_connection_ids: Optional[List[str]]
+    auth_methods: Optional[Dict[str, bool]]
+
+    def __init__(
+        self,
+        *args: Any,
+        email: Optional[str] = None,
+        sso_connection_ids: Optional[List[str]] = None,
+        auth_methods: Optional[Dict[str, bool]] = None,
+        **kwargs: Any,
+    ) -> None:
+        response_json = cast(Optional[Mapping[str, Any]], kwargs.get("response_json"))
+        if email is None and response_json is not None:
+            email = cast(Optional[str], response_json.get("email"))
+        if sso_connection_ids is None and response_json is not None:
+            sso_connection_ids = cast(
+                Optional[List[str]], response_json.get("sso_connection_ids")
+            )
+        if auth_methods is None and response_json is not None:
+            auth_methods = cast(
+                Optional[Dict[str, bool]], response_json.get("auth_methods")
+            )
+        super().__init__(*args, **kwargs)
+        self.email = email
+        self.sso_connection_ids = sso_connection_ids
+        self.auth_methods = auth_methods
+
+
+class AuthenticationMethodNotAllowedError(AuthenticationFlowError):
+    """Raised when the authentication method is not allowed."""
+
+
+class EmailPasswordAuthDisabledError(AuthenticationFlowError):
+    """Raised when email/password authentication is disabled."""
+
+
+class PasskeyProgressiveEnrollmentError(AuthenticationFlowError):
+    """Raised when passkey progressive enrollment is required."""
+
+
+class RadarChallengeError(AuthenticationFlowError):
+    """Raised when a Radar challenge is required."""
+
+
+class RadarSignUpChallengeError(AuthenticationFlowError):
+    """Raised when a Radar sign-up challenge is required."""
 
 
 class NotFoundError(APIError):
@@ -233,4 +408,20 @@ STATUS_CODE_TO_ERROR: Dict[int, Type[APIError]] = {
     409: ConflictError,
     422: UnprocessableEntityError,
     429: RateLimitExceededError,
+}
+
+# Maps authentication error code/error values to specific error classes.
+# Checked by _raise_error() for 403 responses before falling through to AuthorizationError.
+_AUTH_CODE_TO_ERROR: Dict[str, Type[AuthenticationFlowError]] = {
+    "email_verification_required": EmailVerificationRequiredError,
+    "mfa_enrollment": MfaEnrollmentError,
+    "mfa_challenge": MfaChallengeError,
+    "organization_selection_required": OrganizationSelectionRequiredError,
+    "sso_required": SsoRequiredError,
+    "organization_authentication_methods_required": OrganizationAuthMethodsRequiredError,
+    "authentication_method_not_allowed": AuthenticationMethodNotAllowedError,
+    "email_password_auth_disabled": EmailPasswordAuthDisabledError,
+    "passkey_progressive_enrollment": PasskeyProgressiveEnrollmentError,
+    "radar_challenge": RadarChallengeError,
+    "radar_sign_up_challenge": RadarSignUpChallengeError,
 }

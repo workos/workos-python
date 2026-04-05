@@ -9,10 +9,22 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from workos import _base_client as generated_client_module
 from workos._errors import (
     AuthenticationError,
+    AuthenticationFlowError,
+    AuthenticationMethodNotAllowedError,
     BadRequestError,
     AuthorizationError,
+    EmailPasswordAuthDisabledError,
+    EmailVerificationRequiredError,
+    MfaChallengeError,
+    MfaEnrollmentError,
     NotFoundError,
     ConflictError,
+    OrganizationAuthMethodsRequiredError,
+    OrganizationSelectionRequiredError,
+    PasskeyProgressiveEnrollmentError,
+    RadarChallengeError,
+    RadarSignUpChallengeError,
+    SsoRequiredError,
     UnprocessableEntityError,
     RateLimitExceededError,
     ServerError,
@@ -74,6 +86,204 @@ class TestWorkOSClient:
         )
         with pytest.raises(AuthorizationError):
             client.request("GET", "test")
+        client.close()
+
+    def test_raises_email_verification_required(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "code": "email_verification_required",
+                "message": "Email verification required",
+                "pending_authentication_token": "pat_123",
+                "email_verification_id": "ev_123",
+                "email": "user@example.com",
+            },
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(EmailVerificationRequiredError) as exc_info:
+            client.request("GET", "test")
+        assert exc_info.value.pending_authentication_token == "pat_123"
+        assert exc_info.value.email_verification_id == "ev_123"
+        assert exc_info.value.email == "user@example.com"
+        client.close()
+
+    def test_raises_mfa_enrollment(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "code": "mfa_enrollment",
+                "message": "MFA enrollment required",
+                "pending_authentication_token": "pat_456",
+                "user": {"id": "user_123", "email": "user@example.com"},
+            },
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(MfaEnrollmentError) as exc_info:
+            client.request("GET", "test")
+        assert exc_info.value.pending_authentication_token == "pat_456"
+        assert exc_info.value.user == {"id": "user_123", "email": "user@example.com"}
+        client.close()
+
+    def test_raises_mfa_challenge(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "code": "mfa_challenge",
+                "message": "MFA challenge required",
+                "pending_authentication_token": "pat_789",
+                "user": {"id": "user_123"},
+                "authentication_factors": [{"id": "af_1", "type": "totp"}],
+            },
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(MfaChallengeError) as exc_info:
+            client.request("GET", "test")
+        assert exc_info.value.pending_authentication_token == "pat_789"
+        assert exc_info.value.user == {"id": "user_123"}
+        assert exc_info.value.authentication_factors == [{"id": "af_1", "type": "totp"}]
+        client.close()
+
+    def test_raises_organization_selection_required(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "code": "organization_selection_required",
+                "message": "Organization selection required",
+                "pending_authentication_token": "pat_org",
+                "user": {"id": "user_123"},
+                "organizations": [{"id": "org_1", "name": "Acme"}],
+            },
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(OrganizationSelectionRequiredError) as exc_info:
+            client.request("GET", "test")
+        assert exc_info.value.pending_authentication_token == "pat_org"
+        assert exc_info.value.organizations == [{"id": "org_1", "name": "Acme"}]
+        client.close()
+
+    def test_raises_sso_required(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "error": "sso_required",
+                "error_description": "SSO is required",
+                "pending_authentication_token": "pat_sso",
+                "email": "user@example.com",
+                "connection_ids": ["conn_1", "conn_2"],
+            },
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(SsoRequiredError) as exc_info:
+            client.request("GET", "test")
+        assert exc_info.value.pending_authentication_token == "pat_sso"
+        assert exc_info.value.email == "user@example.com"
+        assert exc_info.value.connection_ids == ["conn_1", "conn_2"]
+        client.close()
+
+    def test_raises_org_auth_methods_required(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "error": "organization_authentication_methods_required",
+                "error_description": "Org auth methods required",
+                "pending_authentication_token": "pat_oam",
+                "email": "user@example.com",
+                "sso_connection_ids": ["conn_1"],
+                "auth_methods": {"google_oauth": True, "password": False},
+            },
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(OrganizationAuthMethodsRequiredError) as exc_info:
+            client.request("GET", "test")
+        assert exc_info.value.pending_authentication_token == "pat_oam"
+        assert exc_info.value.sso_connection_ids == ["conn_1"]
+        assert exc_info.value.auth_methods == {"google_oauth": True, "password": False}
+        client.close()
+
+    def test_raises_simple_auth_flow_errors(self, httpx_mock):
+        """Codes with no extra fields beyond pending_authentication_token."""
+        cases = [
+            ("authentication_method_not_allowed", AuthenticationMethodNotAllowedError),
+            ("email_password_auth_disabled", EmailPasswordAuthDisabledError),
+            ("passkey_progressive_enrollment", PasskeyProgressiveEnrollmentError),
+            ("radar_challenge", RadarChallengeError),
+            ("radar_sign_up_challenge", RadarSignUpChallengeError),
+        ]
+        for error_code, expected_class in cases:
+            httpx_mock.reset()
+            httpx_mock.add_response(
+                status_code=403,
+                json={
+                    "code": error_code,
+                    "message": "Error",
+                    "pending_authentication_token": "pat_tok",
+                },
+            )
+            client = WorkOSClient(
+                api_key="sk_test_123", client_id="client_test", max_retries=0
+            )
+            with pytest.raises(expected_class) as exc_info:
+                client.request("GET", "test")
+            assert exc_info.value.pending_authentication_token == "pat_tok"
+            client.close()
+
+    def test_auth_flow_errors_are_catchable_as_authorization_error(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "code": "email_verification_required",
+                "message": "Error",
+                "pending_authentication_token": "pat_123",
+            },
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(AuthorizationError):
+            client.request("GET", "test")
+        client.close()
+
+    def test_auth_flow_errors_are_catchable_as_authentication_flow_error(
+        self, httpx_mock
+    ):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "code": "mfa_challenge",
+                "message": "Error",
+                "pending_authentication_token": "pat_123",
+            },
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(AuthenticationFlowError):
+            client.request("GET", "test")
+        client.close()
+
+    def test_unknown_403_code_raises_authorization_error(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={"code": "some_future_code", "message": "Unknown"},
+        )
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(AuthorizationError) as exc_info:
+            client.request("GET", "test")
+        assert not isinstance(exc_info.value, AuthenticationFlowError)
         client.close()
 
     def test_raises_404(self, httpx_mock):
@@ -299,6 +509,96 @@ class TestAsyncWorkOSClient:
         )
         with pytest.raises(AuthorizationError):
             await client.request("GET", "test")
+        await client.close()
+
+    async def test_raises_email_verification_required(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "code": "email_verification_required",
+                "message": "Email verification required",
+                "pending_authentication_token": "pat_123",
+                "email_verification_id": "ev_123",
+                "email": "user@example.com",
+            },
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(EmailVerificationRequiredError) as exc_info:
+            await client.request("GET", "test")
+        assert exc_info.value.pending_authentication_token == "pat_123"
+        assert exc_info.value.email_verification_id == "ev_123"
+        assert exc_info.value.email == "user@example.com"
+        await client.close()
+
+    async def test_raises_mfa_challenge(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "code": "mfa_challenge",
+                "message": "MFA challenge required",
+                "pending_authentication_token": "pat_789",
+                "user": {"id": "user_123"},
+                "authentication_factors": [{"id": "af_1", "type": "totp"}],
+            },
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(MfaChallengeError) as exc_info:
+            await client.request("GET", "test")
+        assert exc_info.value.pending_authentication_token == "pat_789"
+        assert exc_info.value.authentication_factors == [{"id": "af_1", "type": "totp"}]
+        await client.close()
+
+    async def test_raises_sso_required(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "error": "sso_required",
+                "error_description": "SSO is required",
+                "pending_authentication_token": "pat_sso",
+                "email": "user@example.com",
+                "connection_ids": ["conn_1"],
+            },
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(SsoRequiredError) as exc_info:
+            await client.request("GET", "test")
+        assert exc_info.value.pending_authentication_token == "pat_sso"
+        assert exc_info.value.connection_ids == ["conn_1"]
+        await client.close()
+
+    async def test_auth_flow_errors_backward_compat(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={
+                "code": "organization_selection_required",
+                "message": "Error",
+                "pending_authentication_token": "pat_123",
+            },
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(AuthorizationError):
+            await client.request("GET", "test")
+        await client.close()
+
+    async def test_unknown_403_code_raises_authorization_error(self, httpx_mock):
+        httpx_mock.add_response(
+            status_code=403,
+            json={"code": "some_future_code", "message": "Unknown"},
+        )
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        with pytest.raises(AuthorizationError) as exc_info:
+            await client.request("GET", "test")
+        assert not isinstance(exc_info.value, AuthenticationFlowError)
         await client.close()
 
     async def test_raises_404(self, httpx_mock):

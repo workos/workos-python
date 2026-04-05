@@ -22,6 +22,7 @@ from ._errors import (
     WorkOSConnectionError,
     WorkOSTimeoutError,
     STATUS_CODE_TO_ERROR,
+    _AUTH_CODE_TO_ERROR,
 )
 from ._pagination import AsyncPage, ListMetadata, SyncPage
 from ._types import D, Deserializable, RequestOptions
@@ -245,6 +246,28 @@ class _BaseWorkOSClient:
                     request_url=request_url,
                     request_method=request_method,
                 )
+            # Auth-flow dispatch for 403 responses: check code/error field
+            # for specific auth-flow errors before falling through to generic class.
+            if response.status_code == 403 and response_json is not None:
+                auth_code = code or error
+                if auth_code is not None:
+                    auth_error_class = _AUTH_CODE_TO_ERROR.get(auth_code)
+                    if auth_error_class is not None:
+                        raise auth_error_class(
+                            message,
+                            request_id=request_id,
+                            code=code,
+                            param=param,
+                            response=response,
+                            response_json=response_json,
+                            error=error,
+                            errors=errors,
+                            error_description=error_description,
+                            raw_body=raw_body,
+                            request_url=request_url,
+                            request_method=request_method,
+                        )
+
             raise error_class(
                 message,
                 request_id=request_id,

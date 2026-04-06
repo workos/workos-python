@@ -742,13 +742,13 @@ class UserManagement:
         Get a list of all of your existing users matching the criteria specified.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization: Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
             organization_id: Filter users by the organization they are a member of.
             email: Filter users by their email address.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1198,10 +1198,10 @@ class UserManagement:
 
         Args:
             id: The ID of the user.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1248,12 +1248,12 @@ class UserManagement:
         Get a list of all of invitations matching the criteria specified.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
             email: The email address of the recipient.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1628,13 +1628,13 @@ class UserManagement:
         Get a list of all organization memberships matching the criteria specified. At least one of `user_id` or `organization_id` must be provided. By default only active memberships are returned. Use the `statuses` parameter to filter by other statuses.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
             statuses: Filter by the status of the organization membership. Array including any of `active`, `inactive`, or `pending`.
             user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1947,10 +1947,10 @@ class UserManagement:
 
         Args:
             user_id: The ID of the user.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2807,13 +2807,13 @@ class AsyncUserManagement:
         Get a list of all of your existing users matching the criteria specified.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization: Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
             organization_id: Filter users by the organization they are a member of.
             email: Filter users by their email address.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3263,10 +3263,10 @@ class AsyncUserManagement:
 
         Args:
             id: The ID of the user.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3313,12 +3313,12 @@ class AsyncUserManagement:
         Get a list of all of invitations matching the criteria specified.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
             email: The email address of the recipient.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3693,13 +3693,13 @@ class AsyncUserManagement:
         Get a list of all organization memberships matching the criteria specified. At least one of `user_id` or `organization_id` must be provided. By default only active memberships are returned. Use the `statuses` parameter to filter by other statuses.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
             statuses: Filter by the status of the organization membership. Array including any of `active`, `inactive`, or `pending`.
             user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4012,10 +4012,10 @@ class AsyncUserManagement:
 
         Args:
             user_id: The ID of the user.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:

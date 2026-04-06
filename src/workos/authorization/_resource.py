@@ -102,14 +102,14 @@ class Authorization:
 
         Args:
             organization_membership_id: The ID of the organization membership.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only child resources where the organization membership has this permission are returned.
             parent_resource_id: The WorkOS ID of the parent resource. Provide this or both `parent_resource_external_id` and `parent_resource_type_slug`, but not both.
             parent_resource_type_slug: The slug of the parent resource type. Must be provided together with `parent_resource_external_id`.
             parent_resource_external_id: The application-specific external identifier of the parent resource. Must be provided together with `parent_resource_type_slug`.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -162,10 +162,10 @@ class Authorization:
 
         Args:
             organization_membership_id: The ID of the organization membership.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -788,12 +788,12 @@ class Authorization:
             organization_id: The ID of the organization that owns the resource.
             resource_type_slug: The slug of the resource type this resource belongs to.
             external_id: An identifier you provide to reference the resource in your system.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
             assignment: Filter by assignment type. Use "direct" for direct assignments only, or "indirect" to include inherited assignments.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -850,16 +850,16 @@ class Authorization:
         Get a paginated list of authorization resources.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
             parent_resource_id: Filter resources by parent resource ID.
             parent_resource_type_slug: Filter resources by parent resource type slug.
             parent_external_id: Filter resources by parent external ID.
             search: Search resources by name.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1104,12 +1104,12 @@ class Authorization:
 
         Args:
             resource_id: The ID of the authorization resource.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
             assignment: Filter by assignment type. Use `direct` for direct assignments only, or `indirect` to include inherited assignments.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1391,10 +1391,10 @@ class Authorization:
         Get a list of all permissions in your WorkOS environment.
 
         Args:
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1656,14 +1656,14 @@ class AsyncAuthorization:
 
         Args:
             organization_membership_id: The ID of the organization membership.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only child resources where the organization membership has this permission are returned.
             parent_resource_id: The WorkOS ID of the parent resource. Provide this or both `parent_resource_external_id` and `parent_resource_type_slug`, but not both.
             parent_resource_type_slug: The slug of the parent resource type. Must be provided together with `parent_resource_external_id`.
             parent_resource_external_id: The application-specific external identifier of the parent resource. Must be provided together with `parent_resource_type_slug`.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1716,10 +1716,10 @@ class AsyncAuthorization:
 
         Args:
             organization_membership_id: The ID of the organization membership.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2342,12 +2342,12 @@ class AsyncAuthorization:
             organization_id: The ID of the organization that owns the resource.
             resource_type_slug: The slug of the resource type this resource belongs to.
             external_id: An identifier you provide to reference the resource in your system.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
             assignment: Filter by assignment type. Use "direct" for direct assignments only, or "indirect" to include inherited assignments.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2404,16 +2404,16 @@ class AsyncAuthorization:
         Get a paginated list of authorization resources.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
             parent_resource_id: Filter resources by parent resource ID.
             parent_resource_type_slug: Filter resources by parent resource type slug.
             parent_external_id: Filter resources by parent external ID.
             search: Search resources by name.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2658,12 +2658,12 @@ class AsyncAuthorization:
 
         Args:
             resource_id: The ID of the authorization resource.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
             assignment: Filter by assignment type. Use `direct` for direct assignments only, or `indirect` to include inherited assignments.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2945,10 +2945,10 @@ class AsyncAuthorization:
         Get a list of all permissions in your WorkOS environment.
 
         Args:
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:

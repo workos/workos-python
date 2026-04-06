@@ -37,14 +37,14 @@ class SSO:
         Get a list of all of your existing connections matching the criteria specified.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
+            order: Order the results by the creation time.
             connection_type: Filter Connections by their type.
             domain: Filter Connections by their associated domain.
             organization_id: Filter Connections by their associated organization.
             search: Searchable text to match against Connection names.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -159,37 +159,34 @@ class SSO:
     ) -> str:
         """Initiate SSO
 
-                Initiates the single sign-on flow.
+        Initiates the single sign-on flow.
 
-                Args:
-                    provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
-                    provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
-                    client_id: The unique identifier of the WorkOS environment client.
-                    domain: Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
-                    provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
-                    redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
-                    response_type: The only valid option for the response type parameter is `"code"`.
+        Args:
+            provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
+            provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
+            client_id: The unique identifier of the WorkOS environment client.
+            domain: Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
+            provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
+            redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
+            response_type: The only valid option for the response type parameter is `"code"`.
+                The `"code"` parameter value initiates an [authorization code grant type](https://tools.ietf.org/html/rfc6749#section-4.1). This grant type allows you to exchange an authorization code for an access token during the redirect that takes place after a user has authenticated with an identity provider.
+            state: An optional parameter that can be used to encode arbitrary information to help restore application state between redirects. If included, the redirect URI received from WorkOS will contain the exact `state` that was passed.
+            connection: Used to initiate SSO for a connection. The value should be a WorkOS connection ID.
+                You can persist the WorkOS connection ID with application user or team identifiers. WorkOS will use the connection indicated by the connection parameter to direct the user to the corresponding IdP for authentication.
+            organization: Used to initiate SSO for an organization. The value should be a WorkOS organization ID.
+                You can persist the WorkOS organization ID with application user or team identifiers. WorkOS will use the organization ID to determine the appropriate connection and the IdP to direct the user to for authentication.
+            domain_hint: Can be used to pre-fill the domain field when initiating authentication with Microsoft OAuth or with a Google SAML connection type.
+            login_hint: Can be used to pre-fill the username/email address field of the IdP sign-in page for the user, if you know their username ahead of time. Currently supported for OAuth, OpenID Connect, Okta, and Entra ID connections.
+            nonce: A random string generated by the client that is used to mitigate replay attacks.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-        The `"code"` parameter value initiates an [authorization code grant type](https://tools.ietf.org/html/rfc6749#section-4.1). This grant type allows you to exchange an authorization code for an access token during the redirect that takes place after a user has authenticated with an identity provider.
-                    state: An optional parameter that can be used to encode arbitrary information to help restore application state between redirects. If included, the redirect URI received from WorkOS will contain the exact `state` that was passed.
-                    connection: Used to initiate SSO for a connection. The value should be a WorkOS connection ID.
+        Returns:
+            str
 
-        You can persist the WorkOS connection ID with application user or team identifiers. WorkOS will use the connection indicated by the connection parameter to direct the user to the corresponding IdP for authentication.
-                    organization: Used to initiate SSO for an organization. The value should be a WorkOS organization ID.
-
-        You can persist the WorkOS organization ID with application user or team identifiers. WorkOS will use the organization ID to determine the appropriate connection and the IdP to direct the user to for authentication.
-                    domain_hint: Can be used to pre-fill the domain field when initiating authentication with Microsoft OAuth or with a Google SAML connection type.
-                    login_hint: Can be used to pre-fill the username/email address field of the IdP sign-in page for the user, if you know their username ahead of time. Currently supported for OAuth, OpenID Connect, Okta, and Entra ID connections.
-                    nonce: A random string generated by the client that is used to mitigate replay attacks.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-                Returns:
-                    str
-
-                Raises:
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v
@@ -463,14 +460,14 @@ class AsyncSSO:
         Get a list of all of your existing connections matching the criteria specified.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
+            order: Order the results by the creation time.
             connection_type: Filter Connections by their type.
             domain: Filter Connections by their associated domain.
             organization_id: Filter Connections by their associated organization.
             search: Searchable text to match against Connection names.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -585,37 +582,34 @@ class AsyncSSO:
     ) -> str:
         """Initiate SSO
 
-                Initiates the single sign-on flow.
+        Initiates the single sign-on flow.
 
-                Args:
-                    provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
-                    provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
-                    client_id: The unique identifier of the WorkOS environment client.
-                    domain: Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
-                    provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
-                    redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
-                    response_type: The only valid option for the response type parameter is `"code"`.
+        Args:
+            provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
+            provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
+            client_id: The unique identifier of the WorkOS environment client.
+            domain: Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
+            provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
+            redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
+            response_type: The only valid option for the response type parameter is `"code"`.
+                The `"code"` parameter value initiates an [authorization code grant type](https://tools.ietf.org/html/rfc6749#section-4.1). This grant type allows you to exchange an authorization code for an access token during the redirect that takes place after a user has authenticated with an identity provider.
+            state: An optional parameter that can be used to encode arbitrary information to help restore application state between redirects. If included, the redirect URI received from WorkOS will contain the exact `state` that was passed.
+            connection: Used to initiate SSO for a connection. The value should be a WorkOS connection ID.
+                You can persist the WorkOS connection ID with application user or team identifiers. WorkOS will use the connection indicated by the connection parameter to direct the user to the corresponding IdP for authentication.
+            organization: Used to initiate SSO for an organization. The value should be a WorkOS organization ID.
+                You can persist the WorkOS organization ID with application user or team identifiers. WorkOS will use the organization ID to determine the appropriate connection and the IdP to direct the user to for authentication.
+            domain_hint: Can be used to pre-fill the domain field when initiating authentication with Microsoft OAuth or with a Google SAML connection type.
+            login_hint: Can be used to pre-fill the username/email address field of the IdP sign-in page for the user, if you know their username ahead of time. Currently supported for OAuth, OpenID Connect, Okta, and Entra ID connections.
+            nonce: A random string generated by the client that is used to mitigate replay attacks.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
-        The `"code"` parameter value initiates an [authorization code grant type](https://tools.ietf.org/html/rfc6749#section-4.1). This grant type allows you to exchange an authorization code for an access token during the redirect that takes place after a user has authenticated with an identity provider.
-                    state: An optional parameter that can be used to encode arbitrary information to help restore application state between redirects. If included, the redirect URI received from WorkOS will contain the exact `state` that was passed.
-                    connection: Used to initiate SSO for a connection. The value should be a WorkOS connection ID.
+        Returns:
+            str
 
-        You can persist the WorkOS connection ID with application user or team identifiers. WorkOS will use the connection indicated by the connection parameter to direct the user to the corresponding IdP for authentication.
-                    organization: Used to initiate SSO for an organization. The value should be a WorkOS organization ID.
-
-        You can persist the WorkOS organization ID with application user or team identifiers. WorkOS will use the organization ID to determine the appropriate connection and the IdP to direct the user to for authentication.
-                    domain_hint: Can be used to pre-fill the domain field when initiating authentication with Microsoft OAuth or with a Google SAML connection type.
-                    login_hint: Can be used to pre-fill the username/email address field of the IdP sign-in page for the user, if you know their username ahead of time. Currently supported for OAuth, OpenID Connect, Okta, and Entra ID connections.
-                    nonce: A random string generated by the client that is used to mitigate replay attacks.
-                    request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-                Returns:
-                    str
-
-                Raises:
-                    AuthenticationError: If the API key is invalid (401).
-                    RateLimitExceededError: If rate limited (429).
-                    ServerError: If the server returns a 5xx error.
+        Raises:
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
         """
         params = {
             k: v

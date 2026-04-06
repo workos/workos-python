@@ -103,11 +103,11 @@ class Connect:
         List all Connect Applications in the current environment with optional filtering.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: Filter Connect Applications by organization ID.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -521,11 +521,11 @@ class AsyncConnect:
         List all Connect Applications in the current environment with optional filtering.
 
         Args:
+            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: Filter Connect Applications by organization ID.
-            limit: Maximum number of records to return (1-100, default: 10).
-            before: Pagination cursor for previous page.
-            after: Pagination cursor for next page.
-            order: Sort order.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:

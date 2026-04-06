@@ -28,10 +28,10 @@ from .user_management._resource import UserManagement, AsyncUserManagement
 from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
-from .actions import Actions, AsyncActions
 from .passwordless import AsyncPasswordless, Passwordless
-from .pkce import PKCE
 from .vault import AsyncVault, Vault
+from .actions import Actions, AsyncActions
+from .pkce import PKCE
 
 
 class WorkOSClient(_SyncBase):

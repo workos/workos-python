@@ -1,8 +1,0 @@
-{
-  "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
-  "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
-  "device_code": "Ao4fMrDS...",
-  "ip_address": "203.0.113.42",
-  "device_id": "device_01HXYZ123456789ABCDEFGHIJ",
-  "user_agent": "Mozilla/5.0"
-}

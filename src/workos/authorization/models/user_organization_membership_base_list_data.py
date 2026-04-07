@@ -8,7 +8,9 @@ from enum import Enum
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from workos.common.models import UserOrganizationMembershipBaseListDataStatus
+from workos.common.models.user_organization_membership_base_list_data_status import (
+    UserOrganizationMembershipBaseListDataStatus,
+)
 
 
 @dataclass(slots=True)

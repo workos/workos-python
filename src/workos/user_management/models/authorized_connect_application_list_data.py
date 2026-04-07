@@ -7,7 +7,7 @@ from typing import cast
 from typing import Any, Dict, List, Literal
 from workos._types import _raise_deserialize_error
 
-from workos.connect.models import ConnectApplication
+from workos.connect.models.connect_application import ConnectApplication
 
 
 @dataclass(slots=True)

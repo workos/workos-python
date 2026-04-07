@@ -8,7 +8,7 @@ from enum import Enum
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from workos.common.models import AuditLogExportJsonState
+from workos.common.models.audit_log_export_json_state import AuditLogExportJsonState
 
 
 @dataclass(slots=True)

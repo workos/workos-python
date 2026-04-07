@@ -44,12 +44,487 @@ from workos.authorization.models import (
     SlimRole,
     UserOrganizationMembershipBaseListData,
 )
+from workos.common.models import (
+    ActionAuthenticationDenied,
+    ActionAuthenticationDeniedContext,
+    ActionAuthenticationDeniedContextActor,
+    ActionAuthenticationDeniedContextGoogleAnalyticsSession,
+    ActionAuthenticationDeniedData,
+    ActionUserRegistrationDenied,
+    ActionUserRegistrationDeniedContext,
+    ActionUserRegistrationDeniedContextActor,
+    ActionUserRegistrationDeniedContextGoogleAnalyticsSession,
+    ActionUserRegistrationDeniedData,
+    ApiKeyCreated,
+    ApiKeyCreatedContext,
+    ApiKeyCreatedContextActor,
+    ApiKeyCreatedContextGoogleAnalyticsSession,
+    ApiKeyCreatedData,
+    ApiKeyCreatedDataOwner,
+    ApiKeyRevoked,
+    ApiKeyRevokedContext,
+    ApiKeyRevokedContextActor,
+    ApiKeyRevokedContextGoogleAnalyticsSession,
+    ApiKeyRevokedData,
+    ApiKeyRevokedDataOwner,
+    AuthenticationEmailVerificationFailed,
+    AuthenticationEmailVerificationFailedContext,
+    AuthenticationEmailVerificationFailedContextActor,
+    AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession,
+    AuthenticationEmailVerificationFailedData,
+    AuthenticationEmailVerificationFailedDataError,
+    AuthenticationEmailVerificationSucceeded,
+    AuthenticationEmailVerificationSucceededContext,
+    AuthenticationEmailVerificationSucceededContextActor,
+    AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession,
+    AuthenticationEmailVerificationSucceededData,
+    AuthenticationMFAFailed,
+    AuthenticationMFAFailedContext,
+    AuthenticationMFAFailedContextActor,
+    AuthenticationMFAFailedContextGoogleAnalyticsSession,
+    AuthenticationMFAFailedData,
+    AuthenticationMFAFailedDataError,
+    AuthenticationMFASucceeded,
+    AuthenticationMFASucceededContext,
+    AuthenticationMFASucceededContextActor,
+    AuthenticationMFASucceededContextGoogleAnalyticsSession,
+    AuthenticationMFASucceededData,
+    AuthenticationMagicAuthFailed,
+    AuthenticationMagicAuthFailedContext,
+    AuthenticationMagicAuthFailedContextActor,
+    AuthenticationMagicAuthFailedContextGoogleAnalyticsSession,
+    AuthenticationMagicAuthFailedData,
+    AuthenticationMagicAuthFailedDataError,
+    AuthenticationMagicAuthSucceeded,
+    AuthenticationMagicAuthSucceededContext,
+    AuthenticationMagicAuthSucceededContextActor,
+    AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession,
+    AuthenticationMagicAuthSucceededData,
+    AuthenticationOAuthFailed,
+    AuthenticationOAuthFailedContext,
+    AuthenticationOAuthFailedContextActor,
+    AuthenticationOAuthFailedContextGoogleAnalyticsSession,
+    AuthenticationOAuthFailedData,
+    AuthenticationOAuthFailedDataError,
+    AuthenticationOAuthSucceeded,
+    AuthenticationOAuthSucceededContext,
+    AuthenticationOAuthSucceededContextActor,
+    AuthenticationOAuthSucceededContextGoogleAnalyticsSession,
+    AuthenticationOAuthSucceededData,
+    AuthenticationPasskeyFailed,
+    AuthenticationPasskeyFailedContext,
+    AuthenticationPasskeyFailedContextActor,
+    AuthenticationPasskeyFailedContextGoogleAnalyticsSession,
+    AuthenticationPasskeyFailedData,
+    AuthenticationPasskeyFailedDataError,
+    AuthenticationPasskeySucceeded,
+    AuthenticationPasskeySucceededContext,
+    AuthenticationPasskeySucceededContextActor,
+    AuthenticationPasskeySucceededContextGoogleAnalyticsSession,
+    AuthenticationPasskeySucceededData,
+    AuthenticationPasswordFailed,
+    AuthenticationPasswordFailedContext,
+    AuthenticationPasswordFailedContextActor,
+    AuthenticationPasswordFailedContextGoogleAnalyticsSession,
+    AuthenticationPasswordFailedData,
+    AuthenticationPasswordFailedDataError,
+    AuthenticationPasswordSucceeded,
+    AuthenticationPasswordSucceededContext,
+    AuthenticationPasswordSucceededContextActor,
+    AuthenticationPasswordSucceededContextGoogleAnalyticsSession,
+    AuthenticationPasswordSucceededData,
+    AuthenticationRadarRiskDetected,
+    AuthenticationRadarRiskDetectedContext,
+    AuthenticationRadarRiskDetectedContextActor,
+    AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession,
+    AuthenticationRadarRiskDetectedData,
+    AuthenticationSSOFailed,
+    AuthenticationSSOFailedContext,
+    AuthenticationSSOFailedContextActor,
+    AuthenticationSSOFailedContextGoogleAnalyticsSession,
+    AuthenticationSSOFailedData,
+    AuthenticationSSOFailedDataError,
+    AuthenticationSSOFailedDataSSO,
+    AuthenticationSSOStarted,
+    AuthenticationSSOStartedContext,
+    AuthenticationSSOStartedContextActor,
+    AuthenticationSSOStartedContextGoogleAnalyticsSession,
+    AuthenticationSSOStartedData,
+    AuthenticationSSOStartedDataSSO,
+    AuthenticationSSOSucceeded,
+    AuthenticationSSOSucceededContext,
+    AuthenticationSSOSucceededContextActor,
+    AuthenticationSSOSucceededContextGoogleAnalyticsSession,
+    AuthenticationSSOSucceededData,
+    AuthenticationSSOSucceededDataSSO,
+    AuthenticationSSOTimedOut,
+    AuthenticationSSOTimedOutContext,
+    AuthenticationSSOTimedOutContextActor,
+    AuthenticationSSOTimedOutContextGoogleAnalyticsSession,
+    AuthenticationSSOTimedOutData,
+    AuthenticationSSOTimedOutDataError,
+    AuthenticationSSOTimedOutDataSSO,
+    ConnectionActivated,
+    ConnectionActivatedContext,
+    ConnectionActivatedContextActor,
+    ConnectionActivatedContextGoogleAnalyticsSession,
+    ConnectionActivatedData,
+    ConnectionActivatedDataDomain,
+    ConnectionDeactivated,
+    ConnectionDeactivatedContext,
+    ConnectionDeactivatedContextActor,
+    ConnectionDeactivatedContextGoogleAnalyticsSession,
+    ConnectionDeactivatedData,
+    ConnectionDeactivatedDataDomain,
+    ConnectionDeleted,
+    ConnectionDeletedContext,
+    ConnectionDeletedContextActor,
+    ConnectionDeletedContextGoogleAnalyticsSession,
+    ConnectionDeletedData,
+    ConnectionSAMLCertificateRenewalRequired,
+    ConnectionSAMLCertificateRenewalRequiredContext,
+    ConnectionSAMLCertificateRenewalRequiredContextActor,
+    ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession,
+    ConnectionSAMLCertificateRenewalRequiredData,
+    ConnectionSAMLCertificateRenewalRequiredDataCertificate,
+    ConnectionSAMLCertificateRenewalRequiredDataConnection,
+    ConnectionSAMLCertificateRenewed,
+    ConnectionSAMLCertificateRenewedContext,
+    ConnectionSAMLCertificateRenewedContextActor,
+    ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession,
+    ConnectionSAMLCertificateRenewedData,
+    ConnectionSAMLCertificateRenewedDataCertificate,
+    ConnectionSAMLCertificateRenewedDataConnection,
+    DsyncActivated,
+    DsyncActivatedContext,
+    DsyncActivatedContextActor,
+    DsyncActivatedContextGoogleAnalyticsSession,
+    DsyncActivatedData,
+    DsyncActivatedDataDomain,
+    DsyncDeactivated,
+    DsyncDeactivatedContext,
+    DsyncDeactivatedContextActor,
+    DsyncDeactivatedContextGoogleAnalyticsSession,
+    DsyncDeactivatedData,
+    DsyncDeactivatedDataDomain,
+    DsyncDeleted,
+    DsyncDeletedContext,
+    DsyncDeletedContextActor,
+    DsyncDeletedContextGoogleAnalyticsSession,
+    DsyncDeletedData,
+    DsyncGroupCreated,
+    DsyncGroupCreatedContext,
+    DsyncGroupCreatedContextActor,
+    DsyncGroupCreatedContextGoogleAnalyticsSession,
+    DsyncGroupCreatedData,
+    DsyncGroupDeleted,
+    DsyncGroupDeletedContext,
+    DsyncGroupDeletedContextActor,
+    DsyncGroupDeletedContextGoogleAnalyticsSession,
+    DsyncGroupDeletedData,
+    DsyncGroupUpdated,
+    DsyncGroupUpdatedContext,
+    DsyncGroupUpdatedContextActor,
+    DsyncGroupUpdatedContextGoogleAnalyticsSession,
+    DsyncGroupUpdatedData,
+    DsyncGroupUserAdded,
+    DsyncGroupUserAddedContext,
+    DsyncGroupUserAddedContextActor,
+    DsyncGroupUserAddedContextGoogleAnalyticsSession,
+    DsyncGroupUserAddedData,
+    DsyncGroupUserAddedDataGroup,
+    DsyncGroupUserAddedDataUser,
+    DsyncGroupUserAddedDataUserEmail,
+    DsyncGroupUserAddedDataUserRole,
+    DsyncGroupUserRemoved,
+    DsyncGroupUserRemovedContext,
+    DsyncGroupUserRemovedContextActor,
+    DsyncGroupUserRemovedContextGoogleAnalyticsSession,
+    DsyncGroupUserRemovedData,
+    DsyncGroupUserRemovedDataGroup,
+    DsyncGroupUserRemovedDataUser,
+    DsyncGroupUserRemovedDataUserEmail,
+    DsyncGroupUserRemovedDataUserRole,
+    DsyncUserCreated,
+    DsyncUserCreatedContext,
+    DsyncUserCreatedContextActor,
+    DsyncUserCreatedContextGoogleAnalyticsSession,
+    DsyncUserCreatedData,
+    DsyncUserCreatedDataEmail,
+    DsyncUserCreatedDataRole,
+    DsyncUserDeleted,
+    DsyncUserDeletedContext,
+    DsyncUserDeletedContextActor,
+    DsyncUserDeletedContextGoogleAnalyticsSession,
+    DsyncUserDeletedData,
+    DsyncUserDeletedDataEmail,
+    DsyncUserDeletedDataRole,
+    DsyncUserUpdated,
+    DsyncUserUpdatedContext,
+    DsyncUserUpdatedContextActor,
+    DsyncUserUpdatedContextGoogleAnalyticsSession,
+    DsyncUserUpdatedData,
+    DsyncUserUpdatedDataEmail,
+    DsyncUserUpdatedDataRole,
+    EmailVerificationCreated,
+    EmailVerificationCreatedContext,
+    EmailVerificationCreatedContextActor,
+    EmailVerificationCreatedContextGoogleAnalyticsSession,
+    EmailVerificationCreatedData,
+    FlagCreated,
+    FlagCreatedContext,
+    FlagCreatedContextActor,
+    FlagCreatedData,
+    FlagCreatedDataOwner,
+    FlagDeleted,
+    FlagDeletedContext,
+    FlagDeletedContextActor,
+    FlagDeletedData,
+    FlagDeletedDataOwner,
+    FlagRuleUpdated,
+    FlagRuleUpdatedContext,
+    FlagRuleUpdatedContextActor,
+    FlagRuleUpdatedContextConfiguredTarget,
+    FlagRuleUpdatedContextConfiguredTargetOrganization,
+    FlagRuleUpdatedContextConfiguredTargetUser,
+    FlagRuleUpdatedContextPreviousAttribute,
+    FlagRuleUpdatedContextPreviousAttributeContext,
+    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget,
+    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization,
+    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser,
+    FlagRuleUpdatedContextPreviousAttributeData,
+    FlagRuleUpdatedData,
+    FlagRuleUpdatedDataOwner,
+    FlagUpdated,
+    FlagUpdatedContext,
+    FlagUpdatedContextActor,
+    FlagUpdatedContextPreviousAttribute,
+    FlagUpdatedContextPreviousAttributeData,
+    FlagUpdatedData,
+    FlagUpdatedDataOwner,
+    InvitationAccepted,
+    InvitationAcceptedContext,
+    InvitationAcceptedContextActor,
+    InvitationAcceptedContextGoogleAnalyticsSession,
+    InvitationAcceptedData,
+    InvitationCreated,
+    InvitationCreatedContext,
+    InvitationCreatedContextActor,
+    InvitationCreatedContextGoogleAnalyticsSession,
+    InvitationCreatedData,
+    InvitationResent,
+    InvitationResentContext,
+    InvitationResentContextActor,
+    InvitationResentContextGoogleAnalyticsSession,
+    InvitationResentData,
+    InvitationRevoked,
+    InvitationRevokedContext,
+    InvitationRevokedContextActor,
+    InvitationRevokedContextGoogleAnalyticsSession,
+    InvitationRevokedData,
+    MagicAuthCreated,
+    MagicAuthCreatedContext,
+    MagicAuthCreatedContextActor,
+    MagicAuthCreatedContextGoogleAnalyticsSession,
+    MagicAuthCreatedData,
+    OrganizationCreated,
+    OrganizationCreatedContext,
+    OrganizationCreatedContextActor,
+    OrganizationCreatedContextGoogleAnalyticsSession,
+    OrganizationCreatedData,
+    OrganizationCreatedDataDomain,
+    OrganizationDeleted,
+    OrganizationDeletedContext,
+    OrganizationDeletedContextActor,
+    OrganizationDeletedContextGoogleAnalyticsSession,
+    OrganizationDeletedData,
+    OrganizationDeletedDataDomain,
+    OrganizationDomainCreated,
+    OrganizationDomainCreatedContext,
+    OrganizationDomainCreatedContextActor,
+    OrganizationDomainCreatedContextGoogleAnalyticsSession,
+    OrganizationDomainCreatedData,
+    OrganizationDomainDeleted,
+    OrganizationDomainDeletedContext,
+    OrganizationDomainDeletedContextActor,
+    OrganizationDomainDeletedContextGoogleAnalyticsSession,
+    OrganizationDomainDeletedData,
+    OrganizationDomainUpdated,
+    OrganizationDomainUpdatedContext,
+    OrganizationDomainUpdatedContextActor,
+    OrganizationDomainUpdatedContextGoogleAnalyticsSession,
+    OrganizationDomainUpdatedData,
+    OrganizationDomainVerificationFailed,
+    OrganizationDomainVerificationFailedContext,
+    OrganizationDomainVerificationFailedContextActor,
+    OrganizationDomainVerificationFailedContextGoogleAnalyticsSession,
+    OrganizationDomainVerificationFailedData,
+    OrganizationDomainVerificationFailedDataOrganizationDomain,
+    OrganizationDomainVerified,
+    OrganizationDomainVerifiedContext,
+    OrganizationDomainVerifiedContextActor,
+    OrganizationDomainVerifiedContextGoogleAnalyticsSession,
+    OrganizationDomainVerifiedData,
+    OrganizationMembershipCreated,
+    OrganizationMembershipCreatedContext,
+    OrganizationMembershipCreatedContextActor,
+    OrganizationMembershipCreatedContextGoogleAnalyticsSession,
+    OrganizationMembershipCreatedData,
+    OrganizationMembershipDeleted,
+    OrganizationMembershipDeletedContext,
+    OrganizationMembershipDeletedContextActor,
+    OrganizationMembershipDeletedContextGoogleAnalyticsSession,
+    OrganizationMembershipDeletedData,
+    OrganizationMembershipUpdated,
+    OrganizationMembershipUpdatedContext,
+    OrganizationMembershipUpdatedContextActor,
+    OrganizationMembershipUpdatedContextGoogleAnalyticsSession,
+    OrganizationMembershipUpdatedData,
+    OrganizationRoleCreated,
+    OrganizationRoleCreatedContext,
+    OrganizationRoleCreatedContextActor,
+    OrganizationRoleCreatedContextGoogleAnalyticsSession,
+    OrganizationRoleCreatedData,
+    OrganizationRoleDeleted,
+    OrganizationRoleDeletedContext,
+    OrganizationRoleDeletedContextActor,
+    OrganizationRoleDeletedContextGoogleAnalyticsSession,
+    OrganizationRoleDeletedData,
+    OrganizationRoleUpdated,
+    OrganizationRoleUpdatedContext,
+    OrganizationRoleUpdatedContextActor,
+    OrganizationRoleUpdatedContextGoogleAnalyticsSession,
+    OrganizationRoleUpdatedData,
+    OrganizationUpdated,
+    OrganizationUpdatedContext,
+    OrganizationUpdatedContextActor,
+    OrganizationUpdatedContextGoogleAnalyticsSession,
+    OrganizationUpdatedData,
+    OrganizationUpdatedDataDomain,
+    PasswordResetCreated,
+    PasswordResetCreatedContext,
+    PasswordResetCreatedContextActor,
+    PasswordResetCreatedContextGoogleAnalyticsSession,
+    PasswordResetCreatedData,
+    PasswordResetSucceeded,
+    PasswordResetSucceededContext,
+    PasswordResetSucceededContextActor,
+    PasswordResetSucceededContextGoogleAnalyticsSession,
+    PasswordResetSucceededData,
+    PermissionCreated,
+    PermissionCreatedContext,
+    PermissionCreatedContextActor,
+    PermissionCreatedContextGoogleAnalyticsSession,
+    PermissionCreatedData,
+    PermissionDeleted,
+    PermissionDeletedContext,
+    PermissionDeletedContextActor,
+    PermissionDeletedContextGoogleAnalyticsSession,
+    PermissionDeletedData,
+    PermissionUpdated,
+    PermissionUpdatedContext,
+    PermissionUpdatedContextActor,
+    PermissionUpdatedContextGoogleAnalyticsSession,
+    PermissionUpdatedData,
+    RoleCreated,
+    RoleCreatedContext,
+    RoleCreatedContextActor,
+    RoleCreatedContextGoogleAnalyticsSession,
+    RoleCreatedData,
+    RoleDeleted,
+    RoleDeletedContext,
+    RoleDeletedContextActor,
+    RoleDeletedContextGoogleAnalyticsSession,
+    RoleDeletedData,
+    RoleUpdated,
+    RoleUpdatedContext,
+    RoleUpdatedContextActor,
+    RoleUpdatedContextGoogleAnalyticsSession,
+    RoleUpdatedData,
+    SessionCreated,
+    SessionCreatedContext,
+    SessionCreatedContextActor,
+    SessionCreatedContextGoogleAnalyticsSession,
+    SessionCreatedData,
+    SessionCreatedDataImpersonator,
+    SessionRevoked,
+    SessionRevokedContext,
+    SessionRevokedContextActor,
+    SessionRevokedContextGoogleAnalyticsSession,
+    SessionRevokedData,
+    SessionRevokedDataImpersonator,
+    UserCreated,
+    UserCreatedContext,
+    UserCreatedContextActor,
+    UserCreatedContextGoogleAnalyticsSession,
+    UserCreatedData,
+    UserDeleted,
+    UserDeletedContext,
+    UserDeletedContextActor,
+    UserDeletedContextGoogleAnalyticsSession,
+    UserDeletedData,
+    UserUpdated,
+    UserUpdatedContext,
+    UserUpdatedContextActor,
+    UserUpdatedContextGoogleAnalyticsSession,
+    UserUpdatedData,
+    VaultByokKeyVerificationCompleted,
+    VaultByokKeyVerificationCompletedContext,
+    VaultByokKeyVerificationCompletedContextActor,
+    VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession,
+    VaultByokKeyVerificationCompletedData,
+    VaultDataCreated,
+    VaultDataCreatedContext,
+    VaultDataCreatedContextActor,
+    VaultDataCreatedContextGoogleAnalyticsSession,
+    VaultDataCreatedData,
+    VaultDataDeleted,
+    VaultDataDeletedContext,
+    VaultDataDeletedContextActor,
+    VaultDataDeletedContextGoogleAnalyticsSession,
+    VaultDataDeletedData,
+    VaultDataRead,
+    VaultDataReadContext,
+    VaultDataReadContextActor,
+    VaultDataReadContextGoogleAnalyticsSession,
+    VaultDataReadData,
+    VaultDataUpdated,
+    VaultDataUpdatedContext,
+    VaultDataUpdatedContextActor,
+    VaultDataUpdatedContextGoogleAnalyticsSession,
+    VaultDataUpdatedData,
+    VaultDekDecrypted,
+    VaultDekDecryptedContext,
+    VaultDekDecryptedContextActor,
+    VaultDekDecryptedContextGoogleAnalyticsSession,
+    VaultDekDecryptedData,
+    VaultDekRead,
+    VaultDekReadContext,
+    VaultDekReadContextActor,
+    VaultDekReadContextGoogleAnalyticsSession,
+    VaultDekReadData,
+    VaultKekCreated,
+    VaultKekCreatedContext,
+    VaultKekCreatedContextActor,
+    VaultKekCreatedContextGoogleAnalyticsSession,
+    VaultKekCreatedData,
+    VaultMetadataRead,
+    VaultMetadataReadContext,
+    VaultMetadataReadContextActor,
+    VaultMetadataReadContextGoogleAnalyticsSession,
+    VaultMetadataReadData,
+    VaultNamesListed,
+    VaultNamesListedContext,
+    VaultNamesListedContextActor,
+    VaultNamesListedContextGoogleAnalyticsSession,
+    VaultNamesListedData,
+)
 from workos.connect.models import (
     ApplicationCredentialsListItem,
     ConnectApplication,
     ExternalAuthCompleteResponse,
     NewConnectApplicationSecret,
-    RedirectUriDto,
+    RedirectUriInput,
     UserConsentOption,
     UserConsentOptionChoice,
     UserObject,
@@ -62,7 +537,7 @@ from workos.directory_sync.models import (
     DirectoryUserWithGroups,
     DirectoryUserWithGroupsEmail,
 )
-from workos.events.models import EventSchema
+from workos.events.models import EventListListMetadata, EventSchema
 from workos.feature_flags.models import FeatureFlag, FeatureFlagOwner, Flag, FlagOwner
 from workos.multi_factor_auth.models import (
     AuthenticationChallenge,
@@ -188,23 +663,23 @@ class TestModelRoundTrip:
         assert serialized["label"] == data["label"]
         assert serialized["choices"] == data["choices"]
 
-    def test_redirect_uri_dto_round_trip(self):
-        data = load_fixture("redirect_uri_dto.json")
-        instance = RedirectUriDto.from_dict(data)
+    def test_redirect_uri_input_round_trip(self):
+        data = load_fixture("redirect_uri_input.json")
+        instance = RedirectUriInput.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = RedirectUriDto.from_dict(serialized)
+        restored = RedirectUriInput.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_redirect_uri_dto_minimal_payload(self):
+    def test_redirect_uri_input_minimal_payload(self):
         data = {"uri": "https://example.com/callback"}
-        instance = RedirectUriDto.from_dict(data)
+        instance = RedirectUriInput.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["uri"] == data["uri"]
 
-    def test_redirect_uri_dto_preserves_nullable_fields(self):
+    def test_redirect_uri_input_preserves_nullable_fields(self):
         data = {"uri": "https://example.com/callback", "default": None}
-        instance = RedirectUriDto.from_dict(data)
+        instance = RedirectUriInput.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["default"] is None
 
@@ -1341,7 +1816,7 @@ class TestModelRoundTrip:
             "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
             "external_key": "sPa12dwRQ",
             "type": "gsuite directory",
-            "state": "unlinked",
+            "state": "linked",
             "name": "Foo Corp",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -1365,7 +1840,7 @@ class TestModelRoundTrip:
             "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
             "external_key": "sPa12dwRQ",
             "type": "gsuite directory",
-            "state": "unlinked",
+            "state": "linked",
             "name": "Foo Corp",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -1382,7 +1857,7 @@ class TestModelRoundTrip:
             "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
             "external_key": "sPa12dwRQ",
             "type": "unexpected_directory_type",
-            "state": "unlinked",
+            "state": "linked",
             "name": "Foo Corp",
             "domain": "foo-corp.com",
             "metadata": {"users": {"active": 42, "inactive": 3}, "groups": 5},
@@ -1698,6 +2173,19027 @@ class TestModelRoundTrip:
         instance = EventSchema.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
+
+    def test_action_authentication_denied_round_trip(self):
+        data = load_fixture("action_authentication_denied.json")
+        instance = ActionAuthenticationDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionAuthenticationDenied.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_action_authentication_denied_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "action.authentication.denied",
+            "data": {
+                "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "authentication",
+                "verdict": "Deny",
+                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "email": "user@example.com",
+                "ip_address": "203.0.113.1",
+                "user_agent": "Mozilla/5.0",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ActionAuthenticationDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_action_authentication_denied_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "action.authentication.denied",
+            "data": {
+                "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "authentication",
+                "verdict": "Deny",
+                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "email": "user@example.com",
+                "ip_address": "203.0.113.1",
+                "user_agent": "Mozilla/5.0",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ActionAuthenticationDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_action_authentication_denied_data_round_trip(self):
+        data = load_fixture("action_authentication_denied_data.json")
+        instance = ActionAuthenticationDeniedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionAuthenticationDeniedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_action_authentication_denied_data_minimal_payload(self):
+        data = {
+            "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "authentication",
+            "verdict": "Deny",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": None,
+            "email": "user@example.com",
+            "ip_address": None,
+            "user_agent": None,
+        }
+        instance = ActionAuthenticationDeniedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["action_endpoint_id"] == data["action_endpoint_id"]
+        assert serialized["action_execution_id"] == data["action_execution_id"]
+        assert serialized["type"] == data["type"]
+        assert serialized["verdict"] == data["verdict"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+
+    def test_action_authentication_denied_data_preserves_nullable_fields(self):
+        data = {
+            "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "authentication",
+            "verdict": "Deny",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": None,
+            "email": "user@example.com",
+            "ip_address": None,
+            "user_agent": None,
+        }
+        instance = ActionAuthenticationDeniedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] is None
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+
+    def test_action_authentication_denied_context_round_trip(self):
+        data = load_fixture("action_authentication_denied_context.json")
+        instance = ActionAuthenticationDeniedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionAuthenticationDeniedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_action_authentication_denied_context_minimal_payload(self):
+        data = {}
+        instance = ActionAuthenticationDeniedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_action_authentication_denied_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = ActionAuthenticationDeniedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_action_authentication_denied_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "action_authentication_denied_context_google_analytics_session.json"
+        )
+        instance = ActionAuthenticationDeniedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionAuthenticationDeniedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_action_authentication_denied_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ActionAuthenticationDeniedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_action_authentication_denied_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ActionAuthenticationDeniedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_action_authentication_denied_context_actor_round_trip(self):
+        data = load_fixture("action_authentication_denied_context_actor.json")
+        instance = ActionAuthenticationDeniedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionAuthenticationDeniedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_action_authentication_denied_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ActionAuthenticationDeniedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_action_authentication_denied_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ActionAuthenticationDeniedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_action_authentication_denied_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_action_authentication_denied_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = ActionAuthenticationDeniedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_action_user_registration_denied_round_trip(self):
+        data = load_fixture("action_user_registration_denied.json")
+        instance = ActionUserRegistrationDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionUserRegistrationDenied.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_action_user_registration_denied_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "action.user_registration.denied",
+            "data": {
+                "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "user_registration",
+                "verdict": "Deny",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "email": "user@example.com",
+                "ip_address": "203.0.113.1",
+                "user_agent": "Mozilla/5.0",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ActionUserRegistrationDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_action_user_registration_denied_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "action.user_registration.denied",
+            "data": {
+                "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "user_registration",
+                "verdict": "Deny",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "email": "user@example.com",
+                "ip_address": "203.0.113.1",
+                "user_agent": "Mozilla/5.0",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ActionUserRegistrationDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_action_user_registration_denied_data_round_trip(self):
+        data = load_fixture("action_user_registration_denied_data.json")
+        instance = ActionUserRegistrationDeniedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionUserRegistrationDeniedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_action_user_registration_denied_data_minimal_payload(self):
+        data = {
+            "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "user_registration",
+            "verdict": "Deny",
+            "organization_id": None,
+            "email": "user@example.com",
+            "ip_address": None,
+            "user_agent": None,
+        }
+        instance = ActionUserRegistrationDeniedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["action_endpoint_id"] == data["action_endpoint_id"]
+        assert serialized["action_execution_id"] == data["action_execution_id"]
+        assert serialized["type"] == data["type"]
+        assert serialized["verdict"] == data["verdict"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+
+    def test_action_user_registration_denied_data_preserves_nullable_fields(self):
+        data = {
+            "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "user_registration",
+            "verdict": "Deny",
+            "organization_id": None,
+            "email": "user@example.com",
+            "ip_address": None,
+            "user_agent": None,
+        }
+        instance = ActionUserRegistrationDeniedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] is None
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+
+    def test_action_user_registration_denied_context_round_trip(self):
+        data = load_fixture("action_user_registration_denied_context.json")
+        instance = ActionUserRegistrationDeniedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionUserRegistrationDeniedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_action_user_registration_denied_context_minimal_payload(self):
+        data = {}
+        instance = ActionUserRegistrationDeniedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_action_user_registration_denied_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = ActionUserRegistrationDeniedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_action_user_registration_denied_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "action_user_registration_denied_context_google_analytics_session.json"
+        )
+        instance = ActionUserRegistrationDeniedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionUserRegistrationDeniedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_action_user_registration_denied_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ActionUserRegistrationDeniedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_action_user_registration_denied_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ActionUserRegistrationDeniedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_action_user_registration_denied_context_actor_round_trip(self):
+        data = load_fixture("action_user_registration_denied_context_actor.json")
+        instance = ActionUserRegistrationDeniedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ActionUserRegistrationDeniedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_action_user_registration_denied_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ActionUserRegistrationDeniedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_action_user_registration_denied_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ActionUserRegistrationDeniedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_action_user_registration_denied_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_action_user_registration_denied_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = ActionUserRegistrationDeniedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_api_key_created_round_trip(self):
+        data = load_fixture("api_key_created.json")
+        instance = ApiKeyCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "api_key.created",
+            "data": {
+                "object": "api_key",
+                "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "owner": {
+                    "type": "organization",
+                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "name": "My API Key",
+                "obfuscated_value": "sk_test_...1234",
+                "last_used_at": "2026-01-15T12:00:00.000Z",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ApiKeyCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_api_key_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "api_key.created",
+            "data": {
+                "object": "api_key",
+                "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "owner": {
+                    "type": "organization",
+                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "name": "My API Key",
+                "obfuscated_value": "sk_test_...1234",
+                "last_used_at": "2026-01-15T12:00:00.000Z",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ApiKeyCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_api_key_created_data_round_trip(self):
+        data = load_fixture("api_key_created_data.json")
+        instance = ApiKeyCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_created_data_minimal_payload(self):
+        data = {
+            "object": "api_key",
+            "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"},
+            "name": "My API Key",
+            "obfuscated_value": "sk_test_...1234",
+            "last_used_at": None,
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ApiKeyCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["owner"] == data["owner"]
+        assert serialized["name"] == data["name"]
+        assert serialized["obfuscated_value"] == data["obfuscated_value"]
+        assert serialized["last_used_at"] == data["last_used_at"]
+        assert serialized["permissions"] == data["permissions"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_api_key_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "api_key",
+            "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"},
+            "name": "My API Key",
+            "obfuscated_value": "sk_test_...1234",
+            "last_used_at": None,
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ApiKeyCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["last_used_at"] is None
+
+    def test_api_key_created_data_owner_round_trip(self):
+        data = load_fixture("api_key_created_data_owner.json")
+        instance = ApiKeyCreatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyCreatedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_created_data_owner_minimal_payload(self):
+        data = {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = ApiKeyCreatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["id"] == data["id"]
+
+    def test_api_key_created_context_round_trip(self):
+        data = load_fixture("api_key_created_context.json")
+        instance = ApiKeyCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_created_context_minimal_payload(self):
+        data = {}
+        instance = ApiKeyCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_api_key_created_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = ApiKeyCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_api_key_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("api_key_created_context_google_analytics_session.json")
+        instance = ApiKeyCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ApiKeyCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_api_key_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ApiKeyCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_api_key_created_context_actor_round_trip(self):
+        data = load_fixture("api_key_created_context_actor.json")
+        instance = ApiKeyCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ApiKeyCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_api_key_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ApiKeyCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_api_key_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_api_key_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = ApiKeyCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_api_key_revoked_round_trip(self):
+        data = load_fixture("api_key_revoked.json")
+        instance = ApiKeyRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyRevoked.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_revoked_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "api_key.revoked",
+            "data": {
+                "object": "api_key",
+                "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "owner": {
+                    "type": "organization",
+                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "name": "My API Key",
+                "obfuscated_value": "sk_test_...1234",
+                "last_used_at": "2026-01-15T12:00:00.000Z",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ApiKeyRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_api_key_revoked_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "api_key.revoked",
+            "data": {
+                "object": "api_key",
+                "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "owner": {
+                    "type": "organization",
+                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "name": "My API Key",
+                "obfuscated_value": "sk_test_...1234",
+                "last_used_at": "2026-01-15T12:00:00.000Z",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ApiKeyRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_api_key_revoked_data_round_trip(self):
+        data = load_fixture("api_key_revoked_data.json")
+        instance = ApiKeyRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyRevokedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_revoked_data_minimal_payload(self):
+        data = {
+            "object": "api_key",
+            "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"},
+            "name": "My API Key",
+            "obfuscated_value": "sk_test_...1234",
+            "last_used_at": None,
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ApiKeyRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["owner"] == data["owner"]
+        assert serialized["name"] == data["name"]
+        assert serialized["obfuscated_value"] == data["obfuscated_value"]
+        assert serialized["last_used_at"] == data["last_used_at"]
+        assert serialized["permissions"] == data["permissions"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_api_key_revoked_data_preserves_nullable_fields(self):
+        data = {
+            "object": "api_key",
+            "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"},
+            "name": "My API Key",
+            "obfuscated_value": "sk_test_...1234",
+            "last_used_at": None,
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ApiKeyRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["last_used_at"] is None
+
+    def test_api_key_revoked_data_owner_round_trip(self):
+        data = load_fixture("api_key_revoked_data_owner.json")
+        instance = ApiKeyRevokedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyRevokedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_revoked_data_owner_minimal_payload(self):
+        data = {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = ApiKeyRevokedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["id"] == data["id"]
+
+    def test_api_key_revoked_context_round_trip(self):
+        data = load_fixture("api_key_revoked_context.json")
+        instance = ApiKeyRevokedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyRevokedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_revoked_context_minimal_payload(self):
+        data = {}
+        instance = ApiKeyRevokedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_api_key_revoked_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = ApiKeyRevokedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_api_key_revoked_context_google_analytics_session_round_trip(self):
+        data = load_fixture("api_key_revoked_context_google_analytics_session.json")
+        instance = ApiKeyRevokedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyRevokedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_revoked_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ApiKeyRevokedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_api_key_revoked_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ApiKeyRevokedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_api_key_revoked_context_actor_round_trip(self):
+        data = load_fixture("api_key_revoked_context_actor.json")
+        instance = ApiKeyRevokedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ApiKeyRevokedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_api_key_revoked_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ApiKeyRevokedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_api_key_revoked_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ApiKeyRevokedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_api_key_revoked_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_api_key_revoked_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = ApiKeyRevokedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_email_verification_failed_round_trip(self):
+        data = load_fixture("authentication_email_verification_failed.json")
+        instance = AuthenticationEmailVerificationFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_failed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.email_verification_failed",
+            "data": {
+                "type": "email_verification",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationEmailVerificationFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_email_verification_failed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.email_verification_failed",
+            "data": {
+                "type": "email_verification",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationEmailVerificationFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_email_verification_failed_data_round_trip(self):
+        data = load_fixture("authentication_email_verification_failed_data.json")
+        instance = AuthenticationEmailVerificationFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_failed_data_minimal_payload(self):
+        data = {
+            "type": "email_verification",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationEmailVerificationFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["error"] == data["error"]
+
+    def test_authentication_email_verification_failed_data_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "type": "email_verification",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationEmailVerificationFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+        assert serialized["email"] is None
+
+    def test_authentication_email_verification_failed_data_error_round_trip(self):
+        data = load_fixture("authentication_email_verification_failed_data_error.json")
+        instance = AuthenticationEmailVerificationFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationFailedDataError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_failed_data_error_minimal_payload(self):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationEmailVerificationFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_email_verification_failed_context_round_trip(self):
+        data = load_fixture("authentication_email_verification_failed_context.json")
+        instance = AuthenticationEmailVerificationFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationFailedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_failed_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationEmailVerificationFailedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_email_verification_failed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationEmailVerificationFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_email_verification_failed_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_email_verification_failed_context_google_analytics_session.json"
+        )
+        instance = AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_failed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_email_verification_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_email_verification_failed_context_actor_round_trip(self):
+        data = load_fixture(
+            "authentication_email_verification_failed_context_actor.json"
+        )
+        instance = AuthenticationEmailVerificationFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationFailedContextActor.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_failed_context_actor_minimal_payload(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationEmailVerificationFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_email_verification_failed_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationEmailVerificationFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_email_verification_failed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_email_verification_failed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationEmailVerificationFailedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_email_verification_succeeded_round_trip(self):
+        data = load_fixture("authentication_email_verification_succeeded.json")
+        instance = AuthenticationEmailVerificationSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationSucceeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_succeeded_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.email_verification_succeeded",
+            "data": {
+                "type": "email_verification",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationEmailVerificationSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_email_verification_succeeded_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.email_verification_succeeded",
+            "data": {
+                "type": "email_verification",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationEmailVerificationSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_email_verification_succeeded_data_round_trip(self):
+        data = load_fixture("authentication_email_verification_succeeded_data.json")
+        instance = AuthenticationEmailVerificationSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationSucceededData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_succeeded_data_minimal_payload(self):
+        data = {
+            "type": "email_verification",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationEmailVerificationSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+
+    def test_authentication_email_verification_succeeded_data_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "type": "email_verification",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationEmailVerificationSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+
+    def test_authentication_email_verification_succeeded_context_round_trip(self):
+        data = load_fixture("authentication_email_verification_succeeded_context.json")
+        instance = AuthenticationEmailVerificationSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationSucceededContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_succeeded_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationEmailVerificationSucceededContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_email_verification_succeeded_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationEmailVerificationSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_email_verification_succeeded_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_email_verification_succeeded_context_google_analytics_session.json"
+        )
+        instance = AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_succeeded_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_email_verification_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_email_verification_succeeded_context_actor_round_trip(self):
+        data = load_fixture(
+            "authentication_email_verification_succeeded_context_actor.json"
+        )
+        instance = AuthenticationEmailVerificationSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationEmailVerificationSucceededContextActor.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_email_verification_succeeded_context_actor_minimal_payload(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationEmailVerificationSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_email_verification_succeeded_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationEmailVerificationSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_email_verification_succeeded_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_email_verification_succeeded_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationEmailVerificationSucceededContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_magic_auth_failed_round_trip(self):
+        data = load_fixture("authentication_magic_auth_failed.json")
+        instance = AuthenticationMagicAuthFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMagicAuthFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_failed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.magic_auth_failed",
+            "data": {
+                "type": "magic_auth",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationMagicAuthFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_magic_auth_failed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.magic_auth_failed",
+            "data": {
+                "type": "magic_auth",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationMagicAuthFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_magic_auth_failed_data_round_trip(self):
+        data = load_fixture("authentication_magic_auth_failed_data.json")
+        instance = AuthenticationMagicAuthFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMagicAuthFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_failed_data_minimal_payload(self):
+        data = {
+            "type": "magic_auth",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationMagicAuthFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["error"] == data["error"]
+
+    def test_authentication_magic_auth_failed_data_preserves_nullable_fields(self):
+        data = {
+            "type": "magic_auth",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationMagicAuthFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+        assert serialized["email"] is None
+
+    def test_authentication_magic_auth_failed_data_error_round_trip(self):
+        data = load_fixture("authentication_magic_auth_failed_data_error.json")
+        instance = AuthenticationMagicAuthFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMagicAuthFailedDataError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_failed_data_error_minimal_payload(self):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationMagicAuthFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_magic_auth_failed_context_round_trip(self):
+        data = load_fixture("authentication_magic_auth_failed_context.json")
+        instance = AuthenticationMagicAuthFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMagicAuthFailedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_failed_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationMagicAuthFailedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_magic_auth_failed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationMagicAuthFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_magic_auth_failed_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_magic_auth_failed_context_google_analytics_session.json"
+        )
+        instance = AuthenticationMagicAuthFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMagicAuthFailedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_failed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationMagicAuthFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_magic_auth_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationMagicAuthFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_magic_auth_failed_context_actor_round_trip(self):
+        data = load_fixture("authentication_magic_auth_failed_context_actor.json")
+        instance = AuthenticationMagicAuthFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMagicAuthFailedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_failed_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationMagicAuthFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_magic_auth_failed_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationMagicAuthFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_magic_auth_failed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_magic_auth_failed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationMagicAuthFailedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_magic_auth_succeeded_round_trip(self):
+        data = load_fixture("authentication_magic_auth_succeeded.json")
+        instance = AuthenticationMagicAuthSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMagicAuthSucceeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_succeeded_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.magic_auth_succeeded",
+            "data": {
+                "type": "magic_auth",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationMagicAuthSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_magic_auth_succeeded_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.magic_auth_succeeded",
+            "data": {
+                "type": "magic_auth",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationMagicAuthSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_magic_auth_succeeded_data_round_trip(self):
+        data = load_fixture("authentication_magic_auth_succeeded_data.json")
+        instance = AuthenticationMagicAuthSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMagicAuthSucceededData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_succeeded_data_minimal_payload(self):
+        data = {
+            "type": "magic_auth",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationMagicAuthSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+
+    def test_authentication_magic_auth_succeeded_data_preserves_nullable_fields(self):
+        data = {
+            "type": "magic_auth",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationMagicAuthSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+
+    def test_authentication_magic_auth_succeeded_context_round_trip(self):
+        data = load_fixture("authentication_magic_auth_succeeded_context.json")
+        instance = AuthenticationMagicAuthSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMagicAuthSucceededContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_succeeded_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationMagicAuthSucceededContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_magic_auth_succeeded_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationMagicAuthSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_magic_auth_succeeded_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_magic_auth_succeeded_context_google_analytics_session.json"
+        )
+        instance = (
+            AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_succeeded_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_magic_auth_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_magic_auth_succeeded_context_actor_round_trip(self):
+        data = load_fixture("authentication_magic_auth_succeeded_context_actor.json")
+        instance = AuthenticationMagicAuthSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMagicAuthSucceededContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_magic_auth_succeeded_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationMagicAuthSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_magic_auth_succeeded_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationMagicAuthSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_magic_auth_succeeded_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_magic_auth_succeeded_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationMagicAuthSucceededContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_mfa_failed_round_trip(self):
+        data = load_fixture("authentication_mfa_failed.json")
+        instance = AuthenticationMFAFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFAFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_failed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.mfa_failed",
+            "data": {
+                "type": "mfa",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationMFAFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_mfa_failed_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.mfa_failed",
+            "data": {
+                "type": "mfa",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationMFAFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_mfa_failed_data_round_trip(self):
+        data = load_fixture("authentication_mfa_failed_data.json")
+        instance = AuthenticationMFAFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFAFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_failed_data_minimal_payload(self):
+        data = {
+            "type": "mfa",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationMFAFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["error"] == data["error"]
+
+    def test_authentication_mfa_failed_data_preserves_nullable_fields(self):
+        data = {
+            "type": "mfa",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationMFAFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+        assert serialized["email"] is None
+
+    def test_authentication_mfa_failed_data_error_round_trip(self):
+        data = load_fixture("authentication_mfa_failed_data_error.json")
+        instance = AuthenticationMFAFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFAFailedDataError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_failed_data_error_minimal_payload(self):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationMFAFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_mfa_failed_context_round_trip(self):
+        data = load_fixture("authentication_mfa_failed_context.json")
+        instance = AuthenticationMFAFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFAFailedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_failed_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationMFAFailedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_mfa_failed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationMFAFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_mfa_failed_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_mfa_failed_context_google_analytics_session.json"
+        )
+        instance = AuthenticationMFAFailedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFAFailedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_failed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationMFAFailedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_mfa_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationMFAFailedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_mfa_failed_context_actor_round_trip(self):
+        data = load_fixture("authentication_mfa_failed_context_actor.json")
+        instance = AuthenticationMFAFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFAFailedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_failed_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationMFAFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_mfa_failed_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationMFAFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_mfa_failed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_mfa_failed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationMFAFailedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_mfa_succeeded_round_trip(self):
+        data = load_fixture("authentication_mfa_succeeded.json")
+        instance = AuthenticationMFASucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFASucceeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_succeeded_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.mfa_succeeded",
+            "data": {
+                "type": "mfa",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationMFASucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_mfa_succeeded_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.mfa_succeeded",
+            "data": {
+                "type": "mfa",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationMFASucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_mfa_succeeded_data_round_trip(self):
+        data = load_fixture("authentication_mfa_succeeded_data.json")
+        instance = AuthenticationMFASucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFASucceededData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_succeeded_data_minimal_payload(self):
+        data = {
+            "type": "mfa",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationMFASucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+
+    def test_authentication_mfa_succeeded_data_preserves_nullable_fields(self):
+        data = {
+            "type": "mfa",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationMFASucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+
+    def test_authentication_mfa_succeeded_context_round_trip(self):
+        data = load_fixture("authentication_mfa_succeeded_context.json")
+        instance = AuthenticationMFASucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFASucceededContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_succeeded_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationMFASucceededContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_mfa_succeeded_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationMFASucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_mfa_succeeded_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_mfa_succeeded_context_google_analytics_session.json"
+        )
+        instance = AuthenticationMFASucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFASucceededContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_succeeded_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationMFASucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_mfa_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationMFASucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_mfa_succeeded_context_actor_round_trip(self):
+        data = load_fixture("authentication_mfa_succeeded_context_actor.json")
+        instance = AuthenticationMFASucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationMFASucceededContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_mfa_succeeded_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationMFASucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_mfa_succeeded_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationMFASucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_mfa_succeeded_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_mfa_succeeded_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationMFASucceededContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_oauth_failed_round_trip(self):
+        data = load_fixture("authentication_oauth_failed.json")
+        instance = AuthenticationOAuthFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_failed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.oauth_failed",
+            "data": {
+                "type": "oauth",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationOAuthFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_oauth_failed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.oauth_failed",
+            "data": {
+                "type": "oauth",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationOAuthFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_oauth_failed_data_round_trip(self):
+        data = load_fixture("authentication_oauth_failed_data.json")
+        instance = AuthenticationOAuthFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_failed_data_minimal_payload(self):
+        data = {
+            "type": "oauth",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationOAuthFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["error"] == data["error"]
+
+    def test_authentication_oauth_failed_data_preserves_nullable_fields(self):
+        data = {
+            "type": "oauth",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationOAuthFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+        assert serialized["email"] is None
+
+    def test_authentication_oauth_failed_data_error_round_trip(self):
+        data = load_fixture("authentication_oauth_failed_data_error.json")
+        instance = AuthenticationOAuthFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthFailedDataError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_failed_data_error_minimal_payload(self):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationOAuthFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_oauth_failed_context_round_trip(self):
+        data = load_fixture("authentication_oauth_failed_context.json")
+        instance = AuthenticationOAuthFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthFailedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_failed_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationOAuthFailedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_oauth_failed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationOAuthFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_oauth_failed_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_oauth_failed_context_google_analytics_session.json"
+        )
+        instance = AuthenticationOAuthFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthFailedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_failed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationOAuthFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_oauth_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationOAuthFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_oauth_failed_context_actor_round_trip(self):
+        data = load_fixture("authentication_oauth_failed_context_actor.json")
+        instance = AuthenticationOAuthFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthFailedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_failed_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationOAuthFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_oauth_failed_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationOAuthFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_oauth_failed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_oauth_failed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationOAuthFailedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_oauth_succeeded_round_trip(self):
+        data = load_fixture("authentication_oauth_succeeded.json")
+        instance = AuthenticationOAuthSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthSucceeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_succeeded_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.oauth_succeeded",
+            "data": {
+                "type": "oauth",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationOAuthSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_oauth_succeeded_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.oauth_succeeded",
+            "data": {
+                "type": "oauth",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationOAuthSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_oauth_succeeded_data_round_trip(self):
+        data = load_fixture("authentication_oauth_succeeded_data.json")
+        instance = AuthenticationOAuthSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthSucceededData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_succeeded_data_minimal_payload(self):
+        data = {
+            "type": "oauth",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": "user@example.com",
+        }
+        instance = AuthenticationOAuthSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+
+    def test_authentication_oauth_succeeded_data_preserves_nullable_fields(self):
+        data = {
+            "type": "oauth",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": "user@example.com",
+        }
+        instance = AuthenticationOAuthSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+
+    def test_authentication_oauth_succeeded_context_round_trip(self):
+        data = load_fixture("authentication_oauth_succeeded_context.json")
+        instance = AuthenticationOAuthSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthSucceededContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_succeeded_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationOAuthSucceededContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_oauth_succeeded_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationOAuthSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_oauth_succeeded_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_oauth_succeeded_context_google_analytics_session.json"
+        )
+        instance = AuthenticationOAuthSucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthSucceededContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_succeeded_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationOAuthSucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_oauth_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationOAuthSucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_oauth_succeeded_context_actor_round_trip(self):
+        data = load_fixture("authentication_oauth_succeeded_context_actor.json")
+        instance = AuthenticationOAuthSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationOAuthSucceededContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_oauth_succeeded_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationOAuthSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_oauth_succeeded_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationOAuthSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_oauth_succeeded_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_oauth_succeeded_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationOAuthSucceededContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_passkey_failed_round_trip(self):
+        data = load_fixture("authentication_passkey_failed.json")
+        instance = AuthenticationPasskeyFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasskeyFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_failed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.passkey_failed",
+            "data": {
+                "type": "passkey",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationPasskeyFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_passkey_failed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.passkey_failed",
+            "data": {
+                "type": "passkey",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationPasskeyFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_passkey_failed_data_round_trip(self):
+        data = load_fixture("authentication_passkey_failed_data.json")
+        instance = AuthenticationPasskeyFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasskeyFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_failed_data_minimal_payload(self):
+        data = {
+            "type": "passkey",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationPasskeyFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["error"] == data["error"]
+
+    def test_authentication_passkey_failed_data_preserves_nullable_fields(self):
+        data = {
+            "type": "passkey",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationPasskeyFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+        assert serialized["email"] is None
+
+    def test_authentication_passkey_failed_data_error_round_trip(self):
+        data = load_fixture("authentication_passkey_failed_data_error.json")
+        instance = AuthenticationPasskeyFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasskeyFailedDataError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_failed_data_error_minimal_payload(self):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationPasskeyFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_passkey_failed_context_round_trip(self):
+        data = load_fixture("authentication_passkey_failed_context.json")
+        instance = AuthenticationPasskeyFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasskeyFailedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_failed_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationPasskeyFailedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_passkey_failed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationPasskeyFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_passkey_failed_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_passkey_failed_context_google_analytics_session.json"
+        )
+        instance = AuthenticationPasskeyFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasskeyFailedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_failed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationPasskeyFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_passkey_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationPasskeyFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_passkey_failed_context_actor_round_trip(self):
+        data = load_fixture("authentication_passkey_failed_context_actor.json")
+        instance = AuthenticationPasskeyFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasskeyFailedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_failed_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationPasskeyFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_passkey_failed_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationPasskeyFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_passkey_failed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_passkey_failed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationPasskeyFailedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_passkey_succeeded_round_trip(self):
+        data = load_fixture("authentication_passkey_succeeded.json")
+        instance = AuthenticationPasskeySucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasskeySucceeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_succeeded_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.passkey_succeeded",
+            "data": {
+                "type": "passkey",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationPasskeySucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_passkey_succeeded_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.passkey_succeeded",
+            "data": {
+                "type": "passkey",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationPasskeySucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_passkey_succeeded_data_round_trip(self):
+        data = load_fixture("authentication_passkey_succeeded_data.json")
+        instance = AuthenticationPasskeySucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasskeySucceededData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_succeeded_data_minimal_payload(self):
+        data = {
+            "type": "passkey",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationPasskeySucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+
+    def test_authentication_passkey_succeeded_data_preserves_nullable_fields(self):
+        data = {
+            "type": "passkey",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationPasskeySucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+
+    def test_authentication_passkey_succeeded_context_round_trip(self):
+        data = load_fixture("authentication_passkey_succeeded_context.json")
+        instance = AuthenticationPasskeySucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasskeySucceededContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_succeeded_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationPasskeySucceededContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_passkey_succeeded_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationPasskeySucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_passkey_succeeded_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_passkey_succeeded_context_google_analytics_session.json"
+        )
+        instance = (
+            AuthenticationPasskeySucceededContextGoogleAnalyticsSession.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthenticationPasskeySucceededContextGoogleAnalyticsSession.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_succeeded_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            AuthenticationPasskeySucceededContextGoogleAnalyticsSession.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_passkey_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            AuthenticationPasskeySucceededContextGoogleAnalyticsSession.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_passkey_succeeded_context_actor_round_trip(self):
+        data = load_fixture("authentication_passkey_succeeded_context_actor.json")
+        instance = AuthenticationPasskeySucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasskeySucceededContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_passkey_succeeded_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationPasskeySucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_passkey_succeeded_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationPasskeySucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_passkey_succeeded_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_passkey_succeeded_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationPasskeySucceededContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_password_failed_round_trip(self):
+        data = load_fixture("authentication_password_failed.json")
+        instance = AuthenticationPasswordFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasswordFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_failed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.password_failed",
+            "data": {
+                "type": "password",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationPasswordFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_password_failed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.password_failed",
+            "data": {
+                "type": "password",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationPasswordFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_password_failed_data_round_trip(self):
+        data = load_fixture("authentication_password_failed_data.json")
+        instance = AuthenticationPasswordFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasswordFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_failed_data_minimal_payload(self):
+        data = {
+            "type": "password",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationPasswordFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["error"] == data["error"]
+
+    def test_authentication_password_failed_data_preserves_nullable_fields(self):
+        data = {
+            "type": "password",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationPasswordFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+        assert serialized["email"] is None
+
+    def test_authentication_password_failed_data_error_round_trip(self):
+        data = load_fixture("authentication_password_failed_data_error.json")
+        instance = AuthenticationPasswordFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasswordFailedDataError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_failed_data_error_minimal_payload(self):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationPasswordFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_password_failed_context_round_trip(self):
+        data = load_fixture("authentication_password_failed_context.json")
+        instance = AuthenticationPasswordFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasswordFailedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_failed_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationPasswordFailedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_password_failed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationPasswordFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_password_failed_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_password_failed_context_google_analytics_session.json"
+        )
+        instance = AuthenticationPasswordFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasswordFailedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_failed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationPasswordFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_password_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationPasswordFailedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_password_failed_context_actor_round_trip(self):
+        data = load_fixture("authentication_password_failed_context_actor.json")
+        instance = AuthenticationPasswordFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasswordFailedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_failed_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationPasswordFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_password_failed_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationPasswordFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_password_failed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_password_failed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationPasswordFailedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_password_succeeded_round_trip(self):
+        data = load_fixture("authentication_password_succeeded.json")
+        instance = AuthenticationPasswordSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasswordSucceeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_succeeded_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.password_succeeded",
+            "data": {
+                "type": "password",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationPasswordSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_password_succeeded_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.password_succeeded",
+            "data": {
+                "type": "password",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationPasswordSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_password_succeeded_data_round_trip(self):
+        data = load_fixture("authentication_password_succeeded_data.json")
+        instance = AuthenticationPasswordSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasswordSucceededData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_succeeded_data_minimal_payload(self):
+        data = {
+            "type": "password",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationPasswordSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+
+    def test_authentication_password_succeeded_data_preserves_nullable_fields(self):
+        data = {
+            "type": "password",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationPasswordSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+
+    def test_authentication_password_succeeded_context_round_trip(self):
+        data = load_fixture("authentication_password_succeeded_context.json")
+        instance = AuthenticationPasswordSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasswordSucceededContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_succeeded_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationPasswordSucceededContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_password_succeeded_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationPasswordSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_password_succeeded_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_password_succeeded_context_google_analytics_session.json"
+        )
+        instance = (
+            AuthenticationPasswordSucceededContextGoogleAnalyticsSession.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthenticationPasswordSucceededContextGoogleAnalyticsSession.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_succeeded_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            AuthenticationPasswordSucceededContextGoogleAnalyticsSession.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_password_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            AuthenticationPasswordSucceededContextGoogleAnalyticsSession.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_password_succeeded_context_actor_round_trip(self):
+        data = load_fixture("authentication_password_succeeded_context_actor.json")
+        instance = AuthenticationPasswordSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationPasswordSucceededContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_password_succeeded_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationPasswordSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_password_succeeded_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationPasswordSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_password_succeeded_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_password_succeeded_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationPasswordSucceededContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_radar_risk_detected_round_trip(self):
+        data = load_fixture("authentication_radar_risk_detected.json")
+        instance = AuthenticationRadarRiskDetected.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationRadarRiskDetected.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_radar_risk_detected_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.radar_risk_detected",
+            "data": {
+                "auth_method": "password",
+                "action": "signup",
+                "control": "block",
+                "blocklist_type": "ip",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationRadarRiskDetected.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_radar_risk_detected_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.radar_risk_detected",
+            "data": {
+                "auth_method": "password",
+                "action": "signup",
+                "control": "block",
+                "blocklist_type": "ip",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationRadarRiskDetected.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_radar_risk_detected_data_round_trip(self):
+        data = load_fixture("authentication_radar_risk_detected_data.json")
+        instance = AuthenticationRadarRiskDetectedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationRadarRiskDetectedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_radar_risk_detected_data_minimal_payload(self):
+        data = {
+            "auth_method": "password",
+            "action": "signup",
+            "control": None,
+            "blocklist_type": None,
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationRadarRiskDetectedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["action"] == data["action"]
+        assert serialized["control"] == data["control"]
+        assert serialized["blocklist_type"] == data["blocklist_type"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+
+    def test_authentication_radar_risk_detected_data_preserves_nullable_fields(self):
+        data = {
+            "auth_method": "password",
+            "action": "signup",
+            "control": None,
+            "blocklist_type": None,
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationRadarRiskDetectedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["control"] is None
+        assert serialized["blocklist_type"] is None
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+
+    def test_authentication_radar_risk_detected_data_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "auth_method": "password",
+            "action": "unexpected_authentication_radar_risk_detected_data_action",
+            "control": "block",
+            "blocklist_type": "ip",
+            "ip_address": "203.0.113.42",
+            "user_agent": "Mozilla/5.0",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "user@example.com",
+        }
+        instance = AuthenticationRadarRiskDetectedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_radar_risk_detected_context_round_trip(self):
+        data = load_fixture("authentication_radar_risk_detected_context.json")
+        instance = AuthenticationRadarRiskDetectedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationRadarRiskDetectedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_radar_risk_detected_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationRadarRiskDetectedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_radar_risk_detected_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationRadarRiskDetectedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_radar_risk_detected_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_radar_risk_detected_context_google_analytics_session.json"
+        )
+        instance = (
+            AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_radar_risk_detected_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_radar_risk_detected_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession.from_dict(data)
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_radar_risk_detected_context_actor_round_trip(self):
+        data = load_fixture("authentication_radar_risk_detected_context_actor.json")
+        instance = AuthenticationRadarRiskDetectedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationRadarRiskDetectedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_radar_risk_detected_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationRadarRiskDetectedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_radar_risk_detected_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationRadarRiskDetectedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_radar_risk_detected_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_radar_risk_detected_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationRadarRiskDetectedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_sso_failed_round_trip(self):
+        data = load_fixture("authentication_sso_failed.json")
+        instance = AuthenticationSSOFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_failed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.sso_failed",
+            "data": {
+                "type": "sso",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "sso": {
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+                },
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationSSOFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_sso_failed_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.sso_failed",
+            "data": {
+                "type": "sso",
+                "status": "failed",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "sso": {
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+                },
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationSSOFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_sso_failed_data_round_trip(self):
+        data = load_fixture("authentication_sso_failed_data.json")
+        instance = AuthenticationSSOFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_failed_data_minimal_payload(self):
+        data = {
+            "type": "sso",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "sso": {
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+            },
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationSSOFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["sso"] == data["sso"]
+        assert serialized["error"] == data["error"]
+
+    def test_authentication_sso_failed_data_preserves_nullable_fields(self):
+        data = {
+            "type": "sso",
+            "status": "failed",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "sso": {
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+            },
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationSSOFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+        assert serialized["email"] is None
+
+    def test_authentication_sso_failed_data_sso_round_trip(self):
+        data = load_fixture("authentication_sso_failed_data_sso.json")
+        instance = AuthenticationSSOFailedDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOFailedDataSSO.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_failed_data_sso_minimal_payload(self):
+        data = {"organization_id": None, "connection_id": None, "session_id": None}
+        instance = AuthenticationSSOFailedDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["connection_id"] == data["connection_id"]
+        assert serialized["session_id"] == data["session_id"]
+
+    def test_authentication_sso_failed_data_sso_preserves_nullable_fields(self):
+        data = {"organization_id": None, "connection_id": None, "session_id": None}
+        instance = AuthenticationSSOFailedDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] is None
+        assert serialized["connection_id"] is None
+        assert serialized["session_id"] is None
+
+    def test_authentication_sso_failed_data_error_round_trip(self):
+        data = load_fixture("authentication_sso_failed_data_error.json")
+        instance = AuthenticationSSOFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOFailedDataError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_failed_data_error_minimal_payload(self):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationSSOFailedDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_sso_failed_context_round_trip(self):
+        data = load_fixture("authentication_sso_failed_context.json")
+        instance = AuthenticationSSOFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOFailedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_failed_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationSSOFailedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_sso_failed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationSSOFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_sso_failed_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_sso_failed_context_google_analytics_session.json"
+        )
+        instance = AuthenticationSSOFailedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOFailedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_failed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationSSOFailedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_sso_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationSSOFailedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_sso_failed_context_actor_round_trip(self):
+        data = load_fixture("authentication_sso_failed_context_actor.json")
+        instance = AuthenticationSSOFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOFailedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_failed_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationSSOFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_sso_failed_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationSSOFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_sso_failed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_sso_failed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationSSOFailedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_sso_started_round_trip(self):
+        data = load_fixture("authentication_sso_started.json")
+        instance = AuthenticationSSOStarted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOStarted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_started_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.sso_started",
+            "data": {
+                "type": "sso",
+                "status": "started",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "sso": {
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationSSOStarted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_sso_started_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.sso_started",
+            "data": {
+                "type": "sso",
+                "status": "started",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "sso": {
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationSSOStarted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_sso_started_data_round_trip(self):
+        data = load_fixture("authentication_sso_started_data.json")
+        instance = AuthenticationSSOStartedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOStartedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_started_data_minimal_payload(self):
+        data = {
+            "type": "sso",
+            "status": "started",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "sso": {
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+            },
+        }
+        instance = AuthenticationSSOStartedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["sso"] == data["sso"]
+
+    def test_authentication_sso_started_data_preserves_nullable_fields(self):
+        data = {
+            "type": "sso",
+            "status": "started",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "sso": {
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+            },
+        }
+        instance = AuthenticationSSOStartedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+        assert serialized["email"] is None
+
+    def test_authentication_sso_started_data_sso_round_trip(self):
+        data = load_fixture("authentication_sso_started_data_sso.json")
+        instance = AuthenticationSSOStartedDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOStartedDataSSO.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_started_data_sso_minimal_payload(self):
+        data = {"organization_id": None, "connection_id": None, "session_id": None}
+        instance = AuthenticationSSOStartedDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["connection_id"] == data["connection_id"]
+        assert serialized["session_id"] == data["session_id"]
+
+    def test_authentication_sso_started_data_sso_preserves_nullable_fields(self):
+        data = {"organization_id": None, "connection_id": None, "session_id": None}
+        instance = AuthenticationSSOStartedDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] is None
+        assert serialized["connection_id"] is None
+        assert serialized["session_id"] is None
+
+    def test_authentication_sso_started_context_round_trip(self):
+        data = load_fixture("authentication_sso_started_context.json")
+        instance = AuthenticationSSOStartedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOStartedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_started_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationSSOStartedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_sso_started_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationSSOStartedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_sso_started_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_sso_started_context_google_analytics_session.json"
+        )
+        instance = AuthenticationSSOStartedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOStartedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_started_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationSSOStartedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_sso_started_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationSSOStartedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_sso_started_context_actor_round_trip(self):
+        data = load_fixture("authentication_sso_started_context_actor.json")
+        instance = AuthenticationSSOStartedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOStartedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_started_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationSSOStartedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_sso_started_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationSSOStartedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_sso_started_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_sso_started_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationSSOStartedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_sso_succeeded_round_trip(self):
+        data = load_fixture("authentication_sso_succeeded.json")
+        instance = AuthenticationSSOSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOSucceeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_succeeded_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.sso_succeeded",
+            "data": {
+                "type": "sso",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "sso": {
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationSSOSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_sso_succeeded_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.sso_succeeded",
+            "data": {
+                "type": "sso",
+                "status": "succeeded",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "sso": {
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationSSOSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_sso_succeeded_data_round_trip(self):
+        data = load_fixture("authentication_sso_succeeded_data.json")
+        instance = AuthenticationSSOSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOSucceededData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_succeeded_data_minimal_payload(self):
+        data = {
+            "type": "sso",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": "user@example.com",
+            "sso": {
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+            },
+        }
+        instance = AuthenticationSSOSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["sso"] == data["sso"]
+
+    def test_authentication_sso_succeeded_data_preserves_nullable_fields(self):
+        data = {
+            "type": "sso",
+            "status": "succeeded",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": "user@example.com",
+            "sso": {
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+            },
+        }
+        instance = AuthenticationSSOSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+
+    def test_authentication_sso_succeeded_data_sso_round_trip(self):
+        data = load_fixture("authentication_sso_succeeded_data_sso.json")
+        instance = AuthenticationSSOSucceededDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOSucceededDataSSO.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_succeeded_data_sso_minimal_payload(self):
+        data = {"organization_id": None, "connection_id": None, "session_id": None}
+        instance = AuthenticationSSOSucceededDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["connection_id"] == data["connection_id"]
+        assert serialized["session_id"] == data["session_id"]
+
+    def test_authentication_sso_succeeded_data_sso_preserves_nullable_fields(self):
+        data = {"organization_id": None, "connection_id": None, "session_id": None}
+        instance = AuthenticationSSOSucceededDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] is None
+        assert serialized["connection_id"] is None
+        assert serialized["session_id"] is None
+
+    def test_authentication_sso_succeeded_context_round_trip(self):
+        data = load_fixture("authentication_sso_succeeded_context.json")
+        instance = AuthenticationSSOSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOSucceededContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_succeeded_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationSSOSucceededContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_sso_succeeded_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationSSOSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_sso_succeeded_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_sso_succeeded_context_google_analytics_session.json"
+        )
+        instance = AuthenticationSSOSucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOSucceededContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_succeeded_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationSSOSucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_sso_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationSSOSucceededContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_sso_succeeded_context_actor_round_trip(self):
+        data = load_fixture("authentication_sso_succeeded_context_actor.json")
+        instance = AuthenticationSSOSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOSucceededContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_succeeded_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationSSOSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_sso_succeeded_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationSSOSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_sso_succeeded_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_sso_succeeded_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationSSOSucceededContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_authentication_sso_timed_out_round_trip(self):
+        data = load_fixture("authentication_sso_timed_out.json")
+        instance = AuthenticationSSOTimedOut.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOTimedOut.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_timed_out_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.sso_timed_out",
+            "data": {
+                "type": "sso",
+                "status": "timed_out",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "sso": {
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+                },
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationSSOTimedOut.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_authentication_sso_timed_out_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "authentication.sso_timed_out",
+            "data": {
+                "type": "sso",
+                "status": "timed_out",
+                "ip_address": "203.0.113.42",
+                "user_agent": "Mozilla/5.0",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "user@example.com",
+                "sso": {
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+                },
+                "error": {
+                    "code": "mfa_challenge_failed",
+                    "message": "The MFA challenge has failed.",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = AuthenticationSSOTimedOut.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_authentication_sso_timed_out_data_round_trip(self):
+        data = load_fixture("authentication_sso_timed_out_data.json")
+        instance = AuthenticationSSOTimedOutData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOTimedOutData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_timed_out_data_minimal_payload(self):
+        data = {
+            "type": "sso",
+            "status": "timed_out",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "sso": {
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+            },
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationSSOTimedOutData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["type"] == data["type"]
+        assert serialized["status"] == data["status"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["sso"] == data["sso"]
+        assert serialized["error"] == data["error"]
+
+    def test_authentication_sso_timed_out_data_preserves_nullable_fields(self):
+        data = {
+            "type": "sso",
+            "status": "timed_out",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": None,
+            "email": None,
+            "sso": {
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
+            },
+            "error": {
+                "code": "mfa_challenge_failed",
+                "message": "The MFA challenge has failed.",
+            },
+        }
+        instance = AuthenticationSSOTimedOutData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["user_id"] is None
+        assert serialized["email"] is None
+
+    def test_authentication_sso_timed_out_data_sso_round_trip(self):
+        data = load_fixture("authentication_sso_timed_out_data_sso.json")
+        instance = AuthenticationSSOTimedOutDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOTimedOutDataSSO.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_timed_out_data_sso_minimal_payload(self):
+        data = {"organization_id": None, "connection_id": None, "session_id": None}
+        instance = AuthenticationSSOTimedOutDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["connection_id"] == data["connection_id"]
+        assert serialized["session_id"] == data["session_id"]
+
+    def test_authentication_sso_timed_out_data_sso_preserves_nullable_fields(self):
+        data = {"organization_id": None, "connection_id": None, "session_id": None}
+        instance = AuthenticationSSOTimedOutDataSSO.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] is None
+        assert serialized["connection_id"] is None
+        assert serialized["session_id"] is None
+
+    def test_authentication_sso_timed_out_data_error_round_trip(self):
+        data = load_fixture("authentication_sso_timed_out_data_error.json")
+        instance = AuthenticationSSOTimedOutDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOTimedOutDataError.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_timed_out_data_error_minimal_payload(self):
+        data = {
+            "code": "mfa_challenge_failed",
+            "message": "The MFA challenge has failed.",
+        }
+        instance = AuthenticationSSOTimedOutDataError.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["code"] == data["code"]
+        assert serialized["message"] == data["message"]
+
+    def test_authentication_sso_timed_out_context_round_trip(self):
+        data = load_fixture("authentication_sso_timed_out_context.json")
+        instance = AuthenticationSSOTimedOutContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOTimedOutContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_timed_out_context_minimal_payload(self):
+        data = {}
+        instance = AuthenticationSSOTimedOutContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_authentication_sso_timed_out_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = AuthenticationSSOTimedOutContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_authentication_sso_timed_out_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "authentication_sso_timed_out_context_google_analytics_session.json"
+        )
+        instance = AuthenticationSSOTimedOutContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOTimedOutContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_timed_out_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationSSOTimedOutContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_authentication_sso_timed_out_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = AuthenticationSSOTimedOutContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_authentication_sso_timed_out_context_actor_round_trip(self):
+        data = load_fixture("authentication_sso_timed_out_context_actor.json")
+        instance = AuthenticationSSOTimedOutContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthenticationSSOTimedOutContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authentication_sso_timed_out_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationSSOTimedOutContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_authentication_sso_timed_out_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = AuthenticationSSOTimedOutContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_authentication_sso_timed_out_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_authentication_sso_timed_out_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = AuthenticationSSOTimedOutContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_activated_round_trip(self):
+        data = load_fixture("connection_activated.json")
+        instance = ConnectionActivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionActivated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_activated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.activated",
+            "data": {
+                "object": "connection",
+                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "state": "active",
+                "name": "Acme SSO",
+                "connection_type": "OktaSAML",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "status": "linked",
+                "domains": [
+                    {
+                        "object": "connection_domain",
+                        "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "domain": "acme.com",
+                    }
+                ],
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ConnectionActivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_connection_activated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.activated",
+            "data": {
+                "object": "connection",
+                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "state": "active",
+                "name": "Acme SSO",
+                "connection_type": "OktaSAML",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "status": "linked",
+                "domains": [
+                    {
+                        "object": "connection_domain",
+                        "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "domain": "acme.com",
+                    }
+                ],
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ConnectionActivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_connection_activated_data_round_trip(self):
+        data = load_fixture("connection_activated_data.json")
+        instance = ConnectionActivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionActivatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_activated_data_minimal_payload(self):
+        data = {
+            "object": "connection",
+            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "state": "active",
+            "name": "Acme SSO",
+            "connection_type": "OktaSAML",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "linked",
+            "domains": [
+                {
+                    "object": "connection_domain",
+                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = ConnectionActivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["state"] == data["state"]
+        assert serialized["name"] == data["name"]
+        assert serialized["connection_type"] == data["connection_type"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["external_key"] == data["external_key"]
+        assert serialized["status"] == data["status"]
+        assert serialized["domains"] == data["domains"]
+
+    def test_connection_activated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "connection",
+            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "state": "active",
+            "name": "Acme SSO",
+            "connection_type": "OktaSAML",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "linked",
+            "domains": [
+                {
+                    "object": "connection_domain",
+                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = ConnectionActivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
+
+    def test_connection_activated_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "connection",
+            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "state": "unexpected_connection_activated_data_state",
+            "name": "Acme SSO",
+            "connection_type": "OktaSAML",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "linked",
+            "domains": [
+                {
+                    "object": "connection_domain",
+                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = ConnectionActivatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_activated_data_domain_round_trip(self):
+        data = load_fixture("connection_activated_data_domain.json")
+        instance = ConnectionActivatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionActivatedDataDomain.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_activated_data_domain_minimal_payload(self):
+        data = {
+            "object": "connection_domain",
+            "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "domain": "acme.com",
+        }
+        instance = ConnectionActivatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["domain"] == data["domain"]
+
+    def test_connection_activated_context_round_trip(self):
+        data = load_fixture("connection_activated_context.json")
+        instance = ConnectionActivatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionActivatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_activated_context_minimal_payload(self):
+        data = {}
+        instance = ConnectionActivatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_connection_activated_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = ConnectionActivatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_connection_activated_context_google_analytics_session_round_trip(self):
+        data = load_fixture(
+            "connection_activated_context_google_analytics_session.json"
+        )
+        instance = ConnectionActivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionActivatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_activated_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ConnectionActivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_connection_activated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ConnectionActivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_connection_activated_context_actor_round_trip(self):
+        data = load_fixture("connection_activated_context_actor.json")
+        instance = ConnectionActivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionActivatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_activated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ConnectionActivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_connection_activated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ConnectionActivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_connection_activated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_connection_activated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = ConnectionActivatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_deactivated_round_trip(self):
+        data = load_fixture("connection_deactivated.json")
+        instance = ConnectionDeactivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeactivated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_deactivated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.deactivated",
+            "data": {
+                "object": "connection",
+                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "state": "active",
+                "name": "Acme SSO",
+                "connection_type": "OktaSAML",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "status": "linked",
+                "domains": [
+                    {
+                        "object": "connection_domain",
+                        "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "domain": "acme.com",
+                    }
+                ],
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ConnectionDeactivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_connection_deactivated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.deactivated",
+            "data": {
+                "object": "connection",
+                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "state": "active",
+                "name": "Acme SSO",
+                "connection_type": "OktaSAML",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "status": "linked",
+                "domains": [
+                    {
+                        "object": "connection_domain",
+                        "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "domain": "acme.com",
+                    }
+                ],
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ConnectionDeactivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_connection_deactivated_data_round_trip(self):
+        data = load_fixture("connection_deactivated_data.json")
+        instance = ConnectionDeactivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeactivatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_deactivated_data_minimal_payload(self):
+        data = {
+            "object": "connection",
+            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "state": "active",
+            "name": "Acme SSO",
+            "connection_type": "OktaSAML",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "linked",
+            "domains": [
+                {
+                    "object": "connection_domain",
+                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = ConnectionDeactivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["state"] == data["state"]
+        assert serialized["name"] == data["name"]
+        assert serialized["connection_type"] == data["connection_type"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["external_key"] == data["external_key"]
+        assert serialized["status"] == data["status"]
+        assert serialized["domains"] == data["domains"]
+
+    def test_connection_deactivated_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "connection",
+            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "state": "active",
+            "name": "Acme SSO",
+            "connection_type": "OktaSAML",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "linked",
+            "domains": [
+                {
+                    "object": "connection_domain",
+                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = ConnectionDeactivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
+
+    def test_connection_deactivated_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "connection",
+            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "state": "unexpected_connection_deactivated_data_state",
+            "name": "Acme SSO",
+            "connection_type": "OktaSAML",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "linked",
+            "domains": [
+                {
+                    "object": "connection_domain",
+                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = ConnectionDeactivatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_deactivated_data_domain_round_trip(self):
+        data = load_fixture("connection_deactivated_data_domain.json")
+        instance = ConnectionDeactivatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeactivatedDataDomain.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_deactivated_data_domain_minimal_payload(self):
+        data = {
+            "object": "connection_domain",
+            "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "domain": "acme.com",
+        }
+        instance = ConnectionDeactivatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["domain"] == data["domain"]
+
+    def test_connection_deactivated_context_round_trip(self):
+        data = load_fixture("connection_deactivated_context.json")
+        instance = ConnectionDeactivatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeactivatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_deactivated_context_minimal_payload(self):
+        data = {}
+        instance = ConnectionDeactivatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_connection_deactivated_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = ConnectionDeactivatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_connection_deactivated_context_google_analytics_session_round_trip(self):
+        data = load_fixture(
+            "connection_deactivated_context_google_analytics_session.json"
+        )
+        instance = ConnectionDeactivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeactivatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_deactivated_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ConnectionDeactivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_connection_deactivated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ConnectionDeactivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_connection_deactivated_context_actor_round_trip(self):
+        data = load_fixture("connection_deactivated_context_actor.json")
+        instance = ConnectionDeactivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeactivatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_deactivated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ConnectionDeactivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_connection_deactivated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ConnectionDeactivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_connection_deactivated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_connection_deactivated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = ConnectionDeactivatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_deleted_round_trip(self):
+        data = load_fixture("connection_deleted.json")
+        instance = ConnectionDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.deleted",
+            "data": {
+                "object": "connection",
+                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "state": "active",
+                "name": "Acme SSO",
+                "connection_type": "OktaSAML",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ConnectionDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_connection_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.deleted",
+            "data": {
+                "object": "connection",
+                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "state": "active",
+                "name": "Acme SSO",
+                "connection_type": "OktaSAML",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ConnectionDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_connection_deleted_data_round_trip(self):
+        data = load_fixture("connection_deleted_data.json")
+        instance = ConnectionDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_deleted_data_minimal_payload(self):
+        data = {
+            "object": "connection",
+            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "state": "active",
+            "name": "Acme SSO",
+            "connection_type": "OktaSAML",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["state"] == data["state"]
+        assert serialized["name"] == data["name"]
+        assert serialized["connection_type"] == data["connection_type"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_connection_deleted_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "connection",
+            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "state": "active",
+            "name": "Acme SSO",
+            "connection_type": "OktaSAML",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
+
+    def test_connection_deleted_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "connection",
+            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "state": "unexpected_connection_deleted_data_state",
+            "name": "Acme SSO",
+            "connection_type": "OktaSAML",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionDeletedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_deleted_context_round_trip(self):
+        data = load_fixture("connection_deleted_context.json")
+        instance = ConnectionDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_deleted_context_minimal_payload(self):
+        data = {}
+        instance = ConnectionDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_connection_deleted_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = ConnectionDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_connection_deleted_context_google_analytics_session_round_trip(self):
+        data = load_fixture("connection_deleted_context_google_analytics_session.json")
+        instance = ConnectionDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeletedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_deleted_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ConnectionDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_connection_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ConnectionDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_connection_deleted_context_actor_round_trip(self):
+        data = load_fixture("connection_deleted_context_actor.json")
+        instance = ConnectionDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ConnectionDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_connection_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ConnectionDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_connection_deleted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_connection_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = ConnectionDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_saml_certificate_renewal_required_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewal_required.json")
+        instance = ConnectionSAMLCertificateRenewalRequired.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewalRequired.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewal_required_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.saml_certificate_renewal_required",
+            "data": {
+                "connection": {
+                    "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "certificate": {
+                    "certificate_type": "ResponseSigning",
+                    "expiry_date": "2026-01-15T12:00:00.000Z",
+                    "is_expired": False,
+                },
+                "days_until_expiry": 30,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ConnectionSAMLCertificateRenewalRequired.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_connection_saml_certificate_renewal_required_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.saml_certificate_renewal_required",
+            "data": {
+                "connection": {
+                    "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "certificate": {
+                    "certificate_type": "ResponseSigning",
+                    "expiry_date": "2026-01-15T12:00:00.000Z",
+                    "is_expired": False,
+                },
+                "days_until_expiry": 30,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ConnectionSAMLCertificateRenewalRequired.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_connection_saml_certificate_renewal_required_data_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewal_required_data.json")
+        instance = ConnectionSAMLCertificateRenewalRequiredData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewalRequiredData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewal_required_data_minimal_payload(self):
+        data = {
+            "connection": {
+                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "certificate": {
+                "certificate_type": "ResponseSigning",
+                "expiry_date": "2026-01-15T12:00:00.000Z",
+                "is_expired": False,
+            },
+            "days_until_expiry": 30,
+        }
+        instance = ConnectionSAMLCertificateRenewalRequiredData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["connection"] == data["connection"]
+        assert serialized["certificate"] == data["certificate"]
+        assert serialized["days_until_expiry"] == data["days_until_expiry"]
+
+    def test_connection_saml_certificate_renewal_required_data_connection_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "connection_saml_certificate_renewal_required_data_connection.json"
+        )
+        instance = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewal_required_data_connection_minimal_payload(
+        self,
+    ):
+        data = {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+
+    def test_connection_saml_certificate_renewal_required_data_connection_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
+
+    def test_connection_saml_certificate_renewal_required_data_certificate_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "connection_saml_certificate_renewal_required_data_certificate.json"
+        )
+        instance = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewal_required_data_certificate_minimal_payload(
+        self,
+    ):
+        data = {
+            "certificate_type": "ResponseSigning",
+            "expiry_date": "2026-01-15T12:00:00.000Z",
+            "is_expired": False,
+        }
+        instance = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["certificate_type"] == data["certificate_type"]
+        assert serialized["expiry_date"] == data["expiry_date"]
+        assert serialized["is_expired"] == data["is_expired"]
+
+    def test_connection_saml_certificate_renewal_required_data_certificate_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "certificate_type": "unexpected_connection_saml_certificate_renewal_required_data_certificate_certificate_type",
+            "expiry_date": "2026-01-15T12:00:00.000Z",
+            "is_expired": False,
+        }
+        instance = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(
+            data
+        )
+        assert instance.to_dict() == data
+
+    def test_connection_saml_certificate_renewal_required_context_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewal_required_context.json")
+        instance = ConnectionSAMLCertificateRenewalRequiredContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewalRequiredContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewal_required_context_minimal_payload(self):
+        data = {}
+        instance = ConnectionSAMLCertificateRenewalRequiredContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_connection_saml_certificate_renewal_required_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = ConnectionSAMLCertificateRenewalRequiredContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_connection_saml_certificate_renewal_required_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "connection_saml_certificate_renewal_required_context_google_analytics_session.json"
+        )
+        instance = ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewal_required_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_connection_saml_certificate_renewal_required_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_connection_saml_certificate_renewal_required_context_actor_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "connection_saml_certificate_renewal_required_context_actor.json"
+        )
+        instance = ConnectionSAMLCertificateRenewalRequiredContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewalRequiredContextActor.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewal_required_context_actor_minimal_payload(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ConnectionSAMLCertificateRenewalRequiredContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_connection_saml_certificate_renewal_required_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ConnectionSAMLCertificateRenewalRequiredContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_connection_saml_certificate_renewal_required_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_connection_saml_certificate_renewal_required_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = ConnectionSAMLCertificateRenewalRequiredContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_saml_certificate_renewed_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewed.json")
+        instance = ConnectionSAMLCertificateRenewed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.saml_certificate_renewed",
+            "data": {
+                "connection": {
+                    "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "certificate": {
+                    "certificate_type": "ResponseSigning",
+                    "expiry_date": "2026-01-15T12:00:00.000Z",
+                },
+                "renewed_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ConnectionSAMLCertificateRenewed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_connection_saml_certificate_renewed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "connection.saml_certificate_renewed",
+            "data": {
+                "connection": {
+                    "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                },
+                "certificate": {
+                    "certificate_type": "ResponseSigning",
+                    "expiry_date": "2026-01-15T12:00:00.000Z",
+                },
+                "renewed_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = ConnectionSAMLCertificateRenewed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_connection_saml_certificate_renewed_data_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewed_data.json")
+        instance = ConnectionSAMLCertificateRenewedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewed_data_minimal_payload(self):
+        data = {
+            "connection": {
+                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "certificate": {
+                "certificate_type": "ResponseSigning",
+                "expiry_date": "2026-01-15T12:00:00.000Z",
+            },
+            "renewed_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionSAMLCertificateRenewedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["connection"] == data["connection"]
+        assert serialized["certificate"] == data["certificate"]
+        assert serialized["renewed_at"] == data["renewed_at"]
+
+    def test_connection_saml_certificate_renewed_data_connection_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewed_data_connection.json")
+        instance = ConnectionSAMLCertificateRenewedDataConnection.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewedDataConnection.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewed_data_connection_minimal_payload(self):
+        data = {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = ConnectionSAMLCertificateRenewedDataConnection.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+
+    def test_connection_saml_certificate_renewed_data_connection_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY"}
+        instance = ConnectionSAMLCertificateRenewedDataConnection.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
+
+    def test_connection_saml_certificate_renewed_data_certificate_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewed_data_certificate.json")
+        instance = ConnectionSAMLCertificateRenewedDataCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewedDataCertificate.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewed_data_certificate_minimal_payload(self):
+        data = {
+            "certificate_type": "ResponseSigning",
+            "expiry_date": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionSAMLCertificateRenewedDataCertificate.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["certificate_type"] == data["certificate_type"]
+        assert serialized["expiry_date"] == data["expiry_date"]
+
+    def test_connection_saml_certificate_renewed_data_certificate_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "certificate_type": "unexpected_connection_saml_certificate_renewed_data_certificate_certificate_type",
+            "expiry_date": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectionSAMLCertificateRenewedDataCertificate.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_connection_saml_certificate_renewed_context_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewed_context.json")
+        instance = ConnectionSAMLCertificateRenewedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewed_context_minimal_payload(self):
+        data = {}
+        instance = ConnectionSAMLCertificateRenewedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_connection_saml_certificate_renewed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = ConnectionSAMLCertificateRenewedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_connection_saml_certificate_renewed_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "connection_saml_certificate_renewed_context_google_analytics_session.json"
+        )
+        instance = (
+            ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_connection_saml_certificate_renewed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_connection_saml_certificate_renewed_context_actor_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewed_context_actor.json")
+        instance = ConnectionSAMLCertificateRenewedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ConnectionSAMLCertificateRenewedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_connection_saml_certificate_renewed_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ConnectionSAMLCertificateRenewedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_connection_saml_certificate_renewed_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = ConnectionSAMLCertificateRenewedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_connection_saml_certificate_renewed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_connection_saml_certificate_renewed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = ConnectionSAMLCertificateRenewedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_activated_round_trip(self):
+        data = load_fixture("dsync_activated.json")
+        instance = DsyncActivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncActivated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_activated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.activated",
+            "data": {
+                "object": "directory",
+                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "okta scim v2.0",
+                "state": "active",
+                "name": "Acme Directory",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "domains": [
+                    {
+                        "object": "organization_domain",
+                        "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "domain": "acme.com",
+                    }
+                ],
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncActivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_activated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.activated",
+            "data": {
+                "object": "directory",
+                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "okta scim v2.0",
+                "state": "active",
+                "name": "Acme Directory",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "domains": [
+                    {
+                        "object": "organization_domain",
+                        "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "domain": "acme.com",
+                    }
+                ],
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncActivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_activated_data_round_trip(self):
+        data = load_fixture("dsync_activated_data.json")
+        instance = DsyncActivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncActivatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_activated_data_minimal_payload(self):
+        data = {
+            "object": "directory",
+            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "okta scim v2.0",
+            "state": "active",
+            "name": "Acme Directory",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = DsyncActivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["type"] == data["type"]
+        assert serialized["state"] == data["state"]
+        assert serialized["name"] == data["name"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["external_key"] == data["external_key"]
+        assert serialized["domains"] == data["domains"]
+
+    def test_dsync_activated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory",
+            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "okta scim v2.0",
+            "state": "active",
+            "name": "Acme Directory",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = DsyncActivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
+
+    def test_dsync_activated_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "directory",
+            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "unexpected_dsync_activated_data_type",
+            "state": "active",
+            "name": "Acme Directory",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = DsyncActivatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_activated_data_domain_round_trip(self):
+        data = load_fixture("dsync_activated_data_domain.json")
+        instance = DsyncActivatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncActivatedDataDomain.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_activated_data_domain_minimal_payload(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "domain": "acme.com",
+        }
+        instance = DsyncActivatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["domain"] == data["domain"]
+
+    def test_dsync_activated_context_round_trip(self):
+        data = load_fixture("dsync_activated_context.json")
+        instance = DsyncActivatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncActivatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_activated_context_minimal_payload(self):
+        data = {}
+        instance = DsyncActivatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_activated_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = DsyncActivatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_activated_context_google_analytics_session_round_trip(self):
+        data = load_fixture("dsync_activated_context_google_analytics_session.json")
+        instance = DsyncActivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncActivatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_activated_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncActivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_activated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncActivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_activated_context_actor_round_trip(self):
+        data = load_fixture("dsync_activated_context_actor.json")
+        instance = DsyncActivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncActivatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_activated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncActivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_activated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncActivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_activated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_activated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncActivatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_deactivated_round_trip(self):
+        data = load_fixture("dsync_deactivated.json")
+        instance = DsyncDeactivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeactivated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deactivated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.deactivated",
+            "data": {
+                "object": "directory",
+                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "okta scim v2.0",
+                "state": "active",
+                "name": "Acme Directory",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "domains": [
+                    {
+                        "object": "organization_domain",
+                        "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "domain": "acme.com",
+                    }
+                ],
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncDeactivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_deactivated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.deactivated",
+            "data": {
+                "object": "directory",
+                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "okta scim v2.0",
+                "state": "active",
+                "name": "Acme Directory",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "domains": [
+                    {
+                        "object": "organization_domain",
+                        "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "domain": "acme.com",
+                    }
+                ],
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncDeactivated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_deactivated_data_round_trip(self):
+        data = load_fixture("dsync_deactivated_data.json")
+        instance = DsyncDeactivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeactivatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deactivated_data_minimal_payload(self):
+        data = {
+            "object": "directory",
+            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "okta scim v2.0",
+            "state": "active",
+            "name": "Acme Directory",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = DsyncDeactivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["type"] == data["type"]
+        assert serialized["state"] == data["state"]
+        assert serialized["name"] == data["name"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["external_key"] == data["external_key"]
+        assert serialized["domains"] == data["domains"]
+
+    def test_dsync_deactivated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory",
+            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "okta scim v2.0",
+            "state": "active",
+            "name": "Acme Directory",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = DsyncDeactivatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
+
+    def test_dsync_deactivated_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "directory",
+            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "unexpected_dsync_deactivated_data_type",
+            "state": "active",
+            "name": "Acme Directory",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "domain": "acme.com",
+                }
+            ],
+        }
+        instance = DsyncDeactivatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_deactivated_data_domain_round_trip(self):
+        data = load_fixture("dsync_deactivated_data_domain.json")
+        instance = DsyncDeactivatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeactivatedDataDomain.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deactivated_data_domain_minimal_payload(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "domain": "acme.com",
+        }
+        instance = DsyncDeactivatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["domain"] == data["domain"]
+
+    def test_dsync_deactivated_context_round_trip(self):
+        data = load_fixture("dsync_deactivated_context.json")
+        instance = DsyncDeactivatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeactivatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deactivated_context_minimal_payload(self):
+        data = {}
+        instance = DsyncDeactivatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_deactivated_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = DsyncDeactivatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_deactivated_context_google_analytics_session_round_trip(self):
+        data = load_fixture("dsync_deactivated_context_google_analytics_session.json")
+        instance = DsyncDeactivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeactivatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deactivated_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncDeactivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_deactivated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncDeactivatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_deactivated_context_actor_round_trip(self):
+        data = load_fixture("dsync_deactivated_context_actor.json")
+        instance = DsyncDeactivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeactivatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deactivated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncDeactivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_deactivated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncDeactivatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_deactivated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_deactivated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncDeactivatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_deleted_round_trip(self):
+        data = load_fixture("dsync_deleted.json")
+        instance = DsyncDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.deleted",
+            "data": {
+                "object": "directory",
+                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "okta scim v2.0",
+                "state": "active",
+                "name": "Acme Directory",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.deleted",
+            "data": {
+                "object": "directory",
+                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "type": "okta scim v2.0",
+                "state": "active",
+                "name": "Acme Directory",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_deleted_data_round_trip(self):
+        data = load_fixture("dsync_deleted_data.json")
+        instance = DsyncDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deleted_data_minimal_payload(self):
+        data = {
+            "object": "directory",
+            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "okta scim v2.0",
+            "state": "active",
+            "name": "Acme Directory",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["type"] == data["type"]
+        assert serialized["state"] == data["state"]
+        assert serialized["name"] == data["name"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_deleted_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory",
+            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "okta scim v2.0",
+            "state": "active",
+            "name": "Acme Directory",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "organization_id" not in serialized
+
+    def test_dsync_deleted_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "directory",
+            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "type": "unexpected_dsync_deleted_data_type",
+            "state": "active",
+            "name": "Acme Directory",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncDeletedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_deleted_context_round_trip(self):
+        data = load_fixture("dsync_deleted_context.json")
+        instance = DsyncDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deleted_context_minimal_payload(self):
+        data = {}
+        instance = DsyncDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_deleted_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = DsyncDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_deleted_context_google_analytics_session_round_trip(self):
+        data = load_fixture("dsync_deleted_context_google_analytics_session.json")
+        instance = DsyncDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeletedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deleted_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_deleted_context_actor_round_trip(self):
+        data = load_fixture("dsync_deleted_context_actor.json")
+        instance = DsyncDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_deleted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_group_created_round_trip(self):
+        data = load_fixture("dsync_group_created.json")
+        instance = DsyncGroupCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.group.created",
+            "data": {
+                "object": "directory_group",
+                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                "idp_id": "02grqrue4294w24",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "name": "Developers",
+                "raw_attributes": {"key": {}},
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncGroupCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_group_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.group.created",
+            "data": {
+                "object": "directory_group",
+                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                "idp_id": "02grqrue4294w24",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "name": "Developers",
+                "raw_attributes": {"key": {}},
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncGroupCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_group_created_data_round_trip(self):
+        data = load_fixture("dsync_group_created_data.json")
+        instance = DsyncGroupCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_created_data_minimal_payload(self):
+        data = {
+            "object": "directory_group",
+            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+            "idp_id": "02grqrue4294w24",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "name": "Developers",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_group_created_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory_group",
+            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+            "idp_id": "02grqrue4294w24",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "name": "Developers",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "raw_attributes" not in serialized
+
+    def test_dsync_group_created_context_round_trip(self):
+        data = load_fixture("dsync_group_created_context.json")
+        instance = DsyncGroupCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_created_context_minimal_payload(self):
+        data = {}
+        instance = DsyncGroupCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_group_created_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = DsyncGroupCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_group_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("dsync_group_created_context_google_analytics_session.json")
+        instance = DsyncGroupCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncGroupCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_group_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncGroupCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_group_created_context_actor_round_trip(self):
+        data = load_fixture("dsync_group_created_context_actor.json")
+        instance = DsyncGroupCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncGroupCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_group_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncGroupCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_group_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_group_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncGroupCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_group_deleted_round_trip(self):
+        data = load_fixture("dsync_group_deleted.json")
+        instance = DsyncGroupDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.group.deleted",
+            "data": {
+                "object": "directory_group",
+                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                "idp_id": "02grqrue4294w24",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "name": "Developers",
+                "raw_attributes": {"key": {}},
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncGroupDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_group_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.group.deleted",
+            "data": {
+                "object": "directory_group",
+                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                "idp_id": "02grqrue4294w24",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "name": "Developers",
+                "raw_attributes": {"key": {}},
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncGroupDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_group_deleted_data_round_trip(self):
+        data = load_fixture("dsync_group_deleted_data.json")
+        instance = DsyncGroupDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_deleted_data_minimal_payload(self):
+        data = {
+            "object": "directory_group",
+            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+            "idp_id": "02grqrue4294w24",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "name": "Developers",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_group_deleted_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory_group",
+            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+            "idp_id": "02grqrue4294w24",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "name": "Developers",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "raw_attributes" not in serialized
+
+    def test_dsync_group_deleted_context_round_trip(self):
+        data = load_fixture("dsync_group_deleted_context.json")
+        instance = DsyncGroupDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_deleted_context_minimal_payload(self):
+        data = {}
+        instance = DsyncGroupDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_group_deleted_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = DsyncGroupDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_group_deleted_context_google_analytics_session_round_trip(self):
+        data = load_fixture("dsync_group_deleted_context_google_analytics_session.json")
+        instance = DsyncGroupDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupDeletedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_deleted_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncGroupDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_group_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncGroupDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_group_deleted_context_actor_round_trip(self):
+        data = load_fixture("dsync_group_deleted_context_actor.json")
+        instance = DsyncGroupDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncGroupDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_group_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncGroupDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_group_deleted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_group_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncGroupDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_group_updated_round_trip(self):
+        data = load_fixture("dsync_group_updated.json")
+        instance = DsyncGroupUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.group.updated",
+            "data": {
+                "object": "directory_group",
+                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                "idp_id": "02grqrue4294w24",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "name": "Developers",
+                "raw_attributes": {"key": {}},
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "previous_attributes": {"key": {}},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncGroupUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_group_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.group.updated",
+            "data": {
+                "object": "directory_group",
+                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                "idp_id": "02grqrue4294w24",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "name": "Developers",
+                "raw_attributes": {"key": {}},
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "previous_attributes": {"key": {}},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncGroupUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_group_updated_data_round_trip(self):
+        data = load_fixture("dsync_group_updated_data.json")
+        instance = DsyncGroupUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_updated_data_minimal_payload(self):
+        data = {
+            "object": "directory_group",
+            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+            "idp_id": "02grqrue4294w24",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "name": "Developers",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_group_updated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory_group",
+            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+            "idp_id": "02grqrue4294w24",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "name": "Developers",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "raw_attributes" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_group_updated_context_round_trip(self):
+        data = load_fixture("dsync_group_updated_context.json")
+        instance = DsyncGroupUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_updated_context_minimal_payload(self):
+        data = {}
+        instance = DsyncGroupUpdatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_group_updated_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = DsyncGroupUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_group_updated_context_google_analytics_session_round_trip(self):
+        data = load_fixture("dsync_group_updated_context_google_analytics_session.json")
+        instance = DsyncGroupUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_updated_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncGroupUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_group_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncGroupUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_group_updated_context_actor_round_trip(self):
+        data = load_fixture("dsync_group_updated_context_actor.json")
+        instance = DsyncGroupUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncGroupUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_group_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncGroupUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_group_updated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_group_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncGroupUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_group_user_added_round_trip(self):
+        data = load_fixture("dsync_group_user_added.json")
+        instance = DsyncGroupUserAdded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserAdded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_added_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.group.user_added",
+            "data": {
+                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "user": {
+                    "object": "directory_user",
+                    "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                    "idp_id": "2836",
+                    "email": "marcelina.davis@example.com",
+                    "first_name": "Marcelina",
+                    "last_name": "Davis",
+                    "emails": [
+                        {
+                            "primary": True,
+                            "type": "work",
+                            "value": "marcelina.davis@example.com",
+                        }
+                    ],
+                    "job_title": "Software Engineer",
+                    "username": "mdavis",
+                    "state": "active",
+                    "raw_attributes": {"key": {}},
+                    "custom_attributes": {
+                        "department": "Engineering",
+                        "job_title": "Software Engineer",
+                    },
+                    "role": {"slug": "admin"},
+                    "roles": [{"slug": "admin"}],
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                },
+                "group": {
+                    "object": "directory_group",
+                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                    "idp_id": "02grqrue4294w24",
+                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                    "name": "Developers",
+                    "raw_attributes": {"key": {}},
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncGroupUserAdded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_group_user_added_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.group.user_added",
+            "data": {
+                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "user": {
+                    "object": "directory_user",
+                    "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                    "idp_id": "2836",
+                    "email": "marcelina.davis@example.com",
+                    "first_name": "Marcelina",
+                    "last_name": "Davis",
+                    "emails": [
+                        {
+                            "primary": True,
+                            "type": "work",
+                            "value": "marcelina.davis@example.com",
+                        }
+                    ],
+                    "job_title": "Software Engineer",
+                    "username": "mdavis",
+                    "state": "active",
+                    "raw_attributes": {"key": {}},
+                    "custom_attributes": {
+                        "department": "Engineering",
+                        "job_title": "Software Engineer",
+                    },
+                    "role": {"slug": "admin"},
+                    "roles": [{"slug": "admin"}],
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                },
+                "group": {
+                    "object": "directory_group",
+                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                    "idp_id": "02grqrue4294w24",
+                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                    "name": "Developers",
+                    "raw_attributes": {"key": {}},
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncGroupUserAdded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_group_user_added_data_round_trip(self):
+        data = load_fixture("dsync_group_user_added_data.json")
+        instance = DsyncGroupUserAddedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserAddedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_added_data_minimal_payload(self):
+        data = {
+            "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user": {
+                "object": "directory_user",
+                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "idp_id": "2836",
+                "email": "marcelina.davis@example.com",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "work",
+                        "value": "marcelina.davis@example.com",
+                    }
+                ],
+                "job_title": "Software Engineer",
+                "username": "mdavis",
+                "state": "active",
+                "raw_attributes": {"key": {}},
+                "custom_attributes": {
+                    "department": "Engineering",
+                    "job_title": "Software Engineer",
+                },
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "group": {
+                "object": "directory_group",
+                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                "idp_id": "02grqrue4294w24",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "name": "Developers",
+                "raw_attributes": {"key": {}},
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+        }
+        instance = DsyncGroupUserAddedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["user"] == data["user"]
+        assert serialized["group"] == data["group"]
+
+    def test_dsync_group_user_added_data_user_round_trip(self):
+        data = load_fixture("dsync_group_user_added_data_user.json")
+        instance = DsyncGroupUserAddedDataUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserAddedDataUser.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_added_data_user_minimal_payload(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserAddedDataUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["raw_attributes"] == data["raw_attributes"]
+        assert serialized["custom_attributes"] == data["custom_attributes"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_group_user_added_data_user_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserAddedDataUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert "emails" not in serialized
+        assert "role" not in serialized
+        assert "roles" not in serialized
+
+    def test_dsync_group_user_added_data_user_preserves_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "first_name": None,
+            "last_name": None,
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": None,
+            "username": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserAddedDataUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] is None
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["job_title"] is None
+        assert serialized["username"] is None
+
+    def test_dsync_group_user_added_data_user_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "unexpected_dsync_group_user_added_data_user_state",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserAddedDataUser.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_group_user_added_data_user_email_round_trip(self):
+        data = load_fixture("dsync_group_user_added_data_user_email.json")
+        instance = DsyncGroupUserAddedDataUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserAddedDataUserEmail.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_added_data_user_email_minimal_payload(self):
+        data = {}
+        instance = DsyncGroupUserAddedDataUserEmail.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_group_user_added_data_user_email_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"value": "marcelina.davis@example.com"}
+        instance = DsyncGroupUserAddedDataUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert "primary" not in serialized
+        assert "type" not in serialized
+
+    def test_dsync_group_user_added_data_user_email_preserves_nullable_fields(self):
+        data = {"primary": True, "type": "work", "value": None}
+        instance = DsyncGroupUserAddedDataUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["value"] is None
+
+    def test_dsync_group_user_added_data_user_role_round_trip(self):
+        data = load_fixture("dsync_group_user_added_data_user_role.json")
+        instance = DsyncGroupUserAddedDataUserRole.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserAddedDataUserRole.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_added_data_user_role_minimal_payload(self):
+        data = {"slug": "admin"}
+        instance = DsyncGroupUserAddedDataUserRole.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["slug"] == data["slug"]
+
+    def test_dsync_group_user_added_data_group_round_trip(self):
+        data = load_fixture("dsync_group_user_added_data_group.json")
+        instance = DsyncGroupUserAddedDataGroup.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserAddedDataGroup.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_added_data_group_minimal_payload(self):
+        data = {
+            "object": "directory_group",
+            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+            "idp_id": "02grqrue4294w24",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "name": "Developers",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserAddedDataGroup.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_group_user_added_data_group_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "directory_group",
+            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+            "idp_id": "02grqrue4294w24",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "name": "Developers",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserAddedDataGroup.from_dict(data)
+        serialized = instance.to_dict()
+        assert "raw_attributes" not in serialized
+
+    def test_dsync_group_user_added_context_round_trip(self):
+        data = load_fixture("dsync_group_user_added_context.json")
+        instance = DsyncGroupUserAddedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserAddedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_added_context_minimal_payload(self):
+        data = {}
+        instance = DsyncGroupUserAddedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_group_user_added_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = DsyncGroupUserAddedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_group_user_added_context_google_analytics_session_round_trip(self):
+        data = load_fixture(
+            "dsync_group_user_added_context_google_analytics_session.json"
+        )
+        instance = DsyncGroupUserAddedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserAddedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_added_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncGroupUserAddedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_group_user_added_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncGroupUserAddedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_group_user_added_context_actor_round_trip(self):
+        data = load_fixture("dsync_group_user_added_context_actor.json")
+        instance = DsyncGroupUserAddedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserAddedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_added_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncGroupUserAddedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_group_user_added_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncGroupUserAddedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_group_user_added_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_group_user_added_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncGroupUserAddedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_user_created_round_trip(self):
+        data = load_fixture("dsync_user_created.json")
+        instance = DsyncUserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.user.created",
+            "data": {
+                "object": "directory_user",
+                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "idp_id": "2836",
+                "email": "marcelina.davis@example.com",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "work",
+                        "value": "marcelina.davis@example.com",
+                    }
+                ],
+                "job_title": "Software Engineer",
+                "username": "mdavis",
+                "state": "active",
+                "raw_attributes": {"key": {}},
+                "custom_attributes": {
+                    "department": "Engineering",
+                    "job_title": "Software Engineer",
+                },
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncUserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_user_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.user.created",
+            "data": {
+                "object": "directory_user",
+                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "idp_id": "2836",
+                "email": "marcelina.davis@example.com",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "work",
+                        "value": "marcelina.davis@example.com",
+                    }
+                ],
+                "job_title": "Software Engineer",
+                "username": "mdavis",
+                "state": "active",
+                "raw_attributes": {"key": {}},
+                "custom_attributes": {
+                    "department": "Engineering",
+                    "job_title": "Software Engineer",
+                },
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncUserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_user_created_data_round_trip(self):
+        data = load_fixture("dsync_user_created_data.json")
+        instance = DsyncUserCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_created_data_minimal_payload(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncUserCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["raw_attributes"] == data["raw_attributes"]
+        assert serialized["custom_attributes"] == data["custom_attributes"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_user_created_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncUserCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "emails" not in serialized
+        assert "role" not in serialized
+        assert "roles" not in serialized
+
+    def test_dsync_user_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "first_name": None,
+            "last_name": None,
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": None,
+            "username": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncUserCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] is None
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["job_title"] is None
+        assert serialized["username"] is None
+
+    def test_dsync_user_created_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "unexpected_dsync_user_created_data_state",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncUserCreatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_user_created_data_email_round_trip(self):
+        data = load_fixture("dsync_user_created_data_email.json")
+        instance = DsyncUserCreatedDataEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserCreatedDataEmail.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_created_data_email_minimal_payload(self):
+        data = {}
+        instance = DsyncUserCreatedDataEmail.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_user_created_data_email_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"value": "marcelina.davis@example.com"}
+        instance = DsyncUserCreatedDataEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert "primary" not in serialized
+        assert "type" not in serialized
+
+    def test_dsync_user_created_data_email_preserves_nullable_fields(self):
+        data = {"primary": True, "type": "work", "value": None}
+        instance = DsyncUserCreatedDataEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["value"] is None
+
+    def test_dsync_user_created_data_role_round_trip(self):
+        data = load_fixture("dsync_user_created_data_role.json")
+        instance = DsyncUserCreatedDataRole.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserCreatedDataRole.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_created_data_role_minimal_payload(self):
+        data = {"slug": "admin"}
+        instance = DsyncUserCreatedDataRole.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["slug"] == data["slug"]
+
+    def test_dsync_user_created_context_round_trip(self):
+        data = load_fixture("dsync_user_created_context.json")
+        instance = DsyncUserCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_created_context_minimal_payload(self):
+        data = {}
+        instance = DsyncUserCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_user_created_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = DsyncUserCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_user_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("dsync_user_created_context_google_analytics_session.json")
+        instance = DsyncUserCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncUserCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_user_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncUserCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_user_created_context_actor_round_trip(self):
+        data = load_fixture("dsync_user_created_context_actor.json")
+        instance = DsyncUserCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncUserCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_user_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncUserCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_user_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_user_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncUserCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_user_deleted_round_trip(self):
+        data = load_fixture("dsync_user_deleted.json")
+        instance = DsyncUserDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.user.deleted",
+            "data": {
+                "object": "directory_user",
+                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "idp_id": "2836",
+                "email": "marcelina.davis@example.com",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "work",
+                        "value": "marcelina.davis@example.com",
+                    }
+                ],
+                "job_title": "Software Engineer",
+                "username": "mdavis",
+                "state": "active",
+                "raw_attributes": {"key": {}},
+                "custom_attributes": {
+                    "department": "Engineering",
+                    "job_title": "Software Engineer",
+                },
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncUserDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_user_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.user.deleted",
+            "data": {
+                "object": "directory_user",
+                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "idp_id": "2836",
+                "email": "marcelina.davis@example.com",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "work",
+                        "value": "marcelina.davis@example.com",
+                    }
+                ],
+                "job_title": "Software Engineer",
+                "username": "mdavis",
+                "state": "active",
+                "raw_attributes": {"key": {}},
+                "custom_attributes": {
+                    "department": "Engineering",
+                    "job_title": "Software Engineer",
+                },
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncUserDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_user_deleted_data_round_trip(self):
+        data = load_fixture("dsync_user_deleted_data.json")
+        instance = DsyncUserDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_deleted_data_minimal_payload(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncUserDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["raw_attributes"] == data["raw_attributes"]
+        assert serialized["custom_attributes"] == data["custom_attributes"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_user_deleted_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncUserDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "emails" not in serialized
+        assert "role" not in serialized
+        assert "roles" not in serialized
+
+    def test_dsync_user_deleted_data_preserves_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "first_name": None,
+            "last_name": None,
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": None,
+            "username": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncUserDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] is None
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["job_title"] is None
+        assert serialized["username"] is None
+
+    def test_dsync_user_deleted_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "unexpected_dsync_user_deleted_data_state",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncUserDeletedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_user_deleted_data_email_round_trip(self):
+        data = load_fixture("dsync_user_deleted_data_email.json")
+        instance = DsyncUserDeletedDataEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserDeletedDataEmail.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_deleted_data_email_minimal_payload(self):
+        data = {}
+        instance = DsyncUserDeletedDataEmail.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_user_deleted_data_email_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"value": "marcelina.davis@example.com"}
+        instance = DsyncUserDeletedDataEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert "primary" not in serialized
+        assert "type" not in serialized
+
+    def test_dsync_user_deleted_data_email_preserves_nullable_fields(self):
+        data = {"primary": True, "type": "work", "value": None}
+        instance = DsyncUserDeletedDataEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["value"] is None
+
+    def test_dsync_user_deleted_data_role_round_trip(self):
+        data = load_fixture("dsync_user_deleted_data_role.json")
+        instance = DsyncUserDeletedDataRole.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserDeletedDataRole.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_deleted_data_role_minimal_payload(self):
+        data = {"slug": "admin"}
+        instance = DsyncUserDeletedDataRole.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["slug"] == data["slug"]
+
+    def test_dsync_user_deleted_context_round_trip(self):
+        data = load_fixture("dsync_user_deleted_context.json")
+        instance = DsyncUserDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_deleted_context_minimal_payload(self):
+        data = {}
+        instance = DsyncUserDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_user_deleted_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = DsyncUserDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_user_deleted_context_google_analytics_session_round_trip(self):
+        data = load_fixture("dsync_user_deleted_context_google_analytics_session.json")
+        instance = DsyncUserDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserDeletedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_deleted_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncUserDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_user_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncUserDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_user_deleted_context_actor_round_trip(self):
+        data = load_fixture("dsync_user_deleted_context_actor.json")
+        instance = DsyncUserDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncUserDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_user_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncUserDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_user_deleted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_user_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncUserDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_group_user_removed_round_trip(self):
+        data = load_fixture("dsync_group_user_removed.json")
+        instance = DsyncGroupUserRemoved.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserRemoved.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_removed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.group.user_removed",
+            "data": {
+                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "user": {
+                    "object": "directory_user",
+                    "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                    "idp_id": "2836",
+                    "email": "marcelina.davis@example.com",
+                    "first_name": "Marcelina",
+                    "last_name": "Davis",
+                    "emails": [
+                        {
+                            "primary": True,
+                            "type": "work",
+                            "value": "marcelina.davis@example.com",
+                        }
+                    ],
+                    "job_title": "Software Engineer",
+                    "username": "mdavis",
+                    "state": "active",
+                    "raw_attributes": {"key": {}},
+                    "custom_attributes": {
+                        "department": "Engineering",
+                        "job_title": "Software Engineer",
+                    },
+                    "role": {"slug": "admin"},
+                    "roles": [{"slug": "admin"}],
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                },
+                "group": {
+                    "object": "directory_group",
+                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                    "idp_id": "02grqrue4294w24",
+                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                    "name": "Developers",
+                    "raw_attributes": {"key": {}},
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncGroupUserRemoved.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_group_user_removed_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.group.user_removed",
+            "data": {
+                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "user": {
+                    "object": "directory_user",
+                    "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                    "idp_id": "2836",
+                    "email": "marcelina.davis@example.com",
+                    "first_name": "Marcelina",
+                    "last_name": "Davis",
+                    "emails": [
+                        {
+                            "primary": True,
+                            "type": "work",
+                            "value": "marcelina.davis@example.com",
+                        }
+                    ],
+                    "job_title": "Software Engineer",
+                    "username": "mdavis",
+                    "state": "active",
+                    "raw_attributes": {"key": {}},
+                    "custom_attributes": {
+                        "department": "Engineering",
+                        "job_title": "Software Engineer",
+                    },
+                    "role": {"slug": "admin"},
+                    "roles": [{"slug": "admin"}],
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                },
+                "group": {
+                    "object": "directory_group",
+                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                    "idp_id": "02grqrue4294w24",
+                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                    "name": "Developers",
+                    "raw_attributes": {"key": {}},
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncGroupUserRemoved.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_group_user_removed_data_round_trip(self):
+        data = load_fixture("dsync_group_user_removed_data.json")
+        instance = DsyncGroupUserRemovedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserRemovedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_removed_data_minimal_payload(self):
+        data = {
+            "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user": {
+                "object": "directory_user",
+                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "idp_id": "2836",
+                "email": "marcelina.davis@example.com",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "work",
+                        "value": "marcelina.davis@example.com",
+                    }
+                ],
+                "job_title": "Software Engineer",
+                "username": "mdavis",
+                "state": "active",
+                "raw_attributes": {"key": {}},
+                "custom_attributes": {
+                    "department": "Engineering",
+                    "job_title": "Software Engineer",
+                },
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "group": {
+                "object": "directory_group",
+                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+                "idp_id": "02grqrue4294w24",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "name": "Developers",
+                "raw_attributes": {"key": {}},
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+        }
+        instance = DsyncGroupUserRemovedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["user"] == data["user"]
+        assert serialized["group"] == data["group"]
+
+    def test_dsync_group_user_removed_data_user_round_trip(self):
+        data = load_fixture("dsync_group_user_removed_data_user.json")
+        instance = DsyncGroupUserRemovedDataUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserRemovedDataUser.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_removed_data_user_minimal_payload(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserRemovedDataUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["raw_attributes"] == data["raw_attributes"]
+        assert serialized["custom_attributes"] == data["custom_attributes"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_group_user_removed_data_user_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserRemovedDataUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert "emails" not in serialized
+        assert "role" not in serialized
+        assert "roles" not in serialized
+
+    def test_dsync_group_user_removed_data_user_preserves_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "first_name": None,
+            "last_name": None,
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": None,
+            "username": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserRemovedDataUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] is None
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["job_title"] is None
+        assert serialized["username"] is None
+
+    def test_dsync_group_user_removed_data_user_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "unexpected_dsync_group_user_removed_data_user_state",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserRemovedDataUser.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_group_user_removed_data_user_email_round_trip(self):
+        data = load_fixture("dsync_group_user_removed_data_user_email.json")
+        instance = DsyncGroupUserRemovedDataUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserRemovedDataUserEmail.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_removed_data_user_email_minimal_payload(self):
+        data = {}
+        instance = DsyncGroupUserRemovedDataUserEmail.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_group_user_removed_data_user_email_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"value": "marcelina.davis@example.com"}
+        instance = DsyncGroupUserRemovedDataUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert "primary" not in serialized
+        assert "type" not in serialized
+
+    def test_dsync_group_user_removed_data_user_email_preserves_nullable_fields(self):
+        data = {"primary": True, "type": "work", "value": None}
+        instance = DsyncGroupUserRemovedDataUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["value"] is None
+
+    def test_dsync_group_user_removed_data_user_role_round_trip(self):
+        data = load_fixture("dsync_group_user_removed_data_user_role.json")
+        instance = DsyncGroupUserRemovedDataUserRole.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserRemovedDataUserRole.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_removed_data_user_role_minimal_payload(self):
+        data = {"slug": "admin"}
+        instance = DsyncGroupUserRemovedDataUserRole.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["slug"] == data["slug"]
+
+    def test_dsync_group_user_removed_data_group_round_trip(self):
+        data = load_fixture("dsync_group_user_removed_data_group.json")
+        instance = DsyncGroupUserRemovedDataGroup.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserRemovedDataGroup.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_removed_data_group_minimal_payload(self):
+        data = {
+            "object": "directory_group",
+            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+            "idp_id": "02grqrue4294w24",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "name": "Developers",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserRemovedDataGroup.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_group_user_removed_data_group_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "directory_group",
+            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
+            "idp_id": "02grqrue4294w24",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "name": "Developers",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncGroupUserRemovedDataGroup.from_dict(data)
+        serialized = instance.to_dict()
+        assert "raw_attributes" not in serialized
+
+    def test_dsync_group_user_removed_context_round_trip(self):
+        data = load_fixture("dsync_group_user_removed_context.json")
+        instance = DsyncGroupUserRemovedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserRemovedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_removed_context_minimal_payload(self):
+        data = {}
+        instance = DsyncGroupUserRemovedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_group_user_removed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = DsyncGroupUserRemovedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_group_user_removed_context_google_analytics_session_round_trip(self):
+        data = load_fixture(
+            "dsync_group_user_removed_context_google_analytics_session.json"
+        )
+        instance = DsyncGroupUserRemovedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserRemovedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_removed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncGroupUserRemovedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_group_user_removed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncGroupUserRemovedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_group_user_removed_context_actor_round_trip(self):
+        data = load_fixture("dsync_group_user_removed_context_actor.json")
+        instance = DsyncGroupUserRemovedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncGroupUserRemovedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_group_user_removed_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncGroupUserRemovedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_group_user_removed_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncGroupUserRemovedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_group_user_removed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_group_user_removed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncGroupUserRemovedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_user_updated_round_trip(self):
+        data = load_fixture("dsync_user_updated.json")
+        instance = DsyncUserUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.user.updated",
+            "data": {
+                "object": "directory_user",
+                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "idp_id": "2836",
+                "email": "marcelina.davis@example.com",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "work",
+                        "value": "marcelina.davis@example.com",
+                    }
+                ],
+                "job_title": "Software Engineer",
+                "username": "mdavis",
+                "state": "active",
+                "raw_attributes": {"key": {}},
+                "custom_attributes": {
+                    "department": "Engineering",
+                    "job_title": "Software Engineer",
+                },
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "previous_attributes": {"key": {}},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncUserUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_dsync_user_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "dsync.user.updated",
+            "data": {
+                "object": "directory_user",
+                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+                "idp_id": "2836",
+                "email": "marcelina.davis@example.com",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "work",
+                        "value": "marcelina.davis@example.com",
+                    }
+                ],
+                "job_title": "Software Engineer",
+                "username": "mdavis",
+                "state": "active",
+                "raw_attributes": {"key": {}},
+                "custom_attributes": {
+                    "department": "Engineering",
+                    "job_title": "Software Engineer",
+                },
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "previous_attributes": {"key": {}},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = DsyncUserUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_dsync_user_updated_data_round_trip(self):
+        data = load_fixture("dsync_user_updated_data.json")
+        instance = DsyncUserUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_updated_data_minimal_payload(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncUserUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["raw_attributes"] == data["raw_attributes"]
+        assert serialized["custom_attributes"] == data["custom_attributes"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_dsync_user_updated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DsyncUserUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "emails" not in serialized
+        assert "role" not in serialized
+        assert "roles" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_user_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "first_name": None,
+            "last_name": None,
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": None,
+            "username": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "previous_attributes": {"key": {}},
+        }
+        instance = DsyncUserUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] is None
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["job_title"] is None
+        assert serialized["username"] is None
+
+    def test_dsync_user_updated_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "unexpected_dsync_user_updated_data_state",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+            "previous_attributes": {"key": {}},
+        }
+        instance = DsyncUserUpdatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_dsync_user_updated_data_email_round_trip(self):
+        data = load_fixture("dsync_user_updated_data_email.json")
+        instance = DsyncUserUpdatedDataEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserUpdatedDataEmail.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_updated_data_email_minimal_payload(self):
+        data = {}
+        instance = DsyncUserUpdatedDataEmail.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_user_updated_data_email_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"value": "marcelina.davis@example.com"}
+        instance = DsyncUserUpdatedDataEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert "primary" not in serialized
+        assert "type" not in serialized
+
+    def test_dsync_user_updated_data_email_preserves_nullable_fields(self):
+        data = {"primary": True, "type": "work", "value": None}
+        instance = DsyncUserUpdatedDataEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["value"] is None
+
+    def test_dsync_user_updated_data_role_round_trip(self):
+        data = load_fixture("dsync_user_updated_data_role.json")
+        instance = DsyncUserUpdatedDataRole.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserUpdatedDataRole.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_updated_data_role_minimal_payload(self):
+        data = {"slug": "admin"}
+        instance = DsyncUserUpdatedDataRole.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["slug"] == data["slug"]
+
+    def test_dsync_user_updated_context_round_trip(self):
+        data = load_fixture("dsync_user_updated_context.json")
+        instance = DsyncUserUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_updated_context_minimal_payload(self):
+        data = {}
+        instance = DsyncUserUpdatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_dsync_user_updated_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = DsyncUserUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_dsync_user_updated_context_google_analytics_session_round_trip(self):
+        data = load_fixture("dsync_user_updated_context_google_analytics_session.json")
+        instance = DsyncUserUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_updated_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncUserUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_dsync_user_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = DsyncUserUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_dsync_user_updated_context_actor_round_trip(self):
+        data = load_fixture("dsync_user_updated_context_actor.json")
+        instance = DsyncUserUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DsyncUserUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_dsync_user_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncUserUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_dsync_user_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = DsyncUserUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_dsync_user_updated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_dsync_user_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = DsyncUserUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_email_verification_created_round_trip(self):
+        data = load_fixture("email_verification_created.json")
+        instance = EmailVerificationCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailVerificationCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_verification_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "email_verification.created",
+            "data": {
+                "object": "email_verification",
+                "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = EmailVerificationCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_email_verification_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "email_verification.created",
+            "data": {
+                "object": "email_verification",
+                "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = EmailVerificationCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_email_verification_created_data_round_trip(self):
+        data = load_fixture("email_verification_created_data.json")
+        instance = EmailVerificationCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailVerificationCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_verification_created_data_minimal_payload(self):
+        data = {
+            "object": "email_verification",
+            "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = EmailVerificationCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_email_verification_created_context_round_trip(self):
+        data = load_fixture("email_verification_created_context.json")
+        instance = EmailVerificationCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailVerificationCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_verification_created_context_minimal_payload(self):
+        data = {}
+        instance = EmailVerificationCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_email_verification_created_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = EmailVerificationCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_email_verification_created_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "email_verification_created_context_google_analytics_session.json"
+        )
+        instance = EmailVerificationCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailVerificationCreatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_email_verification_created_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = EmailVerificationCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_email_verification_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = EmailVerificationCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_email_verification_created_context_actor_round_trip(self):
+        data = load_fixture("email_verification_created_context_actor.json")
+        instance = EmailVerificationCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EmailVerificationCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_email_verification_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = EmailVerificationCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_email_verification_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = EmailVerificationCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_email_verification_created_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_email_verification_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = EmailVerificationCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_flag_created_round_trip(self):
+        data = load_fixture("flag_created.json")
+        instance = FlagCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "flag.created",
+            "data": {
+                "object": "feature_flag",
+                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "advanced-analytics",
+                "name": "Advanced Analytics",
+                "description": "Enable advanced analytics dashboard feature",
+                "owner": {
+                    "email": "jane@example.com",
+                    "first_name": "Jane",
+                    "last_name": "Doe",
+                },
+                "tags": ["reports"],
+                "enabled": True,
+                "default_value": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+            },
+            "object": "event",
+        }
+        instance = FlagCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+        assert serialized["object"] == data["object"]
+
+    def test_flag_created_data_round_trip(self):
+        data = load_fixture("flag_created_data.json")
+        instance = FlagCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_created_data_minimal_payload(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["owner"] == data["owner"]
+        assert serialized["tags"] == data["tags"]
+        assert serialized["enabled"] == data["enabled"]
+        assert serialized["default_value"] == data["default_value"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_flag_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+        assert serialized["owner"] is None
+
+    def test_flag_created_data_owner_round_trip(self):
+        data = load_fixture("flag_created_data_owner.json")
+        instance = FlagCreatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagCreatedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_created_data_owner_minimal_payload(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FlagCreatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+
+    def test_flag_created_data_owner_preserves_nullable_fields(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FlagCreatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+
+    def test_flag_created_context_round_trip(self):
+        data = load_fixture("flag_created_context.json")
+        instance = FlagCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_created_context_minimal_payload(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+        }
+        instance = FlagCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["actor"] == data["actor"]
+
+    def test_flag_created_context_actor_round_trip(self):
+        data = load_fixture("flag_created_context_actor.json")
+        instance = FlagCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FlagCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_flag_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FlagCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_flag_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_flag_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FlagCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_flag_deleted_round_trip(self):
+        data = load_fixture("flag_deleted.json")
+        instance = FlagDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "flag.deleted",
+            "data": {
+                "object": "feature_flag",
+                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "advanced-analytics",
+                "name": "Advanced Analytics",
+                "description": "Enable advanced analytics dashboard feature",
+                "owner": {
+                    "email": "jane@example.com",
+                    "first_name": "Jane",
+                    "last_name": "Doe",
+                },
+                "tags": ["reports"],
+                "enabled": True,
+                "default_value": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+            },
+            "object": "event",
+        }
+        instance = FlagDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+        assert serialized["object"] == data["object"]
+
+    def test_flag_deleted_data_round_trip(self):
+        data = load_fixture("flag_deleted_data.json")
+        instance = FlagDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_deleted_data_minimal_payload(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["owner"] == data["owner"]
+        assert serialized["tags"] == data["tags"]
+        assert serialized["enabled"] == data["enabled"]
+        assert serialized["default_value"] == data["default_value"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_flag_deleted_data_preserves_nullable_fields(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+        assert serialized["owner"] is None
+
+    def test_flag_deleted_data_owner_round_trip(self):
+        data = load_fixture("flag_deleted_data_owner.json")
+        instance = FlagDeletedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagDeletedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_deleted_data_owner_minimal_payload(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FlagDeletedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+
+    def test_flag_deleted_data_owner_preserves_nullable_fields(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FlagDeletedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+
+    def test_flag_deleted_context_round_trip(self):
+        data = load_fixture("flag_deleted_context.json")
+        instance = FlagDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_deleted_context_minimal_payload(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+        }
+        instance = FlagDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["actor"] == data["actor"]
+
+    def test_flag_deleted_context_actor_round_trip(self):
+        data = load_fixture("flag_deleted_context_actor.json")
+        instance = FlagDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FlagDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_flag_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FlagDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_flag_deleted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_flag_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FlagDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_flag_rule_updated_round_trip(self):
+        data = load_fixture("flag_rule_updated.json")
+        instance = FlagRuleUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "flag.rule_updated",
+            "data": {
+                "object": "feature_flag",
+                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "advanced-analytics",
+                "name": "Advanced Analytics",
+                "description": "Enable advanced analytics dashboard feature",
+                "owner": {
+                    "email": "jane@example.com",
+                    "first_name": "Jane",
+                    "last_name": "Doe",
+                },
+                "tags": ["reports"],
+                "enabled": True,
+                "default_value": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+                "access_type": "none",
+                "configured_targets": {
+                    "organizations": [
+                        {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+                    ],
+                    "users": [
+                        {
+                            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                            "email": "user@example.com",
+                        }
+                    ],
+                },
+                "previous_attributes": {
+                    "data": {"enabled": True, "default_value": False},
+                    "context": {
+                        "access_type": "none",
+                        "configured_targets": {
+                            "organizations": [
+                                {
+                                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                                    "name": "Acme Corp",
+                                }
+                            ],
+                            "users": [
+                                {
+                                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                                    "email": "user@example.com",
+                                }
+                            ],
+                        },
+                    },
+                },
+            },
+            "object": "event",
+        }
+        instance = FlagRuleUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+        assert serialized["object"] == data["object"]
+
+    def test_flag_rule_updated_data_round_trip(self):
+        data = load_fixture("flag_rule_updated_data.json")
+        instance = FlagRuleUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_data_minimal_payload(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagRuleUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["owner"] == data["owner"]
+        assert serialized["tags"] == data["tags"]
+        assert serialized["enabled"] == data["enabled"]
+        assert serialized["default_value"] == data["default_value"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_flag_rule_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagRuleUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+        assert serialized["owner"] is None
+
+    def test_flag_rule_updated_data_owner_round_trip(self):
+        data = load_fixture("flag_rule_updated_data_owner.json")
+        instance = FlagRuleUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_data_owner_minimal_payload(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FlagRuleUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+
+    def test_flag_rule_updated_data_owner_preserves_nullable_fields(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FlagRuleUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+
+    def test_flag_rule_updated_context_round_trip(self):
+        data = load_fixture("flag_rule_updated_context.json")
+        instance = FlagRuleUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_minimal_payload(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+            "access_type": "none",
+            "configured_targets": {
+                "organizations": [
+                    {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+                ],
+                "users": [
+                    {
+                        "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "email": "user@example.com",
+                    }
+                ],
+            },
+            "previous_attributes": {
+                "data": {"enabled": True, "default_value": False},
+                "context": {
+                    "access_type": "none",
+                    "configured_targets": {
+                        "organizations": [
+                            {
+                                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                                "name": "Acme Corp",
+                            }
+                        ],
+                        "users": [
+                            {
+                                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                                "email": "user@example.com",
+                            }
+                        ],
+                    },
+                },
+            },
+        }
+        instance = FlagRuleUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["actor"] == data["actor"]
+        assert serialized["access_type"] == data["access_type"]
+        assert serialized["configured_targets"] == data["configured_targets"]
+        assert serialized["previous_attributes"] == data["previous_attributes"]
+
+    def test_flag_rule_updated_context_round_trips_unknown_enum_values(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+            "access_type": "unexpected_flag_rule_updated_context_access_type",
+            "configured_targets": {
+                "organizations": [
+                    {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+                ],
+                "users": [
+                    {
+                        "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "email": "user@example.com",
+                    }
+                ],
+            },
+            "previous_attributes": {
+                "data": {"enabled": True, "default_value": False},
+                "context": {
+                    "access_type": "none",
+                    "configured_targets": {
+                        "organizations": [
+                            {
+                                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                                "name": "Acme Corp",
+                            }
+                        ],
+                        "users": [
+                            {
+                                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                                "email": "user@example.com",
+                            }
+                        ],
+                    },
+                },
+            },
+        }
+        instance = FlagRuleUpdatedContext.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_flag_rule_updated_context_actor_round_trip(self):
+        data = load_fixture("flag_rule_updated_context_actor.json")
+        instance = FlagRuleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FlagRuleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_flag_rule_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FlagRuleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_flag_rule_updated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_flag_rule_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FlagRuleUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_flag_rule_updated_context_configured_target_round_trip(self):
+        data = load_fixture("flag_rule_updated_context_configured_target.json")
+        instance = FlagRuleUpdatedContextConfiguredTarget.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedContextConfiguredTarget.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_configured_target_minimal_payload(self):
+        data = {
+            "organizations": [
+                {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+            ],
+            "users": [
+                {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}
+            ],
+        }
+        instance = FlagRuleUpdatedContextConfiguredTarget.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organizations"] == data["organizations"]
+        assert serialized["users"] == data["users"]
+
+    def test_flag_rule_updated_context_configured_target_organization_round_trip(self):
+        data = load_fixture(
+            "flag_rule_updated_context_configured_target_organization.json"
+        )
+        instance = FlagRuleUpdatedContextConfiguredTargetOrganization.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedContextConfiguredTargetOrganization.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_configured_target_organization_minimal_payload(
+        self,
+    ):
+        data = {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+        instance = FlagRuleUpdatedContextConfiguredTargetOrganization.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+
+    def test_flag_rule_updated_context_configured_target_user_round_trip(self):
+        data = load_fixture("flag_rule_updated_context_configured_target_user.json")
+        instance = FlagRuleUpdatedContextConfiguredTargetUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedContextConfiguredTargetUser.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_configured_target_user_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}
+        instance = FlagRuleUpdatedContextConfiguredTargetUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["email"] == data["email"]
+
+    def test_flag_rule_updated_context_previous_attribute_round_trip(self):
+        data = load_fixture("flag_rule_updated_context_previous_attribute.json")
+        instance = FlagRuleUpdatedContextPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedContextPreviousAttribute.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_previous_attribute_minimal_payload(self):
+        data = {}
+        instance = FlagRuleUpdatedContextPreviousAttribute.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_flag_rule_updated_context_previous_attribute_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = FlagRuleUpdatedContextPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert "data" not in serialized
+        assert "context" not in serialized
+
+    def test_flag_rule_updated_context_previous_attribute_data_round_trip(self):
+        data = load_fixture("flag_rule_updated_context_previous_attribute_data.json")
+        instance = FlagRuleUpdatedContextPreviousAttributeData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedContextPreviousAttributeData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_previous_attribute_data_minimal_payload(self):
+        data = {}
+        instance = FlagRuleUpdatedContextPreviousAttributeData.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_flag_rule_updated_context_previous_attribute_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = FlagRuleUpdatedContextPreviousAttributeData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "enabled" not in serialized
+        assert "default_value" not in serialized
+
+    def test_flag_rule_updated_context_previous_attribute_context_round_trip(self):
+        data = load_fixture("flag_rule_updated_context_previous_attribute_context.json")
+        instance = FlagRuleUpdatedContextPreviousAttributeContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedContextPreviousAttributeContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_previous_attribute_context_minimal_payload(self):
+        data = {}
+        instance = FlagRuleUpdatedContextPreviousAttributeContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_flag_rule_updated_context_previous_attribute_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = FlagRuleUpdatedContextPreviousAttributeContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "access_type" not in serialized
+        assert "configured_targets" not in serialized
+
+    def test_flag_rule_updated_context_previous_attribute_context_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "access_type": "unexpected_flag_rule_updated_context_previous_attribute_context_access_type",
+            "configured_targets": {
+                "organizations": [
+                    {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+                ],
+                "users": [
+                    {
+                        "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                        "email": "user@example.com",
+                    }
+                ],
+            },
+        }
+        instance = FlagRuleUpdatedContextPreviousAttributeContext.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "flag_rule_updated_context_previous_attribute_context_configured_target.json"
+        )
+        instance = (
+            FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_minimal_payload(
+        self,
+    ):
+        data = {
+            "organizations": [
+                {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+            ],
+            "users": [
+                {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}
+            ],
+        }
+        instance = (
+            FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["organizations"] == data["organizations"]
+        assert serialized["users"] == data["users"]
+
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_organization_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "flag_rule_updated_context_previous_attribute_context_configured_target_organization.json"
+        )
+        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_organization_minimal_payload(
+        self,
+    ):
+        data = {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
+        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_user_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "flag_rule_updated_context_previous_attribute_context_configured_target_user.json"
+        )
+        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_user_minimal_payload(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}
+        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["email"] == data["email"]
+
+    def test_flag_updated_round_trip(self):
+        data = load_fixture("flag_updated.json")
+        instance = FlagUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "flag.updated",
+            "data": {
+                "object": "feature_flag",
+                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "advanced-analytics",
+                "name": "Advanced Analytics",
+                "description": "Enable advanced analytics dashboard feature",
+                "owner": {
+                    "email": "jane@example.com",
+                    "first_name": "Jane",
+                    "last_name": "Doe",
+                },
+                "tags": ["reports"],
+                "enabled": True,
+                "default_value": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "context": {
+                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor": {
+                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                    "source": "api",
+                    "name": "Jane Doe",
+                },
+                "previous_attributes": {
+                    "data": {
+                        "name": "My Feature Flag",
+                        "description": "Enables the new feature.",
+                        "tags": ["beta", "release"],
+                        "enabled": True,
+                        "default_value": False,
+                    }
+                },
+            },
+            "object": "event",
+        }
+        instance = FlagUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["context"] == data["context"]
+        assert serialized["object"] == data["object"]
+
+    def test_flag_updated_data_round_trip(self):
+        data = load_fixture("flag_updated_data.json")
+        instance = FlagUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_updated_data_minimal_payload(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["owner"] == data["owner"]
+        assert serialized["tags"] == data["tags"]
+        assert serialized["enabled"] == data["enabled"]
+        assert serialized["default_value"] == data["default_value"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_flag_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "feature_flag",
+            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
+            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "advanced-analytics",
+            "name": "Advanced Analytics",
+            "description": None,
+            "owner": None,
+            "tags": ["reports"],
+            "enabled": True,
+            "default_value": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = FlagUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+        assert serialized["owner"] is None
+
+    def test_flag_updated_data_owner_round_trip(self):
+        data = load_fixture("flag_updated_data_owner.json")
+        instance = FlagUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagUpdatedDataOwner.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_updated_data_owner_minimal_payload(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FlagUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+
+    def test_flag_updated_data_owner_preserves_nullable_fields(self):
+        data = {"email": "jane@example.com", "first_name": None, "last_name": None}
+        instance = FlagUpdatedDataOwner.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+
+    def test_flag_updated_context_round_trip(self):
+        data = load_fixture("flag_updated_context.json")
+        instance = FlagUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_updated_context_minimal_payload(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+        }
+        instance = FlagUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["client_id"] == data["client_id"]
+        assert serialized["actor"] == data["actor"]
+
+    def test_flag_updated_context_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor": {
+                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "source": "api",
+                "name": "Jane Doe",
+            },
+        }
+        instance = FlagUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "previous_attributes" not in serialized
+
+    def test_flag_updated_context_actor_round_trip(self):
+        data = load_fixture("flag_updated_context_actor.json")
+        instance = FlagUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FlagUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_flag_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = FlagUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_flag_updated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_flag_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = FlagUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_flag_updated_context_previous_attribute_round_trip(self):
+        data = load_fixture("flag_updated_context_previous_attribute.json")
+        instance = FlagUpdatedContextPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagUpdatedContextPreviousAttribute.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_updated_context_previous_attribute_minimal_payload(self):
+        data = {}
+        instance = FlagUpdatedContextPreviousAttribute.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_flag_updated_context_previous_attribute_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = FlagUpdatedContextPreviousAttribute.from_dict(data)
+        serialized = instance.to_dict()
+        assert "data" not in serialized
+
+    def test_flag_updated_context_previous_attribute_data_round_trip(self):
+        data = load_fixture("flag_updated_context_previous_attribute_data.json")
+        instance = FlagUpdatedContextPreviousAttributeData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = FlagUpdatedContextPreviousAttributeData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_flag_updated_context_previous_attribute_data_minimal_payload(self):
+        data = {}
+        instance = FlagUpdatedContextPreviousAttributeData.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_flag_updated_context_previous_attribute_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"description": "Enables the new feature."}
+        instance = FlagUpdatedContextPreviousAttributeData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "name" not in serialized
+        assert "tags" not in serialized
+        assert "enabled" not in serialized
+        assert "default_value" not in serialized
+
+    def test_flag_updated_context_previous_attribute_data_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "name": "My Feature Flag",
+            "description": None,
+            "tags": ["beta", "release"],
+            "enabled": True,
+            "default_value": False,
+        }
+        instance = FlagUpdatedContextPreviousAttributeData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_invitation_accepted_round_trip(self):
+        data = load_fixture("invitation_accepted.json")
+        instance = InvitationAccepted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationAccepted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_accepted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "invitation.accepted",
+            "data": {
+                "object": "invitation",
+                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "accepted_at": None,
+                "revoked_at": None,
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+                "accepted_user_id": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = InvitationAccepted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_invitation_accepted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "invitation.accepted",
+            "data": {
+                "object": "invitation",
+                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "accepted_at": None,
+                "revoked_at": None,
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+                "accepted_user_id": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = InvitationAccepted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_invitation_accepted_data_round_trip(self):
+        data = load_fixture("invitation_accepted_data.json")
+        instance = InvitationAcceptedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationAcceptedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_accepted_data_minimal_payload(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": None,
+            "inviter_user_id": None,
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationAcceptedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["accepted_at"] == data["accepted_at"]
+        assert serialized["revoked_at"] == data["revoked_at"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["inviter_user_id"] == data["inviter_user_id"]
+        assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_invitation_accepted_data_preserves_nullable_fields(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": None,
+            "inviter_user_id": None,
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationAcceptedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["accepted_at"] is None
+        assert serialized["revoked_at"] is None
+        assert serialized["organization_id"] is None
+        assert serialized["inviter_user_id"] is None
+        assert serialized["accepted_user_id"] is None
+
+    def test_invitation_accepted_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "unexpected_invitation_accepted_data_state",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+            "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationAcceptedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_invitation_accepted_context_round_trip(self):
+        data = load_fixture("invitation_accepted_context.json")
+        instance = InvitationAcceptedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationAcceptedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_accepted_context_minimal_payload(self):
+        data = {}
+        instance = InvitationAcceptedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_invitation_accepted_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = InvitationAcceptedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_invitation_accepted_context_google_analytics_session_round_trip(self):
+        data = load_fixture("invitation_accepted_context_google_analytics_session.json")
+        instance = InvitationAcceptedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationAcceptedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_accepted_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = InvitationAcceptedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_invitation_accepted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = InvitationAcceptedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_invitation_accepted_context_actor_round_trip(self):
+        data = load_fixture("invitation_accepted_context_actor.json")
+        instance = InvitationAcceptedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationAcceptedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_accepted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = InvitationAcceptedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_invitation_accepted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = InvitationAcceptedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_invitation_accepted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_invitation_accepted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = InvitationAcceptedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_invitation_created_round_trip(self):
+        data = load_fixture("invitation_created.json")
+        instance = InvitationCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "invitation.created",
+            "data": {
+                "object": "invitation",
+                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "accepted_at": None,
+                "revoked_at": None,
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+                "accepted_user_id": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = InvitationCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_invitation_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "invitation.created",
+            "data": {
+                "object": "invitation",
+                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "accepted_at": None,
+                "revoked_at": None,
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+                "accepted_user_id": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = InvitationCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_invitation_created_data_round_trip(self):
+        data = load_fixture("invitation_created_data.json")
+        instance = InvitationCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_created_data_minimal_payload(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": None,
+            "inviter_user_id": None,
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["accepted_at"] == data["accepted_at"]
+        assert serialized["revoked_at"] == data["revoked_at"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["inviter_user_id"] == data["inviter_user_id"]
+        assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_invitation_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": None,
+            "inviter_user_id": None,
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["accepted_at"] is None
+        assert serialized["revoked_at"] is None
+        assert serialized["organization_id"] is None
+        assert serialized["inviter_user_id"] is None
+        assert serialized["accepted_user_id"] is None
+
+    def test_invitation_created_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "unexpected_invitation_created_data_state",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+            "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationCreatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_invitation_created_context_round_trip(self):
+        data = load_fixture("invitation_created_context.json")
+        instance = InvitationCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_created_context_minimal_payload(self):
+        data = {}
+        instance = InvitationCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_invitation_created_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = InvitationCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_invitation_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("invitation_created_context_google_analytics_session.json")
+        instance = InvitationCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = InvitationCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_invitation_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = InvitationCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_invitation_created_context_actor_round_trip(self):
+        data = load_fixture("invitation_created_context_actor.json")
+        instance = InvitationCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = InvitationCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_invitation_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = InvitationCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_invitation_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_invitation_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = InvitationCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_invitation_resent_round_trip(self):
+        data = load_fixture("invitation_resent.json")
+        instance = InvitationResent.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationResent.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_resent_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "invitation.resent",
+            "data": {
+                "object": "invitation",
+                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "accepted_at": None,
+                "revoked_at": None,
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+                "accepted_user_id": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = InvitationResent.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_invitation_resent_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "invitation.resent",
+            "data": {
+                "object": "invitation",
+                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "accepted_at": None,
+                "revoked_at": None,
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+                "accepted_user_id": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = InvitationResent.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_invitation_resent_data_round_trip(self):
+        data = load_fixture("invitation_resent_data.json")
+        instance = InvitationResentData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationResentData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_resent_data_minimal_payload(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": None,
+            "inviter_user_id": None,
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationResentData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["accepted_at"] == data["accepted_at"]
+        assert serialized["revoked_at"] == data["revoked_at"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["inviter_user_id"] == data["inviter_user_id"]
+        assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_invitation_resent_data_preserves_nullable_fields(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": None,
+            "inviter_user_id": None,
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationResentData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["accepted_at"] is None
+        assert serialized["revoked_at"] is None
+        assert serialized["organization_id"] is None
+        assert serialized["inviter_user_id"] is None
+        assert serialized["accepted_user_id"] is None
+
+    def test_invitation_resent_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "unexpected_invitation_resent_data_state",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+            "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationResentData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_invitation_resent_context_round_trip(self):
+        data = load_fixture("invitation_resent_context.json")
+        instance = InvitationResentContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationResentContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_resent_context_minimal_payload(self):
+        data = {}
+        instance = InvitationResentContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_invitation_resent_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = InvitationResentContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_invitation_resent_context_google_analytics_session_round_trip(self):
+        data = load_fixture("invitation_resent_context_google_analytics_session.json")
+        instance = InvitationResentContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationResentContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_resent_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = InvitationResentContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_invitation_resent_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = InvitationResentContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_invitation_resent_context_actor_round_trip(self):
+        data = load_fixture("invitation_resent_context_actor.json")
+        instance = InvitationResentContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationResentContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_resent_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = InvitationResentContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_invitation_resent_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = InvitationResentContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_invitation_resent_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_invitation_resent_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = InvitationResentContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_invitation_revoked_round_trip(self):
+        data = load_fixture("invitation_revoked.json")
+        instance = InvitationRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationRevoked.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_revoked_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "invitation.revoked",
+            "data": {
+                "object": "invitation",
+                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "accepted_at": None,
+                "revoked_at": None,
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+                "accepted_user_id": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = InvitationRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_invitation_revoked_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "invitation.revoked",
+            "data": {
+                "object": "invitation",
+                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "accepted_at": None,
+                "revoked_at": None,
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+                "accepted_user_id": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = InvitationRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_invitation_revoked_data_round_trip(self):
+        data = load_fixture("invitation_revoked_data.json")
+        instance = InvitationRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationRevokedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_revoked_data_minimal_payload(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": None,
+            "inviter_user_id": None,
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["accepted_at"] == data["accepted_at"]
+        assert serialized["revoked_at"] == data["revoked_at"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["inviter_user_id"] == data["inviter_user_id"]
+        assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_invitation_revoked_data_preserves_nullable_fields(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": None,
+            "inviter_user_id": None,
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["accepted_at"] is None
+        assert serialized["revoked_at"] is None
+        assert serialized["organization_id"] is None
+        assert serialized["inviter_user_id"] is None
+        assert serialized["accepted_user_id"] is None
+
+    def test_invitation_revoked_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "invitation",
+            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "unexpected_invitation_revoked_data_state",
+            "accepted_at": None,
+            "revoked_at": None,
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+            "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
+            "accepted_user_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = InvitationRevokedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_invitation_revoked_context_round_trip(self):
+        data = load_fixture("invitation_revoked_context.json")
+        instance = InvitationRevokedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationRevokedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_revoked_context_minimal_payload(self):
+        data = {}
+        instance = InvitationRevokedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_invitation_revoked_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = InvitationRevokedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_invitation_revoked_context_google_analytics_session_round_trip(self):
+        data = load_fixture("invitation_revoked_context_google_analytics_session.json")
+        instance = InvitationRevokedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationRevokedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_revoked_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = InvitationRevokedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_invitation_revoked_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = InvitationRevokedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_invitation_revoked_context_actor_round_trip(self):
+        data = load_fixture("invitation_revoked_context_actor.json")
+        instance = InvitationRevokedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = InvitationRevokedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_invitation_revoked_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = InvitationRevokedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_invitation_revoked_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = InvitationRevokedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_invitation_revoked_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_invitation_revoked_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = InvitationRevokedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_magic_auth_created_round_trip(self):
+        data = load_fixture("magic_auth_created.json")
+        instance = MagicAuthCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "magic_auth.created",
+            "data": {
+                "object": "magic_auth",
+                "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = MagicAuthCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_magic_auth_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "magic_auth.created",
+            "data": {
+                "object": "magic_auth",
+                "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = MagicAuthCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_magic_auth_created_data_round_trip(self):
+        data = load_fixture("magic_auth_created_data.json")
+        instance = MagicAuthCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_created_data_minimal_payload(self):
+        data = {
+            "object": "magic_auth",
+            "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = MagicAuthCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_magic_auth_created_context_round_trip(self):
+        data = load_fixture("magic_auth_created_context.json")
+        instance = MagicAuthCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_created_context_minimal_payload(self):
+        data = {}
+        instance = MagicAuthCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_magic_auth_created_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = MagicAuthCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_magic_auth_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("magic_auth_created_context_google_analytics_session.json")
+        instance = MagicAuthCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = MagicAuthCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_magic_auth_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = MagicAuthCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_magic_auth_created_context_actor_round_trip(self):
+        data = load_fixture("magic_auth_created_context_actor.json")
+        instance = MagicAuthCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = MagicAuthCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_magic_auth_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = MagicAuthCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_magic_auth_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = MagicAuthCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_magic_auth_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_magic_auth_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = MagicAuthCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_created_round_trip(self):
+        data = load_fixture("organization_created.json")
+        instance = OrganizationCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization.created",
+            "data": {
+                "object": "organization",
+                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Acme Inc.",
+                "domains": [
+                    {
+                        "object": "organization_domain",
+                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                        "domain": "foo-corp.com",
+                        "state": "pending",
+                        "verification_prefix": "superapp-domain-verification-z3kjny",
+                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                        "verification_strategy": "dns",
+                        "created_at": "2026-01-15T12:00:00.000Z",
+                        "updated_at": "2026-01-15T12:00:00.000Z",
+                    }
+                ],
+                "metadata": {"tier": "diamond"},
+                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
+                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization.created",
+            "data": {
+                "object": "organization",
+                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Acme Inc.",
+                "domains": [
+                    {
+                        "object": "organization_domain",
+                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                        "domain": "foo-corp.com",
+                        "state": "pending",
+                        "verification_prefix": "superapp-domain-verification-z3kjny",
+                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                        "verification_strategy": "dns",
+                        "created_at": "2026-01-15T12:00:00.000Z",
+                        "updated_at": "2026-01-15T12:00:00.000Z",
+                    }
+                ],
+                "metadata": {"tier": "diamond"},
+                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
+                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_created_data_round_trip(self):
+        data = load_fixture("organization_created_data.json")
+        instance = OrganizationCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_created_data_minimal_payload(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["domains"] == data["domains"]
+        assert serialized["metadata"] == data["metadata"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_created_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "stripe_customer_id" not in serialized
+
+    def test_organization_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": None,
+            "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["external_id"] is None
+
+    def test_organization_created_data_domain_round_trip(self):
+        data = load_fixture("organization_created_data_domain.json")
+        instance = OrganizationCreatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationCreatedDataDomain.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_created_data_domain_minimal_payload(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationCreatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["domain"] == data["domain"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_created_data_domain_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationCreatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert "state" not in serialized
+        assert "verification_prefix" not in serialized
+        assert "verification_token" not in serialized
+        assert "verification_strategy" not in serialized
+
+    def test_organization_created_data_domain_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "state": "unexpected_organization_created_data_domain_state",
+            "verification_prefix": "superapp-domain-verification-z3kjny",
+            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+            "verification_strategy": "dns",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationCreatedDataDomain.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_created_context_round_trip(self):
+        data = load_fixture("organization_created_context.json")
+        instance = OrganizationCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_created_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_created_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture(
+            "organization_created_context_google_analytics_session.json"
+        )
+        instance = OrganizationCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationCreatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_created_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_created_context_actor_round_trip(self):
+        data = load_fixture("organization_created_context_actor.json")
+        instance = OrganizationCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_deleted_round_trip(self):
+        data = load_fixture("organization_deleted.json")
+        instance = OrganizationDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization.deleted",
+            "data": {
+                "object": "organization",
+                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Acme Inc.",
+                "domains": [
+                    {
+                        "object": "organization_domain",
+                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                        "domain": "foo-corp.com",
+                        "state": "pending",
+                        "verification_prefix": "superapp-domain-verification-z3kjny",
+                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                        "verification_strategy": "dns",
+                        "created_at": "2026-01-15T12:00:00.000Z",
+                        "updated_at": "2026-01-15T12:00:00.000Z",
+                    }
+                ],
+                "metadata": {"tier": "diamond"},
+                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
+                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization.deleted",
+            "data": {
+                "object": "organization",
+                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Acme Inc.",
+                "domains": [
+                    {
+                        "object": "organization_domain",
+                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                        "domain": "foo-corp.com",
+                        "state": "pending",
+                        "verification_prefix": "superapp-domain-verification-z3kjny",
+                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                        "verification_strategy": "dns",
+                        "created_at": "2026-01-15T12:00:00.000Z",
+                        "updated_at": "2026-01-15T12:00:00.000Z",
+                    }
+                ],
+                "metadata": {"tier": "diamond"},
+                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
+                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_deleted_data_round_trip(self):
+        data = load_fixture("organization_deleted_data.json")
+        instance = OrganizationDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_deleted_data_minimal_payload(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["domains"] == data["domains"]
+        assert serialized["metadata"] == data["metadata"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_deleted_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "stripe_customer_id" not in serialized
+
+    def test_organization_deleted_data_preserves_nullable_fields(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": None,
+            "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["external_id"] is None
+
+    def test_organization_deleted_data_domain_round_trip(self):
+        data = load_fixture("organization_deleted_data_domain.json")
+        instance = OrganizationDeletedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDeletedDataDomain.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_deleted_data_domain_minimal_payload(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDeletedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["domain"] == data["domain"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_deleted_data_domain_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDeletedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert "state" not in serialized
+        assert "verification_prefix" not in serialized
+        assert "verification_token" not in serialized
+        assert "verification_strategy" not in serialized
+
+    def test_organization_deleted_data_domain_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "state": "unexpected_organization_deleted_data_domain_state",
+            "verification_prefix": "superapp-domain-verification-z3kjny",
+            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+            "verification_strategy": "dns",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDeletedDataDomain.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_deleted_context_round_trip(self):
+        data = load_fixture("organization_deleted_context.json")
+        instance = OrganizationDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_deleted_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_deleted_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_deleted_context_google_analytics_session_round_trip(self):
+        data = load_fixture(
+            "organization_deleted_context_google_analytics_session.json"
+        )
+        instance = OrganizationDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDeletedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_deleted_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_deleted_context_actor_round_trip(self):
+        data = load_fixture("organization_deleted_context_actor.json")
+        instance = OrganizationDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_deleted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_domain_created_round_trip(self):
+        data = load_fixture("organization_domain_created.json")
+        instance = OrganizationDomainCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_domain.created",
+            "data": {
+                "object": "organization_domain",
+                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                "domain": "foo-corp.com",
+                "state": "pending",
+                "verification_prefix": "superapp-domain-verification-z3kjny",
+                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                "verification_strategy": "dns",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDomainCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_domain_created_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_domain.created",
+            "data": {
+                "object": "organization_domain",
+                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                "domain": "foo-corp.com",
+                "state": "pending",
+                "verification_prefix": "superapp-domain-verification-z3kjny",
+                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                "verification_strategy": "dns",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDomainCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_domain_created_data_round_trip(self):
+        data = load_fixture("organization_domain_created_data.json")
+        instance = OrganizationDomainCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_created_data_minimal_payload(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["domain"] == data["domain"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_domain_created_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "state" not in serialized
+        assert "verification_prefix" not in serialized
+        assert "verification_token" not in serialized
+        assert "verification_strategy" not in serialized
+
+    def test_organization_domain_created_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "state": "unexpected_organization_domain_created_data_state",
+            "verification_prefix": "superapp-domain-verification-z3kjny",
+            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+            "verification_strategy": "dns",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainCreatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_domain_created_context_round_trip(self):
+        data = load_fixture("organization_domain_created_context.json")
+        instance = OrganizationDomainCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_created_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationDomainCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_domain_created_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationDomainCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_domain_created_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_domain_created_context_google_analytics_session.json"
+        )
+        instance = OrganizationDomainCreatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainCreatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_created_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationDomainCreatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_domain_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationDomainCreatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_domain_created_context_actor_round_trip(self):
+        data = load_fixture("organization_domain_created_context_actor.json")
+        instance = OrganizationDomainCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDomainCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_domain_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDomainCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_domain_created_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_domain_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationDomainCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_domain_deleted_round_trip(self):
+        data = load_fixture("organization_domain_deleted.json")
+        instance = OrganizationDomainDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_domain.deleted",
+            "data": {
+                "object": "organization_domain",
+                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                "domain": "foo-corp.com",
+                "state": "pending",
+                "verification_prefix": "superapp-domain-verification-z3kjny",
+                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                "verification_strategy": "dns",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDomainDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_domain_deleted_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_domain.deleted",
+            "data": {
+                "object": "organization_domain",
+                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                "domain": "foo-corp.com",
+                "state": "pending",
+                "verification_prefix": "superapp-domain-verification-z3kjny",
+                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                "verification_strategy": "dns",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDomainDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_domain_deleted_data_round_trip(self):
+        data = load_fixture("organization_domain_deleted_data.json")
+        instance = OrganizationDomainDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_deleted_data_minimal_payload(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["domain"] == data["domain"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_domain_deleted_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "state" not in serialized
+        assert "verification_prefix" not in serialized
+        assert "verification_token" not in serialized
+        assert "verification_strategy" not in serialized
+
+    def test_organization_domain_deleted_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "state": "unexpected_organization_domain_deleted_data_state",
+            "verification_prefix": "superapp-domain-verification-z3kjny",
+            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+            "verification_strategy": "dns",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainDeletedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_domain_deleted_context_round_trip(self):
+        data = load_fixture("organization_domain_deleted_context.json")
+        instance = OrganizationDomainDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_deleted_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationDomainDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_domain_deleted_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationDomainDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_domain_deleted_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_domain_deleted_context_google_analytics_session.json"
+        )
+        instance = OrganizationDomainDeletedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainDeletedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_deleted_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationDomainDeletedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_domain_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationDomainDeletedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_domain_deleted_context_actor_round_trip(self):
+        data = load_fixture("organization_domain_deleted_context_actor.json")
+        instance = OrganizationDomainDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDomainDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_domain_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDomainDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_domain_deleted_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_domain_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationDomainDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_domain_updated_round_trip(self):
+        data = load_fixture("organization_domain_updated.json")
+        instance = OrganizationDomainUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_domain.updated",
+            "data": {
+                "object": "organization_domain",
+                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                "domain": "foo-corp.com",
+                "state": "pending",
+                "verification_prefix": "superapp-domain-verification-z3kjny",
+                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                "verification_strategy": "dns",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDomainUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_domain_updated_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_domain.updated",
+            "data": {
+                "object": "organization_domain",
+                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                "domain": "foo-corp.com",
+                "state": "pending",
+                "verification_prefix": "superapp-domain-verification-z3kjny",
+                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                "verification_strategy": "dns",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDomainUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_domain_updated_data_round_trip(self):
+        data = load_fixture("organization_domain_updated_data.json")
+        instance = OrganizationDomainUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_updated_data_minimal_payload(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["domain"] == data["domain"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_domain_updated_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "state" not in serialized
+        assert "verification_prefix" not in serialized
+        assert "verification_token" not in serialized
+        assert "verification_strategy" not in serialized
+
+    def test_organization_domain_updated_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "state": "unexpected_organization_domain_updated_data_state",
+            "verification_prefix": "superapp-domain-verification-z3kjny",
+            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+            "verification_strategy": "dns",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainUpdatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_domain_updated_context_round_trip(self):
+        data = load_fixture("organization_domain_updated_context.json")
+        instance = OrganizationDomainUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_updated_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationDomainUpdatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_domain_updated_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationDomainUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_domain_updated_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_domain_updated_context_google_analytics_session.json"
+        )
+        instance = OrganizationDomainUpdatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainUpdatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_updated_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationDomainUpdatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_domain_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationDomainUpdatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_domain_updated_context_actor_round_trip(self):
+        data = load_fixture("organization_domain_updated_context_actor.json")
+        instance = OrganizationDomainUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDomainUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_domain_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDomainUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_domain_updated_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_domain_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationDomainUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_domain_verification_failed_round_trip(self):
+        data = load_fixture("organization_domain_verification_failed.json")
+        instance = OrganizationDomainVerificationFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainVerificationFailed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verification_failed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_domain.verification_failed",
+            "data": {
+                "reason": "domain_verification_period_expired",
+                "organization_domain": {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDomainVerificationFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_domain_verification_failed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_domain.verification_failed",
+            "data": {
+                "reason": "domain_verification_period_expired",
+                "organization_domain": {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                },
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDomainVerificationFailed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_domain_verification_failed_data_round_trip(self):
+        data = load_fixture("organization_domain_verification_failed_data.json")
+        instance = OrganizationDomainVerificationFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainVerificationFailedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verification_failed_data_minimal_payload(self):
+        data = {
+            "reason": "domain_verification_period_expired",
+            "organization_domain": {
+                "object": "organization_domain",
+                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                "domain": "foo-corp.com",
+                "state": "pending",
+                "verification_prefix": "superapp-domain-verification-z3kjny",
+                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                "verification_strategy": "dns",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+        }
+        instance = OrganizationDomainVerificationFailedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["reason"] == data["reason"]
+        assert serialized["organization_domain"] == data["organization_domain"]
+
+    def test_organization_domain_verification_failed_data_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "reason": "unexpected_organization_domain_verification_failed_data_reason",
+            "organization_domain": {
+                "object": "organization_domain",
+                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                "domain": "foo-corp.com",
+                "state": "pending",
+                "verification_prefix": "superapp-domain-verification-z3kjny",
+                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                "verification_strategy": "dns",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+        }
+        instance = OrganizationDomainVerificationFailedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_domain_verification_failed_data_organization_domain_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_domain_verification_failed_data_organization_domain.json"
+        )
+        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verification_failed_data_organization_domain_minimal_payload(
+        self,
+    ):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["domain"] == data["domain"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_domain_verification_failed_data_organization_domain_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "state" not in serialized
+        assert "verification_prefix" not in serialized
+        assert "verification_token" not in serialized
+        assert "verification_strategy" not in serialized
+
+    def test_organization_domain_verification_failed_data_organization_domain_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "state": "unexpected_organization_domain_verification_failed_data_organization_domain_state",
+            "verification_prefix": "superapp-domain-verification-z3kjny",
+            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+            "verification_strategy": "dns",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
+            data
+        )
+        assert instance.to_dict() == data
+
+    def test_organization_domain_verification_failed_context_round_trip(self):
+        data = load_fixture("organization_domain_verification_failed_context.json")
+        instance = OrganizationDomainVerificationFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainVerificationFailedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verification_failed_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationDomainVerificationFailedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_domain_verification_failed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationDomainVerificationFailedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_domain_verification_failed_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_domain_verification_failed_context_google_analytics_session.json"
+        )
+        instance = (
+            OrganizationDomainVerificationFailedContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            OrganizationDomainVerificationFailedContextGoogleAnalyticsSession.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verification_failed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            OrganizationDomainVerificationFailedContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_domain_verification_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            OrganizationDomainVerificationFailedContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_domain_verification_failed_context_actor_round_trip(self):
+        data = load_fixture(
+            "organization_domain_verification_failed_context_actor.json"
+        )
+        instance = OrganizationDomainVerificationFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainVerificationFailedContextActor.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verification_failed_context_actor_minimal_payload(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDomainVerificationFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_domain_verification_failed_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDomainVerificationFailedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_domain_verification_failed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_domain_verification_failed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationDomainVerificationFailedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_domain_verified_round_trip(self):
+        data = load_fixture("organization_domain_verified.json")
+        instance = OrganizationDomainVerified.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainVerified.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verified_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_domain.verified",
+            "data": {
+                "object": "organization_domain",
+                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                "domain": "foo-corp.com",
+                "state": "pending",
+                "verification_prefix": "superapp-domain-verification-z3kjny",
+                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                "verification_strategy": "dns",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDomainVerified.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_domain_verified_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_domain.verified",
+            "data": {
+                "object": "organization_domain",
+                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                "domain": "foo-corp.com",
+                "state": "pending",
+                "verification_prefix": "superapp-domain-verification-z3kjny",
+                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                "verification_strategy": "dns",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationDomainVerified.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_domain_verified_data_round_trip(self):
+        data = load_fixture("organization_domain_verified_data.json")
+        instance = OrganizationDomainVerifiedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainVerifiedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verified_data_minimal_payload(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainVerifiedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["domain"] == data["domain"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_domain_verified_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainVerifiedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "state" not in serialized
+        assert "verification_prefix" not in serialized
+        assert "verification_token" not in serialized
+        assert "verification_strategy" not in serialized
+
+    def test_organization_domain_verified_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "state": "unexpected_organization_domain_verified_data_state",
+            "verification_prefix": "superapp-domain-verification-z3kjny",
+            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+            "verification_strategy": "dns",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationDomainVerifiedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_domain_verified_context_round_trip(self):
+        data = load_fixture("organization_domain_verified_context.json")
+        instance = OrganizationDomainVerifiedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainVerifiedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verified_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationDomainVerifiedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_domain_verified_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationDomainVerifiedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_domain_verified_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_domain_verified_context_google_analytics_session.json"
+        )
+        instance = OrganizationDomainVerifiedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainVerifiedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verified_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationDomainVerifiedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_domain_verified_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationDomainVerifiedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_domain_verified_context_actor_round_trip(self):
+        data = load_fixture("organization_domain_verified_context_actor.json")
+        instance = OrganizationDomainVerifiedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationDomainVerifiedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_domain_verified_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDomainVerifiedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_domain_verified_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationDomainVerifiedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_domain_verified_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_domain_verified_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationDomainVerifiedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_membership_created_round_trip(self):
+        data = load_fixture("organization_membership_created.json")
+        instance = OrganizationMembershipCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_membership.created",
+            "data": {
+                "object": "organization_membership",
+                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "status": "active",
+                "role": {"key": {}},
+                "roles": [{"key": {}}],
+                "custom_attributes": {"key": {}},
+                "directory_managed": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationMembershipCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_membership_created_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_membership.created",
+            "data": {
+                "object": "organization_membership",
+                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "status": "active",
+                "role": {"key": {}},
+                "roles": [{"key": {}}],
+                "custom_attributes": {"key": {}},
+                "directory_managed": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationMembershipCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_membership_created_data_round_trip(self):
+        data = load_fixture("organization_membership_created_data.json")
+        instance = OrganizationMembershipCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_created_data_minimal_payload(self):
+        data = {
+            "object": "organization_membership",
+            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "active",
+            "role": {"key": {}},
+            "custom_attributes": {"key": {}},
+            "directory_managed": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationMembershipCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["status"] == data["status"]
+        assert serialized["role"] == data["role"]
+        assert serialized["custom_attributes"] == data["custom_attributes"]
+        assert serialized["directory_managed"] == data["directory_managed"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_membership_created_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_membership",
+            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "active",
+            "role": {"key": {}},
+            "custom_attributes": {"key": {}},
+            "directory_managed": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationMembershipCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "roles" not in serialized
+
+    def test_organization_membership_created_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_membership",
+            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "unexpected_organization_membership_created_data_status",
+            "role": {"key": {}},
+            "roles": [{"key": {}}],
+            "custom_attributes": {"key": {}},
+            "directory_managed": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationMembershipCreatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_membership_created_context_round_trip(self):
+        data = load_fixture("organization_membership_created_context.json")
+        instance = OrganizationMembershipCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_created_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationMembershipCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_membership_created_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationMembershipCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_membership_created_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_membership_created_context_google_analytics_session.json"
+        )
+        instance = OrganizationMembershipCreatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipCreatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_created_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationMembershipCreatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_membership_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationMembershipCreatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_membership_created_context_actor_round_trip(self):
+        data = load_fixture("organization_membership_created_context_actor.json")
+        instance = OrganizationMembershipCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationMembershipCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_membership_created_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationMembershipCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_membership_created_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_membership_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationMembershipCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_membership_deleted_round_trip(self):
+        data = load_fixture("organization_membership_deleted.json")
+        instance = OrganizationMembershipDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_membership.deleted",
+            "data": {
+                "object": "organization_membership",
+                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "status": "active",
+                "role": {"key": {}},
+                "roles": [{"key": {}}],
+                "custom_attributes": {"key": {}},
+                "directory_managed": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationMembershipDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_membership_deleted_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_membership.deleted",
+            "data": {
+                "object": "organization_membership",
+                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "status": "active",
+                "role": {"key": {}},
+                "roles": [{"key": {}}],
+                "custom_attributes": {"key": {}},
+                "directory_managed": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationMembershipDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_membership_deleted_data_round_trip(self):
+        data = load_fixture("organization_membership_deleted_data.json")
+        instance = OrganizationMembershipDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_deleted_data_minimal_payload(self):
+        data = {
+            "object": "organization_membership",
+            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "active",
+            "role": {"key": {}},
+            "custom_attributes": {"key": {}},
+            "directory_managed": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationMembershipDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["status"] == data["status"]
+        assert serialized["role"] == data["role"]
+        assert serialized["custom_attributes"] == data["custom_attributes"]
+        assert serialized["directory_managed"] == data["directory_managed"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_membership_deleted_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_membership",
+            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "active",
+            "role": {"key": {}},
+            "custom_attributes": {"key": {}},
+            "directory_managed": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationMembershipDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "roles" not in serialized
+
+    def test_organization_membership_deleted_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_membership",
+            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "unexpected_organization_membership_deleted_data_status",
+            "role": {"key": {}},
+            "roles": [{"key": {}}],
+            "custom_attributes": {"key": {}},
+            "directory_managed": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationMembershipDeletedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_membership_deleted_context_round_trip(self):
+        data = load_fixture("organization_membership_deleted_context.json")
+        instance = OrganizationMembershipDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_deleted_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationMembershipDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_membership_deleted_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationMembershipDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_membership_deleted_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_membership_deleted_context_google_analytics_session.json"
+        )
+        instance = OrganizationMembershipDeletedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipDeletedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_deleted_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationMembershipDeletedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_membership_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationMembershipDeletedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_membership_deleted_context_actor_round_trip(self):
+        data = load_fixture("organization_membership_deleted_context_actor.json")
+        instance = OrganizationMembershipDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationMembershipDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_membership_deleted_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationMembershipDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_membership_deleted_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_membership_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationMembershipDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_membership_updated_round_trip(self):
+        data = load_fixture("organization_membership_updated.json")
+        instance = OrganizationMembershipUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_membership.updated",
+            "data": {
+                "object": "organization_membership",
+                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "status": "active",
+                "role": {"key": {}},
+                "roles": [{"key": {}}],
+                "custom_attributes": {"key": {}},
+                "directory_managed": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationMembershipUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_membership_updated_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_membership.updated",
+            "data": {
+                "object": "organization_membership",
+                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "status": "active",
+                "role": {"key": {}},
+                "roles": [{"key": {}}],
+                "custom_attributes": {"key": {}},
+                "directory_managed": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationMembershipUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_membership_updated_data_round_trip(self):
+        data = load_fixture("organization_membership_updated_data.json")
+        instance = OrganizationMembershipUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_updated_data_minimal_payload(self):
+        data = {
+            "object": "organization_membership",
+            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "active",
+            "role": {"key": {}},
+            "custom_attributes": {"key": {}},
+            "directory_managed": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationMembershipUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["status"] == data["status"]
+        assert serialized["role"] == data["role"]
+        assert serialized["custom_attributes"] == data["custom_attributes"]
+        assert serialized["directory_managed"] == data["directory_managed"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_membership_updated_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_membership",
+            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "active",
+            "role": {"key": {}},
+            "custom_attributes": {"key": {}},
+            "directory_managed": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationMembershipUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "roles" not in serialized
+
+    def test_organization_membership_updated_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_membership",
+            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "status": "unexpected_organization_membership_updated_data_status",
+            "role": {"key": {}},
+            "roles": [{"key": {}}],
+            "custom_attributes": {"key": {}},
+            "directory_managed": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationMembershipUpdatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_membership_updated_context_round_trip(self):
+        data = load_fixture("organization_membership_updated_context.json")
+        instance = OrganizationMembershipUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_updated_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationMembershipUpdatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_membership_updated_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationMembershipUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_membership_updated_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_membership_updated_context_google_analytics_session.json"
+        )
+        instance = OrganizationMembershipUpdatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipUpdatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_updated_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationMembershipUpdatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_membership_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationMembershipUpdatedContextGoogleAnalyticsSession.from_dict(
+            data
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_membership_updated_context_actor_round_trip(self):
+        data = load_fixture("organization_membership_updated_context_actor.json")
+        instance = OrganizationMembershipUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationMembershipUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_membership_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationMembershipUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_membership_updated_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationMembershipUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_membership_updated_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_membership_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationMembershipUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_role_created_round_trip(self):
+        data = load_fixture("organization_role_created.json")
+        instance = OrganizationRoleCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_role.created",
+            "data": {
+                "object": "organization_role",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing-admin",
+                "name": "Billing Administrator",
+                "description": "Can manage billing settings.",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationRoleCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_role_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_role.created",
+            "data": {
+                "object": "organization_role",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing-admin",
+                "name": "Billing Administrator",
+                "description": "Can manage billing settings.",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationRoleCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_role_created_data_round_trip(self):
+        data = load_fixture("organization_role_created_data.json")
+        instance = OrganizationRoleCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_created_data_minimal_payload(self):
+        data = {
+            "object": "organization_role",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing-admin",
+            "name": "Billing Administrator",
+            "description": None,
+            "resource_type_slug": "organization",
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationRoleCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
+        assert serialized["permissions"] == data["permissions"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_role_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "organization_role",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing-admin",
+            "name": "Billing Administrator",
+            "description": None,
+            "resource_type_slug": "organization",
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationRoleCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_organization_role_created_context_round_trip(self):
+        data = load_fixture("organization_role_created_context.json")
+        instance = OrganizationRoleCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_created_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationRoleCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_role_created_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationRoleCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_role_created_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_role_created_context_google_analytics_session.json"
+        )
+        instance = OrganizationRoleCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleCreatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_created_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationRoleCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_role_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationRoleCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_role_created_context_actor_round_trip(self):
+        data = load_fixture("organization_role_created_context_actor.json")
+        instance = OrganizationRoleCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationRoleCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_role_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationRoleCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_role_created_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_role_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationRoleCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_role_deleted_round_trip(self):
+        data = load_fixture("organization_role_deleted.json")
+        instance = OrganizationRoleDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_role.deleted",
+            "data": {
+                "object": "organization_role",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing-admin",
+                "name": "Billing Administrator",
+                "description": "Can manage billing settings.",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationRoleDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_role_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_role.deleted",
+            "data": {
+                "object": "organization_role",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing-admin",
+                "name": "Billing Administrator",
+                "description": "Can manage billing settings.",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationRoleDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_role_deleted_data_round_trip(self):
+        data = load_fixture("organization_role_deleted_data.json")
+        instance = OrganizationRoleDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_deleted_data_minimal_payload(self):
+        data = {
+            "object": "organization_role",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing-admin",
+            "name": "Billing Administrator",
+            "description": None,
+            "resource_type_slug": "organization",
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationRoleDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
+        assert serialized["permissions"] == data["permissions"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_role_deleted_data_preserves_nullable_fields(self):
+        data = {
+            "object": "organization_role",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing-admin",
+            "name": "Billing Administrator",
+            "description": None,
+            "resource_type_slug": "organization",
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationRoleDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_organization_role_deleted_context_round_trip(self):
+        data = load_fixture("organization_role_deleted_context.json")
+        instance = OrganizationRoleDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_deleted_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationRoleDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_role_deleted_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationRoleDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_role_deleted_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_role_deleted_context_google_analytics_session.json"
+        )
+        instance = OrganizationRoleDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleDeletedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_deleted_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationRoleDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_role_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationRoleDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_role_deleted_context_actor_round_trip(self):
+        data = load_fixture("organization_role_deleted_context_actor.json")
+        instance = OrganizationRoleDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationRoleDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_role_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationRoleDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_role_deleted_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_role_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationRoleDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_role_updated_round_trip(self):
+        data = load_fixture("organization_role_updated.json")
+        instance = OrganizationRoleUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_role.updated",
+            "data": {
+                "object": "organization_role",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing-admin",
+                "name": "Billing Administrator",
+                "description": "Can manage billing settings.",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationRoleUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_role_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization_role.updated",
+            "data": {
+                "object": "organization_role",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing-admin",
+                "name": "Billing Administrator",
+                "description": "Can manage billing settings.",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationRoleUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_role_updated_data_round_trip(self):
+        data = load_fixture("organization_role_updated_data.json")
+        instance = OrganizationRoleUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_updated_data_minimal_payload(self):
+        data = {
+            "object": "organization_role",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing-admin",
+            "name": "Billing Administrator",
+            "description": None,
+            "resource_type_slug": "organization",
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationRoleUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
+        assert serialized["permissions"] == data["permissions"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_role_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "organization_role",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing-admin",
+            "name": "Billing Administrator",
+            "description": None,
+            "resource_type_slug": "organization",
+            "permissions": ["users:read", "users:write"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationRoleUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_organization_role_updated_context_round_trip(self):
+        data = load_fixture("organization_role_updated_context.json")
+        instance = OrganizationRoleUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_updated_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationRoleUpdatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_role_updated_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationRoleUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_role_updated_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "organization_role_updated_context_google_analytics_session.json"
+        )
+        instance = OrganizationRoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleUpdatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_updated_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationRoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_role_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationRoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_role_updated_context_actor_round_trip(self):
+        data = load_fixture("organization_role_updated_context_actor.json")
+        instance = OrganizationRoleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationRoleUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_role_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationRoleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_role_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationRoleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_role_updated_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_role_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationRoleUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_updated_round_trip(self):
+        data = load_fixture("organization_updated.json")
+        instance = OrganizationUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization.updated",
+            "data": {
+                "object": "organization",
+                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Acme Inc.",
+                "domains": [
+                    {
+                        "object": "organization_domain",
+                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                        "domain": "foo-corp.com",
+                        "state": "pending",
+                        "verification_prefix": "superapp-domain-verification-z3kjny",
+                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                        "verification_strategy": "dns",
+                        "created_at": "2026-01-15T12:00:00.000Z",
+                        "updated_at": "2026-01-15T12:00:00.000Z",
+                    }
+                ],
+                "metadata": {"tier": "diamond"},
+                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
+                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_organization_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "organization.updated",
+            "data": {
+                "object": "organization",
+                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Acme Inc.",
+                "domains": [
+                    {
+                        "object": "organization_domain",
+                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                        "domain": "foo-corp.com",
+                        "state": "pending",
+                        "verification_prefix": "superapp-domain-verification-z3kjny",
+                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                        "verification_strategy": "dns",
+                        "created_at": "2026-01-15T12:00:00.000Z",
+                        "updated_at": "2026-01-15T12:00:00.000Z",
+                    }
+                ],
+                "metadata": {"tier": "diamond"},
+                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
+                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = OrganizationUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_organization_updated_data_round_trip(self):
+        data = load_fixture("organization_updated_data.json")
+        instance = OrganizationUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_updated_data_minimal_payload(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["domains"] == data["domains"]
+        assert serialized["metadata"] == data["metadata"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_updated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "stripe_customer_id" not in serialized
+
+    def test_organization_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "organization",
+            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Acme Inc.",
+            "domains": [
+                {
+                    "object": "organization_domain",
+                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+                    "domain": "foo-corp.com",
+                    "state": "pending",
+                    "verification_prefix": "superapp-domain-verification-z3kjny",
+                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+                    "verification_strategy": "dns",
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+            "metadata": {"tier": "diamond"},
+            "external_id": None,
+            "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["external_id"] is None
+
+    def test_organization_updated_data_domain_round_trip(self):
+        data = load_fixture("organization_updated_data_domain.json")
+        instance = OrganizationUpdatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdatedDataDomain.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_updated_data_domain_minimal_payload(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationUpdatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["domain"] == data["domain"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_organization_updated_data_domain_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationUpdatedDataDomain.from_dict(data)
+        serialized = instance.to_dict()
+        assert "state" not in serialized
+        assert "verification_prefix" not in serialized
+        assert "verification_token" not in serialized
+        assert "verification_strategy" not in serialized
+
+    def test_organization_updated_data_domain_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "organization_domain",
+            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
+            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
+            "domain": "foo-corp.com",
+            "state": "unexpected_organization_updated_data_domain_state",
+            "verification_prefix": "superapp-domain-verification-z3kjny",
+            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
+            "verification_strategy": "dns",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = OrganizationUpdatedDataDomain.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_organization_updated_context_round_trip(self):
+        data = load_fixture("organization_updated_context.json")
+        instance = OrganizationUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_updated_context_minimal_payload(self):
+        data = {}
+        instance = OrganizationUpdatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_organization_updated_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = OrganizationUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_organization_updated_context_google_analytics_session_round_trip(self):
+        data = load_fixture(
+            "organization_updated_context_google_analytics_session.json"
+        )
+        instance = OrganizationUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_organization_updated_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_organization_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = OrganizationUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_organization_updated_context_actor_round_trip(self):
+        data = load_fixture("organization_updated_context_actor.json")
+        instance = OrganizationUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = OrganizationUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_organization_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_organization_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = OrganizationUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_organization_updated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_organization_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = OrganizationUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_password_reset_created_round_trip(self):
+        data = load_fixture("password_reset_created.json")
+        instance = PasswordResetCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordResetCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "password_reset.created",
+            "data": {
+                "object": "password_reset",
+                "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PasswordResetCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_password_reset_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "password_reset.created",
+            "data": {
+                "object": "password_reset",
+                "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PasswordResetCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_password_reset_created_data_round_trip(self):
+        data = load_fixture("password_reset_created_data.json")
+        instance = PasswordResetCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordResetCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_created_data_minimal_payload(self):
+        data = {
+            "object": "password_reset",
+            "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PasswordResetCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_password_reset_created_context_round_trip(self):
+        data = load_fixture("password_reset_created_context.json")
+        instance = PasswordResetCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordResetCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_created_context_minimal_payload(self):
+        data = {}
+        instance = PasswordResetCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_password_reset_created_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = PasswordResetCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_password_reset_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture(
+            "password_reset_created_context_google_analytics_session.json"
+        )
+        instance = PasswordResetCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordResetCreatedContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_created_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = PasswordResetCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_password_reset_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = PasswordResetCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_password_reset_created_context_actor_round_trip(self):
+        data = load_fixture("password_reset_created_context_actor.json")
+        instance = PasswordResetCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordResetCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = PasswordResetCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_password_reset_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = PasswordResetCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_password_reset_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_password_reset_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = PasswordResetCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_password_reset_succeeded_round_trip(self):
+        data = load_fixture("password_reset_succeeded.json")
+        instance = PasswordResetSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordResetSucceeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_succeeded_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "password_reset.succeeded",
+            "data": {
+                "object": "password_reset",
+                "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PasswordResetSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_password_reset_succeeded_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "password_reset.succeeded",
+            "data": {
+                "object": "password_reset",
+                "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "created_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PasswordResetSucceeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_password_reset_succeeded_data_round_trip(self):
+        data = load_fixture("password_reset_succeeded_data.json")
+        instance = PasswordResetSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordResetSucceededData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_succeeded_data_minimal_payload(self):
+        data = {
+            "object": "password_reset",
+            "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "created_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PasswordResetSucceededData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["created_at"] == data["created_at"]
+
+    def test_password_reset_succeeded_context_round_trip(self):
+        data = load_fixture("password_reset_succeeded_context.json")
+        instance = PasswordResetSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordResetSucceededContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_succeeded_context_minimal_payload(self):
+        data = {}
+        instance = PasswordResetSucceededContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_password_reset_succeeded_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = PasswordResetSucceededContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_password_reset_succeeded_context_google_analytics_session_round_trip(self):
+        data = load_fixture(
+            "password_reset_succeeded_context_google_analytics_session.json"
+        )
+        instance = PasswordResetSucceededContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordResetSucceededContextGoogleAnalyticsSession.from_dict(
+            serialized
+        )
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_succeeded_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = PasswordResetSucceededContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_password_reset_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = PasswordResetSucceededContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_password_reset_succeeded_context_actor_round_trip(self):
+        data = load_fixture("password_reset_succeeded_context_actor.json")
+        instance = PasswordResetSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PasswordResetSucceededContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_password_reset_succeeded_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = PasswordResetSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_password_reset_succeeded_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = PasswordResetSucceededContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_password_reset_succeeded_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_password_reset_succeeded_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = PasswordResetSucceededContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_permission_created_round_trip(self):
+        data = load_fixture("permission_created.json")
+        instance = PermissionCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "permission.created",
+            "data": {
+                "object": "permission",
+                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing:manage",
+                "name": "Manage Billing",
+                "description": "Allows managing billing settings.",
+                "system": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PermissionCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_permission_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "permission.created",
+            "data": {
+                "object": "permission",
+                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing:manage",
+                "name": "Manage Billing",
+                "description": "Allows managing billing settings.",
+                "system": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PermissionCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_permission_created_data_round_trip(self):
+        data = load_fixture("permission_created_data.json")
+        instance = PermissionCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_created_data_minimal_payload(self):
+        data = {
+            "object": "permission",
+            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing:manage",
+            "name": "Manage Billing",
+            "description": None,
+            "system": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PermissionCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["system"] == data["system"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_permission_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "permission",
+            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing:manage",
+            "name": "Manage Billing",
+            "description": None,
+            "system": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PermissionCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_permission_created_context_round_trip(self):
+        data = load_fixture("permission_created_context.json")
+        instance = PermissionCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_created_context_minimal_payload(self):
+        data = {}
+        instance = PermissionCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_permission_created_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = PermissionCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_permission_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("permission_created_context_google_analytics_session.json")
+        instance = PermissionCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = PermissionCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_permission_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = PermissionCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_permission_created_context_actor_round_trip(self):
+        data = load_fixture("permission_created_context_actor.json")
+        instance = PermissionCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = PermissionCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_permission_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = PermissionCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_permission_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_permission_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = PermissionCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_permission_deleted_round_trip(self):
+        data = load_fixture("permission_deleted.json")
+        instance = PermissionDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "permission.deleted",
+            "data": {
+                "object": "permission",
+                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing:manage",
+                "name": "Manage Billing",
+                "description": "Allows managing billing settings.",
+                "system": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PermissionDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_permission_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "permission.deleted",
+            "data": {
+                "object": "permission",
+                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing:manage",
+                "name": "Manage Billing",
+                "description": "Allows managing billing settings.",
+                "system": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PermissionDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_permission_deleted_data_round_trip(self):
+        data = load_fixture("permission_deleted_data.json")
+        instance = PermissionDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_deleted_data_minimal_payload(self):
+        data = {
+            "object": "permission",
+            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing:manage",
+            "name": "Manage Billing",
+            "description": None,
+            "system": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PermissionDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["system"] == data["system"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_permission_deleted_data_preserves_nullable_fields(self):
+        data = {
+            "object": "permission",
+            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing:manage",
+            "name": "Manage Billing",
+            "description": None,
+            "system": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PermissionDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_permission_deleted_context_round_trip(self):
+        data = load_fixture("permission_deleted_context.json")
+        instance = PermissionDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_deleted_context_minimal_payload(self):
+        data = {}
+        instance = PermissionDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_permission_deleted_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = PermissionDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_permission_deleted_context_google_analytics_session_round_trip(self):
+        data = load_fixture("permission_deleted_context_google_analytics_session.json")
+        instance = PermissionDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionDeletedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_deleted_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = PermissionDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_permission_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = PermissionDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_permission_deleted_context_actor_round_trip(self):
+        data = load_fixture("permission_deleted_context_actor.json")
+        instance = PermissionDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = PermissionDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_permission_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = PermissionDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_permission_deleted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_permission_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = PermissionDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_permission_updated_round_trip(self):
+        data = load_fixture("permission_updated.json")
+        instance = PermissionUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "permission.updated",
+            "data": {
+                "object": "permission",
+                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing:manage",
+                "name": "Manage Billing",
+                "description": "Allows managing billing settings.",
+                "system": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PermissionUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_permission_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "permission.updated",
+            "data": {
+                "object": "permission",
+                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "slug": "billing:manage",
+                "name": "Manage Billing",
+                "description": "Allows managing billing settings.",
+                "system": False,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PermissionUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_permission_updated_data_round_trip(self):
+        data = load_fixture("permission_updated_data.json")
+        instance = PermissionUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_updated_data_minimal_payload(self):
+        data = {
+            "object": "permission",
+            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing:manage",
+            "name": "Manage Billing",
+            "description": None,
+            "system": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PermissionUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["system"] == data["system"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_permission_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "permission",
+            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "slug": "billing:manage",
+            "name": "Manage Billing",
+            "description": None,
+            "system": False,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PermissionUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
+    def test_permission_updated_context_round_trip(self):
+        data = load_fixture("permission_updated_context.json")
+        instance = PermissionUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_updated_context_minimal_payload(self):
+        data = {}
+        instance = PermissionUpdatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_permission_updated_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = PermissionUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_permission_updated_context_google_analytics_session_round_trip(self):
+        data = load_fixture("permission_updated_context_google_analytics_session.json")
+        instance = PermissionUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_updated_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = PermissionUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_permission_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = PermissionUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_permission_updated_context_actor_round_trip(self):
+        data = load_fixture("permission_updated_context_actor.json")
+        instance = PermissionUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PermissionUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_permission_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = PermissionUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_permission_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = PermissionUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_permission_updated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_permission_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = PermissionUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_role_created_round_trip(self):
+        data = load_fixture("role_created.json")
+        instance = RoleCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "role.created",
+            "data": {
+                "object": "role",
+                "slug": "admin",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = RoleCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_role_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "role.created",
+            "data": {
+                "object": "role",
+                "slug": "admin",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = RoleCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_role_created_data_round_trip(self):
+        data = load_fixture("role_created_data.json")
+        instance = RoleCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_created_data_minimal_payload(self):
+        data = {
+            "object": "role",
+            "slug": "admin",
+            "resource_type_slug": "organization",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RoleCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_role_created_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "role",
+            "slug": "admin",
+            "resource_type_slug": "organization",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RoleCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "permissions" not in serialized
+
+    def test_role_created_context_round_trip(self):
+        data = load_fixture("role_created_context.json")
+        instance = RoleCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_created_context_minimal_payload(self):
+        data = {}
+        instance = RoleCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_role_created_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = RoleCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_role_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("role_created_context_google_analytics_session.json")
+        instance = RoleCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = RoleCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_role_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = RoleCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_role_created_context_actor_round_trip(self):
+        data = load_fixture("role_created_context_actor.json")
+        instance = RoleCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = RoleCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_role_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = RoleCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_role_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_role_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = RoleCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_role_deleted_round_trip(self):
+        data = load_fixture("role_deleted.json")
+        instance = RoleDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "role.deleted",
+            "data": {
+                "object": "role",
+                "slug": "admin",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = RoleDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_role_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "role.deleted",
+            "data": {
+                "object": "role",
+                "slug": "admin",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = RoleDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_role_deleted_data_round_trip(self):
+        data = load_fixture("role_deleted_data.json")
+        instance = RoleDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_deleted_data_minimal_payload(self):
+        data = {
+            "object": "role",
+            "slug": "admin",
+            "resource_type_slug": "organization",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RoleDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_role_deleted_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "role",
+            "slug": "admin",
+            "resource_type_slug": "organization",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RoleDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "permissions" not in serialized
+
+    def test_role_deleted_context_round_trip(self):
+        data = load_fixture("role_deleted_context.json")
+        instance = RoleDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_deleted_context_minimal_payload(self):
+        data = {}
+        instance = RoleDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_role_deleted_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = RoleDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_role_deleted_context_google_analytics_session_round_trip(self):
+        data = load_fixture("role_deleted_context_google_analytics_session.json")
+        instance = RoleDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleDeletedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_deleted_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = RoleDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_role_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = RoleDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_role_deleted_context_actor_round_trip(self):
+        data = load_fixture("role_deleted_context_actor.json")
+        instance = RoleDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = RoleDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_role_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = RoleDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_role_deleted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_role_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = RoleDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_role_updated_round_trip(self):
+        data = load_fixture("role_updated.json")
+        instance = RoleUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "role.updated",
+            "data": {
+                "object": "role",
+                "slug": "admin",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = RoleUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_role_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "role.updated",
+            "data": {
+                "object": "role",
+                "slug": "admin",
+                "resource_type_slug": "organization",
+                "permissions": ["users:read", "users:write"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = RoleUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_role_updated_data_round_trip(self):
+        data = load_fixture("role_updated_data.json")
+        instance = RoleUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_updated_data_minimal_payload(self):
+        data = {
+            "object": "role",
+            "slug": "admin",
+            "resource_type_slug": "organization",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RoleUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_role_updated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "role",
+            "slug": "admin",
+            "resource_type_slug": "organization",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = RoleUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "permissions" not in serialized
+
+    def test_role_updated_context_round_trip(self):
+        data = load_fixture("role_updated_context.json")
+        instance = RoleUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_updated_context_minimal_payload(self):
+        data = {}
+        instance = RoleUpdatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_role_updated_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = RoleUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_role_updated_context_google_analytics_session_round_trip(self):
+        data = load_fixture("role_updated_context_google_analytics_session.json")
+        instance = RoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_updated_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = RoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_role_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = RoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_role_updated_context_actor_round_trip(self):
+        data = load_fixture("role_updated_context_actor.json")
+        instance = RoleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = RoleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_role_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = RoleUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_role_updated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_role_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = RoleUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_session_created_round_trip(self):
+        data = load_fixture("session_created.json")
+        instance = SessionCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "session.created",
+            "data": {
+                "object": "session",
+                "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+                "impersonator": {
+                    "email": "admin@foocorp.com",
+                    "reason": "Investigating an issue with the customer's account.",
+                },
+                "ip_address": "198.51.100.42",
+                "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
+                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "auth_method": "sso",
+                "status": "active",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "ended_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = SessionCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_session_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "session.created",
+            "data": {
+                "object": "session",
+                "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+                "impersonator": {
+                    "email": "admin@foocorp.com",
+                    "reason": "Investigating an issue with the customer's account.",
+                },
+                "ip_address": "198.51.100.42",
+                "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
+                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "auth_method": "sso",
+                "status": "active",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "ended_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = SessionCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_session_created_data_round_trip(self):
+        data = load_fixture("session_created_data.json")
+        instance = SessionCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_created_data_minimal_payload(self):
+        data = {
+            "object": "session",
+            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "auth_method": "sso",
+            "status": "active",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "ended_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SessionCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["status"] == data["status"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["ended_at"] == data["ended_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_session_created_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "session",
+            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+            "ip_address": "198.51.100.42",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "auth_method": "sso",
+            "status": "active",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "ended_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SessionCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "impersonator" not in serialized
+        assert "organization_id" not in serialized
+
+    def test_session_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "session",
+            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+            "impersonator": {
+                "email": "admin@foocorp.com",
+                "reason": "Investigating an issue with the customer's account.",
+            },
+            "ip_address": None,
+            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "auth_method": "sso",
+            "status": "active",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "ended_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SessionCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["ended_at"] is None
+
+    def test_session_created_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "session",
+            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+            "impersonator": {
+                "email": "admin@foocorp.com",
+                "reason": "Investigating an issue with the customer's account.",
+            },
+            "ip_address": "198.51.100.42",
+            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "auth_method": "unexpected_session_created_data_auth_method",
+            "status": "active",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "ended_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SessionCreatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_session_created_data_impersonator_round_trip(self):
+        data = load_fixture("session_created_data_impersonator.json")
+        instance = SessionCreatedDataImpersonator.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionCreatedDataImpersonator.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_created_data_impersonator_minimal_payload(self):
+        data = {"email": "admin@foocorp.com", "reason": None}
+        instance = SessionCreatedDataImpersonator.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["reason"] == data["reason"]
+
+    def test_session_created_data_impersonator_preserves_nullable_fields(self):
+        data = {"email": "admin@foocorp.com", "reason": None}
+        instance = SessionCreatedDataImpersonator.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["reason"] is None
+
+    def test_session_created_context_round_trip(self):
+        data = load_fixture("session_created_context.json")
+        instance = SessionCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_created_context_minimal_payload(self):
+        data = {}
+        instance = SessionCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_session_created_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = SessionCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_session_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("session_created_context_google_analytics_session.json")
+        instance = SessionCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = SessionCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_session_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = SessionCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_session_created_context_actor_round_trip(self):
+        data = load_fixture("session_created_context_actor.json")
+        instance = SessionCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = SessionCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_session_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = SessionCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_session_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_session_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = SessionCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_session_revoked_round_trip(self):
+        data = load_fixture("session_revoked.json")
+        instance = SessionRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionRevoked.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_revoked_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "session.revoked",
+            "data": {
+                "object": "session",
+                "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+                "impersonator": {
+                    "email": "admin@foocorp.com",
+                    "reason": "Investigating an issue with the customer's account.",
+                },
+                "ip_address": "198.51.100.42",
+                "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
+                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "auth_method": "sso",
+                "status": "active",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "ended_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = SessionRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_session_revoked_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "session.revoked",
+            "data": {
+                "object": "session",
+                "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+                "impersonator": {
+                    "email": "admin@foocorp.com",
+                    "reason": "Investigating an issue with the customer's account.",
+                },
+                "ip_address": "198.51.100.42",
+                "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
+                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "auth_method": "sso",
+                "status": "active",
+                "expires_at": "2026-01-15T12:00:00.000Z",
+                "ended_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = SessionRevoked.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_session_revoked_data_round_trip(self):
+        data = load_fixture("session_revoked_data.json")
+        instance = SessionRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionRevokedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_revoked_data_minimal_payload(self):
+        data = {
+            "object": "session",
+            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+            "ip_address": None,
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "auth_method": "sso",
+            "status": "active",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "ended_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SessionRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["ip_address"] == data["ip_address"]
+        assert serialized["user_agent"] == data["user_agent"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["auth_method"] == data["auth_method"]
+        assert serialized["status"] == data["status"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["ended_at"] == data["ended_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_session_revoked_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "session",
+            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+            "ip_address": "198.51.100.42",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "auth_method": "sso",
+            "status": "active",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "ended_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SessionRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "impersonator" not in serialized
+        assert "organization_id" not in serialized
+
+    def test_session_revoked_data_preserves_nullable_fields(self):
+        data = {
+            "object": "session",
+            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+            "impersonator": {
+                "email": "admin@foocorp.com",
+                "reason": "Investigating an issue with the customer's account.",
+            },
+            "ip_address": None,
+            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
+            "user_agent": None,
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "auth_method": "sso",
+            "status": "active",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "ended_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SessionRevokedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["ip_address"] is None
+        assert serialized["user_agent"] is None
+        assert serialized["ended_at"] is None
+
+    def test_session_revoked_data_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "session",
+            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
+            "impersonator": {
+                "email": "admin@foocorp.com",
+                "reason": "Investigating an issue with the customer's account.",
+            },
+            "ip_address": "198.51.100.42",
+            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "auth_method": "unexpected_session_revoked_data_auth_method",
+            "status": "active",
+            "expires_at": "2026-01-15T12:00:00.000Z",
+            "ended_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = SessionRevokedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_session_revoked_data_impersonator_round_trip(self):
+        data = load_fixture("session_revoked_data_impersonator.json")
+        instance = SessionRevokedDataImpersonator.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionRevokedDataImpersonator.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_revoked_data_impersonator_minimal_payload(self):
+        data = {"email": "admin@foocorp.com", "reason": None}
+        instance = SessionRevokedDataImpersonator.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] == data["email"]
+        assert serialized["reason"] == data["reason"]
+
+    def test_session_revoked_data_impersonator_preserves_nullable_fields(self):
+        data = {"email": "admin@foocorp.com", "reason": None}
+        instance = SessionRevokedDataImpersonator.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["reason"] is None
+
+    def test_session_revoked_context_round_trip(self):
+        data = load_fixture("session_revoked_context.json")
+        instance = SessionRevokedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionRevokedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_revoked_context_minimal_payload(self):
+        data = {}
+        instance = SessionRevokedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_session_revoked_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = SessionRevokedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_session_revoked_context_google_analytics_session_round_trip(self):
+        data = load_fixture("session_revoked_context_google_analytics_session.json")
+        instance = SessionRevokedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionRevokedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_revoked_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = SessionRevokedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_session_revoked_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = SessionRevokedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_session_revoked_context_actor_round_trip(self):
+        data = load_fixture("session_revoked_context_actor.json")
+        instance = SessionRevokedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = SessionRevokedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_session_revoked_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = SessionRevokedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_session_revoked_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = SessionRevokedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_session_revoked_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_session_revoked_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = SessionRevokedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_user_created_round_trip(self):
+        data = load_fixture("user_created.json")
+        instance = UserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "user.created",
+            "data": {
+                "object": "user",
+                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+                "email": "marcelina.davis@example.com",
+                "email_verified": True,
+                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+                "metadata": {"timezone": "America/New_York"},
+                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "locale": "en-US",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = UserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_user_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "user.created",
+            "data": {
+                "object": "user",
+                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+                "email": "marcelina.davis@example.com",
+                "email_verified": True,
+                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+                "metadata": {"timezone": "America/New_York"},
+                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "locale": "en-US",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = UserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_user_created_data_round_trip(self):
+        data = load_fixture("user_created_data.json")
+        instance = UserCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_created_data_minimal_payload(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "last_sign_in_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = UserCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+        assert serialized["profile_picture_url"] == data["profile_picture_url"]
+        assert serialized["email"] == data["email"]
+        assert serialized["email_verified"] == data["email_verified"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_user_created_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+            "locale": "en-US",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = UserCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "metadata" not in serialized
+
+    def test_user_created_data_preserves_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "metadata": {"timezone": "America/New_York"},
+            "last_sign_in_at": None,
+            "locale": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = UserCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["profile_picture_url"] is None
+        assert serialized["external_id"] is None
+        assert serialized["last_sign_in_at"] is None
+        assert serialized["locale"] is None
+
+    def test_user_created_context_round_trip(self):
+        data = load_fixture("user_created_context.json")
+        instance = UserCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_created_context_minimal_payload(self):
+        data = {}
+        instance = UserCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_user_created_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = UserCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_user_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("user_created_context_google_analytics_session.json")
+        instance = UserCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = UserCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_user_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = UserCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_user_created_context_actor_round_trip(self):
+        data = load_fixture("user_created_context_actor.json")
+        instance = UserCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = UserCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_user_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = UserCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_user_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_user_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = UserCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_user_deleted_round_trip(self):
+        data = load_fixture("user_deleted.json")
+        instance = UserDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "user.deleted",
+            "data": {
+                "object": "user",
+                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+                "email": "marcelina.davis@example.com",
+                "email_verified": True,
+                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+                "metadata": {"timezone": "America/New_York"},
+                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "locale": "en-US",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = UserDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_user_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "user.deleted",
+            "data": {
+                "object": "user",
+                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+                "email": "marcelina.davis@example.com",
+                "email_verified": True,
+                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+                "metadata": {"timezone": "America/New_York"},
+                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "locale": "en-US",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = UserDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_user_deleted_data_round_trip(self):
+        data = load_fixture("user_deleted_data.json")
+        instance = UserDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_deleted_data_minimal_payload(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "last_sign_in_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = UserDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+        assert serialized["profile_picture_url"] == data["profile_picture_url"]
+        assert serialized["email"] == data["email"]
+        assert serialized["email_verified"] == data["email_verified"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_user_deleted_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+            "locale": "en-US",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = UserDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "metadata" not in serialized
+
+    def test_user_deleted_data_preserves_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "metadata": {"timezone": "America/New_York"},
+            "last_sign_in_at": None,
+            "locale": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = UserDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["profile_picture_url"] is None
+        assert serialized["external_id"] is None
+        assert serialized["last_sign_in_at"] is None
+        assert serialized["locale"] is None
+
+    def test_user_deleted_context_round_trip(self):
+        data = load_fixture("user_deleted_context.json")
+        instance = UserDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_deleted_context_minimal_payload(self):
+        data = {}
+        instance = UserDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_user_deleted_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = UserDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_user_deleted_context_google_analytics_session_round_trip(self):
+        data = load_fixture("user_deleted_context_google_analytics_session.json")
+        instance = UserDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserDeletedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_deleted_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = UserDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_user_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = UserDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_user_deleted_context_actor_round_trip(self):
+        data = load_fixture("user_deleted_context_actor.json")
+        instance = UserDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = UserDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_user_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = UserDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_user_deleted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_user_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = UserDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_user_updated_round_trip(self):
+        data = load_fixture("user_updated.json")
+        instance = UserUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "user.updated",
+            "data": {
+                "object": "user",
+                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+                "email": "marcelina.davis@example.com",
+                "email_verified": True,
+                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+                "metadata": {"timezone": "America/New_York"},
+                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "locale": "en-US",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = UserUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_user_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "user.updated",
+            "data": {
+                "object": "user",
+                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+                "first_name": "Marcelina",
+                "last_name": "Davis",
+                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+                "email": "marcelina.davis@example.com",
+                "email_verified": True,
+                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+                "metadata": {"timezone": "America/New_York"},
+                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "locale": "en-US",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = UserUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_user_updated_data_round_trip(self):
+        data = load_fixture("user_updated_data.json")
+        instance = UserUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_updated_data_minimal_payload(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "last_sign_in_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = UserUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+        assert serialized["profile_picture_url"] == data["profile_picture_url"]
+        assert serialized["email"] == data["email"]
+        assert serialized["email_verified"] == data["email_verified"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_user_updated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+            "locale": "en-US",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = UserUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "metadata" not in serialized
+
+    def test_user_updated_data_preserves_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "metadata": {"timezone": "America/New_York"},
+            "last_sign_in_at": None,
+            "locale": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = UserUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["profile_picture_url"] is None
+        assert serialized["external_id"] is None
+        assert serialized["last_sign_in_at"] is None
+        assert serialized["locale"] is None
+
+    def test_user_updated_context_round_trip(self):
+        data = load_fixture("user_updated_context.json")
+        instance = UserUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_updated_context_minimal_payload(self):
+        data = {}
+        instance = UserUpdatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_user_updated_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = UserUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_user_updated_context_google_analytics_session_round_trip(self):
+        data = load_fixture("user_updated_context_google_analytics_session.json")
+        instance = UserUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_updated_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = UserUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_user_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = UserUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_user_updated_context_actor_round_trip(self):
+        data = load_fixture("user_updated_context_actor.json")
+        instance = UserUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = UserUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = UserUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_user_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = UserUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_user_updated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_user_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = UserUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_byok_key_verification_completed_round_trip(self):
+        data = load_fixture("vault_byok_key_verification_completed.json")
+        instance = VaultByokKeyVerificationCompleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultByokKeyVerificationCompleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_byok_key_verification_completed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.byok_key.verification_completed",
+            "data": {
+                "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                "key_provider": "AWS_KMS",
+                "verified": True,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultByokKeyVerificationCompleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_vault_byok_key_verification_completed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.byok_key.verification_completed",
+            "data": {
+                "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                "key_provider": "AWS_KMS",
+                "verified": True,
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultByokKeyVerificationCompleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_byok_key_verification_completed_data_round_trip(self):
+        data = load_fixture("vault_byok_key_verification_completed_data.json")
+        instance = VaultByokKeyVerificationCompletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultByokKeyVerificationCompletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_byok_key_verification_completed_data_minimal_payload(self):
+        data = {
+            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            "key_provider": "AWS_KMS",
+            "verified": True,
+        }
+        instance = VaultByokKeyVerificationCompletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["key_provider"] == data["key_provider"]
+        assert serialized["verified"] == data["verified"]
+
+    def test_vault_byok_key_verification_completed_data_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+            "key_provider": "unexpected_vault_byok_key_verification_completed_data_key_provider",
+            "verified": True,
+        }
+        instance = VaultByokKeyVerificationCompletedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_byok_key_verification_completed_context_round_trip(self):
+        data = load_fixture("vault_byok_key_verification_completed_context.json")
+        instance = VaultByokKeyVerificationCompletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultByokKeyVerificationCompletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_byok_key_verification_completed_context_minimal_payload(self):
+        data = {}
+        instance = VaultByokKeyVerificationCompletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_vault_byok_key_verification_completed_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = VaultByokKeyVerificationCompletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_vault_byok_key_verification_completed_context_google_analytics_session_round_trip(
+        self,
+    ):
+        data = load_fixture(
+            "vault_byok_key_verification_completed_context_google_analytics_session.json"
+        )
+        instance = (
+            VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = (
+            VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession.from_dict(
+                serialized
+            )
+        )
+        assert restored.to_dict() == serialized
+
+    def test_vault_byok_key_verification_completed_context_google_analytics_session_minimal_payload(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_vault_byok_key_verification_completed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = (
+            VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession.from_dict(
+                data
+            )
+        )
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_vault_byok_key_verification_completed_context_actor_round_trip(self):
+        data = load_fixture("vault_byok_key_verification_completed_context_actor.json")
+        instance = VaultByokKeyVerificationCompletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultByokKeyVerificationCompletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_byok_key_verification_completed_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultByokKeyVerificationCompletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_vault_byok_key_verification_completed_context_actor_preserves_nullable_fields(
+        self,
+    ):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultByokKeyVerificationCompletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_vault_byok_key_verification_completed_context_actor_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_vault_byok_key_verification_completed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = VaultByokKeyVerificationCompletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_data_created_round_trip(self):
+        data = load_fixture("vault_data_created.json")
+        instance = VaultDataCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.data.created",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "kv_name": "user-secrets",
+                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "key_context": {"key": "test_value"},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDataCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_vault_data_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.data.created",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "kv_name": "user-secrets",
+                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "key_context": {"key": "test_value"},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDataCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_data_created_data_round_trip(self):
+        data = load_fixture("vault_data_created_data.json")
+        instance = VaultDataCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_created_data_minimal_payload(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "api",
+            "actor_name": "Jane Doe",
+            "kv_name": "user-secrets",
+            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "key_context": {"key": "test_value"},
+        }
+        instance = VaultDataCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["actor_id"] == data["actor_id"]
+        assert serialized["actor_source"] == data["actor_source"]
+        assert serialized["actor_name"] == data["actor_name"]
+        assert serialized["kv_name"] == data["kv_name"]
+        assert serialized["key_id"] == data["key_id"]
+        assert serialized["key_context"] == data["key_context"]
+
+    def test_vault_data_created_data_round_trips_unknown_enum_values(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "unexpected_vault_data_created_data_actor_source",
+            "actor_name": "Jane Doe",
+            "kv_name": "user-secrets",
+            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "key_context": {"key": "test_value"},
+        }
+        instance = VaultDataCreatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_data_created_context_round_trip(self):
+        data = load_fixture("vault_data_created_context.json")
+        instance = VaultDataCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_created_context_minimal_payload(self):
+        data = {}
+        instance = VaultDataCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_vault_data_created_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = VaultDataCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_vault_data_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("vault_data_created_context_google_analytics_session.json")
+        instance = VaultDataCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDataCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_vault_data_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDataCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_vault_data_created_context_actor_round_trip(self):
+        data = load_fixture("vault_data_created_context_actor.json")
+        instance = VaultDataCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDataCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_vault_data_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDataCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_vault_data_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_vault_data_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = VaultDataCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_data_deleted_round_trip(self):
+        data = load_fixture("vault_data_deleted.json")
+        instance = VaultDataDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.data.deleted",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "kv_name": "user-secrets",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDataDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_vault_data_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.data.deleted",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "kv_name": "user-secrets",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDataDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_data_deleted_data_round_trip(self):
+        data = load_fixture("vault_data_deleted_data.json")
+        instance = VaultDataDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataDeletedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_deleted_data_minimal_payload(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "api",
+            "actor_name": "Jane Doe",
+            "kv_name": "user-secrets",
+        }
+        instance = VaultDataDeletedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["actor_id"] == data["actor_id"]
+        assert serialized["actor_source"] == data["actor_source"]
+        assert serialized["actor_name"] == data["actor_name"]
+        assert serialized["kv_name"] == data["kv_name"]
+
+    def test_vault_data_deleted_data_round_trips_unknown_enum_values(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "unexpected_vault_data_deleted_data_actor_source",
+            "actor_name": "Jane Doe",
+            "kv_name": "user-secrets",
+        }
+        instance = VaultDataDeletedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_data_deleted_context_round_trip(self):
+        data = load_fixture("vault_data_deleted_context.json")
+        instance = VaultDataDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataDeletedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_deleted_context_minimal_payload(self):
+        data = {}
+        instance = VaultDataDeletedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_vault_data_deleted_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = VaultDataDeletedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_vault_data_deleted_context_google_analytics_session_round_trip(self):
+        data = load_fixture("vault_data_deleted_context_google_analytics_session.json")
+        instance = VaultDataDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataDeletedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_deleted_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDataDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_vault_data_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDataDeletedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_vault_data_deleted_context_actor_round_trip(self):
+        data = load_fixture("vault_data_deleted_context_actor.json")
+        instance = VaultDataDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataDeletedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_deleted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDataDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_vault_data_deleted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDataDeletedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_vault_data_deleted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_vault_data_deleted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = VaultDataDeletedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_data_read_round_trip(self):
+        data = load_fixture("vault_data_read.json")
+        instance = VaultDataRead.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataRead.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_read_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.data.read",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "kv_name": "user-secrets",
+                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDataRead.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_vault_data_read_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.data.read",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "kv_name": "user-secrets",
+                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDataRead.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_data_read_data_round_trip(self):
+        data = load_fixture("vault_data_read_data.json")
+        instance = VaultDataReadData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataReadData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_read_data_minimal_payload(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "api",
+            "actor_name": "Jane Doe",
+            "kv_name": "user-secrets",
+            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+        }
+        instance = VaultDataReadData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["actor_id"] == data["actor_id"]
+        assert serialized["actor_source"] == data["actor_source"]
+        assert serialized["actor_name"] == data["actor_name"]
+        assert serialized["kv_name"] == data["kv_name"]
+        assert serialized["key_id"] == data["key_id"]
+
+    def test_vault_data_read_data_round_trips_unknown_enum_values(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "unexpected_vault_data_read_data_actor_source",
+            "actor_name": "Jane Doe",
+            "kv_name": "user-secrets",
+            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+        }
+        instance = VaultDataReadData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_data_read_context_round_trip(self):
+        data = load_fixture("vault_data_read_context.json")
+        instance = VaultDataReadContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataReadContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_read_context_minimal_payload(self):
+        data = {}
+        instance = VaultDataReadContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_vault_data_read_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = VaultDataReadContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_vault_data_read_context_google_analytics_session_round_trip(self):
+        data = load_fixture("vault_data_read_context_google_analytics_session.json")
+        instance = VaultDataReadContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataReadContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_read_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDataReadContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_vault_data_read_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDataReadContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_vault_data_read_context_actor_round_trip(self):
+        data = load_fixture("vault_data_read_context_actor.json")
+        instance = VaultDataReadContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataReadContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_read_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDataReadContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_vault_data_read_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDataReadContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_vault_data_read_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_vault_data_read_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = VaultDataReadContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_data_updated_round_trip(self):
+        data = load_fixture("vault_data_updated.json")
+        instance = VaultDataUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.data.updated",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "kv_name": "user-secrets",
+                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "key_context": {"key": "test_value"},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDataUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_vault_data_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.data.updated",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "kv_name": "user-secrets",
+                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "key_context": {"key": "test_value"},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDataUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_data_updated_data_round_trip(self):
+        data = load_fixture("vault_data_updated_data.json")
+        instance = VaultDataUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataUpdatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_updated_data_minimal_payload(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "api",
+            "actor_name": "Jane Doe",
+            "kv_name": "user-secrets",
+            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "key_context": {"key": "test_value"},
+        }
+        instance = VaultDataUpdatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["actor_id"] == data["actor_id"]
+        assert serialized["actor_source"] == data["actor_source"]
+        assert serialized["actor_name"] == data["actor_name"]
+        assert serialized["kv_name"] == data["kv_name"]
+        assert serialized["key_id"] == data["key_id"]
+        assert serialized["key_context"] == data["key_context"]
+
+    def test_vault_data_updated_data_round_trips_unknown_enum_values(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "unexpected_vault_data_updated_data_actor_source",
+            "actor_name": "Jane Doe",
+            "kv_name": "user-secrets",
+            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "key_context": {"key": "test_value"},
+        }
+        instance = VaultDataUpdatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_data_updated_context_round_trip(self):
+        data = load_fixture("vault_data_updated_context.json")
+        instance = VaultDataUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataUpdatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_updated_context_minimal_payload(self):
+        data = {}
+        instance = VaultDataUpdatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_vault_data_updated_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = VaultDataUpdatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_vault_data_updated_context_google_analytics_session_round_trip(self):
+        data = load_fixture("vault_data_updated_context_google_analytics_session.json")
+        instance = VaultDataUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_updated_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDataUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_vault_data_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDataUpdatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_vault_data_updated_context_actor_round_trip(self):
+        data = load_fixture("vault_data_updated_context_actor.json")
+        instance = VaultDataUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDataUpdatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_data_updated_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDataUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_vault_data_updated_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDataUpdatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_vault_data_updated_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_vault_data_updated_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = VaultDataUpdatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_dek_decrypted_round_trip(self):
+        data = load_fixture("vault_dek_decrypted.json")
+        instance = VaultDekDecrypted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekDecrypted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_decrypted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.dek.decrypted",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDekDecrypted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_vault_dek_decrypted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.dek.decrypted",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDekDecrypted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_dek_decrypted_data_round_trip(self):
+        data = load_fixture("vault_dek_decrypted_data.json")
+        instance = VaultDekDecryptedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekDecryptedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_decrypted_data_minimal_payload(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "api",
+            "actor_name": "Jane Doe",
+            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+        }
+        instance = VaultDekDecryptedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["actor_id"] == data["actor_id"]
+        assert serialized["actor_source"] == data["actor_source"]
+        assert serialized["actor_name"] == data["actor_name"]
+        assert serialized["key_id"] == data["key_id"]
+
+    def test_vault_dek_decrypted_data_round_trips_unknown_enum_values(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "unexpected_vault_dek_decrypted_data_actor_source",
+            "actor_name": "Jane Doe",
+            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+        }
+        instance = VaultDekDecryptedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_dek_decrypted_context_round_trip(self):
+        data = load_fixture("vault_dek_decrypted_context.json")
+        instance = VaultDekDecryptedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekDecryptedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_decrypted_context_minimal_payload(self):
+        data = {}
+        instance = VaultDekDecryptedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_vault_dek_decrypted_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = VaultDekDecryptedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_vault_dek_decrypted_context_google_analytics_session_round_trip(self):
+        data = load_fixture("vault_dek_decrypted_context_google_analytics_session.json")
+        instance = VaultDekDecryptedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekDecryptedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_decrypted_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDekDecryptedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_vault_dek_decrypted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDekDecryptedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_vault_dek_decrypted_context_actor_round_trip(self):
+        data = load_fixture("vault_dek_decrypted_context_actor.json")
+        instance = VaultDekDecryptedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekDecryptedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_decrypted_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDekDecryptedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_vault_dek_decrypted_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDekDecryptedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_vault_dek_decrypted_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_vault_dek_decrypted_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = VaultDekDecryptedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_dek_read_round_trip(self):
+        data = load_fixture("vault_dek_read.json")
+        instance = VaultDekRead.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekRead.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_read_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.dek.read",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+                "key_context": {"key": "test_value"},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDekRead.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_vault_dek_read_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.dek.read",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+                "key_context": {"key": "test_value"},
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultDekRead.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_dek_read_data_round_trip(self):
+        data = load_fixture("vault_dek_read_data.json")
+        instance = VaultDekReadData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekReadData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_read_data_minimal_payload(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "api",
+            "actor_name": "Jane Doe",
+            "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            "key_context": {"key": "test_value"},
+        }
+        instance = VaultDekReadData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["actor_id"] == data["actor_id"]
+        assert serialized["actor_source"] == data["actor_source"]
+        assert serialized["actor_name"] == data["actor_name"]
+        assert serialized["key_ids"] == data["key_ids"]
+        assert serialized["key_context"] == data["key_context"]
+
+    def test_vault_dek_read_data_round_trips_unknown_enum_values(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "unexpected_vault_dek_read_data_actor_source",
+            "actor_name": "Jane Doe",
+            "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
+            "key_context": {"key": "test_value"},
+        }
+        instance = VaultDekReadData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_dek_read_context_round_trip(self):
+        data = load_fixture("vault_dek_read_context.json")
+        instance = VaultDekReadContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekReadContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_read_context_minimal_payload(self):
+        data = {}
+        instance = VaultDekReadContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_vault_dek_read_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = VaultDekReadContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_vault_dek_read_context_google_analytics_session_round_trip(self):
+        data = load_fixture("vault_dek_read_context_google_analytics_session.json")
+        instance = VaultDekReadContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekReadContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_read_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDekReadContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_vault_dek_read_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultDekReadContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_vault_dek_read_context_actor_round_trip(self):
+        data = load_fixture("vault_dek_read_context_actor.json")
+        instance = VaultDekReadContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultDekReadContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_dek_read_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDekReadContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_vault_dek_read_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultDekReadContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_vault_dek_read_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_vault_dek_read_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = VaultDekReadContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_kek_created_round_trip(self):
+        data = load_fixture("vault_kek_created.json")
+        instance = VaultKekCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultKekCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_kek_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.kek.created",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "key_name": "production-kek",
+                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultKekCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_vault_kek_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.kek.created",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "key_name": "production-kek",
+                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultKekCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_kek_created_data_round_trip(self):
+        data = load_fixture("vault_kek_created_data.json")
+        instance = VaultKekCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultKekCreatedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_kek_created_data_minimal_payload(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "api",
+            "actor_name": "Jane Doe",
+            "key_name": "production-kek",
+            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+        }
+        instance = VaultKekCreatedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["actor_id"] == data["actor_id"]
+        assert serialized["actor_source"] == data["actor_source"]
+        assert serialized["actor_name"] == data["actor_name"]
+        assert serialized["key_name"] == data["key_name"]
+        assert serialized["key_id"] == data["key_id"]
+
+    def test_vault_kek_created_data_round_trips_unknown_enum_values(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "unexpected_vault_kek_created_data_actor_source",
+            "actor_name": "Jane Doe",
+            "key_name": "production-kek",
+            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+        }
+        instance = VaultKekCreatedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_kek_created_context_round_trip(self):
+        data = load_fixture("vault_kek_created_context.json")
+        instance = VaultKekCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultKekCreatedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_kek_created_context_minimal_payload(self):
+        data = {}
+        instance = VaultKekCreatedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_vault_kek_created_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = VaultKekCreatedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_vault_kek_created_context_google_analytics_session_round_trip(self):
+        data = load_fixture("vault_kek_created_context_google_analytics_session.json")
+        instance = VaultKekCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultKekCreatedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_kek_created_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultKekCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_vault_kek_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultKekCreatedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_vault_kek_created_context_actor_round_trip(self):
+        data = load_fixture("vault_kek_created_context_actor.json")
+        instance = VaultKekCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultKekCreatedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_kek_created_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultKekCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_vault_kek_created_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultKekCreatedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_vault_kek_created_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_vault_kek_created_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = VaultKekCreatedContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_metadata_read_round_trip(self):
+        data = load_fixture("vault_metadata_read.json")
+        instance = VaultMetadataRead.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultMetadataRead.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_metadata_read_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.metadata.read",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "kv_name": "user-secrets",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultMetadataRead.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_vault_metadata_read_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.metadata.read",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+                "kv_name": "user-secrets",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultMetadataRead.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_metadata_read_data_round_trip(self):
+        data = load_fixture("vault_metadata_read_data.json")
+        instance = VaultMetadataReadData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultMetadataReadData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_metadata_read_data_minimal_payload(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "api",
+            "actor_name": "Jane Doe",
+            "kv_name": "user-secrets",
+        }
+        instance = VaultMetadataReadData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["actor_id"] == data["actor_id"]
+        assert serialized["actor_source"] == data["actor_source"]
+        assert serialized["actor_name"] == data["actor_name"]
+        assert serialized["kv_name"] == data["kv_name"]
+
+    def test_vault_metadata_read_data_round_trips_unknown_enum_values(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "unexpected_vault_metadata_read_data_actor_source",
+            "actor_name": "Jane Doe",
+            "kv_name": "user-secrets",
+        }
+        instance = VaultMetadataReadData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_metadata_read_context_round_trip(self):
+        data = load_fixture("vault_metadata_read_context.json")
+        instance = VaultMetadataReadContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultMetadataReadContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_metadata_read_context_minimal_payload(self):
+        data = {}
+        instance = VaultMetadataReadContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_vault_metadata_read_context_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = VaultMetadataReadContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_vault_metadata_read_context_google_analytics_session_round_trip(self):
+        data = load_fixture("vault_metadata_read_context_google_analytics_session.json")
+        instance = VaultMetadataReadContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultMetadataReadContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_metadata_read_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultMetadataReadContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_vault_metadata_read_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultMetadataReadContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_vault_metadata_read_context_actor_round_trip(self):
+        data = load_fixture("vault_metadata_read_context_actor.json")
+        instance = VaultMetadataReadContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultMetadataReadContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_metadata_read_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultMetadataReadContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_vault_metadata_read_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultMetadataReadContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_vault_metadata_read_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_vault_metadata_read_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = VaultMetadataReadContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_names_listed_round_trip(self):
+        data = load_fixture("vault_names_listed.json")
+        instance = VaultNamesListed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultNamesListed.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_names_listed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.names.listed",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultNamesListed.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_vault_names_listed_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "vault.names.listed",
+            "data": {
+                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "actor_source": "api",
+                "actor_name": "Jane Doe",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = VaultNamesListed.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_vault_names_listed_data_round_trip(self):
+        data = load_fixture("vault_names_listed_data.json")
+        instance = VaultNamesListedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultNamesListedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_names_listed_data_minimal_payload(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "api",
+            "actor_name": "Jane Doe",
+        }
+        instance = VaultNamesListedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["actor_id"] == data["actor_id"]
+        assert serialized["actor_source"] == data["actor_source"]
+        assert serialized["actor_name"] == data["actor_name"]
+
+    def test_vault_names_listed_data_round_trips_unknown_enum_values(self):
+        data = {
+            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "actor_source": "unexpected_vault_names_listed_data_actor_source",
+            "actor_name": "Jane Doe",
+        }
+        instance = VaultNamesListedData.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_vault_names_listed_context_round_trip(self):
+        data = load_fixture("vault_names_listed_context.json")
+        instance = VaultNamesListedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultNamesListedContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_names_listed_context_minimal_payload(self):
+        data = {}
+        instance = VaultNamesListedContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_vault_names_listed_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = VaultNamesListedContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_vault_names_listed_context_google_analytics_session_round_trip(self):
+        data = load_fixture("vault_names_listed_context_google_analytics_session.json")
+        instance = VaultNamesListedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultNamesListedContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_names_listed_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultNamesListedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_vault_names_listed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = VaultNamesListedContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
+    def test_vault_names_listed_context_actor_round_trip(self):
+        data = load_fixture("vault_names_listed_context_actor.json")
+        instance = VaultNamesListedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = VaultNamesListedContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_vault_names_listed_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultNamesListedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_vault_names_listed_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = VaultNamesListedContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_vault_names_listed_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_vault_names_listed_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = VaultNamesListedContextActor.from_dict(data)
+        assert instance.to_dict() == data
 
     def test_jwt_template_response_round_trip(self):
         data = load_fixture("jwt_template_response.json")
@@ -3498,6 +22994,26 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["first_name"] is None
         assert serialized["last_name"] is None
+
+    def test_event_list_list_metadata_round_trip(self):
+        data = load_fixture("event_list_list_metadata.json")
+        instance = EventListListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EventListListMetadata.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_event_list_list_metadata_minimal_payload(self):
+        data = {"after": None}
+        instance = EventListListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["after"] == data["after"]
+
+    def test_event_list_list_metadata_preserves_nullable_fields(self):
+        data = {"after": None}
+        instance = EventListListMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["after"] is None
 
     def test_directory_user_with_groups_email_round_trip(self):
         data = load_fixture("directory_user_with_groups_email.json")

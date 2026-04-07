@@ -12,9 +12,9 @@ from workos._types import _format_datetime, _parse_datetime
 
 from .connection_domain import ConnectionDomain
 from .connection_option import ConnectionOption
-from workos.common.models import ConnectionState
-from workos.common.models import ConnectionStatus
-from workos.common.models import ConnectionType
+from workos.common.models.connection_state import ConnectionState
+from workos.common.models.connection_status import ConnectionStatus
+from workos.common.models.connection_type import ConnectionType
 
 
 @dataclass(slots=True)
@@ -40,7 +40,9 @@ class Connection:
     organization_id: Optional[str] = None
     """Unique identifier for the Organization in which the Connection resides."""
     status: Optional["ConnectionStatus"] = None
-    """Deprecated. Use `state` instead."""
+    """Deprecated. Use `state` instead.
+
+    .. deprecated::"""
     options: Optional["ConnectionOption"] = None
     """Configuration options for SAML connections. Only present for SAML connection types."""
 

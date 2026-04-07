@@ -9,7 +9,7 @@ from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 
 from .intent_options import IntentOptions
-from workos.common.models import GenerateLinkIntent
+from workos.common.models.generate_link_intent import GenerateLinkIntent
 
 
 @dataclass(slots=True)

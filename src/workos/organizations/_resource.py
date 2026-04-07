@@ -210,7 +210,7 @@ class Organizations:
             id: Unique identifier of the Organization.
             name: The name of the organization.
             allow_profiles_outside_organization: Whether the organization allows profiles from outside the organization to sign in.
-            domains: The domains associated with the organization. Deprecated in favor of `domain_data`.
+            domains: (deprecated) The domains associated with the organization. Deprecated in favor of `domain_data`.
             domain_data: The domains associated with the organization, including verification state.
             stripe_customer_id: The Stripe customer ID associated with the organization.
             metadata: Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization.
@@ -507,7 +507,7 @@ class AsyncOrganizations:
             id: Unique identifier of the Organization.
             name: The name of the organization.
             allow_profiles_outside_organization: Whether the organization allows profiles from outside the organization to sign in.
-            domains: The domains associated with the organization. Deprecated in favor of `domain_data`.
+            domains: (deprecated) The domains associated with the organization. Deprecated in favor of `domain_data`.
             domain_data: The domains associated with the organization, including verification state.
             stripe_customer_id: The Stripe customer ID associated with the organization.
             metadata: Object containing [metadata](https://workos.com/docs/authkit/metadata) key/value pairs associated with the Organization.

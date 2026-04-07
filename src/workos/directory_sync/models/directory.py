@@ -11,8 +11,8 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .directory_metadata import DirectoryMetadata
-from workos.common.models import DirectoryState
-from workos.common.models import DirectoryType
+from workos.common.models.directory_state import DirectoryState
+from workos.common.models.directory_type import DirectoryType
 
 
 @dataclass(slots=True)

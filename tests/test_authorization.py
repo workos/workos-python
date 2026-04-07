@@ -518,31 +518,29 @@ class TestAuthorization:
         request = httpx_mock.get_request()
         assert request.url.params["cascade_delete"] == "true"
 
-    def test_list_organization_memberships_for_resource(self, workos, httpx_mock):
+    def test_list_memberships_for_resource(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_user_organization_membership_base_list_data.json"),
         )
-        page = workos.authorization.list_organization_memberships_for_resource(
+        page = workos.authorization.list_memberships_for_resource(
             "test_resource_id", permission_slug="test_permission_slug"
         )
         assert isinstance(page, SyncPage)
         assert isinstance(page.data, list)
 
-    def test_list_organization_memberships_for_resource_empty_page(
-        self, workos, httpx_mock
-    ):
+    def test_list_memberships_for_resource_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.authorization.list_organization_memberships_for_resource(
+        page = workos.authorization.list_memberships_for_resource(
             "test_resource_id", permission_slug="test_permission_slug"
         )
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_organization_memberships_for_resource_encodes_query_params(
+    def test_list_memberships_for_resource_encodes_query_params(
         self, workos, httpx_mock
     ):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.authorization.list_organization_memberships_for_resource(
+        workos.authorization.list_memberships_for_resource(
             "test_resource_id",
             limit=10,
             before="cursor before",
@@ -609,11 +607,11 @@ class TestAuthorization:
         assert request.method == "PATCH"
         assert request.url.path.endswith("/authorization/roles/test_slug")
 
-    def test_add_permission_permissions_roles(self, workos, httpx_mock):
+    def test_add_role_permission(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.add_permission_permissions_roles(
+        result = workos.authorization.add_role_permission(
             "test_slug", body_slug="test_slug"
         )
         assert isinstance(result, Role)
@@ -625,13 +623,11 @@ class TestAuthorization:
         body = json.loads(request.content)
         assert body["slug"] == "test_slug"
 
-    def test_set_permissions_permissions_roles(self, workos, httpx_mock):
+    def test_set_role_permissions(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.set_permissions_permissions_roles(
-            "test_slug", permissions=[]
-        )
+        result = workos.authorization.set_role_permissions("test_slug", permissions=[])
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
@@ -1262,37 +1258,31 @@ class TestAsyncAuthorization:
         request = httpx_mock.get_request()
         assert request.url.params["cascade_delete"] == "true"
 
-    async def test_list_organization_memberships_for_resource(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_memberships_for_resource(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_user_organization_membership_base_list_data.json")
         )
-        page = (
-            await async_workos.authorization.list_organization_memberships_for_resource(
-                "test_resource_id", permission_slug="test_permission_slug"
-            )
+        page = await async_workos.authorization.list_memberships_for_resource(
+            "test_resource_id", permission_slug="test_permission_slug"
         )
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
-    async def test_list_organization_memberships_for_resource_empty_page(
+    async def test_list_memberships_for_resource_empty_page(
         self, async_workos, httpx_mock
     ):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = (
-            await async_workos.authorization.list_organization_memberships_for_resource(
-                "test_resource_id", permission_slug="test_permission_slug"
-            )
+        page = await async_workos.authorization.list_memberships_for_resource(
+            "test_resource_id", permission_slug="test_permission_slug"
         )
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
-    async def test_list_organization_memberships_for_resource_encodes_query_params(
+    async def test_list_memberships_for_resource_encodes_query_params(
         self, async_workos, httpx_mock
     ):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.authorization.list_organization_memberships_for_resource(
+        await async_workos.authorization.list_memberships_for_resource(
             "test_resource_id",
             limit=10,
             before="cursor before",
@@ -1350,9 +1340,9 @@ class TestAsyncAuthorization:
         assert request.method == "PATCH"
         assert request.url.path.endswith("/authorization/roles/test_slug")
 
-    async def test_add_permission_permissions_roles(self, async_workos, httpx_mock):
+    async def test_add_role_permission(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.add_permission_permissions_roles(
+        result = await async_workos.authorization.add_role_permission(
             "test_slug", body_slug="test_slug"
         )
         assert isinstance(result, Role)
@@ -1362,9 +1352,9 @@ class TestAsyncAuthorization:
         assert request.method == "POST"
         assert request.url.path.endswith("/authorization/roles/test_slug/permissions")
 
-    async def test_set_permissions_permissions_roles(self, async_workos, httpx_mock):
+    async def test_set_role_permissions(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.set_permissions_permissions_roles(
+        result = await async_workos.authorization.set_role_permissions(
             "test_slug", permissions=[]
         )
         assert isinstance(result, Role)

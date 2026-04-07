@@ -16,7 +16,7 @@ from .external_auth_complete_response import (
 from .new_connect_application_secret import (
     NewConnectApplicationSecret as NewConnectApplicationSecret,
 )
-from .redirect_uri_dto import RedirectUriDto as RedirectUriDto
+from .redirect_uri_input import RedirectUriInput as RedirectUriInput
 from .update_oauth_application import UpdateOAuthApplication as UpdateOAuthApplication
 from .user_consent_option import UserConsentOption as UserConsentOption
 from .user_consent_option_choice import (

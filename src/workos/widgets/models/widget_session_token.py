@@ -7,7 +7,7 @@ from enum import Enum
 from typing import cast
 from typing import Any, Dict, List, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models import WidgetSessionTokenScopes
+from workos.common.models.widget_session_token_scopes import WidgetSessionTokenScopes
 
 
 @dataclass(slots=True)

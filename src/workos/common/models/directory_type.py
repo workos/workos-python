@@ -12,7 +12,6 @@ from typing_extensions import Literal, TypeAlias
 class DirectoryType(str, Enum):
     """Known values for DirectoryType."""
 
-    PENDING = "pending"
     AZURE_SCIM_V_2_0 = "azure scim v2.0"
     BAMBOOHR = "bamboohr"
     BREATHE_HR = "breathe hr"
@@ -34,8 +33,6 @@ class DirectoryType(str, Enum):
     SFTP = "sftp"
     SFTP_WORKDAY = "sftp workday"
     WORKDAY = "workday"
-    GUSTO = "gusto"
-    RIPPLING = "rippling"
 
     @classmethod
     def _missing_(cls, value: object) -> Optional["DirectoryType"]:
@@ -48,7 +45,6 @@ class DirectoryType(str, Enum):
 
 
 DirectoryTypeLiteral: TypeAlias = Literal[
-    "pending",
     "azure scim v2.0",
     "bamboohr",
     "breathe hr",
@@ -70,6 +66,4 @@ DirectoryTypeLiteral: TypeAlias = Literal[
     "sftp",
     "sftp workday",
     "workday",
-    "gusto",
-    "rippling",
 ]

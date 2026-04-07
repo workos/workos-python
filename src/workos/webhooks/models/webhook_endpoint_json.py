@@ -8,7 +8,7 @@ from enum import Enum
 from typing import Any, Dict, List, Literal
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from workos.common.models import WebhookEndpointJsonStatus
+from workos.common.models.webhook_endpoint_json_status import WebhookEndpointJsonStatus
 
 
 @dataclass(slots=True)

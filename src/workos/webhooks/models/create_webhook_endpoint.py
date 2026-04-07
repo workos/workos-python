@@ -7,7 +7,9 @@ from enum import Enum
 from typing import cast
 from typing import Any, Dict, List
 from workos._types import _raise_deserialize_error
-from workos.common.models import CreateWebhookEndpointEvents
+from workos.common.models.create_webhook_endpoint_events import (
+    CreateWebhookEndpointEvents,
+)
 
 
 @dataclass(slots=True)

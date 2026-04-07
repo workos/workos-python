@@ -12,8 +12,10 @@ from workos._types import _format_datetime, _parse_datetime
 
 from .directory_group import DirectoryGroup
 from .directory_user_with_groups_email import DirectoryUserWithGroupsEmail
-from workos.authorization.models import SlimRole
-from workos.common.models import DirectoryUserWithGroupsState
+from workos.authorization.models.slim_role import SlimRole
+from workos.common.models.directory_user_with_groups_state import (
+    DirectoryUserWithGroupsState,
+)
 
 
 @dataclass(slots=True)
@@ -34,8 +36,6 @@ class DirectoryUserWithGroups:
     """The email address of the user."""
     state: "DirectoryUserWithGroupsState"
     """The state of the user."""
-    raw_attributes: Dict[str, Any]
-    """The raw attributes received from the directory provider."""
     custom_attributes: Dict[str, Any]
     """An object containing the custom attribute mapping for the Directory Provider."""
     created_at: datetime
@@ -49,11 +49,21 @@ class DirectoryUserWithGroups:
     last_name: Optional[str] = None
     """The last name of the user."""
     emails: Optional[List["DirectoryUserWithGroupsEmail"]] = None
-    """A list of email addresses for the user."""
+    """A list of email addresses for the user.
+
+    .. deprecated::"""
     job_title: Optional[str] = None
-    """The job title of the user."""
+    """The job title of the user.
+
+    .. deprecated::"""
     username: Optional[str] = None
-    """The username of the user."""
+    """The username of the user.
+
+    .. deprecated::"""
+    raw_attributes: Optional[Dict[str, Any]] = None
+    """The raw attributes received from the directory provider.
+
+    .. deprecated::"""
     role: Optional["SlimRole"] = None
     roles: Optional[List["SlimRole"]] = None
     """All roles assigned to the user."""
@@ -70,7 +80,6 @@ class DirectoryUserWithGroups:
                 idp_id=data["idp_id"],
                 email=data["email"],
                 state=DirectoryUserWithGroupsState(data["state"]),
-                raw_attributes=data["raw_attributes"],
                 custom_attributes=data["custom_attributes"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
@@ -88,6 +97,7 @@ class DirectoryUserWithGroups:
                 else None,
                 job_title=data.get("job_title"),
                 username=data.get("username"),
+                raw_attributes=data.get("raw_attributes"),
                 role=SlimRole.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("role")) is not None
                 else None,
@@ -116,7 +126,6 @@ class DirectoryUserWithGroups:
         result["state"] = (
             self.state.value if isinstance(self.state, Enum) else self.state
         )
-        result["raw_attributes"] = self.raw_attributes
         result["custom_attributes"] = self.custom_attributes
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
@@ -139,6 +148,8 @@ class DirectoryUserWithGroups:
             result["username"] = self.username
         else:
             result["username"] = None
+        if self.raw_attributes is not None:
+            result["raw_attributes"] = self.raw_attributes
         if self.role is not None:
             result["role"] = self.role.to_dict()
         if self.roles is not None:

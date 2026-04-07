@@ -1,0 +1,20 @@
+{
+  "google_analytics_client_id": "GA1.2.1234567890.1234567890",
+  "google_analytics_sessions": [
+    {
+      "containerId": "GTM-ABCDEF",
+      "sessionId": "1234567890",
+      "sessionNumber": "1"
+    }
+  ],
+  "ajs_anonymous_id": "ajs_anon_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "actor": {
+    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+    "source": "api",
+    "name": "Jane Doe"
+  },
+  "previous_attributes": {
+    "key": {}
+  }
+}

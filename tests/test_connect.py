@@ -151,6 +151,24 @@ class TestConnect:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/connect/client_secrets/test_id")
 
+    def test_create_oauth_application(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("connect_application.json"))
+        result = workos.connect.create_oauth_application()
+        assert isinstance(result, ConnectApplication)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["application_type"] == "oauth"
+
+    def test_create_m2m_application(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("connect_application.json"))
+        result = workos.connect.create_m2m_application()
+        assert isinstance(result, ConnectApplication)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["application_type"] == "m2m"
+
     def test_complete_oauth2_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -354,6 +372,24 @@ class TestAsyncConnect:
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/connect/client_secrets/test_id")
+
+    async def test_create_oauth_application(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("connect_application.json"))
+        result = await async_workos.connect.create_oauth_application()
+        assert isinstance(result, ConnectApplication)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["application_type"] == "oauth"
+
+    async def test_create_m2m_application(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("connect_application.json"))
+        result = await async_workos.connect.create_m2m_application()
+        assert isinstance(result, ConnectApplication)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["application_type"] == "m2m"
 
     async def test_complete_oauth2_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})

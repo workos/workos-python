@@ -8,8 +8,12 @@ from enum import Enum
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from workos.common.models import AuditLogConfigurationLogStreamState
-from workos.common.models import AuditLogConfigurationLogStreamType
+from workos.common.models.audit_log_configuration_log_stream_state import (
+    AuditLogConfigurationLogStreamState,
+)
+from workos.common.models.audit_log_configuration_log_stream_type import (
+    AuditLogConfigurationLogStreamType,
+)
 
 
 @dataclass(slots=True)

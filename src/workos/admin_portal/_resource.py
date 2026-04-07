@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 from .._types import RequestOptions, enum_value
 from .models import IntentOptions, PortalLinkResponse
-from workos.common.models import GenerateLinkIntent
+from workos.common.models.generate_link_intent import GenerateLinkIntent
 
 
 class AdminPortal:

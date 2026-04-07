@@ -8,8 +8,8 @@ from typing import cast
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 
-from workos.authorization.models import SlimRole
-from workos.common.models import ProfileConnectionType
+from workos.authorization.models.slim_role import SlimRole
+from workos.common.models.profile_connection_type import ProfileConnectionType
 
 
 @dataclass(slots=True)

@@ -1,0 +1,18 @@
+{
+  "object": "directory",
+  "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "type": "okta scim v2.0",
+  "state": "active",
+  "name": "Acme Directory",
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z",
+  "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "domains": [
+    {
+      "object": "organization_domain",
+      "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
+      "domain": "acme.com"
+    }
+  ]
+}

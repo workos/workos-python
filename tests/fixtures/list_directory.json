@@ -6,7 +6,7 @@
       "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
       "external_key": "sPa12dwRQ",
       "type": "gsuite directory",
-      "state": "unlinked",
+      "state": "linked",
       "name": "Foo Corp",
       "domain": "foo-corp.com",
       "metadata": {

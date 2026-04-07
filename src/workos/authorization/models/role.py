@@ -8,7 +8,7 @@ from enum import Enum
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from workos.common.models import RoleType
+from workos.common.models.role_type import RoleType
 
 
 @dataclass(slots=True)

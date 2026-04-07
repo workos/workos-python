@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models import CreateUserPasswordHashType
+from workos.common.models.create_user_password_hash_type import (
+    CreateUserPasswordHashType,
+)
 
 
 @dataclass(slots=True)

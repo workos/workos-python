@@ -11,7 +11,9 @@ from workos._types import _raise_deserialize_error
 from .data_integrations_list_response_data_connected_account import (
     DataIntegrationsListResponseDataConnectedAccount,
 )
-from workos.common.models import DataIntegrationsListResponseDataOwnership
+from workos.common.models.data_integrations_list_response_data_ownership import (
+    DataIntegrationsListResponseDataOwnership,
+)
 
 
 @dataclass(slots=True)

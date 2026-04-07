@@ -165,7 +165,7 @@ class SSO:
             provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
             client_id: The unique identifier of the WorkOS environment client.
-            domain: Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
+            domain: (deprecated) Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
             provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
             redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
             response_type: The only valid option for the response type parameter is `"code"`.
@@ -588,7 +588,7 @@ class AsyncSSO:
             provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
             client_id: The unique identifier of the WorkOS environment client.
-            domain: Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
+            domain: (deprecated) Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
             provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
             redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
             response_type: The only valid option for the response type parameter is `"code"`.

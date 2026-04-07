@@ -73,20 +73,20 @@ from .update_user import UpdateUser as UpdateUser
 from .update_user_organization_membership import (
     UpdateUserOrganizationMembership as UpdateUserOrganizationMembership,
 )
-from .urn_ietf_params_oauth_grant_type_device_code_session_authenticate_request import (
-    UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest as UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest,
+from .device_code_session_authenticate_request import (
+    DeviceCodeSessionAuthenticateRequest as DeviceCodeSessionAuthenticateRequest,
 )
-from .urn_workos_oauth_grant_type_email_verification_code_session_authenticate_request import (
-    UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest as UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest,
+from .email_verification_code_session_authenticate_request import (
+    EmailVerificationCodeSessionAuthenticateRequest as EmailVerificationCodeSessionAuthenticateRequest,
 )
-from .urn_workos_oauth_grant_type_magic_auth_code_session_authenticate_request import (
-    UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest as UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest,
+from .magic_auth_code_session_authenticate_request import (
+    MagicAuthCodeSessionAuthenticateRequest as MagicAuthCodeSessionAuthenticateRequest,
 )
-from .urn_workos_oauth_grant_type_mfa_totp_session_authenticate_request import (
-    UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest as UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest,
+from .mfa_totp_session_authenticate_request import (
+    MFATotpSessionAuthenticateRequest as MFATotpSessionAuthenticateRequest,
 )
-from .urn_workos_oauth_grant_type_organization_selection_session_authenticate_request import (
-    UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest as UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest,
+from .organization_selection_session_authenticate_request import (
+    OrganizationSelectionSessionAuthenticateRequest as OrganizationSelectionSessionAuthenticateRequest,
 )
 from .user import User as User
 from .user_identities_get_item import UserIdentitiesGetItem as UserIdentitiesGetItem

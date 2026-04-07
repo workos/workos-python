@@ -12,7 +12,9 @@ from workos._types import _format_datetime, _parse_datetime
 
 from .authentication_factor_enrolled_sms import AuthenticationFactorEnrolledSms
 from .authentication_factor_enrolled_totp import AuthenticationFactorEnrolledTotp
-from workos.common.models import AuthenticationFactorEnrolledType
+from workos.common.models.authentication_factor_enrolled_type import (
+    AuthenticationFactorEnrolledType,
+)
 
 
 @dataclass(slots=True)

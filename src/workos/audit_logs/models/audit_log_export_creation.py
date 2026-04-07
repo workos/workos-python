@@ -20,7 +20,9 @@ class AuditLogExportCreation:
     actions: Optional[List[str]] = None
     """List of actions to filter against."""
     actors: Optional[List[str]] = None
-    """Deprecated. Use `actor_names` instead."""
+    """Deprecated. Use `actor_names` instead.
+
+    .. deprecated::"""
     actor_names: Optional[List[str]] = None
     """List of actor names to filter against."""
     actor_ids: Optional[List[str]] = None

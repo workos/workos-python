@@ -11,8 +11,8 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .user_sessions_impersonator import UserSessionsImpersonator
-from workos.common.models import UserSessionsAuthMethod
-from workos.common.models import UserSessionsStatus
+from workos.common.models.user_sessions_auth_method import UserSessionsAuthMethod
+from workos.common.models.user_sessions_status import UserSessionsStatus
 
 
 @dataclass(slots=True)

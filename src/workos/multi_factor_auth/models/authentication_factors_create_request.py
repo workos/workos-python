@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models import AuthenticationFactorsCreateRequestType
+from workos.common.models.authentication_factors_create_request_type import (
+    AuthenticationFactorsCreateRequestType,
+)
 
 
 @dataclass(slots=True)

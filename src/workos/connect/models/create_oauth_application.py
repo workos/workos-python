@@ -7,7 +7,7 @@ from typing import cast
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 
-from .redirect_uri_dto import RedirectUriDto
+from .redirect_uri_input import RedirectUriInput
 
 
 @dataclass(slots=True)
@@ -24,7 +24,7 @@ class CreateOAuthApplication:
     """A description for the application."""
     scopes: Optional[List[str]] = None
     """The OAuth scopes granted to the application."""
-    redirect_uris: Optional[List["RedirectUriDto"]] = None
+    redirect_uris: Optional[List["RedirectUriInput"]] = None
     """Redirect URIs for the application."""
     uses_pkce: Optional[bool] = None
     """Whether the application uses PKCE (Proof Key for Code Exchange)."""
@@ -42,7 +42,7 @@ class CreateOAuthApplication:
                 description=data.get("description"),
                 scopes=data.get("scopes"),
                 redirect_uris=[
-                    RedirectUriDto.from_dict(cast(Dict[str, Any], item))
+                    RedirectUriInput.from_dict(cast(Dict[str, Any], item))
                     for item in cast(list[Any], _v)
                 ]
                 if (_v := data.get("redirect_uris")) is not None

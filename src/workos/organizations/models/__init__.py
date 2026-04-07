@@ -7,7 +7,7 @@ from .audit_log_configuration_log_stream import (
 from .audit_logs_retention_json import AuditLogsRetentionJson as AuditLogsRetentionJson
 from .organization import Organization as Organization
 from .organization_domain_data import OrganizationDomainData as OrganizationDomainData
-from .organization_dto import OrganizationDto as OrganizationDto
+from .organization_input import OrganizationInput as OrganizationInput
 from .organizations_order import OrganizationsOrder as OrganizationsOrder
 from .update_audit_logs_retention import (
     UpdateAuditLogsRetention as UpdateAuditLogsRetention,

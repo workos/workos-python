@@ -10,9 +10,13 @@ if TYPE_CHECKING:
 from .._types import RequestOptions, enum_value
 from .models import WebhookEndpointJson
 from .models import WebhooksOrder
-from workos.common.models import (
+from workos.common.models.create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents,
+)
+from workos.common.models.update_webhook_endpoint_events import (
     UpdateWebhookEndpointEvents,
+)
+from workos.common.models.update_webhook_endpoint_status import (
     UpdateWebhookEndpointStatus,
 )
 from .._pagination import AsyncPage, SyncPage

@@ -16,7 +16,9 @@ from .models import (
     UserAuthenticationFactorEnrollResponse,
 )
 from .models import UserManagementMultiFactorAuthenticationOrder
-from workos.common.models import AuthenticationFactorsCreateRequestType
+from workos.common.models.authentication_factors_create_request_type import (
+    AuthenticationFactorsCreateRequestType,
+)
 from .._pagination import AsyncPage, SyncPage
 
 

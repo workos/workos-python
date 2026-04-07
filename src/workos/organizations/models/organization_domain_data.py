@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
-from workos.common.models import OrganizationDomainDataState
+from workos.common.models.organization_domain_data_state import (
+    OrganizationDomainDataState,
+)
 
 
 @dataclass(slots=True)

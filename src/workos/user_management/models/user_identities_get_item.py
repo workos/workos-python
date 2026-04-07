@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Literal
 from workos._types import _raise_deserialize_error
-from workos.common.models import UserIdentitiesGetItemProvider
+from workos.common.models.user_identities_get_item_provider import (
+    UserIdentitiesGetItemProvider,
+)
 
 
 @dataclass(slots=True)

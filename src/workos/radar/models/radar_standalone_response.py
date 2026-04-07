@@ -6,9 +6,15 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models import RadarStandaloneResponseBlocklistType
-from workos.common.models import RadarStandaloneResponseControl
-from workos.common.models import RadarStandaloneResponseVerdict
+from workos.common.models.radar_standalone_response_blocklist_type import (
+    RadarStandaloneResponseBlocklistType,
+)
+from workos.common.models.radar_standalone_response_control import (
+    RadarStandaloneResponseControl,
+)
+from workos.common.models.radar_standalone_response_verdict import (
+    RadarStandaloneResponseVerdict,
+)
 
 
 @dataclass(slots=True)

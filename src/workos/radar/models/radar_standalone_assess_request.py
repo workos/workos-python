@@ -6,8 +6,12 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models import RadarStandaloneAssessRequestAction
-from workos.common.models import RadarStandaloneAssessRequestAuthMethod
+from workos.common.models.radar_standalone_assess_request_action import (
+    RadarStandaloneAssessRequestAction,
+)
+from workos.common.models.radar_standalone_assess_request_auth_method import (
+    RadarStandaloneAssessRequestAuthMethod,
+)
 
 
 @dataclass(slots=True)

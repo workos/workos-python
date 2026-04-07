@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from workos.organization_domains.models import OrganizationDomain
+from workos.organization_domains.models.organization_domain import OrganizationDomain
 
 
 @dataclass(slots=True)
@@ -35,7 +35,9 @@ class Organization:
     stripe_customer_id: Optional[str] = None
     """The Stripe customer ID of the Organization."""
     allow_profiles_outside_organization: Optional[bool] = None
-    """Whether the Organization allows profiles outside of its managed domains."""
+    """Whether the Organization allows profiles outside of its managed domains.
+
+    .. deprecated::"""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Organization":

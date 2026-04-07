@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models import CreateUserInviteOptionsLocale
+from workos.common.models.create_user_invite_options_locale import (
+    CreateUserInviteOptionsLocale,
+)
 
 
 @dataclass(slots=True)

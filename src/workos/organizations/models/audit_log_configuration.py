@@ -9,7 +9,9 @@ from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 
 from .audit_log_configuration_log_stream import AuditLogConfigurationLogStream
-from workos.common.models import AuditLogConfigurationState
+from workos.common.models.audit_log_configuration_state import (
+    AuditLogConfigurationState,
+)
 
 
 @dataclass(slots=True)

@@ -28,11 +28,11 @@ from .models import (
     RefreshTokenSessionAuthenticateRequest,
     ResetPasswordResponse,
     SendVerificationEmailResponse,
-    UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest,
-    UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest,
-    UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest,
-    UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest,
-    UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest,
+    DeviceCodeSessionAuthenticateRequest,
+    EmailVerificationCodeSessionAuthenticateRequest,
+    MagicAuthCodeSessionAuthenticateRequest,
+    MFATotpSessionAuthenticateRequest,
+    OrganizationSelectionSessionAuthenticateRequest,
     User,
     UserIdentitiesGetItem,
     UserInvite,
@@ -49,10 +49,16 @@ from .models import (
     UserManagementUsersAuthorizedApplicationsOrder,
     UserManagementUsersOrder,
 )
-from workos.common.models import (
+from workos.common.models.create_user_invite_options_locale import (
     CreateUserInviteOptionsLocale,
+)
+from workos.common.models.create_user_password_hash_type import (
     CreateUserPasswordHashType,
+)
+from workos.common.models.resend_user_invite_options_locale import (
     ResendUserInviteOptionsLocale,
+)
+from workos.common.models.update_user_password_hash_type import (
     UpdateUserPasswordHashType,
 )
 from .._pagination import AsyncPage, SyncPage
@@ -107,11 +113,11 @@ class UserManagement:
             AuthorizationCodeSessionAuthenticateRequest,
             PasswordSessionAuthenticateRequest,
             RefreshTokenSessionAuthenticateRequest,
-            UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest,
-            UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest,
-            UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest,
-            UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest,
-            UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest,
+            MagicAuthCodeSessionAuthenticateRequest,
+            EmailVerificationCodeSessionAuthenticateRequest,
+            MFATotpSessionAuthenticateRequest,
+            OrganizationSelectionSessionAuthenticateRequest,
+            DeviceCodeSessionAuthenticateRequest,
             Dict[str, Any],
         ],
         request_options: Optional[RequestOptions] = None,
@@ -121,7 +127,7 @@ class UserManagement:
         Authenticate a user with a specified [authentication method](https://workos.com/docs/reference/authkit/authentication).
 
         Args:
-            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest, UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest, or a plain dict.
+            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, or a plain dict.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -746,7 +752,7 @@ class UserManagement:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
-            organization: Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
+            organization: (deprecated) Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
             organization_id: Filter users by the organization they are a member of.
             email: Filter users by their email address.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -2172,11 +2178,11 @@ class AsyncUserManagement:
             AuthorizationCodeSessionAuthenticateRequest,
             PasswordSessionAuthenticateRequest,
             RefreshTokenSessionAuthenticateRequest,
-            UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest,
-            UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest,
-            UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest,
-            UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest,
-            UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest,
+            MagicAuthCodeSessionAuthenticateRequest,
+            EmailVerificationCodeSessionAuthenticateRequest,
+            MFATotpSessionAuthenticateRequest,
+            OrganizationSelectionSessionAuthenticateRequest,
+            DeviceCodeSessionAuthenticateRequest,
             Dict[str, Any],
         ],
         request_options: Optional[RequestOptions] = None,
@@ -2186,7 +2192,7 @@ class AsyncUserManagement:
         Authenticate a user with a specified [authentication method](https://workos.com/docs/reference/authkit/authentication).
 
         Args:
-            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMagicAuthCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeEmailVerificationCodeSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeMFATotpSessionAuthenticateRequest, UrnWorkOSOAuthGrantTypeOrganizationSelectionSessionAuthenticateRequest, UrnIetfParamsOAuthGrantTypeDeviceCodeSessionAuthenticateRequest, or a plain dict.
+            body: The request body. Accepts: AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, or a plain dict.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2811,7 +2817,7 @@ class AsyncUserManagement:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
-            organization: Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
+            organization: (deprecated) Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
             organization_id: Filter users by the organization they are a member of.
             email: Filter users by their email address.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.

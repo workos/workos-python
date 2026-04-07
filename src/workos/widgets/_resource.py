@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 from .._types import RequestOptions
 from .models import WidgetSessionTokenResponse
-from workos.common.models import WidgetSessionTokenScopes
+from workos.common.models.widget_session_token_scopes import WidgetSessionTokenScopes
 
 
 class Widgets:

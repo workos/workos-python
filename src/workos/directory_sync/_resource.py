@@ -42,7 +42,7 @@ class DirectorySync:
             order: Order the results by the creation time.
             organization_id: Filter Directories by their associated organization.
             search: Searchable text to match against Directory names.
-            domain: Filter Directories by their associated domain.
+            domain: (deprecated) Filter Directories by their associated domain.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -335,7 +335,7 @@ class AsyncDirectorySync:
             order: Order the results by the creation time.
             organization_id: Filter Directories by their associated organization.
             search: Searchable text to match against Directory names.
-            domain: Filter Directories by their associated domain.
+            domain: (deprecated) Filter Directories by their associated domain.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:

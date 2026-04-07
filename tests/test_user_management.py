@@ -688,6 +688,86 @@ class TestUserManagement:
             "/user_management/users/test_user_id/authorized_applications/test_application_id"
         )
 
+    def test_authenticate_with_password(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = workos.user_management.authenticate_with_password(
+            email="test_email", password="test_password"
+        )
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "password"
+
+    def test_authenticate_with_code(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = workos.user_management.authenticate_with_code()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "authorization_code"
+
+    def test_authenticate_with_refresh_token(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = workos.user_management.authenticate_with_refresh_token(
+            refresh_token="test_refresh_token"
+        )
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "refresh_token"
+
+    def test_authenticate_with_magic_auth(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = workos.user_management.authenticate_with_magic_auth()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "urn:workos:oauth:grant-type:magic-auth:code"
+
+    def test_authenticate_with_email_verification(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = workos.user_management.authenticate_with_email_verification()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert (
+            body["grant_type"] == "urn:workos:oauth:grant-type:email-verification:code"
+        )
+
+    def test_authenticate_with_totp(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = workos.user_management.authenticate_with_totp()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "urn:workos:oauth:grant-type:mfa-totp"
+
+    def test_authenticate_with_organization_selection(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = workos.user_management.authenticate_with_organization_selection()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert (
+            body["grant_type"] == "urn:workos:oauth:grant-type:organization-selection"
+        )
+
+    def test_authenticate_with_device_code(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = workos.user_management.authenticate_with_device_code()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "urn:ietf:params:oauth:grant-type:device_code"
+
     def test_get_jwks_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -1353,6 +1433,90 @@ class TestAsyncUserManagement:
         assert request.url.path.endswith(
             "/user_management/users/test_user_id/authorized_applications/test_application_id"
         )
+
+    async def test_authenticate_with_password(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = await async_workos.user_management.authenticate_with_password(
+            email="test_email", password="test_password"
+        )
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "password"
+
+    async def test_authenticate_with_code(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = await async_workos.user_management.authenticate_with_code()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "authorization_code"
+
+    async def test_authenticate_with_refresh_token(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = await async_workos.user_management.authenticate_with_refresh_token(
+            refresh_token="test_refresh_token"
+        )
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "refresh_token"
+
+    async def test_authenticate_with_magic_auth(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = await async_workos.user_management.authenticate_with_magic_auth()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "urn:workos:oauth:grant-type:magic-auth:code"
+
+    async def test_authenticate_with_email_verification(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = (
+            await async_workos.user_management.authenticate_with_email_verification()
+        )
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert (
+            body["grant_type"] == "urn:workos:oauth:grant-type:email-verification:code"
+        )
+
+    async def test_authenticate_with_totp(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = await async_workos.user_management.authenticate_with_totp()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "urn:workos:oauth:grant-type:mfa-totp"
+
+    async def test_authenticate_with_organization_selection(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = await async_workos.user_management.authenticate_with_organization_selection()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert (
+            body["grant_type"] == "urn:workos:oauth:grant-type:organization-selection"
+        )
+
+    async def test_authenticate_with_device_code(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        result = await async_workos.user_management.authenticate_with_device_code()
+        assert isinstance(result, AuthenticateResponse)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        body = json.loads(request.content)
+        assert body["grant_type"] == "urn:ietf:params:oauth:grant-type:device_code"
 
     async def test_get_jwks_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})

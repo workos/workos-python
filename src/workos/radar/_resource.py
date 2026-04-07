@@ -10,8 +10,10 @@ if TYPE_CHECKING:
 from .._types import RequestOptions, enum_value
 from .models import RadarListEntryAlreadyPresentResponse, RadarStandaloneResponse
 from .models import RadarAction, RadarType
-from workos.common.models import (
+from workos.common.models.radar_standalone_assess_request_action import (
     RadarStandaloneAssessRequestAction,
+)
+from workos.common.models.radar_standalone_assess_request_auth_method import (
     RadarStandaloneAssessRequestAuthMethod,
 )
 

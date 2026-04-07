@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models import DataIntegrationsListResponseDataConnectedAccountState
+from workos.common.models.data_integrations_list_response_data_connected_account_state import (
+    DataIntegrationsListResponseDataConnectedAccountState,
+)
 
 
 @dataclass(slots=True)
@@ -33,7 +35,9 @@ class DataIntegrationsListResponseDataConnectedAccount:
     updated_at: str
     """The timestamp when the connection was last updated."""
     userland_user_id: Optional[str] = None
-    """Use `user_id` instead."""
+    """Use `user_id` instead.
+
+    .. deprecated::"""
 
     @classmethod
     def from_dict(

@@ -17,7 +17,7 @@ from .models import (
     AuditLogSchemaJson,
     AuditLogSchemaTarget,
 )
-from workos.organizations.models import AuditLogsRetentionJson
+from workos.organizations.models.audit_logs_retention_json import AuditLogsRetentionJson
 from .models import AuditLogsOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -309,7 +309,7 @@ class AuditLogs:
             range_start: ISO-8601 value for start of the export range.
             range_end: ISO-8601 value for end of the export range.
             actions: List of actions to filter against.
-            actors: Deprecated. Use `actor_names` instead.
+            actors: (deprecated) Deprecated. Use `actor_names` instead.
             actor_names: List of actor names to filter against.
             actor_ids: List of actor IDs to filter against.
             targets: List of target types to filter against.
@@ -664,7 +664,7 @@ class AsyncAuditLogs:
             range_start: ISO-8601 value for start of the export range.
             range_end: ISO-8601 value for end of the export range.
             actions: List of actions to filter against.
-            actors: Deprecated. Use `actor_names` instead.
+            actors: (deprecated) Deprecated. Use `actor_names` instead.
             actor_names: List of actor names to filter against.
             actor_ids: List of actor IDs to filter against.
             targets: List of target types to filter against.

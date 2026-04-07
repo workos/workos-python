@@ -1086,7 +1086,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_organization_memberships_for_resource(
+    def list_memberships_for_resource(
         self,
         resource_id: str,
         *,
@@ -1299,7 +1299,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def add_permission_permissions_roles(
+    def add_role_permission(
         self,
         slug: str,
         *,
@@ -1338,7 +1338,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def set_permissions_permissions_roles(
+    def set_role_permissions(
         self,
         slug: str,
         *,
@@ -2640,7 +2640,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_organization_memberships_for_resource(
+    async def list_memberships_for_resource(
         self,
         resource_id: str,
         *,
@@ -2853,7 +2853,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def add_permission_permissions_roles(
+    async def add_role_permission(
         self,
         slug: str,
         *,
@@ -2892,7 +2892,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def set_permissions_permissions_roles(
+    async def set_role_permissions(
         self,
         slug: str,
         *,

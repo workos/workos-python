@@ -15,7 +15,7 @@ from .models import (
     CreateOAuthApplication,
     ExternalAuthCompleteResponse,
     NewConnectApplicationSecret,
-    RedirectUriDto,
+    RedirectUriInput,
     UserConsentOption,
     UserObject,
 )
@@ -277,7 +277,7 @@ class Connect:
         name: Optional[str] = None,
         description: Optional[str] = None,
         scopes: Optional[List[str]] = None,
-        redirect_uris: Optional[List[RedirectUriDto]] = None,
+        redirect_uris: Optional[List[RedirectUriInput]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectApplication:
         """Update a Connect Application
@@ -695,7 +695,7 @@ class AsyncConnect:
         name: Optional[str] = None,
         description: Optional[str] = None,
         scopes: Optional[List[str]] = None,
-        redirect_uris: Optional[List[RedirectUriDto]] = None,
+        redirect_uris: Optional[List[RedirectUriInput]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectApplication:
         """Update a Connect Application

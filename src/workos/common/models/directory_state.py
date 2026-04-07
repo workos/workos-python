@@ -12,7 +12,6 @@ from typing_extensions import Literal, TypeAlias
 class DirectoryState(str, Enum):
     """Known values for DirectoryState."""
 
-    REQUIRES_TYPE = "requires_type"
     LINKED = "linked"
     VALIDATING = "validating"
     INVALID_CREDENTIALS = "invalid_credentials"
@@ -30,10 +29,5 @@ class DirectoryState(str, Enum):
 
 
 DirectoryStateLiteral: TypeAlias = Literal[
-    "requires_type",
-    "linked",
-    "validating",
-    "invalid_credentials",
-    "unlinked",
-    "deleting",
+    "linked", "validating", "invalid_credentials", "unlinked", "deleting"
 ]

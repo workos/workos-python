@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models import ConnectedAccountState
+from workos.common.models.connected_account_state import ConnectedAccountState
 
 
 @dataclass(slots=True)

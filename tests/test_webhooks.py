@@ -160,20 +160,22 @@ class TestWebhooks:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncWebhooks:
+    @pytest.mark.asyncio
     async def test_list_webhook_endpoints(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_webhook_endpoint_json.json"))
         page = await async_workos.webhooks.list_webhook_endpoints()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_webhook_endpoints_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.webhooks.list_webhook_endpoints()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_webhook_endpoints_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -190,6 +192,7 @@ class TestAsyncWebhooks:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    @pytest.mark.asyncio
     async def test_create_webhook_endpoints(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("webhook_endpoint_json.json"))
         result = await async_workos.webhooks.create_webhook_endpoints(
@@ -202,6 +205,7 @@ class TestAsyncWebhooks:
         assert request.method == "POST"
         assert request.url.path.endswith("/webhook_endpoints")
 
+    @pytest.mark.asyncio
     async def test_update_webhook_endpoint(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("webhook_endpoint_json.json"))
         result = await async_workos.webhooks.update_webhook_endpoint("test_id")
@@ -212,6 +216,7 @@ class TestAsyncWebhooks:
         assert request.method == "PATCH"
         assert request.url.path.endswith("/webhook_endpoints/test_id")
 
+    @pytest.mark.asyncio
     async def test_delete_webhook_endpoint(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.webhooks.delete_webhook_endpoint("test_id")
@@ -220,6 +225,7 @@ class TestAsyncWebhooks:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/webhook_endpoints/test_id")
 
+    @pytest.mark.asyncio
     async def test_list_webhook_endpoints_with_request_options(
         self, async_workos, httpx_mock
     ):
@@ -230,11 +236,13 @@ class TestAsyncWebhooks:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_list_webhook_endpoints_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
             await async_workos.webhooks.list_webhook_endpoints()
 
+    @pytest.mark.asyncio
     async def test_list_webhook_endpoints_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -246,6 +254,7 @@ class TestAsyncWebhooks:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_webhook_endpoints_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -261,6 +270,7 @@ class TestAsyncWebhooks:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_webhook_endpoints_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -272,6 +282,7 @@ class TestAsyncWebhooks:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_webhook_endpoints_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -283,6 +294,7 @@ class TestAsyncWebhooks:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_webhook_endpoints_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

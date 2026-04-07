@@ -243,20 +243,22 @@ class TestDirectorySync:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncDirectorySync:
+    @pytest.mark.asyncio
     async def test_list_directories(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_directory.json"))
         page = await async_workos.directory_sync.list_directories()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_directories_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.directory_sync.list_directories()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_directories_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -279,6 +281,7 @@ class TestAsyncDirectorySync:
         assert request.url.params["search"] == "value search/test"
         assert request.url.params["domain"] == "value domain/test"
 
+    @pytest.mark.asyncio
     async def test_get_directory(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("directory.json"))
         result = await async_workos.directory_sync.get_directory("test_id")
@@ -289,6 +292,7 @@ class TestAsyncDirectorySync:
         assert request.method == "GET"
         assert request.url.path.endswith("/directories/test_id")
 
+    @pytest.mark.asyncio
     async def test_delete_directory(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.directory_sync.delete_directory("test_id")
@@ -297,18 +301,21 @@ class TestAsyncDirectorySync:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/directories/test_id")
 
+    @pytest.mark.asyncio
     async def test_list_directory_groups(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_directory_group.json"))
         page = await async_workos.directory_sync.list_directory_groups()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_directory_groups_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.directory_sync.list_directory_groups()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_directory_groups_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -329,6 +336,7 @@ class TestAsyncDirectorySync:
         assert request.url.params["directory"] == "value directory/test"
         assert request.url.params["user"] == "value user/test"
 
+    @pytest.mark.asyncio
     async def test_get_directory_group(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("directory_group.json"))
         result = await async_workos.directory_sync.get_directory_group("test_id")
@@ -339,6 +347,7 @@ class TestAsyncDirectorySync:
         assert request.method == "GET"
         assert request.url.path.endswith("/directory_groups/test_id")
 
+    @pytest.mark.asyncio
     async def test_list_directory_users(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_directory_user_with_groups.json")
@@ -347,12 +356,14 @@ class TestAsyncDirectorySync:
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_directory_users_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.directory_sync.list_directory_users()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_directory_users_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -373,6 +384,7 @@ class TestAsyncDirectorySync:
         assert request.url.params["directory"] == "value directory/test"
         assert request.url.params["group"] == "value group/test"
 
+    @pytest.mark.asyncio
     async def test_get_directory_user(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("directory_user_with_groups.json"))
         result = await async_workos.directory_sync.get_directory_user("test_id")
@@ -383,6 +395,7 @@ class TestAsyncDirectorySync:
         assert request.method == "GET"
         assert request.url.path.endswith("/directory_users/test_id")
 
+    @pytest.mark.asyncio
     async def test_list_directories_with_request_options(
         self, async_workos, httpx_mock
     ):
@@ -393,11 +406,13 @@ class TestAsyncDirectorySync:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_list_directories_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
             await async_workos.directory_sync.list_directories()
 
+    @pytest.mark.asyncio
     async def test_list_directories_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -409,6 +424,7 @@ class TestAsyncDirectorySync:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_directories_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -424,6 +440,7 @@ class TestAsyncDirectorySync:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_directories_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -435,6 +452,7 @@ class TestAsyncDirectorySync:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_directories_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -446,6 +464,7 @@ class TestAsyncDirectorySync:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_directories_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

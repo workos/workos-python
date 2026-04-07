@@ -108,8 +108,8 @@ class TestWidgets:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncWidgets:
+    @pytest.mark.asyncio
     async def test_create_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("widget_session_token_response.json"))
         result = await async_workos.widgets.create_token(
@@ -121,6 +121,7 @@ class TestAsyncWidgets:
         assert request.method == "POST"
         assert request.url.path.endswith("/widgets/token")
 
+    @pytest.mark.asyncio
     async def test_create_token_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("widget_session_token_response.json"))
         await async_workos.widgets.create_token(
@@ -130,6 +131,7 @@ class TestAsyncWidgets:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_create_token_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -137,6 +139,7 @@ class TestAsyncWidgets:
                 organization_id="test_organization_id"
             )
 
+    @pytest.mark.asyncio
     async def test_create_token_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -150,6 +153,7 @@ class TestAsyncWidgets:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_token_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -167,6 +171,7 @@ class TestAsyncWidgets:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_token_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -180,6 +185,7 @@ class TestAsyncWidgets:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_token_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -193,6 +199,7 @@ class TestAsyncWidgets:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_token_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

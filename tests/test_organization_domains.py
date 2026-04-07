@@ -160,8 +160,8 @@ class TestOrganizationDomains:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncOrganizationDomains:
+    @pytest.mark.asyncio
     async def test_create_organization_domains(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization_domain.json"))
         result = await async_workos.organization_domains.create_organization_domains(
@@ -174,6 +174,7 @@ class TestAsyncOrganizationDomains:
         assert request.method == "POST"
         assert request.url.path.endswith("/organization_domains")
 
+    @pytest.mark.asyncio
     async def test_get_organization_domain(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization_domain_stand_alone.json")
@@ -188,6 +189,7 @@ class TestAsyncOrganizationDomains:
         assert request.method == "GET"
         assert request.url.path.endswith("/organization_domains/test_id")
 
+    @pytest.mark.asyncio
     async def test_delete_organization_domain(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.organization_domains.delete_organization_domain(
@@ -198,6 +200,7 @@ class TestAsyncOrganizationDomains:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/organization_domains/test_id")
 
+    @pytest.mark.asyncio
     async def test_verify_organization_domain(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization_domain_stand_alone.json")
@@ -212,6 +215,7 @@ class TestAsyncOrganizationDomains:
         assert request.method == "POST"
         assert request.url.path.endswith("/organization_domains/test_id/verify")
 
+    @pytest.mark.asyncio
     async def test_create_organization_domains_with_request_options(
         self, async_workos, httpx_mock
     ):
@@ -224,6 +228,7 @@ class TestAsyncOrganizationDomains:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_create_organization_domains_unauthorized(
         self, async_workos, httpx_mock
     ):
@@ -233,6 +238,7 @@ class TestAsyncOrganizationDomains:
                 domain="test_domain", organization_id="test_organization_id"
             )
 
+    @pytest.mark.asyncio
     async def test_create_organization_domains_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -246,6 +252,7 @@ class TestAsyncOrganizationDomains:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_organization_domains_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -263,6 +270,7 @@ class TestAsyncOrganizationDomains:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_organization_domains_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -276,6 +284,7 @@ class TestAsyncOrganizationDomains:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_organization_domains_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -289,6 +298,7 @@ class TestAsyncOrganizationDomains:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_organization_domains_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

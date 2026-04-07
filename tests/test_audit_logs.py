@@ -252,8 +252,8 @@ class TestAuditLogs:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncAuditLogs:
+    @pytest.mark.asyncio
     async def test_list_organization_audit_logs_retention(
         self, async_workos, httpx_mock
     ):
@@ -267,6 +267,7 @@ class TestAsyncAuditLogs:
         assert request.method == "GET"
         assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
 
+    @pytest.mark.asyncio
     async def test_update_organization_audit_logs_retention(
         self, async_workos, httpx_mock
     ):
@@ -280,18 +281,21 @@ class TestAsyncAuditLogs:
         assert request.method == "PUT"
         assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
 
+    @pytest.mark.asyncio
     async def test_list_actions(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_audit_log_action_json.json"))
         page = await async_workos.audit_logs.list_actions()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_actions_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.audit_logs.list_actions()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_actions_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         await async_workos.audit_logs.list_actions(
@@ -306,18 +310,21 @@ class TestAsyncAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    @pytest.mark.asyncio
     async def test_list_action_schemas(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_audit_log_schema_json.json"))
         page = await async_workos.audit_logs.list_action_schemas("test_actionName")
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_action_schemas_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.audit_logs.list_action_schemas("test_actionName")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_action_schemas_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -335,6 +342,7 @@ class TestAsyncAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    @pytest.mark.asyncio
     async def test_create_action_schemas(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_schema_json.json"))
         result = await async_workos.audit_logs.create_action_schemas(
@@ -347,6 +355,7 @@ class TestAsyncAuditLogs:
         assert request.method == "POST"
         assert request.url.path.endswith("/audit_logs/actions/test_actionName/schemas")
 
+    @pytest.mark.asyncio
     async def test_create_events(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_event_create_response.json")
@@ -361,6 +370,7 @@ class TestAsyncAuditLogs:
         assert request.method == "POST"
         assert request.url.path.endswith("/audit_logs/events")
 
+    @pytest.mark.asyncio
     async def test_create_exports(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_export_json.json"))
         result = await async_workos.audit_logs.create_exports(
@@ -375,6 +385,7 @@ class TestAsyncAuditLogs:
         assert request.method == "POST"
         assert request.url.path.endswith("/audit_logs/exports")
 
+    @pytest.mark.asyncio
     async def test_get_export(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_export_json.json"))
         result = await async_workos.audit_logs.get_export("test_auditLogExportId")
@@ -385,6 +396,7 @@ class TestAsyncAuditLogs:
         assert request.method == "GET"
         assert request.url.path.endswith("/audit_logs/exports/test_auditLogExportId")
 
+    @pytest.mark.asyncio
     async def test_list_organization_audit_logs_retention_with_request_options(
         self, async_workos, httpx_mock
     ):
@@ -395,6 +407,7 @@ class TestAsyncAuditLogs:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_list_organization_audit_logs_retention_unauthorized(
         self, async_workos, httpx_mock
     ):
@@ -404,6 +417,7 @@ class TestAsyncAuditLogs:
                 "test_id"
             )
 
+    @pytest.mark.asyncio
     async def test_list_organization_audit_logs_retention_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -417,6 +431,7 @@ class TestAsyncAuditLogs:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_organization_audit_logs_retention_rate_limited(
         self, httpx_mock
     ):
@@ -436,6 +451,7 @@ class TestAsyncAuditLogs:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_organization_audit_logs_retention_server_error(
         self, httpx_mock
     ):
@@ -451,6 +467,7 @@ class TestAsyncAuditLogs:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_organization_audit_logs_retention_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -464,6 +481,7 @@ class TestAsyncAuditLogs:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_organization_audit_logs_retention_unprocessable(
         self, httpx_mock
     ):

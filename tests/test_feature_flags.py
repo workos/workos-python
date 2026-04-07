@@ -249,20 +249,22 @@ class TestFeatureFlags:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncFeatureFlags:
+    @pytest.mark.asyncio
     async def test_list_feature_flags(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_flag.json"))
         page = await async_workos.feature_flags.list_feature_flags()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_feature_flags_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.feature_flags.list_feature_flags()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_feature_flags_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -279,6 +281,7 @@ class TestAsyncFeatureFlags:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    @pytest.mark.asyncio
     async def test_get_feature_flag(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("flag.json"))
         result = await async_workos.feature_flags.get_feature_flag("test_slug")
@@ -289,6 +292,7 @@ class TestAsyncFeatureFlags:
         assert request.method == "GET"
         assert request.url.path.endswith("/feature-flags/test_slug")
 
+    @pytest.mark.asyncio
     async def test_disable_feature_flag(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("feature_flag.json"))
         result = await async_workos.feature_flags.disable_feature_flag("test_slug")
@@ -299,6 +303,7 @@ class TestAsyncFeatureFlags:
         assert request.method == "PUT"
         assert request.url.path.endswith("/feature-flags/test_slug/disable")
 
+    @pytest.mark.asyncio
     async def test_enable_feature_flag(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("feature_flag.json"))
         result = await async_workos.feature_flags.enable_feature_flag("test_slug")
@@ -309,6 +314,7 @@ class TestAsyncFeatureFlags:
         assert request.method == "PUT"
         assert request.url.path.endswith("/feature-flags/test_slug/enable")
 
+    @pytest.mark.asyncio
     async def test_create_feature_flag_target(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={})
         await async_workos.feature_flags.create_feature_flag_target(
@@ -320,6 +326,7 @@ class TestAsyncFeatureFlags:
             "/feature-flags/test_slug/targets/test_resourceId"
         )
 
+    @pytest.mark.asyncio
     async def test_delete_feature_flag_target(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.feature_flags.delete_feature_flag_target(
@@ -332,6 +339,7 @@ class TestAsyncFeatureFlags:
             "/feature-flags/test_slug/targets/test_resourceId"
         )
 
+    @pytest.mark.asyncio
     async def test_list_organization_feature_flags(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_flag.json"))
         page = await async_workos.feature_flags.list_organization_feature_flags(
@@ -340,6 +348,7 @@ class TestAsyncFeatureFlags:
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_organization_feature_flags_empty_page(
         self, async_workos, httpx_mock
     ):
@@ -350,6 +359,7 @@ class TestAsyncFeatureFlags:
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_organization_feature_flags_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -367,18 +377,21 @@ class TestAsyncFeatureFlags:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    @pytest.mark.asyncio
     async def test_list_user_feature_flags(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_flag.json"))
         page = await async_workos.feature_flags.list_user_feature_flags("test_userId")
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_user_feature_flags_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.feature_flags.list_user_feature_flags("test_userId")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_user_feature_flags_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -396,6 +409,7 @@ class TestAsyncFeatureFlags:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    @pytest.mark.asyncio
     async def test_list_feature_flags_with_request_options(
         self, async_workos, httpx_mock
     ):
@@ -406,11 +420,13 @@ class TestAsyncFeatureFlags:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_list_feature_flags_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
             await async_workos.feature_flags.list_feature_flags()
 
+    @pytest.mark.asyncio
     async def test_list_feature_flags_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -422,6 +438,7 @@ class TestAsyncFeatureFlags:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_feature_flags_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -437,6 +454,7 @@ class TestAsyncFeatureFlags:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_feature_flags_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -448,6 +466,7 @@ class TestAsyncFeatureFlags:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_feature_flags_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -459,6 +478,7 @@ class TestAsyncFeatureFlags:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_feature_flags_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

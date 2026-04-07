@@ -198,8 +198,8 @@ class TestRadar:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncRadar:
+    @pytest.mark.asyncio
     async def test_create_attempts(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("radar_standalone_response.json"))
         result = await async_workos.radar.create_attempts(
@@ -216,6 +216,7 @@ class TestAsyncRadar:
         assert request.method == "POST"
         assert request.url.path.endswith("/radar/attempts")
 
+    @pytest.mark.asyncio
     async def test_update_attempt(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={})
         await async_workos.radar.update_attempt("test_id")
@@ -223,6 +224,7 @@ class TestAsyncRadar:
         assert request.method == "PUT"
         assert request.url.path.endswith("/radar/attempts/test_id")
 
+    @pytest.mark.asyncio
     async def test_add_list_entry(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("radar_list_entry_already_present_response.json")
@@ -236,6 +238,7 @@ class TestAsyncRadar:
         assert request.method == "POST"
         assert request.url.path.endswith("/radar/lists/test_type/test_action")
 
+    @pytest.mark.asyncio
     async def test_remove_list_entry(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.radar.remove_list_entry(
@@ -246,6 +249,7 @@ class TestAsyncRadar:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/radar/lists/test_type/test_action")
 
+    @pytest.mark.asyncio
     async def test_create_attempts_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("radar_standalone_response.json"))
         await async_workos.radar.create_attempts(
@@ -259,6 +263,7 @@ class TestAsyncRadar:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_create_attempts_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -270,6 +275,7 @@ class TestAsyncRadar:
                 action=RadarStandaloneAssessRequestAction("login"),
             )
 
+    @pytest.mark.asyncio
     async def test_create_attempts_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -287,6 +293,7 @@ class TestAsyncRadar:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_attempts_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -308,6 +315,7 @@ class TestAsyncRadar:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_attempts_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -325,6 +333,7 @@ class TestAsyncRadar:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_attempts_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -342,6 +351,7 @@ class TestAsyncRadar:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_attempts_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

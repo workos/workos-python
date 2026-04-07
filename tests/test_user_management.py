@@ -844,8 +844,8 @@ class TestUserManagement:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncUserManagement:
+    @pytest.mark.asyncio
     async def test_get_jwks(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("jwks_response.json"))
         result = await async_workos.user_management.get_jwks("test_clientId")
@@ -854,6 +854,7 @@ class TestAsyncUserManagement:
         assert request.method == "GET"
         assert request.url.path.endswith("/sso/jwks/test_clientId")
 
+    @pytest.mark.asyncio
     async def test_create_authenticate(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = await async_workos.user_management.create_authenticate(
@@ -873,6 +874,7 @@ class TestAsyncUserManagement:
         assert isinstance(result, str)
         assert result.startswith("http")
 
+    @pytest.mark.asyncio
     async def test_create_device(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("device_authorization_response.json"))
         result = await async_workos.user_management.create_device(
@@ -895,6 +897,7 @@ class TestAsyncUserManagement:
         assert isinstance(result, str)
         assert result.startswith("http")
 
+    @pytest.mark.asyncio
     async def test_revoke_session(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={})
         await async_workos.user_management.revoke_session(session_id="test_session_id")
@@ -902,6 +905,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/sessions/revoke")
 
+    @pytest.mark.asyncio
     async def test_create_cors_origins(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("cors_origin_response.json"))
         result = await async_workos.user_management.create_cors_origins(
@@ -914,6 +918,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/cors_origins")
 
+    @pytest.mark.asyncio
     async def test_get_email_verification(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("email_verification.json"))
         result = await async_workos.user_management.get_email_verification("test_id")
@@ -924,6 +929,7 @@ class TestAsyncUserManagement:
         assert request.method == "GET"
         assert request.url.path.endswith("/user_management/email_verification/test_id")
 
+    @pytest.mark.asyncio
     async def test_create_password_reset(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("password_reset.json"))
         result = await async_workos.user_management.create_password_reset(
@@ -936,6 +942,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/password_reset")
 
+    @pytest.mark.asyncio
     async def test_confirm_password_reset(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("reset_password_response.json"))
         result = await async_workos.user_management.confirm_password_reset(
@@ -946,6 +953,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/password_reset/confirm")
 
+    @pytest.mark.asyncio
     async def test_get_password_reset(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("password_reset.json"))
         result = await async_workos.user_management.get_password_reset("test_id")
@@ -956,18 +964,21 @@ class TestAsyncUserManagement:
         assert request.method == "GET"
         assert request.url.path.endswith("/user_management/password_reset/test_id")
 
+    @pytest.mark.asyncio
     async def test_list_users(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_user.json"))
         page = await async_workos.user_management.list_users()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_users_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.user_management.list_users()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_users_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         await async_workos.user_management.list_users(
@@ -988,6 +999,7 @@ class TestAsyncUserManagement:
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["email"] == "value email/test"
 
+    @pytest.mark.asyncio
     async def test_create_users(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user.json"))
         result = await async_workos.user_management.create_users(email="test_email")
@@ -998,6 +1010,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/users")
 
+    @pytest.mark.asyncio
     async def test_get_user_by_external_id(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user.json"))
         result = await async_workos.user_management.get_user_by_external_id(
@@ -1012,6 +1025,7 @@ class TestAsyncUserManagement:
             "/user_management/users/external_id/test_external_id"
         )
 
+    @pytest.mark.asyncio
     async def test_get_user(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user.json"))
         result = await async_workos.user_management.get_user("test_id")
@@ -1022,6 +1036,7 @@ class TestAsyncUserManagement:
         assert request.method == "GET"
         assert request.url.path.endswith("/user_management/users/test_id")
 
+    @pytest.mark.asyncio
     async def test_update_user(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user.json"))
         result = await async_workos.user_management.update_user("test_id")
@@ -1032,6 +1047,7 @@ class TestAsyncUserManagement:
         assert request.method == "PUT"
         assert request.url.path.endswith("/user_management/users/test_id")
 
+    @pytest.mark.asyncio
     async def test_delete_user(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.user_management.delete_user("test_id")
@@ -1040,6 +1056,7 @@ class TestAsyncUserManagement:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/user_management/users/test_id")
 
+    @pytest.mark.asyncio
     async def test_confirm_email_change(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("email_change_confirmation.json"))
         result = await async_workos.user_management.confirm_email_change(
@@ -1053,6 +1070,7 @@ class TestAsyncUserManagement:
             "/user_management/users/test_id/email_change/confirm"
         )
 
+    @pytest.mark.asyncio
     async def test_send_email_change(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("email_change.json"))
         result = await async_workos.user_management.send_email_change(
@@ -1067,6 +1085,7 @@ class TestAsyncUserManagement:
             "/user_management/users/test_id/email_change/send"
         )
 
+    @pytest.mark.asyncio
     async def test_confirm_email_verification(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("verify_email_response.json"))
         result = await async_workos.user_management.confirm_email_verification(
@@ -1079,6 +1098,7 @@ class TestAsyncUserManagement:
             "/user_management/users/test_id/email_verification/confirm"
         )
 
+    @pytest.mark.asyncio
     async def test_send_email_verification(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("send_verification_email_response.json")
@@ -1091,6 +1111,7 @@ class TestAsyncUserManagement:
             "/user_management/users/test_id/email_verification/send"
         )
 
+    @pytest.mark.asyncio
     async def test_list_user_identities(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=[load_fixture("user_identities_get_item.json")])
         result = await async_workos.user_management.list_user_identities("test_id")
@@ -1098,18 +1119,21 @@ class TestAsyncUserManagement:
         assert len(result) == 1
         assert isinstance(result[0], UserIdentitiesGetItem)
 
+    @pytest.mark.asyncio
     async def test_list_user_sessions(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_user_sessions_list_item.json"))
         page = await async_workos.user_management.list_user_sessions("test_id")
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_user_sessions_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.user_management.list_user_sessions("test_id")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_user_sessions_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -1127,18 +1151,21 @@ class TestAsyncUserManagement:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    @pytest.mark.asyncio
     async def test_list_invitations(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_user_invite.json"))
         page = await async_workos.user_management.list_invitations()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_invitations_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.user_management.list_invitations()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_invitations_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -1159,6 +1186,7 @@ class TestAsyncUserManagement:
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["email"] == "value email/test"
 
+    @pytest.mark.asyncio
     async def test_create_invitations(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_invite.json"))
         result = await async_workos.user_management.create_invitations(
@@ -1171,6 +1199,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/invitations")
 
+    @pytest.mark.asyncio
     async def test_get_by_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_invite.json"))
         result = await async_workos.user_management.get_by_token("test_token")
@@ -1183,6 +1212,7 @@ class TestAsyncUserManagement:
             "/user_management/invitations/by_token/test_token"
         )
 
+    @pytest.mark.asyncio
     async def test_get_invitation(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_invite.json"))
         result = await async_workos.user_management.get_invitation("test_id")
@@ -1193,6 +1223,7 @@ class TestAsyncUserManagement:
         assert request.method == "GET"
         assert request.url.path.endswith("/user_management/invitations/test_id")
 
+    @pytest.mark.asyncio
     async def test_accept_invitation(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("invitation.json"))
         result = await async_workos.user_management.accept_invitation("test_id")
@@ -1203,6 +1234,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/invitations/test_id/accept")
 
+    @pytest.mark.asyncio
     async def test_resend_invitation(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_invite.json"))
         result = await async_workos.user_management.resend_invitation("test_id")
@@ -1213,6 +1245,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/invitations/test_id/resend")
 
+    @pytest.mark.asyncio
     async def test_revoke_invitation(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("invitation.json"))
         result = await async_workos.user_management.revoke_invitation("test_id")
@@ -1223,6 +1256,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/invitations/test_id/revoke")
 
+    @pytest.mark.asyncio
     async def test_update_jwt_template(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("jwt_template_response.json"))
         result = await async_workos.user_management.update_jwt_template(
@@ -1235,6 +1269,7 @@ class TestAsyncUserManagement:
         assert request.method == "PUT"
         assert request.url.path.endswith("/user_management/jwt_template")
 
+    @pytest.mark.asyncio
     async def test_create_magic_auth(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("magic_auth.json"))
         result = await async_workos.user_management.create_magic_auth(
@@ -1247,6 +1282,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/magic_auth")
 
+    @pytest.mark.asyncio
     async def test_get_magic_auth(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("magic_auth.json"))
         result = await async_workos.user_management.get_magic_auth("test_id")
@@ -1257,6 +1293,7 @@ class TestAsyncUserManagement:
         assert request.method == "GET"
         assert request.url.path.endswith("/user_management/magic_auth/test_id")
 
+    @pytest.mark.asyncio
     async def test_list_organization_memberships(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_user_organization_membership.json")
@@ -1265,6 +1302,7 @@ class TestAsyncUserManagement:
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_organization_memberships_empty_page(
         self, async_workos, httpx_mock
     ):
@@ -1273,6 +1311,7 @@ class TestAsyncUserManagement:
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_organization_memberships_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -1295,6 +1334,7 @@ class TestAsyncUserManagement:
         assert request.url.params["statuses"] == "val1,val2"
         assert request.url.params["user_id"] == "value user_id/test"
 
+    @pytest.mark.asyncio
     async def test_create_organization_memberships(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization_membership.json"))
         result = await async_workos.user_management.create_organization_memberships(
@@ -1307,6 +1347,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/organization_memberships")
 
+    @pytest.mark.asyncio
     async def test_get_organization_membership(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_organization_membership.json"))
         result = await async_workos.user_management.get_organization_membership(
@@ -1321,6 +1362,7 @@ class TestAsyncUserManagement:
             "/user_management/organization_memberships/test_id"
         )
 
+    @pytest.mark.asyncio
     async def test_update_organization_membership(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_organization_membership.json"))
         result = await async_workos.user_management.update_organization_membership(
@@ -1335,6 +1377,7 @@ class TestAsyncUserManagement:
             "/user_management/organization_memberships/test_id"
         )
 
+    @pytest.mark.asyncio
     async def test_delete_organization_membership(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.user_management.delete_organization_membership(
@@ -1347,6 +1390,7 @@ class TestAsyncUserManagement:
             "/user_management/organization_memberships/test_id"
         )
 
+    @pytest.mark.asyncio
     async def test_deactivate_organization_membership(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization_membership.json"))
         result = await async_workos.user_management.deactivate_organization_membership(
@@ -1361,6 +1405,7 @@ class TestAsyncUserManagement:
             "/user_management/organization_memberships/test_id/deactivate"
         )
 
+    @pytest.mark.asyncio
     async def test_reactivate_organization_membership(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_organization_membership.json"))
         result = await async_workos.user_management.reactivate_organization_membership(
@@ -1375,6 +1420,7 @@ class TestAsyncUserManagement:
             "/user_management/organization_memberships/test_id/reactivate"
         )
 
+    @pytest.mark.asyncio
     async def test_create_redirect_uris(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("redirect_uri.json"))
         result = await async_workos.user_management.create_redirect_uris(uri="test_uri")
@@ -1385,6 +1431,7 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/redirect_uris")
 
+    @pytest.mark.asyncio
     async def test_list_user_authorized_applications(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_authorized_connect_application_list_data.json")
@@ -1395,6 +1442,7 @@ class TestAsyncUserManagement:
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_user_authorized_applications_empty_page(
         self, async_workos, httpx_mock
     ):
@@ -1405,6 +1453,7 @@ class TestAsyncUserManagement:
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_user_authorized_applications_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -1422,6 +1471,7 @@ class TestAsyncUserManagement:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    @pytest.mark.asyncio
     async def test_delete_user_authorized_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.user_management.delete_user_authorized_application(
@@ -1434,6 +1484,7 @@ class TestAsyncUserManagement:
             "/user_management/users/test_user_id/authorized_applications/test_application_id"
         )
 
+    @pytest.mark.asyncio
     async def test_authenticate_with_password(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = await async_workos.user_management.authenticate_with_password(
@@ -1445,6 +1496,7 @@ class TestAsyncUserManagement:
         body = json.loads(request.content)
         assert body["grant_type"] == "password"
 
+    @pytest.mark.asyncio
     async def test_authenticate_with_code(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = await async_workos.user_management.authenticate_with_code()
@@ -1454,6 +1506,7 @@ class TestAsyncUserManagement:
         body = json.loads(request.content)
         assert body["grant_type"] == "authorization_code"
 
+    @pytest.mark.asyncio
     async def test_authenticate_with_refresh_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = await async_workos.user_management.authenticate_with_refresh_token(
@@ -1465,6 +1518,7 @@ class TestAsyncUserManagement:
         body = json.loads(request.content)
         assert body["grant_type"] == "refresh_token"
 
+    @pytest.mark.asyncio
     async def test_authenticate_with_magic_auth(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = await async_workos.user_management.authenticate_with_magic_auth()
@@ -1474,6 +1528,7 @@ class TestAsyncUserManagement:
         body = json.loads(request.content)
         assert body["grant_type"] == "urn:workos:oauth:grant-type:magic-auth:code"
 
+    @pytest.mark.asyncio
     async def test_authenticate_with_email_verification(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = (
@@ -1487,6 +1542,7 @@ class TestAsyncUserManagement:
             body["grant_type"] == "urn:workos:oauth:grant-type:email-verification:code"
         )
 
+    @pytest.mark.asyncio
     async def test_authenticate_with_totp(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = await async_workos.user_management.authenticate_with_totp()
@@ -1496,6 +1552,7 @@ class TestAsyncUserManagement:
         body = json.loads(request.content)
         assert body["grant_type"] == "urn:workos:oauth:grant-type:mfa-totp"
 
+    @pytest.mark.asyncio
     async def test_authenticate_with_organization_selection(
         self, async_workos, httpx_mock
     ):
@@ -1509,6 +1566,7 @@ class TestAsyncUserManagement:
             body["grant_type"] == "urn:workos:oauth:grant-type:organization-selection"
         )
 
+    @pytest.mark.asyncio
     async def test_authenticate_with_device_code(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = await async_workos.user_management.authenticate_with_device_code()
@@ -1518,6 +1576,7 @@ class TestAsyncUserManagement:
         body = json.loads(request.content)
         assert body["grant_type"] == "urn:ietf:params:oauth:grant-type:device_code"
 
+    @pytest.mark.asyncio
     async def test_get_jwks_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("jwks_response.json"))
         await async_workos.user_management.get_jwks(
@@ -1526,11 +1585,13 @@ class TestAsyncUserManagement:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_get_jwks_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
             await async_workos.user_management.get_jwks("test_clientId")
 
+    @pytest.mark.asyncio
     async def test_get_jwks_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -1542,6 +1603,7 @@ class TestAsyncUserManagement:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_get_jwks_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -1557,6 +1619,7 @@ class TestAsyncUserManagement:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_get_jwks_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -1568,6 +1631,7 @@ class TestAsyncUserManagement:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_get_jwks_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -1579,6 +1643,7 @@ class TestAsyncUserManagement:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_get_jwks_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

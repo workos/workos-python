@@ -164,8 +164,8 @@ class TestApiKeys:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncApiKeys:
+    @pytest.mark.asyncio
     async def test_create_validations(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("api_key_validation_response.json"))
         result = await async_workos.api_keys.create_validations(value="test_value")
@@ -174,6 +174,7 @@ class TestAsyncApiKeys:
         assert request.method == "POST"
         assert request.url.path.endswith("/api_keys/validations")
 
+    @pytest.mark.asyncio
     async def test_delete_api_key(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.api_keys.delete_api_key("test_id")
@@ -182,6 +183,7 @@ class TestAsyncApiKeys:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/api_keys/test_id")
 
+    @pytest.mark.asyncio
     async def test_list_organization_api_keys(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_api_key.json"))
         page = await async_workos.api_keys.list_organization_api_keys(
@@ -190,6 +192,7 @@ class TestAsyncApiKeys:
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_organization_api_keys_empty_page(
         self, async_workos, httpx_mock
     ):
@@ -200,6 +203,7 @@ class TestAsyncApiKeys:
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_organization_api_keys_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -217,6 +221,7 @@ class TestAsyncApiKeys:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    @pytest.mark.asyncio
     async def test_create_organization_api_keys(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("api_key_with_value.json"))
         result = await async_workos.api_keys.create_organization_api_keys(
@@ -229,6 +234,7 @@ class TestAsyncApiKeys:
         assert request.method == "POST"
         assert request.url.path.endswith("/organizations/test_organizationId/api_keys")
 
+    @pytest.mark.asyncio
     async def test_create_validations_with_request_options(
         self, async_workos, httpx_mock
     ):
@@ -239,11 +245,13 @@ class TestAsyncApiKeys:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_create_validations_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
             await async_workos.api_keys.create_validations(value="test_value")
 
+    @pytest.mark.asyncio
     async def test_create_validations_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -255,6 +263,7 @@ class TestAsyncApiKeys:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_validations_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -270,6 +279,7 @@ class TestAsyncApiKeys:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_validations_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -281,6 +291,7 @@ class TestAsyncApiKeys:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_validations_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -292,6 +303,7 @@ class TestAsyncApiKeys:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_create_validations_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

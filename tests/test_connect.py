@@ -271,8 +271,8 @@ class TestConnect:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncConnect:
+    @pytest.mark.asyncio
     async def test_complete_oauth2(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("external_auth_complete_response.json")
@@ -290,18 +290,21 @@ class TestAsyncConnect:
         assert request.method == "POST"
         assert request.url.path.endswith("/authkit/oauth2/complete")
 
+    @pytest.mark.asyncio
     async def test_list_applications(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_connect_application.json"))
         page = await async_workos.connect.list_applications()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_applications_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.connect.list_applications()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_applications_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -320,6 +323,7 @@ class TestAsyncConnect:
         assert request.url.params["order"] == "normal"
         assert request.url.params["organization_id"] == "value organization_id/test"
 
+    @pytest.mark.asyncio
     async def test_create_applications(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
         result = await async_workos.connect.create_applications(
@@ -332,6 +336,7 @@ class TestAsyncConnect:
         assert request.method == "POST"
         assert request.url.path.endswith("/connect/applications")
 
+    @pytest.mark.asyncio
     async def test_get_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
         result = await async_workos.connect.get_application("test_id")
@@ -342,6 +347,7 @@ class TestAsyncConnect:
         assert request.method == "GET"
         assert request.url.path.endswith("/connect/applications/test_id")
 
+    @pytest.mark.asyncio
     async def test_update_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
         result = await async_workos.connect.update_application("test_id")
@@ -352,6 +358,7 @@ class TestAsyncConnect:
         assert request.method == "PUT"
         assert request.url.path.endswith("/connect/applications/test_id")
 
+    @pytest.mark.asyncio
     async def test_delete_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.connect.delete_application("test_id")
@@ -360,6 +367,7 @@ class TestAsyncConnect:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/connect/applications/test_id")
 
+    @pytest.mark.asyncio
     async def test_list_application_client_secrets(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=[load_fixture("application_credentials_list_item.json")]
@@ -369,6 +377,7 @@ class TestAsyncConnect:
         assert len(result) == 1
         assert isinstance(result[0], ApplicationCredentialsListItem)
 
+    @pytest.mark.asyncio
     async def test_create_application_client_secrets(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("new_connect_application_secret.json")
@@ -381,6 +390,7 @@ class TestAsyncConnect:
         assert request.method == "POST"
         assert request.url.path.endswith("/connect/applications/test_id/client_secrets")
 
+    @pytest.mark.asyncio
     async def test_delete_client_secret(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.connect.delete_client_secret("test_id")
@@ -389,6 +399,7 @@ class TestAsyncConnect:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/connect/client_secrets/test_id")
 
+    @pytest.mark.asyncio
     async def test_create_oauth_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
         result = await async_workos.connect.create_oauth_application(
@@ -400,6 +411,7 @@ class TestAsyncConnect:
         body = json.loads(request.content)
         assert body["application_type"] == "oauth"
 
+    @pytest.mark.asyncio
     async def test_create_m2m_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
         result = await async_workos.connect.create_m2m_application(
@@ -411,6 +423,7 @@ class TestAsyncConnect:
         body = json.loads(request.content)
         assert body["application_type"] == "m2m"
 
+    @pytest.mark.asyncio
     async def test_complete_oauth2_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("external_auth_complete_response.json")
@@ -423,6 +436,7 @@ class TestAsyncConnect:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_complete_oauth2_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -431,6 +445,7 @@ class TestAsyncConnect:
                 user=UserObject.from_dict(load_fixture("user_object.json")),
             )
 
+    @pytest.mark.asyncio
     async def test_complete_oauth2_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -445,6 +460,7 @@ class TestAsyncConnect:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_complete_oauth2_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -463,6 +479,7 @@ class TestAsyncConnect:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_complete_oauth2_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -477,6 +494,7 @@ class TestAsyncConnect:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_complete_oauth2_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -491,6 +509,7 @@ class TestAsyncConnect:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_complete_oauth2_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

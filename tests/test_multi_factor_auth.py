@@ -213,8 +213,8 @@ class TestMultiFactorAuth:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncMultiFactorAuth:
+    @pytest.mark.asyncio
     async def test_verify_challenge(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("authentication_challenge_verify_response.json")
@@ -228,6 +228,7 @@ class TestAsyncMultiFactorAuth:
         assert request.method == "POST"
         assert request.url.path.endswith("/auth/challenges/test_id/verify")
 
+    @pytest.mark.asyncio
     async def test_enroll_factor(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("authentication_factor_enrolled.json")
@@ -242,6 +243,7 @@ class TestAsyncMultiFactorAuth:
         assert request.method == "POST"
         assert request.url.path.endswith("/auth/factors/enroll")
 
+    @pytest.mark.asyncio
     async def test_get_factor(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authentication_factor.json"))
         result = await async_workos.multi_factor_auth.get_factor("test_id")
@@ -252,6 +254,7 @@ class TestAsyncMultiFactorAuth:
         assert request.method == "GET"
         assert request.url.path.endswith("/auth/factors/test_id")
 
+    @pytest.mark.asyncio
     async def test_delete_factor(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
         result = await async_workos.multi_factor_auth.delete_factor("test_id")
@@ -260,6 +263,7 @@ class TestAsyncMultiFactorAuth:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/auth/factors/test_id")
 
+    @pytest.mark.asyncio
     async def test_challenge_factor(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authentication_challenge.json"))
         result = await async_workos.multi_factor_auth.challenge_factor("test_id")
@@ -270,6 +274,7 @@ class TestAsyncMultiFactorAuth:
         assert request.method == "POST"
         assert request.url.path.endswith("/auth/factors/test_id/challenge")
 
+    @pytest.mark.asyncio
     async def test_list_user_auth_factors(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_authentication_factor.json"))
         page = await async_workos.multi_factor_auth.list_user_auth_factors(
@@ -278,6 +283,7 @@ class TestAsyncMultiFactorAuth:
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_user_auth_factors_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.multi_factor_auth.list_user_auth_factors(
@@ -286,6 +292,7 @@ class TestAsyncMultiFactorAuth:
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_user_auth_factors_encodes_query_params(
         self, async_workos, httpx_mock
     ):
@@ -303,6 +310,7 @@ class TestAsyncMultiFactorAuth:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    @pytest.mark.asyncio
     async def test_create_user_auth_factors(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("user_authentication_factor_enroll_response.json")
@@ -317,6 +325,7 @@ class TestAsyncMultiFactorAuth:
             "/user_management/users/test_userlandUserId/auth_factors"
         )
 
+    @pytest.mark.asyncio
     async def test_verify_challenge_with_request_options(
         self, async_workos, httpx_mock
     ):
@@ -331,6 +340,7 @@ class TestAsyncMultiFactorAuth:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_verify_challenge_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -338,6 +348,7 @@ class TestAsyncMultiFactorAuth:
                 "test_id", code="test_code"
             )
 
+    @pytest.mark.asyncio
     async def test_verify_challenge_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -351,6 +362,7 @@ class TestAsyncMultiFactorAuth:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_verify_challenge_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -368,6 +380,7 @@ class TestAsyncMultiFactorAuth:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_verify_challenge_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -381,6 +394,7 @@ class TestAsyncMultiFactorAuth:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_verify_challenge_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -394,6 +408,7 @@ class TestAsyncMultiFactorAuth:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_verify_challenge_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

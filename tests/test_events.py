@@ -130,20 +130,22 @@ class TestEvents:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncEvents:
+    @pytest.mark.asyncio
     async def test_list_events(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_event_schema.json"))
         page = await async_workos.events.list_events()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
+    @pytest.mark.asyncio
     async def test_list_events_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         page = await async_workos.events.list_events()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
+    @pytest.mark.asyncio
     async def test_list_events_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         await async_workos.events.list_events(
@@ -166,6 +168,7 @@ class TestAsyncEvents:
         assert request.url.params["range_end"] == "value range_end/test"
         assert request.url.params["organization_id"] == "value organization_id/test"
 
+    @pytest.mark.asyncio
     async def test_list_events_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
         await async_workos.events.list_events(
@@ -174,11 +177,13 @@ class TestAsyncEvents:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_list_events_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
             await async_workos.events.list_events()
 
+    @pytest.mark.asyncio
     async def test_list_events_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -190,6 +195,7 @@ class TestAsyncEvents:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_events_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -205,6 +211,7 @@ class TestAsyncEvents:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_events_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -216,6 +223,7 @@ class TestAsyncEvents:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_events_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -227,6 +235,7 @@ class TestAsyncEvents:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_list_events_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

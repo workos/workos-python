@@ -111,8 +111,8 @@ class TestAdminPortal:
             workos.close()
 
 
-@pytest.mark.asyncio
 class TestAsyncAdminPortal:
+    @pytest.mark.asyncio
     async def test_generate_link(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("portal_link_response.json"))
         result = await async_workos.admin_portal.generate_link(
@@ -127,6 +127,7 @@ class TestAsyncAdminPortal:
         assert request.method == "POST"
         assert request.url.path.endswith("/portal/generate_link")
 
+    @pytest.mark.asyncio
     async def test_generate_link_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("portal_link_response.json"))
         await async_workos.admin_portal.generate_link(
@@ -136,6 +137,7 @@ class TestAsyncAdminPortal:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
+    @pytest.mark.asyncio
     async def test_generate_link_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -143,6 +145,7 @@ class TestAsyncAdminPortal:
                 organization="test_organization"
             )
 
+    @pytest.mark.asyncio
     async def test_generate_link_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -156,6 +159,7 @@ class TestAsyncAdminPortal:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_generate_link_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -173,6 +177,7 @@ class TestAsyncAdminPortal:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_generate_link_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -186,6 +191,7 @@ class TestAsyncAdminPortal:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_generate_link_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
@@ -199,6 +205,7 @@ class TestAsyncAdminPortal:
         finally:
             await workos.close()
 
+    @pytest.mark.asyncio
     async def test_generate_link_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0

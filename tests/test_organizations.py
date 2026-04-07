@@ -44,6 +44,7 @@ class TestOrganizations:
             before="cursor before",
             after="cursor/after",
             order=OrganizationsOrder("normal"),
+            domains=["val1", "val2"],
             search="value search/test",
         )
         request = httpx_mock.get_request()
@@ -51,6 +52,7 @@ class TestOrganizations:
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
+        assert request.url.params["domains"] == "val1,val2"
         assert request.url.params["search"] == "value search/test"
 
     def test_create_organizations(self, workos, httpx_mock):
@@ -129,6 +131,14 @@ class TestOrganizations:
             "/organizations/test_id/audit_log_configuration"
         )
 
+    def test_list_organizations_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.organizations.list_organizations(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_list_organizations_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -174,25 +184,25 @@ class TestOrganizations:
         finally:
             workos.close()
 
-    def test_create_organizations_bad_request(self, httpx_mock):
+    def test_list_organizations_bad_request(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.organizations.create_organizations(name="test_name")
+                workos.organizations.list_organizations()
         finally:
             workos.close()
 
-    def test_create_organizations_unprocessable(self, httpx_mock):
+    def test_list_organizations_unprocessable(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.organizations.create_organizations(name="test_name")
+                workos.organizations.list_organizations()
         finally:
             workos.close()
 
@@ -220,6 +230,7 @@ class TestAsyncOrganizations:
             before="cursor before",
             after="cursor/after",
             order=OrganizationsOrder("normal"),
+            domains=["val1", "val2"],
             search="value search/test",
         )
         request = httpx_mock.get_request()
@@ -227,6 +238,7 @@ class TestAsyncOrganizations:
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
+        assert request.url.params["domains"] == "val1,val2"
         assert request.url.params["search"] == "value search/test"
 
     async def test_create_organizations(self, async_workos, httpx_mock):
@@ -297,6 +309,16 @@ class TestAsyncOrganizations:
             "/organizations/test_id/audit_log_configuration"
         )
 
+    async def test_list_organizations_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.organizations.list_organizations(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     async def test_list_organizations_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -339,24 +361,24 @@ class TestAsyncOrganizations:
         finally:
             await workos.close()
 
-    async def test_create_organizations_bad_request(self, httpx_mock):
+    async def test_list_organizations_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.organizations.create_organizations(name="test_name")
+                await workos.organizations.list_organizations()
         finally:
             await workos.close()
 
-    async def test_create_organizations_unprocessable(self, httpx_mock):
+    async def test_list_organizations_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.organizations.create_organizations(name="test_name")
+                await workos.organizations.list_organizations()
         finally:
             await workos.close()

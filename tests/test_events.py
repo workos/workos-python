@@ -9,9 +9,11 @@ from workos.events.models import EventsOrder
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -37,6 +39,7 @@ class TestEvents:
             before="cursor before",
             after="cursor/after",
             order=EventsOrder("normal"),
+            events=["val1", "val2"],
             range_start="value range_start/test",
             range_end="value range_end/test",
             organization_id="value organization_id/test",
@@ -46,9 +49,18 @@ class TestEvents:
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
+        assert request.url.params["events"] == "val1,val2"
         assert request.url.params["range_start"] == "value range_start/test"
         assert request.url.params["range_end"] == "value range_end/test"
         assert request.url.params["organization_id"] == "value organization_id/test"
+
+    def test_list_events_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.events.list_events(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     def test_list_events_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -95,6 +107,28 @@ class TestEvents:
         finally:
             workos.close()
 
+    def test_list_events_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.events.list_events()
+        finally:
+            workos.close()
+
+    def test_list_events_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
+                workos.events.list_events()
+        finally:
+            workos.close()
+
 
 @pytest.mark.asyncio
 class TestAsyncEvents:
@@ -117,6 +151,7 @@ class TestAsyncEvents:
             before="cursor before",
             after="cursor/after",
             order=EventsOrder("normal"),
+            events=["val1", "val2"],
             range_start="value range_start/test",
             range_end="value range_end/test",
             organization_id="value organization_id/test",
@@ -126,9 +161,18 @@ class TestAsyncEvents:
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
+        assert request.url.params["events"] == "val1,val2"
         assert request.url.params["range_start"] == "value range_start/test"
         assert request.url.params["range_end"] == "value range_end/test"
         assert request.url.params["organization_id"] == "value organization_id/test"
+
+    async def test_list_events_with_request_options(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.events.list_events(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     async def test_list_events_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
@@ -168,6 +212,28 @@ class TestAsyncEvents:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
+                await workos.events.list_events()
+        finally:
+            await workos.close()
+
+    async def test_list_events_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.events.list_events()
+        finally:
+            await workos.close()
+
+    async def test_list_events_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
                 await workos.events.list_events()
         finally:
             await workos.close()

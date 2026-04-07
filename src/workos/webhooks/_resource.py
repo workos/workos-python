@@ -46,10 +46,10 @@ class Webhooks:
         Get a list of all of your existing webhook endpoints.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -301,10 +301,10 @@ class AsyncWebhooks:
         Get a list of all of your existing webhook endpoints.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -444,3 +444,93 @@ class AsyncWebhooks:
             path=f"webhook_endpoints/{id}",
             request_options=request_options,
         )
+
+    # @oagen-ignore-start
+    DEFAULT_TOLERANCE = 180
+
+    def verify_event(
+        self,
+        *,
+        event_body: Union[bytes, str],
+        event_signature: str,
+        secret: str,
+        tolerance: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """Verify and deserialize the signature of a Webhook event.
+
+        Args:
+            event_body: The raw Webhook request body (bytes or str).
+            event_signature: The signature from the 'WorkOS-Signature' header.
+            secret: The webhook endpoint secret from the WorkOS dashboard.
+            tolerance: Maximum age of the event in seconds. Defaults to 180.
+
+        Returns:
+            Dict[str, Any]: The deserialized webhook event payload.
+
+        Raises:
+            ValueError: If the signature is invalid or the event is too old.
+        """
+        self.verify_header(
+            event_body=event_body,
+            event_signature=event_signature,
+            secret=secret,
+            tolerance=tolerance,
+        )
+        body = event_body if isinstance(event_body, (str, bytes)) else str(event_body)
+        return json.loads(body)
+
+    def verify_header(
+        self,
+        *,
+        event_body: Union[bytes, str],
+        event_signature: str,
+        secret: str,
+        tolerance: Optional[int] = None,
+    ) -> None:
+        """Verify the signature of a Webhook, raise ValueError if invalid.
+
+        Args:
+            event_body: The raw Webhook request body (bytes or str).
+            event_signature: The signature from the 'WorkOS-Signature' header.
+            secret: The webhook endpoint secret from the WorkOS dashboard.
+            tolerance: Maximum age of the event in seconds. Defaults to 180.
+
+        Raises:
+            ValueError: If the signature cannot be verified or the event is too old.
+        """
+        try:
+            issued_timestamp, signature_hash = event_signature.split(", ")
+        except (ValueError, AttributeError) as exc:
+            raise ValueError(
+                "Unable to extract timestamp and signature hash from header",
+                event_signature,
+            ) from exc
+
+        issued_timestamp = issued_timestamp[2:]
+        signature_hash = signature_hash[3:]
+        max_seconds_since_issued = (
+            tolerance if tolerance is not None else self.DEFAULT_TOLERANCE
+        )
+        current_time = time.time()
+        timestamp_in_seconds = int(issued_timestamp) / 1000
+        seconds_since_issued = current_time - timestamp_in_seconds
+
+        if seconds_since_issued > max_seconds_since_issued:
+            raise ValueError("Timestamp outside the tolerance zone")
+
+        body_str = (
+            event_body.decode("utf-8") if isinstance(event_body, bytes) else event_body
+        )
+        unhashed_string = f"{issued_timestamp}.{body_str}"
+        expected_signature = hmac.new(
+            secret.encode("utf-8"),
+            unhashed_string.encode("utf-8"),
+            digestmod=hashlib.sha256,
+        ).hexdigest()
+
+        if not hmac.compare_digest(signature_hash, expected_signature):
+            raise ValueError(
+                "Signature hash does not match the expected signature hash for payload"
+            )
+
+    # @oagen-ignore-end

@@ -42,7 +42,7 @@ class Connection:
     status: Optional["ConnectionStatus"] = None
     """Deprecated. Use `state` instead.
 
-    .. deprecated::"""
+    .. deprecated:: This field is deprecated."""
     options: Optional["ConnectionOption"] = None
     """Configuration options for SAML connections. Only present for SAML connection types."""
 

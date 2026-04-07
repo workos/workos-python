@@ -120,6 +120,18 @@ class TestPipes:
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
 
+    def test_authorize_data_integration_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration_authorize_url_response.json")
+        )
+        workos.pipes.authorize_data_integration(
+            "test_slug",
+            user_id="test_user_id",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_authorize_data_integration_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -298,6 +310,20 @@ class TestAsyncPipes:
         )
         request = httpx_mock.get_request()
         assert request.url.params["organization_id"] == "value organization_id/test"
+
+    async def test_authorize_data_integration_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("data_integration_authorize_url_response.json")
+        )
+        await async_workos.pipes.authorize_data_integration(
+            "test_slug",
+            user_id="test_user_id",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     async def test_authorize_data_integration_unauthorized(
         self, async_workos, httpx_mock

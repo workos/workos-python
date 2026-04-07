@@ -37,7 +37,7 @@ class Organization:
     allow_profiles_outside_organization: Optional[bool] = None
     """Whether the Organization allows profiles outside of its managed domains.
 
-    .. deprecated::"""
+    .. deprecated:: This field is deprecated."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Organization":

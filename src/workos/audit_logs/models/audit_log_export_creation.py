@@ -22,7 +22,7 @@ class AuditLogExportCreation:
     actors: Optional[List[str]] = None
     """Deprecated. Use `actor_names` instead.
 
-    .. deprecated::"""
+    .. deprecated:: This field is deprecated."""
     actor_names: Optional[List[str]] = None
     """List of actor names to filter against."""
     actor_ids: Optional[List[str]] = None

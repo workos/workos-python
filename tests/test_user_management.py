@@ -70,9 +70,7 @@ class TestUserManagement:
 
     def test_get_authorization_url(self, workos):
         result = workos.user_management.get_authorization_url(
-            response_type="code",
-            redirect_uri="test_redirect_uri",
-            client_id="test_client_id",
+            redirect_uri="test_redirect_uri"
         )
         assert isinstance(result, str)
         assert result.startswith("http")
@@ -538,6 +536,7 @@ class TestUserManagement:
             after="cursor/after",
             order=UserManagementOrganizationMembershipOrder("normal"),
             organization_id="value organization_id/test",
+            statuses=["val1", "val2"],
             user_id="value user_id/test",
         )
         request = httpx_mock.get_request()
@@ -546,6 +545,7 @@ class TestUserManagement:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["statuses"] == "val1,val2"
         assert request.url.params["user_id"] == "value user_id/test"
 
     def test_create_organization_memberships(self, workos, httpx_mock):
@@ -768,6 +768,14 @@ class TestUserManagement:
         body = json.loads(request.content)
         assert body["grant_type"] == "urn:ietf:params:oauth:grant-type:device_code"
 
+    def test_get_jwks_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("jwks_response.json"))
+        workos.user_management.get_jwks(
+            "test_clientId", request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_get_jwks_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -813,33 +821,25 @@ class TestUserManagement:
         finally:
             workos.close()
 
-    def test_create_authenticate_bad_request(self, httpx_mock):
+    def test_get_jwks_bad_request(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.user_management.create_authenticate(
-                    body=load_fixture(
-                        "authorization_code_session_authenticate_request.json"
-                    )
-                )
+                workos.user_management.get_jwks("test_clientId")
         finally:
             workos.close()
 
-    def test_create_authenticate_unprocessable(self, httpx_mock):
+    def test_get_jwks_unprocessable(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.user_management.create_authenticate(
-                    body=load_fixture(
-                        "authorization_code_session_authenticate_request.json"
-                    )
-                )
+                workos.user_management.get_jwks("test_clientId")
         finally:
             workos.close()
 
@@ -866,11 +866,9 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/authenticate")
 
-    async def test_get_authorization_url(self, async_workos):
-        result = await async_workos.user_management.get_authorization_url(
-            response_type="code",
-            redirect_uri="test_redirect_uri",
-            client_id="test_client_id",
+    def test_get_authorization_url(self, async_workos):
+        result = async_workos.user_management.get_authorization_url(
+            redirect_uri="test_redirect_uri"
         )
         assert isinstance(result, str)
         assert result.startswith("http")
@@ -890,8 +888,8 @@ class TestAsyncUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/authorize/device")
 
-    async def test_get_logout_url(self, async_workos):
-        result = await async_workos.user_management.get_logout_url(
+    def test_get_logout_url(self, async_workos):
+        result = async_workos.user_management.get_logout_url(
             session_id="test_session_id"
         )
         assert isinstance(result, str)
@@ -1285,6 +1283,7 @@ class TestAsyncUserManagement:
             after="cursor/after",
             order=UserManagementOrganizationMembershipOrder("normal"),
             organization_id="value organization_id/test",
+            statuses=["val1", "val2"],
             user_id="value user_id/test",
         )
         request = httpx_mock.get_request()
@@ -1293,6 +1292,7 @@ class TestAsyncUserManagement:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
         assert request.url.params["organization_id"] == "value organization_id/test"
+        assert request.url.params["statuses"] == "val1,val2"
         assert request.url.params["user_id"] == "value user_id/test"
 
     async def test_create_organization_memberships(self, async_workos, httpx_mock):
@@ -1518,6 +1518,14 @@ class TestAsyncUserManagement:
         body = json.loads(request.content)
         assert body["grant_type"] == "urn:ietf:params:oauth:grant-type:device_code"
 
+    async def test_get_jwks_with_request_options(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("jwks_response.json"))
+        await async_workos.user_management.get_jwks(
+            "test_clientId", request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     async def test_get_jwks_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -1560,32 +1568,24 @@ class TestAsyncUserManagement:
         finally:
             await workos.close()
 
-    async def test_create_authenticate_bad_request(self, httpx_mock):
+    async def test_get_jwks_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.user_management.create_authenticate(
-                    body=load_fixture(
-                        "authorization_code_session_authenticate_request.json"
-                    )
-                )
+                await workos.user_management.get_jwks("test_clientId")
         finally:
             await workos.close()
 
-    async def test_create_authenticate_unprocessable(self, httpx_mock):
+    async def test_get_jwks_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.user_management.create_authenticate(
-                    body=load_fixture(
-                        "authorization_code_session_authenticate_request.json"
-                    )
-                )
+                await workos.user_management.get_jwks("test_clientId")
         finally:
             await workos.close()

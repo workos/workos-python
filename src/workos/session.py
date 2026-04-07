@@ -41,43 +41,76 @@ class AuthenticateWithSessionCookieFailureReason(Enum):
 
 @dataclass(slots=True)
 class AuthenticateWithSessionCookieSuccessResponse:
-    authenticated: bool  # Always True
+    """Successful session cookie authentication result."""
+
+    authenticated: bool
+    """Always True for successful authentication."""
     session_id: str
+    """The authenticated session identifier."""
     organization_id: Optional[str] = None
+    """The organization the user is authenticated into, if any."""
     role: Optional[str] = None
+    """The user's primary role slug in the organization."""
     roles: Optional[Sequence[str]] = None
+    """All role slugs assigned to the user."""
     permissions: Optional[Sequence[str]] = None
+    """Permissions granted to the user."""
     user: Optional[Dict[str, Any]] = None
+    """The authenticated user object."""
     impersonator: Optional[Dict[str, Any]] = None
+    """Present when the session is impersonated; contains the impersonator's details."""
     entitlements: Optional[Sequence[str]] = None
+    """Entitlements granted to the user."""
     feature_flags: Optional[Sequence[str]] = None
+    """Feature flags enabled for the user."""
 
 
 @dataclass(slots=True)
 class AuthenticateWithSessionCookieErrorResponse:
-    authenticated: bool  # Always False
+    """Failed session cookie authentication result."""
+
+    authenticated: bool
+    """Always False for failed authentication."""
     reason: Union[AuthenticateWithSessionCookieFailureReason, str]
+    """The reason authentication failed."""
 
 
 @dataclass(slots=True)
 class RefreshWithSessionCookieSuccessResponse:
-    authenticated: bool  # Always True
+    """Successful session cookie refresh result."""
+
+    authenticated: bool
+    """Always True for successful refresh."""
     sealed_session: str
+    """The new sealed session token to set as a cookie."""
     session_id: str
+    """The refreshed session identifier."""
     organization_id: Optional[str] = None
+    """The organization the user is authenticated into, if any."""
     role: Optional[str] = None
+    """The user's primary role slug in the organization."""
     roles: Optional[Sequence[str]] = None
+    """All role slugs assigned to the user."""
     permissions: Optional[Sequence[str]] = None
+    """Permissions granted to the user."""
     user: Optional[Dict[str, Any]] = None
+    """The authenticated user object."""
     impersonator: Optional[Dict[str, Any]] = None
+    """Present when the session is impersonated; contains the impersonator's details."""
     entitlements: Optional[Sequence[str]] = None
+    """Entitlements granted to the user."""
     feature_flags: Optional[Sequence[str]] = None
+    """Feature flags enabled for the user."""
 
 
 @dataclass(slots=True)
 class RefreshWithSessionCookieErrorResponse:
-    authenticated: bool  # Always False
+    """Failed session cookie refresh result."""
+
+    authenticated: bool
+    """Always False for failed refresh."""
     reason: Union[AuthenticateWithSessionCookieFailureReason, str]
+    """The reason the refresh failed."""
 
 
 # ---------------------------------------------------------------------------
@@ -487,7 +520,7 @@ class AsyncSession:
                 f"Failed to extract session ID for logout URL: {auth_response.reason}"
             )
 
-        return await self._client.user_management.get_logout_url(
+        return self._client.user_management.get_logout_url(
             session_id=auth_response.session_id,
             return_to=return_to,
         )

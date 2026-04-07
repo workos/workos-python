@@ -714,6 +714,18 @@ class TestAuthorization:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/authorization/permissions/test_slug")
 
+    def test_check_organization_membership_with_request_options(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("authorization_check.json"))
+        workos.authorization.check_organization_membership(
+            "test_organization_membership_id",
+            permission_slug="test_permission_slug",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_check_organization_membership_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -1431,6 +1443,18 @@ class TestAsyncAuthorization:
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/authorization/permissions/test_slug")
+
+    async def test_check_organization_membership_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("authorization_check.json"))
+        await async_workos.authorization.check_organization_membership(
+            "test_organization_membership_id",
+            permission_slug="test_permission_slug",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     async def test_check_organization_membership_unauthorized(
         self, async_workos, httpx_mock

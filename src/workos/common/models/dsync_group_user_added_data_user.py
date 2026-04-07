@@ -46,19 +46,19 @@ class DsyncGroupUserAddedDataUser:
     emails: Optional[List["DsyncGroupUserAddedDataUserEmail"]] = None
     """A list of email addresses for the user.
 
-    .. deprecated::"""
+    .. deprecated:: This field is deprecated."""
     job_title: Optional[str] = None
     """The job title of the user.
 
-    .. deprecated::"""
+    .. deprecated:: This field is deprecated."""
     username: Optional[str] = None
     """The username of the user.
 
-    .. deprecated::"""
+    .. deprecated:: This field is deprecated."""
     raw_attributes: Optional[Dict[str, Any]] = None
     """The raw attributes received from the directory provider.
 
-    .. deprecated::"""
+    .. deprecated:: This field is deprecated."""
     role: Optional["DsyncGroupUserAddedDataUserRole"] = None
     """The primary role assigned to the user."""
     roles: Optional[List["DsyncGroupUserAddedDataUserRole"]] = None

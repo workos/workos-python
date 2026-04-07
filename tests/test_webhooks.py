@@ -84,6 +84,14 @@ class TestWebhooks:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/webhook_endpoints/test_id")
 
+    def test_list_webhook_endpoints_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.webhooks.list_webhook_endpoints(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_list_webhook_endpoints_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -129,29 +137,25 @@ class TestWebhooks:
         finally:
             workos.close()
 
-    def test_create_webhook_endpoints_bad_request(self, httpx_mock):
+    def test_list_webhook_endpoints_bad_request(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.webhooks.create_webhook_endpoints(
-                    endpoint_url="test_endpoint_url", events=[]
-                )
+                workos.webhooks.list_webhook_endpoints()
         finally:
             workos.close()
 
-    def test_create_webhook_endpoints_unprocessable(self, httpx_mock):
+    def test_list_webhook_endpoints_unprocessable(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.webhooks.create_webhook_endpoints(
-                    endpoint_url="test_endpoint_url", events=[]
-                )
+                workos.webhooks.list_webhook_endpoints()
         finally:
             workos.close()
 
@@ -216,6 +220,16 @@ class TestAsyncWebhooks:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/webhook_endpoints/test_id")
 
+    async def test_list_webhook_endpoints_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.webhooks.list_webhook_endpoints(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     async def test_list_webhook_endpoints_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -258,28 +272,24 @@ class TestAsyncWebhooks:
         finally:
             await workos.close()
 
-    async def test_create_webhook_endpoints_bad_request(self, httpx_mock):
+    async def test_list_webhook_endpoints_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.webhooks.create_webhook_endpoints(
-                    endpoint_url="test_endpoint_url", events=[]
-                )
+                await workos.webhooks.list_webhook_endpoints()
         finally:
             await workos.close()
 
-    async def test_create_webhook_endpoints_unprocessable(self, httpx_mock):
+    async def test_list_webhook_endpoints_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.webhooks.create_webhook_endpoints(
-                    endpoint_url="test_endpoint_url", events=[]
-                )
+                await workos.webhooks.list_webhook_endpoints()
         finally:
             await workos.close()

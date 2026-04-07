@@ -129,18 +129,22 @@ class WorkOSClient(_SyncBase):
 
     @functools.cached_property
     def passwordless(self) -> Passwordless:
+        """Passwordless authentication sessions."""
         return Passwordless(self)
 
     @functools.cached_property
     def vault(self) -> Vault:
+        """Vault encryption, key management, and secret storage."""
         return Vault(self)
 
     @functools.cached_property
     def actions(self) -> Actions:
+        """Actions logging and audit trail."""
         return Actions()
 
     @functools.cached_property
     def pkce(self) -> PKCE:
+        """PKCE (Proof Key for Code Exchange) utilities."""
         return PKCE()
 
 
@@ -239,16 +243,20 @@ class AsyncWorkOSClient(_AsyncBase):
 
     @functools.cached_property
     def passwordless(self) -> AsyncPasswordless:
+        """Passwordless authentication sessions."""
         return AsyncPasswordless(self)
 
     @functools.cached_property
     def vault(self) -> AsyncVault:
+        """Vault encryption, key management, and secret storage."""
         return AsyncVault(self)
 
     @functools.cached_property
     def actions(self) -> AsyncActions:
+        """Actions logging and audit trail."""
         return AsyncActions()
 
     @functools.cached_property
     def pkce(self) -> PKCE:
+        """PKCE (Proof Key for Code Exchange) utilities."""
         return PKCE()

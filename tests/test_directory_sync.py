@@ -16,9 +16,11 @@ from workos.directory_sync.models import (
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
+    BadRequestError,
     NotFoundError,
     RateLimitExceededError,
     ServerError,
+    UnprocessableEntityError,
 )
 
 
@@ -165,6 +167,14 @@ class TestDirectorySync:
         assert request.method == "GET"
         assert request.url.path.endswith("/directory_users/test_id")
 
+    def test_list_directories_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.directory_sync.list_directories(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_list_directories_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -206,6 +216,28 @@ class TestDirectorySync:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
+                workos.directory_sync.list_directories()
+        finally:
+            workos.close()
+
+    def test_list_directories_bad_request(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                workos.directory_sync.list_directories()
+        finally:
+            workos.close()
+
+    def test_list_directories_unprocessable(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
                 workos.directory_sync.list_directories()
         finally:
             workos.close()
@@ -351,6 +383,16 @@ class TestAsyncDirectorySync:
         assert request.method == "GET"
         assert request.url.path.endswith("/directory_users/test_id")
 
+    async def test_list_directories_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.directory_sync.list_directories(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     async def test_list_directories_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -389,6 +431,28 @@ class TestAsyncDirectorySync:
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
+                await workos.directory_sync.list_directories()
+        finally:
+            await workos.close()
+
+    async def test_list_directories_bad_request(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
+            with pytest.raises(BadRequestError):
+                await workos.directory_sync.list_directories()
+        finally:
+            await workos.close()
+
+    async def test_list_directories_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
+            with pytest.raises(UnprocessableEntityError):
                 await workos.directory_sync.list_directories()
         finally:
             await workos.close()

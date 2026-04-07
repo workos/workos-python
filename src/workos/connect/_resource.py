@@ -103,10 +103,10 @@ class Connect:
         List all Connect Applications in the current environment with optional filtering.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: Filter Connect Applications by organization ID.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -174,23 +174,21 @@ class Connect:
     def create_oauth_application(
         self,
         *,
-        name: Optional[str] = None,
-        is_first_party: Optional[str] = None,
+        name: str,
+        is_first_party: bool,
         description: Optional[str] = None,
-        scopes: Optional[str] = None,
-        redirect_uris: Optional[str] = None,
-        uses_pkce: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
+        redirect_uris: Optional[List[RedirectUriInput]] = None,
+        uses_pkce: Optional[bool] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectApplication:
         """Create oauth application."""
         body: Dict[str, Any] = {
             "application_type": "oauth",
+            "name": name,
+            "is_first_party": is_first_party,
         }
-        if name is not None:
-            body["name"] = name
-        if is_first_party is not None:
-            body["is_first_party"] = is_first_party
         if description is not None:
             body["description"] = description
         if scopes is not None:
@@ -213,20 +211,18 @@ class Connect:
     def create_m2m_application(
         self,
         *,
-        name: Optional[str] = None,
-        organization_id: Optional[str] = None,
+        name: str,
+        organization_id: str,
         description: Optional[str] = None,
-        scopes: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectApplication:
         """Create m2m application."""
         body: Dict[str, Any] = {
             "application_type": "m2m",
+            "name": name,
+            "organization_id": organization_id,
         }
-        if name is not None:
-            body["name"] = name
-        if organization_id is not None:
-            body["organization_id"] = organization_id
         if description is not None:
             body["description"] = description
         if scopes is not None:
@@ -521,10 +517,10 @@ class AsyncConnect:
         List all Connect Applications in the current environment with optional filtering.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: Filter Connect Applications by organization ID.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -592,23 +588,21 @@ class AsyncConnect:
     async def create_oauth_application(
         self,
         *,
-        name: Optional[str] = None,
-        is_first_party: Optional[str] = None,
+        name: str,
+        is_first_party: bool,
         description: Optional[str] = None,
-        scopes: Optional[str] = None,
-        redirect_uris: Optional[str] = None,
-        uses_pkce: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
+        redirect_uris: Optional[List[RedirectUriInput]] = None,
+        uses_pkce: Optional[bool] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectApplication:
         """Create oauth application."""
         body: Dict[str, Any] = {
             "application_type": "oauth",
+            "name": name,
+            "is_first_party": is_first_party,
         }
-        if name is not None:
-            body["name"] = name
-        if is_first_party is not None:
-            body["is_first_party"] = is_first_party
         if description is not None:
             body["description"] = description
         if scopes is not None:
@@ -631,20 +625,18 @@ class AsyncConnect:
     async def create_m2m_application(
         self,
         *,
-        name: Optional[str] = None,
-        organization_id: Optional[str] = None,
+        name: str,
+        organization_id: str,
         description: Optional[str] = None,
-        scopes: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> ConnectApplication:
         """Create m2m application."""
         body: Dict[str, Any] = {
             "application_type": "m2m",
+            "name": name,
+            "organization_id": organization_id,
         }
-        if name is not None:
-            body["name"] = name
-        if organization_id is not None:
-            body["organization_id"] = organization_id
         if description is not None:
             body["description"] = description
         if scopes is not None:

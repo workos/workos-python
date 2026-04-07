@@ -153,7 +153,9 @@ class TestConnect:
 
     def test_create_oauth_application(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
-        result = workos.connect.create_oauth_application()
+        result = workos.connect.create_oauth_application(
+            name="test_name", is_first_party=True
+        )
         assert isinstance(result, ConnectApplication)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -162,12 +164,26 @@ class TestConnect:
 
     def test_create_m2m_application(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
-        result = workos.connect.create_m2m_application()
+        result = workos.connect.create_m2m_application(
+            name="test_name", organization_id="test_organization_id"
+        )
         assert isinstance(result, ConnectApplication)
         request = httpx_mock.get_request()
         assert request.method == "POST"
         body = json.loads(request.content)
         assert body["application_type"] == "m2m"
+
+    def test_complete_oauth2_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("external_auth_complete_response.json")
+        )
+        workos.connect.complete_oauth2(
+            external_auth_id="test_external_auth_id",
+            user=UserObject.from_dict(load_fixture("user_object.json")),
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     def test_complete_oauth2_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -375,7 +391,9 @@ class TestAsyncConnect:
 
     async def test_create_oauth_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
-        result = await async_workos.connect.create_oauth_application()
+        result = await async_workos.connect.create_oauth_application(
+            name="test_name", is_first_party=True
+        )
         assert isinstance(result, ConnectApplication)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -384,12 +402,26 @@ class TestAsyncConnect:
 
     async def test_create_m2m_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
-        result = await async_workos.connect.create_m2m_application()
+        result = await async_workos.connect.create_m2m_application(
+            name="test_name", organization_id="test_organization_id"
+        )
         assert isinstance(result, ConnectApplication)
         request = httpx_mock.get_request()
         assert request.method == "POST"
         body = json.loads(request.content)
         assert body["application_type"] == "m2m"
+
+    async def test_complete_oauth2_with_request_options(self, async_workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("external_auth_complete_response.json")
+        )
+        await async_workos.connect.complete_oauth2(
+            external_auth_id="test_external_auth_id",
+            user=UserObject.from_dict(load_fixture("user_object.json")),
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     async def test_complete_oauth2_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})

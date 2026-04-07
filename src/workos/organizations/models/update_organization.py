@@ -21,7 +21,7 @@ class UpdateOrganization:
     domains: Optional[List[str]] = None
     """The domains associated with the organization. Deprecated in favor of `domain_data`.
 
-    .. deprecated::"""
+    .. deprecated:: This field is deprecated."""
     domain_data: Optional[List["OrganizationDomainData"]] = None
     """The domains associated with the organization, including verification state."""
     stripe_customer_id: Optional[str] = None

@@ -391,9 +391,7 @@ class UserManagement:
         prompt: Optional[str] = None,
         state: Optional[str] = None,
         organization_id: Optional[str] = None,
-        response_type: Literal["code"],
         redirect_uri: str,
-        client_id: str,
         request_options: Optional[RequestOptions] = None,
     ) -> str:
         """Get an authorization URL
@@ -408,15 +406,13 @@ class UserManagement:
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider.
             provider_scopes: Additional OAuth scopes to request from the identity provider.
             invitation_token: A token representing a user invitation to redeem during authentication.
-            screen_hint: Used to specify which screen to display when the provider is `authkit`.
+            screen_hint: Used to specify which screen to display when the provider is `authkit`. Defaults to `sign-in`.
             login_hint: A hint to the authorization server about the login identifier the user might use.
             provider: The OAuth provider to authenticate with (e.g., GoogleOAuth, MicrosoftOAuth, GitHubOAuth).
             prompt: Controls the authentication flow behavior for the user.
             state: An opaque value used to maintain state between the request and the callback.
             organization_id: The ID of the organization to authenticate the user against.
-            response_type: The response type of the application.
             redirect_uri: The callback URI where the authorization code will be sent after authentication.
-            client_id: The unique identifier of the WorkOS environment client.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -435,7 +431,9 @@ class UserManagement:
                 "domain_hint": domain_hint,
                 "connection_id": connection_id,
                 "provider_query_params": provider_query_params,
-                "provider_scopes": provider_scopes,
+                "provider_scopes": ",".join(str(v) for v in provider_scopes)
+                if provider_scopes is not None
+                else None,
                 "invitation_token": invitation_token,
                 "screen_hint": enum_value(screen_hint)
                 if screen_hint is not None
@@ -445,12 +443,13 @@ class UserManagement:
                 "prompt": prompt,
                 "state": state,
                 "organization_id": organization_id,
-                "response_type": response_type,
                 "redirect_uri": redirect_uri,
-                "client_id": client_id,
             }.items()
             if v is not None
         }
+        params["response_type"] = "code"
+        if self._client.client_id is not None:
+            params["client_id"] = self._client.client_id
         return self._client.build_url("user_management/authorize", params)
 
     def create_device(
@@ -748,10 +747,10 @@ class UserManagement:
         Get a list of all of your existing users matching the criteria specified.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization: (deprecated) Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
             organization_id: Filter users by the organization they are a member of.
             email: Filter users by their email address.
@@ -1204,10 +1203,10 @@ class UserManagement:
 
         Args:
             id: The ID of the user.
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1254,10 +1253,10 @@ class UserManagement:
         Get a list of all of invitations matching the criteria specified.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
             email: The email address of the recipient.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1634,10 +1633,10 @@ class UserManagement:
         Get a list of all organization memberships matching the criteria specified. At least one of `user_id` or `organization_id` must be provided. By default only active memberships are returned. Use the `statuses` parameter to filter by other statuses.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
             statuses: Filter by the status of the organization membership. Array including any of `active`, `inactive`, or `pending`.
             user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
@@ -1662,7 +1661,9 @@ class UserManagement:
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
-                "statuses": statuses,
+                "statuses": ",".join(str(v) for v in statuses)
+                if statuses is not None
+                else None,
                 "user_id": user_id,
             }.items()
             if v is not None
@@ -1953,10 +1954,10 @@ class UserManagement:
 
         Args:
             user_id: The ID of the user.
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2023,7 +2024,15 @@ class UserManagement:
         session_data: str,
         cookie_password: str,
     ) -> "Session":
-        """Create a Session object from sealed session data."""
+        """Create a Session object from sealed session data.
+
+        Args:
+            session_data: The sealed session cookie value.
+            cookie_password: The password used to seal the session cookie.
+
+        Returns:
+            Session: A session object that can authenticate or refresh the session.
+        """
         from ..session import Session
 
         return Session(
@@ -2041,7 +2050,16 @@ class UserManagement:
         "AuthenticateWithSessionCookieSuccessResponse",
         "AuthenticateWithSessionCookieErrorResponse",
     ]:
-        """One-shot authenticate a sealed session cookie."""
+        """One-shot authenticate a sealed session cookie.
+
+        Args:
+            session_data: The sealed session cookie value.
+            cookie_password: The password used to seal the session cookie.
+
+        Returns:
+            AuthenticateWithSessionCookieSuccessResponse if the session is valid,
+            AuthenticateWithSessionCookieErrorResponse otherwise.
+        """
         from ..session import Session
 
         session = Session(
@@ -2071,6 +2089,20 @@ class UserManagement:
     ) -> Dict[str, str]:
         """Generate an AuthKit authorization URL with auto-generated PKCE parameters.
 
+        Args:
+            redirect_uri: The URI to redirect to after authorization.
+            client_id: The WorkOS client ID. Defaults to the client's configured ID.
+            provider: An SSO provider to directly initiate authentication with.
+            connection_id: The ID of a specific SSO connection to authenticate with.
+            organization_id: The ID of the organization to authenticate into.
+            domain_hint: A domain hint for SSO provider discovery.
+            login_hint: A login hint (e.g., email) for the identity provider.
+            screen_hint: Whether to show 'sign-in' or 'sign-up' screen.
+            prompt: The OIDC prompt parameter.
+            provider_scopes: Additional OAuth scopes to request from the provider.
+            provider_query_params: Additional query parameters for the provider.
+            invitation_token: A token to accept an organization invitation during auth.
+
         Returns:
             Dict with keys 'url', 'state', and 'code_verifier'.
         """
@@ -2080,12 +2112,8 @@ class UserManagement:
         pair = pkce.generate()
         state = pkce.generate_code_verifier(43)
 
-        resolved_client_id = client_id or self._client._require_client_id()
-
         url = self.get_authorization_url(
-            response_type="code",
             redirect_uri=redirect_uri,
-            client_id=resolved_client_id,
             code_challenge=pair.code_challenge,
             code_challenge_method="S256",
             state=state,
@@ -2110,7 +2138,17 @@ class UserManagement:
         client_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
-        """Exchange an authorization code using a PKCE code_verifier."""
+        """Exchange an authorization code using a PKCE code_verifier.
+
+        Args:
+            code: The authorization code received from the redirect.
+            code_verifier: The PKCE code verifier generated alongside the code challenge.
+            client_id: The WorkOS client ID. Defaults to the client's configured ID.
+            request_options: Per-request options for headers, timeout, retries, or base URL.
+
+        Returns:
+            AuthenticateResponse: The authentication result with user and tokens.
+        """
         resolved_client_id = client_id or (self._client.client_id or "")
         body: Dict[str, Any] = {
             "grant_type": "authorization_code",
@@ -2438,7 +2476,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def get_authorization_url(
+    def get_authorization_url(
         self,
         *,
         code_challenge_method: Optional[Literal["S256"]] = None,
@@ -2456,9 +2494,7 @@ class AsyncUserManagement:
         prompt: Optional[str] = None,
         state: Optional[str] = None,
         organization_id: Optional[str] = None,
-        response_type: Literal["code"],
         redirect_uri: str,
-        client_id: str,
         request_options: Optional[RequestOptions] = None,
     ) -> str:
         """Get an authorization URL
@@ -2473,15 +2509,13 @@ class AsyncUserManagement:
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider.
             provider_scopes: Additional OAuth scopes to request from the identity provider.
             invitation_token: A token representing a user invitation to redeem during authentication.
-            screen_hint: Used to specify which screen to display when the provider is `authkit`.
+            screen_hint: Used to specify which screen to display when the provider is `authkit`. Defaults to `sign-in`.
             login_hint: A hint to the authorization server about the login identifier the user might use.
             provider: The OAuth provider to authenticate with (e.g., GoogleOAuth, MicrosoftOAuth, GitHubOAuth).
             prompt: Controls the authentication flow behavior for the user.
             state: An opaque value used to maintain state between the request and the callback.
             organization_id: The ID of the organization to authenticate the user against.
-            response_type: The response type of the application.
             redirect_uri: The callback URI where the authorization code will be sent after authentication.
-            client_id: The unique identifier of the WorkOS environment client.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2500,7 +2534,9 @@ class AsyncUserManagement:
                 "domain_hint": domain_hint,
                 "connection_id": connection_id,
                 "provider_query_params": provider_query_params,
-                "provider_scopes": provider_scopes,
+                "provider_scopes": ",".join(str(v) for v in provider_scopes)
+                if provider_scopes is not None
+                else None,
                 "invitation_token": invitation_token,
                 "screen_hint": enum_value(screen_hint)
                 if screen_hint is not None
@@ -2510,12 +2546,13 @@ class AsyncUserManagement:
                 "prompt": prompt,
                 "state": state,
                 "organization_id": organization_id,
-                "response_type": response_type,
                 "redirect_uri": redirect_uri,
-                "client_id": client_id,
             }.items()
             if v is not None
         }
+        params["response_type"] = "code"
+        if self._client.client_id is not None:
+            params["client_id"] = self._client.client_id
         return self._client.build_url("user_management/authorize", params)
 
     async def create_device(
@@ -2553,7 +2590,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def get_logout_url(
+    def get_logout_url(
         self,
         *,
         session_id: str,
@@ -2813,10 +2850,10 @@ class AsyncUserManagement:
         Get a list of all of your existing users matching the criteria specified.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization: (deprecated) Filter users by the organization they are a member of. Deprecated in favor of `organization_id`.
             organization_id: Filter users by the organization they are a member of.
             email: Filter users by their email address.
@@ -3269,10 +3306,10 @@ class AsyncUserManagement:
 
         Args:
             id: The ID of the user.
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3319,10 +3356,10 @@ class AsyncUserManagement:
         Get a list of all of invitations matching the criteria specified.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) that the recipient will join.
             email: The email address of the recipient.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -3699,10 +3736,10 @@ class AsyncUserManagement:
         Get a list of all organization memberships matching the criteria specified. At least one of `user_id` or `organization_id` must be provided. By default only active memberships are returned. Use the `statuses` parameter to filter by other statuses.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
             statuses: Filter by the status of the organization membership. Array including any of `active`, `inactive`, or `pending`.
             user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
@@ -3727,7 +3764,9 @@ class AsyncUserManagement:
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
-                "statuses": statuses,
+                "statuses": ",".join(str(v) for v in statuses)
+                if statuses is not None
+                else None,
                 "user_id": user_id,
             }.items()
             if v is not None
@@ -4018,10 +4057,10 @@ class AsyncUserManagement:
 
         Args:
             user_id: The ID of the user.
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4088,7 +4127,15 @@ class AsyncUserManagement:
         session_data: str,
         cookie_password: str,
     ) -> "AsyncSession":
-        """Create an AsyncSession object from sealed session data."""
+        """Create an AsyncSession object from sealed session data.
+
+        Args:
+            session_data: The sealed session cookie value.
+            cookie_password: The password used to seal the session cookie.
+
+        Returns:
+            AsyncSession: An async session object that can authenticate or refresh the session.
+        """
         from ..session import AsyncSession
 
         return AsyncSession(
@@ -4106,7 +4153,16 @@ class AsyncUserManagement:
         "AuthenticateWithSessionCookieSuccessResponse",
         "AuthenticateWithSessionCookieErrorResponse",
     ]:
-        """One-shot authenticate a sealed session cookie."""
+        """One-shot authenticate a sealed session cookie.
+
+        Args:
+            session_data: The sealed session cookie value.
+            cookie_password: The password used to seal the session cookie.
+
+        Returns:
+            AuthenticateWithSessionCookieSuccessResponse if the session is valid,
+            AuthenticateWithSessionCookieErrorResponse otherwise.
+        """
         from ..session import AsyncSession
 
         session = AsyncSession(
@@ -4136,6 +4192,20 @@ class AsyncUserManagement:
     ) -> Dict[str, str]:
         """Generate an AuthKit authorization URL with auto-generated PKCE parameters.
 
+        Args:
+            redirect_uri: The URI to redirect to after authorization.
+            client_id: The WorkOS client ID. Defaults to the client's configured ID.
+            provider: An SSO provider to directly initiate authentication with.
+            connection_id: The ID of a specific SSO connection to authenticate with.
+            organization_id: The ID of the organization to authenticate into.
+            domain_hint: A domain hint for SSO provider discovery.
+            login_hint: A login hint (e.g., email) for the identity provider.
+            screen_hint: Whether to show 'sign-in' or 'sign-up' screen.
+            prompt: The OIDC prompt parameter.
+            provider_scopes: Additional OAuth scopes to request from the provider.
+            provider_query_params: Additional query parameters for the provider.
+            invitation_token: A token to accept an organization invitation during auth.
+
         Returns:
             Dict with keys 'url', 'state', and 'code_verifier'.
         """
@@ -4145,12 +4215,8 @@ class AsyncUserManagement:
         pair = pkce.generate()
         state = pkce.generate_code_verifier(43)
 
-        resolved_client_id = client_id or self._client._require_client_id()
-
-        url = await self.get_authorization_url(
-            response_type="code",
+        url = self.get_authorization_url(
             redirect_uri=redirect_uri,
-            client_id=resolved_client_id,
             code_challenge=pair.code_challenge,
             code_challenge_method="S256",
             state=state,
@@ -4175,7 +4241,17 @@ class AsyncUserManagement:
         client_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
-        """Exchange an authorization code using a PKCE code_verifier."""
+        """Exchange an authorization code using a PKCE code_verifier.
+
+        Args:
+            code: The authorization code received from the redirect.
+            code_verifier: The PKCE code verifier generated alongside the code challenge.
+            client_id: The WorkOS client ID. Defaults to the client's configured ID.
+            request_options: Per-request options for headers, timeout, retries, or base URL.
+
+        Returns:
+            AuthenticateResponse: The authentication result with user and tokens.
+        """
         resolved_client_id = client_id or (self._client.client_id or "")
         body: Dict[str, Any] = {
             "grant_type": "authorization_code",

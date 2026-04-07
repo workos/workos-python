@@ -173,6 +173,14 @@ class TestFeatureFlags:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    def test_list_feature_flags_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.feature_flags.list_feature_flags(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_list_feature_flags_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -218,25 +226,25 @@ class TestFeatureFlags:
         finally:
             workos.close()
 
-    def test_disable_feature_flag_bad_request(self, httpx_mock):
+    def test_list_feature_flags_bad_request(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.feature_flags.disable_feature_flag("test_slug")
+                workos.feature_flags.list_feature_flags()
         finally:
             workos.close()
 
-    def test_disable_feature_flag_unprocessable(self, httpx_mock):
+    def test_list_feature_flags_unprocessable(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.feature_flags.disable_feature_flag("test_slug")
+                workos.feature_flags.list_feature_flags()
         finally:
             workos.close()
 
@@ -388,6 +396,16 @@ class TestAsyncFeatureFlags:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
+    async def test_list_feature_flags_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.feature_flags.list_feature_flags(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     async def test_list_feature_flags_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -430,24 +448,24 @@ class TestAsyncFeatureFlags:
         finally:
             await workos.close()
 
-    async def test_disable_feature_flag_bad_request(self, httpx_mock):
+    async def test_list_feature_flags_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.feature_flags.disable_feature_flag("test_slug")
+                await workos.feature_flags.list_feature_flags()
         finally:
             await workos.close()
 
-    async def test_disable_feature_flag_unprocessable(self, httpx_mock):
+    async def test_list_feature_flags_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.feature_flags.disable_feature_flag("test_slug")
+                await workos.feature_flags.list_feature_flags()
         finally:
             await workos.close()

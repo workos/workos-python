@@ -152,7 +152,7 @@ class Radar:
         }
         return self._client.request(
             method="post",
-            path=f"radar/lists/{type}/{action}",
+            path=f"radar/lists/{enum_value(type)}/{enum_value(action)}",
             body=body,
             model=RadarListEntryAlreadyPresentResponse,
             request_options=request_options,
@@ -188,7 +188,7 @@ class Radar:
         }
         self._client.request(
             method="delete",
-            path=f"radar/lists/{type}/{action}",
+            path=f"radar/lists/{enum_value(type)}/{enum_value(action)}",
             body=body,
             request_options=request_options,
         )
@@ -328,7 +328,7 @@ class AsyncRadar:
         }
         return await self._client.request(
             method="post",
-            path=f"radar/lists/{type}/{action}",
+            path=f"radar/lists/{enum_value(type)}/{enum_value(action)}",
             body=body,
             model=RadarListEntryAlreadyPresentResponse,
             request_options=request_options,
@@ -364,7 +364,7 @@ class AsyncRadar:
         }
         await self._client.request(
             method="delete",
-            path=f"radar/lists/{type}/{action}",
+            path=f"radar/lists/{enum_value(type)}/{enum_value(action)}",
             body=body,
             request_options=request_options,
         )

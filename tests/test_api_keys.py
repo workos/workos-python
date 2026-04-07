@@ -88,6 +88,14 @@ class TestApiKeys:
         body = json.loads(request.content)
         assert body["name"] == "test_name"
 
+    def test_create_validations_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("api_key_validation_response.json"))
+        workos.api_keys.create_validations(
+            value="test_value", request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_create_validations_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -220,6 +228,16 @@ class TestAsyncApiKeys:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/organizations/test_organizationId/api_keys")
+
+    async def test_create_validations_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("api_key_validation_response.json"))
+        await async_workos.api_keys.create_validations(
+            value="test_value", request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     async def test_create_validations_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})

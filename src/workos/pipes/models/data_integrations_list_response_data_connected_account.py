@@ -37,7 +37,7 @@ class DataIntegrationsListResponseDataConnectedAccount:
     userland_user_id: Optional[str] = None
     """Use `user_id` instead.
 
-    .. deprecated::"""
+    .. deprecated:: This field is deprecated."""
 
     @classmethod
     def from_dict(

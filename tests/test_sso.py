@@ -83,11 +83,7 @@ class TestSSO:
         assert request.url.path.endswith("/connections/test_id")
 
     def test_get_authorization_url(self, workos):
-        result = workos.sso.get_authorization_url(
-            client_id="test_client_id",
-            redirect_uri="test_redirect_uri",
-            response_type="code",
-        )
+        result = workos.sso.get_authorization_url(redirect_uri="test_redirect_uri")
         assert isinstance(result, str)
         assert result.startswith("http")
 
@@ -150,6 +146,14 @@ class TestSSO:
         assert body["code"] == "test_code"
         assert body["grant_type"] == "authorization_code"
 
+    def test_list_connections_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.sso.list_connections(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_list_connections_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -195,25 +199,25 @@ class TestSSO:
         finally:
             workos.close()
 
-    def test_authorize_logout_bad_request(self, httpx_mock):
+    def test_list_connections_bad_request(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.sso.authorize_logout(profile_id="test_profile_id")
+                workos.sso.list_connections()
         finally:
             workos.close()
 
-    def test_authorize_logout_unprocessable(self, httpx_mock):
+    def test_list_connections_unprocessable(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.sso.authorize_logout(profile_id="test_profile_id")
+                workos.sso.list_connections()
         finally:
             workos.close()
 
@@ -274,17 +278,15 @@ class TestAsyncSSO:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/connections/test_id")
 
-    async def test_get_authorization_url(self, async_workos):
-        result = await async_workos.sso.get_authorization_url(
-            client_id="test_client_id",
-            redirect_uri="test_redirect_uri",
-            response_type="code",
+    def test_get_authorization_url(self, async_workos):
+        result = async_workos.sso.get_authorization_url(
+            redirect_uri="test_redirect_uri"
         )
         assert isinstance(result, str)
         assert result.startswith("http")
 
-    async def test_get_logout_url(self, async_workos):
-        result = await async_workos.sso.get_logout_url(token="test_token")
+    def test_get_logout_url(self, async_workos):
+        result = async_workos.sso.get_logout_url(token="test_token")
         assert isinstance(result, str)
         assert result.startswith("http")
 
@@ -329,6 +331,16 @@ class TestAsyncSSO:
         assert request.method == "POST"
         assert request.url.path.endswith("/sso/token")
 
+    async def test_list_connections_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.sso.list_connections(
+            request_options={"extra_headers": {"X-Custom": "value"}}
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     async def test_list_connections_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
@@ -371,24 +383,24 @@ class TestAsyncSSO:
         finally:
             await workos.close()
 
-    async def test_authorize_logout_bad_request(self, httpx_mock):
+    async def test_list_connections_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.sso.authorize_logout(profile_id="test_profile_id")
+                await workos.sso.list_connections()
         finally:
             await workos.close()
 
-    async def test_authorize_logout_unprocessable(self, httpx_mock):
+    async def test_list_connections_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.sso.authorize_logout(profile_id="test_profile_id")
+                await workos.sso.list_connections()
         finally:
             await workos.close()

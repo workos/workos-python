@@ -81,6 +81,19 @@ class TestRadar:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/radar/lists/test_type/test_action")
 
+    def test_create_attempts_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("radar_standalone_response.json"))
+        workos.radar.create_attempts(
+            ip_address="test_ip_address",
+            user_agent="test_user_agent",
+            email="test_email",
+            auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
+            action=RadarStandaloneAssessRequestAction("login"),
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_create_attempts_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -232,6 +245,19 @@ class TestAsyncRadar:
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
         assert request.url.path.endswith("/radar/lists/test_type/test_action")
+
+    async def test_create_attempts_with_request_options(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("radar_standalone_response.json"))
+        await async_workos.radar.create_attempts(
+            ip_address="test_ip_address",
+            user_agent="test_user_agent",
+            email="test_email",
+            auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
+            action=RadarStandaloneAssessRequestAction("login"),
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     async def test_create_attempts_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})

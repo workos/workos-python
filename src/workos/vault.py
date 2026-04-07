@@ -34,8 +34,12 @@ KeyContext = Dict[str, str]
 
 @dataclass(slots=True)
 class DataKey:
+    """A plaintext data key used for local encryption operations."""
+
     id: str
+    """The unique identifier for this data key."""
     key: str
+    """The base64-encoded plaintext key material."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DataKey":
@@ -47,9 +51,14 @@ class DataKey:
 
 @dataclass(slots=True)
 class DataKeyPair:
+    """A data key pair containing both the plaintext key and its encrypted form."""
+
     context: KeyContext
+    """The key context used to generate this key pair."""
     data_key: DataKey
+    """The plaintext data key for local encryption."""
     encrypted_keys: str
+    """The encrypted form of the data key, for storage alongside ciphertext."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DataKeyPair":
@@ -69,16 +78,26 @@ class DataKeyPair:
 
 @dataclass(slots=True)
 class DecodedKeys:
+    """Decoded components of an encrypted payload."""
+
     iv: bytes
+    """The initialization vector for AES-GCM decryption."""
     tag: bytes
-    keys: str  # Base64-encoded string
+    """The authentication tag for AES-GCM verification."""
+    keys: str
+    """Base64-encoded encrypted key material."""
     ciphertext: bytes
+    """The encrypted data."""
 
 
 @dataclass(slots=True)
 class ObjectUpdateBy:
+    """The user or system that last updated a Vault object."""
+
     id: str
+    """The unique identifier of the updater."""
     name: str
+    """The display name of the updater."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ObjectUpdateBy":
@@ -90,13 +109,22 @@ class ObjectUpdateBy:
 
 @dataclass(slots=True)
 class ObjectMetadata:
+    """Metadata for a Vault encrypted object, returned after create or update."""
+
     context: KeyContext
+    """The key context associated with this object."""
     environment_id: str
+    """The WorkOS environment ID."""
     id: str
+    """The unique identifier of the Vault object."""
     key_id: str
+    """The encryption key ID used for this object."""
     updated_at: str
+    """ISO 8601 timestamp of the last update."""
     updated_by: ObjectUpdateBy
+    """The user or system that last updated this object."""
     version_id: str
+    """The version identifier for this object revision."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ObjectMetadata":
@@ -124,10 +152,16 @@ class ObjectMetadata:
 
 @dataclass(slots=True)
 class VaultObject:
+    """A Vault encrypted object with its metadata and optionally decrypted value."""
+
     id: str
+    """The unique identifier of the Vault object."""
     metadata: ObjectMetadata
+    """The object's metadata including key context and version info."""
     name: str
+    """The name of the Vault object."""
     value: Optional[str] = None
+    """The decrypted value, present only when explicitly requested."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "VaultObject":
@@ -151,9 +185,14 @@ class VaultObject:
 
 @dataclass(slots=True)
 class ObjectDigest:
+    """A summary of a Vault object returned in list operations."""
+
     id: str
+    """The unique identifier of the Vault object."""
     name: str
+    """The name of the Vault object."""
     updated_at: str
+    """ISO 8601 timestamp of the last update."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ObjectDigest":
@@ -165,9 +204,14 @@ class ObjectDigest:
 
 @dataclass(slots=True)
 class ObjectVersion:
+    """A version entry for a Vault object."""
+
     created_at: str
+    """ISO 8601 timestamp when this version was created."""
     current_version: bool
+    """Whether this is the current (latest) version."""
     id: str
+    """The unique identifier of this version."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ObjectVersion":
@@ -469,6 +513,7 @@ class AsyncVault:
         self._client = client
 
     async def read_object(self, *, object_id: str) -> VaultObject:
+        """Get a Vault object with the value decrypted."""
         response = await self._client.request(
             method="get",
             path=f"vault/v1/kv/{object_id}",
@@ -477,6 +522,7 @@ class AsyncVault:
         return response
 
     async def read_object_by_name(self, *, name: str) -> VaultObject:
+        """Get a Vault object by name with the value decrypted."""
         response = await self._client.request(
             method="get",
             path=f"vault/v1/kv/name/{name}",
@@ -485,6 +531,7 @@ class AsyncVault:
         return response
 
     async def get_object_metadata(self, *, object_id: str) -> VaultObject:
+        """Get a Vault object's metadata without decrypting the value."""
         response = await self._client.request(
             method="get",
             path=f"vault/v1/kv/{object_id}/metadata",
@@ -499,6 +546,7 @@ class AsyncVault:
         before: Optional[str] = None,
         after: Optional[str] = None,
     ) -> Dict[str, Any]:
+        """Gets a list of encrypted Vault objects."""
         params: Dict[str, Any] = {"limit": limit}
         if before is not None:
             params["before"] = before
@@ -512,6 +560,7 @@ class AsyncVault:
         return response
 
     async def list_object_versions(self, *, object_id: str) -> Sequence[ObjectVersion]:
+        """Gets a list of versions for a specific Vault object."""
         response = await self._client.request_raw(
             method="get",
             path=f"vault/v1/kv/{object_id}/versions",
@@ -526,6 +575,7 @@ class AsyncVault:
         value: str,
         key_context: KeyContext,
     ) -> ObjectMetadata:
+        """Create a new Vault encrypted object."""
         response = await self._client.request(
             method="post",
             path="vault/v1/kv",
@@ -541,6 +591,7 @@ class AsyncVault:
         value: str,
         version_check: Optional[str] = None,
     ) -> VaultObject:
+        """Update an existing Vault object."""
         body: Dict[str, Any] = {"value": value}
         if version_check is not None:
             body["version_check"] = version_check
@@ -553,12 +604,14 @@ class AsyncVault:
         return response
 
     async def delete_object(self, *, object_id: str) -> None:
+        """Permanently delete a Vault encrypted object."""
         await self._client.request(
             method="delete",
             path=f"vault/v1/kv/{object_id}",
         )
 
     async def create_data_key(self, *, key_context: KeyContext) -> DataKeyPair:
+        """Generate a data key for local encryption."""
         response = await self._client.request_raw(
             method="post",
             path="vault/v1/keys/data-key",
@@ -571,6 +624,7 @@ class AsyncVault:
         )
 
     async def decrypt_data_key(self, *, keys: str) -> DataKey:
+        """Decrypt encrypted data keys previously generated by create_data_key."""
         response = await self._client.request_raw(
             method="post",
             path="vault/v1/keys/decrypt",
@@ -585,6 +639,7 @@ class AsyncVault:
         key_context: KeyContext,
         associated_data: Optional[str] = None,
     ) -> str:
+        """Encrypt data locally using AES-GCM with a data key derived from the context."""
         key_pair = await self.create_data_key(key_context=key_context)
 
         key = base64.b64decode(key_pair.data_key.key)
@@ -606,6 +661,7 @@ class AsyncVault:
     async def decrypt(
         self, *, encrypted_data: str, associated_data: Optional[str] = None
     ) -> str:
+        """Decrypt data that was previously encrypted using the encrypt method."""
         decoded = _decode_encrypted_payload(encrypted_data)
         data_key = await self.decrypt_data_key(keys=decoded.keys)
 

@@ -37,10 +37,10 @@ class Events:
         List events for the current environment.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             events: Filter events by one or more event types (e.g. `dsync.user.created`).
             range_start: ISO-8601 date string to filter events created after this date.
             range_end: ISO-8601 date string to filter events created before this date.
@@ -64,7 +64,9 @@ class Events:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
-                "events": events,
+                "events": ",".join(str(v) for v in events)
+                if events is not None
+                else None,
                 "range_start": range_start,
                 "range_end": range_end,
                 "organization_id": organization_id,
@@ -104,10 +106,10 @@ class AsyncEvents:
         List events for the current environment.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             events: Filter events by one or more event types (e.g. `dsync.user.created`).
             range_start: ISO-8601 date string to filter events created after this date.
             range_end: ISO-8601 date string to filter events created before this date.
@@ -131,7 +133,9 @@ class AsyncEvents:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
-                "events": events,
+                "events": ",".join(str(v) for v in events)
+                if events is not None
+                else None,
                 "range_start": range_start,
                 "range_end": range_end,
                 "organization_id": organization_id,

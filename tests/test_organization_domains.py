@@ -70,6 +70,16 @@ class TestOrganizationDomains:
         assert request.method == "POST"
         assert request.url.path.endswith("/organization_domains/test_id/verify")
 
+    def test_create_organization_domains_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("organization_domain.json"))
+        workos.organization_domains.create_organization_domains(
+            domain="test_domain",
+            organization_id="test_organization_id",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_create_organization_domains_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -201,6 +211,18 @@ class TestAsyncOrganizationDomains:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/organization_domains/test_id/verify")
+
+    async def test_create_organization_domains_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("organization_domain.json"))
+        await async_workos.organization_domains.create_organization_domains(
+            domain="test_domain",
+            organization_id="test_organization_id",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     async def test_create_organization_domains_unauthorized(
         self, async_workos, httpx_mock

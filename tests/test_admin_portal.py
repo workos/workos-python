@@ -34,6 +34,15 @@ class TestAdminPortal:
         body = json.loads(request.content)
         assert body["organization"] == "test_organization"
 
+    def test_generate_link_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("portal_link_response.json"))
+        workos.admin_portal.generate_link(
+            organization="test_organization",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_generate_link_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -117,6 +126,15 @@ class TestAsyncAdminPortal:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/portal/generate_link")
+
+    async def test_generate_link_with_request_options(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("portal_link_response.json"))
+        await async_workos.admin_portal.generate_link(
+            organization="test_organization",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     async def test_generate_link_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})

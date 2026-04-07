@@ -31,6 +31,15 @@ class TestWidgets:
         body = json.loads(request.content)
         assert body["organization_id"] == "test_organization_id"
 
+    def test_create_token_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("widget_session_token_response.json"))
+        workos.widgets.create_token(
+            organization_id="test_organization_id",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_create_token_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -111,6 +120,15 @@ class TestAsyncWidgets:
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/widgets/token")
+
+    async def test_create_token_with_request_options(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("widget_session_token_response.json"))
+        await async_workos.widgets.create_token(
+            organization_id="test_organization_id",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     async def test_create_token_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})

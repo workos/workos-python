@@ -133,6 +133,18 @@ class TestMultiFactorAuth:
         body = json.loads(request.content)
         assert body["type"] == "totp"
 
+    def test_verify_challenge_with_request_options(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("authentication_challenge_verify_response.json")
+        )
+        workos.multi_factor_auth.verify_challenge(
+            "test_id",
+            code="test_code",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
+
     def test_verify_challenge_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
@@ -304,6 +316,20 @@ class TestAsyncMultiFactorAuth:
         assert request.url.path.endswith(
             "/user_management/users/test_userlandUserId/auth_factors"
         )
+
+    async def test_verify_challenge_with_request_options(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("authentication_challenge_verify_response.json")
+        )
+        await async_workos.multi_factor_auth.verify_challenge(
+            "test_id",
+            code="test_code",
+            request_options={"extra_headers": {"X-Custom": "value"}},
+        )
+        request = httpx_mock.get_request()
+        assert request.headers["X-Custom"] == "value"
 
     async def test_verify_challenge_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})

@@ -37,10 +37,10 @@ class SSO:
         Get a list of all of your existing connections matching the criteria specified.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time.
+            order: Order the results by the creation time. Defaults to `desc`.
             connection_type: Filter Connections by their type.
             domain: Filter Connections by their associated domain.
             organization_id: Filter Connections by their associated organization.
@@ -144,11 +144,9 @@ class SSO:
         *,
         provider_scopes: Optional[List[str]] = None,
         provider_query_params: Optional[Dict[str, str]] = None,
-        client_id: str,
         domain: Optional[str] = None,
         provider: Optional[Union[SSOProvider, str]] = None,
         redirect_uri: str,
-        response_type: Literal["code"],
         state: Optional[str] = None,
         connection: Optional[str] = None,
         organization: Optional[str] = None,
@@ -164,12 +162,9 @@ class SSO:
         Args:
             provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
-            client_id: The unique identifier of the WorkOS environment client.
             domain: (deprecated) Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
             provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
             redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
-            response_type: The only valid option for the response type parameter is `"code"`.
-                The `"code"` parameter value initiates an [authorization code grant type](https://tools.ietf.org/html/rfc6749#section-4.1). This grant type allows you to exchange an authorization code for an access token during the redirect that takes place after a user has authenticated with an identity provider.
             state: An optional parameter that can be used to encode arbitrary information to help restore application state between redirects. If included, the redirect URI received from WorkOS will contain the exact `state` that was passed.
             connection: Used to initiate SSO for a connection. The value should be a WorkOS connection ID.
                 You can persist the WorkOS connection ID with application user or team identifiers. WorkOS will use the connection indicated by the connection parameter to direct the user to the corresponding IdP for authentication.
@@ -191,13 +186,13 @@ class SSO:
         params = {
             k: v
             for k, v in {
-                "provider_scopes": provider_scopes,
+                "provider_scopes": ",".join(str(v) for v in provider_scopes)
+                if provider_scopes is not None
+                else None,
                 "provider_query_params": provider_query_params,
-                "client_id": client_id,
                 "domain": domain,
                 "provider": enum_value(provider) if provider is not None else None,
                 "redirect_uri": redirect_uri,
-                "response_type": response_type,
                 "state": state,
                 "connection": connection,
                 "organization": organization,
@@ -207,6 +202,9 @@ class SSO:
             }.items()
             if v is not None
         }
+        params["response_type"] = "code"
+        if self._client.client_id is not None:
+            params["client_id"] = self._client.client_id
         return self._client.build_url("sso/authorize", params)
 
     def get_logout_url(
@@ -460,10 +458,10 @@ class AsyncSSO:
         Get a list of all of your existing connections matching the criteria specified.
 
         Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time.
+            order: Order the results by the creation time. Defaults to `desc`.
             connection_type: Filter Connections by their type.
             domain: Filter Connections by their associated domain.
             organization_id: Filter Connections by their associated organization.
@@ -562,16 +560,14 @@ class AsyncSSO:
             request_options=request_options,
         )
 
-    async def get_authorization_url(
+    def get_authorization_url(
         self,
         *,
         provider_scopes: Optional[List[str]] = None,
         provider_query_params: Optional[Dict[str, str]] = None,
-        client_id: str,
         domain: Optional[str] = None,
         provider: Optional[Union[SSOProvider, str]] = None,
         redirect_uri: str,
-        response_type: Literal["code"],
         state: Optional[str] = None,
         connection: Optional[str] = None,
         organization: Optional[str] = None,
@@ -587,12 +583,9 @@ class AsyncSSO:
         Args:
             provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
-            client_id: The unique identifier of the WorkOS environment client.
             domain: (deprecated) Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
             provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
             redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
-            response_type: The only valid option for the response type parameter is `"code"`.
-                The `"code"` parameter value initiates an [authorization code grant type](https://tools.ietf.org/html/rfc6749#section-4.1). This grant type allows you to exchange an authorization code for an access token during the redirect that takes place after a user has authenticated with an identity provider.
             state: An optional parameter that can be used to encode arbitrary information to help restore application state between redirects. If included, the redirect URI received from WorkOS will contain the exact `state` that was passed.
             connection: Used to initiate SSO for a connection. The value should be a WorkOS connection ID.
                 You can persist the WorkOS connection ID with application user or team identifiers. WorkOS will use the connection indicated by the connection parameter to direct the user to the corresponding IdP for authentication.
@@ -614,13 +607,13 @@ class AsyncSSO:
         params = {
             k: v
             for k, v in {
-                "provider_scopes": provider_scopes,
+                "provider_scopes": ",".join(str(v) for v in provider_scopes)
+                if provider_scopes is not None
+                else None,
                 "provider_query_params": provider_query_params,
-                "client_id": client_id,
                 "domain": domain,
                 "provider": enum_value(provider) if provider is not None else None,
                 "redirect_uri": redirect_uri,
-                "response_type": response_type,
                 "state": state,
                 "connection": connection,
                 "organization": organization,
@@ -630,9 +623,12 @@ class AsyncSSO:
             }.items()
             if v is not None
         }
+        params["response_type"] = "code"
+        if self._client.client_id is not None:
+            params["client_id"] = self._client.client_id
         return self._client.build_url("sso/authorize", params)
 
-    async def get_logout_url(
+    def get_logout_url(
         self,
         *,
         token: str,

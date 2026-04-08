@@ -5,9 +5,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
+
+from workos.authorization.models.slim_role import SlimRole
 from .organization_membership_created_data_status import (
     OrganizationMembershipCreatedDataStatus,
 )
@@ -27,7 +30,7 @@ class OrganizationMembershipCreatedData:
     """The ID of the organization."""
     status: "OrganizationMembershipCreatedDataStatus"
     """The status of the organization membership."""
-    role: Dict[str, Any]
+    role: "SlimRole"
     """The role associated with the membership."""
     custom_attributes: Dict[str, Any]
     """Custom attributes associated with the membership."""
@@ -37,7 +40,7 @@ class OrganizationMembershipCreatedData:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    roles: Optional[List[Dict[str, Any]]] = None
+    roles: Optional[List["SlimRole"]] = None
     """The roles associated with the membership."""
 
     @classmethod
@@ -50,12 +53,17 @@ class OrganizationMembershipCreatedData:
                 user_id=data["user_id"],
                 organization_id=data["organization_id"],
                 status=OrganizationMembershipCreatedDataStatus(data["status"]),
-                role=data["role"],
+                role=SlimRole.from_dict(cast(Dict[str, Any], data["role"])),
                 custom_attributes=data["custom_attributes"],
                 directory_managed=data["directory_managed"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                roles=data.get("roles"),
+                roles=[
+                    SlimRole.from_dict(cast(Dict[str, Any], item))
+                    for item in cast(list[Any], _v)
+                ]
+                if (_v := data.get("roles")) is not None
+                else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationMembershipCreatedData", e)
@@ -70,11 +78,11 @@ class OrganizationMembershipCreatedData:
         result["status"] = (
             self.status.value if isinstance(self.status, Enum) else self.status
         )
-        result["role"] = self.role
+        result["role"] = self.role.to_dict()
         result["custom_attributes"] = self.custom_attributes
         result["directory_managed"] = self.directory_managed
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
         if self.roles is not None:
-            result["roles"] = self.roles
+            result["roles"] = [item.to_dict() for item in self.roles]
         return result

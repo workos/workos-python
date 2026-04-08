@@ -34,8 +34,6 @@ from workos.authorization.models import (
     AuthorizationCheck,
     AuthorizationPermission,
     AuthorizationResource,
-    ListData,
-    ListModel,
     Permission,
     Role,
     RoleAssignment,
@@ -46,231 +44,105 @@ from workos.authorization.models import (
 )
 from workos.common.models import (
     ActionAuthenticationDenied,
-    ActionAuthenticationDeniedContext,
-    ActionAuthenticationDeniedContextActor,
-    ActionAuthenticationDeniedContextGoogleAnalyticsSession,
     ActionAuthenticationDeniedData,
     ActionUserRegistrationDenied,
-    ActionUserRegistrationDeniedContext,
-    ActionUserRegistrationDeniedContextActor,
-    ActionUserRegistrationDeniedContextGoogleAnalyticsSession,
     ActionUserRegistrationDeniedData,
     ApiKeyCreated,
-    ApiKeyCreatedContext,
-    ApiKeyCreatedContextActor,
-    ApiKeyCreatedContextGoogleAnalyticsSession,
     ApiKeyCreatedData,
     ApiKeyCreatedDataOwner,
     ApiKeyRevoked,
-    ApiKeyRevokedContext,
-    ApiKeyRevokedContextActor,
-    ApiKeyRevokedContextGoogleAnalyticsSession,
     ApiKeyRevokedData,
     ApiKeyRevokedDataOwner,
     AuthenticationEmailVerificationFailed,
-    AuthenticationEmailVerificationFailedContext,
-    AuthenticationEmailVerificationFailedContextActor,
-    AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession,
     AuthenticationEmailVerificationFailedData,
     AuthenticationEmailVerificationFailedDataError,
     AuthenticationEmailVerificationSucceeded,
-    AuthenticationEmailVerificationSucceededContext,
-    AuthenticationEmailVerificationSucceededContextActor,
-    AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession,
     AuthenticationEmailVerificationSucceededData,
     AuthenticationMFAFailed,
-    AuthenticationMFAFailedContext,
-    AuthenticationMFAFailedContextActor,
-    AuthenticationMFAFailedContextGoogleAnalyticsSession,
     AuthenticationMFAFailedData,
     AuthenticationMFAFailedDataError,
     AuthenticationMFASucceeded,
-    AuthenticationMFASucceededContext,
-    AuthenticationMFASucceededContextActor,
-    AuthenticationMFASucceededContextGoogleAnalyticsSession,
     AuthenticationMFASucceededData,
     AuthenticationMagicAuthFailed,
-    AuthenticationMagicAuthFailedContext,
-    AuthenticationMagicAuthFailedContextActor,
-    AuthenticationMagicAuthFailedContextGoogleAnalyticsSession,
     AuthenticationMagicAuthFailedData,
     AuthenticationMagicAuthFailedDataError,
     AuthenticationMagicAuthSucceeded,
-    AuthenticationMagicAuthSucceededContext,
-    AuthenticationMagicAuthSucceededContextActor,
-    AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession,
     AuthenticationMagicAuthSucceededData,
     AuthenticationOAuthFailed,
-    AuthenticationOAuthFailedContext,
-    AuthenticationOAuthFailedContextActor,
-    AuthenticationOAuthFailedContextGoogleAnalyticsSession,
     AuthenticationOAuthFailedData,
     AuthenticationOAuthFailedDataError,
     AuthenticationOAuthSucceeded,
-    AuthenticationOAuthSucceededContext,
-    AuthenticationOAuthSucceededContextActor,
-    AuthenticationOAuthSucceededContextGoogleAnalyticsSession,
     AuthenticationOAuthSucceededData,
     AuthenticationPasskeyFailed,
-    AuthenticationPasskeyFailedContext,
-    AuthenticationPasskeyFailedContextActor,
-    AuthenticationPasskeyFailedContextGoogleAnalyticsSession,
     AuthenticationPasskeyFailedData,
     AuthenticationPasskeyFailedDataError,
     AuthenticationPasskeySucceeded,
-    AuthenticationPasskeySucceededContext,
-    AuthenticationPasskeySucceededContextActor,
-    AuthenticationPasskeySucceededContextGoogleAnalyticsSession,
     AuthenticationPasskeySucceededData,
     AuthenticationPasswordFailed,
-    AuthenticationPasswordFailedContext,
-    AuthenticationPasswordFailedContextActor,
-    AuthenticationPasswordFailedContextGoogleAnalyticsSession,
     AuthenticationPasswordFailedData,
     AuthenticationPasswordFailedDataError,
     AuthenticationPasswordSucceeded,
-    AuthenticationPasswordSucceededContext,
-    AuthenticationPasswordSucceededContextActor,
-    AuthenticationPasswordSucceededContextGoogleAnalyticsSession,
     AuthenticationPasswordSucceededData,
     AuthenticationRadarRiskDetected,
-    AuthenticationRadarRiskDetectedContext,
-    AuthenticationRadarRiskDetectedContextActor,
-    AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession,
     AuthenticationRadarRiskDetectedData,
     AuthenticationSSOFailed,
-    AuthenticationSSOFailedContext,
-    AuthenticationSSOFailedContextActor,
-    AuthenticationSSOFailedContextGoogleAnalyticsSession,
     AuthenticationSSOFailedData,
     AuthenticationSSOFailedDataError,
     AuthenticationSSOFailedDataSSO,
     AuthenticationSSOStarted,
-    AuthenticationSSOStartedContext,
-    AuthenticationSSOStartedContextActor,
-    AuthenticationSSOStartedContextGoogleAnalyticsSession,
     AuthenticationSSOStartedData,
     AuthenticationSSOStartedDataSSO,
     AuthenticationSSOSucceeded,
-    AuthenticationSSOSucceededContext,
-    AuthenticationSSOSucceededContextActor,
-    AuthenticationSSOSucceededContextGoogleAnalyticsSession,
     AuthenticationSSOSucceededData,
     AuthenticationSSOSucceededDataSSO,
     AuthenticationSSOTimedOut,
-    AuthenticationSSOTimedOutContext,
-    AuthenticationSSOTimedOutContextActor,
-    AuthenticationSSOTimedOutContextGoogleAnalyticsSession,
     AuthenticationSSOTimedOutData,
     AuthenticationSSOTimedOutDataError,
     AuthenticationSSOTimedOutDataSSO,
     ConnectionActivated,
-    ConnectionActivatedContext,
-    ConnectionActivatedContextActor,
-    ConnectionActivatedContextGoogleAnalyticsSession,
     ConnectionActivatedData,
     ConnectionActivatedDataDomain,
     ConnectionDeactivated,
-    ConnectionDeactivatedContext,
-    ConnectionDeactivatedContextActor,
-    ConnectionDeactivatedContextGoogleAnalyticsSession,
     ConnectionDeactivatedData,
     ConnectionDeactivatedDataDomain,
     ConnectionDeleted,
-    ConnectionDeletedContext,
-    ConnectionDeletedContextActor,
-    ConnectionDeletedContextGoogleAnalyticsSession,
     ConnectionDeletedData,
     ConnectionSAMLCertificateRenewalRequired,
-    ConnectionSAMLCertificateRenewalRequiredContext,
-    ConnectionSAMLCertificateRenewalRequiredContextActor,
-    ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession,
     ConnectionSAMLCertificateRenewalRequiredData,
     ConnectionSAMLCertificateRenewalRequiredDataCertificate,
     ConnectionSAMLCertificateRenewalRequiredDataConnection,
     ConnectionSAMLCertificateRenewed,
-    ConnectionSAMLCertificateRenewedContext,
-    ConnectionSAMLCertificateRenewedContextActor,
-    ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession,
     ConnectionSAMLCertificateRenewedData,
     ConnectionSAMLCertificateRenewedDataCertificate,
     ConnectionSAMLCertificateRenewedDataConnection,
+    DirectoryUser,
+    DirectoryUserEmail,
     DsyncActivated,
-    DsyncActivatedContext,
-    DsyncActivatedContextActor,
-    DsyncActivatedContextGoogleAnalyticsSession,
     DsyncActivatedData,
     DsyncActivatedDataDomain,
     DsyncDeactivated,
-    DsyncDeactivatedContext,
-    DsyncDeactivatedContextActor,
-    DsyncDeactivatedContextGoogleAnalyticsSession,
     DsyncDeactivatedData,
     DsyncDeactivatedDataDomain,
     DsyncDeleted,
-    DsyncDeletedContext,
-    DsyncDeletedContextActor,
-    DsyncDeletedContextGoogleAnalyticsSession,
     DsyncDeletedData,
     DsyncGroupCreated,
-    DsyncGroupCreatedContext,
-    DsyncGroupCreatedContextActor,
-    DsyncGroupCreatedContextGoogleAnalyticsSession,
-    DsyncGroupCreatedData,
     DsyncGroupDeleted,
-    DsyncGroupDeletedContext,
-    DsyncGroupDeletedContextActor,
-    DsyncGroupDeletedContextGoogleAnalyticsSession,
-    DsyncGroupDeletedData,
     DsyncGroupUpdated,
-    DsyncGroupUpdatedContext,
-    DsyncGroupUpdatedContextActor,
-    DsyncGroupUpdatedContextGoogleAnalyticsSession,
     DsyncGroupUpdatedData,
     DsyncGroupUserAdded,
-    DsyncGroupUserAddedContext,
-    DsyncGroupUserAddedContextActor,
-    DsyncGroupUserAddedContextGoogleAnalyticsSession,
     DsyncGroupUserAddedData,
-    DsyncGroupUserAddedDataGroup,
-    DsyncGroupUserAddedDataUser,
-    DsyncGroupUserAddedDataUserEmail,
-    DsyncGroupUserAddedDataUserRole,
     DsyncGroupUserRemoved,
-    DsyncGroupUserRemovedContext,
-    DsyncGroupUserRemovedContextActor,
-    DsyncGroupUserRemovedContextGoogleAnalyticsSession,
     DsyncGroupUserRemovedData,
-    DsyncGroupUserRemovedDataGroup,
-    DsyncGroupUserRemovedDataUser,
-    DsyncGroupUserRemovedDataUserEmail,
-    DsyncGroupUserRemovedDataUserRole,
     DsyncUserCreated,
-    DsyncUserCreatedContext,
-    DsyncUserCreatedContextActor,
-    DsyncUserCreatedContextGoogleAnalyticsSession,
-    DsyncUserCreatedData,
-    DsyncUserCreatedDataEmail,
-    DsyncUserCreatedDataRole,
     DsyncUserDeleted,
-    DsyncUserDeletedContext,
-    DsyncUserDeletedContextActor,
-    DsyncUserDeletedContextGoogleAnalyticsSession,
-    DsyncUserDeletedData,
-    DsyncUserDeletedDataEmail,
-    DsyncUserDeletedDataRole,
     DsyncUserUpdated,
-    DsyncUserUpdatedContext,
-    DsyncUserUpdatedContextActor,
-    DsyncUserUpdatedContextGoogleAnalyticsSession,
     DsyncUserUpdatedData,
     DsyncUserUpdatedDataEmail,
-    DsyncUserUpdatedDataRole,
     EmailVerificationCreated,
-    EmailVerificationCreatedContext,
-    EmailVerificationCreatedContextActor,
-    EmailVerificationCreatedContextGoogleAnalyticsSession,
     EmailVerificationCreatedData,
+    EventContext,
+    EventContextActor,
+    EventContextGoogleAnalyticsSession,
     FlagCreated,
     FlagCreatedContext,
     FlagCreatedContextActor,
@@ -303,220 +175,91 @@ from workos.common.models import (
     FlagUpdatedData,
     FlagUpdatedDataOwner,
     InvitationAccepted,
-    InvitationAcceptedContext,
-    InvitationAcceptedContextActor,
-    InvitationAcceptedContextGoogleAnalyticsSession,
     InvitationAcceptedData,
     InvitationCreated,
-    InvitationCreatedContext,
-    InvitationCreatedContextActor,
-    InvitationCreatedContextGoogleAnalyticsSession,
     InvitationCreatedData,
     InvitationResent,
-    InvitationResentContext,
-    InvitationResentContextActor,
-    InvitationResentContextGoogleAnalyticsSession,
     InvitationResentData,
     InvitationRevoked,
-    InvitationRevokedContext,
-    InvitationRevokedContextActor,
-    InvitationRevokedContextGoogleAnalyticsSession,
     InvitationRevokedData,
     MagicAuthCreated,
-    MagicAuthCreatedContext,
-    MagicAuthCreatedContextActor,
-    MagicAuthCreatedContextGoogleAnalyticsSession,
     MagicAuthCreatedData,
     OrganizationCreated,
-    OrganizationCreatedContext,
-    OrganizationCreatedContextActor,
-    OrganizationCreatedContextGoogleAnalyticsSession,
     OrganizationCreatedData,
     OrganizationCreatedDataDomain,
     OrganizationDeleted,
-    OrganizationDeletedContext,
-    OrganizationDeletedContextActor,
-    OrganizationDeletedContextGoogleAnalyticsSession,
     OrganizationDeletedData,
     OrganizationDeletedDataDomain,
     OrganizationDomainCreated,
-    OrganizationDomainCreatedContext,
-    OrganizationDomainCreatedContextActor,
-    OrganizationDomainCreatedContextGoogleAnalyticsSession,
     OrganizationDomainCreatedData,
     OrganizationDomainDeleted,
-    OrganizationDomainDeletedContext,
-    OrganizationDomainDeletedContextActor,
-    OrganizationDomainDeletedContextGoogleAnalyticsSession,
     OrganizationDomainDeletedData,
     OrganizationDomainUpdated,
-    OrganizationDomainUpdatedContext,
-    OrganizationDomainUpdatedContextActor,
-    OrganizationDomainUpdatedContextGoogleAnalyticsSession,
     OrganizationDomainUpdatedData,
     OrganizationDomainVerificationFailed,
-    OrganizationDomainVerificationFailedContext,
-    OrganizationDomainVerificationFailedContextActor,
-    OrganizationDomainVerificationFailedContextGoogleAnalyticsSession,
     OrganizationDomainVerificationFailedData,
     OrganizationDomainVerificationFailedDataOrganizationDomain,
     OrganizationDomainVerified,
-    OrganizationDomainVerifiedContext,
-    OrganizationDomainVerifiedContextActor,
-    OrganizationDomainVerifiedContextGoogleAnalyticsSession,
     OrganizationDomainVerifiedData,
     OrganizationMembershipCreated,
-    OrganizationMembershipCreatedContext,
-    OrganizationMembershipCreatedContextActor,
-    OrganizationMembershipCreatedContextGoogleAnalyticsSession,
     OrganizationMembershipCreatedData,
     OrganizationMembershipDeleted,
-    OrganizationMembershipDeletedContext,
-    OrganizationMembershipDeletedContextActor,
-    OrganizationMembershipDeletedContextGoogleAnalyticsSession,
     OrganizationMembershipDeletedData,
     OrganizationMembershipUpdated,
-    OrganizationMembershipUpdatedContext,
-    OrganizationMembershipUpdatedContextActor,
-    OrganizationMembershipUpdatedContextGoogleAnalyticsSession,
     OrganizationMembershipUpdatedData,
     OrganizationRoleCreated,
-    OrganizationRoleCreatedContext,
-    OrganizationRoleCreatedContextActor,
-    OrganizationRoleCreatedContextGoogleAnalyticsSession,
     OrganizationRoleCreatedData,
     OrganizationRoleDeleted,
-    OrganizationRoleDeletedContext,
-    OrganizationRoleDeletedContextActor,
-    OrganizationRoleDeletedContextGoogleAnalyticsSession,
     OrganizationRoleDeletedData,
     OrganizationRoleUpdated,
-    OrganizationRoleUpdatedContext,
-    OrganizationRoleUpdatedContextActor,
-    OrganizationRoleUpdatedContextGoogleAnalyticsSession,
     OrganizationRoleUpdatedData,
     OrganizationUpdated,
-    OrganizationUpdatedContext,
-    OrganizationUpdatedContextActor,
-    OrganizationUpdatedContextGoogleAnalyticsSession,
     OrganizationUpdatedData,
     OrganizationUpdatedDataDomain,
     PasswordResetCreated,
-    PasswordResetCreatedContext,
-    PasswordResetCreatedContextActor,
-    PasswordResetCreatedContextGoogleAnalyticsSession,
     PasswordResetCreatedData,
     PasswordResetSucceeded,
-    PasswordResetSucceededContext,
-    PasswordResetSucceededContextActor,
-    PasswordResetSucceededContextGoogleAnalyticsSession,
     PasswordResetSucceededData,
     PermissionCreated,
-    PermissionCreatedContext,
-    PermissionCreatedContextActor,
-    PermissionCreatedContextGoogleAnalyticsSession,
     PermissionCreatedData,
     PermissionDeleted,
-    PermissionDeletedContext,
-    PermissionDeletedContextActor,
-    PermissionDeletedContextGoogleAnalyticsSession,
     PermissionDeletedData,
     PermissionUpdated,
-    PermissionUpdatedContext,
-    PermissionUpdatedContextActor,
-    PermissionUpdatedContextGoogleAnalyticsSession,
     PermissionUpdatedData,
     RoleCreated,
-    RoleCreatedContext,
-    RoleCreatedContextActor,
-    RoleCreatedContextGoogleAnalyticsSession,
     RoleCreatedData,
     RoleDeleted,
-    RoleDeletedContext,
-    RoleDeletedContextActor,
-    RoleDeletedContextGoogleAnalyticsSession,
     RoleDeletedData,
     RoleUpdated,
-    RoleUpdatedContext,
-    RoleUpdatedContextActor,
-    RoleUpdatedContextGoogleAnalyticsSession,
     RoleUpdatedData,
     SessionCreated,
-    SessionCreatedContext,
-    SessionCreatedContextActor,
-    SessionCreatedContextGoogleAnalyticsSession,
     SessionCreatedData,
     SessionCreatedDataImpersonator,
     SessionRevoked,
-    SessionRevokedContext,
-    SessionRevokedContextActor,
-    SessionRevokedContextGoogleAnalyticsSession,
     SessionRevokedData,
     SessionRevokedDataImpersonator,
     UserCreated,
-    UserCreatedContext,
-    UserCreatedContextActor,
-    UserCreatedContextGoogleAnalyticsSession,
-    UserCreatedData,
     UserDeleted,
-    UserDeletedContext,
-    UserDeletedContextActor,
-    UserDeletedContextGoogleAnalyticsSession,
-    UserDeletedData,
     UserUpdated,
-    UserUpdatedContext,
-    UserUpdatedContextActor,
-    UserUpdatedContextGoogleAnalyticsSession,
-    UserUpdatedData,
     VaultByokKeyVerificationCompleted,
-    VaultByokKeyVerificationCompletedContext,
-    VaultByokKeyVerificationCompletedContextActor,
-    VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession,
     VaultByokKeyVerificationCompletedData,
     VaultDataCreated,
-    VaultDataCreatedContext,
-    VaultDataCreatedContextActor,
-    VaultDataCreatedContextGoogleAnalyticsSession,
     VaultDataCreatedData,
     VaultDataDeleted,
-    VaultDataDeletedContext,
-    VaultDataDeletedContextActor,
-    VaultDataDeletedContextGoogleAnalyticsSession,
     VaultDataDeletedData,
     VaultDataRead,
-    VaultDataReadContext,
-    VaultDataReadContextActor,
-    VaultDataReadContextGoogleAnalyticsSession,
     VaultDataReadData,
     VaultDataUpdated,
-    VaultDataUpdatedContext,
-    VaultDataUpdatedContextActor,
-    VaultDataUpdatedContextGoogleAnalyticsSession,
     VaultDataUpdatedData,
     VaultDekDecrypted,
-    VaultDekDecryptedContext,
-    VaultDekDecryptedContextActor,
-    VaultDekDecryptedContextGoogleAnalyticsSession,
     VaultDekDecryptedData,
     VaultDekRead,
-    VaultDekReadContext,
-    VaultDekReadContextActor,
-    VaultDekReadContextGoogleAnalyticsSession,
     VaultDekReadData,
     VaultKekCreated,
-    VaultKekCreatedContext,
-    VaultKekCreatedContextActor,
-    VaultKekCreatedContextGoogleAnalyticsSession,
     VaultKekCreatedData,
     VaultMetadataRead,
-    VaultMetadataReadContext,
-    VaultMetadataReadContextActor,
-    VaultMetadataReadContextGoogleAnalyticsSession,
     VaultMetadataReadData,
     VaultNamesListed,
-    VaultNamesListedContext,
-    VaultNamesListedContextActor,
-    VaultNamesListedContextGoogleAnalyticsSession,
     VaultNamesListedData,
 )
 from workos.connect.models import (
@@ -1563,7 +1306,7 @@ class TestModelRoundTrip:
             "name": "Admin",
             "description": None,
             "type": "EnvironmentRole",
-            "resource_type_slug": "default",
+            "resource_type_slug": "organization",
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -1589,7 +1332,7 @@ class TestModelRoundTrip:
             "name": "Admin",
             "description": None,
             "type": "EnvironmentRole",
-            "resource_type_slug": "default",
+            "resource_type_slug": "organization",
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -1606,13 +1349,44 @@ class TestModelRoundTrip:
             "name": "Admin",
             "description": "Can manage all resources",
             "type": "unexpected_role_type",
-            "resource_type_slug": "default",
+            "resource_type_slug": "organization",
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = Role.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_role_list_round_trip(self):
+        data = load_fixture("role_list.json")
+        instance = RoleList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = RoleList.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_role_list_minimal_payload(self):
+        data = {
+            "object": "list",
+            "data": [
+                {
+                    "slug": "admin",
+                    "object": "role",
+                    "id": "role_01EHQMYV6MBK39QC5PZXHY59C3",
+                    "name": "Admin",
+                    "description": "Can manage all resources",
+                    "type": "EnvironmentRole",
+                    "resource_type_slug": "organization",
+                    "permissions": ["posts:read", "posts:write"],
+                    "created_at": "2026-01-15T12:00:00.000Z",
+                    "updated_at": "2026-01-15T12:00:00.000Z",
+                }
+            ],
+        }
+        instance = RoleList.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["data"] == data["data"]
 
     def test_authorization_permission_round_trip(self):
         data = load_fixture("authorization_permission.json")
@@ -1661,37 +1435,6 @@ class TestModelRoundTrip:
         instance = AuthorizationPermission.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
-
-    def test_role_list_round_trip(self):
-        data = load_fixture("role_list.json")
-        instance = RoleList.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = RoleList.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_role_list_minimal_payload(self):
-        data = {
-            "object": "list",
-            "data": [
-                {
-                    "slug": "admin",
-                    "object": "role",
-                    "id": "role_01EHQMYV6MBK39QC5PZXHY59C3",
-                    "name": "Admin",
-                    "description": "Can manage all resources",
-                    "type": "EnvironmentRole",
-                    "resource_type_slug": "default",
-                    "permissions": ["posts:read", "posts:write"],
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-        }
-        instance = RoleList.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["data"] == data["data"]
 
     def test_connection_round_trip(self):
         data = load_fixture("connection.json")
@@ -2102,6 +1845,278 @@ class TestModelRoundTrip:
         instance = DirectoryUserWithGroups.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_event_context_actor_round_trip(self):
+        data = load_fixture("event_context_actor.json")
+        instance = EventContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EventContextActor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_event_context_actor_minimal_payload(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = EventContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["source"] == data["source"]
+        assert serialized["name"] == data["name"]
+
+    def test_event_context_actor_preserves_nullable_fields(self):
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
+        instance = EventContextActor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] is None
+
+    def test_event_context_actor_round_trips_unknown_enum_values(self):
+        data = {
+            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "source": "unexpected_event_context_actor_source",
+            "name": "Jane Doe",
+        }
+        instance = EventContextActor.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_event_context_round_trip(self):
+        data = load_fixture("event_context.json")
+        instance = EventContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EventContext.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_event_context_minimal_payload(self):
+        data = {}
+        instance = EventContext.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_event_context_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = EventContext.from_dict(data)
+        serialized = instance.to_dict()
+        assert "google_analytics_client_id" not in serialized
+        assert "google_analytics_sessions" not in serialized
+        assert "ajs_anonymous_id" not in serialized
+        assert "client_id" not in serialized
+        assert "actor" not in serialized
+        assert "previous_attributes" not in serialized
+
+    def test_directory_user_round_trip(self):
+        data = load_fixture("directory_user.json")
+        instance = DirectoryUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryUser.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_user_minimal_payload(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DirectoryUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["directory_id"] == data["directory_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["idp_id"] == data["idp_id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["raw_attributes"] == data["raw_attributes"]
+        assert serialized["custom_attributes"] == data["custom_attributes"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_directory_user_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DirectoryUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert "emails" not in serialized
+        assert "role" not in serialized
+        assert "roles" not in serialized
+
+    def test_directory_user_preserves_nullable_fields(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": None,
+            "first_name": None,
+            "last_name": None,
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": None,
+            "username": None,
+            "state": "active",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DirectoryUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["email"] is None
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["job_title"] is None
+        assert serialized["username"] is None
+
+    def test_directory_user_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "directory_user",
+            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
+            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
+            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
+            "idp_id": "2836",
+            "email": "marcelina.davis@example.com",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "emails": [
+                {
+                    "primary": True,
+                    "type": "work",
+                    "value": "marcelina.davis@example.com",
+                }
+            ],
+            "job_title": "Software Engineer",
+            "username": "mdavis",
+            "state": "unexpected_directory_user_state",
+            "raw_attributes": {"key": {}},
+            "custom_attributes": {
+                "department": "Engineering",
+                "job_title": "Software Engineer",
+            },
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = DirectoryUser.from_dict(data)
+        assert instance.to_dict() == data
+
+    def test_user_round_trip(self):
+        data = load_fixture("user.json")
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = User.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_user_minimal_payload(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "last_sign_in_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["first_name"] == data["first_name"]
+        assert serialized["last_name"] == data["last_name"]
+        assert serialized["profile_picture_url"] == data["profile_picture_url"]
+        assert serialized["email"] == data["email"]
+        assert serialized["email_verified"] == data["email_verified"]
+        assert serialized["external_id"] == data["external_id"]
+        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_user_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": "Marcelina",
+            "last_name": "Davis",
+            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+            "locale": "en-US",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert "metadata" not in serialized
+
+    def test_user_preserves_nullable_fields(self):
+        data = {
+            "object": "user",
+            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "email": "marcelina.davis@example.com",
+            "email_verified": True,
+            "external_id": None,
+            "metadata": {"timezone": "America/New_York"},
+            "last_sign_in_at": None,
+            "locale": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = User.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["first_name"] is None
+        assert serialized["last_name"] is None
+        assert serialized["profile_picture_url"] is None
+        assert serialized["external_id"] is None
+        assert serialized["last_sign_in_at"] is None
+        assert serialized["locale"] is None
+
     def test_event_schema_round_trip(self):
         data = load_fixture("event_schema.json")
         instance = EventSchema.from_dict(data)
@@ -2282,102 +2297,6 @@ class TestModelRoundTrip:
         assert serialized["ip_address"] is None
         assert serialized["user_agent"] is None
 
-    def test_action_authentication_denied_context_round_trip(self):
-        data = load_fixture("action_authentication_denied_context.json")
-        instance = ActionAuthenticationDeniedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ActionAuthenticationDeniedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_action_authentication_denied_context_minimal_payload(self):
-        data = {}
-        instance = ActionAuthenticationDeniedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_action_authentication_denied_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = ActionAuthenticationDeniedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_action_authentication_denied_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "action_authentication_denied_context_google_analytics_session.json"
-        )
-        instance = ActionAuthenticationDeniedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ActionAuthenticationDeniedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_action_authentication_denied_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ActionAuthenticationDeniedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_action_authentication_denied_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ActionAuthenticationDeniedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_action_authentication_denied_context_actor_round_trip(self):
-        data = load_fixture("action_authentication_denied_context_actor.json")
-        instance = ActionAuthenticationDeniedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ActionAuthenticationDeniedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_action_authentication_denied_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ActionAuthenticationDeniedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_action_authentication_denied_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ActionAuthenticationDeniedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_action_authentication_denied_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_action_authentication_denied_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = ActionAuthenticationDeniedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_action_user_registration_denied_round_trip(self):
         data = load_fixture("action_user_registration_denied.json")
         instance = ActionUserRegistrationDenied.from_dict(data)
@@ -2480,104 +2399,6 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["ip_address"] is None
         assert serialized["user_agent"] is None
-
-    def test_action_user_registration_denied_context_round_trip(self):
-        data = load_fixture("action_user_registration_denied_context.json")
-        instance = ActionUserRegistrationDeniedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ActionUserRegistrationDeniedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_action_user_registration_denied_context_minimal_payload(self):
-        data = {}
-        instance = ActionUserRegistrationDeniedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_action_user_registration_denied_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = ActionUserRegistrationDeniedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_action_user_registration_denied_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "action_user_registration_denied_context_google_analytics_session.json"
-        )
-        instance = ActionUserRegistrationDeniedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ActionUserRegistrationDeniedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_action_user_registration_denied_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ActionUserRegistrationDeniedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_action_user_registration_denied_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ActionUserRegistrationDeniedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_action_user_registration_denied_context_actor_round_trip(self):
-        data = load_fixture("action_user_registration_denied_context_actor.json")
-        instance = ActionUserRegistrationDeniedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ActionUserRegistrationDeniedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_action_user_registration_denied_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ActionUserRegistrationDeniedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_action_user_registration_denied_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ActionUserRegistrationDeniedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_action_user_registration_denied_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_action_user_registration_denied_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = ActionUserRegistrationDeniedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_api_key_created_round_trip(self):
         data = load_fixture("api_key_created.json")
@@ -2704,84 +2525,6 @@ class TestModelRoundTrip:
         assert serialized["type"] == data["type"]
         assert serialized["id"] == data["id"]
 
-    def test_api_key_created_context_round_trip(self):
-        data = load_fixture("api_key_created_context.json")
-        instance = ApiKeyCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ApiKeyCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_api_key_created_context_minimal_payload(self):
-        data = {}
-        instance = ApiKeyCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_api_key_created_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = ApiKeyCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_api_key_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("api_key_created_context_google_analytics_session.json")
-        instance = ApiKeyCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ApiKeyCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_api_key_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ApiKeyCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_api_key_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ApiKeyCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_api_key_created_context_actor_round_trip(self):
-        data = load_fixture("api_key_created_context_actor.json")
-        instance = ApiKeyCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ApiKeyCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_api_key_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ApiKeyCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_api_key_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ApiKeyCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_api_key_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_api_key_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = ApiKeyCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_api_key_revoked_round_trip(self):
         data = load_fixture("api_key_revoked.json")
         instance = ApiKeyRevoked.from_dict(data)
@@ -2906,84 +2649,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
         assert serialized["id"] == data["id"]
-
-    def test_api_key_revoked_context_round_trip(self):
-        data = load_fixture("api_key_revoked_context.json")
-        instance = ApiKeyRevokedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ApiKeyRevokedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_api_key_revoked_context_minimal_payload(self):
-        data = {}
-        instance = ApiKeyRevokedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_api_key_revoked_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = ApiKeyRevokedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_api_key_revoked_context_google_analytics_session_round_trip(self):
-        data = load_fixture("api_key_revoked_context_google_analytics_session.json")
-        instance = ApiKeyRevokedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ApiKeyRevokedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_api_key_revoked_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ApiKeyRevokedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_api_key_revoked_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ApiKeyRevokedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_api_key_revoked_context_actor_round_trip(self):
-        data = load_fixture("api_key_revoked_context_actor.json")
-        instance = ApiKeyRevokedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ApiKeyRevokedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_api_key_revoked_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ApiKeyRevokedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_api_key_revoked_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ApiKeyRevokedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_api_key_revoked_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_api_key_revoked_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = ApiKeyRevokedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_authentication_email_verification_failed_round_trip(self):
         data = load_fixture("authentication_email_verification_failed.json")
@@ -3116,110 +2781,6 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
-    def test_authentication_email_verification_failed_context_round_trip(self):
-        data = load_fixture("authentication_email_verification_failed_context.json")
-        instance = AuthenticationEmailVerificationFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationEmailVerificationFailedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_email_verification_failed_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationEmailVerificationFailedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_email_verification_failed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationEmailVerificationFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_email_verification_failed_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_email_verification_failed_context_google_analytics_session.json"
-        )
-        instance = AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_email_verification_failed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_email_verification_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_email_verification_failed_context_actor_round_trip(self):
-        data = load_fixture(
-            "authentication_email_verification_failed_context_actor.json"
-        )
-        instance = AuthenticationEmailVerificationFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationEmailVerificationFailedContextActor.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_email_verification_failed_context_actor_minimal_payload(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationEmailVerificationFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_email_verification_failed_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationEmailVerificationFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_email_verification_failed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_email_verification_failed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationEmailVerificationFailedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_authentication_email_verification_succeeded_round_trip(self):
         data = load_fixture("authentication_email_verification_succeeded.json")
         instance = AuthenticationEmailVerificationSucceeded.from_dict(data)
@@ -3313,110 +2874,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
         assert serialized["user_agent"] is None
-
-    def test_authentication_email_verification_succeeded_context_round_trip(self):
-        data = load_fixture("authentication_email_verification_succeeded_context.json")
-        instance = AuthenticationEmailVerificationSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationEmailVerificationSucceededContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_email_verification_succeeded_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationEmailVerificationSucceededContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_email_verification_succeeded_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationEmailVerificationSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_email_verification_succeeded_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_email_verification_succeeded_context_google_analytics_session.json"
-        )
-        instance = AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_email_verification_succeeded_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_email_verification_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_email_verification_succeeded_context_actor_round_trip(self):
-        data = load_fixture(
-            "authentication_email_verification_succeeded_context_actor.json"
-        )
-        instance = AuthenticationEmailVerificationSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationEmailVerificationSucceededContextActor.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_email_verification_succeeded_context_actor_minimal_payload(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationEmailVerificationSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_email_verification_succeeded_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationEmailVerificationSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_email_verification_succeeded_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_email_verification_succeeded_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationEmailVerificationSucceededContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_authentication_magic_auth_failed_round_trip(self):
         data = load_fixture("authentication_magic_auth_failed.json")
@@ -3547,104 +3004,6 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
-    def test_authentication_magic_auth_failed_context_round_trip(self):
-        data = load_fixture("authentication_magic_auth_failed_context.json")
-        instance = AuthenticationMagicAuthFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMagicAuthFailedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_magic_auth_failed_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationMagicAuthFailedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_magic_auth_failed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationMagicAuthFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_magic_auth_failed_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_magic_auth_failed_context_google_analytics_session.json"
-        )
-        instance = AuthenticationMagicAuthFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMagicAuthFailedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_magic_auth_failed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationMagicAuthFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_magic_auth_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationMagicAuthFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_magic_auth_failed_context_actor_round_trip(self):
-        data = load_fixture("authentication_magic_auth_failed_context_actor.json")
-        instance = AuthenticationMagicAuthFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMagicAuthFailedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_magic_auth_failed_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationMagicAuthFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_magic_auth_failed_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationMagicAuthFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_magic_auth_failed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_magic_auth_failed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationMagicAuthFailedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_authentication_magic_auth_succeeded_round_trip(self):
         data = load_fixture("authentication_magic_auth_succeeded.json")
         instance = AuthenticationMagicAuthSucceeded.from_dict(data)
@@ -3736,112 +3095,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
         assert serialized["user_agent"] is None
-
-    def test_authentication_magic_auth_succeeded_context_round_trip(self):
-        data = load_fixture("authentication_magic_auth_succeeded_context.json")
-        instance = AuthenticationMagicAuthSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMagicAuthSucceededContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_magic_auth_succeeded_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationMagicAuthSucceededContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_magic_auth_succeeded_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationMagicAuthSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_magic_auth_succeeded_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_magic_auth_succeeded_context_google_analytics_session.json"
-        )
-        instance = (
-            AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = (
-            AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession.from_dict(
-                serialized
-            )
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_magic_auth_succeeded_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_magic_auth_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_magic_auth_succeeded_context_actor_round_trip(self):
-        data = load_fixture("authentication_magic_auth_succeeded_context_actor.json")
-        instance = AuthenticationMagicAuthSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMagicAuthSucceededContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_magic_auth_succeeded_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationMagicAuthSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_magic_auth_succeeded_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationMagicAuthSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_magic_auth_succeeded_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_magic_auth_succeeded_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationMagicAuthSucceededContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_authentication_mfa_failed_round_trip(self):
         data = load_fixture("authentication_mfa_failed.json")
@@ -3970,96 +3223,6 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
-    def test_authentication_mfa_failed_context_round_trip(self):
-        data = load_fixture("authentication_mfa_failed_context.json")
-        instance = AuthenticationMFAFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMFAFailedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_mfa_failed_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationMFAFailedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_mfa_failed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationMFAFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_mfa_failed_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_mfa_failed_context_google_analytics_session.json"
-        )
-        instance = AuthenticationMFAFailedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMFAFailedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_mfa_failed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationMFAFailedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_mfa_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationMFAFailedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_mfa_failed_context_actor_round_trip(self):
-        data = load_fixture("authentication_mfa_failed_context_actor.json")
-        instance = AuthenticationMFAFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMFAFailedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_mfa_failed_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationMFAFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_mfa_failed_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationMFAFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_mfa_failed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_mfa_failed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationMFAFailedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_authentication_mfa_succeeded_round_trip(self):
         data = load_fixture("authentication_mfa_succeeded.json")
         instance = AuthenticationMFASucceeded.from_dict(data)
@@ -4151,102 +3314,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
         assert serialized["user_agent"] is None
-
-    def test_authentication_mfa_succeeded_context_round_trip(self):
-        data = load_fixture("authentication_mfa_succeeded_context.json")
-        instance = AuthenticationMFASucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMFASucceededContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_mfa_succeeded_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationMFASucceededContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_mfa_succeeded_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationMFASucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_mfa_succeeded_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_mfa_succeeded_context_google_analytics_session.json"
-        )
-        instance = AuthenticationMFASucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMFASucceededContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_mfa_succeeded_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationMFASucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_mfa_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationMFASucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_mfa_succeeded_context_actor_round_trip(self):
-        data = load_fixture("authentication_mfa_succeeded_context_actor.json")
-        instance = AuthenticationMFASucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationMFASucceededContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_mfa_succeeded_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationMFASucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_mfa_succeeded_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationMFASucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_mfa_succeeded_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_mfa_succeeded_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationMFASucceededContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_authentication_oauth_failed_round_trip(self):
         data = load_fixture("authentication_oauth_failed.json")
@@ -4377,102 +3444,6 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
-    def test_authentication_oauth_failed_context_round_trip(self):
-        data = load_fixture("authentication_oauth_failed_context.json")
-        instance = AuthenticationOAuthFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationOAuthFailedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_oauth_failed_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationOAuthFailedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_oauth_failed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationOAuthFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_oauth_failed_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_oauth_failed_context_google_analytics_session.json"
-        )
-        instance = AuthenticationOAuthFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationOAuthFailedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_oauth_failed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationOAuthFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_oauth_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationOAuthFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_oauth_failed_context_actor_round_trip(self):
-        data = load_fixture("authentication_oauth_failed_context_actor.json")
-        instance = AuthenticationOAuthFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationOAuthFailedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_oauth_failed_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationOAuthFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_oauth_failed_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationOAuthFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_oauth_failed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_oauth_failed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationOAuthFailedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_authentication_oauth_succeeded_round_trip(self):
         data = load_fixture("authentication_oauth_succeeded.json")
         instance = AuthenticationOAuthSucceeded.from_dict(data)
@@ -4565,104 +3536,6 @@ class TestModelRoundTrip:
         assert serialized["ip_address"] is None
         assert serialized["user_agent"] is None
         assert serialized["user_id"] is None
-
-    def test_authentication_oauth_succeeded_context_round_trip(self):
-        data = load_fixture("authentication_oauth_succeeded_context.json")
-        instance = AuthenticationOAuthSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationOAuthSucceededContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_oauth_succeeded_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationOAuthSucceededContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_oauth_succeeded_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationOAuthSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_oauth_succeeded_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_oauth_succeeded_context_google_analytics_session.json"
-        )
-        instance = AuthenticationOAuthSucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationOAuthSucceededContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_oauth_succeeded_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationOAuthSucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_oauth_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationOAuthSucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_oauth_succeeded_context_actor_round_trip(self):
-        data = load_fixture("authentication_oauth_succeeded_context_actor.json")
-        instance = AuthenticationOAuthSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationOAuthSucceededContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_oauth_succeeded_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationOAuthSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_oauth_succeeded_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationOAuthSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_oauth_succeeded_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_oauth_succeeded_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationOAuthSucceededContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_authentication_passkey_failed_round_trip(self):
         data = load_fixture("authentication_passkey_failed.json")
@@ -4793,104 +3666,6 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
-    def test_authentication_passkey_failed_context_round_trip(self):
-        data = load_fixture("authentication_passkey_failed_context.json")
-        instance = AuthenticationPasskeyFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationPasskeyFailedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_passkey_failed_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationPasskeyFailedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_passkey_failed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationPasskeyFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_passkey_failed_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_passkey_failed_context_google_analytics_session.json"
-        )
-        instance = AuthenticationPasskeyFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationPasskeyFailedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_passkey_failed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationPasskeyFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_passkey_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationPasskeyFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_passkey_failed_context_actor_round_trip(self):
-        data = load_fixture("authentication_passkey_failed_context_actor.json")
-        instance = AuthenticationPasskeyFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationPasskeyFailedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_passkey_failed_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationPasskeyFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_passkey_failed_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationPasskeyFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_passkey_failed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_passkey_failed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationPasskeyFailedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_authentication_passkey_succeeded_round_trip(self):
         data = load_fixture("authentication_passkey_succeeded.json")
         instance = AuthenticationPasskeySucceeded.from_dict(data)
@@ -4982,106 +3757,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
         assert serialized["user_agent"] is None
-
-    def test_authentication_passkey_succeeded_context_round_trip(self):
-        data = load_fixture("authentication_passkey_succeeded_context.json")
-        instance = AuthenticationPasskeySucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationPasskeySucceededContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_passkey_succeeded_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationPasskeySucceededContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_passkey_succeeded_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationPasskeySucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_passkey_succeeded_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_passkey_succeeded_context_google_analytics_session.json"
-        )
-        instance = (
-            AuthenticationPasskeySucceededContextGoogleAnalyticsSession.from_dict(data)
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = (
-            AuthenticationPasskeySucceededContextGoogleAnalyticsSession.from_dict(
-                serialized
-            )
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_passkey_succeeded_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            AuthenticationPasskeySucceededContextGoogleAnalyticsSession.from_dict(data)
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_passkey_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            AuthenticationPasskeySucceededContextGoogleAnalyticsSession.from_dict(data)
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_passkey_succeeded_context_actor_round_trip(self):
-        data = load_fixture("authentication_passkey_succeeded_context_actor.json")
-        instance = AuthenticationPasskeySucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationPasskeySucceededContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_passkey_succeeded_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationPasskeySucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_passkey_succeeded_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationPasskeySucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_passkey_succeeded_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_passkey_succeeded_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationPasskeySucceededContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_authentication_password_failed_round_trip(self):
         data = load_fixture("authentication_password_failed.json")
@@ -5212,104 +3887,6 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
-    def test_authentication_password_failed_context_round_trip(self):
-        data = load_fixture("authentication_password_failed_context.json")
-        instance = AuthenticationPasswordFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationPasswordFailedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_password_failed_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationPasswordFailedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_password_failed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationPasswordFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_password_failed_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_password_failed_context_google_analytics_session.json"
-        )
-        instance = AuthenticationPasswordFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationPasswordFailedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_password_failed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationPasswordFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_password_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationPasswordFailedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_password_failed_context_actor_round_trip(self):
-        data = load_fixture("authentication_password_failed_context_actor.json")
-        instance = AuthenticationPasswordFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationPasswordFailedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_password_failed_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationPasswordFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_password_failed_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationPasswordFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_password_failed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_password_failed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationPasswordFailedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_authentication_password_succeeded_round_trip(self):
         data = load_fixture("authentication_password_succeeded.json")
         instance = AuthenticationPasswordSucceeded.from_dict(data)
@@ -5401,106 +3978,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
         assert serialized["user_agent"] is None
-
-    def test_authentication_password_succeeded_context_round_trip(self):
-        data = load_fixture("authentication_password_succeeded_context.json")
-        instance = AuthenticationPasswordSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationPasswordSucceededContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_password_succeeded_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationPasswordSucceededContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_password_succeeded_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationPasswordSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_password_succeeded_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_password_succeeded_context_google_analytics_session.json"
-        )
-        instance = (
-            AuthenticationPasswordSucceededContextGoogleAnalyticsSession.from_dict(data)
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = (
-            AuthenticationPasswordSucceededContextGoogleAnalyticsSession.from_dict(
-                serialized
-            )
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_password_succeeded_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            AuthenticationPasswordSucceededContextGoogleAnalyticsSession.from_dict(data)
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_password_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            AuthenticationPasswordSucceededContextGoogleAnalyticsSession.from_dict(data)
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_password_succeeded_context_actor_round_trip(self):
-        data = load_fixture("authentication_password_succeeded_context_actor.json")
-        instance = AuthenticationPasswordSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationPasswordSucceededContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_password_succeeded_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationPasswordSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_password_succeeded_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationPasswordSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_password_succeeded_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_password_succeeded_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationPasswordSucceededContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_authentication_radar_risk_detected_round_trip(self):
         data = load_fixture("authentication_radar_risk_detected.json")
@@ -5620,106 +4097,6 @@ class TestModelRoundTrip:
             "email": "user@example.com",
         }
         instance = AuthenticationRadarRiskDetectedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_authentication_radar_risk_detected_context_round_trip(self):
-        data = load_fixture("authentication_radar_risk_detected_context.json")
-        instance = AuthenticationRadarRiskDetectedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationRadarRiskDetectedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_radar_risk_detected_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationRadarRiskDetectedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_radar_risk_detected_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationRadarRiskDetectedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_radar_risk_detected_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_radar_risk_detected_context_google_analytics_session.json"
-        )
-        instance = (
-            AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession.from_dict(data)
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = (
-            AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession.from_dict(
-                serialized
-            )
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_radar_risk_detected_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession.from_dict(data)
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_radar_risk_detected_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession.from_dict(data)
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_radar_risk_detected_context_actor_round_trip(self):
-        data = load_fixture("authentication_radar_risk_detected_context_actor.json")
-        instance = AuthenticationRadarRiskDetectedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationRadarRiskDetectedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_radar_risk_detected_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationRadarRiskDetectedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_radar_risk_detected_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationRadarRiskDetectedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_radar_risk_detected_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_radar_risk_detected_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationRadarRiskDetectedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_authentication_sso_failed_round_trip(self):
@@ -5894,96 +4271,6 @@ class TestModelRoundTrip:
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
 
-    def test_authentication_sso_failed_context_round_trip(self):
-        data = load_fixture("authentication_sso_failed_context.json")
-        instance = AuthenticationSSOFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOFailedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_failed_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationSSOFailedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_sso_failed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationSSOFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_sso_failed_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_sso_failed_context_google_analytics_session.json"
-        )
-        instance = AuthenticationSSOFailedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOFailedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_failed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationSSOFailedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_sso_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationSSOFailedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_sso_failed_context_actor_round_trip(self):
-        data = load_fixture("authentication_sso_failed_context_actor.json")
-        instance = AuthenticationSSOFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOFailedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_failed_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationSSOFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_sso_failed_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationSSOFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_sso_failed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_sso_failed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationSSOFailedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_authentication_sso_started_round_trip(self):
         data = load_fixture("authentication_sso_started.json")
         instance = AuthenticationSSOStarted.from_dict(data)
@@ -6120,96 +4407,6 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["connection_id"] is None
         assert serialized["session_id"] is None
-
-    def test_authentication_sso_started_context_round_trip(self):
-        data = load_fixture("authentication_sso_started_context.json")
-        instance = AuthenticationSSOStartedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOStartedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_started_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationSSOStartedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_sso_started_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationSSOStartedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_sso_started_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_sso_started_context_google_analytics_session.json"
-        )
-        instance = AuthenticationSSOStartedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOStartedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_started_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationSSOStartedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_sso_started_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationSSOStartedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_sso_started_context_actor_round_trip(self):
-        data = load_fixture("authentication_sso_started_context_actor.json")
-        instance = AuthenticationSSOStartedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOStartedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_started_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationSSOStartedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_sso_started_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationSSOStartedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_sso_started_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_sso_started_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationSSOStartedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_authentication_sso_succeeded_round_trip(self):
         data = load_fixture("authentication_sso_succeeded.json")
@@ -6348,102 +4545,6 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["connection_id"] is None
         assert serialized["session_id"] is None
-
-    def test_authentication_sso_succeeded_context_round_trip(self):
-        data = load_fixture("authentication_sso_succeeded_context.json")
-        instance = AuthenticationSSOSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOSucceededContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_succeeded_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationSSOSucceededContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_sso_succeeded_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationSSOSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_sso_succeeded_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_sso_succeeded_context_google_analytics_session.json"
-        )
-        instance = AuthenticationSSOSucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOSucceededContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_succeeded_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationSSOSucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_sso_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationSSOSucceededContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_sso_succeeded_context_actor_round_trip(self):
-        data = load_fixture("authentication_sso_succeeded_context_actor.json")
-        instance = AuthenticationSSOSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOSucceededContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_succeeded_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationSSOSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_sso_succeeded_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationSSOSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_sso_succeeded_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_sso_succeeded_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationSSOSucceededContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_authentication_sso_timed_out_round_trip(self):
         data = load_fixture("authentication_sso_timed_out.json")
@@ -6618,102 +4719,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
         assert serialized["message"] == data["message"]
-
-    def test_authentication_sso_timed_out_context_round_trip(self):
-        data = load_fixture("authentication_sso_timed_out_context.json")
-        instance = AuthenticationSSOTimedOutContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOTimedOutContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_timed_out_context_minimal_payload(self):
-        data = {}
-        instance = AuthenticationSSOTimedOutContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_authentication_sso_timed_out_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = AuthenticationSSOTimedOutContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_authentication_sso_timed_out_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "authentication_sso_timed_out_context_google_analytics_session.json"
-        )
-        instance = AuthenticationSSOTimedOutContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOTimedOutContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_timed_out_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationSSOTimedOutContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_authentication_sso_timed_out_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = AuthenticationSSOTimedOutContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_authentication_sso_timed_out_context_actor_round_trip(self):
-        data = load_fixture("authentication_sso_timed_out_context_actor.json")
-        instance = AuthenticationSSOTimedOutContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthenticationSSOTimedOutContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authentication_sso_timed_out_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationSSOTimedOutContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_authentication_sso_timed_out_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = AuthenticationSSOTimedOutContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_authentication_sso_timed_out_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_authentication_sso_timed_out_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = AuthenticationSSOTimedOutContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_connection_activated_round_trip(self):
         data = load_fixture("connection_activated.json")
@@ -6892,92 +4897,6 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
         assert serialized["id"] == data["id"]
         assert serialized["domain"] == data["domain"]
-
-    def test_connection_activated_context_round_trip(self):
-        data = load_fixture("connection_activated_context.json")
-        instance = ConnectionActivatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionActivatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_connection_activated_context_minimal_payload(self):
-        data = {}
-        instance = ConnectionActivatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_connection_activated_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = ConnectionActivatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_connection_activated_context_google_analytics_session_round_trip(self):
-        data = load_fixture(
-            "connection_activated_context_google_analytics_session.json"
-        )
-        instance = ConnectionActivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionActivatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_connection_activated_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ConnectionActivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_connection_activated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ConnectionActivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_connection_activated_context_actor_round_trip(self):
-        data = load_fixture("connection_activated_context_actor.json")
-        instance = ConnectionActivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionActivatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_connection_activated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ConnectionActivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_connection_activated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ConnectionActivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_connection_activated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_connection_activated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = ConnectionActivatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_connection_deactivated_round_trip(self):
         data = load_fixture("connection_deactivated.json")
@@ -7159,92 +5078,6 @@ class TestModelRoundTrip:
         assert serialized["id"] == data["id"]
         assert serialized["domain"] == data["domain"]
 
-    def test_connection_deactivated_context_round_trip(self):
-        data = load_fixture("connection_deactivated_context.json")
-        instance = ConnectionDeactivatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionDeactivatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_connection_deactivated_context_minimal_payload(self):
-        data = {}
-        instance = ConnectionDeactivatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_connection_deactivated_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = ConnectionDeactivatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_connection_deactivated_context_google_analytics_session_round_trip(self):
-        data = load_fixture(
-            "connection_deactivated_context_google_analytics_session.json"
-        )
-        instance = ConnectionDeactivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionDeactivatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_connection_deactivated_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ConnectionDeactivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_connection_deactivated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ConnectionDeactivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_connection_deactivated_context_actor_round_trip(self):
-        data = load_fixture("connection_deactivated_context_actor.json")
-        instance = ConnectionDeactivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionDeactivatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_connection_deactivated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ConnectionDeactivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_connection_deactivated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ConnectionDeactivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_connection_deactivated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_connection_deactivated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = ConnectionDeactivatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_connection_deleted_round_trip(self):
         data = load_fixture("connection_deleted.json")
         instance = ConnectionDeleted.from_dict(data)
@@ -7353,84 +5186,6 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = ConnectionDeletedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_connection_deleted_context_round_trip(self):
-        data = load_fixture("connection_deleted_context.json")
-        instance = ConnectionDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_connection_deleted_context_minimal_payload(self):
-        data = {}
-        instance = ConnectionDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_connection_deleted_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = ConnectionDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_connection_deleted_context_google_analytics_session_round_trip(self):
-        data = load_fixture("connection_deleted_context_google_analytics_session.json")
-        instance = ConnectionDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionDeletedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_connection_deleted_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ConnectionDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_connection_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ConnectionDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_connection_deleted_context_actor_round_trip(self):
-        data = load_fixture("connection_deleted_context_actor.json")
-        instance = ConnectionDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_connection_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ConnectionDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_connection_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ConnectionDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_connection_deleted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_connection_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = ConnectionDeletedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_connection_saml_certificate_renewal_required_round_trip(self):
@@ -7601,112 +5356,6 @@ class TestModelRoundTrip:
         )
         assert instance.to_dict() == data
 
-    def test_connection_saml_certificate_renewal_required_context_round_trip(self):
-        data = load_fixture("connection_saml_certificate_renewal_required_context.json")
-        instance = ConnectionSAMLCertificateRenewalRequiredContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionSAMLCertificateRenewalRequiredContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_connection_saml_certificate_renewal_required_context_minimal_payload(self):
-        data = {}
-        instance = ConnectionSAMLCertificateRenewalRequiredContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_connection_saml_certificate_renewal_required_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = ConnectionSAMLCertificateRenewalRequiredContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_connection_saml_certificate_renewal_required_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "connection_saml_certificate_renewal_required_context_google_analytics_session.json"
-        )
-        instance = ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_connection_saml_certificate_renewal_required_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_connection_saml_certificate_renewal_required_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_connection_saml_certificate_renewal_required_context_actor_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "connection_saml_certificate_renewal_required_context_actor.json"
-        )
-        instance = ConnectionSAMLCertificateRenewalRequiredContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionSAMLCertificateRenewalRequiredContextActor.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_connection_saml_certificate_renewal_required_context_actor_minimal_payload(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ConnectionSAMLCertificateRenewalRequiredContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_connection_saml_certificate_renewal_required_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ConnectionSAMLCertificateRenewalRequiredContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_connection_saml_certificate_renewal_required_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_connection_saml_certificate_renewal_required_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = ConnectionSAMLCertificateRenewalRequiredContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_connection_saml_certificate_renewed_round_trip(self):
         data = load_fixture("connection_saml_certificate_renewed.json")
         instance = ConnectionSAMLCertificateRenewed.from_dict(data)
@@ -7839,112 +5488,6 @@ class TestModelRoundTrip:
             "expiry_date": "2026-01-15T12:00:00.000Z",
         }
         instance = ConnectionSAMLCertificateRenewedDataCertificate.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_connection_saml_certificate_renewed_context_round_trip(self):
-        data = load_fixture("connection_saml_certificate_renewed_context.json")
-        instance = ConnectionSAMLCertificateRenewedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionSAMLCertificateRenewedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_connection_saml_certificate_renewed_context_minimal_payload(self):
-        data = {}
-        instance = ConnectionSAMLCertificateRenewedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_connection_saml_certificate_renewed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = ConnectionSAMLCertificateRenewedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_connection_saml_certificate_renewed_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "connection_saml_certificate_renewed_context_google_analytics_session.json"
-        )
-        instance = (
-            ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = (
-            ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession.from_dict(
-                serialized
-            )
-        )
-        assert restored.to_dict() == serialized
-
-    def test_connection_saml_certificate_renewed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_connection_saml_certificate_renewed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_connection_saml_certificate_renewed_context_actor_round_trip(self):
-        data = load_fixture("connection_saml_certificate_renewed_context_actor.json")
-        instance = ConnectionSAMLCertificateRenewedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ConnectionSAMLCertificateRenewedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_connection_saml_certificate_renewed_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ConnectionSAMLCertificateRenewedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_connection_saml_certificate_renewed_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = ConnectionSAMLCertificateRenewedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_connection_saml_certificate_renewed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_connection_saml_certificate_renewed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = ConnectionSAMLCertificateRenewedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_dsync_activated_round_trip(self):
@@ -8119,84 +5662,6 @@ class TestModelRoundTrip:
         assert serialized["id"] == data["id"]
         assert serialized["domain"] == data["domain"]
 
-    def test_dsync_activated_context_round_trip(self):
-        data = load_fixture("dsync_activated_context.json")
-        instance = DsyncActivatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncActivatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_activated_context_minimal_payload(self):
-        data = {}
-        instance = DsyncActivatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_activated_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = DsyncActivatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_activated_context_google_analytics_session_round_trip(self):
-        data = load_fixture("dsync_activated_context_google_analytics_session.json")
-        instance = DsyncActivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncActivatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_activated_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncActivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_activated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncActivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_activated_context_actor_round_trip(self):
-        data = load_fixture("dsync_activated_context_actor.json")
-        instance = DsyncActivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncActivatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_activated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncActivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_activated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncActivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_activated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_activated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncActivatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_dsync_deactivated_round_trip(self):
         data = load_fixture("dsync_deactivated.json")
         instance = DsyncDeactivated.from_dict(data)
@@ -8369,84 +5834,6 @@ class TestModelRoundTrip:
         assert serialized["id"] == data["id"]
         assert serialized["domain"] == data["domain"]
 
-    def test_dsync_deactivated_context_round_trip(self):
-        data = load_fixture("dsync_deactivated_context.json")
-        instance = DsyncDeactivatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncDeactivatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_deactivated_context_minimal_payload(self):
-        data = {}
-        instance = DsyncDeactivatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_deactivated_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = DsyncDeactivatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_deactivated_context_google_analytics_session_round_trip(self):
-        data = load_fixture("dsync_deactivated_context_google_analytics_session.json")
-        instance = DsyncDeactivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncDeactivatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_deactivated_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncDeactivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_deactivated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncDeactivatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_deactivated_context_actor_round_trip(self):
-        data = load_fixture("dsync_deactivated_context_actor.json")
-        instance = DsyncDeactivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncDeactivatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_deactivated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncDeactivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_deactivated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncDeactivatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_deactivated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_deactivated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncDeactivatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_dsync_deleted_round_trip(self):
         data = load_fixture("dsync_deleted.json")
         instance = DsyncDeleted.from_dict(data)
@@ -8557,84 +5944,6 @@ class TestModelRoundTrip:
         instance = DsyncDeletedData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_dsync_deleted_context_round_trip(self):
-        data = load_fixture("dsync_deleted_context.json")
-        instance = DsyncDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_deleted_context_minimal_payload(self):
-        data = {}
-        instance = DsyncDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_deleted_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = DsyncDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_deleted_context_google_analytics_session_round_trip(self):
-        data = load_fixture("dsync_deleted_context_google_analytics_session.json")
-        instance = DsyncDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncDeletedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_deleted_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_deleted_context_actor_round_trip(self):
-        data = load_fixture("dsync_deleted_context_actor.json")
-        instance = DsyncDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_deleted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncDeletedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_dsync_group_created_round_trip(self):
         data = load_fixture("dsync_group_created.json")
         instance = DsyncGroupCreated.from_dict(data)
@@ -8691,131 +6000,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "context" not in serialized
 
-    def test_dsync_group_created_data_round_trip(self):
-        data = load_fixture("dsync_group_created_data.json")
-        instance = DsyncGroupCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupCreatedData.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_created_data_minimal_payload(self):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["idp_id"] == data["idp_id"]
-        assert serialized["directory_id"] == data["directory_id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["name"] == data["name"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_dsync_group_created_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert "raw_attributes" not in serialized
-
-    def test_dsync_group_created_context_round_trip(self):
-        data = load_fixture("dsync_group_created_context.json")
-        instance = DsyncGroupCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_created_context_minimal_payload(self):
-        data = {}
-        instance = DsyncGroupCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_group_created_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = DsyncGroupCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_group_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("dsync_group_created_context_google_analytics_session.json")
-        instance = DsyncGroupCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncGroupCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_group_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncGroupCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_group_created_context_actor_round_trip(self):
-        data = load_fixture("dsync_group_created_context_actor.json")
-        instance = DsyncGroupCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncGroupCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_group_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncGroupCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_group_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_group_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncGroupCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_dsync_group_deleted_round_trip(self):
         data = load_fixture("dsync_group_deleted.json")
         instance = DsyncGroupDeleted.from_dict(data)
@@ -8871,131 +6055,6 @@ class TestModelRoundTrip:
         instance = DsyncGroupDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
-
-    def test_dsync_group_deleted_data_round_trip(self):
-        data = load_fixture("dsync_group_deleted_data.json")
-        instance = DsyncGroupDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupDeletedData.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_deleted_data_minimal_payload(self):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["idp_id"] == data["idp_id"]
-        assert serialized["directory_id"] == data["directory_id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["name"] == data["name"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_dsync_group_deleted_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert "raw_attributes" not in serialized
-
-    def test_dsync_group_deleted_context_round_trip(self):
-        data = load_fixture("dsync_group_deleted_context.json")
-        instance = DsyncGroupDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_deleted_context_minimal_payload(self):
-        data = {}
-        instance = DsyncGroupDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_group_deleted_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = DsyncGroupDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_group_deleted_context_google_analytics_session_round_trip(self):
-        data = load_fixture("dsync_group_deleted_context_google_analytics_session.json")
-        instance = DsyncGroupDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupDeletedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_deleted_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncGroupDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_group_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncGroupDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_group_deleted_context_actor_round_trip(self):
-        data = load_fixture("dsync_group_deleted_context_actor.json")
-        instance = DsyncGroupDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncGroupDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_group_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncGroupDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_group_deleted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_group_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncGroupDeletedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_dsync_group_updated_round_trip(self):
         data = load_fixture("dsync_group_updated.json")
@@ -9100,86 +6159,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "raw_attributes" not in serialized
         assert "previous_attributes" not in serialized
-
-    def test_dsync_group_updated_context_round_trip(self):
-        data = load_fixture("dsync_group_updated_context.json")
-        instance = DsyncGroupUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUpdatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_updated_context_minimal_payload(self):
-        data = {}
-        instance = DsyncGroupUpdatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_group_updated_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = DsyncGroupUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_group_updated_context_google_analytics_session_round_trip(self):
-        data = load_fixture("dsync_group_updated_context_google_analytics_session.json")
-        instance = DsyncGroupUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_updated_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncGroupUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_group_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncGroupUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_group_updated_context_actor_round_trip(self):
-        data = load_fixture("dsync_group_updated_context_actor.json")
-        instance = DsyncGroupUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUpdatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_updated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncGroupUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_group_updated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncGroupUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_group_updated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_group_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncGroupUpdatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_dsync_group_user_added_round_trip(self):
         data = load_fixture("dsync_group_user_added.json")
@@ -9359,320 +6338,6 @@ class TestModelRoundTrip:
         assert serialized["user"] == data["user"]
         assert serialized["group"] == data["group"]
 
-    def test_dsync_group_user_added_data_user_round_trip(self):
-        data = load_fixture("dsync_group_user_added_data_user.json")
-        instance = DsyncGroupUserAddedDataUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserAddedDataUser.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_added_data_user_minimal_payload(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserAddedDataUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["directory_id"] == data["directory_id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["idp_id"] == data["idp_id"]
-        assert serialized["email"] == data["email"]
-        assert serialized["state"] == data["state"]
-        assert serialized["raw_attributes"] == data["raw_attributes"]
-        assert serialized["custom_attributes"] == data["custom_attributes"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_dsync_group_user_added_data_user_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserAddedDataUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert "emails" not in serialized
-        assert "role" not in serialized
-        assert "roles" not in serialized
-
-    def test_dsync_group_user_added_data_user_preserves_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "first_name": None,
-            "last_name": None,
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": None,
-            "username": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserAddedDataUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["email"] is None
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["job_title"] is None
-        assert serialized["username"] is None
-
-    def test_dsync_group_user_added_data_user_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "unexpected_dsync_group_user_added_data_user_state",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserAddedDataUser.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_dsync_group_user_added_data_user_email_round_trip(self):
-        data = load_fixture("dsync_group_user_added_data_user_email.json")
-        instance = DsyncGroupUserAddedDataUserEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserAddedDataUserEmail.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_added_data_user_email_minimal_payload(self):
-        data = {}
-        instance = DsyncGroupUserAddedDataUserEmail.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_group_user_added_data_user_email_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"value": "marcelina.davis@example.com"}
-        instance = DsyncGroupUserAddedDataUserEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert "primary" not in serialized
-        assert "type" not in serialized
-
-    def test_dsync_group_user_added_data_user_email_preserves_nullable_fields(self):
-        data = {"primary": True, "type": "work", "value": None}
-        instance = DsyncGroupUserAddedDataUserEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["value"] is None
-
-    def test_dsync_group_user_added_data_user_role_round_trip(self):
-        data = load_fixture("dsync_group_user_added_data_user_role.json")
-        instance = DsyncGroupUserAddedDataUserRole.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserAddedDataUserRole.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_added_data_user_role_minimal_payload(self):
-        data = {"slug": "admin"}
-        instance = DsyncGroupUserAddedDataUserRole.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["slug"] == data["slug"]
-
-    def test_dsync_group_user_added_data_group_round_trip(self):
-        data = load_fixture("dsync_group_user_added_data_group.json")
-        instance = DsyncGroupUserAddedDataGroup.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserAddedDataGroup.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_added_data_group_minimal_payload(self):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserAddedDataGroup.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["idp_id"] == data["idp_id"]
-        assert serialized["directory_id"] == data["directory_id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["name"] == data["name"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_dsync_group_user_added_data_group_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserAddedDataGroup.from_dict(data)
-        serialized = instance.to_dict()
-        assert "raw_attributes" not in serialized
-
-    def test_dsync_group_user_added_context_round_trip(self):
-        data = load_fixture("dsync_group_user_added_context.json")
-        instance = DsyncGroupUserAddedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserAddedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_added_context_minimal_payload(self):
-        data = {}
-        instance = DsyncGroupUserAddedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_group_user_added_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = DsyncGroupUserAddedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_group_user_added_context_google_analytics_session_round_trip(self):
-        data = load_fixture(
-            "dsync_group_user_added_context_google_analytics_session.json"
-        )
-        instance = DsyncGroupUserAddedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserAddedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_added_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncGroupUserAddedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_group_user_added_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncGroupUserAddedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_group_user_added_context_actor_round_trip(self):
-        data = load_fixture("dsync_group_user_added_context_actor.json")
-        instance = DsyncGroupUserAddedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserAddedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_added_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncGroupUserAddedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_group_user_added_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncGroupUserAddedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_group_user_added_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_group_user_added_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncGroupUserAddedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_dsync_user_created_round_trip(self):
         data = load_fixture("dsync_user_created.json")
         instance = DsyncUserCreated.from_dict(data)
@@ -9765,263 +6430,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "context" not in serialized
 
-    def test_dsync_user_created_data_round_trip(self):
-        data = load_fixture("dsync_user_created_data.json")
-        instance = DsyncUserCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserCreatedData.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_created_data_minimal_payload(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncUserCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["directory_id"] == data["directory_id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["idp_id"] == data["idp_id"]
-        assert serialized["email"] == data["email"]
-        assert serialized["state"] == data["state"]
-        assert serialized["raw_attributes"] == data["raw_attributes"]
-        assert serialized["custom_attributes"] == data["custom_attributes"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_dsync_user_created_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncUserCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert "emails" not in serialized
-        assert "role" not in serialized
-        assert "roles" not in serialized
-
-    def test_dsync_user_created_data_preserves_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "first_name": None,
-            "last_name": None,
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": None,
-            "username": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncUserCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["email"] is None
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["job_title"] is None
-        assert serialized["username"] is None
-
-    def test_dsync_user_created_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "unexpected_dsync_user_created_data_state",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncUserCreatedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_dsync_user_created_data_email_round_trip(self):
-        data = load_fixture("dsync_user_created_data_email.json")
-        instance = DsyncUserCreatedDataEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserCreatedDataEmail.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_created_data_email_minimal_payload(self):
-        data = {}
-        instance = DsyncUserCreatedDataEmail.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_user_created_data_email_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"value": "marcelina.davis@example.com"}
-        instance = DsyncUserCreatedDataEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert "primary" not in serialized
-        assert "type" not in serialized
-
-    def test_dsync_user_created_data_email_preserves_nullable_fields(self):
-        data = {"primary": True, "type": "work", "value": None}
-        instance = DsyncUserCreatedDataEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["value"] is None
-
-    def test_dsync_user_created_data_role_round_trip(self):
-        data = load_fixture("dsync_user_created_data_role.json")
-        instance = DsyncUserCreatedDataRole.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserCreatedDataRole.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_created_data_role_minimal_payload(self):
-        data = {"slug": "admin"}
-        instance = DsyncUserCreatedDataRole.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["slug"] == data["slug"]
-
-    def test_dsync_user_created_context_round_trip(self):
-        data = load_fixture("dsync_user_created_context.json")
-        instance = DsyncUserCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_created_context_minimal_payload(self):
-        data = {}
-        instance = DsyncUserCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_user_created_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = DsyncUserCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_user_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("dsync_user_created_context_google_analytics_session.json")
-        instance = DsyncUserCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncUserCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_user_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncUserCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_user_created_context_actor_round_trip(self):
-        data = load_fixture("dsync_user_created_context_actor.json")
-        instance = DsyncUserCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncUserCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_user_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncUserCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_user_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_user_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncUserCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_dsync_user_deleted_round_trip(self):
         data = load_fixture("dsync_user_deleted.json")
         instance = DsyncUserDeleted.from_dict(data)
@@ -10113,263 +6521,6 @@ class TestModelRoundTrip:
         instance = DsyncUserDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
-
-    def test_dsync_user_deleted_data_round_trip(self):
-        data = load_fixture("dsync_user_deleted_data.json")
-        instance = DsyncUserDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserDeletedData.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_deleted_data_minimal_payload(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncUserDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["directory_id"] == data["directory_id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["idp_id"] == data["idp_id"]
-        assert serialized["email"] == data["email"]
-        assert serialized["state"] == data["state"]
-        assert serialized["raw_attributes"] == data["raw_attributes"]
-        assert serialized["custom_attributes"] == data["custom_attributes"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_dsync_user_deleted_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncUserDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert "emails" not in serialized
-        assert "role" not in serialized
-        assert "roles" not in serialized
-
-    def test_dsync_user_deleted_data_preserves_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "first_name": None,
-            "last_name": None,
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": None,
-            "username": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncUserDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["email"] is None
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["job_title"] is None
-        assert serialized["username"] is None
-
-    def test_dsync_user_deleted_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "unexpected_dsync_user_deleted_data_state",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncUserDeletedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_dsync_user_deleted_data_email_round_trip(self):
-        data = load_fixture("dsync_user_deleted_data_email.json")
-        instance = DsyncUserDeletedDataEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserDeletedDataEmail.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_deleted_data_email_minimal_payload(self):
-        data = {}
-        instance = DsyncUserDeletedDataEmail.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_user_deleted_data_email_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"value": "marcelina.davis@example.com"}
-        instance = DsyncUserDeletedDataEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert "primary" not in serialized
-        assert "type" not in serialized
-
-    def test_dsync_user_deleted_data_email_preserves_nullable_fields(self):
-        data = {"primary": True, "type": "work", "value": None}
-        instance = DsyncUserDeletedDataEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["value"] is None
-
-    def test_dsync_user_deleted_data_role_round_trip(self):
-        data = load_fixture("dsync_user_deleted_data_role.json")
-        instance = DsyncUserDeletedDataRole.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserDeletedDataRole.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_deleted_data_role_minimal_payload(self):
-        data = {"slug": "admin"}
-        instance = DsyncUserDeletedDataRole.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["slug"] == data["slug"]
-
-    def test_dsync_user_deleted_context_round_trip(self):
-        data = load_fixture("dsync_user_deleted_context.json")
-        instance = DsyncUserDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_deleted_context_minimal_payload(self):
-        data = {}
-        instance = DsyncUserDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_user_deleted_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = DsyncUserDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_user_deleted_context_google_analytics_session_round_trip(self):
-        data = load_fixture("dsync_user_deleted_context_google_analytics_session.json")
-        instance = DsyncUserDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserDeletedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_deleted_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncUserDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_user_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncUserDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_user_deleted_context_actor_round_trip(self):
-        data = load_fixture("dsync_user_deleted_context_actor.json")
-        instance = DsyncUserDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncUserDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_user_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncUserDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_user_deleted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_user_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncUserDeletedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_dsync_group_user_removed_round_trip(self):
         data = load_fixture("dsync_group_user_removed.json")
@@ -10548,322 +6699,6 @@ class TestModelRoundTrip:
         assert serialized["directory_id"] == data["directory_id"]
         assert serialized["user"] == data["user"]
         assert serialized["group"] == data["group"]
-
-    def test_dsync_group_user_removed_data_user_round_trip(self):
-        data = load_fixture("dsync_group_user_removed_data_user.json")
-        instance = DsyncGroupUserRemovedDataUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserRemovedDataUser.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_removed_data_user_minimal_payload(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserRemovedDataUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["directory_id"] == data["directory_id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["idp_id"] == data["idp_id"]
-        assert serialized["email"] == data["email"]
-        assert serialized["state"] == data["state"]
-        assert serialized["raw_attributes"] == data["raw_attributes"]
-        assert serialized["custom_attributes"] == data["custom_attributes"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_dsync_group_user_removed_data_user_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserRemovedDataUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert "emails" not in serialized
-        assert "role" not in serialized
-        assert "roles" not in serialized
-
-    def test_dsync_group_user_removed_data_user_preserves_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "first_name": None,
-            "last_name": None,
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": None,
-            "username": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserRemovedDataUser.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["email"] is None
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["job_title"] is None
-        assert serialized["username"] is None
-
-    def test_dsync_group_user_removed_data_user_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "unexpected_dsync_group_user_removed_data_user_state",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserRemovedDataUser.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_dsync_group_user_removed_data_user_email_round_trip(self):
-        data = load_fixture("dsync_group_user_removed_data_user_email.json")
-        instance = DsyncGroupUserRemovedDataUserEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserRemovedDataUserEmail.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_removed_data_user_email_minimal_payload(self):
-        data = {}
-        instance = DsyncGroupUserRemovedDataUserEmail.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_group_user_removed_data_user_email_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"value": "marcelina.davis@example.com"}
-        instance = DsyncGroupUserRemovedDataUserEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert "primary" not in serialized
-        assert "type" not in serialized
-
-    def test_dsync_group_user_removed_data_user_email_preserves_nullable_fields(self):
-        data = {"primary": True, "type": "work", "value": None}
-        instance = DsyncGroupUserRemovedDataUserEmail.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["value"] is None
-
-    def test_dsync_group_user_removed_data_user_role_round_trip(self):
-        data = load_fixture("dsync_group_user_removed_data_user_role.json")
-        instance = DsyncGroupUserRemovedDataUserRole.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserRemovedDataUserRole.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_removed_data_user_role_minimal_payload(self):
-        data = {"slug": "admin"}
-        instance = DsyncGroupUserRemovedDataUserRole.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["slug"] == data["slug"]
-
-    def test_dsync_group_user_removed_data_group_round_trip(self):
-        data = load_fixture("dsync_group_user_removed_data_group.json")
-        instance = DsyncGroupUserRemovedDataGroup.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserRemovedDataGroup.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_removed_data_group_minimal_payload(self):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserRemovedDataGroup.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["idp_id"] == data["idp_id"]
-        assert serialized["directory_id"] == data["directory_id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["name"] == data["name"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_dsync_group_user_removed_data_group_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = DsyncGroupUserRemovedDataGroup.from_dict(data)
-        serialized = instance.to_dict()
-        assert "raw_attributes" not in serialized
-
-    def test_dsync_group_user_removed_context_round_trip(self):
-        data = load_fixture("dsync_group_user_removed_context.json")
-        instance = DsyncGroupUserRemovedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserRemovedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_removed_context_minimal_payload(self):
-        data = {}
-        instance = DsyncGroupUserRemovedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_group_user_removed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = DsyncGroupUserRemovedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_group_user_removed_context_google_analytics_session_round_trip(self):
-        data = load_fixture(
-            "dsync_group_user_removed_context_google_analytics_session.json"
-        )
-        instance = DsyncGroupUserRemovedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserRemovedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_removed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncGroupUserRemovedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_group_user_removed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncGroupUserRemovedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_group_user_removed_context_actor_round_trip(self):
-        data = load_fixture("dsync_group_user_removed_context_actor.json")
-        instance = DsyncGroupUserRemovedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncGroupUserRemovedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_group_user_removed_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncGroupUserRemovedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_group_user_removed_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncGroupUserRemovedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_group_user_removed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_group_user_removed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncGroupUserRemovedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_dsync_user_updated_round_trip(self):
         data = load_fixture("dsync_user_updated.json")
@@ -11127,98 +6962,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["value"] is None
 
-    def test_dsync_user_updated_data_role_round_trip(self):
-        data = load_fixture("dsync_user_updated_data_role.json")
-        instance = DsyncUserUpdatedDataRole.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserUpdatedDataRole.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_updated_data_role_minimal_payload(self):
-        data = {"slug": "admin"}
-        instance = DsyncUserUpdatedDataRole.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["slug"] == data["slug"]
-
-    def test_dsync_user_updated_context_round_trip(self):
-        data = load_fixture("dsync_user_updated_context.json")
-        instance = DsyncUserUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserUpdatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_updated_context_minimal_payload(self):
-        data = {}
-        instance = DsyncUserUpdatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_dsync_user_updated_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = DsyncUserUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_dsync_user_updated_context_google_analytics_session_round_trip(self):
-        data = load_fixture("dsync_user_updated_context_google_analytics_session.json")
-        instance = DsyncUserUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_updated_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncUserUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_dsync_user_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = DsyncUserUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_dsync_user_updated_context_actor_round_trip(self):
-        data = load_fixture("dsync_user_updated_context_actor.json")
-        instance = DsyncUserUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = DsyncUserUpdatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_dsync_user_updated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncUserUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_dsync_user_updated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = DsyncUserUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_dsync_user_updated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_dsync_user_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = DsyncUserUpdatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_email_verification_created_round_trip(self):
         data = load_fixture("email_verification_created.json")
         instance = EmailVerificationCreated.from_dict(data)
@@ -11298,96 +7041,6 @@ class TestModelRoundTrip:
         assert serialized["expires_at"] == data["expires_at"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
-
-    def test_email_verification_created_context_round_trip(self):
-        data = load_fixture("email_verification_created_context.json")
-        instance = EmailVerificationCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = EmailVerificationCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_email_verification_created_context_minimal_payload(self):
-        data = {}
-        instance = EmailVerificationCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_email_verification_created_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = EmailVerificationCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_email_verification_created_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "email_verification_created_context_google_analytics_session.json"
-        )
-        instance = EmailVerificationCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = EmailVerificationCreatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_email_verification_created_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = EmailVerificationCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_email_verification_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = EmailVerificationCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_email_verification_created_context_actor_round_trip(self):
-        data = load_fixture("email_verification_created_context_actor.json")
-        instance = EmailVerificationCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = EmailVerificationCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_email_verification_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = EmailVerificationCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_email_verification_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = EmailVerificationCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_email_verification_created_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_email_verification_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = EmailVerificationCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_flag_created_round_trip(self):
         data = load_fixture("flag_created.json")
@@ -12696,86 +8349,6 @@ class TestModelRoundTrip:
         instance = InvitationAcceptedData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_invitation_accepted_context_round_trip(self):
-        data = load_fixture("invitation_accepted_context.json")
-        instance = InvitationAcceptedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationAcceptedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_accepted_context_minimal_payload(self):
-        data = {}
-        instance = InvitationAcceptedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_invitation_accepted_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = InvitationAcceptedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_invitation_accepted_context_google_analytics_session_round_trip(self):
-        data = load_fixture("invitation_accepted_context_google_analytics_session.json")
-        instance = InvitationAcceptedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationAcceptedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_accepted_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = InvitationAcceptedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_invitation_accepted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = InvitationAcceptedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_invitation_accepted_context_actor_round_trip(self):
-        data = load_fixture("invitation_accepted_context_actor.json")
-        instance = InvitationAcceptedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationAcceptedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_accepted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = InvitationAcceptedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_invitation_accepted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = InvitationAcceptedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_invitation_accepted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_invitation_accepted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = InvitationAcceptedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_invitation_created_round_trip(self):
         data = load_fixture("invitation_created.json")
         instance = InvitationCreated.from_dict(data)
@@ -12915,84 +8488,6 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = InvitationCreatedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_invitation_created_context_round_trip(self):
-        data = load_fixture("invitation_created_context.json")
-        instance = InvitationCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_created_context_minimal_payload(self):
-        data = {}
-        instance = InvitationCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_invitation_created_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = InvitationCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_invitation_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("invitation_created_context_google_analytics_session.json")
-        instance = InvitationCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = InvitationCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_invitation_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = InvitationCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_invitation_created_context_actor_round_trip(self):
-        data = load_fixture("invitation_created_context_actor.json")
-        instance = InvitationCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = InvitationCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_invitation_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = InvitationCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_invitation_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_invitation_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = InvitationCreatedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_invitation_resent_round_trip(self):
@@ -13136,84 +8631,6 @@ class TestModelRoundTrip:
         instance = InvitationResentData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_invitation_resent_context_round_trip(self):
-        data = load_fixture("invitation_resent_context.json")
-        instance = InvitationResentContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationResentContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_resent_context_minimal_payload(self):
-        data = {}
-        instance = InvitationResentContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_invitation_resent_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = InvitationResentContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_invitation_resent_context_google_analytics_session_round_trip(self):
-        data = load_fixture("invitation_resent_context_google_analytics_session.json")
-        instance = InvitationResentContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationResentContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_resent_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = InvitationResentContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_invitation_resent_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = InvitationResentContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_invitation_resent_context_actor_round_trip(self):
-        data = load_fixture("invitation_resent_context_actor.json")
-        instance = InvitationResentContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationResentContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_resent_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = InvitationResentContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_invitation_resent_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = InvitationResentContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_invitation_resent_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_invitation_resent_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = InvitationResentContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_invitation_revoked_round_trip(self):
         data = load_fixture("invitation_revoked.json")
         instance = InvitationRevoked.from_dict(data)
@@ -13355,84 +8772,6 @@ class TestModelRoundTrip:
         instance = InvitationRevokedData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_invitation_revoked_context_round_trip(self):
-        data = load_fixture("invitation_revoked_context.json")
-        instance = InvitationRevokedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationRevokedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_revoked_context_minimal_payload(self):
-        data = {}
-        instance = InvitationRevokedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_invitation_revoked_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = InvitationRevokedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_invitation_revoked_context_google_analytics_session_round_trip(self):
-        data = load_fixture("invitation_revoked_context_google_analytics_session.json")
-        instance = InvitationRevokedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationRevokedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_revoked_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = InvitationRevokedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_invitation_revoked_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = InvitationRevokedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_invitation_revoked_context_actor_round_trip(self):
-        data = load_fixture("invitation_revoked_context_actor.json")
-        instance = InvitationRevokedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = InvitationRevokedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_invitation_revoked_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = InvitationRevokedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_invitation_revoked_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = InvitationRevokedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_invitation_revoked_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_invitation_revoked_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = InvitationRevokedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_magic_auth_created_round_trip(self):
         data = load_fixture("magic_auth_created.json")
         instance = MagicAuthCreated.from_dict(data)
@@ -13512,84 +8851,6 @@ class TestModelRoundTrip:
         assert serialized["expires_at"] == data["expires_at"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
-
-    def test_magic_auth_created_context_round_trip(self):
-        data = load_fixture("magic_auth_created_context.json")
-        instance = MagicAuthCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = MagicAuthCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_magic_auth_created_context_minimal_payload(self):
-        data = {}
-        instance = MagicAuthCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_magic_auth_created_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = MagicAuthCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_magic_auth_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("magic_auth_created_context_google_analytics_session.json")
-        instance = MagicAuthCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = MagicAuthCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_magic_auth_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = MagicAuthCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_magic_auth_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = MagicAuthCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_magic_auth_created_context_actor_round_trip(self):
-        data = load_fixture("magic_auth_created_context_actor.json")
-        instance = MagicAuthCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = MagicAuthCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_magic_auth_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = MagicAuthCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_magic_auth_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = MagicAuthCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_magic_auth_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_magic_auth_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = MagicAuthCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_organization_created_round_trip(self):
         data = load_fixture("organization_created.json")
@@ -13831,92 +9092,6 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = OrganizationCreatedDataDomain.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_organization_created_context_round_trip(self):
-        data = load_fixture("organization_created_context.json")
-        instance = OrganizationCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_created_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_created_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture(
-            "organization_created_context_google_analytics_session.json"
-        )
-        instance = OrganizationCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationCreatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_created_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_created_context_actor_round_trip(self):
-        data = load_fixture("organization_created_context_actor.json")
-        instance = OrganizationCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationCreatedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_organization_deleted_round_trip(self):
@@ -14161,92 +9336,6 @@ class TestModelRoundTrip:
         instance = OrganizationDeletedDataDomain.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_organization_deleted_context_round_trip(self):
-        data = load_fixture("organization_deleted_context.json")
-        instance = OrganizationDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_deleted_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_deleted_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_deleted_context_google_analytics_session_round_trip(self):
-        data = load_fixture(
-            "organization_deleted_context_google_analytics_session.json"
-        )
-        instance = OrganizationDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDeletedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_deleted_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_deleted_context_actor_round_trip(self):
-        data = load_fixture("organization_deleted_context_actor.json")
-        instance = OrganizationDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_deleted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationDeletedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_organization_domain_created_round_trip(self):
         data = load_fixture("organization_domain_created.json")
         instance = OrganizationDomainCreated.from_dict(data)
@@ -14365,102 +9454,6 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = OrganizationDomainCreatedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_organization_domain_created_context_round_trip(self):
-        data = load_fixture("organization_domain_created_context.json")
-        instance = OrganizationDomainCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_created_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationDomainCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_domain_created_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationDomainCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_domain_created_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_domain_created_context_google_analytics_session.json"
-        )
-        instance = OrganizationDomainCreatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainCreatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_created_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationDomainCreatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_domain_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationDomainCreatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_domain_created_context_actor_round_trip(self):
-        data = load_fixture("organization_domain_created_context_actor.json")
-        instance = OrganizationDomainCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDomainCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_domain_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDomainCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_domain_created_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_domain_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationDomainCreatedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_organization_domain_deleted_round_trip(self):
@@ -14583,102 +9576,6 @@ class TestModelRoundTrip:
         instance = OrganizationDomainDeletedData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_organization_domain_deleted_context_round_trip(self):
-        data = load_fixture("organization_domain_deleted_context.json")
-        instance = OrganizationDomainDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_deleted_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationDomainDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_domain_deleted_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationDomainDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_domain_deleted_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_domain_deleted_context_google_analytics_session.json"
-        )
-        instance = OrganizationDomainDeletedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainDeletedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_deleted_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationDomainDeletedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_domain_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationDomainDeletedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_domain_deleted_context_actor_round_trip(self):
-        data = load_fixture("organization_domain_deleted_context_actor.json")
-        instance = OrganizationDomainDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDomainDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_domain_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDomainDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_domain_deleted_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_domain_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationDomainDeletedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_organization_domain_updated_round_trip(self):
         data = load_fixture("organization_domain_updated.json")
         instance = OrganizationDomainUpdated.from_dict(data)
@@ -14797,102 +9694,6 @@ class TestModelRoundTrip:
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = OrganizationDomainUpdatedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_organization_domain_updated_context_round_trip(self):
-        data = load_fixture("organization_domain_updated_context.json")
-        instance = OrganizationDomainUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainUpdatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_updated_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationDomainUpdatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_domain_updated_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationDomainUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_domain_updated_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_domain_updated_context_google_analytics_session.json"
-        )
-        instance = OrganizationDomainUpdatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainUpdatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_updated_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationDomainUpdatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_domain_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationDomainUpdatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_domain_updated_context_actor_round_trip(self):
-        data = load_fixture("organization_domain_updated_context_actor.json")
-        instance = OrganizationDomainUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainUpdatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_updated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDomainUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_domain_updated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDomainUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_domain_updated_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_domain_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationDomainUpdatedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_organization_domain_verification_failed_round_trip(self):
@@ -15089,118 +9890,6 @@ class TestModelRoundTrip:
         )
         assert instance.to_dict() == data
 
-    def test_organization_domain_verification_failed_context_round_trip(self):
-        data = load_fixture("organization_domain_verification_failed_context.json")
-        instance = OrganizationDomainVerificationFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainVerificationFailedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_verification_failed_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationDomainVerificationFailedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_domain_verification_failed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationDomainVerificationFailedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_domain_verification_failed_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_domain_verification_failed_context_google_analytics_session.json"
-        )
-        instance = (
-            OrganizationDomainVerificationFailedContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = (
-            OrganizationDomainVerificationFailedContextGoogleAnalyticsSession.from_dict(
-                serialized
-            )
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_verification_failed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            OrganizationDomainVerificationFailedContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_domain_verification_failed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            OrganizationDomainVerificationFailedContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_domain_verification_failed_context_actor_round_trip(self):
-        data = load_fixture(
-            "organization_domain_verification_failed_context_actor.json"
-        )
-        instance = OrganizationDomainVerificationFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainVerificationFailedContextActor.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_verification_failed_context_actor_minimal_payload(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDomainVerificationFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_domain_verification_failed_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDomainVerificationFailedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_domain_verification_failed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_domain_verification_failed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationDomainVerificationFailedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_organization_domain_verified_round_trip(self):
         data = load_fixture("organization_domain_verified.json")
         instance = OrganizationDomainVerified.from_dict(data)
@@ -15321,102 +10010,6 @@ class TestModelRoundTrip:
         instance = OrganizationDomainVerifiedData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_organization_domain_verified_context_round_trip(self):
-        data = load_fixture("organization_domain_verified_context.json")
-        instance = OrganizationDomainVerifiedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainVerifiedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_verified_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationDomainVerifiedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_domain_verified_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationDomainVerifiedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_domain_verified_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_domain_verified_context_google_analytics_session.json"
-        )
-        instance = OrganizationDomainVerifiedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainVerifiedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_verified_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationDomainVerifiedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_domain_verified_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationDomainVerifiedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_domain_verified_context_actor_round_trip(self):
-        data = load_fixture("organization_domain_verified_context_actor.json")
-        instance = OrganizationDomainVerifiedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationDomainVerifiedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_domain_verified_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDomainVerifiedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_domain_verified_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationDomainVerifiedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_domain_verified_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_domain_verified_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationDomainVerifiedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_organization_membership_created_round_trip(self):
         data = load_fixture("organization_membership_created.json")
         instance = OrganizationMembershipCreated.from_dict(data)
@@ -15435,8 +10028,8 @@ class TestModelRoundTrip:
                 "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "status": "active",
-                "role": {"key": {}},
-                "roles": [{"key": {}}],
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
                 "custom_attributes": {"key": {}},
                 "directory_managed": False,
                 "created_at": "2026-01-15T12:00:00.000Z",
@@ -15465,8 +10058,8 @@ class TestModelRoundTrip:
                 "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "status": "active",
-                "role": {"key": {}},
-                "roles": [{"key": {}}],
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
                 "custom_attributes": {"key": {}},
                 "directory_managed": False,
                 "created_at": "2026-01-15T12:00:00.000Z",
@@ -15494,7 +10087,7 @@ class TestModelRoundTrip:
             "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "status": "active",
-            "role": {"key": {}},
+            "role": {"slug": "admin"},
             "custom_attributes": {"key": {}},
             "directory_managed": False,
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -15522,7 +10115,7 @@ class TestModelRoundTrip:
             "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "status": "active",
-            "role": {"key": {}},
+            "role": {"slug": "admin"},
             "custom_attributes": {"key": {}},
             "directory_managed": False,
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -15539,112 +10132,14 @@ class TestModelRoundTrip:
             "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "status": "unexpected_organization_membership_created_data_status",
-            "role": {"key": {}},
-            "roles": [{"key": {}}],
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
             "custom_attributes": {"key": {}},
             "directory_managed": False,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = OrganizationMembershipCreatedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_organization_membership_created_context_round_trip(self):
-        data = load_fixture("organization_membership_created_context.json")
-        instance = OrganizationMembershipCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationMembershipCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_membership_created_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationMembershipCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_membership_created_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationMembershipCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_membership_created_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_membership_created_context_google_analytics_session.json"
-        )
-        instance = OrganizationMembershipCreatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationMembershipCreatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_membership_created_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationMembershipCreatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_membership_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationMembershipCreatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_membership_created_context_actor_round_trip(self):
-        data = load_fixture("organization_membership_created_context_actor.json")
-        instance = OrganizationMembershipCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationMembershipCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_membership_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationMembershipCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_membership_created_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationMembershipCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_membership_created_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_membership_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationMembershipCreatedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_organization_membership_deleted_round_trip(self):
@@ -15665,8 +10160,8 @@ class TestModelRoundTrip:
                 "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "status": "active",
-                "role": {"key": {}},
-                "roles": [{"key": {}}],
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
                 "custom_attributes": {"key": {}},
                 "directory_managed": False,
                 "created_at": "2026-01-15T12:00:00.000Z",
@@ -15695,8 +10190,8 @@ class TestModelRoundTrip:
                 "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "status": "active",
-                "role": {"key": {}},
-                "roles": [{"key": {}}],
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
                 "custom_attributes": {"key": {}},
                 "directory_managed": False,
                 "created_at": "2026-01-15T12:00:00.000Z",
@@ -15724,7 +10219,7 @@ class TestModelRoundTrip:
             "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "status": "active",
-            "role": {"key": {}},
+            "role": {"slug": "admin"},
             "custom_attributes": {"key": {}},
             "directory_managed": False,
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -15752,7 +10247,7 @@ class TestModelRoundTrip:
             "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "status": "active",
-            "role": {"key": {}},
+            "role": {"slug": "admin"},
             "custom_attributes": {"key": {}},
             "directory_managed": False,
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -15769,112 +10264,14 @@ class TestModelRoundTrip:
             "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "status": "unexpected_organization_membership_deleted_data_status",
-            "role": {"key": {}},
-            "roles": [{"key": {}}],
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
             "custom_attributes": {"key": {}},
             "directory_managed": False,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = OrganizationMembershipDeletedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_organization_membership_deleted_context_round_trip(self):
-        data = load_fixture("organization_membership_deleted_context.json")
-        instance = OrganizationMembershipDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationMembershipDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_membership_deleted_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationMembershipDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_membership_deleted_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationMembershipDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_membership_deleted_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_membership_deleted_context_google_analytics_session.json"
-        )
-        instance = OrganizationMembershipDeletedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationMembershipDeletedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_membership_deleted_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationMembershipDeletedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_membership_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationMembershipDeletedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_membership_deleted_context_actor_round_trip(self):
-        data = load_fixture("organization_membership_deleted_context_actor.json")
-        instance = OrganizationMembershipDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationMembershipDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_membership_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationMembershipDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_membership_deleted_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationMembershipDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_membership_deleted_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_membership_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationMembershipDeletedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_organization_membership_updated_round_trip(self):
@@ -15895,8 +10292,8 @@ class TestModelRoundTrip:
                 "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "status": "active",
-                "role": {"key": {}},
-                "roles": [{"key": {}}],
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
                 "custom_attributes": {"key": {}},
                 "directory_managed": False,
                 "created_at": "2026-01-15T12:00:00.000Z",
@@ -15925,8 +10322,8 @@ class TestModelRoundTrip:
                 "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
                 "status": "active",
-                "role": {"key": {}},
-                "roles": [{"key": {}}],
+                "role": {"slug": "admin"},
+                "roles": [{"slug": "admin"}],
                 "custom_attributes": {"key": {}},
                 "directory_managed": False,
                 "created_at": "2026-01-15T12:00:00.000Z",
@@ -15954,7 +10351,7 @@ class TestModelRoundTrip:
             "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "status": "active",
-            "role": {"key": {}},
+            "role": {"slug": "admin"},
             "custom_attributes": {"key": {}},
             "directory_managed": False,
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -15982,7 +10379,7 @@ class TestModelRoundTrip:
             "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "status": "active",
-            "role": {"key": {}},
+            "role": {"slug": "admin"},
             "custom_attributes": {"key": {}},
             "directory_managed": False,
             "created_at": "2026-01-15T12:00:00.000Z",
@@ -15999,112 +10396,14 @@ class TestModelRoundTrip:
             "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
             "status": "unexpected_organization_membership_updated_data_status",
-            "role": {"key": {}},
-            "roles": [{"key": {}}],
+            "role": {"slug": "admin"},
+            "roles": [{"slug": "admin"}],
             "custom_attributes": {"key": {}},
             "directory_managed": False,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
         instance = OrganizationMembershipUpdatedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_organization_membership_updated_context_round_trip(self):
-        data = load_fixture("organization_membership_updated_context.json")
-        instance = OrganizationMembershipUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationMembershipUpdatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_membership_updated_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationMembershipUpdatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_membership_updated_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationMembershipUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_membership_updated_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_membership_updated_context_google_analytics_session.json"
-        )
-        instance = OrganizationMembershipUpdatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationMembershipUpdatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_membership_updated_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationMembershipUpdatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_membership_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationMembershipUpdatedContextGoogleAnalyticsSession.from_dict(
-            data
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_membership_updated_context_actor_round_trip(self):
-        data = load_fixture("organization_membership_updated_context_actor.json")
-        instance = OrganizationMembershipUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationMembershipUpdatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_membership_updated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationMembershipUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_membership_updated_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationMembershipUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_membership_updated_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_membership_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationMembershipUpdatedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_organization_role_created_round_trip(self):
@@ -16211,96 +10510,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["description"] is None
 
-    def test_organization_role_created_context_round_trip(self):
-        data = load_fixture("organization_role_created_context.json")
-        instance = OrganizationRoleCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationRoleCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_role_created_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationRoleCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_role_created_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationRoleCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_role_created_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_role_created_context_google_analytics_session.json"
-        )
-        instance = OrganizationRoleCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationRoleCreatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_role_created_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationRoleCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_role_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationRoleCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_role_created_context_actor_round_trip(self):
-        data = load_fixture("organization_role_created_context_actor.json")
-        instance = OrganizationRoleCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationRoleCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_role_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationRoleCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_role_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationRoleCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_role_created_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_role_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationRoleCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_organization_role_deleted_round_trip(self):
         data = load_fixture("organization_role_deleted.json")
         instance = OrganizationRoleDeleted.from_dict(data)
@@ -16405,96 +10614,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["description"] is None
 
-    def test_organization_role_deleted_context_round_trip(self):
-        data = load_fixture("organization_role_deleted_context.json")
-        instance = OrganizationRoleDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationRoleDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_role_deleted_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationRoleDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_role_deleted_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationRoleDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_role_deleted_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_role_deleted_context_google_analytics_session.json"
-        )
-        instance = OrganizationRoleDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationRoleDeletedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_role_deleted_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationRoleDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_role_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationRoleDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_role_deleted_context_actor_round_trip(self):
-        data = load_fixture("organization_role_deleted_context_actor.json")
-        instance = OrganizationRoleDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationRoleDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_role_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationRoleDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_role_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationRoleDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_role_deleted_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_role_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationRoleDeletedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_organization_role_updated_round_trip(self):
         data = load_fixture("organization_role_updated.json")
         instance = OrganizationRoleUpdated.from_dict(data)
@@ -16598,96 +10717,6 @@ class TestModelRoundTrip:
         instance = OrganizationRoleUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
-
-    def test_organization_role_updated_context_round_trip(self):
-        data = load_fixture("organization_role_updated_context.json")
-        instance = OrganizationRoleUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationRoleUpdatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_role_updated_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationRoleUpdatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_role_updated_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationRoleUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_role_updated_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_role_updated_context_google_analytics_session.json"
-        )
-        instance = OrganizationRoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationRoleUpdatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_role_updated_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationRoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_role_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationRoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_role_updated_context_actor_round_trip(self):
-        data = load_fixture("organization_role_updated_context_actor.json")
-        instance = OrganizationRoleUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationRoleUpdatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_role_updated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationRoleUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_role_updated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationRoleUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_role_updated_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_role_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationRoleUpdatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_organization_updated_round_trip(self):
         data = load_fixture("organization_updated.json")
@@ -16931,92 +10960,6 @@ class TestModelRoundTrip:
         instance = OrganizationUpdatedDataDomain.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_organization_updated_context_round_trip(self):
-        data = load_fixture("organization_updated_context.json")
-        instance = OrganizationUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationUpdatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_updated_context_minimal_payload(self):
-        data = {}
-        instance = OrganizationUpdatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_organization_updated_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = OrganizationUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_organization_updated_context_google_analytics_session_round_trip(self):
-        data = load_fixture(
-            "organization_updated_context_google_analytics_session.json"
-        )
-        instance = OrganizationUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationUpdatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_organization_updated_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_organization_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = OrganizationUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_organization_updated_context_actor_round_trip(self):
-        data = load_fixture("organization_updated_context_actor.json")
-        instance = OrganizationUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = OrganizationUpdatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_organization_updated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_organization_updated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = OrganizationUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_organization_updated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_organization_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = OrganizationUpdatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_password_reset_created_round_trip(self):
         data = load_fixture("password_reset_created.json")
         instance = PasswordResetCreated.from_dict(data)
@@ -17093,92 +11036,6 @@ class TestModelRoundTrip:
         assert serialized["expires_at"] == data["expires_at"]
         assert serialized["created_at"] == data["created_at"]
 
-    def test_password_reset_created_context_round_trip(self):
-        data = load_fixture("password_reset_created_context.json")
-        instance = PasswordResetCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PasswordResetCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_password_reset_created_context_minimal_payload(self):
-        data = {}
-        instance = PasswordResetCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_password_reset_created_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = PasswordResetCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_password_reset_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture(
-            "password_reset_created_context_google_analytics_session.json"
-        )
-        instance = PasswordResetCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PasswordResetCreatedContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_password_reset_created_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = PasswordResetCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_password_reset_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = PasswordResetCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_password_reset_created_context_actor_round_trip(self):
-        data = load_fixture("password_reset_created_context_actor.json")
-        instance = PasswordResetCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PasswordResetCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_password_reset_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = PasswordResetCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_password_reset_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = PasswordResetCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_password_reset_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_password_reset_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = PasswordResetCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_password_reset_succeeded_round_trip(self):
         data = load_fixture("password_reset_succeeded.json")
         instance = PasswordResetSucceeded.from_dict(data)
@@ -17254,94 +11111,6 @@ class TestModelRoundTrip:
         assert serialized["email"] == data["email"]
         assert serialized["expires_at"] == data["expires_at"]
         assert serialized["created_at"] == data["created_at"]
-
-    def test_password_reset_succeeded_context_round_trip(self):
-        data = load_fixture("password_reset_succeeded_context.json")
-        instance = PasswordResetSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PasswordResetSucceededContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_password_reset_succeeded_context_minimal_payload(self):
-        data = {}
-        instance = PasswordResetSucceededContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_password_reset_succeeded_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = PasswordResetSucceededContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_password_reset_succeeded_context_google_analytics_session_round_trip(self):
-        data = load_fixture(
-            "password_reset_succeeded_context_google_analytics_session.json"
-        )
-        instance = PasswordResetSucceededContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PasswordResetSucceededContextGoogleAnalyticsSession.from_dict(
-            serialized
-        )
-        assert restored.to_dict() == serialized
-
-    def test_password_reset_succeeded_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = PasswordResetSucceededContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_password_reset_succeeded_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = PasswordResetSucceededContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_password_reset_succeeded_context_actor_round_trip(self):
-        data = load_fixture("password_reset_succeeded_context_actor.json")
-        instance = PasswordResetSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PasswordResetSucceededContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_password_reset_succeeded_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = PasswordResetSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_password_reset_succeeded_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = PasswordResetSucceededContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_password_reset_succeeded_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_password_reset_succeeded_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = PasswordResetSucceededContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_permission_created_round_trip(self):
         data = load_fixture("permission_created.json")
@@ -17442,84 +11211,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["description"] is None
 
-    def test_permission_created_context_round_trip(self):
-        data = load_fixture("permission_created_context.json")
-        instance = PermissionCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PermissionCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_permission_created_context_minimal_payload(self):
-        data = {}
-        instance = PermissionCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_permission_created_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = PermissionCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_permission_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("permission_created_context_google_analytics_session.json")
-        instance = PermissionCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PermissionCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_permission_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = PermissionCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_permission_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = PermissionCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_permission_created_context_actor_round_trip(self):
-        data = load_fixture("permission_created_context_actor.json")
-        instance = PermissionCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PermissionCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_permission_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = PermissionCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_permission_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = PermissionCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_permission_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_permission_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = PermissionCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_permission_deleted_round_trip(self):
         data = load_fixture("permission_deleted.json")
         instance = PermissionDeleted.from_dict(data)
@@ -17618,84 +11309,6 @@ class TestModelRoundTrip:
         instance = PermissionDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
-
-    def test_permission_deleted_context_round_trip(self):
-        data = load_fixture("permission_deleted_context.json")
-        instance = PermissionDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PermissionDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_permission_deleted_context_minimal_payload(self):
-        data = {}
-        instance = PermissionDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_permission_deleted_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = PermissionDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_permission_deleted_context_google_analytics_session_round_trip(self):
-        data = load_fixture("permission_deleted_context_google_analytics_session.json")
-        instance = PermissionDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PermissionDeletedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_permission_deleted_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = PermissionDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_permission_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = PermissionDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_permission_deleted_context_actor_round_trip(self):
-        data = load_fixture("permission_deleted_context_actor.json")
-        instance = PermissionDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PermissionDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_permission_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = PermissionDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_permission_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = PermissionDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_permission_deleted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_permission_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = PermissionDeletedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_permission_updated_round_trip(self):
         data = load_fixture("permission_updated.json")
@@ -17796,84 +11409,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["description"] is None
 
-    def test_permission_updated_context_round_trip(self):
-        data = load_fixture("permission_updated_context.json")
-        instance = PermissionUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PermissionUpdatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_permission_updated_context_minimal_payload(self):
-        data = {}
-        instance = PermissionUpdatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_permission_updated_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = PermissionUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_permission_updated_context_google_analytics_session_round_trip(self):
-        data = load_fixture("permission_updated_context_google_analytics_session.json")
-        instance = PermissionUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PermissionUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_permission_updated_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = PermissionUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_permission_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = PermissionUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_permission_updated_context_actor_round_trip(self):
-        data = load_fixture("permission_updated_context_actor.json")
-        instance = PermissionUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = PermissionUpdatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_permission_updated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = PermissionUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_permission_updated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = PermissionUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_permission_updated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_permission_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = PermissionUpdatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_role_created_round_trip(self):
         data = load_fixture("role_created.json")
         instance = RoleCreated.from_dict(data)
@@ -17959,84 +11494,6 @@ class TestModelRoundTrip:
         instance = RoleCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "permissions" not in serialized
-
-    def test_role_created_context_round_trip(self):
-        data = load_fixture("role_created_context.json")
-        instance = RoleCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = RoleCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_role_created_context_minimal_payload(self):
-        data = {}
-        instance = RoleCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_role_created_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = RoleCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_role_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("role_created_context_google_analytics_session.json")
-        instance = RoleCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = RoleCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_role_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = RoleCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_role_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = RoleCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_role_created_context_actor_round_trip(self):
-        data = load_fixture("role_created_context_actor.json")
-        instance = RoleCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = RoleCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_role_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = RoleCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_role_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = RoleCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_role_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_role_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = RoleCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_role_deleted_round_trip(self):
         data = load_fixture("role_deleted.json")
@@ -18124,84 +11581,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "permissions" not in serialized
 
-    def test_role_deleted_context_round_trip(self):
-        data = load_fixture("role_deleted_context.json")
-        instance = RoleDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = RoleDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_role_deleted_context_minimal_payload(self):
-        data = {}
-        instance = RoleDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_role_deleted_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = RoleDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_role_deleted_context_google_analytics_session_round_trip(self):
-        data = load_fixture("role_deleted_context_google_analytics_session.json")
-        instance = RoleDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = RoleDeletedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_role_deleted_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = RoleDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_role_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = RoleDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_role_deleted_context_actor_round_trip(self):
-        data = load_fixture("role_deleted_context_actor.json")
-        instance = RoleDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = RoleDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_role_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = RoleDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_role_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = RoleDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_role_deleted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_role_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = RoleDeletedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_role_updated_round_trip(self):
         data = load_fixture("role_updated.json")
         instance = RoleUpdated.from_dict(data)
@@ -18287,84 +11666,6 @@ class TestModelRoundTrip:
         instance = RoleUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "permissions" not in serialized
-
-    def test_role_updated_context_round_trip(self):
-        data = load_fixture("role_updated_context.json")
-        instance = RoleUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = RoleUpdatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_role_updated_context_minimal_payload(self):
-        data = {}
-        instance = RoleUpdatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_role_updated_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = RoleUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_role_updated_context_google_analytics_session_round_trip(self):
-        data = load_fixture("role_updated_context_google_analytics_session.json")
-        instance = RoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = RoleUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_role_updated_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = RoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_role_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = RoleUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_role_updated_context_actor_round_trip(self):
-        data = load_fixture("role_updated_context_actor.json")
-        instance = RoleUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = RoleUpdatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_role_updated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = RoleUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_role_updated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = RoleUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_role_updated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_role_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = RoleUpdatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_session_created_round_trip(self):
         data = load_fixture("session_created.json")
@@ -18559,84 +11860,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["reason"] is None
 
-    def test_session_created_context_round_trip(self):
-        data = load_fixture("session_created_context.json")
-        instance = SessionCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = SessionCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_session_created_context_minimal_payload(self):
-        data = {}
-        instance = SessionCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_session_created_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = SessionCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_session_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("session_created_context_google_analytics_session.json")
-        instance = SessionCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = SessionCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_session_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = SessionCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_session_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = SessionCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_session_created_context_actor_round_trip(self):
-        data = load_fixture("session_created_context_actor.json")
-        instance = SessionCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = SessionCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_session_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = SessionCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_session_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = SessionCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_session_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_session_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = SessionCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_session_revoked_round_trip(self):
         data = load_fixture("session_revoked.json")
         instance = SessionRevoked.from_dict(data)
@@ -18830,84 +12053,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["reason"] is None
 
-    def test_session_revoked_context_round_trip(self):
-        data = load_fixture("session_revoked_context.json")
-        instance = SessionRevokedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = SessionRevokedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_session_revoked_context_minimal_payload(self):
-        data = {}
-        instance = SessionRevokedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_session_revoked_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = SessionRevokedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_session_revoked_context_google_analytics_session_round_trip(self):
-        data = load_fixture("session_revoked_context_google_analytics_session.json")
-        instance = SessionRevokedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = SessionRevokedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_session_revoked_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = SessionRevokedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_session_revoked_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = SessionRevokedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_session_revoked_context_actor_round_trip(self):
-        data = load_fixture("session_revoked_context_actor.json")
-        instance = SessionRevokedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = SessionRevokedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_session_revoked_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = SessionRevokedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_session_revoked_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = SessionRevokedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_session_revoked_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_session_revoked_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = SessionRevokedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_user_created_round_trip(self):
         data = load_fixture("user_created.json")
         instance = UserCreated.from_dict(data)
@@ -18971,164 +12116,6 @@ class TestModelRoundTrip:
         instance = UserCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
-
-    def test_user_created_data_round_trip(self):
-        data = load_fixture("user_created_data.json")
-        instance = UserCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserCreatedData.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_created_data_minimal_payload(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "last_sign_in_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = UserCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["first_name"] == data["first_name"]
-        assert serialized["last_name"] == data["last_name"]
-        assert serialized["profile_picture_url"] == data["profile_picture_url"]
-        assert serialized["email"] == data["email"]
-        assert serialized["email_verified"] == data["email_verified"]
-        assert serialized["external_id"] == data["external_id"]
-        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_user_created_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-            "locale": "en-US",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = UserCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert "metadata" not in serialized
-
-    def test_user_created_data_preserves_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "metadata": {"timezone": "America/New_York"},
-            "last_sign_in_at": None,
-            "locale": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = UserCreatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["profile_picture_url"] is None
-        assert serialized["external_id"] is None
-        assert serialized["last_sign_in_at"] is None
-        assert serialized["locale"] is None
-
-    def test_user_created_context_round_trip(self):
-        data = load_fixture("user_created_context.json")
-        instance = UserCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_created_context_minimal_payload(self):
-        data = {}
-        instance = UserCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_user_created_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = UserCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_user_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("user_created_context_google_analytics_session.json")
-        instance = UserCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = UserCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_user_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = UserCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_user_created_context_actor_round_trip(self):
-        data = load_fixture("user_created_context_actor.json")
-        instance = UserCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = UserCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_user_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = UserCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_user_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_user_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = UserCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_user_deleted_round_trip(self):
         data = load_fixture("user_deleted.json")
@@ -19194,164 +12181,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "context" not in serialized
 
-    def test_user_deleted_data_round_trip(self):
-        data = load_fixture("user_deleted_data.json")
-        instance = UserDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserDeletedData.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_deleted_data_minimal_payload(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "last_sign_in_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = UserDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["first_name"] == data["first_name"]
-        assert serialized["last_name"] == data["last_name"]
-        assert serialized["profile_picture_url"] == data["profile_picture_url"]
-        assert serialized["email"] == data["email"]
-        assert serialized["email_verified"] == data["email_verified"]
-        assert serialized["external_id"] == data["external_id"]
-        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_user_deleted_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-            "locale": "en-US",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = UserDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert "metadata" not in serialized
-
-    def test_user_deleted_data_preserves_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "metadata": {"timezone": "America/New_York"},
-            "last_sign_in_at": None,
-            "locale": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = UserDeletedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["profile_picture_url"] is None
-        assert serialized["external_id"] is None
-        assert serialized["last_sign_in_at"] is None
-        assert serialized["locale"] is None
-
-    def test_user_deleted_context_round_trip(self):
-        data = load_fixture("user_deleted_context.json")
-        instance = UserDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_deleted_context_minimal_payload(self):
-        data = {}
-        instance = UserDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_user_deleted_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = UserDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_user_deleted_context_google_analytics_session_round_trip(self):
-        data = load_fixture("user_deleted_context_google_analytics_session.json")
-        instance = UserDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserDeletedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_deleted_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = UserDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_user_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = UserDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_user_deleted_context_actor_round_trip(self):
-        data = load_fixture("user_deleted_context_actor.json")
-        instance = UserDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = UserDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_user_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = UserDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_user_deleted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_user_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = UserDeletedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_user_updated_round_trip(self):
         data = load_fixture("user_updated.json")
         instance = UserUpdated.from_dict(data)
@@ -19415,164 +12244,6 @@ class TestModelRoundTrip:
         instance = UserUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
-
-    def test_user_updated_data_round_trip(self):
-        data = load_fixture("user_updated_data.json")
-        instance = UserUpdatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserUpdatedData.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_updated_data_minimal_payload(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "last_sign_in_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = UserUpdatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["first_name"] == data["first_name"]
-        assert serialized["last_name"] == data["last_name"]
-        assert serialized["profile_picture_url"] == data["profile_picture_url"]
-        assert serialized["email"] == data["email"]
-        assert serialized["email_verified"] == data["email_verified"]
-        assert serialized["external_id"] == data["external_id"]
-        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_user_updated_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-            "locale": "en-US",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = UserUpdatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert "metadata" not in serialized
-
-    def test_user_updated_data_preserves_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "metadata": {"timezone": "America/New_York"},
-            "last_sign_in_at": None,
-            "locale": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = UserUpdatedData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["profile_picture_url"] is None
-        assert serialized["external_id"] is None
-        assert serialized["last_sign_in_at"] is None
-        assert serialized["locale"] is None
-
-    def test_user_updated_context_round_trip(self):
-        data = load_fixture("user_updated_context.json")
-        instance = UserUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserUpdatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_updated_context_minimal_payload(self):
-        data = {}
-        instance = UserUpdatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_user_updated_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = UserUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_user_updated_context_google_analytics_session_round_trip(self):
-        data = load_fixture("user_updated_context_google_analytics_session.json")
-        instance = UserUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_updated_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = UserUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_user_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = UserUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_user_updated_context_actor_round_trip(self):
-        data = load_fixture("user_updated_context_actor.json")
-        instance = UserUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = UserUpdatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_updated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = UserUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_user_updated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = UserUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_user_updated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_user_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = UserUpdatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_vault_byok_key_verification_completed_round_trip(self):
         data = load_fixture("vault_byok_key_verification_completed.json")
@@ -19649,112 +12320,6 @@ class TestModelRoundTrip:
             "verified": True,
         }
         instance = VaultByokKeyVerificationCompletedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_vault_byok_key_verification_completed_context_round_trip(self):
-        data = load_fixture("vault_byok_key_verification_completed_context.json")
-        instance = VaultByokKeyVerificationCompletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultByokKeyVerificationCompletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_byok_key_verification_completed_context_minimal_payload(self):
-        data = {}
-        instance = VaultByokKeyVerificationCompletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_vault_byok_key_verification_completed_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = VaultByokKeyVerificationCompletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_vault_byok_key_verification_completed_context_google_analytics_session_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "vault_byok_key_verification_completed_context_google_analytics_session.json"
-        )
-        instance = (
-            VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = (
-            VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession.from_dict(
-                serialized
-            )
-        )
-        assert restored.to_dict() == serialized
-
-    def test_vault_byok_key_verification_completed_context_google_analytics_session_minimal_payload(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_vault_byok_key_verification_completed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = (
-            VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession.from_dict(
-                data
-            )
-        )
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_vault_byok_key_verification_completed_context_actor_round_trip(self):
-        data = load_fixture("vault_byok_key_verification_completed_context_actor.json")
-        instance = VaultByokKeyVerificationCompletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultByokKeyVerificationCompletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_byok_key_verification_completed_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultByokKeyVerificationCompletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_vault_byok_key_verification_completed_context_actor_preserves_nullable_fields(
-        self,
-    ):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultByokKeyVerificationCompletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_vault_byok_key_verification_completed_context_actor_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_vault_byok_key_verification_completed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = VaultByokKeyVerificationCompletedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_vault_data_created_round_trip(self):
@@ -19845,84 +12410,6 @@ class TestModelRoundTrip:
         instance = VaultDataCreatedData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_vault_data_created_context_round_trip(self):
-        data = load_fixture("vault_data_created_context.json")
-        instance = VaultDataCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_created_context_minimal_payload(self):
-        data = {}
-        instance = VaultDataCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_vault_data_created_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = VaultDataCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_vault_data_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("vault_data_created_context_google_analytics_session.json")
-        instance = VaultDataCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDataCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_vault_data_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDataCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_vault_data_created_context_actor_round_trip(self):
-        data = load_fixture("vault_data_created_context_actor.json")
-        instance = VaultDataCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDataCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_vault_data_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDataCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_vault_data_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_vault_data_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = VaultDataCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_vault_data_deleted_round_trip(self):
         data = load_fixture("vault_data_deleted.json")
         instance = VaultDataDeleted.from_dict(data)
@@ -19999,84 +12486,6 @@ class TestModelRoundTrip:
             "kv_name": "user-secrets",
         }
         instance = VaultDataDeletedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_vault_data_deleted_context_round_trip(self):
-        data = load_fixture("vault_data_deleted_context.json")
-        instance = VaultDataDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataDeletedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_deleted_context_minimal_payload(self):
-        data = {}
-        instance = VaultDataDeletedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_vault_data_deleted_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = VaultDataDeletedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_vault_data_deleted_context_google_analytics_session_round_trip(self):
-        data = load_fixture("vault_data_deleted_context_google_analytics_session.json")
-        instance = VaultDataDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataDeletedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_deleted_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDataDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_vault_data_deleted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDataDeletedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_vault_data_deleted_context_actor_round_trip(self):
-        data = load_fixture("vault_data_deleted_context_actor.json")
-        instance = VaultDataDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataDeletedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_deleted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDataDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_vault_data_deleted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDataDeletedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_vault_data_deleted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_vault_data_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = VaultDataDeletedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_vault_data_read_round_trip(self):
@@ -20160,84 +12569,6 @@ class TestModelRoundTrip:
             "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
         }
         instance = VaultDataReadData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_vault_data_read_context_round_trip(self):
-        data = load_fixture("vault_data_read_context.json")
-        instance = VaultDataReadContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataReadContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_read_context_minimal_payload(self):
-        data = {}
-        instance = VaultDataReadContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_vault_data_read_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = VaultDataReadContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_vault_data_read_context_google_analytics_session_round_trip(self):
-        data = load_fixture("vault_data_read_context_google_analytics_session.json")
-        instance = VaultDataReadContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataReadContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_read_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDataReadContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_vault_data_read_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDataReadContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_vault_data_read_context_actor_round_trip(self):
-        data = load_fixture("vault_data_read_context_actor.json")
-        instance = VaultDataReadContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataReadContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_read_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDataReadContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_vault_data_read_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDataReadContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_vault_data_read_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_vault_data_read_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = VaultDataReadContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_vault_data_updated_round_trip(self):
@@ -20328,84 +12659,6 @@ class TestModelRoundTrip:
         instance = VaultDataUpdatedData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_vault_data_updated_context_round_trip(self):
-        data = load_fixture("vault_data_updated_context.json")
-        instance = VaultDataUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataUpdatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_updated_context_minimal_payload(self):
-        data = {}
-        instance = VaultDataUpdatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_vault_data_updated_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = VaultDataUpdatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_vault_data_updated_context_google_analytics_session_round_trip(self):
-        data = load_fixture("vault_data_updated_context_google_analytics_session.json")
-        instance = VaultDataUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataUpdatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_updated_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDataUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_vault_data_updated_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDataUpdatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_vault_data_updated_context_actor_round_trip(self):
-        data = load_fixture("vault_data_updated_context_actor.json")
-        instance = VaultDataUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDataUpdatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_data_updated_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDataUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_vault_data_updated_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDataUpdatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_vault_data_updated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_vault_data_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = VaultDataUpdatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_vault_dek_decrypted_round_trip(self):
         data = load_fixture("vault_dek_decrypted.json")
         instance = VaultDekDecrypted.from_dict(data)
@@ -20482,86 +12735,6 @@ class TestModelRoundTrip:
             "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
         }
         instance = VaultDekDecryptedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_vault_dek_decrypted_context_round_trip(self):
-        data = load_fixture("vault_dek_decrypted_context.json")
-        instance = VaultDekDecryptedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDekDecryptedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_dek_decrypted_context_minimal_payload(self):
-        data = {}
-        instance = VaultDekDecryptedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_vault_dek_decrypted_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = VaultDekDecryptedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_vault_dek_decrypted_context_google_analytics_session_round_trip(self):
-        data = load_fixture("vault_dek_decrypted_context_google_analytics_session.json")
-        instance = VaultDekDecryptedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDekDecryptedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_dek_decrypted_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDekDecryptedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_vault_dek_decrypted_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDekDecryptedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_vault_dek_decrypted_context_actor_round_trip(self):
-        data = load_fixture("vault_dek_decrypted_context_actor.json")
-        instance = VaultDekDecryptedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDekDecryptedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_dek_decrypted_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDekDecryptedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_vault_dek_decrypted_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDekDecryptedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_vault_dek_decrypted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_vault_dek_decrypted_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = VaultDekDecryptedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_vault_dek_read_round_trip(self):
@@ -20647,84 +12820,6 @@ class TestModelRoundTrip:
         instance = VaultDekReadData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_vault_dek_read_context_round_trip(self):
-        data = load_fixture("vault_dek_read_context.json")
-        instance = VaultDekReadContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDekReadContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_dek_read_context_minimal_payload(self):
-        data = {}
-        instance = VaultDekReadContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_vault_dek_read_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = VaultDekReadContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_vault_dek_read_context_google_analytics_session_round_trip(self):
-        data = load_fixture("vault_dek_read_context_google_analytics_session.json")
-        instance = VaultDekReadContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDekReadContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_dek_read_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDekReadContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_vault_dek_read_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultDekReadContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_vault_dek_read_context_actor_round_trip(self):
-        data = load_fixture("vault_dek_read_context_actor.json")
-        instance = VaultDekReadContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultDekReadContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_dek_read_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDekReadContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_vault_dek_read_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultDekReadContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_vault_dek_read_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_vault_dek_read_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = VaultDekReadContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_vault_kek_created_round_trip(self):
         data = load_fixture("vault_kek_created.json")
         instance = VaultKekCreated.from_dict(data)
@@ -20808,84 +12903,6 @@ class TestModelRoundTrip:
         instance = VaultKekCreatedData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_vault_kek_created_context_round_trip(self):
-        data = load_fixture("vault_kek_created_context.json")
-        instance = VaultKekCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultKekCreatedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_kek_created_context_minimal_payload(self):
-        data = {}
-        instance = VaultKekCreatedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_vault_kek_created_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = VaultKekCreatedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_vault_kek_created_context_google_analytics_session_round_trip(self):
-        data = load_fixture("vault_kek_created_context_google_analytics_session.json")
-        instance = VaultKekCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultKekCreatedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_kek_created_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultKekCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_vault_kek_created_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultKekCreatedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_vault_kek_created_context_actor_round_trip(self):
-        data = load_fixture("vault_kek_created_context_actor.json")
-        instance = VaultKekCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultKekCreatedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_kek_created_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultKekCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_vault_kek_created_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultKekCreatedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_vault_kek_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_vault_kek_created_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = VaultKekCreatedContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_vault_metadata_read_round_trip(self):
         data = load_fixture("vault_metadata_read.json")
         instance = VaultMetadataRead.from_dict(data)
@@ -20964,86 +12981,6 @@ class TestModelRoundTrip:
         instance = VaultMetadataReadData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_vault_metadata_read_context_round_trip(self):
-        data = load_fixture("vault_metadata_read_context.json")
-        instance = VaultMetadataReadContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultMetadataReadContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_metadata_read_context_minimal_payload(self):
-        data = {}
-        instance = VaultMetadataReadContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_vault_metadata_read_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {}
-        instance = VaultMetadataReadContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_vault_metadata_read_context_google_analytics_session_round_trip(self):
-        data = load_fixture("vault_metadata_read_context_google_analytics_session.json")
-        instance = VaultMetadataReadContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultMetadataReadContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_metadata_read_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultMetadataReadContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_vault_metadata_read_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultMetadataReadContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_vault_metadata_read_context_actor_round_trip(self):
-        data = load_fixture("vault_metadata_read_context_actor.json")
-        instance = VaultMetadataReadContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultMetadataReadContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_metadata_read_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultMetadataReadContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_vault_metadata_read_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultMetadataReadContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_vault_metadata_read_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_vault_metadata_read_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = VaultMetadataReadContextActor.from_dict(data)
-        assert instance.to_dict() == data
-
     def test_vault_names_listed_round_trip(self):
         data = load_fixture("vault_names_listed.json")
         instance = VaultNamesListed.from_dict(data)
@@ -21115,84 +13052,6 @@ class TestModelRoundTrip:
             "actor_name": "Jane Doe",
         }
         instance = VaultNamesListedData.from_dict(data)
-        assert instance.to_dict() == data
-
-    def test_vault_names_listed_context_round_trip(self):
-        data = load_fixture("vault_names_listed_context.json")
-        instance = VaultNamesListedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultNamesListedContext.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_names_listed_context_minimal_payload(self):
-        data = {}
-        instance = VaultNamesListedContext.from_dict(data)
-        assert instance.to_dict() is not None
-
-    def test_vault_names_listed_context_omits_absent_optional_non_nullable_fields(self):
-        data = {}
-        instance = VaultNamesListedContext.from_dict(data)
-        serialized = instance.to_dict()
-        assert "google_analytics_client_id" not in serialized
-        assert "google_analytics_sessions" not in serialized
-        assert "ajs_anonymous_id" not in serialized
-        assert "client_id" not in serialized
-        assert "actor" not in serialized
-        assert "previous_attributes" not in serialized
-
-    def test_vault_names_listed_context_google_analytics_session_round_trip(self):
-        data = load_fixture("vault_names_listed_context_google_analytics_session.json")
-        instance = VaultNamesListedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultNamesListedContextGoogleAnalyticsSession.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_names_listed_context_google_analytics_session_minimal_payload(self):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultNamesListedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["containerId"] == data["containerId"]
-
-    def test_vault_names_listed_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {"containerId": "GTM-ABCDEF"}
-        instance = VaultNamesListedContextGoogleAnalyticsSession.from_dict(data)
-        serialized = instance.to_dict()
-        assert "sessionId" not in serialized
-        assert "sessionNumber" not in serialized
-
-    def test_vault_names_listed_context_actor_round_trip(self):
-        data = load_fixture("vault_names_listed_context_actor.json")
-        instance = VaultNamesListedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = VaultNamesListedContextActor.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_vault_names_listed_context_actor_minimal_payload(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultNamesListedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["id"] == data["id"]
-        assert serialized["source"] == data["source"]
-        assert serialized["name"] == data["name"]
-
-    def test_vault_names_listed_context_actor_preserves_nullable_fields(self):
-        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": None}
-        instance = VaultNamesListedContextActor.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["name"] is None
-
-    def test_vault_names_listed_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_vault_names_listed_context_actor_source",
-            "name": "Jane Doe",
-        }
-        instance = VaultNamesListedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
     def test_jwt_template_response_round_trip(self):
@@ -21981,86 +13840,6 @@ class TestModelRoundTrip:
         }
         instance = UserOrganizationMembership.from_dict(data)
         assert instance.to_dict() == data
-
-    def test_user_round_trip(self):
-        data = load_fixture("user.json")
-        instance = User.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = User.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_user_minimal_payload(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "last_sign_in_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = User.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["first_name"] == data["first_name"]
-        assert serialized["last_name"] == data["last_name"]
-        assert serialized["profile_picture_url"] == data["profile_picture_url"]
-        assert serialized["email"] == data["email"]
-        assert serialized["email_verified"] == data["email_verified"]
-        assert serialized["external_id"] == data["external_id"]
-        assert serialized["last_sign_in_at"] == data["last_sign_in_at"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_user_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-            "locale": "en-US",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = User.from_dict(data)
-        serialized = instance.to_dict()
-        assert "metadata" not in serialized
-
-    def test_user_preserves_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "metadata": {"timezone": "America/New_York"},
-            "last_sign_in_at": None,
-            "locale": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = User.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["first_name"] is None
-        assert serialized["last_name"] is None
-        assert serialized["profile_picture_url"] is None
-        assert serialized["external_id"] is None
-        assert serialized["last_sign_in_at"] is None
-        assert serialized["locale"] is None
 
     def test_email_verification_round_trip(self):
         data = load_fixture("email_verification.json")
@@ -23015,6 +14794,55 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["after"] is None
 
+    def test_directory_user_email_round_trip(self):
+        data = load_fixture("directory_user_email.json")
+        instance = DirectoryUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DirectoryUserEmail.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_directory_user_email_minimal_payload(self):
+        data = {}
+        instance = DirectoryUserEmail.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_directory_user_email_omits_absent_optional_non_nullable_fields(self):
+        data = {"value": "marcelina.davis@example.com"}
+        instance = DirectoryUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert "primary" not in serialized
+        assert "type" not in serialized
+
+    def test_directory_user_email_preserves_nullable_fields(self):
+        data = {"primary": True, "type": "work", "value": None}
+        instance = DirectoryUserEmail.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["value"] is None
+
+    def test_event_context_google_analytics_session_round_trip(self):
+        data = load_fixture("event_context_google_analytics_session.json")
+        instance = EventContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = EventContextGoogleAnalyticsSession.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_event_context_google_analytics_session_minimal_payload(self):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = EventContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["containerId"] == data["containerId"]
+
+    def test_event_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {"containerId": "GTM-ABCDEF"}
+        instance = EventContextGoogleAnalyticsSession.from_dict(data)
+        serialized = instance.to_dict()
+        assert "sessionId" not in serialized
+        assert "sessionNumber" not in serialized
+
     def test_directory_user_with_groups_email_round_trip(self):
         data = load_fixture("directory_user_with_groups_email.json")
         instance = DirectoryUserWithGroupsEmail.from_dict(data)
@@ -23356,104 +15184,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert "value" not in serialized
         assert "label" not in serialized
-
-    def test_list_round_trip(self):
-        data = load_fixture("list.json")
-        instance = ListModel.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ListModel.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_list_minimal_payload(self):
-        data = {
-            "object": "list",
-            "data": [
-                {
-                    "slug": "org-admin",
-                    "object": "role",
-                    "id": "role_01EHQMYV6MBK39QC5PZXHY59C3",
-                    "name": "Organization Admin",
-                    "description": "Can manage all resources",
-                    "type": "OrganizationRole",
-                    "resource_type_slug": "default",
-                    "permissions": ["posts:read", "posts:write"],
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-        }
-        instance = ListModel.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["data"] == data["data"]
-
-    def test_list_data_round_trip(self):
-        data = load_fixture("list_data.json")
-        instance = ListData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = ListData.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_list_data_minimal_payload(self):
-        data = {
-            "slug": "org-admin",
-            "object": "role",
-            "id": "role_01EHQMYV6MBK39QC5PZXHY59C3",
-            "name": "Organization Admin",
-            "description": None,
-            "type": "OrganizationRole",
-            "resource_type_slug": "default",
-            "permissions": ["posts:read", "posts:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = ListData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["slug"] == data["slug"]
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["name"] == data["name"]
-        assert serialized["description"] == data["description"]
-        assert serialized["type"] == data["type"]
-        assert serialized["resource_type_slug"] == data["resource_type_slug"]
-        assert serialized["permissions"] == data["permissions"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_list_data_preserves_nullable_fields(self):
-        data = {
-            "slug": "org-admin",
-            "object": "role",
-            "id": "role_01EHQMYV6MBK39QC5PZXHY59C3",
-            "name": "Organization Admin",
-            "description": None,
-            "type": "OrganizationRole",
-            "resource_type_slug": "default",
-            "permissions": ["posts:read", "posts:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = ListData.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["description"] is None
-
-    def test_list_data_round_trips_unknown_enum_values(self):
-        data = {
-            "slug": "org-admin",
-            "object": "role",
-            "id": "role_01EHQMYV6MBK39QC5PZXHY59C3",
-            "name": "Organization Admin",
-            "description": "Can manage all resources",
-            "type": "unexpected_list_data_type",
-            "resource_type_slug": "default",
-            "permissions": ["posts:read", "posts:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = ListData.from_dict(data)
-        assert instance.to_dict() == data
 
     def test_permission_round_trip(self):
         data = load_fixture("permission.json")

@@ -17,6 +17,8 @@ class CreateOrganizationRole:
     """A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix."""
     description: Optional[str] = None
     """An optional description of the role's purpose."""
+    resource_type_slug: Optional[str] = None
+    """The slug of the resource type the role is scoped to."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "CreateOrganizationRole":
@@ -26,6 +28,7 @@ class CreateOrganizationRole:
                 name=data["name"],
                 slug=data.get("slug"),
                 description=data.get("description"),
+                resource_type_slug=data.get("resource_type_slug"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateOrganizationRole", e)
@@ -40,4 +43,6 @@ class CreateOrganizationRole:
             result["description"] = self.description
         else:
             result["description"] = None
+        if self.resource_type_slug is not None:
+            result["resource_type_slug"] = self.resource_type_slug
         return result

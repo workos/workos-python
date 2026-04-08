@@ -9,9 +9,7 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .organization_domain_verification_failed_context import (
-    OrganizationDomainVerificationFailedContext,
-)
+from .event_context import EventContext
 from .organization_domain_verification_failed_data import (
     OrganizationDomainVerificationFailedData,
 )
@@ -30,8 +28,7 @@ class OrganizationDomainVerificationFailed:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["OrganizationDomainVerificationFailedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "OrganizationDomainVerificationFailed":
@@ -45,9 +42,7 @@ class OrganizationDomainVerificationFailed:
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=OrganizationDomainVerificationFailedContext.from_dict(
-                    cast(Dict[str, Any], _v)
-                )
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

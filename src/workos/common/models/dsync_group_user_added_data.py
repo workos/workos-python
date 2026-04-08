@@ -7,8 +7,8 @@ from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
-from .dsync_group_user_added_data_group import DsyncGroupUserAddedDataGroup
-from .dsync_group_user_added_data_user import DsyncGroupUserAddedDataUser
+from workos.directory_sync.models.directory_group import DirectoryGroup
+from .directory_user import DirectoryUser
 
 
 @dataclass(slots=True)
@@ -17,9 +17,9 @@ class DsyncGroupUserAddedData:
 
     directory_id: str
     """The ID of the directory."""
-    user: "DsyncGroupUserAddedDataUser"
+    user: "DirectoryUser"
     """The directory user added to the group."""
-    group: "DsyncGroupUserAddedDataGroup"
+    group: "DirectoryGroup"
     """The directory group the user was added to."""
 
     @classmethod
@@ -28,12 +28,8 @@ class DsyncGroupUserAddedData:
         try:
             return cls(
                 directory_id=data["directory_id"],
-                user=DsyncGroupUserAddedDataUser.from_dict(
-                    cast(Dict[str, Any], data["user"])
-                ),
-                group=DsyncGroupUserAddedDataGroup.from_dict(
-                    cast(Dict[str, Any], data["group"])
-                ),
+                user=DirectoryUser.from_dict(cast(Dict[str, Any], data["user"])),
+                group=DirectoryGroup.from_dict(cast(Dict[str, Any], data["group"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DsyncGroupUserAddedData", e)

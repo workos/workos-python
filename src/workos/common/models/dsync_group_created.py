@@ -9,8 +9,8 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .dsync_group_created_context import DsyncGroupCreatedContext
-from .dsync_group_created_data import DsyncGroupCreatedData
+from workos.directory_sync.models.directory_group import DirectoryGroup
+from .event_context import EventContext
 
 
 @dataclass(slots=True)
@@ -20,14 +20,13 @@ class DsyncGroupCreated:
     id: str
     """Unique identifier for the event."""
     event: Literal["dsync.group.created"]
-    data: "DsyncGroupCreatedData"
+    data: "DirectoryGroup"
     """The event payload."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["DsyncGroupCreatedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DsyncGroupCreated":
@@ -36,12 +35,10 @@ class DsyncGroupCreated:
             return cls(
                 id=data["id"],
                 event=data["event"],
-                data=DsyncGroupCreatedData.from_dict(
-                    cast(Dict[str, Any], data["data"])
-                ),
+                data=DirectoryGroup.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=DsyncGroupCreatedContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

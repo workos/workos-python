@@ -9,9 +9,7 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .vault_byok_key_verification_completed_context import (
-    VaultByokKeyVerificationCompletedContext,
-)
+from .event_context import EventContext
 from .vault_byok_key_verification_completed_data import (
     VaultByokKeyVerificationCompletedData,
 )
@@ -30,8 +28,7 @@ class VaultByokKeyVerificationCompleted:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["VaultByokKeyVerificationCompletedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "VaultByokKeyVerificationCompleted":
@@ -45,9 +42,7 @@ class VaultByokKeyVerificationCompleted:
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=VaultByokKeyVerificationCompletedContext.from_dict(
-                    cast(Dict[str, Any], _v)
-                )
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

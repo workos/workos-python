@@ -12,7 +12,6 @@ from .models import (
     AuthorizationCheck,
     AuthorizationPermission,
     AuthorizationResource,
-    ListModel,
     Permission,
     Role,
     RoleAssignment,
@@ -328,7 +327,7 @@ class Authorization:
         organization_id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> ListModel:
+    ) -> RoleList:
         """List organization roles
 
         Get a list of all roles that apply to an organization. This includes both environment roles and organization-specific roles, returned in priority order.
@@ -338,7 +337,7 @@ class Authorization:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ListModel
+            RoleList
 
         Raises:
             AuthorizationError: If the request is forbidden (403).
@@ -350,7 +349,7 @@ class Authorization:
         return self._client.request(
             method="get",
             path=f"authorization/organizations/{organization_id}/roles",
-            model=ListModel,
+            model=RoleList,
             request_options=request_options,
         )
 
@@ -361,6 +360,7 @@ class Authorization:
         name: str,
         slug: Optional[str] = None,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
         """Create a custom organization role
@@ -372,6 +372,7 @@ class Authorization:
             slug: A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix.
             name: A descriptive name for the role.
             description: An optional description of the role's purpose.
+            resource_type_slug: The slug of the resource type the role is scoped to.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -393,6 +394,7 @@ class Authorization:
                 "slug": slug,
                 "name": name,
                 "description": description,
+                "resource_type_slug": resource_type_slug,
             }.items()
             if v is not None
         }
@@ -1882,7 +1884,7 @@ class AsyncAuthorization:
         organization_id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> ListModel:
+    ) -> RoleList:
         """List organization roles
 
         Get a list of all roles that apply to an organization. This includes both environment roles and organization-specific roles, returned in priority order.
@@ -1892,7 +1894,7 @@ class AsyncAuthorization:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ListModel
+            RoleList
 
         Raises:
             AuthorizationError: If the request is forbidden (403).
@@ -1904,7 +1906,7 @@ class AsyncAuthorization:
         return await self._client.request(
             method="get",
             path=f"authorization/organizations/{organization_id}/roles",
-            model=ListModel,
+            model=RoleList,
             request_options=request_options,
         )
 
@@ -1915,6 +1917,7 @@ class AsyncAuthorization:
         name: str,
         slug: Optional[str] = None,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
         """Create a custom organization role
@@ -1926,6 +1929,7 @@ class AsyncAuthorization:
             slug: A unique identifier for the role within the organization. When provided, must begin with 'org-' and contain only lowercase letters, numbers, hyphens, and underscores. When omitted, a slug is auto-generated from the role name and a random suffix.
             name: A descriptive name for the role.
             description: An optional description of the role's purpose.
+            resource_type_slug: The slug of the resource type the role is scoped to.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1947,6 +1951,7 @@ class AsyncAuthorization:
                 "slug": slug,
                 "name": name,
                 "description": description,
+                "resource_type_slug": resource_type_slug,
             }.items()
             if v is not None
         }

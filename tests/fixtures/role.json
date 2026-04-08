@@ -5,7 +5,7 @@
   "name": "Admin",
   "description": "Can manage all resources",
   "type": "EnvironmentRole",
-  "resource_type_slug": "default",
+  "resource_type_slug": "organization",
   "permissions": [
     "posts:read",
     "posts:write"

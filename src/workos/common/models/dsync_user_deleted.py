@@ -9,8 +9,8 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .dsync_user_deleted_context import DsyncUserDeletedContext
-from .dsync_user_deleted_data import DsyncUserDeletedData
+from .directory_user import DirectoryUser
+from .event_context import EventContext
 
 
 @dataclass(slots=True)
@@ -20,14 +20,13 @@ class DsyncUserDeleted:
     id: str
     """Unique identifier for the event."""
     event: Literal["dsync.user.deleted"]
-    data: "DsyncUserDeletedData"
+    data: "DirectoryUser"
     """The event payload."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["DsyncUserDeletedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DsyncUserDeleted":
@@ -36,10 +35,10 @@ class DsyncUserDeleted:
             return cls(
                 id=data["id"],
                 event=data["event"],
-                data=DsyncUserDeletedData.from_dict(cast(Dict[str, Any], data["data"])),
+                data=DirectoryUser.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=DsyncUserDeletedContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

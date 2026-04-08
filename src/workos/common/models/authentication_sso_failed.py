@@ -9,8 +9,8 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .authentication_sso_failed_context import AuthenticationSSOFailedContext
 from .authentication_sso_failed_data import AuthenticationSSOFailedData
+from .event_context import EventContext
 
 
 @dataclass(slots=True)
@@ -26,8 +26,7 @@ class AuthenticationSSOFailed:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["AuthenticationSSOFailedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationSSOFailed":
@@ -41,9 +40,7 @@ class AuthenticationSSOFailed:
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=AuthenticationSSOFailedContext.from_dict(
-                    cast(Dict[str, Any], _v)
-                )
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

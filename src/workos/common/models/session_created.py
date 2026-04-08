@@ -9,7 +9,7 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .session_created_context import SessionCreatedContext
+from .event_context import EventContext
 from .session_created_data import SessionCreatedData
 
 
@@ -26,8 +26,7 @@ class SessionCreated:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["SessionCreatedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "SessionCreated":
@@ -39,7 +38,7 @@ class SessionCreated:
                 data=SessionCreatedData.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=SessionCreatedContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

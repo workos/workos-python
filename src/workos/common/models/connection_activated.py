@@ -9,8 +9,8 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .connection_activated_context import ConnectionActivatedContext
 from .connection_activated_data import ConnectionActivatedData
+from .event_context import EventContext
 
 
 @dataclass(slots=True)
@@ -26,8 +26,7 @@ class ConnectionActivated:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["ConnectionActivatedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ConnectionActivated":
@@ -41,7 +40,7 @@ class ConnectionActivated:
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=ConnectionActivatedContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

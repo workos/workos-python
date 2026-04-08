@@ -1,82 +1,21 @@
 # WorkOS Python SDK v6 Migration Guide
 
-This guide describes the upgrade pattern for the v6 release in this branch.
+This guide focuses on the code you are most likely to change when upgrading from v5 to v6 in this branch.
 
-The important theme is that v6 is primarily a client architecture migration, not a full product-surface reset. Most of the familiar product namespaces remain available, but the SDK now sits on a generated client with new models, new pagination types, normalized errors, built-in retries, and much stronger sync/async parity.
+v6 is still recognizably the WorkOS Python SDK, but it moves onto a generated client and runtime. The highest-friction changes are import path updates, the `portal` to `admin_portal` rename, the removal of `fga`, the shift away from Pydantic model helpers, and the new error and retry behavior.
 
-## Table of Contents
+## TL;DR
 
-- [WorkOS Python SDK v6 Migration Guide](#workos-python-sdk-v6-migration-guide)
-  - [Table of Contents](#table-of-contents)
-  - [Executive Summary](#executive-summary)
-  - [What Stays Familiar](#what-stays-familiar)
-  - [Breaking Changes](#breaking-changes)
-    - [Python 3.10+ is now required](#python-310-is-now-required)
-    - [Old client module paths were removed](#old-client-module-paths-were-removed)
-    - [Client construction is less strict](#client-construction-is-less-strict)
-    - [`portal` became `admin_portal`](#portal-became-admin_portal)
-    - [`fga` is removed](#fga-is-removed)
-    - [Models are no longer Pydantic models](#models-are-no-longer-pydantic-models)
-    - [Model imports moved out of `workos.types`](#model-imports-moved-out-of-workostypes)
-    - [Paginated responses now use `SyncPage` / `AsyncPage`](#paginated-responses-now-use-syncpage--asyncpage)
-    - [Exception classes were renamed and normalized](#exception-classes-were-renamed-and-normalized)
-    - [Requests now retry by default](#requests-now-retry-by-default)
-  - [New Additions and Benefits](#new-additions-and-benefits)
-  - [API Parity Notes](#api-parity-notes)
-  - [Suggested Upgrade Order](#suggested-upgrade-order)
-  - [Migration Checklist](#migration-checklist)
+1. Upgrade to Python 3.10+.
+2. Replace any `workos.client` or `workos.async_client` imports with top-level imports from `workos`.
+3. Rename `client.portal` to `client.admin_portal`.
+4. Remove any `client.fga` usage before upgrading.
+5. Replace Pydantic-specific model code such as `model_validate()` and `model_dump()`.
+6. Review exception handling, pagination assumptions, and retry-sensitive call sites.
 
-## Executive Summary
-
-The shortest possible summary is:
-
-1. Keep `WorkOSClient` / `AsyncWorkOSClient` imports (these names are unchanged from v5).
-2. Remove any imports from the old `workos.client` or `workos.async_client` modules (use `from workos import WorkOSClient` instead).
-3. Keep most existing product namespace calls as-is.
-4. Rename `client.portal` to `client.admin_portal`.
-5. Remove any use of `client.fga`.
-6. Update model imports and serialization code away from `workos.types.*` and Pydantic.
-7. Review exception handling and retry assumptions.
-
-## What Stays Familiar
-
-v6 keeps a high degree of product-surface continuity.
-
-These namespaces still exist on the client:
-
-- `api_keys`
-- `audit_logs`
-- `authorization`
-- `connect`
-- `directory_sync`
-- `events`
-- `organization_domains`
-- `organizations`
-- `passwordless`
-- `pipes`
-- `sso`
-- `user_management`
-- `webhooks`
-- `widgets`
-- `vault`
-
-Several high-value convenience helpers also remain available:
-
-- `client.mfa` still works as an alias for `client.multi_factor_auth`
-- `client.user_management.load_sealed_session(...)`
-- `client.user_management.authenticate_with_password(...)`
-- `client.user_management.get_authorization_url_with_pkce(...)`
-- `client.sso.get_authorization_url_with_pkce(...)`
-
-That means many integrations can upgrade with mostly import, model, and error-handling changes rather than a wholesale rewrite of API calls.
-
-## Breaking Changes
+## HIGH Impact Changes
 
 ### Python 3.10+ is now required
-
-v5 supported Python 3.8+.
-
-v6 requires Python 3.10+.
 
 **v5**
 
@@ -92,56 +31,34 @@ requires-python = ">=3.8"
 requires-python = ">=3.10"
 ```
 
-**Migration:** Upgrade local dev, CI, and production runtimes before taking the SDK upgrade.
+**Affected users:** Any application, worker, CI job, or deploy target still pinned to Python 3.8 or 3.9.
+
+**Migration:** Upgrade your runtime before taking the SDK upgrade.
 
 ### Old client module paths were removed
 
-The client class names `WorkOSClient` and `AsyncWorkOSClient` are unchanged from v5. However, the old module paths `workos.client` and `workos.async_client` are gone.
+The client class names are unchanged, but the old module paths are gone.
 
 **v5**
 
 ```python
-from workos.client import WorkOSClient          # old module path
-from workos.async_client import AsyncWorkOSClient  # old module path
+from workos.client import WorkOSClient
+from workos.async_client import AsyncWorkOSClient
 ```
 
 **v6**
 
 ```python
-from workos import WorkOSClient, AsyncWorkOSClient  # top-level import
+from workos import WorkOSClient, AsyncWorkOSClient
 ```
 
-**Migration:** If you were importing from `workos.client` or `workos.async_client`, update to the top-level import. If you were already using `from workos import WorkOSClient`, no change is needed.
+**Affected users:** Anyone importing from `workos.client` or `workos.async_client`.
 
-### Client construction is less strict
-
-v5 required both an API key and a client ID at construction time.
-
-v6 requires at least one of them.
-
-**v5**
-
-```python
-from workos import WorkOSClient
-
-client = WorkOSClient(api_key="sk_test_123", client_id="client_123")
-```
-
-**v6**
-
-```python
-from workos import WorkOSClient
-
-server_client = WorkOSClient(api_key="sk_test_123")
-public_client = WorkOSClient(client_id="client_123")
-hybrid_client = WorkOSClient(api_key="sk_test_123", client_id="client_123")
-```
-
-**Migration:** Keep passing both values if that matches your app today. If you have server-only usage, you can now construct a client with only `api_key`. If you have client-ID-driven flows, make sure a `client_id` is still available wherever those flows run.
+**Migration:** Move client imports to `from workos import WorkOSClient, AsyncWorkOSClient`.
 
 ### `portal` became `admin_portal`
 
-This is one of the few product-namespace renames that users are likely to hit directly.
+This is the most visible service rename in v6. The `generate_link` argument also changed from `organization_id` to `organization`.
 
 **v5**
 
@@ -161,19 +78,33 @@ link = client.admin_portal.generate_link(
 )
 ```
 
-**Migration:** Rename `client.portal` to `client.admin_portal`. While doing that, also update `organization_id=` to `organization=` for `generate_link(...)`.
+**Affected users:** Anyone generating Admin Portal links.
+
+**Migration:** Rename `client.portal` to `client.admin_portal` and update `organization_id=` to `organization=`.
 
 ### `fga` is removed
 
-The old `client.fga` surface is no longer present in v6.
+There is no `client.fga` accessor in v6.
 
-**Migration:** Any remaining FGA usage needs to stay on v5 for now or be migrated separately before adopting v6.
+**v5**
+
+```python
+fga = client.fga
+```
+
+**v6**
+
+```python
+# No v6 replacement is available in this branch.
+```
+
+**Affected users:** Any integration still using the FGA surface.
+
+**Migration:** Keep that integration on v5 for now, or split the FGA migration from the v6 SDK upgrade.
 
 ### Models are no longer Pydantic models
 
-v5 models exposed Pydantic APIs like `model_validate()` and `model_dump()`.
-
-v6 models are generated dataclass-style objects with `from_dict()` and `to_dict()`.
+Generated models now use `from_dict()` and `to_dict()` instead of Pydantic APIs.
 
 **v5**
 
@@ -193,13 +124,159 @@ event = AuditLogEvent.from_dict(payload)
 body = event.to_dict()
 ```
 
-**Migration:** Replace Pydantic-specific helpers and stop depending on Pydantic behaviors such as validators, `model_dump()`, or `model_validate()`.
+**Affected users:** Anyone calling `model_validate()`, `model_dump()`, or relying on Pydantic-specific behavior.
 
-### Model imports moved out of `workos.types`
+**Migration:** Replace Pydantic helpers with `from_dict()` and `to_dict()`, and remove any dependence on Pydantic validators or BaseModel APIs.
 
-The broad `workos.types.*` tree is gone.
+### Exception classes were renamed and normalized
 
-Use resource-local `models` packages instead, plus `workos.common.models` for shared enums and common DTOs.
+The old `*Exception` naming is replaced with `*Error`, and the runtime now exposes more structured SDK-native errors.
+
+**v5**
+
+```python
+from workos.exceptions import NotFoundException
+
+try:
+    client.organizations.get_organization("org_123")
+except NotFoundException:
+    ...
+```
+
+**v6**
+
+```python
+from workos import NotFoundError
+
+try:
+    client.organizations.get_organization("org_123")
+except NotFoundError as exc:
+    request_id = exc.request_id
+    status_code = exc.status_code
+```
+
+Representative renames:
+
+- `BadRequestException` -> `BadRequestError`
+- `AuthenticationException` -> `AuthenticationError`
+- `AuthorizationException` -> `AuthorizationError`
+- `NotFoundException` -> `NotFoundError`
+- `ConflictException` -> `ConflictError`
+- `ServerException` -> `ServerError`
+
+v6 also exposes runtime and auth-flow specific errors such as:
+
+- `ConfigurationError`
+- `UnprocessableEntityError`
+- `RateLimitExceededError`
+- `WorkOSConnectionError`
+- `WorkOSTimeoutError`
+- `EmailVerificationRequiredError`
+- `MfaEnrollmentError`
+- `MfaChallengeError`
+- `OrganizationSelectionRequiredError`
+- `SsoRequiredError`
+
+**Affected users:** Anyone using `try`/`except` with SDK exceptions or inspecting exception attributes.
+
+**Migration:** Rename caught exception classes, update imports, and review any code that depends on old exception names or attributes.
+
+## MEDIUM Impact Changes
+
+### Paginated list responses now use `SyncPage` and `AsyncPage`
+
+List endpoints now return typed page wrappers with cursor metadata and built-in auto-pagination.
+
+**v6**
+
+```python
+page = client.organizations.list_organizations()
+
+for organization in page:
+    print(organization.id)
+
+assert page.before is None or isinstance(page.before, str)
+assert page.after is None or isinstance(page.after, str)
+```
+
+**v6 async**
+
+```python
+page = await async_client.organizations.list_organizations()
+
+items = [organization async for organization in page]
+```
+
+**Affected users:** Any code that expected a handwritten list wrapper or manually handled pagination state differently.
+
+**Migration:** Update pagination code to work with `SyncPage` or `AsyncPage`, and use `page.data`, `page.before`, `page.after`, or iteration over the page as needed.
+
+### Requests now retry by default
+
+The generated runtime retries retryable failures by default, including `429` and common `5xx` responses.
+
+**v6**
+
+```python
+from workos import WorkOSClient
+
+client = WorkOSClient(api_key="sk_test_123", max_retries=0)
+```
+
+Per-request overrides are available through `request_options`.
+
+```python
+from workos import WorkOSClient
+
+client = WorkOSClient(api_key="sk_test_123")
+
+client.organizations.list_organizations(
+    request_options={
+        "timeout": 5,
+        "max_retries": 0,
+    }
+)
+```
+
+**Affected users:** Latency-sensitive code paths, fail-fast integrations, and any callers that assumed immediate failure after a single request attempt.
+
+**Migration:** Review retry-sensitive call sites and set `max_retries=0` at the client or request level where fail-fast behavior is required.
+
+### Client construction is less strict, but some config failures may move to call sites
+
+v6 accepts either an API key or a client ID at client construction time.
+
+**v5**
+
+```python
+from workos import WorkOSClient
+
+client = WorkOSClient(api_key="sk_test_123", client_id="client_123")
+```
+
+**v6**
+
+```python
+from workos import WorkOSClient
+
+server_client = WorkOSClient(api_key="sk_test_123")
+public_client = WorkOSClient(client_id="client_123")
+hybrid_client = WorkOSClient(api_key="sk_test_123", client_id="client_123")
+```
+
+Operations that require a missing credential now raise `ConfigurationError` when called.
+
+**Affected users:** Code that relied on constructor-time validation to prove both credentials were present for all later operations.
+
+**Migration:** Keep passing both values if that matches your app today, and audit flows that require `api_key` or `client_id` so missing-config errors do not surprise you at request time.
+
+## LOW Impact Changes
+
+### Model import paths changed, but `workos.types.<resource>` compatibility barrels still exist
+
+v6 prefers resource-local model imports such as `workos.organizations.models` and shared types in `workos.common.models`.
+
+Package-level compatibility imports under `workos.types.<resource>` still exist in this branch. The bigger break is that old per-model module paths are no longer the preferred shape.
 
 **v5**
 
@@ -215,145 +292,57 @@ from workos.organizations.models import Organization
 from workos.common.models import GenerateLinkIntent
 ```
 
-**Migration:** Move imports to `workos.<resource>.models` wherever possible. If you are importing a shared enum or common helper type, look in `workos.common.models`.
-
-### Paginated responses now use `SyncPage` / `AsyncPage`
-
-List endpoints now return page objects with cursor metadata and built-in iteration helpers.
-
-**v6**
+Temporary compatibility still works for package-level imports:
 
 ```python
-page = client.organizations.list()
-
-for organization in page:
-    print(organization.id)
-
-assert page.before is None or isinstance(page.before, str)
-assert page.after is None or isinstance(page.after, str)
+from workos.types.organizations import Organization
 ```
 
-**Migration:** If your code expected a custom handwritten list wrapper, update it to work with `SyncPage` or `AsyncPage`.
+**Affected users:** Anyone importing individual model modules from the old `workos.types.*` tree.
 
-### Exception classes were renamed and normalized
+**Migration:** Prefer `workos.<resource>.models` and `workos.common.models` for new code. If you need a lower-friction rollout, package-level `workos.types.<resource>` imports can bridge part of the migration in this branch.
 
-The old exception classes used `*Exception` names. v6 uses `*Error` names and exposes a more consistent set of fields.
+## What's Preserved
 
-Representative mapping:
-
-- `BadRequestException` -> `BadRequestError`
-- `AuthenticationException` -> `AuthenticationError`
-- `AuthorizationException` -> `AuthorizationError`
-- `NotFoundException` -> `NotFoundError`
-- `ConflictException` -> `ConflictError`
-- `ServerException` -> `ServerError`
-
-v6 also adds clearer runtime exceptions such as:
-
-- `ConfigurationError`
-- `UnprocessableEntityError`
-- `RateLimitExceededError`
-- `WorkOSConnectionError`
-- `WorkOSTimeoutError`
-
-Exception instances now consistently expose fields such as:
-
-- `status_code`
-- `message`
-- `request_id`
-- `code`
-- `param`
-- `raw_body`
-- `request_url`
-- `request_method`
-
-**Migration:** Update imports, rename caught exception classes, and review any code that inspects exception attributes.
-
-### Requests now retry by default
-
-The generated client retries certain failures by default, including common 5xx and rate-limit responses.
-
-If your v5 integration assumed immediate failure, this is a behavior change.
-
-**v6**
-
-```python
-client = WorkOSClient(api_key="sk_test_123", max_retries=0)
-```
-
-Per-request overrides are also available through `RequestOptions`.
-
-```python
-from workos import WorkOSClient
-
-client = WorkOSClient(api_key="sk_test_123")
-
-client.organizations.list(
-    request_options={
-        "timeout": 5,
-        "max_retries": 0,
-    }
-)
-```
-
-**Migration:** Set `max_retries=0` if you need fail-fast behavior during rollout or in latency-sensitive paths.
-
-## New Additions and Benefits
-
-The v6 branch is not only a migration cost. It also improves the SDK in ways that are visible to users:
-
-- Higher API parity with the WorkOS API because the client surface is generated from the spec rather than maintained endpoint-by-endpoint by hand.
-- Stronger sync/async parity. In v5, several areas were unavailable or incomplete in the async client. In v6, async support is much broader and more consistent.
-- A normalized request stack built on `httpx`, with retries, timeout handling, connection handling, and automatic POST idempotency keys.
-- Consistent generated model behavior across products with `from_dict()` / `to_dict()`.
-- Dedicated pagination primitives with cursor metadata and automatic iteration.
-- New or newly first-class surfaces such as `radar`, plus hand-maintained helper utilities like `actions` and `pkce`.
-- Broader generated tests, including model round-trip coverage.
-
-## API Parity Notes
-
-For most existing integrations, the parity story is better than the old draft guide implied.
-
-What is largely unchanged:
-
-- The major product namespaces most users call today are still present.
-- Many convenience helpers remain in place.
-- The SDK still offers both sync and async clients.
-- Core request flows still target the same HTTP API paths and data model.
-
-What changed for parity in a positive direction:
-
-- The async client is no longer missing large parts of the product surface such as Admin Portal, MFA, Webhooks, Widgets, Vault, and Passwordless.
-- Generated resources and models make it easier to keep the SDK aligned with the public API over time.
-
-What still requires migration work:
-
-- old `workos.client` / `workos.async_client` module paths
-- `portal` to `admin_portal`
-- removal of `fga`
-- model import and serialization changes
-- exception name changes
+- `WorkOSClient` and `AsyncWorkOSClient` remain the top-level client names.
+- Most familiar service namespaces remain available, including `api_keys`, `audit_logs`, `authorization`, `connect`, `directory_sync`, `events`, `organization_domains`, `organizations`, `passwordless`, `pipes`, `sso`, `user_management`, `webhooks`, `widgets`, and `vault`.
+- `client.mfa` still works as an alias for `client.multi_factor_auth`.
+- High-value helpers remain available, including `client.user_management.load_sealed_session(...)`, `client.user_management.authenticate_with_password(...)`, `client.user_management.get_authorization_url_with_pkce(...)`, and `client.sso.get_authorization_url_with_pkce(...)`.
+- Client configuration is still instance-scoped.
+- Per-request options are supported and include `extra_headers`, `timeout`, `max_retries`, `base_url`, and `idempotency_key`.
+- The runtime raises SDK-native errors instead of leaking raw `httpx` exceptions as the primary public contract.
+- Retry handling honors `Retry-After` when present.
+- POST requests automatically receive an idempotency key when one is not provided.
+- Auto-pagination is wired and fetches subsequent pages.
 
 ## Suggested Upgrade Order
 
-1. Upgrade Python to 3.10+.
-2. Update any `from workos.client import WorkOSClient` to `from workos import WorkOSClient`.
+1. Upgrade Python to 3.10+ in local development, CI, and production.
+2. Replace `workos.client` and `workos.async_client` imports with top-level imports from `workos`.
 3. Rename `client.portal` usages to `client.admin_portal`.
 4. Find and remove any `client.fga` usage.
-5. Replace `workos.types.*` imports with `workos.<resource>.models` or `workos.common.models`.
-6. Replace `model_validate()` / `model_dump()` with `from_dict()` / `to_dict()`.
-7. Update exception imports and any code matching on exception names or attributes.
-8. Review retry-sensitive call sites and set `max_retries=0` where appropriate.
-9. Run sync and async test suites and look for import errors, attribute errors, and serialization mismatches.
+5. Replace `model_validate()` and `model_dump()` with `from_dict()` and `to_dict()`.
+6. Update exception imports and any code that catches or inspects SDK errors.
+7. Audit pagination code that depends on the old list wrapper shape.
+8. Review retry-sensitive call sites and set `max_retries=0` where required.
+9. Migrate old model imports toward `workos.<resource>.models` and `workos.common.models`.
+10. Run sync and async integration tests and look for import errors, attribute errors, serialization mismatches, and changed retry behavior.
+
+## Searches To Run
+
+```sh
+rg 'workos\.client|workos\.async_client|client\.portal|client\.fga|model_dump|model_validate|Exception|workos\.types'
+```
 
 ## Migration Checklist
 
-- Python runtime is 3.10+
-- `workos.client` and `workos.async_client` module imports are updated to `from workos import WorkOSClient, AsyncWorkOSClient`
-- `client.portal` usages are renamed to `client.admin_portal`
-- `client.fga` usages are removed or isolated from the v6 upgrade
-- `workos.types.*` imports are gone
-- Pydantic-only model helpers are gone
-- Exception imports use v6 `*Error` names
-- Retry behavior has been reviewed explicitly
-- Sync and async integration tests pass
+- Python runtime is 3.10+.
+- Client imports no longer use `workos.client` or `workos.async_client`.
+- `client.portal` usages are renamed to `client.admin_portal`.
+- `client.fga` usage is removed or isolated from the v6 upgrade.
+- Pydantic-only model helpers are gone.
+- Exception imports use v6 `*Error` names.
+- Retry behavior has been reviewed explicitly.
+- Pagination code has been updated where needed.
+- Model imports are moving toward `workos.<resource>.models` and `workos.common.models`.
+- Sync and async integration tests pass.

@@ -9,8 +9,8 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .user_created_context import UserCreatedContext
-from .user_created_data import UserCreatedData
+from .event_context import EventContext
+from workos.user_management.models.user import User
 
 
 @dataclass(slots=True)
@@ -20,14 +20,13 @@ class UserCreated:
     id: str
     """Unique identifier for the event."""
     event: Literal["user.created"]
-    data: "UserCreatedData"
+    data: "User"
     """The event payload."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["UserCreatedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "UserCreated":
@@ -36,10 +35,10 @@ class UserCreated:
             return cls(
                 id=data["id"],
                 event=data["event"],
-                data=UserCreatedData.from_dict(cast(Dict[str, Any], data["data"])),
+                data=User.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=UserCreatedContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

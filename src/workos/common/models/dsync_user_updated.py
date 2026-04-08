@@ -9,8 +9,8 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .dsync_user_updated_context import DsyncUserUpdatedContext
 from .dsync_user_updated_data import DsyncUserUpdatedData
+from .event_context import EventContext
 
 
 @dataclass(slots=True)
@@ -26,8 +26,7 @@ class DsyncUserUpdated:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["DsyncUserUpdatedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DsyncUserUpdated":
@@ -39,7 +38,7 @@ class DsyncUserUpdated:
                 data=DsyncUserUpdatedData.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=DsyncUserUpdatedContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

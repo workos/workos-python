@@ -9,7 +9,7 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .organization_deleted_context import OrganizationDeletedContext
+from .event_context import EventContext
 from .organization_deleted_data import OrganizationDeletedData
 
 
@@ -26,8 +26,7 @@ class OrganizationDeleted:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["OrganizationDeletedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "OrganizationDeleted":
@@ -41,7 +40,7 @@ class OrganizationDeleted:
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=OrganizationDeletedContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

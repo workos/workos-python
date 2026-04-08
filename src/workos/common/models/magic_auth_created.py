@@ -9,7 +9,7 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .magic_auth_created_context import MagicAuthCreatedContext
+from .event_context import EventContext
 from .magic_auth_created_data import MagicAuthCreatedData
 
 
@@ -26,8 +26,7 @@ class MagicAuthCreated:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["MagicAuthCreatedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "MagicAuthCreated":
@@ -39,7 +38,7 @@ class MagicAuthCreated:
                 data=MagicAuthCreatedData.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=MagicAuthCreatedContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

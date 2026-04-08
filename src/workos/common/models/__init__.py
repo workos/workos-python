@@ -3,51 +3,19 @@
 from .action_authentication_denied import (
     ActionAuthenticationDenied as ActionAuthenticationDenied,
 )
-from .action_authentication_denied_context import (
-    ActionAuthenticationDeniedContext as ActionAuthenticationDeniedContext,
-)
-from .action_authentication_denied_context_actor import (
-    ActionAuthenticationDeniedContextActor as ActionAuthenticationDeniedContextActor,
-)
-from .action_authentication_denied_context_google_analytics_session import (
-    ActionAuthenticationDeniedContextGoogleAnalyticsSession as ActionAuthenticationDeniedContextGoogleAnalyticsSession,
-)
 from .action_authentication_denied_data import (
     ActionAuthenticationDeniedData as ActionAuthenticationDeniedData,
 )
 from .action_user_registration_denied import (
     ActionUserRegistrationDenied as ActionUserRegistrationDenied,
 )
-from .action_user_registration_denied_context import (
-    ActionUserRegistrationDeniedContext as ActionUserRegistrationDeniedContext,
-)
-from .action_user_registration_denied_context_actor import (
-    ActionUserRegistrationDeniedContextActor as ActionUserRegistrationDeniedContextActor,
-)
-from .action_user_registration_denied_context_google_analytics_session import (
-    ActionUserRegistrationDeniedContextGoogleAnalyticsSession as ActionUserRegistrationDeniedContextGoogleAnalyticsSession,
-)
 from .action_user_registration_denied_data import (
     ActionUserRegistrationDeniedData as ActionUserRegistrationDeniedData,
 )
 from .api_key_created import ApiKeyCreated as ApiKeyCreated
-from .api_key_created_context import ApiKeyCreatedContext as ApiKeyCreatedContext
-from .api_key_created_context_actor import (
-    ApiKeyCreatedContextActor as ApiKeyCreatedContextActor,
-)
-from .api_key_created_context_google_analytics_session import (
-    ApiKeyCreatedContextGoogleAnalyticsSession as ApiKeyCreatedContextGoogleAnalyticsSession,
-)
 from .api_key_created_data import ApiKeyCreatedData as ApiKeyCreatedData
 from .api_key_created_data_owner import ApiKeyCreatedDataOwner as ApiKeyCreatedDataOwner
 from .api_key_revoked import ApiKeyRevoked as ApiKeyRevoked
-from .api_key_revoked_context import ApiKeyRevokedContext as ApiKeyRevokedContext
-from .api_key_revoked_context_actor import (
-    ApiKeyRevokedContextActor as ApiKeyRevokedContextActor,
-)
-from .api_key_revoked_context_google_analytics_session import (
-    ApiKeyRevokedContextGoogleAnalyticsSession as ApiKeyRevokedContextGoogleAnalyticsSession,
-)
 from .api_key_revoked_data import ApiKeyRevokedData as ApiKeyRevokedData
 from .api_key_revoked_data_owner import ApiKeyRevokedDataOwner as ApiKeyRevokedDataOwner
 from .audit_log_configuration_log_stream_state import (
@@ -68,15 +36,6 @@ from .authenticate_response_authentication_method import (
 from .authentication_email_verification_failed import (
     AuthenticationEmailVerificationFailed as AuthenticationEmailVerificationFailed,
 )
-from .authentication_email_verification_failed_context import (
-    AuthenticationEmailVerificationFailedContext as AuthenticationEmailVerificationFailedContext,
-)
-from .authentication_email_verification_failed_context_actor import (
-    AuthenticationEmailVerificationFailedContextActor as AuthenticationEmailVerificationFailedContextActor,
-)
-from .authentication_email_verification_failed_context_google_analytics_session import (
-    AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession as AuthenticationEmailVerificationFailedContextGoogleAnalyticsSession,
-)
 from .authentication_email_verification_failed_data import (
     AuthenticationEmailVerificationFailedData as AuthenticationEmailVerificationFailedData,
 )
@@ -85,15 +44,6 @@ from .authentication_email_verification_failed_data_error import (
 )
 from .authentication_email_verification_succeeded import (
     AuthenticationEmailVerificationSucceeded as AuthenticationEmailVerificationSucceeded,
-)
-from .authentication_email_verification_succeeded_context import (
-    AuthenticationEmailVerificationSucceededContext as AuthenticationEmailVerificationSucceededContext,
-)
-from .authentication_email_verification_succeeded_context_actor import (
-    AuthenticationEmailVerificationSucceededContextActor as AuthenticationEmailVerificationSucceededContextActor,
-)
-from .authentication_email_verification_succeeded_context_google_analytics_session import (
-    AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession as AuthenticationEmailVerificationSucceededContextGoogleAnalyticsSession,
 )
 from .authentication_email_verification_succeeded_data import (
     AuthenticationEmailVerificationSucceededData as AuthenticationEmailVerificationSucceededData,
@@ -110,15 +60,6 @@ from .authentication_factors_create_request_type import (
 from .authentication_magic_auth_failed import (
     AuthenticationMagicAuthFailed as AuthenticationMagicAuthFailed,
 )
-from .authentication_magic_auth_failed_context import (
-    AuthenticationMagicAuthFailedContext as AuthenticationMagicAuthFailedContext,
-)
-from .authentication_magic_auth_failed_context_actor import (
-    AuthenticationMagicAuthFailedContextActor as AuthenticationMagicAuthFailedContextActor,
-)
-from .authentication_magic_auth_failed_context_google_analytics_session import (
-    AuthenticationMagicAuthFailedContextGoogleAnalyticsSession as AuthenticationMagicAuthFailedContextGoogleAnalyticsSession,
-)
 from .authentication_magic_auth_failed_data import (
     AuthenticationMagicAuthFailedData as AuthenticationMagicAuthFailedData,
 )
@@ -128,29 +69,11 @@ from .authentication_magic_auth_failed_data_error import (
 from .authentication_magic_auth_succeeded import (
     AuthenticationMagicAuthSucceeded as AuthenticationMagicAuthSucceeded,
 )
-from .authentication_magic_auth_succeeded_context import (
-    AuthenticationMagicAuthSucceededContext as AuthenticationMagicAuthSucceededContext,
-)
-from .authentication_magic_auth_succeeded_context_actor import (
-    AuthenticationMagicAuthSucceededContextActor as AuthenticationMagicAuthSucceededContextActor,
-)
-from .authentication_magic_auth_succeeded_context_google_analytics_session import (
-    AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession as AuthenticationMagicAuthSucceededContextGoogleAnalyticsSession,
-)
 from .authentication_magic_auth_succeeded_data import (
     AuthenticationMagicAuthSucceededData as AuthenticationMagicAuthSucceededData,
 )
 from .authentication_mfa_failed import (
     AuthenticationMFAFailed as AuthenticationMFAFailed,
-)
-from .authentication_mfa_failed_context import (
-    AuthenticationMFAFailedContext as AuthenticationMFAFailedContext,
-)
-from .authentication_mfa_failed_context_actor import (
-    AuthenticationMFAFailedContextActor as AuthenticationMFAFailedContextActor,
-)
-from .authentication_mfa_failed_context_google_analytics_session import (
-    AuthenticationMFAFailedContextGoogleAnalyticsSession as AuthenticationMFAFailedContextGoogleAnalyticsSession,
 )
 from .authentication_mfa_failed_data import (
     AuthenticationMFAFailedData as AuthenticationMFAFailedData,
@@ -161,29 +84,11 @@ from .authentication_mfa_failed_data_error import (
 from .authentication_mfa_succeeded import (
     AuthenticationMFASucceeded as AuthenticationMFASucceeded,
 )
-from .authentication_mfa_succeeded_context import (
-    AuthenticationMFASucceededContext as AuthenticationMFASucceededContext,
-)
-from .authentication_mfa_succeeded_context_actor import (
-    AuthenticationMFASucceededContextActor as AuthenticationMFASucceededContextActor,
-)
-from .authentication_mfa_succeeded_context_google_analytics_session import (
-    AuthenticationMFASucceededContextGoogleAnalyticsSession as AuthenticationMFASucceededContextGoogleAnalyticsSession,
-)
 from .authentication_mfa_succeeded_data import (
     AuthenticationMFASucceededData as AuthenticationMFASucceededData,
 )
 from .authentication_oauth_failed import (
     AuthenticationOAuthFailed as AuthenticationOAuthFailed,
-)
-from .authentication_oauth_failed_context import (
-    AuthenticationOAuthFailedContext as AuthenticationOAuthFailedContext,
-)
-from .authentication_oauth_failed_context_actor import (
-    AuthenticationOAuthFailedContextActor as AuthenticationOAuthFailedContextActor,
-)
-from .authentication_oauth_failed_context_google_analytics_session import (
-    AuthenticationOAuthFailedContextGoogleAnalyticsSession as AuthenticationOAuthFailedContextGoogleAnalyticsSession,
 )
 from .authentication_oauth_failed_data import (
     AuthenticationOAuthFailedData as AuthenticationOAuthFailedData,
@@ -194,29 +99,11 @@ from .authentication_oauth_failed_data_error import (
 from .authentication_oauth_succeeded import (
     AuthenticationOAuthSucceeded as AuthenticationOAuthSucceeded,
 )
-from .authentication_oauth_succeeded_context import (
-    AuthenticationOAuthSucceededContext as AuthenticationOAuthSucceededContext,
-)
-from .authentication_oauth_succeeded_context_actor import (
-    AuthenticationOAuthSucceededContextActor as AuthenticationOAuthSucceededContextActor,
-)
-from .authentication_oauth_succeeded_context_google_analytics_session import (
-    AuthenticationOAuthSucceededContextGoogleAnalyticsSession as AuthenticationOAuthSucceededContextGoogleAnalyticsSession,
-)
 from .authentication_oauth_succeeded_data import (
     AuthenticationOAuthSucceededData as AuthenticationOAuthSucceededData,
 )
 from .authentication_passkey_failed import (
     AuthenticationPasskeyFailed as AuthenticationPasskeyFailed,
-)
-from .authentication_passkey_failed_context import (
-    AuthenticationPasskeyFailedContext as AuthenticationPasskeyFailedContext,
-)
-from .authentication_passkey_failed_context_actor import (
-    AuthenticationPasskeyFailedContextActor as AuthenticationPasskeyFailedContextActor,
-)
-from .authentication_passkey_failed_context_google_analytics_session import (
-    AuthenticationPasskeyFailedContextGoogleAnalyticsSession as AuthenticationPasskeyFailedContextGoogleAnalyticsSession,
 )
 from .authentication_passkey_failed_data import (
     AuthenticationPasskeyFailedData as AuthenticationPasskeyFailedData,
@@ -227,29 +114,11 @@ from .authentication_passkey_failed_data_error import (
 from .authentication_passkey_succeeded import (
     AuthenticationPasskeySucceeded as AuthenticationPasskeySucceeded,
 )
-from .authentication_passkey_succeeded_context import (
-    AuthenticationPasskeySucceededContext as AuthenticationPasskeySucceededContext,
-)
-from .authentication_passkey_succeeded_context_actor import (
-    AuthenticationPasskeySucceededContextActor as AuthenticationPasskeySucceededContextActor,
-)
-from .authentication_passkey_succeeded_context_google_analytics_session import (
-    AuthenticationPasskeySucceededContextGoogleAnalyticsSession as AuthenticationPasskeySucceededContextGoogleAnalyticsSession,
-)
 from .authentication_passkey_succeeded_data import (
     AuthenticationPasskeySucceededData as AuthenticationPasskeySucceededData,
 )
 from .authentication_password_failed import (
     AuthenticationPasswordFailed as AuthenticationPasswordFailed,
-)
-from .authentication_password_failed_context import (
-    AuthenticationPasswordFailedContext as AuthenticationPasswordFailedContext,
-)
-from .authentication_password_failed_context_actor import (
-    AuthenticationPasswordFailedContextActor as AuthenticationPasswordFailedContextActor,
-)
-from .authentication_password_failed_context_google_analytics_session import (
-    AuthenticationPasswordFailedContextGoogleAnalyticsSession as AuthenticationPasswordFailedContextGoogleAnalyticsSession,
 )
 from .authentication_password_failed_data import (
     AuthenticationPasswordFailedData as AuthenticationPasswordFailedData,
@@ -260,44 +129,17 @@ from .authentication_password_failed_data_error import (
 from .authentication_password_succeeded import (
     AuthenticationPasswordSucceeded as AuthenticationPasswordSucceeded,
 )
-from .authentication_password_succeeded_context import (
-    AuthenticationPasswordSucceededContext as AuthenticationPasswordSucceededContext,
-)
-from .authentication_password_succeeded_context_actor import (
-    AuthenticationPasswordSucceededContextActor as AuthenticationPasswordSucceededContextActor,
-)
-from .authentication_password_succeeded_context_google_analytics_session import (
-    AuthenticationPasswordSucceededContextGoogleAnalyticsSession as AuthenticationPasswordSucceededContextGoogleAnalyticsSession,
-)
 from .authentication_password_succeeded_data import (
     AuthenticationPasswordSucceededData as AuthenticationPasswordSucceededData,
 )
 from .authentication_radar_risk_detected import (
     AuthenticationRadarRiskDetected as AuthenticationRadarRiskDetected,
 )
-from .authentication_radar_risk_detected_context import (
-    AuthenticationRadarRiskDetectedContext as AuthenticationRadarRiskDetectedContext,
-)
-from .authentication_radar_risk_detected_context_actor import (
-    AuthenticationRadarRiskDetectedContextActor as AuthenticationRadarRiskDetectedContextActor,
-)
-from .authentication_radar_risk_detected_context_google_analytics_session import (
-    AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession as AuthenticationRadarRiskDetectedContextGoogleAnalyticsSession,
-)
 from .authentication_radar_risk_detected_data import (
     AuthenticationRadarRiskDetectedData as AuthenticationRadarRiskDetectedData,
 )
 from .authentication_sso_failed import (
     AuthenticationSSOFailed as AuthenticationSSOFailed,
-)
-from .authentication_sso_failed_context import (
-    AuthenticationSSOFailedContext as AuthenticationSSOFailedContext,
-)
-from .authentication_sso_failed_context_actor import (
-    AuthenticationSSOFailedContextActor as AuthenticationSSOFailedContextActor,
-)
-from .authentication_sso_failed_context_google_analytics_session import (
-    AuthenticationSSOFailedContextGoogleAnalyticsSession as AuthenticationSSOFailedContextGoogleAnalyticsSession,
 )
 from .authentication_sso_failed_data import (
     AuthenticationSSOFailedData as AuthenticationSSOFailedData,
@@ -311,15 +153,6 @@ from .authentication_sso_failed_data_sso import (
 from .authentication_sso_started import (
     AuthenticationSSOStarted as AuthenticationSSOStarted,
 )
-from .authentication_sso_started_context import (
-    AuthenticationSSOStartedContext as AuthenticationSSOStartedContext,
-)
-from .authentication_sso_started_context_actor import (
-    AuthenticationSSOStartedContextActor as AuthenticationSSOStartedContextActor,
-)
-from .authentication_sso_started_context_google_analytics_session import (
-    AuthenticationSSOStartedContextGoogleAnalyticsSession as AuthenticationSSOStartedContextGoogleAnalyticsSession,
-)
 from .authentication_sso_started_data import (
     AuthenticationSSOStartedData as AuthenticationSSOStartedData,
 )
@@ -329,15 +162,6 @@ from .authentication_sso_started_data_sso import (
 from .authentication_sso_succeeded import (
     AuthenticationSSOSucceeded as AuthenticationSSOSucceeded,
 )
-from .authentication_sso_succeeded_context import (
-    AuthenticationSSOSucceededContext as AuthenticationSSOSucceededContext,
-)
-from .authentication_sso_succeeded_context_actor import (
-    AuthenticationSSOSucceededContextActor as AuthenticationSSOSucceededContextActor,
-)
-from .authentication_sso_succeeded_context_google_analytics_session import (
-    AuthenticationSSOSucceededContextGoogleAnalyticsSession as AuthenticationSSOSucceededContextGoogleAnalyticsSession,
-)
 from .authentication_sso_succeeded_data import (
     AuthenticationSSOSucceededData as AuthenticationSSOSucceededData,
 )
@@ -346,15 +170,6 @@ from .authentication_sso_succeeded_data_sso import (
 )
 from .authentication_sso_timed_out import (
     AuthenticationSSOTimedOut as AuthenticationSSOTimedOut,
-)
-from .authentication_sso_timed_out_context import (
-    AuthenticationSSOTimedOutContext as AuthenticationSSOTimedOutContext,
-)
-from .authentication_sso_timed_out_context_actor import (
-    AuthenticationSSOTimedOutContextActor as AuthenticationSSOTimedOutContextActor,
-)
-from .authentication_sso_timed_out_context_google_analytics_session import (
-    AuthenticationSSOTimedOutContextGoogleAnalyticsSession as AuthenticationSSOTimedOutContextGoogleAnalyticsSession,
 )
 from .authentication_sso_timed_out_data import (
     AuthenticationSSOTimedOutData as AuthenticationSSOTimedOutData,
@@ -367,15 +182,6 @@ from .authentication_sso_timed_out_data_sso import (
 )
 from .connected_account_state import ConnectedAccountState as ConnectedAccountState
 from .connection_activated import ConnectionActivated as ConnectionActivated
-from .connection_activated_context import (
-    ConnectionActivatedContext as ConnectionActivatedContext,
-)
-from .connection_activated_context_actor import (
-    ConnectionActivatedContextActor as ConnectionActivatedContextActor,
-)
-from .connection_activated_context_google_analytics_session import (
-    ConnectionActivatedContextGoogleAnalyticsSession as ConnectionActivatedContextGoogleAnalyticsSession,
-)
 from .connection_activated_data import (
     ConnectionActivatedData as ConnectionActivatedData,
 )
@@ -383,15 +189,6 @@ from .connection_activated_data_domain import (
     ConnectionActivatedDataDomain as ConnectionActivatedDataDomain,
 )
 from .connection_deactivated import ConnectionDeactivated as ConnectionDeactivated
-from .connection_deactivated_context import (
-    ConnectionDeactivatedContext as ConnectionDeactivatedContext,
-)
-from .connection_deactivated_context_actor import (
-    ConnectionDeactivatedContextActor as ConnectionDeactivatedContextActor,
-)
-from .connection_deactivated_context_google_analytics_session import (
-    ConnectionDeactivatedContextGoogleAnalyticsSession as ConnectionDeactivatedContextGoogleAnalyticsSession,
-)
 from .connection_deactivated_data import (
     ConnectionDeactivatedData as ConnectionDeactivatedData,
 )
@@ -399,27 +196,9 @@ from .connection_deactivated_data_domain import (
     ConnectionDeactivatedDataDomain as ConnectionDeactivatedDataDomain,
 )
 from .connection_deleted import ConnectionDeleted as ConnectionDeleted
-from .connection_deleted_context import (
-    ConnectionDeletedContext as ConnectionDeletedContext,
-)
-from .connection_deleted_context_actor import (
-    ConnectionDeletedContextActor as ConnectionDeletedContextActor,
-)
-from .connection_deleted_context_google_analytics_session import (
-    ConnectionDeletedContextGoogleAnalyticsSession as ConnectionDeletedContextGoogleAnalyticsSession,
-)
 from .connection_deleted_data import ConnectionDeletedData as ConnectionDeletedData
 from .connection_saml_certificate_renewal_required import (
     ConnectionSAMLCertificateRenewalRequired as ConnectionSAMLCertificateRenewalRequired,
-)
-from .connection_saml_certificate_renewal_required_context import (
-    ConnectionSAMLCertificateRenewalRequiredContext as ConnectionSAMLCertificateRenewalRequiredContext,
-)
-from .connection_saml_certificate_renewal_required_context_actor import (
-    ConnectionSAMLCertificateRenewalRequiredContextActor as ConnectionSAMLCertificateRenewalRequiredContextActor,
-)
-from .connection_saml_certificate_renewal_required_context_google_analytics_session import (
-    ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession as ConnectionSAMLCertificateRenewalRequiredContextGoogleAnalyticsSession,
 )
 from .connection_saml_certificate_renewal_required_data import (
     ConnectionSAMLCertificateRenewalRequiredData as ConnectionSAMLCertificateRenewalRequiredData,
@@ -432,15 +211,6 @@ from .connection_saml_certificate_renewal_required_data_connection import (
 )
 from .connection_saml_certificate_renewed import (
     ConnectionSAMLCertificateRenewed as ConnectionSAMLCertificateRenewed,
-)
-from .connection_saml_certificate_renewed_context import (
-    ConnectionSAMLCertificateRenewedContext as ConnectionSAMLCertificateRenewedContext,
-)
-from .connection_saml_certificate_renewed_context_actor import (
-    ConnectionSAMLCertificateRenewedContextActor as ConnectionSAMLCertificateRenewedContextActor,
-)
-from .connection_saml_certificate_renewed_context_google_analytics_session import (
-    ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession as ConnectionSAMLCertificateRenewedContextGoogleAnalyticsSession,
 )
 from .connection_saml_certificate_renewed_data import (
     ConnectionSAMLCertificateRenewedData as ConnectionSAMLCertificateRenewedData,
@@ -471,192 +241,52 @@ from .data_integrations_list_response_data_ownership import (
 )
 from .directory_state import DirectoryState as DirectoryState
 from .directory_type import DirectoryType as DirectoryType
+from .directory_user import DirectoryUser as DirectoryUser
+from .directory_user_email import DirectoryUserEmail as DirectoryUserEmail
 from .directory_user_with_groups_state import (
     DirectoryUserWithGroupsState as DirectoryUserWithGroupsState,
 )
 from .dsync_activated import DsyncActivated as DsyncActivated
-from .dsync_activated_context import DsyncActivatedContext as DsyncActivatedContext
-from .dsync_activated_context_actor import (
-    DsyncActivatedContextActor as DsyncActivatedContextActor,
-)
-from .dsync_activated_context_google_analytics_session import (
-    DsyncActivatedContextGoogleAnalyticsSession as DsyncActivatedContextGoogleAnalyticsSession,
-)
 from .dsync_activated_data import DsyncActivatedData as DsyncActivatedData
 from .dsync_activated_data_domain import (
     DsyncActivatedDataDomain as DsyncActivatedDataDomain,
 )
 from .dsync_deactivated import DsyncDeactivated as DsyncDeactivated
-from .dsync_deactivated_context import (
-    DsyncDeactivatedContext as DsyncDeactivatedContext,
-)
-from .dsync_deactivated_context_actor import (
-    DsyncDeactivatedContextActor as DsyncDeactivatedContextActor,
-)
-from .dsync_deactivated_context_google_analytics_session import (
-    DsyncDeactivatedContextGoogleAnalyticsSession as DsyncDeactivatedContextGoogleAnalyticsSession,
-)
 from .dsync_deactivated_data import DsyncDeactivatedData as DsyncDeactivatedData
 from .dsync_deactivated_data_domain import (
     DsyncDeactivatedDataDomain as DsyncDeactivatedDataDomain,
 )
 from .dsync_deleted import DsyncDeleted as DsyncDeleted
-from .dsync_deleted_context import DsyncDeletedContext as DsyncDeletedContext
-from .dsync_deleted_context_actor import (
-    DsyncDeletedContextActor as DsyncDeletedContextActor,
-)
-from .dsync_deleted_context_google_analytics_session import (
-    DsyncDeletedContextGoogleAnalyticsSession as DsyncDeletedContextGoogleAnalyticsSession,
-)
 from .dsync_deleted_data import DsyncDeletedData as DsyncDeletedData
 from .dsync_group_created import DsyncGroupCreated as DsyncGroupCreated
-from .dsync_group_created_context import (
-    DsyncGroupCreatedContext as DsyncGroupCreatedContext,
-)
-from .dsync_group_created_context_actor import (
-    DsyncGroupCreatedContextActor as DsyncGroupCreatedContextActor,
-)
-from .dsync_group_created_context_google_analytics_session import (
-    DsyncGroupCreatedContextGoogleAnalyticsSession as DsyncGroupCreatedContextGoogleAnalyticsSession,
-)
-from .dsync_group_created_data import DsyncGroupCreatedData as DsyncGroupCreatedData
 from .dsync_group_deleted import DsyncGroupDeleted as DsyncGroupDeleted
-from .dsync_group_deleted_context import (
-    DsyncGroupDeletedContext as DsyncGroupDeletedContext,
-)
-from .dsync_group_deleted_context_actor import (
-    DsyncGroupDeletedContextActor as DsyncGroupDeletedContextActor,
-)
-from .dsync_group_deleted_context_google_analytics_session import (
-    DsyncGroupDeletedContextGoogleAnalyticsSession as DsyncGroupDeletedContextGoogleAnalyticsSession,
-)
-from .dsync_group_deleted_data import DsyncGroupDeletedData as DsyncGroupDeletedData
 from .dsync_group_updated import DsyncGroupUpdated as DsyncGroupUpdated
-from .dsync_group_updated_context import (
-    DsyncGroupUpdatedContext as DsyncGroupUpdatedContext,
-)
-from .dsync_group_updated_context_actor import (
-    DsyncGroupUpdatedContextActor as DsyncGroupUpdatedContextActor,
-)
-from .dsync_group_updated_context_google_analytics_session import (
-    DsyncGroupUpdatedContextGoogleAnalyticsSession as DsyncGroupUpdatedContextGoogleAnalyticsSession,
-)
 from .dsync_group_updated_data import DsyncGroupUpdatedData as DsyncGroupUpdatedData
 from .dsync_group_user_added import DsyncGroupUserAdded as DsyncGroupUserAdded
-from .dsync_group_user_added_context import (
-    DsyncGroupUserAddedContext as DsyncGroupUserAddedContext,
-)
-from .dsync_group_user_added_context_actor import (
-    DsyncGroupUserAddedContextActor as DsyncGroupUserAddedContextActor,
-)
-from .dsync_group_user_added_context_google_analytics_session import (
-    DsyncGroupUserAddedContextGoogleAnalyticsSession as DsyncGroupUserAddedContextGoogleAnalyticsSession,
-)
 from .dsync_group_user_added_data import (
     DsyncGroupUserAddedData as DsyncGroupUserAddedData,
 )
-from .dsync_group_user_added_data_group import (
-    DsyncGroupUserAddedDataGroup as DsyncGroupUserAddedDataGroup,
-)
-from .dsync_group_user_added_data_user import (
-    DsyncGroupUserAddedDataUser as DsyncGroupUserAddedDataUser,
-)
-from .dsync_group_user_added_data_user_email import (
-    DsyncGroupUserAddedDataUserEmail as DsyncGroupUserAddedDataUserEmail,
-)
-from .dsync_group_user_added_data_user_role import (
-    DsyncGroupUserAddedDataUserRole as DsyncGroupUserAddedDataUserRole,
-)
 from .dsync_group_user_removed import DsyncGroupUserRemoved as DsyncGroupUserRemoved
-from .dsync_group_user_removed_context import (
-    DsyncGroupUserRemovedContext as DsyncGroupUserRemovedContext,
-)
-from .dsync_group_user_removed_context_actor import (
-    DsyncGroupUserRemovedContextActor as DsyncGroupUserRemovedContextActor,
-)
-from .dsync_group_user_removed_context_google_analytics_session import (
-    DsyncGroupUserRemovedContextGoogleAnalyticsSession as DsyncGroupUserRemovedContextGoogleAnalyticsSession,
-)
 from .dsync_group_user_removed_data import (
     DsyncGroupUserRemovedData as DsyncGroupUserRemovedData,
 )
-from .dsync_group_user_removed_data_group import (
-    DsyncGroupUserRemovedDataGroup as DsyncGroupUserRemovedDataGroup,
-)
-from .dsync_group_user_removed_data_user import (
-    DsyncGroupUserRemovedDataUser as DsyncGroupUserRemovedDataUser,
-)
-from .dsync_group_user_removed_data_user_email import (
-    DsyncGroupUserRemovedDataUserEmail as DsyncGroupUserRemovedDataUserEmail,
-)
-from .dsync_group_user_removed_data_user_role import (
-    DsyncGroupUserRemovedDataUserRole as DsyncGroupUserRemovedDataUserRole,
-)
 from .dsync_user_created import DsyncUserCreated as DsyncUserCreated
-from .dsync_user_created_context import (
-    DsyncUserCreatedContext as DsyncUserCreatedContext,
-)
-from .dsync_user_created_context_actor import (
-    DsyncUserCreatedContextActor as DsyncUserCreatedContextActor,
-)
-from .dsync_user_created_context_google_analytics_session import (
-    DsyncUserCreatedContextGoogleAnalyticsSession as DsyncUserCreatedContextGoogleAnalyticsSession,
-)
-from .dsync_user_created_data import DsyncUserCreatedData as DsyncUserCreatedData
-from .dsync_user_created_data_email import (
-    DsyncUserCreatedDataEmail as DsyncUserCreatedDataEmail,
-)
-from .dsync_user_created_data_role import (
-    DsyncUserCreatedDataRole as DsyncUserCreatedDataRole,
-)
 from .dsync_user_deleted import DsyncUserDeleted as DsyncUserDeleted
-from .dsync_user_deleted_context import (
-    DsyncUserDeletedContext as DsyncUserDeletedContext,
-)
-from .dsync_user_deleted_context_actor import (
-    DsyncUserDeletedContextActor as DsyncUserDeletedContextActor,
-)
-from .dsync_user_deleted_context_google_analytics_session import (
-    DsyncUserDeletedContextGoogleAnalyticsSession as DsyncUserDeletedContextGoogleAnalyticsSession,
-)
-from .dsync_user_deleted_data import DsyncUserDeletedData as DsyncUserDeletedData
-from .dsync_user_deleted_data_email import (
-    DsyncUserDeletedDataEmail as DsyncUserDeletedDataEmail,
-)
-from .dsync_user_deleted_data_role import (
-    DsyncUserDeletedDataRole as DsyncUserDeletedDataRole,
-)
 from .dsync_user_updated import DsyncUserUpdated as DsyncUserUpdated
-from .dsync_user_updated_context import (
-    DsyncUserUpdatedContext as DsyncUserUpdatedContext,
-)
-from .dsync_user_updated_context_actor import (
-    DsyncUserUpdatedContextActor as DsyncUserUpdatedContextActor,
-)
-from .dsync_user_updated_context_google_analytics_session import (
-    DsyncUserUpdatedContextGoogleAnalyticsSession as DsyncUserUpdatedContextGoogleAnalyticsSession,
-)
 from .dsync_user_updated_data import DsyncUserUpdatedData as DsyncUserUpdatedData
 from .dsync_user_updated_data_email import (
     DsyncUserUpdatedDataEmail as DsyncUserUpdatedDataEmail,
 )
-from .dsync_user_updated_data_role import (
-    DsyncUserUpdatedDataRole as DsyncUserUpdatedDataRole,
-)
 from .email_verification_created import (
     EmailVerificationCreated as EmailVerificationCreated,
 )
-from .email_verification_created_context import (
-    EmailVerificationCreatedContext as EmailVerificationCreatedContext,
-)
-from .email_verification_created_context_actor import (
-    EmailVerificationCreatedContextActor as EmailVerificationCreatedContextActor,
-)
-from .email_verification_created_context_google_analytics_session import (
-    EmailVerificationCreatedContextGoogleAnalyticsSession as EmailVerificationCreatedContextGoogleAnalyticsSession,
-)
 from .email_verification_created_data import (
     EmailVerificationCreatedData as EmailVerificationCreatedData,
+)
+from .event_context import EventContext as EventContext
+from .event_context_actor import EventContextActor as EventContextActor
+from .event_context_google_analytics_session import (
+    EventContextGoogleAnalyticsSession as EventContextGoogleAnalyticsSession,
 )
 from .flag_created import FlagCreated as FlagCreated
 from .flag_created_context import FlagCreatedContext as FlagCreatedContext
@@ -723,72 +353,17 @@ from .flag_updated_data import FlagUpdatedData as FlagUpdatedData
 from .flag_updated_data_owner import FlagUpdatedDataOwner as FlagUpdatedDataOwner
 from .generate_link_intent import GenerateLinkIntent as GenerateLinkIntent
 from .invitation_accepted import InvitationAccepted as InvitationAccepted
-from .invitation_accepted_context import (
-    InvitationAcceptedContext as InvitationAcceptedContext,
-)
-from .invitation_accepted_context_actor import (
-    InvitationAcceptedContextActor as InvitationAcceptedContextActor,
-)
-from .invitation_accepted_context_google_analytics_session import (
-    InvitationAcceptedContextGoogleAnalyticsSession as InvitationAcceptedContextGoogleAnalyticsSession,
-)
 from .invitation_accepted_data import InvitationAcceptedData as InvitationAcceptedData
 from .invitation_created import InvitationCreated as InvitationCreated
-from .invitation_created_context import (
-    InvitationCreatedContext as InvitationCreatedContext,
-)
-from .invitation_created_context_actor import (
-    InvitationCreatedContextActor as InvitationCreatedContextActor,
-)
-from .invitation_created_context_google_analytics_session import (
-    InvitationCreatedContextGoogleAnalyticsSession as InvitationCreatedContextGoogleAnalyticsSession,
-)
 from .invitation_created_data import InvitationCreatedData as InvitationCreatedData
 from .invitation_resent import InvitationResent as InvitationResent
-from .invitation_resent_context import (
-    InvitationResentContext as InvitationResentContext,
-)
-from .invitation_resent_context_actor import (
-    InvitationResentContextActor as InvitationResentContextActor,
-)
-from .invitation_resent_context_google_analytics_session import (
-    InvitationResentContextGoogleAnalyticsSession as InvitationResentContextGoogleAnalyticsSession,
-)
 from .invitation_resent_data import InvitationResentData as InvitationResentData
 from .invitation_revoked import InvitationRevoked as InvitationRevoked
-from .invitation_revoked_context import (
-    InvitationRevokedContext as InvitationRevokedContext,
-)
-from .invitation_revoked_context_actor import (
-    InvitationRevokedContextActor as InvitationRevokedContextActor,
-)
-from .invitation_revoked_context_google_analytics_session import (
-    InvitationRevokedContextGoogleAnalyticsSession as InvitationRevokedContextGoogleAnalyticsSession,
-)
 from .invitation_revoked_data import InvitationRevokedData as InvitationRevokedData
 from .invitation_state import InvitationState as InvitationState
-from .list_data_type import ListDataType as ListDataType
 from .magic_auth_created import MagicAuthCreated as MagicAuthCreated
-from .magic_auth_created_context import (
-    MagicAuthCreatedContext as MagicAuthCreatedContext,
-)
-from .magic_auth_created_context_actor import (
-    MagicAuthCreatedContextActor as MagicAuthCreatedContextActor,
-)
-from .magic_auth_created_context_google_analytics_session import (
-    MagicAuthCreatedContextGoogleAnalyticsSession as MagicAuthCreatedContextGoogleAnalyticsSession,
-)
 from .magic_auth_created_data import MagicAuthCreatedData as MagicAuthCreatedData
 from .organization_created import OrganizationCreated as OrganizationCreated
-from .organization_created_context import (
-    OrganizationCreatedContext as OrganizationCreatedContext,
-)
-from .organization_created_context_actor import (
-    OrganizationCreatedContextActor as OrganizationCreatedContextActor,
-)
-from .organization_created_context_google_analytics_session import (
-    OrganizationCreatedContextGoogleAnalyticsSession as OrganizationCreatedContextGoogleAnalyticsSession,
-)
 from .organization_created_data import (
     OrganizationCreatedData as OrganizationCreatedData,
 )
@@ -796,15 +371,6 @@ from .organization_created_data_domain import (
     OrganizationCreatedDataDomain as OrganizationCreatedDataDomain,
 )
 from .organization_deleted import OrganizationDeleted as OrganizationDeleted
-from .organization_deleted_context import (
-    OrganizationDeletedContext as OrganizationDeletedContext,
-)
-from .organization_deleted_context_actor import (
-    OrganizationDeletedContextActor as OrganizationDeletedContextActor,
-)
-from .organization_deleted_context_google_analytics_session import (
-    OrganizationDeletedContextGoogleAnalyticsSession as OrganizationDeletedContextGoogleAnalyticsSession,
-)
 from .organization_deleted_data import (
     OrganizationDeletedData as OrganizationDeletedData,
 )
@@ -814,15 +380,6 @@ from .organization_deleted_data_domain import (
 from .organization_domain_created import (
     OrganizationDomainCreated as OrganizationDomainCreated,
 )
-from .organization_domain_created_context import (
-    OrganizationDomainCreatedContext as OrganizationDomainCreatedContext,
-)
-from .organization_domain_created_context_actor import (
-    OrganizationDomainCreatedContextActor as OrganizationDomainCreatedContextActor,
-)
-from .organization_domain_created_context_google_analytics_session import (
-    OrganizationDomainCreatedContextGoogleAnalyticsSession as OrganizationDomainCreatedContextGoogleAnalyticsSession,
-)
 from .organization_domain_created_data import (
     OrganizationDomainCreatedData as OrganizationDomainCreatedData,
 )
@@ -831,15 +388,6 @@ from .organization_domain_data_state import (
 )
 from .organization_domain_deleted import (
     OrganizationDomainDeleted as OrganizationDomainDeleted,
-)
-from .organization_domain_deleted_context import (
-    OrganizationDomainDeletedContext as OrganizationDomainDeletedContext,
-)
-from .organization_domain_deleted_context_actor import (
-    OrganizationDomainDeletedContextActor as OrganizationDomainDeletedContextActor,
-)
-from .organization_domain_deleted_context_google_analytics_session import (
-    OrganizationDomainDeletedContextGoogleAnalyticsSession as OrganizationDomainDeletedContextGoogleAnalyticsSession,
 )
 from .organization_domain_deleted_data import (
     OrganizationDomainDeletedData as OrganizationDomainDeletedData,
@@ -856,29 +404,11 @@ from .organization_domain_state import (
 from .organization_domain_updated import (
     OrganizationDomainUpdated as OrganizationDomainUpdated,
 )
-from .organization_domain_updated_context import (
-    OrganizationDomainUpdatedContext as OrganizationDomainUpdatedContext,
-)
-from .organization_domain_updated_context_actor import (
-    OrganizationDomainUpdatedContextActor as OrganizationDomainUpdatedContextActor,
-)
-from .organization_domain_updated_context_google_analytics_session import (
-    OrganizationDomainUpdatedContextGoogleAnalyticsSession as OrganizationDomainUpdatedContextGoogleAnalyticsSession,
-)
 from .organization_domain_updated_data import (
     OrganizationDomainUpdatedData as OrganizationDomainUpdatedData,
 )
 from .organization_domain_verification_failed import (
     OrganizationDomainVerificationFailed as OrganizationDomainVerificationFailed,
-)
-from .organization_domain_verification_failed_context import (
-    OrganizationDomainVerificationFailedContext as OrganizationDomainVerificationFailedContext,
-)
-from .organization_domain_verification_failed_context_actor import (
-    OrganizationDomainVerificationFailedContextActor as OrganizationDomainVerificationFailedContextActor,
-)
-from .organization_domain_verification_failed_context_google_analytics_session import (
-    OrganizationDomainVerificationFailedContextGoogleAnalyticsSession as OrganizationDomainVerificationFailedContextGoogleAnalyticsSession,
 )
 from .organization_domain_verification_failed_data import (
     OrganizationDomainVerificationFailedData as OrganizationDomainVerificationFailedData,
@@ -892,44 +422,17 @@ from .organization_domain_verification_strategy import (
 from .organization_domain_verified import (
     OrganizationDomainVerified as OrganizationDomainVerified,
 )
-from .organization_domain_verified_context import (
-    OrganizationDomainVerifiedContext as OrganizationDomainVerifiedContext,
-)
-from .organization_domain_verified_context_actor import (
-    OrganizationDomainVerifiedContextActor as OrganizationDomainVerifiedContextActor,
-)
-from .organization_domain_verified_context_google_analytics_session import (
-    OrganizationDomainVerifiedContextGoogleAnalyticsSession as OrganizationDomainVerifiedContextGoogleAnalyticsSession,
-)
 from .organization_domain_verified_data import (
     OrganizationDomainVerifiedData as OrganizationDomainVerifiedData,
 )
 from .organization_membership_created import (
     OrganizationMembershipCreated as OrganizationMembershipCreated,
 )
-from .organization_membership_created_context import (
-    OrganizationMembershipCreatedContext as OrganizationMembershipCreatedContext,
-)
-from .organization_membership_created_context_actor import (
-    OrganizationMembershipCreatedContextActor as OrganizationMembershipCreatedContextActor,
-)
-from .organization_membership_created_context_google_analytics_session import (
-    OrganizationMembershipCreatedContextGoogleAnalyticsSession as OrganizationMembershipCreatedContextGoogleAnalyticsSession,
-)
 from .organization_membership_created_data import (
     OrganizationMembershipCreatedData as OrganizationMembershipCreatedData,
 )
 from .organization_membership_deleted import (
     OrganizationMembershipDeleted as OrganizationMembershipDeleted,
-)
-from .organization_membership_deleted_context import (
-    OrganizationMembershipDeletedContext as OrganizationMembershipDeletedContext,
-)
-from .organization_membership_deleted_context_actor import (
-    OrganizationMembershipDeletedContextActor as OrganizationMembershipDeletedContextActor,
-)
-from .organization_membership_deleted_context_google_analytics_session import (
-    OrganizationMembershipDeletedContextGoogleAnalyticsSession as OrganizationMembershipDeletedContextGoogleAnalyticsSession,
 )
 from .organization_membership_deleted_data import (
     OrganizationMembershipDeletedData as OrganizationMembershipDeletedData,
@@ -940,29 +443,11 @@ from .organization_membership_status import (
 from .organization_membership_updated import (
     OrganizationMembershipUpdated as OrganizationMembershipUpdated,
 )
-from .organization_membership_updated_context import (
-    OrganizationMembershipUpdatedContext as OrganizationMembershipUpdatedContext,
-)
-from .organization_membership_updated_context_actor import (
-    OrganizationMembershipUpdatedContextActor as OrganizationMembershipUpdatedContextActor,
-)
-from .organization_membership_updated_context_google_analytics_session import (
-    OrganizationMembershipUpdatedContextGoogleAnalyticsSession as OrganizationMembershipUpdatedContextGoogleAnalyticsSession,
-)
 from .organization_membership_updated_data import (
     OrganizationMembershipUpdatedData as OrganizationMembershipUpdatedData,
 )
 from .organization_role_created import (
     OrganizationRoleCreated as OrganizationRoleCreated,
-)
-from .organization_role_created_context import (
-    OrganizationRoleCreatedContext as OrganizationRoleCreatedContext,
-)
-from .organization_role_created_context_actor import (
-    OrganizationRoleCreatedContextActor as OrganizationRoleCreatedContextActor,
-)
-from .organization_role_created_context_google_analytics_session import (
-    OrganizationRoleCreatedContextGoogleAnalyticsSession as OrganizationRoleCreatedContextGoogleAnalyticsSession,
 )
 from .organization_role_created_data import (
     OrganizationRoleCreatedData as OrganizationRoleCreatedData,
@@ -970,43 +455,16 @@ from .organization_role_created_data import (
 from .organization_role_deleted import (
     OrganizationRoleDeleted as OrganizationRoleDeleted,
 )
-from .organization_role_deleted_context import (
-    OrganizationRoleDeletedContext as OrganizationRoleDeletedContext,
-)
-from .organization_role_deleted_context_actor import (
-    OrganizationRoleDeletedContextActor as OrganizationRoleDeletedContextActor,
-)
-from .organization_role_deleted_context_google_analytics_session import (
-    OrganizationRoleDeletedContextGoogleAnalyticsSession as OrganizationRoleDeletedContextGoogleAnalyticsSession,
-)
 from .organization_role_deleted_data import (
     OrganizationRoleDeletedData as OrganizationRoleDeletedData,
 )
 from .organization_role_updated import (
     OrganizationRoleUpdated as OrganizationRoleUpdated,
 )
-from .organization_role_updated_context import (
-    OrganizationRoleUpdatedContext as OrganizationRoleUpdatedContext,
-)
-from .organization_role_updated_context_actor import (
-    OrganizationRoleUpdatedContextActor as OrganizationRoleUpdatedContextActor,
-)
-from .organization_role_updated_context_google_analytics_session import (
-    OrganizationRoleUpdatedContextGoogleAnalyticsSession as OrganizationRoleUpdatedContextGoogleAnalyticsSession,
-)
 from .organization_role_updated_data import (
     OrganizationRoleUpdatedData as OrganizationRoleUpdatedData,
 )
 from .organization_updated import OrganizationUpdated as OrganizationUpdated
-from .organization_updated_context import (
-    OrganizationUpdatedContext as OrganizationUpdatedContext,
-)
-from .organization_updated_context_actor import (
-    OrganizationUpdatedContextActor as OrganizationUpdatedContextActor,
-)
-from .organization_updated_context_google_analytics_session import (
-    OrganizationUpdatedContextGoogleAnalyticsSession as OrganizationUpdatedContextGoogleAnalyticsSession,
-)
 from .organization_updated_data import (
     OrganizationUpdatedData as OrganizationUpdatedData,
 )
@@ -1014,63 +472,18 @@ from .organization_updated_data_domain import (
     OrganizationUpdatedDataDomain as OrganizationUpdatedDataDomain,
 )
 from .password_reset_created import PasswordResetCreated as PasswordResetCreated
-from .password_reset_created_context import (
-    PasswordResetCreatedContext as PasswordResetCreatedContext,
-)
-from .password_reset_created_context_actor import (
-    PasswordResetCreatedContextActor as PasswordResetCreatedContextActor,
-)
-from .password_reset_created_context_google_analytics_session import (
-    PasswordResetCreatedContextGoogleAnalyticsSession as PasswordResetCreatedContextGoogleAnalyticsSession,
-)
 from .password_reset_created_data import (
     PasswordResetCreatedData as PasswordResetCreatedData,
 )
 from .password_reset_succeeded import PasswordResetSucceeded as PasswordResetSucceeded
-from .password_reset_succeeded_context import (
-    PasswordResetSucceededContext as PasswordResetSucceededContext,
-)
-from .password_reset_succeeded_context_actor import (
-    PasswordResetSucceededContextActor as PasswordResetSucceededContextActor,
-)
-from .password_reset_succeeded_context_google_analytics_session import (
-    PasswordResetSucceededContextGoogleAnalyticsSession as PasswordResetSucceededContextGoogleAnalyticsSession,
-)
 from .password_reset_succeeded_data import (
     PasswordResetSucceededData as PasswordResetSucceededData,
 )
 from .permission_created import PermissionCreated as PermissionCreated
-from .permission_created_context import (
-    PermissionCreatedContext as PermissionCreatedContext,
-)
-from .permission_created_context_actor import (
-    PermissionCreatedContextActor as PermissionCreatedContextActor,
-)
-from .permission_created_context_google_analytics_session import (
-    PermissionCreatedContextGoogleAnalyticsSession as PermissionCreatedContextGoogleAnalyticsSession,
-)
 from .permission_created_data import PermissionCreatedData as PermissionCreatedData
 from .permission_deleted import PermissionDeleted as PermissionDeleted
-from .permission_deleted_context import (
-    PermissionDeletedContext as PermissionDeletedContext,
-)
-from .permission_deleted_context_actor import (
-    PermissionDeletedContextActor as PermissionDeletedContextActor,
-)
-from .permission_deleted_context_google_analytics_session import (
-    PermissionDeletedContextGoogleAnalyticsSession as PermissionDeletedContextGoogleAnalyticsSession,
-)
 from .permission_deleted_data import PermissionDeletedData as PermissionDeletedData
 from .permission_updated import PermissionUpdated as PermissionUpdated
-from .permission_updated_context import (
-    PermissionUpdatedContext as PermissionUpdatedContext,
-)
-from .permission_updated_context_actor import (
-    PermissionUpdatedContextActor as PermissionUpdatedContextActor,
-)
-from .permission_updated_context_google_analytics_session import (
-    PermissionUpdatedContextGoogleAnalyticsSession as PermissionUpdatedContextGoogleAnalyticsSession,
-)
 from .permission_updated_data import PermissionUpdatedData as PermissionUpdatedData
 from .profile_connection_type import ProfileConnectionType as ProfileConnectionType
 from .radar_standalone_assess_request_action import (
@@ -1092,53 +505,18 @@ from .resend_user_invite_options_locale import (
     ResendUserInviteOptionsLocale as ResendUserInviteOptionsLocale,
 )
 from .role_created import RoleCreated as RoleCreated
-from .role_created_context import RoleCreatedContext as RoleCreatedContext
-from .role_created_context_actor import (
-    RoleCreatedContextActor as RoleCreatedContextActor,
-)
-from .role_created_context_google_analytics_session import (
-    RoleCreatedContextGoogleAnalyticsSession as RoleCreatedContextGoogleAnalyticsSession,
-)
 from .role_created_data import RoleCreatedData as RoleCreatedData
 from .role_deleted import RoleDeleted as RoleDeleted
-from .role_deleted_context import RoleDeletedContext as RoleDeletedContext
-from .role_deleted_context_actor import (
-    RoleDeletedContextActor as RoleDeletedContextActor,
-)
-from .role_deleted_context_google_analytics_session import (
-    RoleDeletedContextGoogleAnalyticsSession as RoleDeletedContextGoogleAnalyticsSession,
-)
 from .role_deleted_data import RoleDeletedData as RoleDeletedData
 from .role_type import RoleType as RoleType
 from .role_updated import RoleUpdated as RoleUpdated
-from .role_updated_context import RoleUpdatedContext as RoleUpdatedContext
-from .role_updated_context_actor import (
-    RoleUpdatedContextActor as RoleUpdatedContextActor,
-)
-from .role_updated_context_google_analytics_session import (
-    RoleUpdatedContextGoogleAnalyticsSession as RoleUpdatedContextGoogleAnalyticsSession,
-)
 from .role_updated_data import RoleUpdatedData as RoleUpdatedData
 from .session_created import SessionCreated as SessionCreated
-from .session_created_context import SessionCreatedContext as SessionCreatedContext
-from .session_created_context_actor import (
-    SessionCreatedContextActor as SessionCreatedContextActor,
-)
-from .session_created_context_google_analytics_session import (
-    SessionCreatedContextGoogleAnalyticsSession as SessionCreatedContextGoogleAnalyticsSession,
-)
 from .session_created_data import SessionCreatedData as SessionCreatedData
 from .session_created_data_impersonator import (
     SessionCreatedDataImpersonator as SessionCreatedDataImpersonator,
 )
 from .session_revoked import SessionRevoked as SessionRevoked
-from .session_revoked_context import SessionRevokedContext as SessionRevokedContext
-from .session_revoked_context_actor import (
-    SessionRevokedContextActor as SessionRevokedContextActor,
-)
-from .session_revoked_context_google_analytics_session import (
-    SessionRevokedContextGoogleAnalyticsSession as SessionRevokedContextGoogleAnalyticsSession,
-)
 from .session_revoked_data import SessionRevokedData as SessionRevokedData
 from .session_revoked_data_impersonator import (
     SessionRevokedDataImpersonator as SessionRevokedDataImpersonator,
@@ -1153,23 +531,7 @@ from .update_webhook_endpoint_status import (
     UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus,
 )
 from .user_created import UserCreated as UserCreated
-from .user_created_context import UserCreatedContext as UserCreatedContext
-from .user_created_context_actor import (
-    UserCreatedContextActor as UserCreatedContextActor,
-)
-from .user_created_context_google_analytics_session import (
-    UserCreatedContextGoogleAnalyticsSession as UserCreatedContextGoogleAnalyticsSession,
-)
-from .user_created_data import UserCreatedData as UserCreatedData
 from .user_deleted import UserDeleted as UserDeleted
-from .user_deleted_context import UserDeletedContext as UserDeletedContext
-from .user_deleted_context_actor import (
-    UserDeletedContextActor as UserDeletedContextActor,
-)
-from .user_deleted_context_google_analytics_session import (
-    UserDeletedContextGoogleAnalyticsSession as UserDeletedContextGoogleAnalyticsSession,
-)
-from .user_deleted_data import UserDeletedData as UserDeletedData
 from .user_identities_get_item_provider import (
     UserIdentitiesGetItemProvider as UserIdentitiesGetItemProvider,
 )
@@ -1183,121 +545,29 @@ from .user_organization_membership_status import (
 from .user_sessions_auth_method import UserSessionsAuthMethod as UserSessionsAuthMethod
 from .user_sessions_status import UserSessionsStatus as UserSessionsStatus
 from .user_updated import UserUpdated as UserUpdated
-from .user_updated_context import UserUpdatedContext as UserUpdatedContext
-from .user_updated_context_actor import (
-    UserUpdatedContextActor as UserUpdatedContextActor,
-)
-from .user_updated_context_google_analytics_session import (
-    UserUpdatedContextGoogleAnalyticsSession as UserUpdatedContextGoogleAnalyticsSession,
-)
-from .user_updated_data import UserUpdatedData as UserUpdatedData
 from .vault_byok_key_verification_completed import (
     VaultByokKeyVerificationCompleted as VaultByokKeyVerificationCompleted,
-)
-from .vault_byok_key_verification_completed_context import (
-    VaultByokKeyVerificationCompletedContext as VaultByokKeyVerificationCompletedContext,
-)
-from .vault_byok_key_verification_completed_context_actor import (
-    VaultByokKeyVerificationCompletedContextActor as VaultByokKeyVerificationCompletedContextActor,
-)
-from .vault_byok_key_verification_completed_context_google_analytics_session import (
-    VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession as VaultByokKeyVerificationCompletedContextGoogleAnalyticsSession,
 )
 from .vault_byok_key_verification_completed_data import (
     VaultByokKeyVerificationCompletedData as VaultByokKeyVerificationCompletedData,
 )
 from .vault_data_created import VaultDataCreated as VaultDataCreated
-from .vault_data_created_context import (
-    VaultDataCreatedContext as VaultDataCreatedContext,
-)
-from .vault_data_created_context_actor import (
-    VaultDataCreatedContextActor as VaultDataCreatedContextActor,
-)
-from .vault_data_created_context_google_analytics_session import (
-    VaultDataCreatedContextGoogleAnalyticsSession as VaultDataCreatedContextGoogleAnalyticsSession,
-)
 from .vault_data_created_data import VaultDataCreatedData as VaultDataCreatedData
 from .vault_data_deleted import VaultDataDeleted as VaultDataDeleted
-from .vault_data_deleted_context import (
-    VaultDataDeletedContext as VaultDataDeletedContext,
-)
-from .vault_data_deleted_context_actor import (
-    VaultDataDeletedContextActor as VaultDataDeletedContextActor,
-)
-from .vault_data_deleted_context_google_analytics_session import (
-    VaultDataDeletedContextGoogleAnalyticsSession as VaultDataDeletedContextGoogleAnalyticsSession,
-)
 from .vault_data_deleted_data import VaultDataDeletedData as VaultDataDeletedData
 from .vault_data_read import VaultDataRead as VaultDataRead
-from .vault_data_read_context import VaultDataReadContext as VaultDataReadContext
-from .vault_data_read_context_actor import (
-    VaultDataReadContextActor as VaultDataReadContextActor,
-)
-from .vault_data_read_context_google_analytics_session import (
-    VaultDataReadContextGoogleAnalyticsSession as VaultDataReadContextGoogleAnalyticsSession,
-)
 from .vault_data_read_data import VaultDataReadData as VaultDataReadData
 from .vault_data_updated import VaultDataUpdated as VaultDataUpdated
-from .vault_data_updated_context import (
-    VaultDataUpdatedContext as VaultDataUpdatedContext,
-)
-from .vault_data_updated_context_actor import (
-    VaultDataUpdatedContextActor as VaultDataUpdatedContextActor,
-)
-from .vault_data_updated_context_google_analytics_session import (
-    VaultDataUpdatedContextGoogleAnalyticsSession as VaultDataUpdatedContextGoogleAnalyticsSession,
-)
 from .vault_data_updated_data import VaultDataUpdatedData as VaultDataUpdatedData
 from .vault_dek_decrypted import VaultDekDecrypted as VaultDekDecrypted
-from .vault_dek_decrypted_context import (
-    VaultDekDecryptedContext as VaultDekDecryptedContext,
-)
-from .vault_dek_decrypted_context_actor import (
-    VaultDekDecryptedContextActor as VaultDekDecryptedContextActor,
-)
-from .vault_dek_decrypted_context_google_analytics_session import (
-    VaultDekDecryptedContextGoogleAnalyticsSession as VaultDekDecryptedContextGoogleAnalyticsSession,
-)
 from .vault_dek_decrypted_data import VaultDekDecryptedData as VaultDekDecryptedData
 from .vault_dek_read import VaultDekRead as VaultDekRead
-from .vault_dek_read_context import VaultDekReadContext as VaultDekReadContext
-from .vault_dek_read_context_actor import (
-    VaultDekReadContextActor as VaultDekReadContextActor,
-)
-from .vault_dek_read_context_google_analytics_session import (
-    VaultDekReadContextGoogleAnalyticsSession as VaultDekReadContextGoogleAnalyticsSession,
-)
 from .vault_dek_read_data import VaultDekReadData as VaultDekReadData
 from .vault_kek_created import VaultKekCreated as VaultKekCreated
-from .vault_kek_created_context import VaultKekCreatedContext as VaultKekCreatedContext
-from .vault_kek_created_context_actor import (
-    VaultKekCreatedContextActor as VaultKekCreatedContextActor,
-)
-from .vault_kek_created_context_google_analytics_session import (
-    VaultKekCreatedContextGoogleAnalyticsSession as VaultKekCreatedContextGoogleAnalyticsSession,
-)
 from .vault_kek_created_data import VaultKekCreatedData as VaultKekCreatedData
 from .vault_metadata_read import VaultMetadataRead as VaultMetadataRead
-from .vault_metadata_read_context import (
-    VaultMetadataReadContext as VaultMetadataReadContext,
-)
-from .vault_metadata_read_context_actor import (
-    VaultMetadataReadContextActor as VaultMetadataReadContextActor,
-)
-from .vault_metadata_read_context_google_analytics_session import (
-    VaultMetadataReadContextGoogleAnalyticsSession as VaultMetadataReadContextGoogleAnalyticsSession,
-)
 from .vault_metadata_read_data import VaultMetadataReadData as VaultMetadataReadData
 from .vault_names_listed import VaultNamesListed as VaultNamesListed
-from .vault_names_listed_context import (
-    VaultNamesListedContext as VaultNamesListedContext,
-)
-from .vault_names_listed_context_actor import (
-    VaultNamesListedContextActor as VaultNamesListedContextActor,
-)
-from .vault_names_listed_context_google_analytics_session import (
-    VaultNamesListedContextGoogleAnalyticsSession as VaultNamesListedContextGoogleAnalyticsSession,
-)
 from .vault_names_listed_data import VaultNamesListedData as VaultNamesListedData
 from .webhook_endpoint_json_status import (
     WebhookEndpointJsonStatus as WebhookEndpointJsonStatus,

@@ -16,8 +16,6 @@ from .create_authorization_resource import (
 )
 from .create_organization_role import CreateOrganizationRole as CreateOrganizationRole
 from .create_role import CreateRole as CreateRole
-from .list import ListModel as ListModel
-from .list_data import ListData as ListData
 from .permission import Permission as Permission
 from .permissions_order import PermissionsOrder as PermissionsOrder
 from .remove_role import RemoveRole as RemoveRole

@@ -11,7 +11,7 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .dsync_user_updated_data_email import DsyncUserUpdatedDataEmail
-from .dsync_user_updated_data_role import DsyncUserUpdatedDataRole
+from workos.authorization.models.slim_role import SlimRole
 from .dsync_user_updated_data_state import DsyncUserUpdatedDataState
 
 
@@ -59,9 +59,8 @@ class DsyncUserUpdatedData:
     """The raw attributes received from the directory provider.
 
     .. deprecated:: This field is deprecated."""
-    role: Optional["DsyncUserUpdatedDataRole"] = None
-    """The primary role assigned to the user."""
-    roles: Optional[List["DsyncUserUpdatedDataRole"]] = None
+    role: Optional["SlimRole"] = None
+    roles: Optional[List["SlimRole"]] = None
     """All roles assigned to the user."""
     previous_attributes: Optional[Dict[str, Any]] = None
 
@@ -91,11 +90,11 @@ class DsyncUserUpdatedData:
                 job_title=data.get("job_title"),
                 username=data.get("username"),
                 raw_attributes=data.get("raw_attributes"),
-                role=DsyncUserUpdatedDataRole.from_dict(cast(Dict[str, Any], _v))
+                role=SlimRole.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("role")) is not None
                 else None,
                 roles=[
-                    DsyncUserUpdatedDataRole.from_dict(cast(Dict[str, Any], item))
+                    SlimRole.from_dict(cast(Dict[str, Any], item))
                     for item in cast(list[Any], _v)
                 ]
                 if (_v := data.get("roles")) is not None

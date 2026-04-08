@@ -9,12 +9,10 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .connection_saml_certificate_renewed_context import (
-    ConnectionSAMLCertificateRenewedContext,
-)
 from .connection_saml_certificate_renewed_data import (
     ConnectionSAMLCertificateRenewedData,
 )
+from .event_context import EventContext
 
 
 @dataclass(slots=True)
@@ -30,8 +28,7 @@ class ConnectionSAMLCertificateRenewed:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["ConnectionSAMLCertificateRenewedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ConnectionSAMLCertificateRenewed":
@@ -45,9 +42,7 @@ class ConnectionSAMLCertificateRenewed:
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=ConnectionSAMLCertificateRenewedContext.from_dict(
-                    cast(Dict[str, Any], _v)
-                )
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

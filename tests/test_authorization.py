@@ -10,7 +10,6 @@ from workos.authorization.models import (
     AuthorizationCheck,
     AuthorizationPermission,
     AuthorizationResource,
-    ListModel,
     Permission,
     Role,
     RoleAssignment,
@@ -182,10 +181,10 @@ class TestAuthorization:
 
     def test_list_organization_roles(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("list.json"),
+            json=load_fixture("role_list.json"),
         )
         result = workos.authorization.list_organization_roles("test_organizationId")
-        assert isinstance(result, ListModel)
+        assert isinstance(result, RoleList)
         assert result.object == "list"
         request = httpx_mock.get_request()
         assert request.method == "GET"
@@ -972,11 +971,11 @@ class TestAsyncAuthorization:
 
     @pytest.mark.asyncio
     async def test_list_organization_roles(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("list.json"))
+        httpx_mock.add_response(json=load_fixture("role_list.json"))
         result = await async_workos.authorization.list_organization_roles(
             "test_organizationId"
         )
-        assert isinstance(result, ListModel)
+        assert isinstance(result, RoleList)
         assert result.object == "list"
         request = httpx_mock.get_request()
         assert request.method == "GET"

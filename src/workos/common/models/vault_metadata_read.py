@@ -9,7 +9,7 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .vault_metadata_read_context import VaultMetadataReadContext
+from .event_context import EventContext
 from .vault_metadata_read_data import VaultMetadataReadData
 
 
@@ -26,8 +26,7 @@ class VaultMetadataRead:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["VaultMetadataReadContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "VaultMetadataRead":
@@ -41,7 +40,7 @@ class VaultMetadataRead:
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=VaultMetadataReadContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

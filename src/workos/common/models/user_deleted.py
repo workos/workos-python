@@ -9,8 +9,8 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .user_deleted_context import UserDeletedContext
-from .user_deleted_data import UserDeletedData
+from .event_context import EventContext
+from workos.user_management.models.user import User
 
 
 @dataclass(slots=True)
@@ -20,14 +20,13 @@ class UserDeleted:
     id: str
     """Unique identifier for the event."""
     event: Literal["user.deleted"]
-    data: "UserDeletedData"
+    data: "User"
     """The event payload."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["UserDeletedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "UserDeleted":
@@ -36,10 +35,10 @@ class UserDeleted:
             return cls(
                 id=data["id"],
                 event=data["event"],
-                data=UserDeletedData.from_dict(cast(Dict[str, Any], data["data"])),
+                data=User.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=UserDeletedContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

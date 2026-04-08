@@ -9,8 +9,8 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .action_authentication_denied_context import ActionAuthenticationDeniedContext
 from .action_authentication_denied_data import ActionAuthenticationDeniedData
+from .event_context import EventContext
 
 
 @dataclass(slots=True)
@@ -26,8 +26,7 @@ class ActionAuthenticationDenied:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["ActionAuthenticationDeniedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ActionAuthenticationDenied":
@@ -41,9 +40,7 @@ class ActionAuthenticationDenied:
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=ActionAuthenticationDeniedContext.from_dict(
-                    cast(Dict[str, Any], _v)
-                )
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

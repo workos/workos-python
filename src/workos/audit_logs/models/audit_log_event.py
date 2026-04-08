@@ -28,7 +28,7 @@ class AuditLogEvent:
     """Additional context about where and how the action occurred."""
     metadata: Optional[Dict[str, Union[str, float, bool]]] = None
     """Additional data associated with the event or entity."""
-    version: Optional[float] = None
+    version: Optional[int] = None
     """What schema version the event is associated with."""
 
     @classmethod

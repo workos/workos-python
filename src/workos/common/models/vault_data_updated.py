@@ -9,7 +9,7 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .vault_data_updated_context import VaultDataUpdatedContext
+from .event_context import EventContext
 from .vault_data_updated_data import VaultDataUpdatedData
 
 
@@ -26,8 +26,7 @@ class VaultDataUpdated:
     """An ISO 8601 timestamp."""
     object: Literal["event"]
     """Distinguishes the Event object."""
-    context: Optional["VaultDataUpdatedContext"] = None
-    """Additional context about the event."""
+    context: Optional["EventContext"] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "VaultDataUpdated":
@@ -39,7 +38,7 @@ class VaultDataUpdated:
                 data=VaultDataUpdatedData.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=VaultDataUpdatedContext.from_dict(cast(Dict[str, Any], _v))
+                context=EventContext.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("context")) is not None
                 else None,
             )

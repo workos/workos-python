@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import cast
 from typing import Any, Dict, List, Optional, Union
 from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from .audit_log_event_actor import AuditLogEventActor
 from .audit_log_event_context import AuditLogEventContext
@@ -18,7 +20,7 @@ class AuditLogEvent:
 
     action: str
     """Identifier of what happened."""
-    occurred_at: str
+    occurred_at: datetime
     """ISO-8601 value of when the action occurred."""
     actor: "AuditLogEventActor"
     """The entity that performed the action."""
@@ -37,7 +39,7 @@ class AuditLogEvent:
         try:
             return cls(
                 action=data["action"],
-                occurred_at=data["occurred_at"],
+                occurred_at=_parse_datetime(data["occurred_at"]),
                 actor=AuditLogEventActor.from_dict(cast(Dict[str, Any], data["actor"])),
                 targets=[
                     AuditLogEventTarget.from_dict(cast(Dict[str, Any], item))
@@ -56,7 +58,7 @@ class AuditLogEvent:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["action"] = self.action
-        result["occurred_at"] = self.occurred_at
+        result["occurred_at"] = _format_datetime(self.occurred_at)
         result["actor"] = self.actor.to_dict()
         result["targets"] = [item.to_dict() for item in self.targets]
         result["context"] = self.context.to_dict()

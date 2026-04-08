@@ -26,7 +26,7 @@ class ApiKeyWithValue:
     """A descriptive name for the API Key."""
     obfuscated_value: str
     """An obfuscated representation of the API Key value."""
-    last_used_at: Optional[str]
+    last_used_at: Optional[datetime]
     """Timestamp of when the API Key was last used."""
     permissions: List[str]
     """The permission slugs assigned to the API Key."""
@@ -49,7 +49,9 @@ class ApiKeyWithValue:
                 ),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
-                last_used_at=data["last_used_at"],
+                last_used_at=_parse_datetime(_v)
+                if (_v := data["last_used_at"]) is not None
+                else None,
                 permissions=data["permissions"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
@@ -67,7 +69,7 @@ class ApiKeyWithValue:
         result["name"] = self.name
         result["obfuscated_value"] = self.obfuscated_value
         if self.last_used_at is not None:
-            result["last_used_at"] = self.last_used_at
+            result["last_used_at"] = _format_datetime(self.last_used_at)
         else:
             result["last_used_at"] = None
         result["permissions"] = self.permissions

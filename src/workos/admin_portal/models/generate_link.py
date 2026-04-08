@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 from typing import cast
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 from workos._types import _raise_deserialize_error
 
 from .intent_options import IntentOptions
@@ -34,6 +34,8 @@ class GenerateLink:
         - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key"""
     intent_options: Optional["IntentOptions"] = None
     """Options to configure the Admin Portal based on the intent."""
+    admin_emails: Optional[List[str]] = None
+    """The email addresses of the IT admins to grant access to the Admin Portal for the given organization. Accepts up to 20 emails."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "GenerateLink":
@@ -49,6 +51,7 @@ class GenerateLink:
                 intent_options=IntentOptions.from_dict(cast(Dict[str, Any], _v))
                 if (_v := data.get("intent_options")) is not None
                 else None,
+                admin_emails=data.get("admin_emails"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("GenerateLink", e)
@@ -67,4 +70,6 @@ class GenerateLink:
             )
         if self.intent_options is not None:
             result["intent_options"] = self.intent_options.to_dict()
+        if self.admin_emails is not None:
+            result["admin_emails"] = self.admin_emails
         return result

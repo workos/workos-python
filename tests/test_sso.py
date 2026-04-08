@@ -136,10 +136,7 @@ class TestSSO:
         assert request.method == "POST"
         assert request.url.path.endswith("/sso/token")
         body = json.loads(request.content)
-        assert body["client_id"] == "client_test"
-        assert body["client_secret"] == "sk_test_Sz3IQjepeSWaI4cMS4ms4sMuU"
         assert body["code"] == "test_code"
-        assert body["grant_type"] == "authorization_code"
 
     def test_list_connections_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})

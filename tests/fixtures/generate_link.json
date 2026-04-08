@@ -8,5 +8,8 @@
       "bookmark_slug": "chatgpt",
       "provider_type": "GoogleSAML"
     }
-  }
+  },
+  "admin_emails": [
+    "admin@example.com"
+  ]
 }

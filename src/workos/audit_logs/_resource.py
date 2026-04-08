@@ -193,7 +193,7 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def create_action_schemas(
+    def create_schema(
         self,
         action_name: str,
         *,
@@ -239,7 +239,7 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def create_events(
+    def create_event(
         self,
         *,
         organization_id: str,
@@ -287,7 +287,7 @@ class AuditLogs:
             request_options=request_options,
         )
 
-    def create_exports(
+    def create_export(
         self,
         *,
         organization_id: str,
@@ -548,7 +548,7 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def create_action_schemas(
+    async def create_schema(
         self,
         action_name: str,
         *,
@@ -594,7 +594,7 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def create_events(
+    async def create_event(
         self,
         *,
         organization_id: str,
@@ -642,7 +642,7 @@ class AsyncAuditLogs:
             request_options=request_options,
         )
 
-    async def create_exports(
+    async def create_export(
         self,
         *,
         organization_id: str,

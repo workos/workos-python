@@ -133,7 +133,7 @@ class DirectorySync:
             request_options=request_options,
         )
 
-    def list_directory_groups(
+    def list_groups(
         self,
         *,
         limit: Optional[int] = None,
@@ -188,7 +188,7 @@ class DirectorySync:
             request_options=request_options,
         )
 
-    def get_directory_group(
+    def get_group(
         self,
         id: str,
         *,
@@ -219,7 +219,7 @@ class DirectorySync:
             request_options=request_options,
         )
 
-    def list_directory_users(
+    def list_users(
         self,
         *,
         limit: Optional[int] = None,
@@ -274,7 +274,7 @@ class DirectorySync:
             request_options=request_options,
         )
 
-    def get_directory_user(
+    def get_user(
         self,
         id: str,
         *,
@@ -426,7 +426,7 @@ class AsyncDirectorySync:
             request_options=request_options,
         )
 
-    async def list_directory_groups(
+    async def list_groups(
         self,
         *,
         limit: Optional[int] = None,
@@ -481,7 +481,7 @@ class AsyncDirectorySync:
             request_options=request_options,
         )
 
-    async def get_directory_group(
+    async def get_group(
         self,
         id: str,
         *,
@@ -512,7 +512,7 @@ class AsyncDirectorySync:
             request_options=request_options,
         )
 
-    async def list_directory_users(
+    async def list_users(
         self,
         *,
         limit: Optional[int] = None,
@@ -567,7 +567,7 @@ class AsyncDirectorySync:
             request_options=request_options,
         )
 
-    async def get_directory_user(
+    async def get_user(
         self,
         id: str,
         *,

@@ -109,11 +109,11 @@ class TestAuditLogs:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    def test_create_action_schemas(self, workos, httpx_mock):
+    def test_create_schema(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_schema_json.json"),
         )
-        result = workos.audit_logs.create_action_schemas("test_actionName", targets=[])
+        result = workos.audit_logs.create_schema("test_actionName", targets=[])
         assert isinstance(result, AuditLogSchemaJson)
         assert result.object == "audit_log_schema"
         assert result.version == 1
@@ -123,11 +123,11 @@ class TestAuditLogs:
         body = json.loads(request.content)
         assert "targets" in body
 
-    def test_create_events(self, workos, httpx_mock):
+    def test_create_event(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_event_create_response.json"),
         )
-        result = workos.audit_logs.create_events(
+        result = workos.audit_logs.create_event(
             organization_id="test_organization_id",
             event=AuditLogEvent.from_dict(load_fixture("audit_log_event.json")),
         )
@@ -140,11 +140,11 @@ class TestAuditLogs:
         assert body["organization_id"] == "test_organization_id"
         assert "event" in body
 
-    def test_create_exports(self, workos, httpx_mock):
+    def test_create_export(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_export_json.json"),
         )
-        result = workos.audit_logs.create_exports(
+        result = workos.audit_logs.create_export(
             organization_id="test_organization_id",
             range_start="test_range_start",
             range_end="test_range_end",
@@ -343,9 +343,9 @@ class TestAsyncAuditLogs:
         assert request.url.params["order"] == "normal"
 
     @pytest.mark.asyncio
-    async def test_create_action_schemas(self, async_workos, httpx_mock):
+    async def test_create_schema(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_schema_json.json"))
-        result = await async_workos.audit_logs.create_action_schemas(
+        result = await async_workos.audit_logs.create_schema(
             "test_actionName", targets=[]
         )
         assert isinstance(result, AuditLogSchemaJson)
@@ -356,11 +356,11 @@ class TestAsyncAuditLogs:
         assert request.url.path.endswith("/audit_logs/actions/test_actionName/schemas")
 
     @pytest.mark.asyncio
-    async def test_create_events(self, async_workos, httpx_mock):
+    async def test_create_event(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_event_create_response.json")
         )
-        result = await async_workos.audit_logs.create_events(
+        result = await async_workos.audit_logs.create_event(
             organization_id="test_organization_id",
             event=AuditLogEvent.from_dict(load_fixture("audit_log_event.json")),
         )
@@ -371,9 +371,9 @@ class TestAsyncAuditLogs:
         assert request.url.path.endswith("/audit_logs/events")
 
     @pytest.mark.asyncio
-    async def test_create_exports(self, async_workos, httpx_mock):
+    async def test_create_export(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_export_json.json"))
-        result = await async_workos.audit_logs.create_exports(
+        result = await async_workos.audit_logs.create_export(
             organization_id="test_organization_id",
             range_start="test_range_start",
             range_end="test_range_end",

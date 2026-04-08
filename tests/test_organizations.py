@@ -55,11 +55,11 @@ class TestOrganizations:
         assert request.url.params["domains"] == "val1,val2"
         assert request.url.params["search"] == "value search/test"
 
-    def test_create_organizations(self, workos, httpx_mock):
+    def test_create_organization(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization.json"),
         )
-        result = workos.organizations.create_organizations(name="test_name")
+        result = workos.organizations.create_organization(name="test_name")
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -244,9 +244,9 @@ class TestAsyncOrganizations:
         assert request.url.params["search"] == "value search/test"
 
     @pytest.mark.asyncio
-    async def test_create_organizations(self, async_workos, httpx_mock):
+    async def test_create_organization(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization.json"))
-        result = await async_workos.organizations.create_organizations(name="test_name")
+        result = await async_workos.organizations.create_organization(name="test_name")
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"

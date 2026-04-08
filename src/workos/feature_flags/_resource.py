@@ -162,7 +162,7 @@ class FeatureFlags:
             request_options=request_options,
         )
 
-    def create_feature_flag_target(
+    def add_flag_target(
         self,
         resource_id: str,
         slug: str,
@@ -192,7 +192,7 @@ class FeatureFlags:
             request_options=request_options,
         )
 
-    def delete_feature_flag_target(
+    def remove_flag_target(
         self,
         resource_id: str,
         slug: str,
@@ -466,7 +466,7 @@ class AsyncFeatureFlags:
             request_options=request_options,
         )
 
-    async def create_feature_flag_target(
+    async def add_flag_target(
         self,
         resource_id: str,
         slug: str,
@@ -496,7 +496,7 @@ class AsyncFeatureFlags:
             request_options=request_options,
         )
 
-    async def delete_feature_flag_target(
+    async def remove_flag_target(
         self,
         resource_id: str,
         slug: str,

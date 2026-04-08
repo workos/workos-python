@@ -88,20 +88,18 @@ class TestFeatureFlags:
         assert request.method == "PUT"
         assert request.url.path.endswith("/feature-flags/test_slug/enable")
 
-    def test_create_feature_flag_target(self, workos, httpx_mock):
+    def test_add_flag_target(self, workos, httpx_mock):
         httpx_mock.add_response(json={})
-        workos.feature_flags.create_feature_flag_target("test_resourceId", "test_slug")
+        workos.feature_flags.add_flag_target("test_resourceId", "test_slug")
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith(
             "/feature-flags/test_slug/targets/test_resourceId"
         )
 
-    def test_delete_feature_flag_target(self, workos, httpx_mock):
+    def test_remove_flag_target(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.feature_flags.delete_feature_flag_target(
-            "test_resourceId", "test_slug"
-        )
+        result = workos.feature_flags.remove_flag_target("test_resourceId", "test_slug")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
@@ -315,11 +313,9 @@ class TestAsyncFeatureFlags:
         assert request.url.path.endswith("/feature-flags/test_slug/enable")
 
     @pytest.mark.asyncio
-    async def test_create_feature_flag_target(self, async_workos, httpx_mock):
+    async def test_add_flag_target(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={})
-        await async_workos.feature_flags.create_feature_flag_target(
-            "test_resourceId", "test_slug"
-        )
+        await async_workos.feature_flags.add_flag_target("test_resourceId", "test_slug")
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith(
@@ -327,9 +323,9 @@ class TestAsyncFeatureFlags:
         )
 
     @pytest.mark.asyncio
-    async def test_delete_feature_flag_target(self, async_workos, httpx_mock):
+    async def test_remove_flag_target(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.feature_flags.delete_feature_flag_target(
+        result = await async_workos.feature_flags.remove_flag_target(
             "test_resourceId", "test_slug"
         )
         assert result is None

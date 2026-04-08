@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -317,10 +317,7 @@ class SSO:
     def get_profile_and_token(
         self,
         *,
-        client_id: str,
-        client_secret: str,
         code: str,
-        grant_type: Literal["authorization_code"],
         request_options: Optional[RequestOptions] = None,
     ) -> SSOTokenResponse:
         """Get a Profile and Token
@@ -328,10 +325,7 @@ class SSO:
         Get an access token along with the user [Profile](https://workos.com/docs/reference/sso/profile) using the code passed to your [Redirect URI](https://workos.com/docs/reference/sso/get-authorization-url/redirect-uri).
 
         Args:
-            client_id: The client ID of the WorkOS environment.
-            client_secret: The client secret of the WorkOS environment.
             code: The authorization code received from the authorization callback.
-            grant_type: The grant type for the token request.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -346,11 +340,13 @@ class SSO:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            "client_id": client_id,
-            "client_secret": client_secret,
             "code": code,
-            "grant_type": grant_type,
         }
+        body["grant_type"] = "authorization_code"
+        if self._client.client_id is not None:
+            body["client_id"] = self._client.client_id
+        if self._client._api_key is not None:
+            body["client_secret"] = self._client._api_key
         return self._client.request(
             method="post",
             path="sso/token",
@@ -738,10 +734,7 @@ class AsyncSSO:
     async def get_profile_and_token(
         self,
         *,
-        client_id: str,
-        client_secret: str,
         code: str,
-        grant_type: Literal["authorization_code"],
         request_options: Optional[RequestOptions] = None,
     ) -> SSOTokenResponse:
         """Get a Profile and Token
@@ -749,10 +742,7 @@ class AsyncSSO:
         Get an access token along with the user [Profile](https://workos.com/docs/reference/sso/profile) using the code passed to your [Redirect URI](https://workos.com/docs/reference/sso/get-authorization-url/redirect-uri).
 
         Args:
-            client_id: The client ID of the WorkOS environment.
-            client_secret: The client secret of the WorkOS environment.
             code: The authorization code received from the authorization callback.
-            grant_type: The grant type for the token request.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -767,11 +757,13 @@ class AsyncSSO:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            "client_id": client_id,
-            "client_secret": client_secret,
             "code": code,
-            "grant_type": grant_type,
         }
+        body["grant_type"] = "authorization_code"
+        if self._client.client_id is not None:
+            body["client_id"] = self._client.client_id
+        if self._client._api_key is not None:
+            body["client_secret"] = self._client._api_key
         return await self._client.request(
             method="post",
             path="sso/token",

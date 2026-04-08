@@ -79,23 +79,23 @@ class TestDirectorySync:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/directories/test_id")
 
-    def test_list_directory_groups(self, workos, httpx_mock):
+    def test_list_groups(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_directory_group.json"),
         )
-        page = workos.directory_sync.list_directory_groups()
+        page = workos.directory_sync.list_groups()
         assert isinstance(page, SyncPage)
         assert isinstance(page.data, list)
 
-    def test_list_directory_groups_empty_page(self, workos, httpx_mock):
+    def test_list_groups_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.directory_sync.list_directory_groups()
+        page = workos.directory_sync.list_groups()
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_directory_groups_encodes_query_params(self, workos, httpx_mock):
+    def test_list_groups_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.directory_sync.list_directory_groups(
+        workos.directory_sync.list_groups(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -111,11 +111,11 @@ class TestDirectorySync:
         assert request.url.params["directory"] == "value directory/test"
         assert request.url.params["user"] == "value user/test"
 
-    def test_get_directory_group(self, workos, httpx_mock):
+    def test_get_group(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("directory_group.json"),
         )
-        result = workos.directory_sync.get_directory_group("test_id")
+        result = workos.directory_sync.get_group("test_id")
         assert isinstance(result, DirectoryGroup)
         assert result.object == "directory_group"
         assert result.id == "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z"
@@ -123,23 +123,23 @@ class TestDirectorySync:
         assert request.method == "GET"
         assert request.url.path.endswith("/directory_groups/test_id")
 
-    def test_list_directory_users(self, workos, httpx_mock):
+    def test_list_users(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_directory_user_with_groups.json"),
         )
-        page = workos.directory_sync.list_directory_users()
+        page = workos.directory_sync.list_users()
         assert isinstance(page, SyncPage)
         assert isinstance(page.data, list)
 
-    def test_list_directory_users_empty_page(self, workos, httpx_mock):
+    def test_list_users_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.directory_sync.list_directory_users()
+        page = workos.directory_sync.list_users()
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_directory_users_encodes_query_params(self, workos, httpx_mock):
+    def test_list_users_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.directory_sync.list_directory_users(
+        workos.directory_sync.list_users(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -155,11 +155,11 @@ class TestDirectorySync:
         assert request.url.params["directory"] == "value directory/test"
         assert request.url.params["group"] == "value group/test"
 
-    def test_get_directory_user(self, workos, httpx_mock):
+    def test_get_user(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("directory_user_with_groups.json"),
         )
-        result = workos.directory_sync.get_directory_user("test_id")
+        result = workos.directory_sync.get_user("test_id")
         assert isinstance(result, DirectoryUserWithGroups)
         assert result.object == "directory_user"
         assert result.id == "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ"
@@ -302,25 +302,23 @@ class TestAsyncDirectorySync:
         assert request.url.path.endswith("/directories/test_id")
 
     @pytest.mark.asyncio
-    async def test_list_directory_groups(self, async_workos, httpx_mock):
+    async def test_list_groups(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_directory_group.json"))
-        page = await async_workos.directory_sync.list_directory_groups()
+        page = await async_workos.directory_sync.list_groups()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
     @pytest.mark.asyncio
-    async def test_list_directory_groups_empty_page(self, async_workos, httpx_mock):
+    async def test_list_groups_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.directory_sync.list_directory_groups()
+        page = await async_workos.directory_sync.list_groups()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_directory_groups_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_groups_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.directory_sync.list_directory_groups(
+        await async_workos.directory_sync.list_groups(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -337,9 +335,9 @@ class TestAsyncDirectorySync:
         assert request.url.params["user"] == "value user/test"
 
     @pytest.mark.asyncio
-    async def test_get_directory_group(self, async_workos, httpx_mock):
+    async def test_get_group(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("directory_group.json"))
-        result = await async_workos.directory_sync.get_directory_group("test_id")
+        result = await async_workos.directory_sync.get_group("test_id")
         assert isinstance(result, DirectoryGroup)
         assert result.object == "directory_group"
         assert result.id == "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z"
@@ -348,27 +346,25 @@ class TestAsyncDirectorySync:
         assert request.url.path.endswith("/directory_groups/test_id")
 
     @pytest.mark.asyncio
-    async def test_list_directory_users(self, async_workos, httpx_mock):
+    async def test_list_users(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_directory_user_with_groups.json")
         )
-        page = await async_workos.directory_sync.list_directory_users()
+        page = await async_workos.directory_sync.list_users()
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
     @pytest.mark.asyncio
-    async def test_list_directory_users_empty_page(self, async_workos, httpx_mock):
+    async def test_list_users_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.directory_sync.list_directory_users()
+        page = await async_workos.directory_sync.list_users()
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_directory_users_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_users_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.directory_sync.list_directory_users(
+        await async_workos.directory_sync.list_users(
             limit=10,
             before="cursor before",
             after="cursor/after",
@@ -385,9 +381,9 @@ class TestAsyncDirectorySync:
         assert request.url.params["group"] == "value group/test"
 
     @pytest.mark.asyncio
-    async def test_get_directory_user(self, async_workos, httpx_mock):
+    async def test_get_user(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("directory_user_with_groups.json"))
-        result = await async_workos.directory_sync.get_directory_user("test_id")
+        result = await async_workos.directory_sync.get_user("test_id")
         assert isinstance(result, DirectoryUserWithGroups)
         assert result.object == "directory_user"
         assert result.id == "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ"

@@ -28,7 +28,7 @@ class Authorization:
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
-    def check_organization_membership(
+    def check(
         self,
         organization_membership_id: str,
         *,
@@ -195,7 +195,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def create_organization_membership_role_assignments(
+    def assign_role(
         self,
         organization_membership_id: str,
         *,
@@ -246,7 +246,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_organization_membership_role_assignments(
+    def remove_role(
         self,
         organization_membership_id: str,
         *,
@@ -353,7 +353,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def create_organization_roles(
+    def create_organization_role(
         self,
         organization_id: str,
         *,
@@ -898,7 +898,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def create_resources(
+    def create_resource(
         self,
         *,
         external_id: str,
@@ -1148,7 +1148,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_roles(
+    def list_environment_roles(
         self,
         *,
         request_options: Optional[RequestOptions] = None,
@@ -1173,7 +1173,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def create_roles(
+    def create_environment_role(
         self,
         *,
         slug: str,
@@ -1224,7 +1224,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def get_role(
+    def get_environment_role(
         self,
         slug: str,
         *,
@@ -1255,7 +1255,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def update_role(
+    def update_environment_role(
         self,
         slug: str,
         *,
@@ -1301,7 +1301,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def add_role_permission(
+    def add_environment_role_permission(
         self,
         slug: str,
         *,
@@ -1340,7 +1340,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def set_role_permissions(
+    def set_environment_role_permissions(
         self,
         slug: str,
         *,
@@ -1426,7 +1426,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def create_permissions(
+    def create_permission(
         self,
         *,
         slug: str,
@@ -1585,7 +1585,7 @@ class AsyncAuthorization:
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
-    async def check_organization_membership(
+    async def check(
         self,
         organization_membership_id: str,
         *,
@@ -1752,7 +1752,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def create_organization_membership_role_assignments(
+    async def assign_role(
         self,
         organization_membership_id: str,
         *,
@@ -1803,7 +1803,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_organization_membership_role_assignments(
+    async def remove_role(
         self,
         organization_membership_id: str,
         *,
@@ -1910,7 +1910,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def create_organization_roles(
+    async def create_organization_role(
         self,
         organization_id: str,
         *,
@@ -2455,7 +2455,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def create_resources(
+    async def create_resource(
         self,
         *,
         external_id: str,
@@ -2705,7 +2705,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_roles(
+    async def list_environment_roles(
         self,
         *,
         request_options: Optional[RequestOptions] = None,
@@ -2730,7 +2730,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def create_roles(
+    async def create_environment_role(
         self,
         *,
         slug: str,
@@ -2781,7 +2781,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def get_role(
+    async def get_environment_role(
         self,
         slug: str,
         *,
@@ -2812,7 +2812,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def update_role(
+    async def update_environment_role(
         self,
         slug: str,
         *,
@@ -2858,7 +2858,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def add_role_permission(
+    async def add_environment_role_permission(
         self,
         slug: str,
         *,
@@ -2897,7 +2897,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def set_role_permissions(
+    async def set_environment_role_permissions(
         self,
         slug: str,
         *,
@@ -2983,7 +2983,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def create_permissions(
+    async def create_permission(
         self,
         *,
         slug: str,

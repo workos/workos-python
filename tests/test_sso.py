@@ -128,12 +128,7 @@ class TestSSO:
         httpx_mock.add_response(
             json=load_fixture("sso_token_response.json"),
         )
-        result = workos.sso.get_profile_and_token(
-            client_id="test_client_id",
-            client_secret="test_client_secret",
-            code="test_code",
-            grant_type="authorization_code",
-        )
+        result = workos.sso.get_profile_and_token(code="test_code")
         assert isinstance(result, SSOTokenResponse)
         assert result.token_type == "Bearer"
         assert result.access_token == "eyJhbGciOiJSUzI1NiIsImtpZCI6InNzby..."
@@ -141,8 +136,8 @@ class TestSSO:
         assert request.method == "POST"
         assert request.url.path.endswith("/sso/token")
         body = json.loads(request.content)
-        assert body["client_id"] == "test_client_id"
-        assert body["client_secret"] == "test_client_secret"
+        assert body["client_id"] == "client_test"
+        assert body["client_secret"] == "sk_test_Sz3IQjepeSWaI4cMS4ms4sMuU"
         assert body["code"] == "test_code"
         assert body["grant_type"] == "authorization_code"
 
@@ -325,12 +320,7 @@ class TestAsyncSSO:
     @pytest.mark.asyncio
     async def test_get_profile_and_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("sso_token_response.json"))
-        result = await async_workos.sso.get_profile_and_token(
-            client_id="test_client_id",
-            client_secret="test_client_secret",
-            code="test_code",
-            grant_type="authorization_code",
-        )
+        result = await async_workos.sso.get_profile_and_token(code="test_code")
         assert isinstance(result, SSOTokenResponse)
         assert result.token_type == "Bearer"
         assert result.access_token == "eyJhbGciOiJSUzI1NiIsImtpZCI6InNzby..."

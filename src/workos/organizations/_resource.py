@@ -74,7 +74,7 @@ class Organizations:
             request_options=request_options,
         )
 
-    def create_organizations(
+    def create_organization(
         self,
         *,
         name: str,
@@ -373,7 +373,7 @@ class AsyncOrganizations:
             request_options=request_options,
         )
 
-    async def create_organizations(
+    async def create_organization(
         self,
         *,
         name: str,

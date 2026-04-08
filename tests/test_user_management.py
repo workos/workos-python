@@ -104,11 +104,11 @@ class TestUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/sessions/revoke")
 
-    def test_create_cors_origins(self, workos, httpx_mock):
+    def test_create_cors_origin(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("cors_origin_response.json"),
         )
-        result = workos.user_management.create_cors_origins(origin="test_origin")
+        result = workos.user_management.create_cors_origin(origin="test_origin")
         assert isinstance(result, CORSOriginResponse)
         assert result.object == "cors_origin"
         assert result.id == "cors_origin_01HXYZ123456789ABCDEFGHIJ"
@@ -130,11 +130,11 @@ class TestUserManagement:
         assert request.method == "GET"
         assert request.url.path.endswith("/user_management/email_verification/test_id")
 
-    def test_create_password_reset(self, workos, httpx_mock):
+    def test_reset_password(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("password_reset.json"),
         )
-        result = workos.user_management.create_password_reset(email="test_email")
+        result = workos.user_management.reset_password(email="test_email")
         assert isinstance(result, PasswordReset)
         assert result.object == "password_reset"
         assert result.id == "password_reset_01E4ZCR3C56J083X43JQXF3JK5"
@@ -205,11 +205,11 @@ class TestUserManagement:
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["email"] == "value email/test"
 
-    def test_create_users(self, workos, httpx_mock):
+    def test_create_user(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("user.json"),
         )
-        result = workos.user_management.create_users(email="test_email")
+        result = workos.user_management.create_user(email="test_email")
         assert isinstance(result, User)
         assert result.object == "user"
         assert result.id == "user_01E4ZCR3C56J083X43JQXF3JK5"
@@ -300,13 +300,11 @@ class TestUserManagement:
         body = json.loads(request.content)
         assert body["new_email"] == "test_new_email"
 
-    def test_confirm_email_verification(self, workos, httpx_mock):
+    def test_verify_email(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("verify_email_response.json"),
         )
-        result = workos.user_management.confirm_email_verification(
-            "test_id", code="test_code"
-        )
+        result = workos.user_management.verify_email("test_id", code="test_code")
         assert isinstance(result, VerifyEmailResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -316,11 +314,11 @@ class TestUserManagement:
         body = json.loads(request.content)
         assert body["code"] == "test_code"
 
-    def test_send_email_verification(self, workos, httpx_mock):
+    def test_send_verification_email(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("send_verification_email_response.json"),
         )
-        result = workos.user_management.send_email_verification("test_id")
+        result = workos.user_management.send_verification_email("test_id")
         assert isinstance(result, SendVerificationEmailResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -328,30 +326,30 @@ class TestUserManagement:
             "/user_management/users/test_id/email_verification/send"
         )
 
-    def test_list_user_identities(self, workos, httpx_mock):
+    def test_get_user_identities(self, workos, httpx_mock):
         httpx_mock.add_response(json=[load_fixture("user_identities_get_item.json")])
-        result = workos.user_management.list_user_identities("test_id")
+        result = workos.user_management.get_user_identities("test_id")
         assert isinstance(result, list)
         assert len(result) == 1
         assert isinstance(result[0], UserIdentitiesGetItem)
 
-    def test_list_user_sessions(self, workos, httpx_mock):
+    def test_list_sessions(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_user_sessions_list_item.json"),
         )
-        page = workos.user_management.list_user_sessions("test_id")
+        page = workos.user_management.list_sessions("test_id")
         assert isinstance(page, SyncPage)
         assert isinstance(page.data, list)
 
-    def test_list_user_sessions_empty_page(self, workos, httpx_mock):
+    def test_list_sessions_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.user_management.list_user_sessions("test_id")
+        page = workos.user_management.list_sessions("test_id")
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_user_sessions_encodes_query_params(self, workos, httpx_mock):
+    def test_list_sessions_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.user_management.list_user_sessions(
+        workos.user_management.list_sessions(
             "test_id",
             limit=10,
             before="cursor before",
@@ -396,11 +394,11 @@ class TestUserManagement:
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["email"] == "value email/test"
 
-    def test_create_invitations(self, workos, httpx_mock):
+    def test_send_invitation(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("user_invite.json"),
         )
-        result = workos.user_management.create_invitations(email="test_email")
+        result = workos.user_management.send_invitation(email="test_email")
         assert isinstance(result, UserInvite)
         assert result.object == "invitation"
         assert result.id == "invitation_01E4ZCR3C56J083X43JQXF3JK5"
@@ -410,11 +408,11 @@ class TestUserManagement:
         body = json.loads(request.content)
         assert body["email"] == "test_email"
 
-    def test_get_by_token(self, workos, httpx_mock):
+    def test_find_invitation_by_token(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("user_invite.json"),
         )
-        result = workos.user_management.get_by_token("test_token")
+        result = workos.user_management.find_invitation_by_token("test_token")
         assert isinstance(result, UserInvite)
         assert result.object == "invitation"
         assert result.id == "invitation_01E4ZCR3C56J083X43JQXF3JK5"
@@ -548,11 +546,11 @@ class TestUserManagement:
         assert request.url.params["statuses"] == "val1,val2"
         assert request.url.params["user_id"] == "value user_id/test"
 
-    def test_create_organization_memberships(self, workos, httpx_mock):
+    def test_create_organization_membership(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization_membership.json"),
         )
-        result = workos.user_management.create_organization_memberships(
+        result = workos.user_management.create_organization_membership(
             user_id="test_user_id", organization_id="test_organization_id"
         )
         assert isinstance(result, OrganizationMembership)
@@ -631,11 +629,11 @@ class TestUserManagement:
             "/user_management/organization_memberships/test_id/reactivate"
         )
 
-    def test_create_redirect_uris(self, workos, httpx_mock):
+    def test_create_redirect_uri(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("redirect_uri.json"),
         )
-        result = workos.user_management.create_redirect_uris(uri="test_uri")
+        result = workos.user_management.create_redirect_uri(uri="test_uri")
         assert isinstance(result, RedirectUri)
         assert result.object == "redirect_uri"
         assert result.id == "ruri_01EHZNVPK3SFK441A1RGBFSHRT"
@@ -906,9 +904,9 @@ class TestAsyncUserManagement:
         assert request.url.path.endswith("/user_management/sessions/revoke")
 
     @pytest.mark.asyncio
-    async def test_create_cors_origins(self, async_workos, httpx_mock):
+    async def test_create_cors_origin(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("cors_origin_response.json"))
-        result = await async_workos.user_management.create_cors_origins(
+        result = await async_workos.user_management.create_cors_origin(
             origin="test_origin"
         )
         assert isinstance(result, CORSOriginResponse)
@@ -930,11 +928,9 @@ class TestAsyncUserManagement:
         assert request.url.path.endswith("/user_management/email_verification/test_id")
 
     @pytest.mark.asyncio
-    async def test_create_password_reset(self, async_workos, httpx_mock):
+    async def test_reset_password(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("password_reset.json"))
-        result = await async_workos.user_management.create_password_reset(
-            email="test_email"
-        )
+        result = await async_workos.user_management.reset_password(email="test_email")
         assert isinstance(result, PasswordReset)
         assert result.object == "password_reset"
         assert result.id == "password_reset_01E4ZCR3C56J083X43JQXF3JK5"
@@ -1000,9 +996,9 @@ class TestAsyncUserManagement:
         assert request.url.params["email"] == "value email/test"
 
     @pytest.mark.asyncio
-    async def test_create_users(self, async_workos, httpx_mock):
+    async def test_create_user(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user.json"))
-        result = await async_workos.user_management.create_users(email="test_email")
+        result = await async_workos.user_management.create_user(email="test_email")
         assert isinstance(result, User)
         assert result.object == "user"
         assert result.id == "user_01E4ZCR3C56J083X43JQXF3JK5"
@@ -1086,9 +1082,9 @@ class TestAsyncUserManagement:
         )
 
     @pytest.mark.asyncio
-    async def test_confirm_email_verification(self, async_workos, httpx_mock):
+    async def test_verify_email(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("verify_email_response.json"))
-        result = await async_workos.user_management.confirm_email_verification(
+        result = await async_workos.user_management.verify_email(
             "test_id", code="test_code"
         )
         assert isinstance(result, VerifyEmailResponse)
@@ -1099,11 +1095,11 @@ class TestAsyncUserManagement:
         )
 
     @pytest.mark.asyncio
-    async def test_send_email_verification(self, async_workos, httpx_mock):
+    async def test_send_verification_email(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("send_verification_email_response.json")
         )
-        result = await async_workos.user_management.send_email_verification("test_id")
+        result = await async_workos.user_management.send_verification_email("test_id")
         assert isinstance(result, SendVerificationEmailResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -1112,33 +1108,31 @@ class TestAsyncUserManagement:
         )
 
     @pytest.mark.asyncio
-    async def test_list_user_identities(self, async_workos, httpx_mock):
+    async def test_get_user_identities(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=[load_fixture("user_identities_get_item.json")])
-        result = await async_workos.user_management.list_user_identities("test_id")
+        result = await async_workos.user_management.get_user_identities("test_id")
         assert isinstance(result, list)
         assert len(result) == 1
         assert isinstance(result[0], UserIdentitiesGetItem)
 
     @pytest.mark.asyncio
-    async def test_list_user_sessions(self, async_workos, httpx_mock):
+    async def test_list_sessions(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_user_sessions_list_item.json"))
-        page = await async_workos.user_management.list_user_sessions("test_id")
+        page = await async_workos.user_management.list_sessions("test_id")
         assert isinstance(page, AsyncPage)
         assert isinstance(page.data, list)
 
     @pytest.mark.asyncio
-    async def test_list_user_sessions_empty_page(self, async_workos, httpx_mock):
+    async def test_list_sessions_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.user_management.list_user_sessions("test_id")
+        page = await async_workos.user_management.list_sessions("test_id")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_user_sessions_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_sessions_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.user_management.list_user_sessions(
+        await async_workos.user_management.list_sessions(
             "test_id",
             limit=10,
             before="cursor before",
@@ -1187,11 +1181,9 @@ class TestAsyncUserManagement:
         assert request.url.params["email"] == "value email/test"
 
     @pytest.mark.asyncio
-    async def test_create_invitations(self, async_workos, httpx_mock):
+    async def test_send_invitation(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_invite.json"))
-        result = await async_workos.user_management.create_invitations(
-            email="test_email"
-        )
+        result = await async_workos.user_management.send_invitation(email="test_email")
         assert isinstance(result, UserInvite)
         assert result.object == "invitation"
         assert result.id == "invitation_01E4ZCR3C56J083X43JQXF3JK5"
@@ -1200,9 +1192,11 @@ class TestAsyncUserManagement:
         assert request.url.path.endswith("/user_management/invitations")
 
     @pytest.mark.asyncio
-    async def test_get_by_token(self, async_workos, httpx_mock):
+    async def test_find_invitation_by_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_invite.json"))
-        result = await async_workos.user_management.get_by_token("test_token")
+        result = await async_workos.user_management.find_invitation_by_token(
+            "test_token"
+        )
         assert isinstance(result, UserInvite)
         assert result.object == "invitation"
         assert result.id == "invitation_01E4ZCR3C56J083X43JQXF3JK5"
@@ -1335,9 +1329,9 @@ class TestAsyncUserManagement:
         assert request.url.params["user_id"] == "value user_id/test"
 
     @pytest.mark.asyncio
-    async def test_create_organization_memberships(self, async_workos, httpx_mock):
+    async def test_create_organization_membership(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization_membership.json"))
-        result = await async_workos.user_management.create_organization_memberships(
+        result = await async_workos.user_management.create_organization_membership(
             user_id="test_user_id", organization_id="test_organization_id"
         )
         assert isinstance(result, OrganizationMembership)
@@ -1421,9 +1415,9 @@ class TestAsyncUserManagement:
         )
 
     @pytest.mark.asyncio
-    async def test_create_redirect_uris(self, async_workos, httpx_mock):
+    async def test_create_redirect_uri(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("redirect_uri.json"))
-        result = await async_workos.user_management.create_redirect_uris(uri="test_uri")
+        result = await async_workos.user_management.create_redirect_uri(uri="test_uri")
         assert isinstance(result, RedirectUri)
         assert result.object == "redirect_uri"
         assert result.id == "ruri_01EHZNVPK3SFK441A1RGBFSHRT"

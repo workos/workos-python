@@ -559,7 +559,7 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def create_cors_origins(
+    def create_cors_origin(
         self,
         *,
         origin: str,
@@ -624,7 +624,7 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def create_password_reset(
+    def reset_password(
         self,
         *,
         email: str,
@@ -786,7 +786,7 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def create_users(
+    def create_user(
         self,
         *,
         email: str,
@@ -1085,7 +1085,7 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def confirm_email_verification(
+    def verify_email(
         self,
         id: str,
         *,
@@ -1123,7 +1123,7 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def send_email_verification(
+    def send_verification_email(
         self,
         id: str,
         *,
@@ -1154,7 +1154,7 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def list_user_identities(
+    def get_user_identities(
         self,
         id: str,
         *,
@@ -1187,7 +1187,7 @@ class UserManagement:
             for item in (raw if isinstance(raw, list) else [])
         ]
 
-    def list_user_sessions(
+    def list_sessions(
         self,
         id: str,
         *,
@@ -1290,7 +1290,7 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def create_invitations(
+    def send_invitation(
         self,
         *,
         email: str,
@@ -1345,7 +1345,7 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def get_by_token(
+    def find_invitation_by_token(
         self,
         token: str,
         *,
@@ -1676,7 +1676,7 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def create_organization_memberships(
+    def create_organization_membership(
         self,
         *,
         user_id: str,
@@ -1901,7 +1901,7 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def create_redirect_uris(
+    def create_redirect_uri(
         self,
         *,
         uri: str,
@@ -2662,7 +2662,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def create_cors_origins(
+    async def create_cors_origin(
         self,
         *,
         origin: str,
@@ -2727,7 +2727,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def create_password_reset(
+    async def reset_password(
         self,
         *,
         email: str,
@@ -2889,7 +2889,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def create_users(
+    async def create_user(
         self,
         *,
         email: str,
@@ -3188,7 +3188,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def confirm_email_verification(
+    async def verify_email(
         self,
         id: str,
         *,
@@ -3226,7 +3226,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def send_email_verification(
+    async def send_verification_email(
         self,
         id: str,
         *,
@@ -3257,7 +3257,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def list_user_identities(
+    async def get_user_identities(
         self,
         id: str,
         *,
@@ -3290,7 +3290,7 @@ class AsyncUserManagement:
             for item in (raw if isinstance(raw, list) else [])
         ]
 
-    async def list_user_sessions(
+    async def list_sessions(
         self,
         id: str,
         *,
@@ -3393,7 +3393,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def create_invitations(
+    async def send_invitation(
         self,
         *,
         email: str,
@@ -3448,7 +3448,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def get_by_token(
+    async def find_invitation_by_token(
         self,
         token: str,
         *,
@@ -3779,7 +3779,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def create_organization_memberships(
+    async def create_organization_membership(
         self,
         *,
         user_id: str,
@@ -4004,7 +4004,7 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def create_redirect_uris(
+    async def create_redirect_uri(
         self,
         *,
         uri: str,

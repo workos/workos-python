@@ -36,13 +36,15 @@ class FlagRuleUpdatedContextPreviousAttributeContext:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                access_type=FlagRuleUpdatedContextPreviousAttributeContextAccessType(_v)
-                if (_v := data.get("access_type")) is not None
+                access_type=FlagRuleUpdatedContextPreviousAttributeContextAccessType(
+                    _v_access_type
+                )
+                if (_v_access_type := data.get("access_type")) is not None
                 else None,
                 configured_targets=FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_configured_targets)
                 )
-                if (_v := data.get("configured_targets")) is not None
+                if (_v_configured_targets := data.get("configured_targets")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

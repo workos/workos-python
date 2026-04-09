@@ -1,3 +1,4 @@
+# @oagen-ignore-file
 import json
 
 import pytest
@@ -7,6 +8,7 @@ from tests.generated_helpers import load_fixture
 from workos.vault import (
     DataKey,
     DataKeyPair,
+    ObjectDigest,
     ObjectMetadata,
     ObjectVersion,
     VaultObject,
@@ -62,9 +64,9 @@ class TestVault:
     def test_list_objects(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("vault_list_objects.json"))
         result = workos.vault.list_objects()
-        assert isinstance(result, dict)
-        assert len(result["data"]) == 1
-        assert result["data"][0]["id"] == "vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        assert len(result) == 1
+        assert isinstance(result[0], ObjectDigest)
+        assert result[0].id == "vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
         request = httpx_mock.get_request()
         assert request.method == "GET"
         assert request.url.path.endswith("/vault/v1/kv")
@@ -268,8 +270,8 @@ class TestAsyncVault:
     async def test_list_objects(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("vault_list_objects.json"))
         result = await async_workos.vault.list_objects()
-        assert isinstance(result, dict)
-        assert len(result["data"]) == 1
+        assert len(result) == 1
+        assert isinstance(result[0], ObjectDigest)
         request = httpx_mock.get_request()
         assert request.method == "GET"
         assert request.url.path.endswith("/vault/v1/kv")

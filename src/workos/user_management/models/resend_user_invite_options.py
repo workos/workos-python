@@ -23,8 +23,8 @@ class ResendUserInviteOptions:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                locale=ResendUserInviteOptionsLocale(_v)
-                if (_v := data.get("locale")) is not None
+                locale=ResendUserInviteOptionsLocale(_v_locale)
+                if (_v_locale := data.get("locale")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

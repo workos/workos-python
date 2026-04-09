@@ -43,9 +43,9 @@ class UpdateOrganization:
                 domains=data.get("domains"),
                 domain_data=[
                     OrganizationDomainData.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v)
+                    for item in cast(list[Any], _v_domain_data)
                 ]
-                if (_v := data.get("domain_data")) is not None
+                if (_v_domain_data := data.get("domain_data")) is not None
                 else None,
                 stripe_customer_id=data.get("stripe_customer_id"),
                 metadata=data.get("metadata"),

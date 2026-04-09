@@ -32,14 +32,14 @@ class FlagRuleUpdatedContextPreviousAttribute:
         try:
             return cls(
                 data=FlagRuleUpdatedContextPreviousAttributeData.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_data)
                 )
-                if (_v := data.get("data")) is not None
+                if (_v_data := data.get("data")) is not None
                 else None,
                 context=FlagRuleUpdatedContextPreviousAttributeContext.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_context)
                 )
-                if (_v := data.get("context")) is not None
+                if (_v_context := data.get("context")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

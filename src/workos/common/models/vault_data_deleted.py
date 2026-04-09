@@ -38,8 +38,8 @@ class VaultDataDeleted:
                 data=VaultDataDeletedData.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=EventContext.from_dict(cast(Dict[str, Any], _v))
-                if (_v := data.get("context")) is not None
+                context=EventContext.from_dict(cast(Dict[str, Any], _v_context))
+                if (_v_context := data.get("context")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

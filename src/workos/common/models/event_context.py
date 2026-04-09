@@ -39,14 +39,19 @@ class EventContext:
                     EventContextGoogleAnalyticsSession.from_dict(
                         cast(Dict[str, Any], item)
                     )
-                    for item in cast(list[Any], _v)
+                    for item in cast(list[Any], _v_google_analytics_sessions)
                 ]
-                if (_v := data.get("google_analytics_sessions")) is not None
+                if (
+                    _v_google_analytics_sessions := data.get(
+                        "google_analytics_sessions"
+                    )
+                )
+                is not None
                 else None,
                 ajs_anonymous_id=data.get("ajs_anonymous_id"),
                 client_id=data.get("client_id"),
-                actor=EventContextActor.from_dict(cast(Dict[str, Any], _v))
-                if (_v := data.get("actor")) is not None
+                actor=EventContextActor.from_dict(cast(Dict[str, Any], _v_actor))
+                if (_v_actor := data.get("actor")) is not None
                 else None,
                 previous_attributes=data.get("previous_attributes"),
             )

@@ -38,8 +38,8 @@ class AuthenticationChallenge:
                 authentication_factor_id=data["authentication_factor_id"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                expires_at=_parse_datetime(_v)
-                if (_v := data.get("expires_at")) is not None
+                expires_at=_parse_datetime(_v_expires_at)
+                if (_v_expires_at := data.get("expires_at")) is not None
                 else None,
                 code=data.get("code"),
             )

@@ -49,13 +49,15 @@ class AuthenticationFactorEnrolled:
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 user_id=data.get("user_id"),
-                sms=AuthenticationFactorEnrolledSms.from_dict(cast(Dict[str, Any], _v))
-                if (_v := data.get("sms")) is not None
+                sms=AuthenticationFactorEnrolledSms.from_dict(
+                    cast(Dict[str, Any], _v_sms)
+                )
+                if (_v_sms := data.get("sms")) is not None
                 else None,
                 totp=AuthenticationFactorEnrolledTotp.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_totp)
                 )
-                if (_v := data.get("totp")) is not None
+                if (_v_totp := data.get("totp")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

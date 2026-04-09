@@ -38,8 +38,8 @@ class CreateUserInviteOptions:
                 role_slug=data.get("role_slug"),
                 expires_in_days=data.get("expires_in_days"),
                 inviter_user_id=data.get("inviter_user_id"),
-                locale=CreateUserInviteOptionsLocale(_v)
-                if (_v := data.get("locale")) is not None
+                locale=CreateUserInviteOptionsLocale(_v_locale)
+                if (_v_locale := data.get("locale")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

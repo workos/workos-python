@@ -50,13 +50,16 @@ class OrganizationDomain:
                 domain=data["domain"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                state=OrganizationDomainState(_v)
-                if (_v := data.get("state")) is not None
+                state=OrganizationDomainState(_v_state)
+                if (_v_state := data.get("state")) is not None
                 else None,
                 verification_prefix=data.get("verification_prefix"),
                 verification_token=data.get("verification_token"),
-                verification_strategy=OrganizationDomainVerificationStrategy(_v)
-                if (_v := data.get("verification_strategy")) is not None
+                verification_strategy=OrganizationDomainVerificationStrategy(
+                    _v_verification_strategy
+                )
+                if (_v_verification_strategy := data.get("verification_strategy"))
+                is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

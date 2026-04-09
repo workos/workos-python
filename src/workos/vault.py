@@ -361,7 +361,7 @@ class Vault:
         limit: int = DEFAULT_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> Sequence[ObjectDigest]:
         """Gets a list of encrypted Vault objects."""
         params: Dict[str, Any] = {"limit": limit}
         if before is not None:
@@ -374,7 +374,8 @@ class Vault:
             path="vault/v1/kv",
             params=params,
         )
-        return response
+        data: List[Dict[str, Any]] = response.get("data", [])
+        return [ObjectDigest.from_dict(item) for item in data]
 
     def list_object_versions(self, *, object_id: str) -> Sequence[ObjectVersion]:
         """Gets a list of versions for a specific Vault object."""
@@ -545,7 +546,7 @@ class AsyncVault:
         limit: int = DEFAULT_RESPONSE_LIMIT,
         before: Optional[str] = None,
         after: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> Sequence[ObjectDigest]:
         """Gets a list of encrypted Vault objects."""
         params: Dict[str, Any] = {"limit": limit}
         if before is not None:
@@ -557,7 +558,8 @@ class AsyncVault:
             path="vault/v1/kv",
             params=params,
         )
-        return response
+        data: List[Dict[str, Any]] = response.get("data", [])
+        return [ObjectDigest.from_dict(item) for item in data]
 
     async def list_object_versions(self, *, object_id: str) -> Sequence[ObjectVersion]:
         """Gets a list of versions for a specific Vault object."""

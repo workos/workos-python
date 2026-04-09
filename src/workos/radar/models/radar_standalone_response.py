@@ -40,11 +40,11 @@ class RadarStandaloneResponse:
                 verdict=RadarStandaloneResponseVerdict(data["verdict"]),
                 reason=data["reason"],
                 attempt_id=data["attempt_id"],
-                control=RadarStandaloneResponseControl(_v)
-                if (_v := data.get("control")) is not None
+                control=RadarStandaloneResponseControl(_v_control)
+                if (_v_control := data.get("control")) is not None
                 else None,
-                blocklist_type=RadarStandaloneResponseBlocklistType(_v)
-                if (_v := data.get("blocklist_type")) is not None
+                blocklist_type=RadarStandaloneResponseBlocklistType(_v_blocklist_type)
+                if (_v_blocklist_type := data.get("blocklist_type")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

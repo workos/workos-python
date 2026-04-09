@@ -30,7 +30,7 @@ def _verify_signature(
 ) -> None:
     """Verify an HMAC-SHA256 signature header. Raises ValueError on failure."""
     try:
-        issued_part, sig_part = sig_header.split(", ")
+        issued_part, sig_part = sig_header.split(", ", 1)
     except (ValueError, AttributeError) as exc:
         raise ValueError(
             "Unable to extract timestamp and signature hash from header",

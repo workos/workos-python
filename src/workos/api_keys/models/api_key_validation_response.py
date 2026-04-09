@@ -21,8 +21,8 @@ class ApiKeyValidationResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                api_key=ApiKey.from_dict(cast(Dict[str, Any], _v))
-                if (_v := data["api_key"]) is not None
+                api_key=ApiKey.from_dict(cast(Dict[str, Any], _v_api_key))
+                if (_v_api_key := data["api_key"]) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

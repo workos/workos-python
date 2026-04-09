@@ -32,13 +32,14 @@ class UpdateWebhookEndpoint:
         try:
             return cls(
                 endpoint_url=data.get("endpoint_url"),
-                status=UpdateWebhookEndpointStatus(_v)
-                if (_v := data.get("status")) is not None
+                status=UpdateWebhookEndpointStatus(_v_status)
+                if (_v_status := data.get("status")) is not None
                 else None,
                 events=[
-                    UpdateWebhookEndpointEvents(item) for item in cast(list[Any], _v)
+                    UpdateWebhookEndpointEvents(item)
+                    for item in cast(list[Any], _v_events)
                 ]
-                if (_v := data.get("events")) is not None
+                if (_v_events := data.get("events")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

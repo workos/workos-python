@@ -45,11 +45,13 @@ class GenerateLink:
                 organization=data["organization"],
                 return_url=data.get("return_url"),
                 success_url=data.get("success_url"),
-                intent=GenerateLinkIntent(_v)
-                if (_v := data.get("intent")) is not None
+                intent=GenerateLinkIntent(_v_intent)
+                if (_v_intent := data.get("intent")) is not None
                 else None,
-                intent_options=IntentOptions.from_dict(cast(Dict[str, Any], _v))
-                if (_v := data.get("intent_options")) is not None
+                intent_options=IntentOptions.from_dict(
+                    cast(Dict[str, Any], _v_intent_options)
+                )
+                if (_v_intent_options := data.get("intent_options")) is not None
                 else None,
                 admin_emails=data.get("admin_emails"),
             )

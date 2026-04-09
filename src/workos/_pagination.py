@@ -109,7 +109,6 @@ class AsyncPage(Generic[T]):
                 break
             page = await page._fetch_page(after=page.after)
 
-    async def __aiter__(self) -> AsyncIterator[T]:
+    def __aiter__(self) -> AsyncIterator[T]:
         """Iterate through all items across all pages."""
-        async for item in self.auto_paging_iter():
-            yield item
+        return self.auto_paging_iter()

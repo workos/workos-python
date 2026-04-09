@@ -31,9 +31,10 @@ class UserManagementLoginRequest:
                 user=UserObject.from_dict(cast(Dict[str, Any], data["user"])),
                 user_consent_options=[
                     UserConsentOption.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v)
+                    for item in cast(list[Any], _v_user_consent_options)
                 ]
-                if (_v := data.get("user_consent_options")) is not None
+                if (_v_user_consent_options := data.get("user_consent_options"))
+                is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

@@ -53,11 +53,11 @@ class Invitation:
                 id=data["id"],
                 email=data["email"],
                 state=InvitationState(data["state"]),
-                accepted_at=_parse_datetime(_v)
-                if (_v := data["accepted_at"]) is not None
+                accepted_at=_parse_datetime(_v_accepted_at)
+                if (_v_accepted_at := data["accepted_at"]) is not None
                 else None,
-                revoked_at=_parse_datetime(_v)
-                if (_v := data["revoked_at"]) is not None
+                revoked_at=_parse_datetime(_v_revoked_at)
+                if (_v_revoked_at := data["revoked_at"]) is not None
                 else None,
                 expires_at=_parse_datetime(data["expires_at"]),
                 organization_id=data["organization_id"],

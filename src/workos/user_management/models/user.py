@@ -53,8 +53,8 @@ class User:
                 email=data["email"],
                 email_verified=data["email_verified"],
                 external_id=data["external_id"],
-                last_sign_in_at=_parse_datetime(_v)
-                if (_v := data["last_sign_in_at"]) is not None
+                last_sign_in_at=_parse_datetime(_v_last_sign_in_at)
+                if (_v_last_sign_in_at := data["last_sign_in_at"]) is not None
                 else None,
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),

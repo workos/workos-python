@@ -25,9 +25,9 @@ class FlagUpdatedContextPreviousAttribute:
         try:
             return cls(
                 data=FlagUpdatedContextPreviousAttributeData.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_data)
                 )
-                if (_v := data.get("data")) is not None
+                if (_v_data := data.get("data")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

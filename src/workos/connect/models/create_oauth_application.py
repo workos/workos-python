@@ -43,9 +43,9 @@ class CreateOAuthApplication:
                 scopes=data.get("scopes"),
                 redirect_uris=[
                     RedirectUriInput.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v)
+                    for item in cast(list[Any], _v_redirect_uris)
                 ]
-                if (_v := data.get("redirect_uris")) is not None
+                if (_v_redirect_uris := data.get("redirect_uris")) is not None
                 else None,
                 uses_pkce=data.get("uses_pkce"),
                 organization_id=data.get("organization_id"),

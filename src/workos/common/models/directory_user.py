@@ -82,21 +82,21 @@ class DirectoryUser:
                 last_name=data.get("last_name"),
                 emails=[
                     DirectoryUserEmail.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v)
+                    for item in cast(list[Any], _v_emails)
                 ]
-                if (_v := data.get("emails")) is not None
+                if (_v_emails := data.get("emails")) is not None
                 else None,
                 job_title=data.get("job_title"),
                 username=data.get("username"),
                 raw_attributes=data.get("raw_attributes"),
-                role=SlimRole.from_dict(cast(Dict[str, Any], _v))
-                if (_v := data.get("role")) is not None
+                role=SlimRole.from_dict(cast(Dict[str, Any], _v_role))
+                if (_v_role := data.get("role")) is not None
                 else None,
                 roles=[
                     SlimRole.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v)
+                    for item in cast(list[Any], _v_roles)
                 ]
-                if (_v := data.get("roles")) is not None
+                if (_v_roles := data.get("roles")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

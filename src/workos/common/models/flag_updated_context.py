@@ -32,9 +32,10 @@ class FlagUpdatedContext:
                     cast(Dict[str, Any], data["actor"])
                 ),
                 previous_attributes=FlagUpdatedContextPreviousAttribute.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_previous_attributes)
                 )
-                if (_v := data.get("previous_attributes")) is not None
+                if (_v_previous_attributes := data.get("previous_attributes"))
+                is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

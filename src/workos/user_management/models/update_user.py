@@ -47,8 +47,8 @@ class UpdateUser:
                 email_verified=data.get("email_verified"),
                 password=data.get("password"),
                 password_hash=data.get("password_hash"),
-                password_hash_type=UpdateUserPasswordHashType(_v)
-                if (_v := data.get("password_hash_type")) is not None
+                password_hash_type=UpdateUserPasswordHashType(_v_password_hash_type)
+                if (_v_password_hash_type := data.get("password_hash_type")) is not None
                 else None,
                 metadata=data.get("metadata"),
                 external_id=data.get("external_id"),

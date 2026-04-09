@@ -60,14 +60,14 @@ class Profile:
                 first_name=data["first_name"],
                 last_name=data["last_name"],
                 raw_attributes=data["raw_attributes"],
-                role=SlimRole.from_dict(cast(Dict[str, Any], _v))
-                if (_v := data.get("role")) is not None
+                role=SlimRole.from_dict(cast(Dict[str, Any], _v_role))
+                if (_v_role := data.get("role")) is not None
                 else None,
                 roles=[
                     SlimRole.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v)
+                    for item in cast(list[Any], _v_roles)
                 ]
-                if (_v := data.get("roles")) is not None
+                if (_v_roles := data.get("roles")) is not None
                 else None,
                 groups=data.get("groups"),
                 custom_attributes=data.get("custom_attributes"),

@@ -47,18 +47,21 @@ class AuthenticateResponse:
                 refresh_token=data["refresh_token"],
                 organization_id=data.get("organization_id"),
                 authkit_authorization_code=data.get("authkit_authorization_code"),
-                authentication_method=AuthenticateResponseAuthenticationMethod(_v)
-                if (_v := data.get("authentication_method")) is not None
+                authentication_method=AuthenticateResponseAuthenticationMethod(
+                    _v_authentication_method
+                )
+                if (_v_authentication_method := data.get("authentication_method"))
+                is not None
                 else None,
                 impersonator=AuthenticateResponseImpersonator.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_impersonator)
                 )
-                if (_v := data.get("impersonator")) is not None
+                if (_v_impersonator := data.get("impersonator")) is not None
                 else None,
                 oauth_tokens=AuthenticateResponseOAuthToken.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_oauth_tokens)
                 )
-                if (_v := data.get("oauth_tokens")) is not None
+                if (_v_oauth_tokens := data.get("oauth_tokens")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

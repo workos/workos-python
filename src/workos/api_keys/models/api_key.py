@@ -45,8 +45,8 @@ class ApiKey:
                 owner=ApiKeyOwner.from_dict(cast(Dict[str, Any], data["owner"])),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
-                last_used_at=_parse_datetime(_v)
-                if (_v := data["last_used_at"]) is not None
+                last_used_at=_parse_datetime(_v_last_used_at)
+                if (_v_last_used_at := data["last_used_at"]) is not None
                 else None,
                 permissions=data["permissions"],
                 created_at=_parse_datetime(data["created_at"]),

@@ -36,9 +36,9 @@ class AuditLogConfiguration:
                 retention_period_in_days=data["retention_period_in_days"],
                 state=AuditLogConfigurationState(data["state"]),
                 log_stream=AuditLogConfigurationLogStream.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_log_stream)
                 )
-                if (_v := data.get("log_stream")) is not None
+                if (_v_log_stream := data.get("log_stream")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

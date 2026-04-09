@@ -42,8 +42,8 @@ class AuditLogSchemaJson:
                     for item in cast(list[Any], data["targets"])
                 ],
                 created_at=_parse_datetime(data["created_at"]),
-                actor=AuditLogSchemaJsonActor.from_dict(cast(Dict[str, Any], _v))
-                if (_v := data.get("actor")) is not None
+                actor=AuditLogSchemaJsonActor.from_dict(cast(Dict[str, Any], _v_actor))
+                if (_v_actor := data.get("actor")) is not None
                 else None,
                 metadata=data.get("metadata"),
             )

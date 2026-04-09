@@ -57,8 +57,8 @@ class Directory:
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 domain=data.get("domain"),
-                metadata=DirectoryMetadata.from_dict(cast(Dict[str, Any], _v))
-                if (_v := data.get("metadata")) is not None
+                metadata=DirectoryMetadata.from_dict(cast(Dict[str, Any], _v_metadata))
+                if (_v_metadata := data.get("metadata")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

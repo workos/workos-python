@@ -60,9 +60,9 @@ class OrganizationMembershipCreatedData:
                 updated_at=_parse_datetime(data["updated_at"]),
                 roles=[
                     SlimRole.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v)
+                    for item in cast(list[Any], _v_roles)
                 ]
-                if (_v := data.get("roles")) is not None
+                if (_v_roles := data.get("roles")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

@@ -62,9 +62,9 @@ class DataIntegrationsListResponseData:
                 created_at=data["created_at"],
                 updated_at=data["updated_at"],
                 connected_account=DataIntegrationsListResponseDataConnectedAccount.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_connected_account)
                 )
-                if (_v := data["connected_account"]) is not None
+                if (_v_connected_account := data["connected_account"]) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

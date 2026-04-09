@@ -28,8 +28,11 @@ class WidgetSessionToken:
             return cls(
                 organization_id=data["organization_id"],
                 user_id=data.get("user_id"),
-                scopes=[WidgetSessionTokenScopes(item) for item in cast(list[Any], _v)]
-                if (_v := data.get("scopes")) is not None
+                scopes=[
+                    WidgetSessionTokenScopes(item)
+                    for item in cast(list[Any], _v_scopes)
+                ]
+                if (_v_scopes := data.get("scopes")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

@@ -63,11 +63,11 @@ class Connection:
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 organization_id=data.get("organization_id"),
-                status=ConnectionStatus(_v)
-                if (_v := data.get("status")) is not None
+                status=ConnectionStatus(_v_status)
+                if (_v_status := data.get("status")) is not None
                 else None,
-                options=ConnectionOption.from_dict(cast(Dict[str, Any], _v))
-                if (_v := data.get("options")) is not None
+                options=ConnectionOption.from_dict(cast(Dict[str, Any], _v_options))
+                if (_v_options := data.get("options")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

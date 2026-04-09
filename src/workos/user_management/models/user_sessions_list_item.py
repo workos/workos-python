@@ -59,15 +59,15 @@ class UserSessionsListItem:
                 auth_method=UserSessionsAuthMethod(data["auth_method"]),
                 status=UserSessionsStatus(data["status"]),
                 expires_at=_parse_datetime(data["expires_at"]),
-                ended_at=_parse_datetime(_v)
-                if (_v := data["ended_at"]) is not None
+                ended_at=_parse_datetime(_v_ended_at)
+                if (_v_ended_at := data["ended_at"]) is not None
                 else None,
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 impersonator=UserSessionsImpersonator.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_impersonator)
                 )
-                if (_v := data.get("impersonator")) is not None
+                if (_v_impersonator := data.get("impersonator")) is not None
                 else None,
                 organization_id=data.get("organization_id"),
             )

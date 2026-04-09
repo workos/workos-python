@@ -36,9 +36,9 @@ class SSOTokenResponse:
                 expires_in=data["expires_in"],
                 profile=Profile.from_dict(cast(Dict[str, Any], data["profile"])),
                 oauth_tokens=SSOTokenResponseOAuthToken.from_dict(
-                    cast(Dict[str, Any], _v)
+                    cast(Dict[str, Any], _v_oauth_tokens)
                 )
-                if (_v := data.get("oauth_tokens")) is not None
+                if (_v_oauth_tokens := data.get("oauth_tokens")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:

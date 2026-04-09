@@ -42,8 +42,8 @@ class CreateUser:
                 email=data["email"],
                 password=data.get("password"),
                 password_hash=data.get("password_hash"),
-                password_hash_type=CreateUserPasswordHashType(_v)
-                if (_v := data.get("password_hash_type")) is not None
+                password_hash_type=CreateUserPasswordHashType(_v_password_hash_type)
+                if (_v_password_hash_type := data.get("password_hash_type")) is not None
                 else None,
                 first_name=data.get("first_name"),
                 last_name=data.get("last_name"),

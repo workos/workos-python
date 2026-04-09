@@ -1,0 +1,11 @@
+{
+  "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+  "client_secret": "sk_test_....",
+  "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
+  "code": "123456",
+  "email": "user@example.com",
+  "invitation_token": "inv_tok_01HXYZ123456789ABCDEFGHIJ",
+  "ip_address": "203.0.113.42",
+  "device_id": "device_01HXYZ123456789ABCDEFGHIJ",
+  "user_agent": "Mozilla/5.0"
+}

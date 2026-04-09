@@ -1,0 +1,8 @@
+{
+  "device_code": "CVE2wOfIFK4vhmiDBntpX9s8KT2f0qngpWYL0LGy9HxYgBRXUKIUkZB9BgIFho5h",
+  "user_code": "BCDF-GHJK",
+  "verification_uri": "https://authkit_domain/device",
+  "verification_uri_complete": "https://authkit_domain/device?user_code=BCDF-GHJK",
+  "expires_in": 300,
+  "interval": 5
+}

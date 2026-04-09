@@ -1,0 +1,6 @@
+{
+  "context": {"tenant": "acme"},
+  "id": "vault_key_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+  "data_key": "AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE=",
+  "encrypted_keys": "dGVzdC1lbmNyeXB0ZWQta2V5cw=="
+}

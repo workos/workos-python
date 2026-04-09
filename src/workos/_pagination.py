@@ -1,0 +1,114 @@
+# @oagen-ignore-file
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import (
+    Any,
+    AsyncIterator,
+    Awaitable,
+    Callable,
+    Dict,
+    Generic,
+    Iterator,
+    List,
+    Optional,
+    TypeVar,
+)
+
+from ._types import Deserializable
+
+T = TypeVar("T", bound=Deserializable)
+
+
+@dataclass(slots=True)
+class ListMetadata:
+    """Pagination cursor metadata."""
+
+    before: Optional[str] = None
+    after: Optional[str] = None
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "ListMetadata":
+        return cls(before=data.get("before"), after=data.get("after"))
+
+
+@dataclass
+class SyncPage(Generic[T]):
+    """A page of results with auto-pagination support."""
+
+    data: List[T]
+    list_metadata: ListMetadata
+    _fetch_page: Optional[Callable[..., "SyncPage[T]"]] = field(
+        default=None, repr=False
+    )
+
+    @property
+    def before(self) -> Optional[str]:
+        """Cursor for the previous page, if available."""
+        return self.list_metadata.before
+
+    @property
+    def after(self) -> Optional[str]:
+        """Cursor for the next page, if available."""
+        return self.list_metadata.after
+
+    def has_more(self) -> bool:
+        """Whether there are more pages available."""
+        return self.after is not None
+
+    def auto_paging_iter(self) -> Iterator[T]:
+        """Iterate through all items across all pages."""
+        page = self
+        while True:
+            yield from page.data
+            if not page.data:
+                break
+            if not page.has_more() or page._fetch_page is None:
+                break
+            page = page._fetch_page(after=page.after)
+
+    def __iter__(self) -> Iterator[T]:
+        """Iterate through all items across all pages."""
+        return self.auto_paging_iter()
+
+
+@dataclass
+class AsyncPage(Generic[T]):
+    """A page of results with async auto-pagination support."""
+
+    data: List[T]
+    list_metadata: ListMetadata
+    _fetch_page: Optional[Callable[..., Awaitable["AsyncPage[T]"]]] = field(
+        default=None, repr=False
+    )
+
+    @property
+    def before(self) -> Optional[str]:
+        """Cursor for the previous page, if available."""
+        return self.list_metadata.before
+
+    @property
+    def after(self) -> Optional[str]:
+        """Cursor for the next page, if available."""
+        return self.list_metadata.after
+
+    def has_more(self) -> bool:
+        """Whether there are more pages available."""
+        return self.after is not None
+
+    async def auto_paging_iter(self) -> AsyncIterator[T]:
+        """Iterate through all items across all pages."""
+        page = self
+        while True:
+            for item in page.data:
+                yield item
+            if not page.data:
+                break
+            if not page.has_more() or page._fetch_page is None:
+                break
+            page = await page._fetch_page(after=page.after)
+
+    def __aiter__(self) -> AsyncIterator[T]:
+        """Iterate through all items across all pages."""
+        return self.auto_paging_iter()

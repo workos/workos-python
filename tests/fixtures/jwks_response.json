@@ -1,0 +1,16 @@
+{
+  "keys": [
+    {
+      "alg": "RS256",
+      "kty": "RSA",
+      "use": "sig",
+      "x5c": [
+        "MIIDQjCCAiqgAwIBAgIGATz/FuLiMA0GCSqGSIb3DQEBCwUA..."
+      ],
+      "n": "0vx7agoebGc...eKnNs",
+      "e": "AQAB",
+      "kid": "key_01HXYZ123456789ABCDEFGHIJ",
+      "x5t#S256": "ZjQzYjI0OT...NmNjU0"
+    }
+  ]
+}

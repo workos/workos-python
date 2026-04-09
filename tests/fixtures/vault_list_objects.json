@@ -1,0 +1,13 @@
+{
+  "data": [
+    {
+      "id": "vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+      "name": "my-secret",
+      "updated_at": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "list_metadata": {
+    "before": null,
+    "after": null
+  }
+}

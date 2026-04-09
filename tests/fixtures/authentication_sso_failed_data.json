@@ -1,0 +1,17 @@
+{
+  "type": "sso",
+  "status": "failed",
+  "ip_address": "203.0.113.42",
+  "user_agent": "Mozilla/5.0",
+  "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+  "email": "user@example.com",
+  "sso": {
+    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
+    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"
+  },
+  "error": {
+    "code": "mfa_challenge_failed",
+    "message": "The MFA challenge has failed."
+  }
+}

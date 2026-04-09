@@ -1,0 +1,12 @@
+{
+  "data": {
+    "name": "My Feature Flag",
+    "description": "Enables the new feature.",
+    "tags": [
+      "beta",
+      "release"
+    ],
+    "enabled": true,
+    "default_value": false
+  }
+}

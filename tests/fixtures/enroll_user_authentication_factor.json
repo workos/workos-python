@@ -1,0 +1,6 @@
+{
+  "type": "totp",
+  "totp_issuer": "WorkOS",
+  "totp_user": "user@example.com",
+  "totp_secret": "JBSWY3DPEHPK3PXP"
+}

@@ -1,0 +1,39 @@
+{
+  "user": {
+    "object": "user",
+    "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+    "first_name": "Marcelina",
+    "last_name": "Davis",
+    "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+    "email": "marcelina.davis@example.com",
+    "email_verified": true,
+    "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+    "metadata": {
+      "timezone": "America/New_York"
+    },
+    "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+    "locale": "en-US",
+    "created_at": "2026-01-15T12:00:00.000Z",
+    "updated_at": "2026-01-15T12:00:00.000Z"
+  },
+  "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
+  "authkit_authorization_code": "authkit_authz_code_abc123",
+  "access_token": "eyJhb.nNzb19vaWRjX2tleV9.lc5Uk4yWVk5In0",
+  "refresh_token": "yAjhKk123NLIjdrBdGZPf8pLIDvK",
+  "authentication_method": "SSO",
+  "impersonator": {
+    "email": "admin@foocorp.com",
+    "reason": "Investigating an issue with the customer's account."
+  },
+  "oauth_tokens": {
+    "provider": "GoogleOAuth",
+    "refresh_token": "1//04g...",
+    "access_token": "ya29.a0ARrdaM...",
+    "expires_at": 1735141800,
+    "scopes": [
+      "profile",
+      "email",
+      "openid"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "type": "authentication",
+  "verdict": "Deny",
+  "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+  "email": "user@example.com",
+  "ip_address": "203.0.113.1",
+  "user_agent": "Mozilla/5.0"
+}

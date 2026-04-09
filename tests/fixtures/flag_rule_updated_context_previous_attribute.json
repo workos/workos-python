@@ -1,0 +1,23 @@
+{
+  "data": {
+    "enabled": true,
+    "default_value": false
+  },
+  "context": {
+    "access_type": "none",
+    "configured_targets": {
+      "organizations": [
+        {
+          "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+          "name": "Acme Corp"
+        }
+      ],
+      "users": [
+        {
+          "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+          "email": "user@example.com"
+        }
+      ]
+    }
+  }
+}

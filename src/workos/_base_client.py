@@ -472,6 +472,35 @@ class WorkOSClient(_BaseWorkOSClient):
         )
         return result if isinstance(result, dict) else {}
 
+    def request_list(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: Optional[Dict[str, Any]] = None,
+        body: Optional[Dict[str, Any]] = None,
+        idempotency_key: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> list[Dict[str, Any]]:
+        """Make an HTTP request expecting a bare JSON array response.
+
+        Returns the raw list of dicts. Use this for endpoints that return
+        a JSON array instead of a paginated envelope.
+        """
+        result = self.request(
+            method=method,
+            path=path,
+            params=params,
+            body=body,
+            idempotency_key=idempotency_key,
+            request_options=request_options,
+        )
+        if not isinstance(result, list):
+            raise WorkOSError(
+                f"Expected array response from {method.upper()} /{path}, got {type(result).__name__}"
+            )
+        return result
+
     def request_page(
         self,
         method: str,
@@ -667,6 +696,35 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             request_options=request_options,
         )
         return result if isinstance(result, dict) else {}
+
+    async def request_list(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: Optional[Dict[str, Any]] = None,
+        body: Optional[Dict[str, Any]] = None,
+        idempotency_key: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> list[Dict[str, Any]]:
+        """Make an async HTTP request expecting a bare JSON array response.
+
+        Returns the raw list of dicts. Use this for endpoints that return
+        a JSON array instead of a paginated envelope.
+        """
+        result = await self.request(
+            method=method,
+            path=path,
+            params=params,
+            body=body,
+            idempotency_key=idempotency_key,
+            request_options=request_options,
+        )
+        if not isinstance(result, list):
+            raise WorkOSError(
+                f"Expected array response from {method.upper()} /{path}, got {type(result).__name__}"
+            )
+        return result
 
     async def request_page(
         self,

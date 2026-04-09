@@ -367,14 +367,14 @@ class Connect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        raw = self._client.request(
+        raw = self._client.request_list(
             method="get",
             path=f"connect/applications/{id}/client_secrets",
             request_options=request_options,
         )
         return [
             ApplicationCredentialsListItem.from_dict(cast(Dict[str, Any], item))
-            for item in (raw if isinstance(raw, list) else [])
+            for item in raw
         ]
 
     def create_application_client_secrets(
@@ -781,14 +781,14 @@ class AsyncConnect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        raw = await self._client.request(
+        raw = await self._client.request_list(
             method="get",
             path=f"connect/applications/{id}/client_secrets",
             request_options=request_options,
         )
         return [
             ApplicationCredentialsListItem.from_dict(cast(Dict[str, Any], item))
-            for item in (raw if isinstance(raw, list) else [])
+            for item in raw
         ]
 
     async def create_application_client_secrets(

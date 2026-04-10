@@ -234,6 +234,45 @@ class TestAuthorization:
         )
         assert request_kwargs["json"] == {"slug": "admin", "name": "Admin"}
 
+    def test_create_organization_role_without_slug(
+        self, mock_organization_role, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_role, 201
+        )
+
+        role = syncify(
+            self.authorization.create_organization_role(
+                "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                name="Admin",
+            )
+        )
+
+        assert role.id == "role_01ABC"
+        assert request_kwargs["json"] == {"name": "Admin"}
+
+    def test_create_organization_role_with_resource_type_slug(
+        self, mock_organization_role, capture_and_mock_http_client_request
+    ):
+        request_kwargs = capture_and_mock_http_client_request(
+            self.http_client, mock_organization_role, 201
+        )
+
+        syncify(
+            self.authorization.create_organization_role(
+                "org_01EHT88Z8J8795GZNQ4ZP1J81T",
+                slug="admin",
+                name="Admin",
+                resource_type_slug="project",
+            )
+        )
+
+        assert request_kwargs["json"] == {
+            "slug": "admin",
+            "name": "Admin",
+            "resource_type_slug": "project",
+        }
+
     def test_list_organization_roles(
         self, mock_organization_roles, capture_and_mock_http_client_request
     ):

@@ -147,9 +147,10 @@ class AuthorizationModule(Protocol):
         self,
         organization_id: str,
         *,
-        slug: str,
+        slug: Optional[str] = None,
         name: str,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
     ) -> SyncOrAsync[OrganizationRole]: ...
 
     def list_organization_roles(
@@ -474,13 +475,18 @@ class Authorization(AuthorizationModule):
         self,
         organization_id: str,
         *,
-        slug: str,
+        slug: Optional[str] = None,
         name: str,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
     ) -> OrganizationRole:
-        json: Dict[str, Any] = {"slug": slug, "name": name}
+        json: Dict[str, Any] = {"name": name}
+        if slug is not None:
+            json["slug"] = slug
         if description is not None:
             json["description"] = description
+        if resource_type_slug is not None:
+            json["resource_type_slug"] = resource_type_slug
 
         response = self._http_client.request(
             f"authorization/organizations/{organization_id}/roles",
@@ -1152,13 +1158,18 @@ class AsyncAuthorization(AuthorizationModule):
         self,
         organization_id: str,
         *,
-        slug: str,
+        slug: Optional[str] = None,
         name: str,
         description: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
     ) -> OrganizationRole:
-        json: Dict[str, Any] = {"slug": slug, "name": name}
+        json: Dict[str, Any] = {"name": name}
+        if slug is not None:
+            json["slug"] = slug
         if description is not None:
             json["description"] = description
+        if resource_type_slug is not None:
+            json["resource_type_slug"] = resource_type_slug
 
         response = await self._http_client.request(
             f"authorization/organizations/{organization_id}/roles",

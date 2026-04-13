@@ -3,13 +3,19 @@
 ## [6.0.0](https://github.com/workos/workos-python/compare/v5.46.0...v6.0.0) (2026-04-13)
 
 
-### ⚠ BREAKING CHANGES
+### Top-level notices
 
-* release new version of Python SDK library ([#599](https://github.com/workos/workos-python/issues/599))
+- v6 is a breaking release and now requires Python 3.10 or newer.
+- The SDK now uses generated sync and async clients with top-level imports from `workos`.
+- `client.portal` has been renamed to `client.admin_portal`, and `client.fga` is not available in v6.
 
-### Features
+### What's changed
 
-* release new version of Python SDK library ([#599](https://github.com/workos/workos-python/issues/599)) ([9aaec74](https://github.com/workos/workos-python/commit/9aaec749b8646ecb5cea095f96ee701fcb2f71f7))
+- Rebuilt the Python SDK around a generated client/runtime with updated request handling, pagination, typed models, and error surfaces.
+- Reorganized package exports and service modules to support the new v6 client shape across the SDK.
+- Added release validation coverage, including package smoke tests and the runtime dependency updates needed for packaged installs.
+
+See the [V6 migration guide](docs/V6_MIGRATION_GUIDE.md) before upgrading from v5.
 
 ## [5.46.0](https://github.com/workos/workos-python/compare/v5.45.0...v5.46.0) (2026-03-16)
 

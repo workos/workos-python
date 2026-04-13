@@ -7,7 +7,12 @@ license = "MIT"
 authors = [{ name = "WorkOS", email = "sdk@workos.com" }]
 requires-python = ">=3.10"
 
-dependencies = ["cryptography~=46.0", "httpx~=0.28", "pyjwt~=2.12"]
+dependencies = [
+  "cryptography~=46.0",
+  "httpx~=0.28",
+  "pyjwt~=2.12",
+  "typing_extensions~=4.0",
+]
 
 [project.urls]
 Homepage = "https://workos.com/docs/sdks/python"

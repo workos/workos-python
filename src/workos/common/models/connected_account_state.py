@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from enum import Enum
 from typing import Optional
-from typing_extensions import Literal, TypeAlias
+from typing import Literal, TypeAlias
 
 
 class ConnectedAccountState(str, Enum):

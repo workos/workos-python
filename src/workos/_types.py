@@ -5,8 +5,12 @@ from __future__ import annotations
 import sys
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, NoReturn, Protocol, TypeVar
-from typing_extensions import Self, TypedDict
+from typing import Any, Dict, NoReturn, Protocol, TypedDict, TypeVar
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
 
 class RequestOptions(TypedDict, total=False):

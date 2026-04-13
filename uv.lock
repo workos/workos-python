@@ -711,7 +711,7 @@ dependencies = [
     { name = "cryptography" },
     { name = "httpx" },
     { name = "pyjwt" },
-    { name = "typing-extensions" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 
 [package.dev-dependencies]
@@ -747,7 +747,7 @@ requires-dist = [
     { name = "cryptography", specifier = "~=46.0" },
     { name = "httpx", specifier = "~=0.28" },
     { name = "pyjwt", specifier = "~=2.12" },
-    { name = "typing-extensions", specifier = "~=4.0" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'", specifier = "~=4.0" },
 ]
 
 [package.metadata.requires-dev]

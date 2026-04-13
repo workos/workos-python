@@ -205,11 +205,8 @@ def test_dependencies_available() -> None:
     import cryptography
     import httpx
     import jwt
-    import typing_extensions
 
-    print(
-        "✓ Core dependencies available (httpx, cryptography, pyjwt, typing_extensions)"
-    )
+    print("✓ Core dependencies available (httpx, cryptography, pyjwt)")
 
 
 def main() -> int:

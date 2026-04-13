@@ -1,0 +1,7 @@
+{
+  "issuer": "WorkOS",
+  "user": "user@example.com",
+  "secret": "JBSWY3DPEHPK3PXP",
+  "qr_code": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...",
+  "uri": "otpauth://totp/WorkOS:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=WorkOS"
+}

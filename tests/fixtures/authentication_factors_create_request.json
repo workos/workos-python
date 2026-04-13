@@ -1,0 +1,7 @@
+{
+  "type": "totp",
+  "phone_number": "+15555555555",
+  "totp_issuer": "Foo Corp",
+  "totp_user": "alan.turing@example.com",
+  "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5"
+}

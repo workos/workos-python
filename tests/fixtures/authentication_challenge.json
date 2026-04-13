@@ -1,0 +1,9 @@
+{
+  "object": "authentication_challenge",
+  "id": "auth_challenge_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+  "expires_at": "2026-01-15T12:00:00.000Z",
+  "code": "123456",
+  "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}

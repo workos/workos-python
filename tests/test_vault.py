@@ -1,486 +1,402 @@
-import pytest
+# @oagen-ignore-file
+import json
 
-from tests.utils.fixtures.mock_vault_object import (
-    MockObjectDigest,
-    MockObjectMetadata,
-    MockObjectVersion,
-    MockVaultObject,
+import pytest
+from workos import WorkOSClient, AsyncWorkOSClient
+from tests.generated_helpers import load_fixture
+
+from workos.vault import (
+    DataKey,
+    DataKeyPair,
+    ObjectDigest,
+    ObjectMetadata,
+    ObjectVersion,
+    VaultObject,
 )
-from tests.utils.list_resource import list_response_of
-from workos.types.vault.key import KeyContext
-from workos.vault import Vault
+from workos._errors import (
+    AuthenticationError,
+    NotFoundError,
+    RateLimitExceededError,
+    ServerError,
+)
 
 
 class TestVault:
-    @pytest.fixture(autouse=True)
-    def setup(self, sync_http_client_for_test):
-        self.http_client = sync_http_client_for_test
-        self.vault = Vault(http_client=self.http_client)
-
-    @pytest.fixture
-    def mock_vault_object(self):
-        return MockVaultObject(
-            "vault_01234567890abcdef", "test-secret", "secret-value"
-        ).dict()
-
-    @pytest.fixture
-    def mock_object_digest(self):
-        return MockObjectDigest("vault_01234567890abcdef", "test-secret").dict()
-
-    @pytest.fixture
-    def mock_object_metadata(self):
-        return MockObjectMetadata("vault_01234567890abcdef").dict()
-
-    @pytest.fixture
-    def mock_vault_object_no_value(self):
-        mock_obj = MockVaultObject("vault_01234567890abcdef", "test-secret")
-        mock_obj.value = None
-        return mock_obj.dict()
-
-    @pytest.fixture
-    def mock_vault_objects_list(self):
-        vault_objects = [
-            MockObjectDigest(f"vault_{i}", f"secret-{i}").dict() for i in range(5)
-        ]
-        return {
-            "data": vault_objects,
-            "list_metadata": {"before": None, "after": None},
-            "object": "list",
-        }
-
-    @pytest.fixture
-    def mock_vault_objects_multiple_pages(self):
-        vault_objects = [
-            MockObjectDigest(f"vault_{i}", f"secret-{i}").dict() for i in range(25)
-        ]
-        return list_response_of(data=vault_objects)
-
-    @pytest.fixture
-    def mock_object_versions(self):
-        versions = [
-            MockObjectVersion(f"version_{i}", current_version=(i == 0)).dict()
-            for i in range(3)
-        ]
-        return {"data": versions}
-
-    @pytest.fixture
-    def mock_data_key(self):
-        return {
-            "id": "key_01234567890abcdef",
-            "data_key": "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
-        }
-
-    @pytest.fixture
-    def mock_data_key_pair(self):
-        return {
-            "context": {"key": "test-key"},
-            "id": "key_01234567890abcdef",
-            "data_key": "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
-            "encrypted_keys": "ZW5jcnlwdGVkX2tleXNfZGF0YQ==",
-        }
-
-    def test_read_object_success(
-        self, mock_vault_object, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_vault_object, 200
+    def test_read_object(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_object.json"))
+        result = workos.vault.read_object(
+            object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        )
+        assert isinstance(result, VaultObject)
+        assert result.id == "vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        assert result.name == "my-secret"
+        assert result.value == "super-secret-value"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/vault/v1/kv/vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
         )
 
-        vault_object = self.vault.read_object(object_id="vault_01234567890abcdef")
+    def test_read_object_by_name(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_object.json"))
+        result = workos.vault.read_object_by_name(name="my-secret")
+        assert isinstance(result, VaultObject)
+        assert result.name == "my-secret"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/vault/v1/kv/name/my-secret")
 
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["url"].endswith("/vault/v1/kv/vault_01234567890abcdef")
-        assert vault_object.id == "vault_01234567890abcdef"
-        assert vault_object.name == "test-secret"
-        assert vault_object.value == "secret-value"
-        assert vault_object.metadata.environment_id == "env_01234567890abcdef"
-
-    def test_read_object_missing_object_id(self):
-        with pytest.raises(
-            ValueError, match="Incomplete arguments: 'object_id' is a required argument"
-        ):
-            self.vault.read_object(object_id="")
-
-    def test_read_object_none_object_id(self):
-        with pytest.raises(
-            ValueError, match="Incomplete arguments: 'object_id' is a required argument"
-        ):
-            self.vault.read_object(object_id=None)
-
-    def test_read_object_by_name_success(
-        self, mock_vault_object, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_vault_object, 200
+    def test_get_object_metadata(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_object_metadata.json"))
+        result = workos.vault.get_object_metadata(
+            object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        )
+        assert isinstance(result, VaultObject)
+        assert result.id == "vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        assert result.name == "my-secret"
+        assert result.value is None
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/vault/v1/kv/vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C/metadata"
         )
 
-        vault_object = self.vault.read_object_by_name(name="test-secret")
+    def test_list_objects(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_list_objects.json"))
+        result = workos.vault.list_objects()
+        assert len(result) == 1
+        assert isinstance(result[0], ObjectDigest)
+        assert result[0].id == "vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/vault/v1/kv")
 
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["url"].endswith("/vault/v1/kv/name/test-secret")
-        assert vault_object.id == "vault_01234567890abcdef"
-        assert vault_object.name == "test-secret"
-        assert vault_object.value == "secret-value"
-        assert vault_object.metadata.environment_id == "env_01234567890abcdef"
+    def test_list_objects_with_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_list_objects.json"))
+        workos.vault.list_objects(limit=5, after="cursor_abc")
+        request = httpx_mock.get_request()
+        assert "limit=5" in str(request.url)
+        assert "after=cursor_abc" in str(request.url)
 
-    def test_read_object_by_name_missing_name(self):
-        with pytest.raises(
-            ValueError, match="Incomplete arguments: 'name' is a required argument"
-        ):
-            self.vault.read_object_by_name(name="")
-
-    def test_read_object_by_name_none_name(self):
-        with pytest.raises(
-            ValueError, match="Incomplete arguments: 'name' is a required argument"
-        ):
-            self.vault.read_object_by_name(name=None)
-
-    def test_list_objects_default_params(
-        self, mock_vault_objects_list, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_vault_objects_list, 200
+    def test_list_object_versions(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_list_object_versions.json"))
+        result = workos.vault.list_object_versions(
+            object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        )
+        assert len(result) == 1
+        assert isinstance(result[0], ObjectVersion)
+        assert result[0].current_version is True
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/vault/v1/kv/vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C/versions"
         )
 
-        vault_objects = self.vault.list_objects()
+    def test_create_object(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_create_object.json"))
+        result = workos.vault.create_object(
+            name="my-secret",
+            value="super-secret-value",
+            key_context={"tenant": "acme"},
+        )
+        assert isinstance(result, ObjectMetadata)
+        assert result.id == "vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/vault/v1/kv")
+        body = json.loads(request.content)
+        assert body["name"] == "my-secret"
+        assert body["value"] == "super-secret-value"
+        assert body["key_context"] == {"tenant": "acme"}
 
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["url"].endswith("/vault/v1/kv")
-        assert request_kwargs["params"]["limit"] == 10
-        assert "before" not in request_kwargs["params"]
-        assert "after" not in request_kwargs["params"]
-        assert len(vault_objects.data) == 5
-        assert vault_objects.data[0].id == "vault_0"
-        assert vault_objects.data[0].name == "secret-0"
+    def test_update_object(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_object.json"))
+        result = workos.vault.update_object(
+            object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+            value="new-secret-value",
+        )
+        assert isinstance(result, VaultObject)
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
+        assert request.url.path.endswith(
+            "/vault/v1/kv/vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        )
+        body = json.loads(request.content)
+        assert body["value"] == "new-secret-value"
 
-    def test_list_objects_with_params(
-        self, mock_vault_objects_list, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_vault_objects_list, 200
+    def test_update_object_with_version_check(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_object.json"))
+        workos.vault.update_object(
+            object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+            value="new-secret-value",
+            version_check="vault_ver_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+        )
+        request = httpx_mock.get_request()
+        body = json.loads(request.content)
+        assert body["version_check"] == "vault_ver_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+
+    def test_delete_object(self, workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        workos.vault.delete_object(object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C")
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+        assert request.url.path.endswith(
+            "/vault/v1/kv/vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
         )
 
-        self.vault.list_objects(limit=5, before="vault_before", after="vault_after")
+    def test_create_data_key(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_data_key.json"))
+        result = workos.vault.create_data_key(key_context={"tenant": "acme"})
+        assert isinstance(result, DataKeyPair)
+        assert isinstance(result.data_key, DataKey)
+        assert result.data_key.id == "vault_key_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        assert result.context == {"tenant": "acme"}
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/vault/v1/keys/data-key")
 
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["url"].endswith("/vault/v1/kv")
-        assert request_kwargs["params"]["limit"] == 5
-        assert request_kwargs["params"]["before"] == "vault_before"
-        assert request_kwargs["params"]["after"] == "vault_after"
+    def test_decrypt_data_key(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_decrypt_key.json"))
+        result = workos.vault.decrypt_data_key(keys="dGVzdC1lbmNyeXB0ZWQta2V5cw==")
+        assert isinstance(result, DataKey)
+        assert result.id == "vault_key_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/vault/v1/keys/decrypt")
 
-    def test_list_objects_auto_pagination(
-        self, mock_vault_objects_multiple_pages, test_auto_pagination
-    ):
-        test_auto_pagination(
-            http_client=self.http_client,
-            list_function=self.vault.list_objects,
-            expected_all_page_data=mock_vault_objects_multiple_pages["data"],
+    def test_encrypt_decrypt_round_trip(self, workos, httpx_mock):
+        # Mock create_data_key for encrypt
+        httpx_mock.add_response(json=load_fixture("vault_data_key.json"))
+        # Mock decrypt_data_key for decrypt
+        httpx_mock.add_response(json=load_fixture("vault_decrypt_key.json"))
+
+        encrypted = workos.vault.encrypt(
+            data="hello world", key_context={"tenant": "acme"}
+        )
+        assert isinstance(encrypted, str)
+        assert encrypted != "hello world"
+
+        decrypted = workos.vault.decrypt(encrypted_data=encrypted)
+        assert decrypted == "hello world"
+
+    def test_read_object_unauthorized(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            status_code=401,
+            json={"message": "Unauthorized"},
+        )
+        with pytest.raises(AuthenticationError):
+            workos.vault.read_object(object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C")
+
+    def test_read_object_not_found(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=404, json={"message": "Not found"})
+            with pytest.raises(NotFoundError):
+                workos.vault.read_object(
+                    object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+                )
+        finally:
+            workos.close()
+
+    def test_read_object_rate_limited(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(
+                status_code=429,
+                headers={"Retry-After": "0"},
+                json={"message": "Slow down"},
+            )
+            with pytest.raises(RateLimitExceededError):
+                workos.vault.read_object(
+                    object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+                )
+        finally:
+            workos.close()
+
+    def test_read_object_server_error(self, httpx_mock):
+        workos = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=500, json={"message": "Server error"})
+            with pytest.raises(ServerError):
+                workos.vault.read_object(
+                    object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+                )
+        finally:
+            workos.close()
+
+
+@pytest.mark.asyncio
+class TestAsyncVault:
+    async def test_read_object(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_object.json"))
+        result = await async_workos.vault.read_object(
+            object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        )
+        assert isinstance(result, VaultObject)
+        assert result.id == "vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        assert result.name == "my-secret"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/vault/v1/kv/vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
         )
 
-    def test_list_object_versions_success(
-        self, mock_object_versions, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_object_versions, 200
+    async def test_read_object_by_name(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_object.json"))
+        result = await async_workos.vault.read_object_by_name(name="my-secret")
+        assert isinstance(result, VaultObject)
+        request = httpx_mock.get_request()
+        assert request.url.path.endswith("/vault/v1/kv/name/my-secret")
+
+    async def test_get_object_metadata(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_object_metadata.json"))
+        result = await async_workos.vault.get_object_metadata(
+            object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        )
+        assert isinstance(result, VaultObject)
+        assert result.value is None
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith(
+            "/vault/v1/kv/vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C/metadata"
         )
 
-        versions = self.vault.list_object_versions(object_id="vault_01234567890abcdef")
+    async def test_list_objects(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_list_objects.json"))
+        result = await async_workos.vault.list_objects()
+        assert len(result) == 1
+        assert isinstance(result[0], ObjectDigest)
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/vault/v1/kv")
 
-        assert request_kwargs["method"] == "get"
-        assert request_kwargs["url"].endswith(
-            "/vault/v1/kv/vault_01234567890abcdef/versions"
+    async def test_list_object_versions(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_list_object_versions.json"))
+        result = await async_workos.vault.list_object_versions(
+            object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
         )
-        assert len(versions) == 3
-        assert versions[0].id == "version_0"
-        assert versions[0].current_version is True
-        assert versions[1].current_version is False
-
-    def test_list_object_versions_empty_data(
-        self, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, {"data": []}, 200
-        )
-
-        versions = self.vault.list_object_versions(object_id="vault_01234567890abcdef")
-
-        assert request_kwargs["method"] == "get"
-        assert len(versions) == 0
-
-    def test_create_object_success(
-        self, mock_object_metadata, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_object_metadata, 200
+        assert len(result) == 1
+        assert isinstance(result[0], ObjectVersion)
+        request = httpx_mock.get_request()
+        assert request.url.path.endswith(
+            "/vault/v1/kv/vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C/versions"
         )
 
-        object_metadata = self.vault.create_object(
-            name="test-secret",
-            value="secret-value",
-            key_context=KeyContext({"key": "test-key"}),
+    async def test_create_object(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_create_object.json"))
+        result = await async_workos.vault.create_object(
+            name="my-secret",
+            value="super-secret-value",
+            key_context={"tenant": "acme"},
         )
+        assert isinstance(result, ObjectMetadata)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/vault/v1/kv")
 
-        assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/vault/v1/kv")
-        assert request_kwargs["json"]["name"] == "test-secret"
-        assert request_kwargs["json"]["value"] == "secret-value"
-        assert request_kwargs["json"]["key_context"] == KeyContext({"key": "test-key"})
-        assert object_metadata.id == "vault_01234567890abcdef"
+    async def test_update_object(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_object.json"))
+        result = await async_workos.vault.update_object(
+            object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+            value="new-secret-value",
+        )
+        assert isinstance(result, VaultObject)
+        request = httpx_mock.get_request()
+        assert request.method == "PUT"
 
-    def test_create_object_missing_name(self):
-        with pytest.raises(
-            ValueError,
-            match="Incomplete arguments: 'name' and 'value' are required arguments",
-        ):
-            self.vault.create_object(
-                name="",
-                value="secret-value",
-                key_context=KeyContext({"key": "test-key"}),
+    async def test_delete_object(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=204)
+        await async_workos.vault.delete_object(
+            object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+        )
+        request = httpx_mock.get_request()
+        assert request.method == "DELETE"
+
+    async def test_create_data_key(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_data_key.json"))
+        result = await async_workos.vault.create_data_key(
+            key_context={"tenant": "acme"}
+        )
+        assert isinstance(result, DataKeyPair)
+        assert isinstance(result.data_key, DataKey)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/vault/v1/keys/data-key")
+
+    async def test_decrypt_data_key(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_decrypt_key.json"))
+        result = await async_workos.vault.decrypt_data_key(
+            keys="dGVzdC1lbmNyeXB0ZWQta2V5cw=="
+        )
+        assert isinstance(result, DataKey)
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/vault/v1/keys/decrypt")
+
+    async def test_encrypt_decrypt_round_trip(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_data_key.json"))
+        httpx_mock.add_response(json=load_fixture("vault_decrypt_key.json"))
+
+        encrypted = await async_workos.vault.encrypt(
+            data="hello world", key_context={"tenant": "acme"}
+        )
+        assert isinstance(encrypted, str)
+
+        decrypted = await async_workos.vault.decrypt(encrypted_data=encrypted)
+        assert decrypted == "hello world"
+
+    async def test_read_object_unauthorized(self, async_workos, httpx_mock):
+        httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
+        with pytest.raises(AuthenticationError):
+            await async_workos.vault.read_object(
+                object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
             )
 
-    def test_create_object_missing_value(self):
-        with pytest.raises(
-            ValueError,
-            match="Incomplete arguments: 'name' and 'value' are required arguments",
-        ):
-            self.vault.create_object(
-                name="test-secret",
-                value="",
-                key_context=KeyContext({"key": "test-key"}),
+    async def test_read_object_not_found(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(status_code=404, json={"message": "Not found"})
+            with pytest.raises(NotFoundError):
+                await workos.vault.read_object(
+                    object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+                )
+        finally:
+            await workos.close()
+
+    async def test_read_object_rate_limited(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        try:
+            httpx_mock.add_response(
+                status_code=429,
+                headers={"Retry-After": "0"},
+                json={"message": "Slow down"},
             )
+            with pytest.raises(RateLimitExceededError):
+                await workos.vault.read_object(
+                    object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+                )
+        finally:
+            await workos.close()
 
-    def test_create_object_missing_both(self):
-        with pytest.raises(
-            ValueError,
-            match="Incomplete arguments: 'name' and 'value' are required arguments",
-        ):
-            self.vault.create_object(
-                name="", value="", key_context=KeyContext({"key": "test-key"})
-            )
-
-    def test_update_object_with_value(
-        self, mock_vault_object, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_vault_object, 200
+    async def test_read_object_server_error(self, httpx_mock):
+        workos = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
         )
-
-        vault_object = self.vault.update_object(
-            object_id="vault_01234567890abcdef",
-            value="updated-value",
-        )
-
-        assert request_kwargs["method"] == "put"
-        assert request_kwargs["url"].endswith("/vault/v1/kv/vault_01234567890abcdef")
-        assert request_kwargs["json"]["value"] == "updated-value"
-        assert "version_check" not in request_kwargs["json"]
-        assert vault_object.id == "vault_01234567890abcdef"
-
-    def test_update_object_with_version_check(
-        self, mock_vault_object, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_vault_object, 200
-        )
-
-        self.vault.update_object(
-            object_id="vault_01234567890abcdef",
-            value="updated-value",
-            version_check="version_123",
-        )
-
-        assert request_kwargs["method"] == "put"
-        assert request_kwargs["json"]["value"] == "updated-value"
-        assert request_kwargs["json"]["version_check"] == "version_123"
-
-    def test_update_object_missing_value(self):
-        with pytest.raises(
-            TypeError, match="missing 1 required keyword-only argument: 'value'"
-        ):
-            self.vault.update_object(object_id="vault_01234567890abcdef")
-
-    def test_update_object_missing_object_id(self):
-        with pytest.raises(
-            ValueError, match="Incomplete arguments: 'object_id' is a required argument"
-        ):
-            self.vault.update_object(object_id="", value="test-value")
-
-    def test_update_object_none_object_id(self):
-        with pytest.raises(
-            ValueError,
-            match="Incomplete arguments: 'object_id' is a required argument",
-        ):
-            self.vault.update_object(object_id=None, value="updated-value")
-
-    def test_delete_object_success(self, capture_and_mock_http_client_request):
-        request_kwargs = capture_and_mock_http_client_request(self.http_client, {}, 204)
-
-        result = self.vault.delete_object(object_id="vault_01234567890abcdef")
-
-        assert request_kwargs["method"] == "delete"
-        assert request_kwargs["url"].endswith("/vault/v1/kv/vault_01234567890abcdef")
-        assert result is None
-
-    def test_delete_object_missing_object_id(self):
-        with pytest.raises(
-            ValueError, match="Incomplete arguments: 'object_id' is a required argument"
-        ):
-            self.vault.delete_object(object_id="")
-
-    def test_delete_object_none_object_id(self):
-        with pytest.raises(
-            ValueError, match="Incomplete arguments: 'object_id' is a required argument"
-        ):
-            self.vault.delete_object(object_id=None)
-
-    def test_create_data_key_success(
-        self, mock_data_key_pair, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_data_key_pair, 200
-        )
-
-        data_key_pair = self.vault.create_data_key(
-            key_context=KeyContext({"key": "test-key"})
-        )
-
-        assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/vault/v1/keys/data-key")
-        assert request_kwargs["json"]["context"] == KeyContext({"key": "test-key"})
-        assert data_key_pair.data_key.id == "key_01234567890abcdef"
-        assert data_key_pair.encrypted_keys == "ZW5jcnlwdGVkX2tleXNfZGF0YQ=="
-
-    def test_decrypt_data_key_success(
-        self, mock_data_key, capture_and_mock_http_client_request
-    ):
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_data_key, 200
-        )
-
-        data_key = self.vault.decrypt_data_key(keys="ZW5jcnlwdGVkX2tleXNfZGF0YQ==")
-
-        assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/vault/v1/keys/decrypt")
-        assert request_kwargs["json"]["keys"] == "ZW5jcnlwdGVkX2tleXNfZGF0YQ=="
-        assert data_key.id == "key_01234567890abcdef"
-        assert data_key.key == "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY="
-
-    def test_encrypt_success(
-        self, mock_data_key_pair, capture_and_mock_http_client_request
-    ):
-        # Mock the create_data_key call
-        request_kwargs = capture_and_mock_http_client_request(
-            self.http_client, mock_data_key_pair, 200
-        )
-
-        plaintext = "Hello, World!"
-        context = KeyContext({"key": "test-key"})
-
-        encrypted_data = self.vault.encrypt(data=plaintext, key_context=context)
-
-        # Verify create_data_key was called
-        assert request_kwargs["method"] == "post"
-        assert request_kwargs["url"].endswith("/vault/v1/keys/data-key")
-        assert request_kwargs["json"]["context"] == KeyContext({"key": "test-key"})
-
-        # Verify we got encrypted data back
-        assert isinstance(encrypted_data, str)
-        assert len(encrypted_data) > 0
-
-    def test_encrypt_with_associated_data(
-        self, mock_data_key_pair, capture_and_mock_http_client_request
-    ):
-        # Mock the create_data_key call
-        capture_and_mock_http_client_request(self.http_client, mock_data_key_pair, 200)
-
-        plaintext = "Hello, World!"
-        context = KeyContext({"key": "test-key"})
-        associated_data = "additional-context"
-
-        encrypted_data = self.vault.encrypt(
-            data=plaintext, key_context=context, associated_data=associated_data
-        )
-
-        # Verify we got encrypted data back
-        assert isinstance(encrypted_data, str)
-        assert len(encrypted_data) > 0
-
-    def test_decrypt_success(self, mock_data_key, capture_and_mock_http_client_request):
-        # First encrypt some data to get a valid encrypted payload
-        mock_data_key_pair = {
-            "context": {"key": "test-key"},
-            "id": "key_01234567890abcdef",
-            "data_key": "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
-            "encrypted_keys": "ZW5jcnlwdGVkX2tleXNfZGF0YQ==",
-        }
-
-        # Mock create_data_key for encryption
-        capture_and_mock_http_client_request(self.http_client, mock_data_key_pair, 200)
-
-        plaintext = "Hello, World!"
-        context = KeyContext({"key": "test-key"})
-        encrypted_data = self.vault.encrypt(data=plaintext, key_context=context)
-
-        # Now mock decrypt_data_key for decryption
-        capture_and_mock_http_client_request(self.http_client, mock_data_key, 200)
-
-        # Decrypt the data
-        decrypted_text = self.vault.decrypt(encrypted_data=encrypted_data)
-
-        # Verify decryption worked
-        assert decrypted_text == plaintext
-
-    def test_decrypt_with_associated_data(
-        self, mock_data_key, capture_and_mock_http_client_request
-    ):
-        # First encrypt some data with associated data
-        mock_data_key_pair = {
-            "context": {"key": "test-key"},
-            "id": "key_01234567890abcdef",
-            "data_key": "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
-            "encrypted_keys": "ZW5jcnlwdGVkX2tleXNfZGF0YQ==",
-        }
-
-        # Mock create_data_key for encryption
-        capture_and_mock_http_client_request(self.http_client, mock_data_key_pair, 200)
-
-        plaintext = "Hello, World!"
-        context = KeyContext({"key": "test-key"})
-        associated_data = "additional-context"
-        encrypted_data = self.vault.encrypt(
-            data=plaintext, key_context=context, associated_data=associated_data
-        )
-
-        # Now mock decrypt_data_key for decryption
-        capture_and_mock_http_client_request(self.http_client, mock_data_key, 200)
-
-        # Decrypt the data with the same associated data
-        decrypted_text = self.vault.decrypt(
-            encrypted_data=encrypted_data, associated_data=associated_data
-        )
-
-        # Verify decryption worked
-        assert decrypted_text == plaintext
-
-    def test_encrypt_decrypt_roundtrip(
-        self, mock_data_key_pair, mock_data_key, capture_and_mock_http_client_request
-    ):
-        """Test that encrypt/decrypt works correctly together"""
-
-        # Mock create_data_key for encryption
-        capture_and_mock_http_client_request(self.http_client, mock_data_key_pair, 200)
-
-        plaintext = "This is a test message for encryption!"
-        context = KeyContext({"env": "test", "service": "vault"})
-
-        # Encrypt the data
-        encrypted_data = self.vault.encrypt(data=plaintext, key_context=context)
-
-        # Mock decrypt_data_key for decryption
-        capture_and_mock_http_client_request(self.http_client, mock_data_key, 200)
-
-        # Decrypt the data
-        decrypted_text = self.vault.decrypt(encrypted_data=encrypted_data)
-
-        # Verify roundtrip worked
-        assert decrypted_text == plaintext
+        try:
+            httpx_mock.add_response(status_code=500, json={"message": "Server error"})
+            with pytest.raises(ServerError):
+                await workos.vault.read_object(
+                    object_id="vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+                )
+        finally:
+            await workos.close()

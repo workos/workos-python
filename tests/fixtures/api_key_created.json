@@ -1,0 +1,43 @@
+{
+  "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+  "event": "api_key.created",
+  "data": {
+    "object": "api_key",
+    "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
+    "owner": {
+      "type": "organization",
+      "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
+    },
+    "name": "My API Key",
+    "obfuscated_value": "sk_test_...1234",
+    "last_used_at": "2026-01-15T12:00:00.000Z",
+    "permissions": [
+      "users:read",
+      "users:write"
+    ],
+    "created_at": "2026-01-15T12:00:00.000Z",
+    "updated_at": "2026-01-15T12:00:00.000Z"
+  },
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "context": {
+    "google_analytics_client_id": "GA1.2.1234567890.1234567890",
+    "google_analytics_sessions": [
+      {
+        "containerId": "GTM-ABCDEF",
+        "sessionId": "1234567890",
+        "sessionNumber": "1"
+      }
+    ],
+    "ajs_anonymous_id": "ajs_anon_01EHWNCE74X7JSDV0X3SZ3KJNY",
+    "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
+    "actor": {
+      "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
+      "source": "api",
+      "name": "Jane Doe"
+    },
+    "previous_attributes": {
+      "key": {}
+    }
+  },
+  "object": "event"
+}

@@ -1,0 +1,19 @@
+{
+  "object": "organization_membership",
+  "id": "om_01HXYZ123456789ABCDEFGHIJ",
+  "user_id": "user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E",
+  "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
+  "status": "active",
+  "directory_managed": false,
+  "organization_name": "Acme Corp",
+  "custom_attributes": {
+    "department": "Engineering",
+    "title": "Developer Experience Engineer",
+    "location": "Brooklyn"
+  },
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z",
+  "role": {
+    "slug": "admin"
+  }
+}

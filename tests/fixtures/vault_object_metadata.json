@@ -1,0 +1,16 @@
+{
+  "id": "vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+  "metadata": {
+    "context": {"tenant": "acme"},
+    "environment_id": "environment_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+    "id": "vault_obj_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+    "key_id": "vault_key_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+    "updated_at": "2025-01-01T00:00:00.000Z",
+    "updated_by": {
+      "id": "key_01EHDAK2BFGWCSZXP9HGZ3VK8C",
+      "name": "My API Key"
+    },
+    "version_id": "vault_ver_01EHDAK2BFGWCSZXP9HGZ3VK8C"
+  },
+  "name": "my-secret"
+}

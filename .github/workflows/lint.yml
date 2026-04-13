@@ -22,7 +22,7 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --locked --dev
+        run: uv sync --locked --only-group lint --only-group type_check
 
       - name: Check formatting
         run: uv run ruff format --check .

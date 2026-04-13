@@ -157,6 +157,9 @@ class UserManagement:
         email: str,
         password: str,
         invitation_token: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with password."""
@@ -171,6 +174,12 @@ class UserManagement:
             body["client_secret"] = self._client._api_key
         if invitation_token is not None:
             body["invitation_token"] = invitation_token
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return self._client.request(
             method="POST",
@@ -183,19 +192,27 @@ class UserManagement:
     def authenticate_with_code(
         self,
         *,
-        code: Optional[str] = None,
+        code: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with code."""
         body: Dict[str, Any] = {
             "grant_type": "authorization_code",
+            "code": code,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if code is not None:
-            body["code"] = code
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return self._client.request(
             method="POST",
@@ -210,6 +227,9 @@ class UserManagement:
         *,
         refresh_token: str,
         organization_id: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with refresh token."""
@@ -223,6 +243,12 @@ class UserManagement:
             body["client_secret"] = self._client._api_key
         if organization_id is not None:
             body["organization_id"] = organization_id
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return self._client.request(
             method="POST",
@@ -235,25 +261,32 @@ class UserManagement:
     def authenticate_with_magic_auth(
         self,
         *,
-        code: Optional[str] = None,
-        email: Optional[str] = None,
+        code: str,
+        email: str,
         invitation_token: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with magic auth."""
         body: Dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
+            "code": code,
+            "email": email,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if code is not None:
-            body["code"] = code
-        if email is not None:
-            body["email"] = email
         if invitation_token is not None:
             body["invitation_token"] = invitation_token
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return self._client.request(
             method="POST",
@@ -266,22 +299,30 @@ class UserManagement:
     def authenticate_with_email_verification(
         self,
         *,
-        code: Optional[str] = None,
+        code: str,
         pending_authentication_token: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with email verification."""
         body: Dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:email-verification:code",
+            "code": code,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if code is not None:
-            body["code"] = code
         if pending_authentication_token is not None:
             body["pending_authentication_token"] = pending_authentication_token
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return self._client.request(
             method="POST",
@@ -294,25 +335,31 @@ class UserManagement:
     def authenticate_with_totp(
         self,
         *,
-        code: Optional[str] = None,
-        pending_authentication_token: Optional[str] = None,
-        authentication_challenge_id: Optional[str] = None,
+        code: str,
+        pending_authentication_token: str,
+        authentication_challenge_id: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with totp."""
         body: Dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:mfa-totp",
+            "code": code,
+            "pending_authentication_token": pending_authentication_token,
+            "authentication_challenge_id": authentication_challenge_id,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if code is not None:
-            body["code"] = code
-        if pending_authentication_token is not None:
-            body["pending_authentication_token"] = pending_authentication_token
-        if authentication_challenge_id is not None:
-            body["authentication_challenge_id"] = authentication_challenge_id
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return self._client.request(
             method="POST",
@@ -325,22 +372,29 @@ class UserManagement:
     def authenticate_with_organization_selection(
         self,
         *,
-        pending_authentication_token: Optional[str] = None,
-        organization_id: Optional[str] = None,
+        pending_authentication_token: str,
+        organization_id: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with organization selection."""
         body: Dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:organization-selection",
+            "pending_authentication_token": pending_authentication_token,
+            "organization_id": organization_id,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if pending_authentication_token is not None:
-            body["pending_authentication_token"] = pending_authentication_token
-        if organization_id is not None:
-            body["organization_id"] = organization_id
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return self._client.request(
             method="POST",
@@ -353,17 +407,25 @@ class UserManagement:
     def authenticate_with_device_code(
         self,
         *,
-        device_code: Optional[str] = None,
+        device_code: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with device code."""
         body: Dict[str, Any] = {
             "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
+            "device_code": device_code,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
-        if device_code is not None:
-            body["device_code"] = device_code
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return self._client.request(
             method="POST",
@@ -2259,6 +2321,9 @@ class AsyncUserManagement:
         email: str,
         password: str,
         invitation_token: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with password."""
@@ -2273,6 +2338,12 @@ class AsyncUserManagement:
             body["client_secret"] = self._client._api_key
         if invitation_token is not None:
             body["invitation_token"] = invitation_token
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return await self._client.request(
             method="POST",
@@ -2285,19 +2356,27 @@ class AsyncUserManagement:
     async def authenticate_with_code(
         self,
         *,
-        code: Optional[str] = None,
+        code: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with code."""
         body: Dict[str, Any] = {
             "grant_type": "authorization_code",
+            "code": code,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if code is not None:
-            body["code"] = code
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return await self._client.request(
             method="POST",
@@ -2312,6 +2391,9 @@ class AsyncUserManagement:
         *,
         refresh_token: str,
         organization_id: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with refresh token."""
@@ -2325,6 +2407,12 @@ class AsyncUserManagement:
             body["client_secret"] = self._client._api_key
         if organization_id is not None:
             body["organization_id"] = organization_id
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return await self._client.request(
             method="POST",
@@ -2337,25 +2425,32 @@ class AsyncUserManagement:
     async def authenticate_with_magic_auth(
         self,
         *,
-        code: Optional[str] = None,
-        email: Optional[str] = None,
+        code: str,
+        email: str,
         invitation_token: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with magic auth."""
         body: Dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:magic-auth:code",
+            "code": code,
+            "email": email,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if code is not None:
-            body["code"] = code
-        if email is not None:
-            body["email"] = email
         if invitation_token is not None:
             body["invitation_token"] = invitation_token
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return await self._client.request(
             method="POST",
@@ -2368,22 +2463,30 @@ class AsyncUserManagement:
     async def authenticate_with_email_verification(
         self,
         *,
-        code: Optional[str] = None,
+        code: str,
         pending_authentication_token: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with email verification."""
         body: Dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:email-verification:code",
+            "code": code,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if code is not None:
-            body["code"] = code
         if pending_authentication_token is not None:
             body["pending_authentication_token"] = pending_authentication_token
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return await self._client.request(
             method="POST",
@@ -2396,25 +2499,31 @@ class AsyncUserManagement:
     async def authenticate_with_totp(
         self,
         *,
-        code: Optional[str] = None,
-        pending_authentication_token: Optional[str] = None,
-        authentication_challenge_id: Optional[str] = None,
+        code: str,
+        pending_authentication_token: str,
+        authentication_challenge_id: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with totp."""
         body: Dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:mfa-totp",
+            "code": code,
+            "pending_authentication_token": pending_authentication_token,
+            "authentication_challenge_id": authentication_challenge_id,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if code is not None:
-            body["code"] = code
-        if pending_authentication_token is not None:
-            body["pending_authentication_token"] = pending_authentication_token
-        if authentication_challenge_id is not None:
-            body["authentication_challenge_id"] = authentication_challenge_id
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return await self._client.request(
             method="POST",
@@ -2427,22 +2536,29 @@ class AsyncUserManagement:
     async def authenticate_with_organization_selection(
         self,
         *,
-        pending_authentication_token: Optional[str] = None,
-        organization_id: Optional[str] = None,
+        pending_authentication_token: str,
+        organization_id: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with organization selection."""
         body: Dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:organization-selection",
+            "pending_authentication_token": pending_authentication_token,
+            "organization_id": organization_id,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if pending_authentication_token is not None:
-            body["pending_authentication_token"] = pending_authentication_token
-        if organization_id is not None:
-            body["organization_id"] = organization_id
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return await self._client.request(
             method="POST",
@@ -2455,17 +2571,25 @@ class AsyncUserManagement:
     async def authenticate_with_device_code(
         self,
         *,
-        device_code: Optional[str] = None,
+        device_code: str,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate with device code."""
         body: Dict[str, Any] = {
             "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
+            "device_code": device_code,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
-        if device_code is not None:
-            body["device_code"] = device_code
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return await self._client.request(
             method="POST",

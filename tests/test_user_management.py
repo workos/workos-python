@@ -699,7 +699,7 @@ class TestUserManagement:
 
     def test_authenticate_with_code(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = workos.user_management.authenticate_with_code()
+        result = workos.user_management.authenticate_with_code(code="test_value")
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -719,7 +719,9 @@ class TestUserManagement:
 
     def test_authenticate_with_magic_auth(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = workos.user_management.authenticate_with_magic_auth()
+        result = workos.user_management.authenticate_with_magic_auth(
+            code="test_value", email="test_value"
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -728,7 +730,9 @@ class TestUserManagement:
 
     def test_authenticate_with_email_verification(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = workos.user_management.authenticate_with_email_verification()
+        result = workos.user_management.authenticate_with_email_verification(
+            code="test_value"
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -739,7 +743,11 @@ class TestUserManagement:
 
     def test_authenticate_with_totp(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = workos.user_management.authenticate_with_totp()
+        result = workos.user_management.authenticate_with_totp(
+            code="test_value",
+            pending_authentication_token="test_value",
+            authentication_challenge_id="test_value",
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -748,7 +756,9 @@ class TestUserManagement:
 
     def test_authenticate_with_organization_selection(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = workos.user_management.authenticate_with_organization_selection()
+        result = workos.user_management.authenticate_with_organization_selection(
+            pending_authentication_token="test_value", organization_id="test_value"
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -759,7 +769,9 @@ class TestUserManagement:
 
     def test_authenticate_with_device_code(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = workos.user_management.authenticate_with_device_code()
+        result = workos.user_management.authenticate_with_device_code(
+            device_code="test_value"
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -1493,7 +1505,9 @@ class TestAsyncUserManagement:
     @pytest.mark.asyncio
     async def test_authenticate_with_code(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = await async_workos.user_management.authenticate_with_code()
+        result = await async_workos.user_management.authenticate_with_code(
+            code="test_value"
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -1515,7 +1529,9 @@ class TestAsyncUserManagement:
     @pytest.mark.asyncio
     async def test_authenticate_with_magic_auth(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = await async_workos.user_management.authenticate_with_magic_auth()
+        result = await async_workos.user_management.authenticate_with_magic_auth(
+            code="test_value", email="test_value"
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -1526,7 +1542,9 @@ class TestAsyncUserManagement:
     async def test_authenticate_with_email_verification(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = (
-            await async_workos.user_management.authenticate_with_email_verification()
+            await async_workos.user_management.authenticate_with_email_verification(
+                code="test_value"
+            )
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -1539,7 +1557,11 @@ class TestAsyncUserManagement:
     @pytest.mark.asyncio
     async def test_authenticate_with_totp(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = await async_workos.user_management.authenticate_with_totp()
+        result = await async_workos.user_management.authenticate_with_totp(
+            code="test_value",
+            pending_authentication_token="test_value",
+            authentication_challenge_id="test_value",
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -1551,7 +1573,11 @@ class TestAsyncUserManagement:
         self, async_workos, httpx_mock
     ):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = await async_workos.user_management.authenticate_with_organization_selection()
+        result = (
+            await async_workos.user_management.authenticate_with_organization_selection(
+                pending_authentication_token="test_value", organization_id="test_value"
+            )
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -1563,7 +1589,9 @@ class TestAsyncUserManagement:
     @pytest.mark.asyncio
     async def test_authenticate_with_device_code(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = await async_workos.user_management.authenticate_with_device_code()
+        result = await async_workos.user_management.authenticate_with_device_code(
+            device_code="test_value"
+        )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"

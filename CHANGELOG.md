@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.0.1](https://github.com/workos/workos-python/compare/v6.0.0...v6.0.1) (2026-04-13)
+
+
+### Bug Fixes
+
+* one more regen ([187f83f](https://github.com/workos/workos-python/commit/187f83fa9efce38b8665e9e25d7c214787dba204))
+* regenerate methods to include missing params ([#610](https://github.com/workos/workos-python/issues/610)) ([6792792](https://github.com/workos/workos-python/commit/6792792cc5ad51df50fadd0248b797ffe74ab095))
+
 ## [6.0.0](https://github.com/workos/workos-python/compare/v5.46.0...v6.0.0) (2026-04-13)
 
 

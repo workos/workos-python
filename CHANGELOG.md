@@ -1,5 +1,16 @@
 # Changelog
 
+## [6.0.0](https://github.com/workos/workos-python/compare/v5.46.0...v6.0.0) (2026-04-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* release new version of Python SDK library ([#599](https://github.com/workos/workos-python/issues/599))
+
+### Features
+
+* release new version of Python SDK library ([#599](https://github.com/workos/workos-python/issues/599)) ([9aaec74](https://github.com/workos/workos-python/commit/9aaec749b8646ecb5cea095f96ee701fcb2f71f7))
+
 ## [5.46.0](https://github.com/workos/workos-python/compare/v5.45.0...v5.46.0) (2026-03-16)
 
 

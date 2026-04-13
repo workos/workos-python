@@ -115,13 +115,11 @@ class TestOrganizations:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/organizations/test_id")
 
-    def test_list_organization_audit_log_configuration(self, workos, httpx_mock):
+    def test_get_audit_log_configuration(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_log_configuration.json"),
         )
-        result = workos.organizations.list_organization_audit_log_configuration(
-            "test_id"
-        )
+        result = workos.organizations.get_audit_log_configuration("test_id")
         assert isinstance(result, AuditLogConfiguration)
         assert result.organization_id == "org_01EHZNVPK3SFK441A1RGBFSHRT"
         assert result.retention_period_in_days == 30
@@ -299,15 +297,9 @@ class TestAsyncOrganizations:
         assert request.url.path.endswith("/organizations/test_id")
 
     @pytest.mark.asyncio
-    async def test_list_organization_audit_log_configuration(
-        self, async_workos, httpx_mock
-    ):
+    async def test_get_audit_log_configuration(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_configuration.json"))
-        result = (
-            await async_workos.organizations.list_organization_audit_log_configuration(
-                "test_id"
-            )
-        )
+        result = await async_workos.organizations.get_audit_log_configuration("test_id")
         assert isinstance(result, AuditLogConfiguration)
         assert result.organization_id == "org_01EHZNVPK3SFK441A1RGBFSHRT"
         assert result.retention_period_in_days == 30

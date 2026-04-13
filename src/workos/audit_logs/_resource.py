@@ -28,7 +28,7 @@ class AuditLogs:
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
-    def list_organization_audit_logs_retention(
+    def get_organization_audit_logs_retention(
         self,
         id: str,
         *,
@@ -383,7 +383,7 @@ class AsyncAuditLogs:
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
-    async def list_organization_audit_logs_retention(
+    async def get_organization_audit_logs_retention(
         self,
         id: str,
         *,

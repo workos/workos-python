@@ -281,7 +281,7 @@ class Organizations:
             request_options=request_options,
         )
 
-    def list_organization_audit_log_configuration(
+    def get_audit_log_configuration(
         self,
         id: str,
         *,
@@ -580,7 +580,7 @@ class AsyncOrganizations:
             request_options=request_options,
         )
 
-    async def list_organization_audit_log_configuration(
+    async def get_audit_log_configuration(
         self,
         id: str,
         *,

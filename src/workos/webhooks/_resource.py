@@ -78,7 +78,7 @@ class Webhooks:
             request_options=request_options,
         )
 
-    def create_webhook_endpoints(
+    def create_webhook_endpoint(
         self,
         *,
         endpoint_url: str,
@@ -333,7 +333,7 @@ class AsyncWebhooks:
             request_options=request_options,
         )
 
-    async def create_webhook_endpoints(
+    async def create_webhook_endpoint(
         self,
         *,
         endpoint_url: str,

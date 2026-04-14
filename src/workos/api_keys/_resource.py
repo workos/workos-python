@@ -19,7 +19,7 @@ class ApiKeys:
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
-    def create_validations(
+    def create_validation(
         self,
         *,
         value: str,
@@ -128,7 +128,7 @@ class ApiKeys:
             request_options=request_options,
         )
 
-    def create_organization_api_keys(
+    def create_organization_api_key(
         self,
         organization_id: str,
         *,
@@ -179,7 +179,7 @@ class AsyncApiKeys:
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
-    async def create_validations(
+    async def create_validation(
         self,
         *,
         value: str,
@@ -288,7 +288,7 @@ class AsyncApiKeys:
             request_options=request_options,
         )
 
-    async def create_organization_api_keys(
+    async def create_organization_api_key(
         self,
         organization_id: str,
         *,

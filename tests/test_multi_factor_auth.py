@@ -117,11 +117,11 @@ class TestMultiFactorAuth:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    def test_create_user_auth_factors(self, workos, httpx_mock):
+    def test_create_user_auth_factor(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("user_authentication_factor_enroll_response.json"),
         )
-        result = workos.multi_factor_auth.create_user_auth_factors(
+        result = workos.multi_factor_auth.create_user_auth_factor(
             "test_userlandUserId", type="totp"
         )
         assert isinstance(result, UserAuthenticationFactorEnrollResponse)
@@ -311,11 +311,11 @@ class TestAsyncMultiFactorAuth:
         assert request.url.params["order"] == "normal"
 
     @pytest.mark.asyncio
-    async def test_create_user_auth_factors(self, async_workos, httpx_mock):
+    async def test_create_user_auth_factor(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("user_authentication_factor_enroll_response.json")
         )
-        result = await async_workos.multi_factor_auth.create_user_auth_factors(
+        result = await async_workos.multi_factor_auth.create_user_auth_factor(
             "test_userlandUserId", type="totp"
         )
         assert isinstance(result, UserAuthenticationFactorEnrollResponse)

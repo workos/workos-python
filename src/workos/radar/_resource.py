@@ -24,7 +24,7 @@ class Radar:
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
-    def create_attempts(
+    def create_attempt(
         self,
         *,
         ip_address: str,
@@ -200,7 +200,7 @@ class AsyncRadar:
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
-    async def create_attempts(
+    async def create_attempt(
         self,
         *,
         ip_address: str,

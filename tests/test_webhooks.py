@@ -47,11 +47,11 @@ class TestWebhooks:
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    def test_create_webhook_endpoints(self, workos, httpx_mock):
+    def test_create_webhook_endpoint(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("webhook_endpoint_json.json"),
         )
-        result = workos.webhooks.create_webhook_endpoints(
+        result = workos.webhooks.create_webhook_endpoint(
             endpoint_url="test_endpoint_url", events=[]
         )
         assert isinstance(result, WebhookEndpointJson)
@@ -193,9 +193,9 @@ class TestAsyncWebhooks:
         assert request.url.params["order"] == "normal"
 
     @pytest.mark.asyncio
-    async def test_create_webhook_endpoints(self, async_workos, httpx_mock):
+    async def test_create_webhook_endpoint(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("webhook_endpoint_json.json"))
-        result = await async_workos.webhooks.create_webhook_endpoints(
+        result = await async_workos.webhooks.create_webhook_endpoint(
             endpoint_url="test_endpoint_url", events=[]
         )
         assert isinstance(result, WebhookEndpointJson)

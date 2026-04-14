@@ -25,11 +25,11 @@ from workos._errors import (
 
 
 class TestRadar:
-    def test_create_attempts(self, workos, httpx_mock):
+    def test_create_attempt(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("radar_standalone_response.json"),
         )
-        result = workos.radar.create_attempts(
+        result = workos.radar.create_attempt(
             ip_address="test_ip_address",
             user_agent="test_user_agent",
             email="test_email",
@@ -81,9 +81,9 @@ class TestRadar:
         assert request.method == "DELETE"
         assert request.url.path.endswith("/radar/lists/test_type/test_action")
 
-    def test_create_attempts_with_request_options(self, workos, httpx_mock):
+    def test_create_attempt_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("radar_standalone_response.json"))
-        workos.radar.create_attempts(
+        workos.radar.create_attempt(
             ip_address="test_ip_address",
             user_agent="test_user_agent",
             email="test_email",
@@ -94,13 +94,13 @@ class TestRadar:
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
-    def test_create_attempts_unauthorized(self, workos, httpx_mock):
+    def test_create_attempt_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationError):
-            workos.radar.create_attempts(
+            workos.radar.create_attempt(
                 ip_address="test_ip_address",
                 user_agent="test_user_agent",
                 email="test_email",
@@ -108,14 +108,14 @@ class TestRadar:
                 action=RadarStandaloneAssessRequestAction("login"),
             )
 
-    def test_create_attempts_not_found(self, httpx_mock):
+    def test_create_attempt_not_found(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                workos.radar.create_attempts(
+                workos.radar.create_attempt(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",
                     email="test_email",
@@ -125,7 +125,7 @@ class TestRadar:
         finally:
             workos.close()
 
-    def test_create_attempts_rate_limited(self, httpx_mock):
+    def test_create_attempt_rate_limited(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -136,7 +136,7 @@ class TestRadar:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededError):
-                workos.radar.create_attempts(
+                workos.radar.create_attempt(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",
                     email="test_email",
@@ -146,14 +146,14 @@ class TestRadar:
         finally:
             workos.close()
 
-    def test_create_attempts_server_error(self, httpx_mock):
+    def test_create_attempt_server_error(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                workos.radar.create_attempts(
+                workos.radar.create_attempt(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",
                     email="test_email",
@@ -163,14 +163,14 @@ class TestRadar:
         finally:
             workos.close()
 
-    def test_create_attempts_bad_request(self, httpx_mock):
+    def test_create_attempt_bad_request(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.radar.create_attempts(
+                workos.radar.create_attempt(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",
                     email="test_email",
@@ -180,14 +180,14 @@ class TestRadar:
         finally:
             workos.close()
 
-    def test_create_attempts_unprocessable(self, httpx_mock):
+    def test_create_attempt_unprocessable(self, httpx_mock):
         workos = WorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.radar.create_attempts(
+                workos.radar.create_attempt(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",
                     email="test_email",
@@ -200,9 +200,9 @@ class TestRadar:
 
 class TestAsyncRadar:
     @pytest.mark.asyncio
-    async def test_create_attempts(self, async_workos, httpx_mock):
+    async def test_create_attempt(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("radar_standalone_response.json"))
-        result = await async_workos.radar.create_attempts(
+        result = await async_workos.radar.create_attempt(
             ip_address="test_ip_address",
             user_agent="test_user_agent",
             email="test_email",
@@ -250,9 +250,9 @@ class TestAsyncRadar:
         assert request.url.path.endswith("/radar/lists/test_type/test_action")
 
     @pytest.mark.asyncio
-    async def test_create_attempts_with_request_options(self, async_workos, httpx_mock):
+    async def test_create_attempt_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("radar_standalone_response.json"))
-        await async_workos.radar.create_attempts(
+        await async_workos.radar.create_attempt(
             ip_address="test_ip_address",
             user_agent="test_user_agent",
             email="test_email",
@@ -264,10 +264,10 @@ class TestAsyncRadar:
         assert request.headers["X-Custom"] == "value"
 
     @pytest.mark.asyncio
-    async def test_create_attempts_unauthorized(self, async_workos, httpx_mock):
+    async def test_create_attempt_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.radar.create_attempts(
+            await async_workos.radar.create_attempt(
                 ip_address="test_ip_address",
                 user_agent="test_user_agent",
                 email="test_email",
@@ -276,14 +276,14 @@ class TestAsyncRadar:
             )
 
     @pytest.mark.asyncio
-    async def test_create_attempts_not_found(self, httpx_mock):
+    async def test_create_attempt_not_found(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.radar.create_attempts(
+                await workos.radar.create_attempt(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",
                     email="test_email",
@@ -294,7 +294,7 @@ class TestAsyncRadar:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_create_attempts_rate_limited(self, httpx_mock):
+    async def test_create_attempt_rate_limited(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
@@ -305,7 +305,7 @@ class TestAsyncRadar:
                 json={"message": "Slow down"},
             )
             with pytest.raises(RateLimitExceededError):
-                await workos.radar.create_attempts(
+                await workos.radar.create_attempt(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",
                     email="test_email",
@@ -316,14 +316,14 @@ class TestAsyncRadar:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_create_attempts_server_error(self, httpx_mock):
+    async def test_create_attempt_server_error(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.radar.create_attempts(
+                await workos.radar.create_attempt(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",
                     email="test_email",
@@ -334,14 +334,14 @@ class TestAsyncRadar:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_create_attempts_bad_request(self, httpx_mock):
+    async def test_create_attempt_bad_request(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.radar.create_attempts(
+                await workos.radar.create_attempt(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",
                     email="test_email",
@@ -352,14 +352,14 @@ class TestAsyncRadar:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_create_attempts_unprocessable(self, httpx_mock):
+    async def test_create_attempt_unprocessable(self, httpx_mock):
         workos = AsyncWorkOSClient(
             api_key="sk_test_123", client_id="client_test", max_retries=0
         )
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.radar.create_attempts(
+                await workos.radar.create_attempt(
                     ip_address="test_ip_address",
                     user_agent="test_user_agent",
                     email="test_email",

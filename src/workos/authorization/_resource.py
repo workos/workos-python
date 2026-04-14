@@ -518,7 +518,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def create_role_permissions(
+    def create_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -2075,7 +2075,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def create_role_permissions(
+    async def create_role_permission(
         self,
         organization_id: str,
         slug: str,

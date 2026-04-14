@@ -254,11 +254,11 @@ class TestAuthorization:
             "/authorization/organizations/test_organizationId/roles/test_slug"
         )
 
-    def test_create_role_permissions(self, workos, httpx_mock):
+    def test_create_role_permission(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.create_role_permissions(
+        result = workos.authorization.create_role_permission(
             "test_organizationId", "test_slug", body_slug="test_slug"
         )
         assert isinstance(result, Role)
@@ -1040,9 +1040,9 @@ class TestAsyncAuthorization:
         )
 
     @pytest.mark.asyncio
-    async def test_create_role_permissions(self, async_workos, httpx_mock):
+    async def test_create_role_permission(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.create_role_permissions(
+        result = await async_workos.authorization.create_role_permission(
             "test_organizationId", "test_slug", body_slug="test_slug"
         )
         assert isinstance(result, Role)

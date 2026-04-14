@@ -17,7 +17,7 @@ class OrganizationDomains:
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
 
-    def create_organization_domains(
+    def create_organization_domain(
         self,
         *,
         domain: str,
@@ -147,7 +147,7 @@ class AsyncOrganizationDomains:
     def __init__(self, client: "AsyncWorkOSClient") -> None:
         self._client = client
 
-    async def create_organization_domains(
+    async def create_organization_domain(
         self,
         *,
         domain: str,

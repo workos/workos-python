@@ -138,7 +138,7 @@ class Connect:
             request_options=request_options,
         )
 
-    def create_applications(
+    def create_application(
         self,
         *,
         body: Union[CreateOAuthApplication, CreateM2MApplication, Dict[str, Any]],
@@ -377,7 +377,7 @@ class Connect:
             for item in raw
         ]
 
-    def create_application_client_secrets(
+    def create_application_client_secret(
         self,
         id: str,
         *,
@@ -552,7 +552,7 @@ class AsyncConnect:
             request_options=request_options,
         )
 
-    async def create_applications(
+    async def create_application(
         self,
         *,
         body: Union[CreateOAuthApplication, CreateM2MApplication, Dict[str, Any]],
@@ -791,7 +791,7 @@ class AsyncConnect:
             for item in raw
         ]
 
-    async def create_application_client_secrets(
+    async def create_application_client_secret(
         self,
         id: str,
         *,

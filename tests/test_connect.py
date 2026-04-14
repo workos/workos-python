@@ -76,11 +76,11 @@ class TestConnect:
         assert request.url.params["order"] == "normal"
         assert request.url.params["organization_id"] == "value organization_id/test"
 
-    def test_create_applications(self, workos, httpx_mock):
+    def test_create_application(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("connect_application.json"),
         )
-        result = workos.connect.create_applications(
+        result = workos.connect.create_application(
             body=load_fixture("create_oauth_application.json")
         )
         assert isinstance(result, ConnectApplication)
@@ -131,11 +131,11 @@ class TestConnect:
         assert len(result) == 1
         assert isinstance(result[0], ApplicationCredentialsListItem)
 
-    def test_create_application_client_secrets(self, workos, httpx_mock):
+    def test_create_application_client_secret(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("new_connect_application_secret.json"),
         )
-        result = workos.connect.create_application_client_secrets("test_id")
+        result = workos.connect.create_application_client_secret("test_id")
         assert isinstance(result, NewConnectApplicationSecret)
         assert result.object == "connect_application_secret"
         assert result.id == "secret_01J9Q2Z3X4Y5W6V7U8T9S0R1Q"
@@ -324,9 +324,9 @@ class TestAsyncConnect:
         assert request.url.params["organization_id"] == "value organization_id/test"
 
     @pytest.mark.asyncio
-    async def test_create_applications(self, async_workos, httpx_mock):
+    async def test_create_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
-        result = await async_workos.connect.create_applications(
+        result = await async_workos.connect.create_application(
             body=load_fixture("create_oauth_application.json")
         )
         assert isinstance(result, ConnectApplication)
@@ -378,11 +378,11 @@ class TestAsyncConnect:
         assert isinstance(result[0], ApplicationCredentialsListItem)
 
     @pytest.mark.asyncio
-    async def test_create_application_client_secrets(self, async_workos, httpx_mock):
+    async def test_create_application_client_secret(self, async_workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("new_connect_application_secret.json")
         )
-        result = await async_workos.connect.create_application_client_secrets("test_id")
+        result = await async_workos.connect.create_application_client_secret("test_id")
         assert isinstance(result, NewConnectApplicationSecret)
         assert result.object == "connect_application_secret"
         assert result.id == "secret_01J9Q2Z3X4Y5W6V7U8T9S0R1Q"

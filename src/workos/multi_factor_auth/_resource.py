@@ -264,7 +264,7 @@ class MultiFactorAuth:
             request_options=request_options,
         )
 
-    def create_user_auth_factors(
+    def create_user_auth_factor(
         self,
         userland_user_id: str,
         *,
@@ -556,7 +556,7 @@ class AsyncMultiFactorAuth:
             request_options=request_options,
         )
 
-    async def create_user_auth_factors(
+    async def create_user_auth_factor(
         self,
         userland_user_id: str,
         *,

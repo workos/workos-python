@@ -28,10 +28,13 @@ from .user_management._resource import UserManagement, AsyncUserManagement
 from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
+
+# @oagen-ignore-start — non-spec service imports (hand-maintained)
 from .passwordless import AsyncPasswordless, Passwordless
 from .vault import AsyncVault, Vault
 from .actions import Actions, AsyncActions
 from .pkce import PKCE
+# @oagen-ignore-end
 
 
 class WorkOSClient(_SyncBase):
@@ -127,6 +130,8 @@ class WorkOSClient(_SyncBase):
         """Alias for multi_factor_auth."""
         return self.multi_factor_auth
 
+    # @oagen-ignore-start — non-spec service accessors (hand-maintained)
+
     @functools.cached_property
     def passwordless(self) -> Passwordless:
         """Passwordless authentication sessions."""
@@ -146,6 +151,8 @@ class WorkOSClient(_SyncBase):
     def pkce(self) -> PKCE:
         """PKCE (Proof Key for Code Exchange) utilities."""
         return PKCE()
+
+    # @oagen-ignore-end
 
 
 class AsyncWorkOSClient(_AsyncBase):
@@ -241,6 +248,8 @@ class AsyncWorkOSClient(_AsyncBase):
         """Alias for multi_factor_auth."""
         return self.multi_factor_auth
 
+    # @oagen-ignore-start — non-spec service accessors (hand-maintained)
+
     @functools.cached_property
     def passwordless(self) -> AsyncPasswordless:
         """Passwordless authentication sessions."""
@@ -260,3 +269,5 @@ class AsyncWorkOSClient(_AsyncBase):
     def pkce(self) -> PKCE:
         """PKCE (Proof Key for Code Exchange) utilities."""
         return PKCE()
+
+    # @oagen-ignore-end

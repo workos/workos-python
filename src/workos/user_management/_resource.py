@@ -2197,6 +2197,9 @@ class UserManagement:
         code: str,
         code_verifier: str,
         client_id: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Exchange an authorization code using a PKCE code_verifier.
@@ -2205,6 +2208,9 @@ class UserManagement:
             code: The authorization code received from the redirect.
             code_verifier: The PKCE code verifier generated alongside the code challenge.
             client_id: The WorkOS client ID. Defaults to the client's configured ID.
+            ip_address: The IP address of the user's request.
+            device_id: A unique identifier for the device.
+            user_agent: The user agent string from the user's browser.
             request_options: Per-request options for headers, timeout, retries, or base URL.
 
         Returns:
@@ -2219,6 +2225,12 @@ class UserManagement:
         }
         if self._client._api_key:
             body["client_secret"] = self._client._api_key
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return cast(
             AuthenticateResponse,
@@ -4361,6 +4373,9 @@ class AsyncUserManagement:
         code: str,
         code_verifier: str,
         client_id: Optional[str] = None,
+        ip_address: Optional[str] = None,
+        device_id: Optional[str] = None,
+        user_agent: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Exchange an authorization code using a PKCE code_verifier.
@@ -4369,6 +4384,9 @@ class AsyncUserManagement:
             code: The authorization code received from the redirect.
             code_verifier: The PKCE code verifier generated alongside the code challenge.
             client_id: The WorkOS client ID. Defaults to the client's configured ID.
+            ip_address: The IP address of the user's request.
+            device_id: A unique identifier for the device.
+            user_agent: The user agent string from the user's browser.
             request_options: Per-request options for headers, timeout, retries, or base URL.
 
         Returns:
@@ -4383,6 +4401,12 @@ class AsyncUserManagement:
         }
         if self._client._api_key:
             body["client_secret"] = self._client._api_key
+        if ip_address is not None:
+            body["ip_address"] = ip_address
+        if device_id is not None:
+            body["device_id"] = device_id
+        if user_agent is not None:
+            body["user_agent"] = user_agent
 
         return cast(
             AuthenticateResponse,

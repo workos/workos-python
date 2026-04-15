@@ -135,6 +135,32 @@ class TestAuthKitPKCECodeExchange:
         body = json.loads(request.content)
         assert "client_secret" in body
 
+    def test_forwards_radar_context(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        workos.user_management.authenticate_with_code_pkce(
+            code="auth_code_123",
+            code_verifier="test_verifier_abc",
+            ip_address="203.0.113.42",
+            device_id="device_01HXYZ",
+            user_agent="Mozilla/5.0",
+        )
+        request = httpx_mock.get_request()
+        body = json.loads(request.content)
+        assert body["ip_address"] == "203.0.113.42"
+        assert body["device_id"] == "device_01HXYZ"
+        assert body["user_agent"] == "Mozilla/5.0"
+
+    def test_omits_radar_context_when_not_provided(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        workos.user_management.authenticate_with_code_pkce(
+            code="auth_code_123", code_verifier="test_verifier_abc"
+        )
+        request = httpx_mock.get_request()
+        body = json.loads(request.content)
+        assert "ip_address" not in body
+        assert "device_id" not in body
+        assert "user_agent" not in body
+
 
 @pytest.mark.asyncio
 class TestAsyncAuthKitPKCECodeExchange:
@@ -147,6 +173,21 @@ class TestAsyncAuthKitPKCECodeExchange:
         request = httpx_mock.get_request()
         body = json.loads(request.content)
         assert body["code_verifier"] == "test_verifier_abc"
+
+    async def test_forwards_radar_context(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        await async_workos.user_management.authenticate_with_code_pkce(
+            code="auth_code_123",
+            code_verifier="test_verifier_abc",
+            ip_address="203.0.113.42",
+            device_id="device_01HXYZ",
+            user_agent="Mozilla/5.0",
+        )
+        request = httpx_mock.get_request()
+        body = json.loads(request.content)
+        assert body["ip_address"] == "203.0.113.42"
+        assert body["device_id"] == "device_01HXYZ"
+        assert body["user_agent"] == "Mozilla/5.0"
 
 
 class TestSSOPKCEAuthorizationUrl:

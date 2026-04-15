@@ -189,6 +189,19 @@ class TestAsyncAuthKitPKCECodeExchange:
         assert body["device_id"] == "device_01HXYZ"
         assert body["user_agent"] == "Mozilla/5.0"
 
+    async def test_omits_radar_context_when_not_provided(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
+        await async_workos.user_management.authenticate_with_code_pkce(
+            code="auth_code_123", code_verifier="test_verifier_abc"
+        )
+        request = httpx_mock.get_request()
+        body = json.loads(request.content)
+        assert "ip_address" not in body
+        assert "device_id" not in body
+        assert "user_agent" not in body
+
 
 class TestSSOPKCEAuthorizationUrl:
     def test_returns_required_keys(self, workos):

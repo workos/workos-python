@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.3](https://github.com/workos/workos-python/compare/v6.0.2...v6.0.3) (2026-04-15)
+
+
+### Bug Fixes
+
+* forward Radar context from authenticate_with_code_pkce ([#620](https://github.com/workos/workos-python/issues/620)) ([32aea77](https://github.com/workos/workos-python/commit/32aea77883b80da00829e9c200586eaeb371daf3))
+
 ## [6.0.2](https://github.com/workos/workos-python/compare/v6.0.1...v6.0.2) (2026-04-14)
 
 

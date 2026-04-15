@@ -40,7 +40,6 @@
         "digest",
         "pinDigest"
       ],
-      "extractVersion": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
       "groupName": "github actions non-major",
       "groupSlug": "github-actions-non-major",
       "automerge": true
@@ -52,7 +51,6 @@
       "matchUpdateTypes": [
         "major"
       ],
-      "extractVersion": "^v(?<version>\\d+\\.\\d+\\.\\d+)$",
       "groupName": "github actions major",
       "groupSlug": "github-actions-major",
       "automerge": false

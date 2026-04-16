@@ -82,19 +82,21 @@ class TestSealSessionFromAuthResponse:
         assert data["access_token"] == "at_123"
         assert data["user"]["id"] == "user_01"
 
-    def test_seal_without_optional_fields(self):
+    def test_seal_without_impersonator(self):
         sealed = seal_session_from_auth_response(
             access_token="at_123",
             refresh_token="rt_456",
+            user={"id": "user_01", "email": "test@example.com"},
             cookie_password=COOKIE_PASSWORD,
         )
         data = unseal_data(sealed, COOKIE_PASSWORD)
-        assert "user" not in data
+        assert "impersonator" not in data
 
     def test_seal_with_impersonator(self):
         sealed = seal_session_from_auth_response(
             access_token="at_123",
             refresh_token="rt_456",
+            user={"id": "user_01", "email": "test@example.com"},
             impersonator={"email": "admin@example.com"},
             cookie_password=COOKIE_PASSWORD,
         )

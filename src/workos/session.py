@@ -142,7 +142,7 @@ def seal_session_from_auth_response(
     *,
     access_token: str,
     refresh_token: str,
-    user: Optional[Dict[str, Any]] = None,
+    user: Dict[str, Any],
     impersonator: Optional[Dict[str, Any]] = None,
     cookie_password: str,
 ) -> str:
@@ -161,9 +161,8 @@ def seal_session_from_auth_response(
     session_data: Dict[str, Any] = {
         "access_token": access_token,
         "refresh_token": refresh_token,
+        "user": user,
     }
-    if user is not None:
-        session_data["user"] = user
     if impersonator is not None:
         session_data["impersonator"] = impersonator
     return seal_data(session_data, cookie_password)

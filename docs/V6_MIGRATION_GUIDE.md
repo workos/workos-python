@@ -11,7 +11,8 @@ v6 is still recognizably the WorkOS Python SDK, but it moves onto a generated cl
 3. Rename `client.portal` to `client.admin_portal`.
 4. Remove any `client.fga` usage before upgrading.
 5. Replace Pydantic-specific model code such as `model_validate()` and `model_dump()`.
-6. Review exception handling, pagination assumptions, and retry-sensitive call sites.
+6. If you pass `session=` to `authenticate_with_code()` or `authenticate_with_refresh_token()`, switch to explicit sealing after authentication.
+7. Review exception handling, pagination assumptions, and retry-sensitive call sites.
 
 ## HIGH Impact Changes
 
@@ -181,6 +182,74 @@ v6 also exposes runtime and auth-flow specific errors such as:
 
 **Migration:** Rename caught exception classes, update imports, and review any code that depends on old exception names or attributes.
 
+### `authenticate_with_code` and `authenticate_with_refresh_token` no longer accept `session`
+
+In v5, `session=` was supported on `authenticate_with_code` and `authenticate_with_refresh_token`. In v6, those public wrappers no longer accept `session=`. The SDK session APIs are unchanged, but wrapper-level sealing is now an explicit step, and the minimal helper does not preserve the full v5 sealed payload.
+
+**v5**
+
+```python
+response = client.user_management.authenticate_with_code(
+    code=code,
+    session={"seal_session": True, "cookie_password": COOKIE_PASSWORD},
+)
+sealed = response.sealed_session
+```
+
+**v6**
+
+```python
+from workos.session import seal_session_from_auth_response
+
+response = client.user_management.authenticate_with_code(code=code)
+
+sealed = seal_session_from_auth_response(
+    access_token=response.access_token,
+    refresh_token=response.refresh_token,
+    user=response.user.to_dict(),
+    impersonator=(
+        response.impersonator.to_dict()
+        if response.impersonator
+        else None
+    ),
+    cookie_password=COOKIE_PASSWORD,
+)
+```
+
+The same pattern applies to `authenticate_with_refresh_token(...)`.
+
+If you need the broader v5-style sealed payload, seal the serialized response directly instead of just the session runtime fields:
+
+```python
+from workos.session import seal_data
+
+response = client.user_management.authenticate_with_code(code=code)
+
+sealed = seal_data(response.to_dict(), COOKIE_PASSWORD)
+```
+
+That preserves additional response properties such as `organization_id`, `authentication_method`, `authkit_authorization_code`, and `oauth_tokens`. This is closer to v5 behavior, which sealed the full auth response dict.
+
+If you were passing `session=None` (a no-op in v5), just drop the argument on either method:
+
+```python
+# v5
+response = client.user_management.authenticate_with_code(code=code, session=None)
+
+# v6
+response = client.user_management.authenticate_with_code(code=code)
+```
+
+**What still works the same:**
+
+- `client.user_management.load_sealed_session(session_data=..., cookie_password=...)`
+- `client.user_management.authenticate_with_session_cookie(session_data=..., cookie_password=...)`
+- `Session.authenticate()`, `Session.refresh()`, and `Session.get_logout_url()`
+
+**Affected users:** Anyone passing `session=` to `authenticate_with_code()` or `authenticate_with_refresh_token()`.
+
+**Migration:** Call `seal_session_from_auth_response()` after `authenticate_with_code()` or `authenticate_with_refresh_token()` when you only need the sealed-session runtime fields, use `seal_data(response.to_dict(), ...)` when you need the broader v5-style payload, or remove the `session=None` no-op.
+
 ## MEDIUM Impact Changes
 
 ### Paginated list responses now use `SyncPage` and `AsyncPage`
@@ -323,15 +392,16 @@ from workos.types.organizations import Organization
 4. Find and remove any `client.fga` usage.
 5. Replace `model_validate()` and `model_dump()` with `from_dict()` and `to_dict()`.
 6. Update exception imports and any code that catches or inspects SDK errors.
-7. Audit pagination code that depends on the old list wrapper shape.
-8. Review retry-sensitive call sites and set `max_retries=0` where required.
-9. Migrate old model imports toward `workos.<resource>.models` and `workos.common.models`.
-10. Run sync and async integration tests and look for import errors, attribute errors, serialization mismatches, and changed retry behavior.
+7. If you pass `session=` to `authenticate_with_code()` or `authenticate_with_refresh_token()`, switch to explicit sealing.
+8. Audit pagination code that depends on the old list wrapper shape.
+9. Review retry-sensitive call sites and set `max_retries=0` where required.
+10. Migrate old model imports toward `workos.<resource>.models` and `workos.common.models`.
+11. Run sync and async integration tests and look for import errors, attribute errors, serialization mismatches, and changed retry behavior.
 
 ## Searches To Run
 
 ```sh
-rg 'workos\.client|workos\.async_client|client\.portal|client\.fga|model_dump|model_validate|Exception|workos\.types'
+rg 'workos\.client|workos\.async_client|client\.portal|client\.fga|model_dump|model_validate|Exception|workos\.types|session=|seal_session'
 ```
 
 ## Migration Checklist
@@ -342,6 +412,7 @@ rg 'workos\.client|workos\.async_client|client\.portal|client\.fga|model_dump|mo
 - `client.fga` usage is removed or isolated from the v6 upgrade.
 - Pydantic-only model helpers are gone.
 - Exception imports use v6 `*Error` names.
+- `session=` usage in `authenticate_with_code()` and `authenticate_with_refresh_token()` has been replaced with explicit sealing.
 - Retry behavior has been reviewed explicitly.
 - Pagination code has been updated where needed.
 - Model imports are moving toward `workos.<resource>.models` and `workos.common.models`.

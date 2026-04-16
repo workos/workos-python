@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.0.4](https://github.com/workos/workos-python/compare/v6.0.3...v6.0.4) (2026-04-16)
+
+
+### Bug Fixes
+
+* add documentation on sealing sessions ([#625](https://github.com/workos/workos-python/issues/625)) ([5ae90d0](https://github.com/workos/workos-python/commit/5ae90d024a0a5532c8bb54a21a4190a3de564bea))
+* Remove extractVersion from matchUpdateTypes rules ([#623](https://github.com/workos/workos-python/issues/623)) ([09a2e5d](https://github.com/workos/workos-python/commit/09a2e5d1e7666eb6b435c49ed3ba1e63d8ae274e))
+
 ## [6.0.3](https://github.com/workos/workos-python/compare/v6.0.2...v6.0.3) (2026-04-15)
 
 

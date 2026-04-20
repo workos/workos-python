@@ -189,7 +189,7 @@ class _BaseWorkOSClient:
     def _deserialize_response(
         self, response: httpx.Response, model: Optional[Type[Deserializable]]
     ) -> Any:
-        if response.status_code == 204 or not response.content:
+        if response.status_code == 204 or not response.content or model is None:
             return None
         data: Dict[str, Any] = cast(Dict[str, Any], response.json())
         if model is not None:

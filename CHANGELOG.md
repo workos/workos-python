@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.0.5](https://github.com/workos/workos-python/compare/v6.0.4...v6.0.5) (2026-04-20)
+
+
+### Bug Fixes
+
+* do not JSON parse arbitrary bodies ([#627](https://github.com/workos/workos-python/issues/627)) ([1a8ef00](https://github.com/workos/workos-python/commit/1a8ef00c3b56ecd155853f107a4307ada7caab52))
+* restore typing to events ([bbff53f](https://github.com/workos/workos-python/commit/bbff53f3be5af897d6ae917e7a1a8e256d5643e4))
+
 ## [6.0.4](https://github.com/workos/workos-python/compare/v6.0.3...v6.0.4) (2026-04-16)
 
 

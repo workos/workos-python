@@ -49,6 +49,8 @@ class TestPipes:
             "test_slug", user_id="test_user_id"
         )
         assert isinstance(result, DataIntegrationAccessTokenResponse)
+        assert result.active is True
+        assert result.error == "not_installed"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/data-integrations/test_slug/token")
@@ -237,6 +239,8 @@ class TestAsyncPipes:
             "test_slug", user_id="test_user_id"
         )
         assert isinstance(result, DataIntegrationAccessTokenResponse)
+        assert result.active is True
+        assert result.error == "not_installed"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/data-integrations/test_slug/token")

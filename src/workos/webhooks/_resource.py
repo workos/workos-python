@@ -38,7 +38,7 @@ class Webhooks:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[WebhooksOrder, str]] = None,
+        order: Optional[Union[WebhooksOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[WebhookEndpointJson]:
         """List Webhook Endpoints
@@ -200,7 +200,7 @@ class Webhooks:
         event_signature: str,
         secret: str,
         tolerance: Optional[int] = None,
-    ) -> Dict[str, Any]:
+    ) -> "EventSchema":
         """Verify and deserialize the signature of a Webhook event.
 
         Args:
@@ -210,11 +210,13 @@ class Webhooks:
             tolerance: Maximum age of the event in seconds. Defaults to 180.
 
         Returns:
-            Dict[str, Any]: The deserialized webhook event payload.
+            EventSchema: The deserialized webhook event.
 
         Raises:
             ValueError: If the signature is invalid or the event is too old.
         """
+        from workos.events.models import EventSchema
+
         self.verify_header(
             event_body=event_body,
             event_signature=event_signature,
@@ -222,7 +224,7 @@ class Webhooks:
             tolerance=tolerance,
         )
         body = event_body if isinstance(event_body, (str, bytes)) else str(event_body)
-        return json.loads(body)
+        return EventSchema.from_dict(json.loads(body))
 
     def verify_header(
         self,
@@ -293,7 +295,7 @@ class AsyncWebhooks:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[WebhooksOrder, str]] = None,
+        order: Optional[Union[WebhooksOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[WebhookEndpointJson]:
         """List Webhook Endpoints
@@ -455,7 +457,7 @@ class AsyncWebhooks:
         event_signature: str,
         secret: str,
         tolerance: Optional[int] = None,
-    ) -> Dict[str, Any]:
+    ) -> "EventSchema":
         """Verify and deserialize the signature of a Webhook event.
 
         Args:
@@ -465,11 +467,13 @@ class AsyncWebhooks:
             tolerance: Maximum age of the event in seconds. Defaults to 180.
 
         Returns:
-            Dict[str, Any]: The deserialized webhook event payload.
+            EventSchema: The deserialized webhook event.
 
         Raises:
             ValueError: If the signature is invalid or the event is too old.
         """
+        from workos.events.models import EventSchema
+
         self.verify_header(
             event_body=event_body,
             event_signature=event_signature,
@@ -477,7 +481,7 @@ class AsyncWebhooks:
             tolerance=tolerance,
         )
         body = event_body if isinstance(event_body, (str, bytes)) else str(event_body)
-        return json.loads(body)
+        return EventSchema.from_dict(json.loads(body))
 
     def verify_header(
         self,
@@ -534,3 +538,9 @@ class AsyncWebhooks:
             )
 
     # @oagen-ignore-end
+
+
+# @oagen-ignore-start
+if TYPE_CHECKING:
+    from workos.events.models import EventSchema
+# @oagen-ignore-end

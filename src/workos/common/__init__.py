@@ -142,6 +142,9 @@ from .models import CreateUserInviteOptionsLocale as CreateUserInviteOptionsLoca
 from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
 from .models import CreateWebhookEndpointEvents as CreateWebhookEndpointEvents
 from .models import (
+    DataIntegrationAccessTokenResponseError as DataIntegrationAccessTokenResponseError,
+)
+from .models import (
     DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
 )
 from .models import (
@@ -234,6 +237,14 @@ from .models import (
 from .models import FlagUpdatedData as FlagUpdatedData
 from .models import FlagUpdatedDataOwner as FlagUpdatedDataOwner
 from .models import GenerateLinkIntent as GenerateLinkIntent
+from .models import Group as Group
+from .models import GroupCreated as GroupCreated
+from .models import GroupDeleted as GroupDeleted
+from .models import GroupMemberAdded as GroupMemberAdded
+from .models import GroupMemberAddedData as GroupMemberAddedData
+from .models import GroupMemberRemoved as GroupMemberRemoved
+from .models import GroupMemberRemovedData as GroupMemberRemovedData
+from .models import GroupUpdated as GroupUpdated
 from .models import InvitationAccepted as InvitationAccepted
 from .models import InvitationAcceptedData as InvitationAcceptedData
 from .models import InvitationCreated as InvitationCreated

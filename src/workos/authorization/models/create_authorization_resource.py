@@ -22,11 +22,11 @@ class CreateAuthorizationResource:
     description: Optional[str] = None
     """An optional description of the resource."""
     parent_resource_id: Optional[str] = None
-    """The ID of the parent resource."""
+    """The ID of the parent resource. Mutually exclusive with `parent_resource_external_id` and `parent_resource_type_slug`."""
     parent_resource_external_id: Optional[str] = None
-    """The external ID of the parent resource."""
+    """The external ID of the parent resource. Required with `parent_resource_type_slug`. Mutually exclusive with `parent_resource_id`."""
     parent_resource_type_slug: Optional[str] = None
-    """The resource type slug of the parent resource."""
+    """The resource type slug of the parent resource. Required with `parent_resource_external_id`. Mutually exclusive with `parent_resource_id`."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "CreateAuthorizationResource":

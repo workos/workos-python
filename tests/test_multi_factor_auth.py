@@ -69,7 +69,7 @@ class TestMultiFactorAuth:
         assert request.url.path.endswith("/auth/factors/test_id")
 
     def test_delete_factor(self, workos, httpx_mock):
-        httpx_mock.add_response(status_code=204)
+        httpx_mock.add_response(status_code=200, content=b"\n")
         result = workos.multi_factor_auth.delete_factor("test_id")
         assert result is None
         request = httpx_mock.get_request()
@@ -256,7 +256,7 @@ class TestAsyncMultiFactorAuth:
 
     @pytest.mark.asyncio
     async def test_delete_factor(self, async_workos, httpx_mock):
-        httpx_mock.add_response(status_code=204)
+        httpx_mock.add_response(status_code=200, content=b"\n")
         result = await async_workos.multi_factor_auth.delete_factor("test_id")
         assert result is None
         request = httpx_mock.get_request()

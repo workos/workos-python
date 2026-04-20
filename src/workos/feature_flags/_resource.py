@@ -29,7 +29,7 @@ class FeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[FeatureFlagsOrder, str]] = None,
+        order: Optional[Union[FeatureFlagsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List feature flags
@@ -229,7 +229,7 @@ class FeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = None,
+        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List enabled feature flags for an organization
@@ -278,7 +278,7 @@ class FeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersFeatureFlagsOrder, str]] = None,
+        order: Optional[Union[UserManagementUsersFeatureFlagsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List enabled feature flags for a user
@@ -333,7 +333,7 @@ class AsyncFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[FeatureFlagsOrder, str]] = None,
+        order: Optional[Union[FeatureFlagsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List feature flags
@@ -533,7 +533,7 @@ class AsyncFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = None,
+        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List enabled feature flags for an organization
@@ -582,7 +582,7 @@ class AsyncFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersFeatureFlagsOrder, str]] = None,
+        order: Optional[Union[UserManagementUsersFeatureFlagsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List enabled feature flags for a user

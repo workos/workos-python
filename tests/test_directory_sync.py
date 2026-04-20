@@ -72,7 +72,7 @@ class TestDirectorySync:
         assert request.url.path.endswith("/directories/test_id")
 
     def test_delete_directory(self, workos, httpx_mock):
-        httpx_mock.add_response(status_code=204)
+        httpx_mock.add_response(status_code=200, content=b"\n")
         result = workos.directory_sync.delete_directory("test_id")
         assert result is None
         request = httpx_mock.get_request()
@@ -294,7 +294,7 @@ class TestAsyncDirectorySync:
 
     @pytest.mark.asyncio
     async def test_delete_directory(self, async_workos, httpx_mock):
-        httpx_mock.add_response(status_code=204)
+        httpx_mock.add_response(status_code=200, content=b"\n")
         result = await async_workos.directory_sync.delete_directory("test_id")
         assert result is None
         request = httpx_mock.get_request()

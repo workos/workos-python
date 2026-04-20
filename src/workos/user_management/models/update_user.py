@@ -23,18 +23,18 @@ class UpdateUser:
     """The last name of the user."""
     email_verified: Optional[bool] = None
     """Whether the user's email has been verified."""
-    password: Optional[str] = None
-    """The password to set for the user."""
-    password_hash: Optional[str] = None
-    """The hashed password to set for the user. Mutually exclusive with `password`."""
-    password_hash_type: Optional["UpdateUserPasswordHashType"] = None
-    """The algorithm originally used to hash the password, used when providing a `password_hash`."""
     metadata: Optional[Dict[str, str]] = None
     """Object containing metadata key/value pairs associated with the user."""
     external_id: Optional[str] = None
     """The external ID of the user."""
     locale: Optional[str] = None
     """The user's preferred locale."""
+    password: Optional[str] = None
+    """The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`."""
+    password_hash: Optional[str] = None
+    """The hashed password to set for the user. Required with `password_hash_type`. Mutually exclusive with `password`."""
+    password_hash_type: Optional["UpdateUserPasswordHashType"] = None
+    """The algorithm originally used to hash the password, used when providing a `password_hash`. Required with `password_hash`. Mutually exclusive with `password`."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "UpdateUser":
@@ -45,14 +45,14 @@ class UpdateUser:
                 first_name=data.get("first_name"),
                 last_name=data.get("last_name"),
                 email_verified=data.get("email_verified"),
+                metadata=data.get("metadata"),
+                external_id=data.get("external_id"),
+                locale=data.get("locale"),
                 password=data.get("password"),
                 password_hash=data.get("password_hash"),
                 password_hash_type=UpdateUserPasswordHashType(_v_password_hash_type)
                 if (_v_password_hash_type := data.get("password_hash_type")) is not None
                 else None,
-                metadata=data.get("metadata"),
-                external_id=data.get("external_id"),
-                locale=data.get("locale"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateUser", e)
@@ -68,16 +68,6 @@ class UpdateUser:
             result["last_name"] = self.last_name
         if self.email_verified is not None:
             result["email_verified"] = self.email_verified
-        if self.password is not None:
-            result["password"] = self.password
-        if self.password_hash is not None:
-            result["password_hash"] = self.password_hash
-        if self.password_hash_type is not None:
-            result["password_hash_type"] = (
-                self.password_hash_type.value
-                if isinstance(self.password_hash_type, Enum)
-                else self.password_hash_type
-            )
         if self.metadata is not None:
             result["metadata"] = self.metadata
         else:
@@ -90,4 +80,14 @@ class UpdateUser:
             result["locale"] = self.locale
         else:
             result["locale"] = None
+        if self.password is not None:
+            result["password"] = self.password
+        if self.password_hash is not None:
+            result["password_hash"] = self.password_hash
+        if self.password_hash_type is not None:
+            result["password_hash_type"] = (
+                self.password_hash_type.value
+                if isinstance(self.password_hash_type, Enum)
+                else self.password_hash_type
+            )
         return result

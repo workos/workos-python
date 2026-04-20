@@ -25,7 +25,7 @@ class SSO:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[ConnectionsOrder, str]] = None,
+        order: Optional[Union[ConnectionsOrder, str]] = "desc",
         connection_type: Optional[Union[ConnectionsConnectionType, str]] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
@@ -160,7 +160,7 @@ class SSO:
         Initiates the single sign-on flow.
 
         Args:
-            provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
+            provider_scopes: Additional scopes to request from the identity provider. Applicable when using OAuth or OpenID Connect connections.
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
             domain: (deprecated) Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
             provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
@@ -442,7 +442,7 @@ class AsyncSSO:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[ConnectionsOrder, str]] = None,
+        order: Optional[Union[ConnectionsOrder, str]] = "desc",
         connection_type: Optional[Union[ConnectionsConnectionType, str]] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
@@ -577,7 +577,7 @@ class AsyncSSO:
         Initiates the single sign-on flow.
 
         Args:
-            provider_scopes: Additional OAuth scopes to request from the identity provider. Only applicable when using OAuth connections.
+            provider_scopes: Additional scopes to request from the identity provider. Applicable when using OAuth or OpenID Connect connections.
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
             domain: (deprecated) Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
             provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.

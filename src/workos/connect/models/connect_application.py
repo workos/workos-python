@@ -29,6 +29,10 @@ class ConnectApplication:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
+    application_type: Optional[Literal["m2m"]] = None
+    """The type of the application."""
+    organization_id: Optional[str] = None
+    """The ID of the organization the application belongs to."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ConnectApplication":
@@ -43,6 +47,8 @@ class ConnectApplication:
                 scopes=data["scopes"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
+                application_type=data.get("application_type"),
+                organization_id=data.get("organization_id"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectApplication", e)
@@ -61,4 +67,8 @@ class ConnectApplication:
         result["scopes"] = self.scopes
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
+        if self.application_type is not None:
+            result["application_type"] = self.application_type
+        if self.organization_id is not None:
+            result["organization_id"] = self.organization_id
         return result

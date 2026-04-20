@@ -94,7 +94,7 @@ class Connect:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[ApplicationsOrder, str]] = None,
+        order: Optional[Union[ApplicationsOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[ConnectApplication]:
@@ -508,7 +508,7 @@ class AsyncConnect:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[ApplicationsOrder, str]] = None,
+        order: Optional[Union[ApplicationsOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[ConnectApplication]:

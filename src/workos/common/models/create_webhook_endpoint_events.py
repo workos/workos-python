@@ -49,6 +49,11 @@ class CreateWebhookEndpointEvents(str, Enum):
     DSYNC_USER_DELETED = "dsync.user.deleted"
     DSYNC_USER_UPDATED = "dsync.user.updated"
     EMAIL_VERIFICATION_CREATED = "email_verification.created"
+    GROUP_CREATED = "group.created"
+    GROUP_DELETED = "group.deleted"
+    GROUP_MEMBER_ADDED = "group.member_added"
+    GROUP_MEMBER_REMOVED = "group.member_removed"
+    GROUP_UPDATED = "group.updated"
     FLAG_CREATED = "flag.created"
     FLAG_DELETED = "flag.deleted"
     FLAG_UPDATED = "flag.updated"
@@ -130,6 +135,11 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "dsync.user.deleted",
     "dsync.user.updated",
     "email_verification.created",
+    "group.created",
+    "group.deleted",
+    "group.member_added",
+    "group.member_removed",
+    "group.updated",
     "flag.created",
     "flag.deleted",
     "flag.updated",

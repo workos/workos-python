@@ -4,71 +4,57 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from workos.common.models.role_type import RoleType
 
 
 @dataclass(slots=True)
-class Role:
-    """Role model."""
+class Group:
+    """Group model."""
 
-    slug: str
-    """A unique slug for the role."""
-    object: Literal["role"]
-    """Distinguishes the role object."""
+    object: Literal["group"]
+    """The Group object."""
     id: str
-    """Unique identifier of the role."""
+    """The unique ID of the Group."""
+    organization_id: str
+    """The ID of the Organization the Group belongs to."""
     name: str
-    """A descriptive name for the role."""
+    """The name of the Group."""
     description: Optional[str]
-    """An optional description of the role."""
-    type: "RoleType"
-    """Whether the role is scoped to the environment or an organization (custom role)."""
-    resource_type_slug: str
-    """The slug of the resource type the role is scoped to."""
-    permissions: List[str]
-    """The permission slugs assigned to the role."""
+    """An optional description of the Group."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Role":
+    def from_dict(cls, data: Dict[str, Any]) -> "Group":
         """Deserialize from a dictionary."""
         try:
             return cls(
-                slug=data["slug"],
                 object=data["object"],
                 id=data["id"],
+                organization_id=data["organization_id"],
                 name=data["name"],
                 description=data["description"],
-                type=RoleType(data["type"]),
-                resource_type_slug=data["resource_type_slug"],
-                permissions=data["permissions"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("Role", e)
+            _raise_deserialize_error("Group", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["slug"] = self.slug
         result["object"] = self.object
         result["id"] = self.id
+        result["organization_id"] = self.organization_id
         result["name"] = self.name
         if self.description is not None:
             result["description"] = self.description
         else:
             result["description"] = None
-        result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
-        result["resource_type_slug"] = self.resource_type_slug
-        result["permissions"] = self.permissions
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
         return result

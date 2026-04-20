@@ -18,6 +18,10 @@ class AuthorizationCodeSessionAuthenticateRequest:
     grant_type: Literal["authorization_code"]
     code: str
     """The authorization code received from the redirect."""
+    code_verifier: Optional[str] = None
+    """The PKCE code verifier used to derive the code challenge passed to the authorization URL."""
+    invitation_token: Optional[str] = None
+    """An invitation token to accept during authentication."""
     ip_address: Optional[str] = None
     """The IP address of the user's request."""
     device_id: Optional[str] = None
@@ -36,6 +40,8 @@ class AuthorizationCodeSessionAuthenticateRequest:
                 client_secret=data["client_secret"],
                 grant_type=data["grant_type"],
                 code=data["code"],
+                code_verifier=data.get("code_verifier"),
+                invitation_token=data.get("invitation_token"),
                 ip_address=data.get("ip_address"),
                 device_id=data.get("device_id"),
                 user_agent=data.get("user_agent"),
@@ -50,6 +56,10 @@ class AuthorizationCodeSessionAuthenticateRequest:
         result["client_secret"] = self.client_secret
         result["grant_type"] = self.grant_type
         result["code"] = self.code
+        if self.code_verifier is not None:
+            result["code_verifier"] = self.code_verifier
+        if self.invitation_token is not None:
+            result["invitation_token"] = self.invitation_token
         if self.ip_address is not None:
             result["ip_address"] = self.ip_address
         if self.device_id is not None:

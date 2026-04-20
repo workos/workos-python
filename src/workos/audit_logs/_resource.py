@@ -101,7 +101,7 @@ class AuditLogs:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuditLogsOrder, str]] = None,
+        order: Optional[Union[AuditLogsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuditLogActionJson]:
         """List Actions
@@ -150,7 +150,7 @@ class AuditLogs:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuditLogsOrder, str]] = None,
+        order: Optional[Union[AuditLogsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuditLogSchemaJson]:
         """List Schemas
@@ -456,7 +456,7 @@ class AsyncAuditLogs:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuditLogsOrder, str]] = None,
+        order: Optional[Union[AuditLogsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuditLogActionJson]:
         """List Actions
@@ -505,7 +505,7 @@ class AsyncAuditLogs:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuditLogsOrder, str]] = None,
+        order: Optional[Union[AuditLogsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuditLogSchemaJson]:
         """List Schemas

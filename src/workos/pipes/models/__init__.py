@@ -4,6 +4,9 @@ from .connected_account import ConnectedAccount as ConnectedAccount
 from .data_integration_access_token_response import (
     DataIntegrationAccessTokenResponse as DataIntegrationAccessTokenResponse,
 )
+from .data_integration_access_token_response_access_token import (
+    DataIntegrationAccessTokenResponseAccessToken as DataIntegrationAccessTokenResponseAccessToken,
+)
 from .data_integration_authorize_url_response import (
     DataIntegrationAuthorizeUrlResponse as DataIntegrationAuthorizeUrlResponse,
 )

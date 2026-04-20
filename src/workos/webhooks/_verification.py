@@ -8,7 +8,9 @@ import hashlib
 import hmac
 import json
 import time
-from typing import Any, Dict, Optional, Union
+from typing import Optional, Union
+
+from workos.events.models import EventSchema
 
 WebhookPayload = Union[bytes, bytearray]
 
@@ -21,7 +23,7 @@ def verify_event(
     event_signature: str,
     secret: str,
     tolerance: Optional[int] = DEFAULT_TOLERANCE,
-) -> Dict[str, Any]:
+) -> EventSchema:
     """Verify and deserialize the signature of a Webhook event.
 
     Args:
@@ -31,7 +33,7 @@ def verify_event(
         tolerance: The number of seconds the Webhook event is valid for. (Optional)
 
     Returns:
-        The deserialized webhook event as a dictionary.
+        EventSchema: The deserialized webhook event.
 
     Raises:
         ValueError: If the signature cannot be verified or the timestamp is out of range.
@@ -42,7 +44,7 @@ def verify_event(
         secret=secret,
         tolerance=tolerance,
     )
-    return json.loads(event_body)
+    return EventSchema.from_dict(json.loads(event_body))
 
 
 def verify_header(

@@ -222,7 +222,7 @@ class MultiFactorAuth:
         after: Optional[str] = None,
         order: Optional[
             Union[UserManagementMultiFactorAuthenticationOrder, str]
-        ] = None,
+        ] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthenticationFactor]:
         """List authentication factors
@@ -514,7 +514,7 @@ class AsyncMultiFactorAuth:
         after: Optional[str] = None,
         order: Optional[
             Union[UserManagementMultiFactorAuthenticationOrder, str]
-        ] = None,
+        ] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthenticationFactor]:
         """List authentication factors

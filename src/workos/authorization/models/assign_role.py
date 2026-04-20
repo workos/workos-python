@@ -14,11 +14,11 @@ class AssignRole:
     role_slug: str
     """The slug of the role to assign."""
     resource_id: Optional[str] = None
-    """The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`."""
+    """The ID of the resource. Mutually exclusive with `resource_external_id` and `resource_type_slug`."""
     resource_external_id: Optional[str] = None
-    """The external ID of the resource. Requires `resource_type_slug`."""
+    """The external ID of the resource. Required with `resource_type_slug`. Mutually exclusive with `resource_id`."""
     resource_type_slug: Optional[str] = None
-    """The resource type slug. Required with `resource_external_id`."""
+    """The resource type slug. Required with `resource_external_id`. Mutually exclusive with `resource_id`."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AssignRole":

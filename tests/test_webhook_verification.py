@@ -4,6 +4,7 @@ import json
 import time
 
 import pytest
+from workos.events.models import EventSchema
 from workos.webhooks._verification import (
     verify_event as standalone_verify_event,
     verify_header as standalone_verify_header,
@@ -25,9 +26,11 @@ def _make_sig_header(body: str, secret: str, timestamp_ms: int = 0) -> str:
 
 SAMPLE_EVENT = json.dumps(
     {
+        "object": "event",
         "id": "evt_01",
         "event": "user.created",
         "data": {"id": "user_01", "email": "test@example.com"},
+        "created_at": "2024-01-01T00:00:00Z",
     }
 )
 SECRET = "whsec_test_secret"
@@ -39,14 +42,16 @@ class TestWebhooksVerifyEvent:
         result = workos.webhooks.verify_event(
             event_body=SAMPLE_EVENT, event_signature=sig, secret=SECRET
         )
-        assert result["id"] == "evt_01"
+        assert isinstance(result, EventSchema)
+        assert result.id == "evt_01"
 
     def test_verify_event_valid_bytes(self, workos):
         sig = _make_sig_header(SAMPLE_EVENT, SECRET)
         result = workos.webhooks.verify_event(
             event_body=SAMPLE_EVENT.encode("utf-8"), event_signature=sig, secret=SECRET
         )
-        assert result["id"] == "evt_01"
+        assert isinstance(result, EventSchema)
+        assert result.id == "evt_01"
 
     def test_verify_event_invalid_signature(self, workos):
         sig = _make_sig_header(SAMPLE_EVENT, "wrong_secret")
@@ -72,7 +77,8 @@ class TestWebhooksVerifyEvent:
         result = workos.webhooks.verify_event(
             event_body=SAMPLE_EVENT, event_signature=sig, secret=SECRET, tolerance=60
         )
-        assert result["id"] == "evt_01"
+        assert isinstance(result, EventSchema)
+        assert result.id == "evt_01"
 
     def test_verify_event_malformed_header(self, workos):
         with pytest.raises(ValueError, match="Unable to extract"):
@@ -113,7 +119,8 @@ class TestStandaloneVerifyEvent:
         result = standalone_verify_event(
             event_body=SAMPLE_EVENT.encode("utf-8"), event_signature=sig, secret=SECRET
         )
-        assert result["id"] == "evt_01"
+        assert isinstance(result, EventSchema)
+        assert result.id == "evt_01"
 
     def test_standalone_verify_event_invalid(self):
         sig = _make_sig_header(SAMPLE_EVENT, "wrong")

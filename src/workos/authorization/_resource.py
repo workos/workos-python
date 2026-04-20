@@ -20,6 +20,52 @@ from .models import (
 )
 from .models import AuthorizationAssignment, AuthorizationOrder, PermissionsOrder
 from .._pagination import AsyncPage, SyncPage
+from dataclasses import dataclass
+
+
+@dataclass
+class ResourceTargetById:
+    """Identify resource target by id."""
+
+    resource_id: str
+
+
+@dataclass
+class ResourceTargetByExternalId:
+    """Identify resource target by external id."""
+
+    resource_external_id: str
+    resource_type_slug: str
+
+
+@dataclass
+class ParentResourceById:
+    """Identify parent resource by id."""
+
+    parent_resource_id: str
+
+
+@dataclass
+class ParentResourceByExternalId:
+    """Identify parent resource by external id."""
+
+    parent_resource_type_slug: str
+    parent_resource_external_id: str
+
+
+@dataclass
+class ParentById:
+    """Identify parent by id."""
+
+    parent_resource_id: str
+
+
+@dataclass
+class ParentByExternalId:
+    """Identify parent by external id."""
+
+    parent_resource_type_slug: str
+    parent_external_id: str
 
 
 class Authorization:
@@ -33,9 +79,7 @@ class Authorization:
         organization_membership_id: str,
         *,
         permission_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
+        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationCheck:
         """Check authorization
@@ -45,9 +89,7 @@ class Authorization:
         Args:
             organization_membership_id: The ID of the organization membership to check.
             permission_slug: The slug of the permission to check.
-            resource_id: The ID of the resource.
-            resource_external_id: The external ID of the resource.
-            resource_type_slug: The slug of the resource type.
+            resource_target: Identifies the resource target. One of: ResourceTargetById, ResourceTargetByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -62,15 +104,13 @@ class Authorization:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "permission_slug": permission_slug,
-                "resource_id": resource_id,
-                "resource_external_id": resource_external_id,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
+            "permission_slug": permission_slug,
         }
+        if isinstance(resource_target, ResourceTargetById):
+            body["resource_id"] = resource_target.resource_id
+        elif isinstance(resource_target, ResourceTargetByExternalId):
+            body["resource_external_id"] = resource_target.resource_external_id
+            body["resource_type_slug"] = resource_target.resource_type_slug
         return self._client.request(
             method="post",
             path=f"authorization/organization_memberships/{organization_membership_id}/check",
@@ -86,11 +126,9 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
         permission_slug: str,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
+        parent_resource: Union[ParentResourceById, ParentResourceByExternalId],
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizationResource]:
         """List resources for organization membership
@@ -106,9 +144,7 @@ class Authorization:
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             permission_slug: The permission slug to filter by. Only child resources where the organization membership has this permission are returned.
-            parent_resource_id: The WorkOS ID of the parent resource. Provide this or both `parent_resource_external_id` and `parent_resource_type_slug`, but not both.
-            parent_resource_type_slug: The slug of the parent resource type. Must be provided together with `parent_resource_external_id`.
-            parent_resource_external_id: The application-specific external identifier of the parent resource. Must be provided together with `parent_resource_type_slug`.
+            parent_resource: Identifies the parent resource. One of: ParentResourceById, ParentResourceByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -131,16 +167,130 @@ class Authorization:
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
                 "permission_slug": permission_slug,
-                "parent_resource_id": parent_resource_id,
-                "parent_resource_type_slug": parent_resource_type_slug,
-                "parent_resource_external_id": parent_resource_external_id,
+            }.items()
+            if v is not None
+        }
+        if isinstance(parent_resource, ParentResourceById):
+            params["parent_resource_id"] = parent_resource.parent_resource_id
+        elif isinstance(parent_resource, ParentResourceByExternalId):
+            params["parent_resource_type_slug"] = (
+                parent_resource.parent_resource_type_slug
+            )
+            params["parent_resource_external_id"] = (
+                parent_resource.parent_resource_external_id
+            )
+        return self._client.request_page(
+            method="get",
+            path=f"authorization/organization_memberships/{organization_membership_id}/resources",
+            model=AuthorizationResource,
+            params=params,
+            request_options=request_options,
+        )
+
+    def list_resource_permissions(
+        self,
+        organization_membership_id: str,
+        resource_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[AuthorizationPermission]:
+        """List effective permissions for an organization membership on a resource
+
+        Returns all permissions the organization membership effectively has on a resource, including permissions inherited through roles assigned to ancestor resources.
+
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            resource_id: The ID of the authorization resource.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[AuthorizationPermission]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources",
-            model=AuthorizationResource,
+            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_id}/permissions",
+            model=AuthorizationPermission,
+            params=params,
+            request_options=request_options,
+        )
+
+    def list_effective_permissions_by_external_id(
+        self,
+        organization_membership_id: str,
+        resource_type_slug: str,
+        external_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[AuthorizationPermission]:
+        """List effective permissions for an organization membership on a resource by external ID
+
+        Returns all permissions the organization membership effectively has on a resource identified by its external ID, including permissions inherited through roles assigned to ancestor resources.
+
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            resource_type_slug: The slug of the resource type.
+            external_id: An identifier you provide to reference the resource in your system.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[AuthorizationPermission]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_type_slug}/{external_id}/permissions",
+            model=AuthorizationPermission,
             params=params,
             request_options=request_options,
         )
@@ -152,7 +302,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[RoleAssignment]:
         """List role assignments
@@ -200,9 +350,7 @@ class Authorization:
         organization_membership_id: str,
         *,
         role_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
+        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
         request_options: Optional[RequestOptions] = None,
     ) -> RoleAssignment:
         """Assign a role
@@ -212,9 +360,7 @@ class Authorization:
         Args:
             organization_membership_id: The ID of the organization membership.
             role_slug: The slug of the role to assign.
-            resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
-            resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
-            resource_type_slug: The resource type slug. Required with `resource_external_id`.
+            resource_target: Identifies the resource target. One of: ResourceTargetById, ResourceTargetByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -229,15 +375,13 @@ class Authorization:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "role_slug": role_slug,
-                "resource_id": resource_id,
-                "resource_external_id": resource_external_id,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
+            "role_slug": role_slug,
         }
+        if isinstance(resource_target, ResourceTargetById):
+            body["resource_id"] = resource_target.resource_id
+        elif isinstance(resource_target, ResourceTargetByExternalId):
+            body["resource_external_id"] = resource_target.resource_external_id
+            body["resource_type_slug"] = resource_target.resource_type_slug
         return self._client.request(
             method="post",
             path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
@@ -251,9 +395,7 @@ class Authorization:
         organization_membership_id: str,
         *,
         role_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
+        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
         request_options: Optional[RequestOptions] = None,
     ) -> None:
         """Remove a role assignment
@@ -263,9 +405,7 @@ class Authorization:
         Args:
             organization_membership_id: The ID of the organization membership.
             role_slug: The slug of the role to remove.
-            resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
-            resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
-            resource_type_slug: The resource type slug. Required with `resource_external_id`.
+            resource_target: Identifies the resource target. One of: ResourceTargetById, ResourceTargetByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Raises:
@@ -277,15 +417,13 @@ class Authorization:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "role_slug": role_slug,
-                "resource_id": resource_id,
-                "resource_external_id": resource_external_id,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
+            "role_slug": role_slug,
         }
+        if isinstance(resource_target, ResourceTargetById):
+            body["resource_id"] = resource_target.resource_id
+        elif isinstance(resource_target, ResourceTargetByExternalId):
+            body["resource_external_id"] = resource_target.resource_external_id
+            body["resource_type_slug"] = resource_target.resource_type_slug
         self._client.request(
             method="delete",
             path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
@@ -328,9 +466,9 @@ class Authorization:
         *,
         request_options: Optional[RequestOptions] = None,
     ) -> RoleList:
-        """List organization roles
+        """List custom roles
 
-        Get a list of all roles that apply to an organization. This includes both environment roles and organization-specific roles, returned in priority order.
+        Get a list of all roles that apply to an organization. This includes both environment roles and custom roles, returned in priority order.
 
         Args:
             organization_id: The ID of the organization.
@@ -363,9 +501,9 @@ class Authorization:
         resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
-        """Create a custom organization role
+        """Create a custom role
 
-        Create a new custom organization role. When slug is omitted, it is auto-generated from the role name.
+        Create a new custom role for this organization.
 
         Args:
             organization_id: The ID of the organization.
@@ -413,9 +551,9 @@ class Authorization:
         *,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
-        """Get an organization role
+        """Get a custom role
 
-        Retrieve a role that applies to an organization by its slug. This can return either an environment role or an organization-specific role.
+        Retrieve a role that applies to an organization by its slug. This can return either an environment role or a custom role.
 
         Args:
             organization_id: The ID of the organization.
@@ -448,9 +586,9 @@ class Authorization:
         description: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
-        """Update an organization role
+        """Update a custom role
 
-        Update an existing custom organization role. Only the fields provided in the request body will be updated.
+        Update an existing custom role. Only the fields provided in the request body will be updated.
 
         Args:
             organization_id: The ID of the organization.
@@ -494,9 +632,9 @@ class Authorization:
         *,
         request_options: Optional[RequestOptions] = None,
     ) -> None:
-        """Delete a custom organization role
+        """Delete a custom role
 
-        Delete an existing custom organization role.
+        Delete an existing custom role.
 
         Args:
             organization_id: The ID of the organization.
@@ -526,9 +664,9 @@ class Authorization:
         body_slug: str,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
-        """Add a permission to an organization role
+        """Add a permission to a custom role
 
-        Add a single permission to an organization role. If the permission is already assigned to the role, this operation has no effect.
+        Add a single permission to a custom role. If the permission is already assigned to the role, this operation has no effect.
 
         Args:
             organization_id: The ID of the organization.
@@ -567,9 +705,9 @@ class Authorization:
         permissions: List[str],
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
-        """Set permissions for a role
+        """Set permissions for a custom role
 
-        Replace all permissions on a role with the provided list.
+        Replace all permissions on a custom role with the provided list.
 
         Args:
             organization_id: The ID of the organization.
@@ -607,9 +745,9 @@ class Authorization:
         *,
         request_options: Optional[RequestOptions] = None,
     ) -> None:
-        """Remove a permission from an organization role
+        """Remove a permission from a custom role
 
-        Remove a single permission from an organization role by its slug.
+        Remove a single permission from a custom role by its slug.
 
         Args:
             organization_id: The ID of the organization.
@@ -673,9 +811,9 @@ class Authorization:
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
+        parent_resource: Optional[
+            Union[ParentResourceById, ParentResourceByExternalId]
+        ] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Update a resource by external ID
@@ -688,9 +826,7 @@ class Authorization:
             external_id: An identifier you provide to reference the resource in your system.
             name: A display name for the resource.
             description: An optional description of the resource.
-            parent_resource_id: The ID of the parent resource.
-            parent_resource_external_id: The external ID of the parent resource.
-            parent_resource_type_slug: The resource type slug of the parent resource.
+            parent_resource: Identifies the parent resource. One of: ParentResourceById, ParentResourceByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -711,12 +847,19 @@ class Authorization:
             for k, v in {
                 "name": name,
                 "description": description,
-                "parent_resource_id": parent_resource_id,
-                "parent_resource_external_id": parent_resource_external_id,
-                "parent_resource_type_slug": parent_resource_type_slug,
             }.items()
             if v is not None
         }
+        if parent_resource is not None:
+            if isinstance(parent_resource, ParentResourceById):
+                body["parent_resource_id"] = parent_resource.parent_resource_id
+            elif isinstance(parent_resource, ParentResourceByExternalId):
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
+                )
+                body["parent_resource_type_slug"] = (
+                    parent_resource.parent_resource_type_slug
+                )
         return self._client.request(
             method="patch",
             path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
@@ -777,7 +920,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -838,13 +981,11 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
-        parent_external_id: Optional[str] = None,
         search: Optional[str] = None,
+        parent: Optional[Union[ParentById, ParentByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizationResource]:
         """List resources
@@ -858,10 +999,8 @@ class Authorization:
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
-            parent_resource_id: Filter resources by parent resource ID.
-            parent_resource_type_slug: Filter resources by parent resource type slug.
-            parent_external_id: Filter resources by parent external ID.
             search: Search resources by name.
+            parent: Identifies the parent. One of: ParentById, ParentByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -883,13 +1022,16 @@ class Authorization:
                 "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
                 "resource_type_slug": resource_type_slug,
-                "parent_resource_id": parent_resource_id,
-                "parent_resource_type_slug": parent_resource_type_slug,
-                "parent_external_id": parent_external_id,
                 "search": search,
             }.items()
             if v is not None
         }
+        if parent is not None:
+            if isinstance(parent, ParentById):
+                params["parent_resource_id"] = parent.parent_resource_id
+            elif isinstance(parent, ParentByExternalId):
+                params["parent_resource_type_slug"] = parent.parent_resource_type_slug
+                params["parent_external_id"] = parent.parent_external_id
         return self._client.request_page(
             method="get",
             path="authorization/resources",
@@ -906,9 +1048,9 @@ class Authorization:
         resource_type_slug: str,
         organization_id: str,
         description: Optional[str] = None,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
+        parent_resource: Optional[
+            Union[ParentResourceById, ParentResourceByExternalId]
+        ] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Create an authorization resource
@@ -921,9 +1063,7 @@ class Authorization:
             description: An optional description of the resource.
             resource_type_slug: The slug of the resource type.
             organization_id: The ID of the organization this resource belongs to.
-            parent_resource_id: The ID of the parent resource.
-            parent_resource_external_id: The external ID of the parent resource.
-            parent_resource_type_slug: The resource type slug of the parent resource.
+            parent_resource: Identifies the parent resource. One of: ParentResourceById, ParentResourceByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -947,12 +1087,19 @@ class Authorization:
                 "description": description,
                 "resource_type_slug": resource_type_slug,
                 "organization_id": organization_id,
-                "parent_resource_id": parent_resource_id,
-                "parent_resource_external_id": parent_resource_external_id,
-                "parent_resource_type_slug": parent_resource_type_slug,
             }.items()
             if v is not None
         }
+        if parent_resource is not None:
+            if isinstance(parent_resource, ParentResourceById):
+                body["parent_resource_id"] = parent_resource.parent_resource_id
+            elif isinstance(parent_resource, ParentResourceByExternalId):
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
+                )
+                body["parent_resource_type_slug"] = (
+                    parent_resource.parent_resource_type_slug
+                )
         return self._client.request(
             method="post",
             path="authorization/resources",
@@ -999,9 +1146,9 @@ class Authorization:
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
+        parent_resource: Optional[
+            Union[ParentResourceById, ParentResourceByExternalId]
+        ] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Update a resource
@@ -1012,9 +1159,7 @@ class Authorization:
             resource_id: The ID of the authorization resource.
             name: A display name for the resource.
             description: An optional description of the resource.
-            parent_resource_id: The ID of the parent resource.
-            parent_resource_external_id: The external ID of the parent resource.
-            parent_resource_type_slug: The resource type slug of the parent resource.
+            parent_resource: Identifies the parent resource. One of: ParentResourceById, ParentResourceByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1035,12 +1180,19 @@ class Authorization:
             for k, v in {
                 "name": name,
                 "description": description,
-                "parent_resource_id": parent_resource_id,
-                "parent_resource_external_id": parent_resource_external_id,
-                "parent_resource_type_slug": parent_resource_type_slug,
             }.items()
             if v is not None
         }
+        if parent_resource is not None:
+            if isinstance(parent_resource, ParentResourceById):
+                body["parent_resource_id"] = parent_resource.parent_resource_id
+            elif isinstance(parent_resource, ParentResourceByExternalId):
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
+                )
+                body["parent_resource_type_slug"] = (
+                    parent_resource.parent_resource_type_slug
+                )
         return self._client.request(
             method="patch",
             path=f"authorization/resources/{resource_id}",
@@ -1095,7 +1247,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -1385,7 +1537,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[PermissionsOrder, str]] = None,
+        order: Optional[Union[PermissionsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizationPermission]:
         """List permissions
@@ -1437,7 +1589,7 @@ class Authorization:
     ) -> Permission:
         """Create a permission
 
-        Create a new permission in your WorkOS environment. The permission can then be assigned to environment roles and organization roles.
+        Create a new permission in your WorkOS environment. The permission can then be assigned to environment roles and custom roles.
 
         Args:
             slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.
@@ -1590,9 +1742,7 @@ class AsyncAuthorization:
         organization_membership_id: str,
         *,
         permission_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
+        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationCheck:
         """Check authorization
@@ -1602,9 +1752,7 @@ class AsyncAuthorization:
         Args:
             organization_membership_id: The ID of the organization membership to check.
             permission_slug: The slug of the permission to check.
-            resource_id: The ID of the resource.
-            resource_external_id: The external ID of the resource.
-            resource_type_slug: The slug of the resource type.
+            resource_target: Identifies the resource target. One of: ResourceTargetById, ResourceTargetByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1619,15 +1767,13 @@ class AsyncAuthorization:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "permission_slug": permission_slug,
-                "resource_id": resource_id,
-                "resource_external_id": resource_external_id,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
+            "permission_slug": permission_slug,
         }
+        if isinstance(resource_target, ResourceTargetById):
+            body["resource_id"] = resource_target.resource_id
+        elif isinstance(resource_target, ResourceTargetByExternalId):
+            body["resource_external_id"] = resource_target.resource_external_id
+            body["resource_type_slug"] = resource_target.resource_type_slug
         return await self._client.request(
             method="post",
             path=f"authorization/organization_memberships/{organization_membership_id}/check",
@@ -1643,11 +1789,9 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
         permission_slug: str,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
+        parent_resource: Union[ParentResourceById, ParentResourceByExternalId],
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizationResource]:
         """List resources for organization membership
@@ -1663,9 +1807,7 @@ class AsyncAuthorization:
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             permission_slug: The permission slug to filter by. Only child resources where the organization membership has this permission are returned.
-            parent_resource_id: The WorkOS ID of the parent resource. Provide this or both `parent_resource_external_id` and `parent_resource_type_slug`, but not both.
-            parent_resource_type_slug: The slug of the parent resource type. Must be provided together with `parent_resource_external_id`.
-            parent_resource_external_id: The application-specific external identifier of the parent resource. Must be provided together with `parent_resource_type_slug`.
+            parent_resource: Identifies the parent resource. One of: ParentResourceById, ParentResourceByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1688,16 +1830,130 @@ class AsyncAuthorization:
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
                 "permission_slug": permission_slug,
-                "parent_resource_id": parent_resource_id,
-                "parent_resource_type_slug": parent_resource_type_slug,
-                "parent_resource_external_id": parent_resource_external_id,
+            }.items()
+            if v is not None
+        }
+        if isinstance(parent_resource, ParentResourceById):
+            params["parent_resource_id"] = parent_resource.parent_resource_id
+        elif isinstance(parent_resource, ParentResourceByExternalId):
+            params["parent_resource_type_slug"] = (
+                parent_resource.parent_resource_type_slug
+            )
+            params["parent_resource_external_id"] = (
+                parent_resource.parent_resource_external_id
+            )
+        return await self._client.request_page(
+            method="get",
+            path=f"authorization/organization_memberships/{organization_membership_id}/resources",
+            model=AuthorizationResource,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def list_resource_permissions(
+        self,
+        organization_membership_id: str,
+        resource_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[AuthorizationPermission]:
+        """List effective permissions for an organization membership on a resource
+
+        Returns all permissions the organization membership effectively has on a resource, including permissions inherited through roles assigned to ancestor resources.
+
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            resource_id: The ID of the authorization resource.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[AuthorizationPermission]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
             }.items()
             if v is not None
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources",
-            model=AuthorizationResource,
+            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_id}/permissions",
+            model=AuthorizationPermission,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def list_effective_permissions_by_external_id(
+        self,
+        organization_membership_id: str,
+        resource_type_slug: str,
+        external_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[AuthorizationPermission]:
+        """List effective permissions for an organization membership on a resource by external ID
+
+        Returns all permissions the organization membership effectively has on a resource identified by its external ID, including permissions inherited through roles assigned to ancestor resources.
+
+        Args:
+            organization_membership_id: The ID of the organization membership.
+            resource_type_slug: The slug of the resource type.
+            external_id: An identifier you provide to reference the resource in your system.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[AuthorizationPermission]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_type_slug}/{external_id}/permissions",
+            model=AuthorizationPermission,
             params=params,
             request_options=request_options,
         )
@@ -1709,7 +1965,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[RoleAssignment]:
         """List role assignments
@@ -1757,9 +2013,7 @@ class AsyncAuthorization:
         organization_membership_id: str,
         *,
         role_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
+        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
         request_options: Optional[RequestOptions] = None,
     ) -> RoleAssignment:
         """Assign a role
@@ -1769,9 +2023,7 @@ class AsyncAuthorization:
         Args:
             organization_membership_id: The ID of the organization membership.
             role_slug: The slug of the role to assign.
-            resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
-            resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
-            resource_type_slug: The resource type slug. Required with `resource_external_id`.
+            resource_target: Identifies the resource target. One of: ResourceTargetById, ResourceTargetByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1786,15 +2038,13 @@ class AsyncAuthorization:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "role_slug": role_slug,
-                "resource_id": resource_id,
-                "resource_external_id": resource_external_id,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
+            "role_slug": role_slug,
         }
+        if isinstance(resource_target, ResourceTargetById):
+            body["resource_id"] = resource_target.resource_id
+        elif isinstance(resource_target, ResourceTargetByExternalId):
+            body["resource_external_id"] = resource_target.resource_external_id
+            body["resource_type_slug"] = resource_target.resource_type_slug
         return await self._client.request(
             method="post",
             path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
@@ -1808,9 +2058,7 @@ class AsyncAuthorization:
         organization_membership_id: str,
         *,
         role_slug: str,
-        resource_id: Optional[str] = None,
-        resource_external_id: Optional[str] = None,
-        resource_type_slug: Optional[str] = None,
+        resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
         request_options: Optional[RequestOptions] = None,
     ) -> None:
         """Remove a role assignment
@@ -1820,9 +2068,7 @@ class AsyncAuthorization:
         Args:
             organization_membership_id: The ID of the organization membership.
             role_slug: The slug of the role to remove.
-            resource_id: The ID of the resource. Use either this or `resource_external_id` and `resource_type_slug`.
-            resource_external_id: The external ID of the resource. Requires `resource_type_slug`.
-            resource_type_slug: The resource type slug. Required with `resource_external_id`.
+            resource_target: Identifies the resource target. One of: ResourceTargetById, ResourceTargetByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Raises:
@@ -1834,15 +2080,13 @@ class AsyncAuthorization:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "role_slug": role_slug,
-                "resource_id": resource_id,
-                "resource_external_id": resource_external_id,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
+            "role_slug": role_slug,
         }
+        if isinstance(resource_target, ResourceTargetById):
+            body["resource_id"] = resource_target.resource_id
+        elif isinstance(resource_target, ResourceTargetByExternalId):
+            body["resource_external_id"] = resource_target.resource_external_id
+            body["resource_type_slug"] = resource_target.resource_type_slug
         await self._client.request(
             method="delete",
             path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
@@ -1885,9 +2129,9 @@ class AsyncAuthorization:
         *,
         request_options: Optional[RequestOptions] = None,
     ) -> RoleList:
-        """List organization roles
+        """List custom roles
 
-        Get a list of all roles that apply to an organization. This includes both environment roles and organization-specific roles, returned in priority order.
+        Get a list of all roles that apply to an organization. This includes both environment roles and custom roles, returned in priority order.
 
         Args:
             organization_id: The ID of the organization.
@@ -1920,9 +2164,9 @@ class AsyncAuthorization:
         resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
-        """Create a custom organization role
+        """Create a custom role
 
-        Create a new custom organization role. When slug is omitted, it is auto-generated from the role name.
+        Create a new custom role for this organization.
 
         Args:
             organization_id: The ID of the organization.
@@ -1970,9 +2214,9 @@ class AsyncAuthorization:
         *,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
-        """Get an organization role
+        """Get a custom role
 
-        Retrieve a role that applies to an organization by its slug. This can return either an environment role or an organization-specific role.
+        Retrieve a role that applies to an organization by its slug. This can return either an environment role or a custom role.
 
         Args:
             organization_id: The ID of the organization.
@@ -2005,9 +2249,9 @@ class AsyncAuthorization:
         description: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
-        """Update an organization role
+        """Update a custom role
 
-        Update an existing custom organization role. Only the fields provided in the request body will be updated.
+        Update an existing custom role. Only the fields provided in the request body will be updated.
 
         Args:
             organization_id: The ID of the organization.
@@ -2051,9 +2295,9 @@ class AsyncAuthorization:
         *,
         request_options: Optional[RequestOptions] = None,
     ) -> None:
-        """Delete a custom organization role
+        """Delete a custom role
 
-        Delete an existing custom organization role.
+        Delete an existing custom role.
 
         Args:
             organization_id: The ID of the organization.
@@ -2083,9 +2327,9 @@ class AsyncAuthorization:
         body_slug: str,
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
-        """Add a permission to an organization role
+        """Add a permission to a custom role
 
-        Add a single permission to an organization role. If the permission is already assigned to the role, this operation has no effect.
+        Add a single permission to a custom role. If the permission is already assigned to the role, this operation has no effect.
 
         Args:
             organization_id: The ID of the organization.
@@ -2124,9 +2368,9 @@ class AsyncAuthorization:
         permissions: List[str],
         request_options: Optional[RequestOptions] = None,
     ) -> Role:
-        """Set permissions for a role
+        """Set permissions for a custom role
 
-        Replace all permissions on a role with the provided list.
+        Replace all permissions on a custom role with the provided list.
 
         Args:
             organization_id: The ID of the organization.
@@ -2164,9 +2408,9 @@ class AsyncAuthorization:
         *,
         request_options: Optional[RequestOptions] = None,
     ) -> None:
-        """Remove a permission from an organization role
+        """Remove a permission from a custom role
 
-        Remove a single permission from an organization role by its slug.
+        Remove a single permission from a custom role by its slug.
 
         Args:
             organization_id: The ID of the organization.
@@ -2230,9 +2474,9 @@ class AsyncAuthorization:
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
+        parent_resource: Optional[
+            Union[ParentResourceById, ParentResourceByExternalId]
+        ] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Update a resource by external ID
@@ -2245,9 +2489,7 @@ class AsyncAuthorization:
             external_id: An identifier you provide to reference the resource in your system.
             name: A display name for the resource.
             description: An optional description of the resource.
-            parent_resource_id: The ID of the parent resource.
-            parent_resource_external_id: The external ID of the parent resource.
-            parent_resource_type_slug: The resource type slug of the parent resource.
+            parent_resource: Identifies the parent resource. One of: ParentResourceById, ParentResourceByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2268,12 +2510,19 @@ class AsyncAuthorization:
             for k, v in {
                 "name": name,
                 "description": description,
-                "parent_resource_id": parent_resource_id,
-                "parent_resource_external_id": parent_resource_external_id,
-                "parent_resource_type_slug": parent_resource_type_slug,
             }.items()
             if v is not None
         }
+        if parent_resource is not None:
+            if isinstance(parent_resource, ParentResourceById):
+                body["parent_resource_id"] = parent_resource.parent_resource_id
+            elif isinstance(parent_resource, ParentResourceByExternalId):
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
+                )
+                body["parent_resource_type_slug"] = (
+                    parent_resource.parent_resource_type_slug
+                )
         return await self._client.request(
             method="patch",
             path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
@@ -2334,7 +2583,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -2395,13 +2644,11 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
-        parent_external_id: Optional[str] = None,
         search: Optional[str] = None,
+        parent: Optional[Union[ParentById, ParentByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizationResource]:
         """List resources
@@ -2415,10 +2662,8 @@ class AsyncAuthorization:
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
-            parent_resource_id: Filter resources by parent resource ID.
-            parent_resource_type_slug: Filter resources by parent resource type slug.
-            parent_external_id: Filter resources by parent external ID.
             search: Search resources by name.
+            parent: Identifies the parent. One of: ParentById, ParentByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2440,13 +2685,16 @@ class AsyncAuthorization:
                 "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
                 "resource_type_slug": resource_type_slug,
-                "parent_resource_id": parent_resource_id,
-                "parent_resource_type_slug": parent_resource_type_slug,
-                "parent_external_id": parent_external_id,
                 "search": search,
             }.items()
             if v is not None
         }
+        if parent is not None:
+            if isinstance(parent, ParentById):
+                params["parent_resource_id"] = parent.parent_resource_id
+            elif isinstance(parent, ParentByExternalId):
+                params["parent_resource_type_slug"] = parent.parent_resource_type_slug
+                params["parent_external_id"] = parent.parent_external_id
         return await self._client.request_page(
             method="get",
             path="authorization/resources",
@@ -2463,9 +2711,9 @@ class AsyncAuthorization:
         resource_type_slug: str,
         organization_id: str,
         description: Optional[str] = None,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
+        parent_resource: Optional[
+            Union[ParentResourceById, ParentResourceByExternalId]
+        ] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Create an authorization resource
@@ -2478,9 +2726,7 @@ class AsyncAuthorization:
             description: An optional description of the resource.
             resource_type_slug: The slug of the resource type.
             organization_id: The ID of the organization this resource belongs to.
-            parent_resource_id: The ID of the parent resource.
-            parent_resource_external_id: The external ID of the parent resource.
-            parent_resource_type_slug: The resource type slug of the parent resource.
+            parent_resource: Identifies the parent resource. One of: ParentResourceById, ParentResourceByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2504,12 +2750,19 @@ class AsyncAuthorization:
                 "description": description,
                 "resource_type_slug": resource_type_slug,
                 "organization_id": organization_id,
-                "parent_resource_id": parent_resource_id,
-                "parent_resource_external_id": parent_resource_external_id,
-                "parent_resource_type_slug": parent_resource_type_slug,
             }.items()
             if v is not None
         }
+        if parent_resource is not None:
+            if isinstance(parent_resource, ParentResourceById):
+                body["parent_resource_id"] = parent_resource.parent_resource_id
+            elif isinstance(parent_resource, ParentResourceByExternalId):
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
+                )
+                body["parent_resource_type_slug"] = (
+                    parent_resource.parent_resource_type_slug
+                )
         return await self._client.request(
             method="post",
             path="authorization/resources",
@@ -2556,9 +2809,9 @@ class AsyncAuthorization:
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        parent_resource_id: Optional[str] = None,
-        parent_resource_external_id: Optional[str] = None,
-        parent_resource_type_slug: Optional[str] = None,
+        parent_resource: Optional[
+            Union[ParentResourceById, ParentResourceByExternalId]
+        ] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Update a resource
@@ -2569,9 +2822,7 @@ class AsyncAuthorization:
             resource_id: The ID of the authorization resource.
             name: A display name for the resource.
             description: An optional description of the resource.
-            parent_resource_id: The ID of the parent resource.
-            parent_resource_external_id: The external ID of the parent resource.
-            parent_resource_type_slug: The resource type slug of the parent resource.
+            parent_resource: Identifies the parent resource. One of: ParentResourceById, ParentResourceByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2592,12 +2843,19 @@ class AsyncAuthorization:
             for k, v in {
                 "name": name,
                 "description": description,
-                "parent_resource_id": parent_resource_id,
-                "parent_resource_external_id": parent_resource_external_id,
-                "parent_resource_type_slug": parent_resource_type_slug,
             }.items()
             if v is not None
         }
+        if parent_resource is not None:
+            if isinstance(parent_resource, ParentResourceById):
+                body["parent_resource_id"] = parent_resource.parent_resource_id
+            elif isinstance(parent_resource, ParentResourceByExternalId):
+                body["parent_resource_external_id"] = (
+                    parent_resource.parent_resource_external_id
+                )
+                body["parent_resource_type_slug"] = (
+                    parent_resource.parent_resource_type_slug
+                )
         return await self._client.request(
             method="patch",
             path=f"authorization/resources/{resource_id}",
@@ -2652,7 +2910,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = None,
+        order: Optional[Union[AuthorizationOrder, str]] = "desc",
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -2942,7 +3200,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[PermissionsOrder, str]] = None,
+        order: Optional[Union[PermissionsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizationPermission]:
         """List permissions
@@ -2994,7 +3252,7 @@ class AsyncAuthorization:
     ) -> Permission:
         """Create a permission
 
-        Create a new permission in your WorkOS environment. The permission can then be assigned to environment roles and organization roles.
+        Create a new permission in your WorkOS environment. The permission can then be assigned to environment roles and custom roles.
 
         Args:
             slug: A unique key to reference the permission. Must be lowercase and contain only letters, numbers, hyphens, underscores, colons, periods, and asterisks.

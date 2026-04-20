@@ -75,7 +75,7 @@ class TestSSO:
         assert request.url.path.endswith("/connections/test_id")
 
     def test_delete_connection(self, workos, httpx_mock):
-        httpx_mock.add_response(status_code=204)
+        httpx_mock.add_response(status_code=200, content=b"\n")
         result = workos.sso.delete_connection("test_id")
         assert result is None
         request = httpx_mock.get_request()
@@ -267,7 +267,7 @@ class TestAsyncSSO:
 
     @pytest.mark.asyncio
     async def test_delete_connection(self, async_workos, httpx_mock):
-        httpx_mock.add_response(status_code=204)
+        httpx_mock.add_response(status_code=200, content=b"\n")
         result = await async_workos.sso.delete_connection("test_id")
         assert result is None
         request = httpx_mock.get_request()

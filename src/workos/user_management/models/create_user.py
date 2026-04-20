@@ -17,12 +17,6 @@ class CreateUser:
 
     email: str
     """The email address of the user."""
-    password: Optional[str] = None
-    """The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`."""
-    password_hash: Optional[str] = None
-    """The hashed password to set for the user. Mutually exclusive with `password`."""
-    password_hash_type: Optional["CreateUserPasswordHashType"] = None
-    """The algorithm originally used to hash the password, used when providing a `password_hash`."""
     first_name: Optional[str] = None
     """The first name of the user."""
     last_name: Optional[str] = None
@@ -33,6 +27,12 @@ class CreateUser:
     """Object containing metadata key/value pairs associated with the user."""
     external_id: Optional[str] = None
     """The external ID of the user."""
+    password: Optional[str] = None
+    """The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`."""
+    password_hash: Optional[str] = None
+    """The hashed password to set for the user. Required with `password_hash_type`. Mutually exclusive with `password`."""
+    password_hash_type: Optional["CreateUserPasswordHashType"] = None
+    """The algorithm originally used to hash the password, used when providing a `password_hash`. Required with `password_hash`. Mutually exclusive with `password`."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "CreateUser":
@@ -40,16 +40,16 @@ class CreateUser:
         try:
             return cls(
                 email=data["email"],
-                password=data.get("password"),
-                password_hash=data.get("password_hash"),
-                password_hash_type=CreateUserPasswordHashType(_v_password_hash_type)
-                if (_v_password_hash_type := data.get("password_hash_type")) is not None
-                else None,
                 first_name=data.get("first_name"),
                 last_name=data.get("last_name"),
                 email_verified=data.get("email_verified"),
                 metadata=data.get("metadata"),
                 external_id=data.get("external_id"),
+                password=data.get("password"),
+                password_hash=data.get("password_hash"),
+                password_hash_type=CreateUserPasswordHashType(_v_password_hash_type)
+                if (_v_password_hash_type := data.get("password_hash_type")) is not None
+                else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateUser", e)
@@ -58,18 +58,6 @@ class CreateUser:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["email"] = self.email
-        if self.password is not None:
-            result["password"] = self.password
-        else:
-            result["password"] = None
-        if self.password_hash is not None:
-            result["password_hash"] = self.password_hash
-        if self.password_hash_type is not None:
-            result["password_hash_type"] = (
-                self.password_hash_type.value
-                if isinstance(self.password_hash_type, Enum)
-                else self.password_hash_type
-            )
         if self.first_name is not None:
             result["first_name"] = self.first_name
         else:
@@ -90,4 +78,16 @@ class CreateUser:
             result["external_id"] = self.external_id
         else:
             result["external_id"] = None
+        if self.password is not None:
+            result["password"] = self.password
+        else:
+            result["password"] = None
+        if self.password_hash is not None:
+            result["password_hash"] = self.password_hash
+        if self.password_hash_type is not None:
+            result["password_hash_type"] = (
+                self.password_hash_type.value
+                if isinstance(self.password_hash_type, Enum)
+                else self.password_hash_type
+            )
         return result

@@ -41,6 +41,7 @@ from workos._errors import (
     ServerError,
     UnprocessableEntityError,
 )
+from workos.user_management._resource import PasswordPlaintext, RoleSingle
 
 
 class TestUserManagement:
@@ -209,7 +210,9 @@ class TestUserManagement:
         httpx_mock.add_response(
             json=load_fixture("user.json"),
         )
-        result = workos.user_management.create_user(email="test_email")
+        result = workos.user_management.create_user(
+            email="test_email", password=PasswordPlaintext(password="test_value")
+        )
         assert isinstance(result, User)
         assert result.object == "user"
         assert result.id == "user_01E4ZCR3C56J083X43JQXF3JK5"
@@ -249,7 +252,9 @@ class TestUserManagement:
         httpx_mock.add_response(
             json=load_fixture("user.json"),
         )
-        result = workos.user_management.update_user("test_id")
+        result = workos.user_management.update_user(
+            "test_id", password=PasswordPlaintext(password="test_value")
+        )
         assert isinstance(result, User)
         assert result.object == "user"
         assert result.id == "user_01E4ZCR3C56J083X43JQXF3JK5"
@@ -551,7 +556,9 @@ class TestUserManagement:
             json=load_fixture("organization_membership.json"),
         )
         result = workos.user_management.create_organization_membership(
-            user_id="test_user_id", organization_id="test_organization_id"
+            user_id="test_user_id",
+            organization_id="test_organization_id",
+            role=RoleSingle(role_slug="test_value"),
         )
         assert isinstance(result, OrganizationMembership)
         assert result.object == "organization_membership"
@@ -581,7 +588,9 @@ class TestUserManagement:
         httpx_mock.add_response(
             json=load_fixture("user_organization_membership.json"),
         )
-        result = workos.user_management.update_organization_membership("test_id")
+        result = workos.user_management.update_organization_membership(
+            "test_id", role=RoleSingle(role_slug="test_value")
+        )
         assert isinstance(result, UserOrganizationMembership)
         assert result.object == "organization_membership"
         assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
@@ -699,7 +708,7 @@ class TestUserManagement:
 
     def test_authenticate_with_code(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
-        result = workos.user_management.authenticate_with_code(code="test_value")
+        result = workos.user_management.authenticate_with_code(code="test_code")
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -731,7 +740,7 @@ class TestUserManagement:
     def test_authenticate_with_email_verification(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = workos.user_management.authenticate_with_email_verification(
-            code="test_value"
+            code="test_value", pending_authentication_token="test_value"
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -1010,7 +1019,9 @@ class TestAsyncUserManagement:
     @pytest.mark.asyncio
     async def test_create_user(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user.json"))
-        result = await async_workos.user_management.create_user(email="test_email")
+        result = await async_workos.user_management.create_user(
+            email="test_email", password=PasswordPlaintext(password="test_value")
+        )
         assert isinstance(result, User)
         assert result.object == "user"
         assert result.id == "user_01E4ZCR3C56J083X43JQXF3JK5"
@@ -1047,7 +1058,9 @@ class TestAsyncUserManagement:
     @pytest.mark.asyncio
     async def test_update_user(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user.json"))
-        result = await async_workos.user_management.update_user("test_id")
+        result = await async_workos.user_management.update_user(
+            "test_id", password=PasswordPlaintext(password="test_value")
+        )
         assert isinstance(result, User)
         assert result.object == "user"
         assert result.id == "user_01E4ZCR3C56J083X43JQXF3JK5"
@@ -1344,7 +1357,9 @@ class TestAsyncUserManagement:
     async def test_create_organization_membership(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization_membership.json"))
         result = await async_workos.user_management.create_organization_membership(
-            user_id="test_user_id", organization_id="test_organization_id"
+            user_id="test_user_id",
+            organization_id="test_organization_id",
+            role=RoleSingle(role_slug="test_value"),
         )
         assert isinstance(result, OrganizationMembership)
         assert result.object == "organization_membership"
@@ -1372,7 +1387,7 @@ class TestAsyncUserManagement:
     async def test_update_organization_membership(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("user_organization_membership.json"))
         result = await async_workos.user_management.update_organization_membership(
-            "test_id"
+            "test_id", role=RoleSingle(role_slug="test_value")
         )
         assert isinstance(result, UserOrganizationMembership)
         assert result.object == "organization_membership"
@@ -1506,7 +1521,7 @@ class TestAsyncUserManagement:
     async def test_authenticate_with_code(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = await async_workos.user_management.authenticate_with_code(
-            code="test_value"
+            code="test_code"
         )
         assert isinstance(result, AuthenticateResponse)
         request = httpx_mock.get_request()
@@ -1543,7 +1558,7 @@ class TestAsyncUserManagement:
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
         result = (
             await async_workos.user_management.authenticate_with_email_verification(
-                code="test_value"
+                code="test_value", pending_authentication_token="test_value"
             )
         )
         assert isinstance(result, AuthenticateResponse)

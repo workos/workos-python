@@ -174,6 +174,14 @@ from workos.common.models import (
     FlagUpdatedContextPreviousAttributeData,
     FlagUpdatedData,
     FlagUpdatedDataOwner,
+    Group,
+    GroupCreated,
+    GroupDeleted,
+    GroupMemberAdded,
+    GroupMemberAddedData,
+    GroupMemberRemoved,
+    GroupMemberRemovedData,
+    GroupUpdated,
     InvitationAccepted,
     InvitationAcceptedData,
     InvitationCreated,
@@ -306,6 +314,8 @@ from workos.organizations.models import (
 )
 from workos.pipes.models import (
     ConnectedAccount,
+    DataIntegrationAccessTokenResponse,
+    DataIntegrationAccessTokenResponseAccessToken,
     DataIntegrationAuthorizeUrlResponse,
     DataIntegrationsListResponse,
     DataIntegrationsListResponseData,
@@ -764,6 +774,22 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
+    def test_connect_application_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "object": "connect_application",
+            "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
+            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+            "description": "An application for managing user access",
+            "name": "My Application",
+            "scopes": ["openid", "profile", "email"],
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = ConnectApplication.from_dict(data)
+        serialized = instance.to_dict()
+        assert "application_type" not in serialized
+        assert "organization_id" not in serialized
+
     def test_connect_application_preserves_nullable_fields(self):
         data = {
             "object": "connect_application",
@@ -774,6 +800,8 @@ class TestModelRoundTrip:
             "scopes": ["openid", "profile", "email"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
+            "application_type": "m2m",
+            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
         }
         instance = ConnectApplication.from_dict(data)
         serialized = instance.to_dict()
@@ -1246,6 +1274,54 @@ class TestModelRoundTrip:
         assert serialized["description"] is None
         assert serialized["parent_resource_id"] is None
 
+    def test_authorization_permission_round_trip(self):
+        data = load_fixture("authorization_permission.json")
+        instance = AuthorizationPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = AuthorizationPermission.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_authorization_permission_minimal_payload(self):
+        data = {
+            "object": "permission",
+            "id": "perm_01HXYZ123456789ABCDEFGHIJ",
+            "slug": "documents:read",
+            "name": "View Documents",
+            "description": None,
+            "system": False,
+            "resource_type_slug": "workspace",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AuthorizationPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["slug"] == data["slug"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["system"] == data["system"]
+        assert serialized["resource_type_slug"] == data["resource_type_slug"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_authorization_permission_preserves_nullable_fields(self):
+        data = {
+            "object": "permission",
+            "id": "perm_01HXYZ123456789ABCDEFGHIJ",
+            "slug": "documents:read",
+            "name": "View Documents",
+            "description": None,
+            "system": False,
+            "resource_type_slug": "workspace",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = AuthorizationPermission.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
     def test_slim_role_round_trip(self):
         data = load_fixture("slim_role.json")
         instance = SlimRole.from_dict(data)
@@ -1387,54 +1463,6 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
         assert serialized["data"] == data["data"]
-
-    def test_authorization_permission_round_trip(self):
-        data = load_fixture("authorization_permission.json")
-        instance = AuthorizationPermission.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = AuthorizationPermission.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_authorization_permission_minimal_payload(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01HXYZ123456789ABCDEFGHIJ",
-            "slug": "documents:read",
-            "name": "View Documents",
-            "description": None,
-            "system": False,
-            "resource_type_slug": "workspace",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = AuthorizationPermission.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["slug"] == data["slug"]
-        assert serialized["name"] == data["name"]
-        assert serialized["description"] == data["description"]
-        assert serialized["system"] == data["system"]
-        assert serialized["resource_type_slug"] == data["resource_type_slug"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_authorization_permission_preserves_nullable_fields(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01HXYZ123456789ABCDEFGHIJ",
-            "slug": "documents:read",
-            "name": "View Documents",
-            "description": None,
-            "system": False,
-            "resource_type_slug": "workspace",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = AuthorizationPermission.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["description"] is None
 
     def test_connection_round_trip(self):
         data = load_fixture("connection.json")
@@ -2036,6 +2064,48 @@ class TestModelRoundTrip:
         }
         instance = DirectoryUser.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_group_round_trip(self):
+        data = load_fixture("group.json")
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = Group.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_minimal_payload(self):
+        data = {
+            "object": "group",
+            "id": "group_01HXYZ123456789ABCDEFGHIJ",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Engineering",
+            "description": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_group_preserves_nullable_fields(self):
+        data = {
+            "object": "group",
+            "id": "group_01HXYZ123456789ABCDEFGHIJ",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Engineering",
+            "description": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
 
     def test_user_round_trip(self):
         data = load_fixture("user.json")
@@ -8208,6 +8278,288 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["description"] is None
 
+    def test_group_created_round_trip(self):
+        data = load_fixture("group_created.json")
+        instance = GroupCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "group.created",
+            "data": {
+                "object": "group",
+                "id": "group_01HXYZ123456789ABCDEFGHIJ",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Engineering",
+                "description": "The engineering team",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = GroupCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_group_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "group.created",
+            "data": {
+                "object": "group",
+                "id": "group_01HXYZ123456789ABCDEFGHIJ",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Engineering",
+                "description": "The engineering team",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = GroupCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_group_deleted_round_trip(self):
+        data = load_fixture("group_deleted.json")
+        instance = GroupDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupDeleted.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_deleted_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "group.deleted",
+            "data": {
+                "object": "group",
+                "id": "group_01HXYZ123456789ABCDEFGHIJ",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Engineering",
+                "description": "The engineering team",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = GroupDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_group_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "group.deleted",
+            "data": {
+                "object": "group",
+                "id": "group_01HXYZ123456789ABCDEFGHIJ",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Engineering",
+                "description": "The engineering team",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = GroupDeleted.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_group_member_added_round_trip(self):
+        data = load_fixture("group_member_added.json")
+        instance = GroupMemberAdded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMemberAdded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_member_added_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "group.member_added",
+            "data": {
+                "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
+                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = GroupMemberAdded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_group_member_added_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "group.member_added",
+            "data": {
+                "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
+                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = GroupMemberAdded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_group_member_added_data_round_trip(self):
+        data = load_fixture("group_member_added_data.json")
+        instance = GroupMemberAddedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMemberAddedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_member_added_data_minimal_payload(self):
+        data = {
+            "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
+            "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+        }
+        instance = GroupMemberAddedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["group_id"] == data["group_id"]
+        assert (
+            serialized["organization_membership_id"]
+            == data["organization_membership_id"]
+        )
+
+    def test_group_member_removed_round_trip(self):
+        data = load_fixture("group_member_removed.json")
+        instance = GroupMemberRemoved.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMemberRemoved.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_member_removed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "group.member_removed",
+            "data": {
+                "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
+                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = GroupMemberRemoved.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_group_member_removed_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "group.member_removed",
+            "data": {
+                "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
+                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = GroupMemberRemoved.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_group_member_removed_data_round_trip(self):
+        data = load_fixture("group_member_removed_data.json")
+        instance = GroupMemberRemovedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupMemberRemovedData.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_member_removed_data_minimal_payload(self):
+        data = {
+            "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
+            "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
+        }
+        instance = GroupMemberRemovedData.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["group_id"] == data["group_id"]
+        assert (
+            serialized["organization_membership_id"]
+            == data["organization_membership_id"]
+        )
+
+    def test_group_updated_round_trip(self):
+        data = load_fixture("group_updated.json")
+        instance = GroupUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = GroupUpdated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_updated_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "group.updated",
+            "data": {
+                "object": "group",
+                "id": "group_01HXYZ123456789ABCDEFGHIJ",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Engineering",
+                "description": "The engineering team",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = GroupUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_group_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "group.updated",
+            "data": {
+                "object": "group",
+                "id": "group_01HXYZ123456789ABCDEFGHIJ",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "name": "Engineering",
+                "description": "The engineering team",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = GroupUpdated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
     def test_invitation_accepted_round_trip(self):
         data = load_fixture("invitation_accepted.json")
         instance = InvitationAccepted.from_dict(data)
@@ -13408,6 +13760,46 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["url"] == data["url"]
 
+    def test_data_integration_access_token_response_round_trip(self):
+        data = load_fixture("data_integration_access_token_response.json")
+        instance = DataIntegrationAccessTokenResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationAccessTokenResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_access_token_response_minimal_payload(self):
+        data = {}
+        instance = DataIntegrationAccessTokenResponse.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_data_integration_access_token_response_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = DataIntegrationAccessTokenResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert "active" not in serialized
+        assert "access_token" not in serialized
+        assert "error" not in serialized
+
+    def test_data_integration_access_token_response_round_trips_unknown_enum_values(
+        self,
+    ):
+        data = {
+            "active": True,
+            "access_token": {
+                "object": "access_token",
+                "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+                "expires_at": "2025-12-31T23:59:59.000Z",
+                "scopes": ["repo", "user:email"],
+                "missing_scopes": [],
+            },
+            "error": "unexpected_data_integration_access_token_response_error",
+        }
+        instance = DataIntegrationAccessTokenResponse.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_connected_account_round_trip(self):
         data = load_fixture("connected_account.json")
         instance = ConnectedAccount.from_dict(data)
@@ -14631,6 +15023,44 @@ class TestModelRoundTrip:
         instance = DataIntegrationsListResponseData.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_data_integration_access_token_response_access_token_round_trip(self):
+        data = load_fixture("data_integration_access_token_response_access_token.json")
+        instance = DataIntegrationAccessTokenResponseAccessToken.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DataIntegrationAccessTokenResponseAccessToken.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_data_integration_access_token_response_access_token_minimal_payload(self):
+        data = {
+            "object": "access_token",
+            "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+        }
+        instance = DataIntegrationAccessTokenResponseAccessToken.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["access_token"] == data["access_token"]
+        assert serialized["expires_at"] == data["expires_at"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["missing_scopes"] == data["missing_scopes"]
+
+    def test_data_integration_access_token_response_access_token_preserves_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "access_token",
+            "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
+            "expires_at": None,
+            "scopes": ["repo", "user:email"],
+            "missing_scopes": [],
+        }
+        instance = DataIntegrationAccessTokenResponseAccessToken.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["expires_at"] is None
+
     def test_audit_log_configuration_log_stream_round_trip(self):
         data = load_fixture("audit_log_configuration_log_stream.json")
         instance = AuditLogConfigurationLogStream.from_dict(data)
@@ -15141,6 +15571,8 @@ class TestModelRoundTrip:
                 "scopes": ["openid", "profile", "email"],
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
+                "application_type": "m2m",
+                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
             },
         }
         instance = AuthorizedConnectApplicationListData.from_dict(data)
@@ -15149,6 +15581,30 @@ class TestModelRoundTrip:
         assert serialized["id"] == data["id"]
         assert serialized["granted_scopes"] == data["granted_scopes"]
         assert serialized["application"] == data["application"]
+
+    def test_authorized_connect_application_list_data_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "object": "authorized_connect_application",
+            "id": "authorized_connect_app_01HXYZ123456789ABCDEFGHIJ",
+            "granted_scopes": ["openid", "profile", "email"],
+            "application": {
+                "object": "connect_application",
+                "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
+                "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
+                "description": "An application for managing user access",
+                "name": "My Application",
+                "scopes": ["openid", "profile", "email"],
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+                "application_type": "m2m",
+                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+            },
+        }
+        instance = AuthorizedConnectApplicationListData.from_dict(data)
+        serialized = instance.to_dict()
+        assert "oauth_resource" not in serialized
 
     def test_api_key_owner_round_trip(self):
         data = load_fixture("api_key_owner.json")

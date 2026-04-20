@@ -3,6 +3,8 @@
   "client_secret": "sk_test_....",
   "grant_type": "authorization_code",
   "code": "vBqZKaPpsnJlPfXiDqN7b6VTz",
+  "code_verifier": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk",
+  "invitation_token": "inv_tok_01HXYZ123456789ABCDEFGHIJ",
   "ip_address": "203.0.113.42",
   "device_id": "device_01HXYZ123456789ABCDEFGHIJ",
   "user_agent": "Mozilla/5.0"

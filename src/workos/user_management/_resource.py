@@ -52,22 +52,49 @@ from .models import (
 from workos.common.models.create_user_invite_options_locale import (
     CreateUserInviteOptionsLocale,
 )
-from workos.common.models.create_user_password_hash_type import (
-    CreateUserPasswordHashType,
-)
 from workos.common.models.resend_user_invite_options_locale import (
     ResendUserInviteOptionsLocale,
 )
-from workos.common.models.update_user_password_hash_type import (
-    UpdateUserPasswordHashType,
-)
 from .._pagination import AsyncPage, SyncPage
+from dataclasses import dataclass
+from workos.common.models.create_user_password_hash_type import (
+    CreateUserPasswordHashType,
+)
 from ..session import (
     AsyncSession,
     AuthenticateWithSessionCookieErrorResponse,
     AuthenticateWithSessionCookieSuccessResponse,
     Session,
 )
+
+
+@dataclass
+class PasswordPlaintext:
+    """Identify password plaintext."""
+
+    password: Optional[str]
+
+
+@dataclass
+class PasswordHashed:
+    """Identify password hashed."""
+
+    password_hash: str
+    password_hash_type: Union[CreateUserPasswordHashType, str]
+
+
+@dataclass
+class RoleSingle:
+    """Identify role single."""
+
+    role_slug: str
+
+
+@dataclass
+class RoleMultiple:
+    """Identify role multiple."""
+
+    role_slugs: List[str]
 
 
 class UserManagement:
@@ -193,6 +220,8 @@ class UserManagement:
         self,
         *,
         code: str,
+        code_verifier: Optional[str] = None,
+        invitation_token: Optional[str] = None,
         ip_address: Optional[str] = None,
         device_id: Optional[str] = None,
         user_agent: Optional[str] = None,
@@ -207,6 +236,10 @@ class UserManagement:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
+        if code_verifier is not None:
+            body["code_verifier"] = code_verifier
+        if invitation_token is not None:
+            body["invitation_token"] = invitation_token
         if ip_address is not None:
             body["ip_address"] = ip_address
         if device_id is not None:
@@ -300,7 +333,7 @@ class UserManagement:
         self,
         *,
         code: str,
-        pending_authentication_token: Optional[str] = None,
+        pending_authentication_token: str,
         ip_address: Optional[str] = None,
         device_id: Optional[str] = None,
         user_agent: Optional[str] = None,
@@ -310,13 +343,12 @@ class UserManagement:
         body: Dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:email-verification:code",
             "code": code,
+            "pending_authentication_token": pending_authentication_token,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if pending_authentication_token is not None:
-            body["pending_authentication_token"] = pending_authentication_token
         if ip_address is not None:
             body["ip_address"] = ip_address
         if device_id is not None:
@@ -798,7 +830,7 @@ class UserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersOrder, str]] = None,
+        order: Optional[Union[UserManagementUsersOrder, str]] = "desc",
         organization: Optional[str] = None,
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
@@ -852,14 +884,12 @@ class UserManagement:
         self,
         *,
         email: str,
-        password: Optional[str] = None,
-        password_hash: Optional[str] = None,
-        password_hash_type: Optional[Union[CreateUserPasswordHashType, str]] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
+        password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> User:
         """Create a user
@@ -868,14 +898,12 @@ class UserManagement:
 
         Args:
             email: The email address of the user.
-            password: The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`.
-            password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
-            password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
             first_name: The first name of the user.
             last_name: The last name of the user.
             email_verified: Whether the user's email has been verified.
             metadata: Object containing metadata key/value pairs associated with the user.
             external_id: The external ID of the user.
+            password: Identifies the password. One of: PasswordPlaintext, PasswordHashed.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -893,11 +921,6 @@ class UserManagement:
             k: v
             for k, v in {
                 "email": email,
-                "password": password,
-                "password_hash": password_hash,
-                "password_hash_type": enum_value(password_hash_type)
-                if password_hash_type is not None
-                else None,
                 "first_name": first_name,
                 "last_name": last_name,
                 "email_verified": email_verified,
@@ -906,6 +929,12 @@ class UserManagement:
             }.items()
             if v is not None
         }
+        if password is not None:
+            if isinstance(password, PasswordPlaintext):
+                body["password"] = password.password
+            elif isinstance(password, PasswordHashed):
+                body["password_hash"] = password.password_hash
+                body["password_hash_type"] = enum_value(password.password_hash_type)
         return self._client.request(
             method="post",
             path="user_management/users",
@@ -982,12 +1011,10 @@ class UserManagement:
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
-        password: Optional[str] = None,
-        password_hash: Optional[str] = None,
-        password_hash_type: Optional[Union[UpdateUserPasswordHashType, str]] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
         locale: Optional[str] = None,
+        password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> User:
         """Update a user
@@ -1000,12 +1027,10 @@ class UserManagement:
             first_name: The first name of the user.
             last_name: The last name of the user.
             email_verified: Whether the user's email has been verified.
-            password: The password to set for the user.
-            password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
-            password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
             metadata: Object containing metadata key/value pairs associated with the user.
             external_id: The external ID of the user.
             locale: The user's preferred locale.
+            password: Identifies the password. One of: PasswordPlaintext, PasswordHashed.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1025,17 +1050,18 @@ class UserManagement:
                 "first_name": first_name,
                 "last_name": last_name,
                 "email_verified": email_verified,
-                "password": password,
-                "password_hash": password_hash,
-                "password_hash_type": enum_value(password_hash_type)
-                if password_hash_type is not None
-                else None,
                 "metadata": metadata,
                 "external_id": external_id,
                 "locale": locale,
             }.items()
             if v is not None
         }
+        if password is not None:
+            if isinstance(password, PasswordPlaintext):
+                body["password"] = password.password
+            elif isinstance(password, PasswordHashed):
+                body["password_hash"] = password.password_hash
+                body["password_hash_type"] = enum_value(password.password_hash_type)
         return self._client.request(
             method="put",
             path=f"user_management/users/{id}",
@@ -1255,7 +1281,7 @@ class UserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersOrder, str]] = None,
+        order: Optional[Union[UserManagementUsersOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserSessionsListItem]:
         """List sessions
@@ -1304,7 +1330,7 @@ class UserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementInvitationsOrder, str]] = None,
+        order: Optional[Union[UserManagementInvitationsOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -1681,7 +1707,7 @@ class UserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementOrganizationMembershipOrder, str]] = None,
+        order: Optional[Union[UserManagementOrganizationMembershipOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         statuses: Optional[
             List[Union[UserManagementOrganizationMembershipStatuses, str]]
@@ -1742,8 +1768,7 @@ class UserManagement:
         *,
         user_id: str,
         organization_id: str,
-        role_slug: Optional[str] = None,
-        role_slugs: Optional[List[str]] = None,
+        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> OrganizationMembership:
         """Create an organization membership
@@ -1755,8 +1780,7 @@ class UserManagement:
         Args:
             user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
-            role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
-            role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
+            role: Identifies the role. One of: RoleSingle, RoleMultiple.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1771,15 +1795,14 @@ class UserManagement:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-                "role_slug": role_slug,
-                "role_slugs": role_slugs,
-            }.items()
-            if v is not None
+            "user_id": user_id,
+            "organization_id": organization_id,
         }
+        if role is not None:
+            if isinstance(role, RoleSingle):
+                body["role_slug"] = role.role_slug
+            elif isinstance(role, RoleMultiple):
+                body["role_slugs"] = role.role_slugs
         return self._client.request(
             method="post",
             path="user_management/organization_memberships",
@@ -1822,8 +1845,7 @@ class UserManagement:
         self,
         id: str,
         *,
-        role_slug: Optional[str] = None,
-        role_slugs: Optional[List[str]] = None,
+        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserOrganizationMembership:
         """Update an organization membership
@@ -1832,8 +1854,7 @@ class UserManagement:
 
         Args:
             id: The unique ID of the organization membership.
-            role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
-            role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
+            role: Identifies the role. One of: RoleSingle, RoleMultiple.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1846,14 +1867,12 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "role_slug": role_slug,
-                "role_slugs": role_slugs,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {}
+        if role is not None:
+            if isinstance(role, RoleSingle):
+                body["role_slug"] = role.role_slug
+            elif isinstance(role, RoleMultiple):
+                body["role_slugs"] = role.role_slugs
         return self._client.request(
             method="put",
             path=f"user_management/organization_memberships/{id}",
@@ -2006,7 +2025,7 @@ class UserManagement:
         after: Optional[str] = None,
         order: Optional[
             Union[UserManagementUsersAuthorizedApplicationsOrder, str]
-        ] = None,
+        ] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizedConnectApplicationListData]:
         """List authorized applications
@@ -2369,6 +2388,8 @@ class AsyncUserManagement:
         self,
         *,
         code: str,
+        code_verifier: Optional[str] = None,
+        invitation_token: Optional[str] = None,
         ip_address: Optional[str] = None,
         device_id: Optional[str] = None,
         user_agent: Optional[str] = None,
@@ -2383,6 +2404,10 @@ class AsyncUserManagement:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
+        if code_verifier is not None:
+            body["code_verifier"] = code_verifier
+        if invitation_token is not None:
+            body["invitation_token"] = invitation_token
         if ip_address is not None:
             body["ip_address"] = ip_address
         if device_id is not None:
@@ -2476,7 +2501,7 @@ class AsyncUserManagement:
         self,
         *,
         code: str,
-        pending_authentication_token: Optional[str] = None,
+        pending_authentication_token: str,
         ip_address: Optional[str] = None,
         device_id: Optional[str] = None,
         user_agent: Optional[str] = None,
@@ -2486,13 +2511,12 @@ class AsyncUserManagement:
         body: Dict[str, Any] = {
             "grant_type": "urn:workos:oauth:grant-type:email-verification:code",
             "code": code,
+            "pending_authentication_token": pending_authentication_token,
         }
         if self._client.client_id is not None:
             body["client_id"] = self._client.client_id
         if self._client._api_key is not None:
             body["client_secret"] = self._client._api_key
-        if pending_authentication_token is not None:
-            body["pending_authentication_token"] = pending_authentication_token
         if ip_address is not None:
             body["ip_address"] = ip_address
         if device_id is not None:
@@ -2974,7 +2998,7 @@ class AsyncUserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersOrder, str]] = None,
+        order: Optional[Union[UserManagementUsersOrder, str]] = "desc",
         organization: Optional[str] = None,
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
@@ -3028,14 +3052,12 @@ class AsyncUserManagement:
         self,
         *,
         email: str,
-        password: Optional[str] = None,
-        password_hash: Optional[str] = None,
-        password_hash_type: Optional[Union[CreateUserPasswordHashType, str]] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
+        password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> User:
         """Create a user
@@ -3044,14 +3066,12 @@ class AsyncUserManagement:
 
         Args:
             email: The email address of the user.
-            password: The password to set for the user. Mutually exclusive with `password_hash` and `password_hash_type`.
-            password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
-            password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
             first_name: The first name of the user.
             last_name: The last name of the user.
             email_verified: Whether the user's email has been verified.
             metadata: Object containing metadata key/value pairs associated with the user.
             external_id: The external ID of the user.
+            password: Identifies the password. One of: PasswordPlaintext, PasswordHashed.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3069,11 +3089,6 @@ class AsyncUserManagement:
             k: v
             for k, v in {
                 "email": email,
-                "password": password,
-                "password_hash": password_hash,
-                "password_hash_type": enum_value(password_hash_type)
-                if password_hash_type is not None
-                else None,
                 "first_name": first_name,
                 "last_name": last_name,
                 "email_verified": email_verified,
@@ -3082,6 +3097,12 @@ class AsyncUserManagement:
             }.items()
             if v is not None
         }
+        if password is not None:
+            if isinstance(password, PasswordPlaintext):
+                body["password"] = password.password
+            elif isinstance(password, PasswordHashed):
+                body["password_hash"] = password.password_hash
+                body["password_hash_type"] = enum_value(password.password_hash_type)
         return await self._client.request(
             method="post",
             path="user_management/users",
@@ -3158,12 +3179,10 @@ class AsyncUserManagement:
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         email_verified: Optional[bool] = None,
-        password: Optional[str] = None,
-        password_hash: Optional[str] = None,
-        password_hash_type: Optional[Union[UpdateUserPasswordHashType, str]] = None,
         metadata: Optional[Dict[str, str]] = None,
         external_id: Optional[str] = None,
         locale: Optional[str] = None,
+        password: Optional[Union[PasswordPlaintext, PasswordHashed]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> User:
         """Update a user
@@ -3176,12 +3195,10 @@ class AsyncUserManagement:
             first_name: The first name of the user.
             last_name: The last name of the user.
             email_verified: Whether the user's email has been verified.
-            password: The password to set for the user.
-            password_hash: The hashed password to set for the user. Mutually exclusive with `password`.
-            password_hash_type: The algorithm originally used to hash the password, used when providing a `password_hash`.
             metadata: Object containing metadata key/value pairs associated with the user.
             external_id: The external ID of the user.
             locale: The user's preferred locale.
+            password: Identifies the password. One of: PasswordPlaintext, PasswordHashed.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3201,17 +3218,18 @@ class AsyncUserManagement:
                 "first_name": first_name,
                 "last_name": last_name,
                 "email_verified": email_verified,
-                "password": password,
-                "password_hash": password_hash,
-                "password_hash_type": enum_value(password_hash_type)
-                if password_hash_type is not None
-                else None,
                 "metadata": metadata,
                 "external_id": external_id,
                 "locale": locale,
             }.items()
             if v is not None
         }
+        if password is not None:
+            if isinstance(password, PasswordPlaintext):
+                body["password"] = password.password
+            elif isinstance(password, PasswordHashed):
+                body["password_hash"] = password.password_hash
+                body["password_hash_type"] = enum_value(password.password_hash_type)
         return await self._client.request(
             method="put",
             path=f"user_management/users/{id}",
@@ -3431,7 +3449,7 @@ class AsyncUserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersOrder, str]] = None,
+        order: Optional[Union[UserManagementUsersOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserSessionsListItem]:
         """List sessions
@@ -3480,7 +3498,7 @@ class AsyncUserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementInvitationsOrder, str]] = None,
+        order: Optional[Union[UserManagementInvitationsOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -3857,7 +3875,7 @@ class AsyncUserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementOrganizationMembershipOrder, str]] = None,
+        order: Optional[Union[UserManagementOrganizationMembershipOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         statuses: Optional[
             List[Union[UserManagementOrganizationMembershipStatuses, str]]
@@ -3918,8 +3936,7 @@ class AsyncUserManagement:
         *,
         user_id: str,
         organization_id: str,
-        role_slug: Optional[str] = None,
-        role_slugs: Optional[List[str]] = None,
+        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> OrganizationMembership:
         """Create an organization membership
@@ -3931,8 +3948,7 @@ class AsyncUserManagement:
         Args:
             user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
             organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
-            role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
-            role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
+            role: Identifies the role. One of: RoleSingle, RoleMultiple.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3947,15 +3963,14 @@ class AsyncUserManagement:
             ServerError: If the server returns a 5xx error.
         """
         body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-                "role_slug": role_slug,
-                "role_slugs": role_slugs,
-            }.items()
-            if v is not None
+            "user_id": user_id,
+            "organization_id": organization_id,
         }
+        if role is not None:
+            if isinstance(role, RoleSingle):
+                body["role_slug"] = role.role_slug
+            elif isinstance(role, RoleMultiple):
+                body["role_slugs"] = role.role_slugs
         return await self._client.request(
             method="post",
             path="user_management/organization_memberships",
@@ -3998,8 +4013,7 @@ class AsyncUserManagement:
         self,
         id: str,
         *,
-        role_slug: Optional[str] = None,
-        role_slugs: Optional[List[str]] = None,
+        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserOrganizationMembership:
         """Update an organization membership
@@ -4008,8 +4022,7 @@ class AsyncUserManagement:
 
         Args:
             id: The unique ID of the organization membership.
-            role_slug: A single role identifier. Defaults to `member` or the explicit default role. Mutually exclusive with `role_slugs`.
-            role_slugs: An array of role identifiers. Limited to one role when Multiple Roles is disabled. Mutually exclusive with `role_slug`.
+            role: Identifies the role. One of: RoleSingle, RoleMultiple.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4022,14 +4035,12 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "role_slug": role_slug,
-                "role_slugs": role_slugs,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {}
+        if role is not None:
+            if isinstance(role, RoleSingle):
+                body["role_slug"] = role.role_slug
+            elif isinstance(role, RoleMultiple):
+                body["role_slugs"] = role.role_slugs
         return await self._client.request(
             method="put",
             path=f"user_management/organization_memberships/{id}",
@@ -4182,7 +4193,7 @@ class AsyncUserManagement:
         after: Optional[str] = None,
         order: Optional[
             Union[UserManagementUsersAuthorizedApplicationsOrder, str]
-        ] = None,
+        ] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizedConnectApplicationListData]:
         """List authorized applications

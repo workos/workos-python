@@ -86,7 +86,7 @@ class ApiKeys:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsApiKeysOrder, str]] = None,
+        order: Optional[Union[OrganizationsApiKeysOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[ApiKey]:
         """List API keys for an organization
@@ -246,7 +246,7 @@ class AsyncApiKeys:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsApiKeysOrder, str]] = None,
+        order: Optional[Union[OrganizationsApiKeysOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[ApiKey]:
         """List API keys for an organization

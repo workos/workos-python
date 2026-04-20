@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import cast
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 
 from workos.connect.models.connect_application import ConnectApplication
@@ -21,6 +21,8 @@ class AuthorizedConnectApplicationListData:
     granted_scopes: List[str]
     """The scopes granted by the user to the application."""
     application: "ConnectApplication"
+    oauth_resource: Optional[str] = None
+    """The OAuth resource associated with the authorized connect application, if one was requested."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AuthorizedConnectApplicationListData":
@@ -33,6 +35,7 @@ class AuthorizedConnectApplicationListData:
                 application=ConnectApplication.from_dict(
                     cast(Dict[str, Any], data["application"])
                 ),
+                oauth_resource=data.get("oauth_resource"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthorizedConnectApplicationListData", e)
@@ -44,4 +47,6 @@ class AuthorizedConnectApplicationListData:
         result["id"] = self.id
         result["granted_scopes"] = self.granted_scopes
         result["application"] = self.application.to_dict()
+        if self.oauth_resource is not None:
+            result["oauth_resource"] = self.oauth_resource
         return result

@@ -14,11 +14,11 @@ class CheckAuthorization:
     permission_slug: str
     """The slug of the permission to check."""
     resource_id: Optional[str] = None
-    """The ID of the resource."""
+    """The ID of the resource. Mutually exclusive with `resource_external_id` and `resource_type_slug`."""
     resource_external_id: Optional[str] = None
-    """The external ID of the resource."""
+    """The external ID of the resource. Required with `resource_type_slug`. Mutually exclusive with `resource_id`."""
     resource_type_slug: Optional[str] = None
-    """The slug of the resource type."""
+    """The slug of the resource type. Required with `resource_external_id`. Mutually exclusive with `resource_id`."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "CheckAuthorization":

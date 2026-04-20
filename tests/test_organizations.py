@@ -108,7 +108,7 @@ class TestOrganizations:
         assert request.url.path.endswith("/organizations/test_id")
 
     def test_delete_organization(self, workos, httpx_mock):
-        httpx_mock.add_response(status_code=202, content=b"\n")
+        httpx_mock.add_response(status_code=200, content=b"\n")
         result = workos.organizations.delete_organization("test_id")
         assert result is None
         request = httpx_mock.get_request()
@@ -289,7 +289,7 @@ class TestAsyncOrganizations:
 
     @pytest.mark.asyncio
     async def test_delete_organization(self, async_workos, httpx_mock):
-        httpx_mock.add_response(status_code=202, content=b"\n")
+        httpx_mock.add_response(status_code=200, content=b"\n")
         result = await async_workos.organizations.delete_organization("test_id")
         assert result is None
         request = httpx_mock.get_request()

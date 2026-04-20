@@ -3,23 +3,58 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from enum import Enum
+from typing import cast
+from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
+
+from .data_integration_access_token_response_access_token import (
+    DataIntegrationAccessTokenResponseAccessToken,
+)
+from workos.common.models.data_integration_access_token_response_error import (
+    DataIntegrationAccessTokenResponseError,
+)
 
 
 @dataclass(slots=True)
 class DataIntegrationAccessTokenResponse:
     """Data Integration Access Token Response model."""
 
+    active: Optional[Literal[True]] = None
+    """Indicates whether the access token is valid and ready for use, or if reauthorization is required."""
+    access_token: Optional["DataIntegrationAccessTokenResponseAccessToken"] = None
+    """The [access token](https://workos.com/docs/reference/pipes/access-token) object, present when `active` is `true`."""
+    error: Optional["DataIntegrationAccessTokenResponseError"] = None
+    """- `"not_installed"`: The user does not have the integration installed.
+- `"needs_reauthorization"`: The user needs to reauthorize the integration."""
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationAccessTokenResponse":
         """Deserialize from a dictionary."""
         try:
-            return cls()
+            return cls(
+                active=data.get("active"),
+                access_token=DataIntegrationAccessTokenResponseAccessToken.from_dict(
+                    cast(Dict[str, Any], _v_access_token)
+                )
+                if (_v_access_token := data.get("access_token")) is not None
+                else None,
+                error=DataIntegrationAccessTokenResponseError(_v_error)
+                if (_v_error := data.get("error")) is not None
+                else None,
+            )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationAccessTokenResponse", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
+        if self.active is not None:
+            result["active"] = self.active
+        if self.access_token is not None:
+            result["access_token"] = self.access_token.to_dict()
+        if self.error is not None:
+            result["error"] = (
+                self.error.value if isinstance(self.error, Enum) else self.error
+            )
         return result

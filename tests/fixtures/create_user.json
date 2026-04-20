@@ -1,13 +1,13 @@
 {
   "email": "marcelina.davis@example.com",
-  "password": "strong_password_123!",
-  "password_hash": "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
-  "password_hash_type": "bcrypt",
   "first_name": "Marcelina",
   "last_name": "Davis",
   "email_verified": true,
   "metadata": {
     "timezone": "America/New_York"
   },
-  "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222"
+  "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+  "password": "strong_password_123!",
+  "password_hash": "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
+  "password_hash_type": "bcrypt"
 }

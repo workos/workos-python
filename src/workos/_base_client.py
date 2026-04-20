@@ -191,9 +191,12 @@ class _BaseWorkOSClient:
     ) -> Any:
         if response.status_code == 204 or not response.content:
             return None
-        data: Dict[str, Any] = cast(Dict[str, Any], response.json())
+        try:
+            data = response.json()
+        except Exception:
+            return None
         if model is not None:
-            return model.from_dict(data)
+            return model.from_dict(cast(Dict[str, Any], data))
         return data
 
     @staticmethod

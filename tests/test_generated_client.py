@@ -451,6 +451,33 @@ class TestWorkOSClient:
         assert client.widgets is not None
         client.close()
 
+    def test_request_raw_preserves_json_dict_response(self, httpx_mock):
+        httpx_mock.add_response(json={"ok": True})
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        result = client.request_raw("GET", "test")
+        assert result == {"ok": True}
+        client.close()
+
+    def test_request_list_preserves_json_array_response(self, httpx_mock):
+        httpx_mock.add_response(json=[{"id": "item_123"}])
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        result = client.request_list("GET", "test")
+        assert result == [{"id": "item_123"}]
+        client.close()
+
+    def test_request_returns_none_for_non_json_success_without_model(self, httpx_mock):
+        httpx_mock.add_response(status_code=202, content=b"\n")
+        client = WorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        result = client.request("DELETE", "test")
+        assert result is None
+        client.close()
+
 
 @pytest.mark.asyncio
 class TestAsyncWorkOSClient:
@@ -473,6 +500,35 @@ class TestAsyncWorkOSClient:
         assert client.user_management is not None
         assert client.webhooks is not None
         assert client.widgets is not None
+        await client.close()
+
+    async def test_request_raw_preserves_json_dict_response(self, httpx_mock):
+        httpx_mock.add_response(json={"ok": True})
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        result = await client.request_raw("GET", "test")
+        assert result == {"ok": True}
+        await client.close()
+
+    async def test_request_list_preserves_json_array_response(self, httpx_mock):
+        httpx_mock.add_response(json=[{"id": "item_123"}])
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        result = await client.request_list("GET", "test")
+        assert result == [{"id": "item_123"}]
+        await client.close()
+
+    async def test_request_returns_none_for_non_json_success_without_model(
+        self, httpx_mock
+    ):
+        httpx_mock.add_response(status_code=202, content=b"\n")
+        client = AsyncWorkOSClient(
+            api_key="sk_test_123", client_id="client_test", max_retries=0
+        )
+        result = await client.request("DELETE", "test")
+        assert result is None
         await client.close()
 
     async def test_raises_400(self, httpx_mock):

@@ -53,7 +53,7 @@
 - Reorganized package exports and service modules to support the new v6 client shape across the SDK.
 - Added release validation coverage, including package smoke tests and the runtime dependency updates needed for packaged installs.
 
-See the [V6 migration guide](docs/V6_MIGRATION_GUIDE.md) before upgrading from v5.
+See the [V6 migration guide]([docs/V6_MIGRATION_GUIDE.md](https://github.com/workos/workos-python/blob/main/docs/V6_MIGRATION_GUIDE.md)) before upgrading from v5.
 
 ## [5.46.0](https://github.com/workos/workos-python/compare/v5.45.0...v5.46.0) (2026-03-16)
 

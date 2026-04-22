@@ -200,7 +200,7 @@ class Webhooks:
         event_signature: str,
         secret: str,
         tolerance: Optional[int] = None,
-    ) -> "EventSchema":
+    ) -> "EventSchemaVariant":
         """Verify and deserialize the signature of a Webhook event.
 
         Args:
@@ -210,7 +210,7 @@ class Webhooks:
             tolerance: Maximum age of the event in seconds. Defaults to 180.
 
         Returns:
-            EventSchema: The deserialized webhook event.
+            EventSchemaVariant: The deserialized webhook event.
 
         Raises:
             ValueError: If the signature is invalid or the event is too old.
@@ -457,7 +457,7 @@ class AsyncWebhooks:
         event_signature: str,
         secret: str,
         tolerance: Optional[int] = None,
-    ) -> "EventSchema":
+    ) -> "EventSchemaVariant":
         """Verify and deserialize the signature of a Webhook event.
 
         Args:
@@ -467,7 +467,7 @@ class AsyncWebhooks:
             tolerance: Maximum age of the event in seconds. Defaults to 180.
 
         Returns:
-            EventSchema: The deserialized webhook event.
+            EventSchemaVariant: The deserialized webhook event.
 
         Raises:
             ValueError: If the signature is invalid or the event is too old.
@@ -542,5 +542,5 @@ class AsyncWebhooks:
 
 # @oagen-ignore-start
 if TYPE_CHECKING:
-    from workos.events.models import EventSchema
+    from workos.events.models import EventSchemaVariant
 # @oagen-ignore-end

@@ -10,7 +10,7 @@ import json
 import time
 from typing import Optional, Union
 
-from workos.events.models import EventSchema
+from workos.events.models import EventSchema, EventSchemaVariant
 
 WebhookPayload = Union[bytes, bytearray]
 
@@ -23,7 +23,7 @@ def verify_event(
     event_signature: str,
     secret: str,
     tolerance: Optional[int] = DEFAULT_TOLERANCE,
-) -> EventSchema:
+) -> EventSchemaVariant:
     """Verify and deserialize the signature of a Webhook event.
 
     Args:

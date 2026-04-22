@@ -2,53 +2,332 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, Dict, Literal, Optional
+from typing import Any, ClassVar, Dict, Union, cast
 from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+
+from workos.common.models.action_authentication_denied import ActionAuthenticationDenied
+from workos.common.models.action_user_registration_denied import (
+    ActionUserRegistrationDenied,
+)
+from workos.common.models.api_key_created import ApiKeyCreated
+from workos.common.models.api_key_revoked import ApiKeyRevoked
+from workos.common.models.authentication_email_verification_failed import (
+    AuthenticationEmailVerificationFailed,
+)
+from workos.common.models.authentication_email_verification_succeeded import (
+    AuthenticationEmailVerificationSucceeded,
+)
+from workos.common.models.authentication_magic_auth_failed import (
+    AuthenticationMagicAuthFailed,
+)
+from workos.common.models.authentication_magic_auth_succeeded import (
+    AuthenticationMagicAuthSucceeded,
+)
+from workos.common.models.authentication_mfa_failed import AuthenticationMFAFailed
+from workos.common.models.authentication_mfa_succeeded import AuthenticationMFASucceeded
+from workos.common.models.authentication_oauth_failed import AuthenticationOAuthFailed
+from workos.common.models.authentication_oauth_succeeded import (
+    AuthenticationOAuthSucceeded,
+)
+from workos.common.models.authentication_passkey_failed import (
+    AuthenticationPasskeyFailed,
+)
+from workos.common.models.authentication_passkey_succeeded import (
+    AuthenticationPasskeySucceeded,
+)
+from workos.common.models.authentication_password_failed import (
+    AuthenticationPasswordFailed,
+)
+from workos.common.models.authentication_password_succeeded import (
+    AuthenticationPasswordSucceeded,
+)
+from workos.common.models.authentication_radar_risk_detected import (
+    AuthenticationRadarRiskDetected,
+)
+from workos.common.models.authentication_sso_failed import AuthenticationSSOFailed
+from workos.common.models.authentication_sso_started import AuthenticationSSOStarted
+from workos.common.models.authentication_sso_succeeded import AuthenticationSSOSucceeded
+from workos.common.models.authentication_sso_timed_out import AuthenticationSSOTimedOut
+from workos.common.models.connection_activated import ConnectionActivated
+from workos.common.models.connection_deactivated import ConnectionDeactivated
+from workos.common.models.connection_deleted import ConnectionDeleted
+from workos.common.models.connection_saml_certificate_renewal_required import (
+    ConnectionSAMLCertificateRenewalRequired,
+)
+from workos.common.models.connection_saml_certificate_renewed import (
+    ConnectionSAMLCertificateRenewed,
+)
+from workos.common.models.dsync_activated import DsyncActivated
+from workos.common.models.dsync_deactivated import DsyncDeactivated
+from workos.common.models.dsync_deleted import DsyncDeleted
+from workos.common.models.dsync_group_created import DsyncGroupCreated
+from workos.common.models.dsync_group_deleted import DsyncGroupDeleted
+from workos.common.models.dsync_group_updated import DsyncGroupUpdated
+from workos.common.models.dsync_group_user_added import DsyncGroupUserAdded
+from workos.common.models.dsync_group_user_removed import DsyncGroupUserRemoved
+from workos.common.models.dsync_user_created import DsyncUserCreated
+from workos.common.models.dsync_user_deleted import DsyncUserDeleted
+from workos.common.models.dsync_user_updated import DsyncUserUpdated
+from workos.common.models.email_verification_created import EmailVerificationCreated
+from workos.common.models.flag_created import FlagCreated
+from workos.common.models.flag_deleted import FlagDeleted
+from workos.common.models.flag_rule_updated import FlagRuleUpdated
+from workos.common.models.flag_updated import FlagUpdated
+from workos.common.models.group_created import GroupCreated
+from workos.common.models.group_deleted import GroupDeleted
+from workos.common.models.group_member_added import GroupMemberAdded
+from workos.common.models.group_member_removed import GroupMemberRemoved
+from workos.common.models.group_updated import GroupUpdated
+from workos.common.models.invitation_accepted import InvitationAccepted
+from workos.common.models.invitation_created import InvitationCreated
+from workos.common.models.invitation_resent import InvitationResent
+from workos.common.models.invitation_revoked import InvitationRevoked
+from workos.common.models.magic_auth_created import MagicAuthCreated
+from workos.common.models.organization_created import OrganizationCreated
+from workos.common.models.organization_deleted import OrganizationDeleted
+from workos.common.models.organization_domain_created import OrganizationDomainCreated
+from workos.common.models.organization_domain_deleted import OrganizationDomainDeleted
+from workos.common.models.organization_domain_updated import OrganizationDomainUpdated
+from workos.common.models.organization_domain_verification_failed import (
+    OrganizationDomainVerificationFailed,
+)
+from workos.common.models.organization_domain_verified import OrganizationDomainVerified
+from workos.common.models.organization_membership_created import (
+    OrganizationMembershipCreated,
+)
+from workos.common.models.organization_membership_deleted import (
+    OrganizationMembershipDeleted,
+)
+from workos.common.models.organization_membership_updated import (
+    OrganizationMembershipUpdated,
+)
+from workos.common.models.organization_role_created import OrganizationRoleCreated
+from workos.common.models.organization_role_deleted import OrganizationRoleDeleted
+from workos.common.models.organization_role_updated import OrganizationRoleUpdated
+from workos.common.models.organization_updated import OrganizationUpdated
+from workos.common.models.password_reset_created import PasswordResetCreated
+from workos.common.models.password_reset_succeeded import PasswordResetSucceeded
+from workos.common.models.permission_created import PermissionCreated
+from workos.common.models.permission_deleted import PermissionDeleted
+from workos.common.models.permission_updated import PermissionUpdated
+from workos.common.models.role_created import RoleCreated
+from workos.common.models.role_deleted import RoleDeleted
+from workos.common.models.role_updated import RoleUpdated
+from workos.common.models.session_created import SessionCreated
+from workos.common.models.session_revoked import SessionRevoked
+from workos.common.models.user_created import UserCreated
+from workos.common.models.user_deleted import UserDeleted
+from workos.common.models.user_updated import UserUpdated
+from workos.common.models.vault_byok_key_verification_completed import (
+    VaultByokKeyVerificationCompleted,
+)
+from workos.common.models.vault_data_created import VaultDataCreated
+from workos.common.models.vault_data_deleted import VaultDataDeleted
+from workos.common.models.vault_data_read import VaultDataRead
+from workos.common.models.vault_data_updated import VaultDataUpdated
+from workos.common.models.vault_dek_decrypted import VaultDekDecrypted
+from workos.common.models.vault_dek_read import VaultDekRead
+from workos.common.models.vault_kek_created import VaultKekCreated
+from workos.common.models.vault_metadata_read import VaultMetadataRead
+from workos.common.models.vault_names_listed import VaultNamesListed
 
 
-@dataclass(slots=True)
+EventSchemaVariant = Union[
+    ActionAuthenticationDenied,
+    ActionUserRegistrationDenied,
+    ApiKeyCreated,
+    ApiKeyRevoked,
+    AuthenticationEmailVerificationFailed,
+    AuthenticationEmailVerificationSucceeded,
+    AuthenticationMagicAuthFailed,
+    AuthenticationMagicAuthSucceeded,
+    AuthenticationMFAFailed,
+    AuthenticationMFASucceeded,
+    AuthenticationOAuthFailed,
+    AuthenticationOAuthSucceeded,
+    AuthenticationPasskeyFailed,
+    AuthenticationPasskeySucceeded,
+    AuthenticationPasswordFailed,
+    AuthenticationPasswordSucceeded,
+    AuthenticationRadarRiskDetected,
+    AuthenticationSSOFailed,
+    AuthenticationSSOStarted,
+    AuthenticationSSOSucceeded,
+    AuthenticationSSOTimedOut,
+    ConnectionActivated,
+    ConnectionDeactivated,
+    ConnectionDeleted,
+    ConnectionSAMLCertificateRenewalRequired,
+    ConnectionSAMLCertificateRenewed,
+    DsyncActivated,
+    DsyncDeactivated,
+    DsyncDeleted,
+    DsyncGroupCreated,
+    DsyncGroupDeleted,
+    DsyncGroupUpdated,
+    DsyncGroupUserAdded,
+    DsyncGroupUserRemoved,
+    DsyncUserCreated,
+    DsyncUserDeleted,
+    DsyncUserUpdated,
+    EmailVerificationCreated,
+    FlagCreated,
+    FlagDeleted,
+    FlagRuleUpdated,
+    FlagUpdated,
+    GroupCreated,
+    GroupDeleted,
+    GroupMemberAdded,
+    GroupMemberRemoved,
+    GroupUpdated,
+    InvitationAccepted,
+    InvitationCreated,
+    InvitationResent,
+    InvitationRevoked,
+    MagicAuthCreated,
+    OrganizationCreated,
+    OrganizationDeleted,
+    OrganizationDomainCreated,
+    OrganizationDomainDeleted,
+    OrganizationDomainUpdated,
+    OrganizationDomainVerificationFailed,
+    OrganizationDomainVerified,
+    OrganizationMembershipCreated,
+    OrganizationMembershipDeleted,
+    OrganizationMembershipUpdated,
+    OrganizationRoleCreated,
+    OrganizationRoleDeleted,
+    OrganizationRoleUpdated,
+    OrganizationUpdated,
+    PasswordResetCreated,
+    PasswordResetSucceeded,
+    PermissionCreated,
+    PermissionDeleted,
+    PermissionUpdated,
+    RoleCreated,
+    RoleDeleted,
+    RoleUpdated,
+    SessionCreated,
+    SessionRevoked,
+    UserCreated,
+    UserDeleted,
+    UserUpdated,
+    VaultByokKeyVerificationCompleted,
+    VaultDataCreated,
+    VaultDataDeleted,
+    VaultDataRead,
+    VaultDataUpdated,
+    VaultDekDecrypted,
+    VaultDekRead,
+    VaultKekCreated,
+    VaultMetadataRead,
+    VaultNamesListed,
+]
+
+
 class EventSchema:
     """An event emitted by WorkOS."""
 
-    object: Literal["event"]
-    """Distinguishes the Event object."""
-    id: str
-    """Unique identifier for the Event."""
-    event: str
-    """The type of event that occurred."""
-    data: Dict[str, Any]
-    """The event payload."""
-    created_at: datetime
-    """An ISO 8601 timestamp."""
-    context: Optional[Dict[str, Any]] = None
-    """Additional context about the event."""
+    _DISPATCH: ClassVar[Dict[str, Any]] = {
+        "action.authentication.denied": ActionAuthenticationDenied,
+        "action.user_registration.denied": ActionUserRegistrationDenied,
+        "api_key.created": ApiKeyCreated,
+        "api_key.revoked": ApiKeyRevoked,
+        "authentication.email_verification_failed": AuthenticationEmailVerificationFailed,
+        "authentication.email_verification_succeeded": AuthenticationEmailVerificationSucceeded,
+        "authentication.magic_auth_failed": AuthenticationMagicAuthFailed,
+        "authentication.magic_auth_succeeded": AuthenticationMagicAuthSucceeded,
+        "authentication.mfa_failed": AuthenticationMFAFailed,
+        "authentication.mfa_succeeded": AuthenticationMFASucceeded,
+        "authentication.oauth_failed": AuthenticationOAuthFailed,
+        "authentication.oauth_succeeded": AuthenticationOAuthSucceeded,
+        "authentication.passkey_failed": AuthenticationPasskeyFailed,
+        "authentication.passkey_succeeded": AuthenticationPasskeySucceeded,
+        "authentication.password_failed": AuthenticationPasswordFailed,
+        "authentication.password_succeeded": AuthenticationPasswordSucceeded,
+        "authentication.radar_risk_detected": AuthenticationRadarRiskDetected,
+        "authentication.sso_failed": AuthenticationSSOFailed,
+        "authentication.sso_started": AuthenticationSSOStarted,
+        "authentication.sso_succeeded": AuthenticationSSOSucceeded,
+        "authentication.sso_timed_out": AuthenticationSSOTimedOut,
+        "connection.activated": ConnectionActivated,
+        "connection.deactivated": ConnectionDeactivated,
+        "connection.deleted": ConnectionDeleted,
+        "connection.saml_certificate_renewal_required": ConnectionSAMLCertificateRenewalRequired,
+        "connection.saml_certificate_renewed": ConnectionSAMLCertificateRenewed,
+        "dsync.activated": DsyncActivated,
+        "dsync.deactivated": DsyncDeactivated,
+        "dsync.deleted": DsyncDeleted,
+        "dsync.group.created": DsyncGroupCreated,
+        "dsync.group.deleted": DsyncGroupDeleted,
+        "dsync.group.updated": DsyncGroupUpdated,
+        "dsync.group.user_added": DsyncGroupUserAdded,
+        "dsync.group.user_removed": DsyncGroupUserRemoved,
+        "dsync.user.created": DsyncUserCreated,
+        "dsync.user.deleted": DsyncUserDeleted,
+        "dsync.user.updated": DsyncUserUpdated,
+        "email_verification.created": EmailVerificationCreated,
+        "flag.created": FlagCreated,
+        "flag.deleted": FlagDeleted,
+        "flag.rule_updated": FlagRuleUpdated,
+        "flag.updated": FlagUpdated,
+        "group.created": GroupCreated,
+        "group.deleted": GroupDeleted,
+        "group.member_added": GroupMemberAdded,
+        "group.member_removed": GroupMemberRemoved,
+        "group.updated": GroupUpdated,
+        "invitation.accepted": InvitationAccepted,
+        "invitation.created": InvitationCreated,
+        "invitation.resent": InvitationResent,
+        "invitation.revoked": InvitationRevoked,
+        "magic_auth.created": MagicAuthCreated,
+        "organization_domain.created": OrganizationDomainCreated,
+        "organization_domain.deleted": OrganizationDomainDeleted,
+        "organization_domain.updated": OrganizationDomainUpdated,
+        "organization_domain.verification_failed": OrganizationDomainVerificationFailed,
+        "organization_domain.verified": OrganizationDomainVerified,
+        "organization_membership.created": OrganizationMembershipCreated,
+        "organization_membership.deleted": OrganizationMembershipDeleted,
+        "organization_membership.updated": OrganizationMembershipUpdated,
+        "organization_role.created": OrganizationRoleCreated,
+        "organization_role.deleted": OrganizationRoleDeleted,
+        "organization_role.updated": OrganizationRoleUpdated,
+        "organization.created": OrganizationCreated,
+        "organization.deleted": OrganizationDeleted,
+        "organization.updated": OrganizationUpdated,
+        "password_reset.created": PasswordResetCreated,
+        "password_reset.succeeded": PasswordResetSucceeded,
+        "permission.created": PermissionCreated,
+        "permission.deleted": PermissionDeleted,
+        "permission.updated": PermissionUpdated,
+        "role.created": RoleCreated,
+        "role.deleted": RoleDeleted,
+        "role.updated": RoleUpdated,
+        "session.created": SessionCreated,
+        "session.revoked": SessionRevoked,
+        "user.created": UserCreated,
+        "user.deleted": UserDeleted,
+        "user.updated": UserUpdated,
+        "vault.byok_key.verification_completed": VaultByokKeyVerificationCompleted,
+        "vault.data.created": VaultDataCreated,
+        "vault.data.deleted": VaultDataDeleted,
+        "vault.data.read": VaultDataRead,
+        "vault.data.updated": VaultDataUpdated,
+        "vault.dek.decrypted": VaultDekDecrypted,
+        "vault.dek.read": VaultDekRead,
+        "vault.kek.created": VaultKekCreated,
+        "vault.metadata.read": VaultMetadataRead,
+        "vault.names.listed": VaultNamesListed,
+    }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "EventSchema":
-        """Deserialize from a dictionary."""
-        try:
-            return cls(
-                object=data["object"],
-                id=data["id"],
-                event=data["event"],
-                data=data["data"],
-                created_at=_parse_datetime(data["created_at"]),
-                context=data.get("context"),
-            )
-        except (KeyError, ValueError) as e:
-            _raise_deserialize_error("EventSchema", e)
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
-        result["object"] = self.object
-        result["id"] = self.id
-        result["event"] = self.event
-        result["data"] = self.data
-        result["created_at"] = _format_datetime(self.created_at)
-        if self.context is not None:
-            result["context"] = self.context
-        return result
+    def from_dict(cls, data: Dict[str, Any]) -> "EventSchemaVariant":
+        """Deserialize from a dictionary, dispatching to the correct variant."""
+        event_type = data.get("event")
+        if event_type is not None:
+            dispatch_cls = cls._DISPATCH.get(str(event_type))
+            if dispatch_cls is not None:
+                return cast("EventSchemaVariant", dispatch_cls.from_dict(data))
+        _raise_deserialize_error(
+            "EventSchema", ValueError(f"Unknown event: {event_type!r}")
+        )

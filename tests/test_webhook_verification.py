@@ -4,7 +4,7 @@ import json
 import time
 
 import pytest
-from workos.events.models import EventSchema
+from workos.common.models.user_created import UserCreated
 from workos.webhooks._verification import (
     verify_event as standalone_verify_event,
     verify_header as standalone_verify_header,
@@ -29,7 +29,19 @@ SAMPLE_EVENT = json.dumps(
         "object": "event",
         "id": "evt_01",
         "event": "user.created",
-        "data": {"id": "user_01", "email": "test@example.com"},
+        "data": {
+            "object": "user",
+            "id": "user_01",
+            "email": "test@example.com",
+            "email_verified": True,
+            "first_name": None,
+            "last_name": None,
+            "profile_picture_url": None,
+            "external_id": None,
+            "last_sign_in_at": None,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z",
+        },
         "created_at": "2024-01-01T00:00:00Z",
     }
 )
@@ -42,7 +54,7 @@ class TestWebhooksVerifyEvent:
         result = workos.webhooks.verify_event(
             event_body=SAMPLE_EVENT, event_signature=sig, secret=SECRET
         )
-        assert isinstance(result, EventSchema)
+        assert isinstance(result, UserCreated)
         assert result.id == "evt_01"
 
     def test_verify_event_valid_bytes(self, workos):
@@ -50,7 +62,7 @@ class TestWebhooksVerifyEvent:
         result = workos.webhooks.verify_event(
             event_body=SAMPLE_EVENT.encode("utf-8"), event_signature=sig, secret=SECRET
         )
-        assert isinstance(result, EventSchema)
+        assert isinstance(result, UserCreated)
         assert result.id == "evt_01"
 
     def test_verify_event_invalid_signature(self, workos):
@@ -77,7 +89,7 @@ class TestWebhooksVerifyEvent:
         result = workos.webhooks.verify_event(
             event_body=SAMPLE_EVENT, event_signature=sig, secret=SECRET, tolerance=60
         )
-        assert isinstance(result, EventSchema)
+        assert isinstance(result, UserCreated)
         assert result.id == "evt_01"
 
     def test_verify_event_malformed_header(self, workos):
@@ -119,7 +131,7 @@ class TestStandaloneVerifyEvent:
         result = standalone_verify_event(
             event_body=SAMPLE_EVENT.encode("utf-8"), event_signature=sig, secret=SECRET
         )
-        assert isinstance(result, EventSchema)
+        assert isinstance(result, UserCreated)
         assert result.id == "evt_01"
 
     def test_standalone_verify_event_invalid(self):

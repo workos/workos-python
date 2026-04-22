@@ -78,7 +78,7 @@ class Events:
             self._client.request_page(
                 method="get",
                 path="events",
-                model=EventSchema,  # type: ignore[arg-type]
+                model=EventSchema,  # type: ignore[arg-type]  # dispatcher; pagination only calls from_dict
                 params=params,
                 request_options=request_options,
             ),
@@ -150,7 +150,7 @@ class AsyncEvents:
             await self._client.request_page(
                 method="get",
                 path="events",
-                model=EventSchema,  # type: ignore[arg-type]
+                model=EventSchema,  # type: ignore[arg-type]  # dispatcher; pagination only calls from_dict
                 params=params,
                 request_options=request_options,
             ),

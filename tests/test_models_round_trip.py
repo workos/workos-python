@@ -2,6 +2,8 @@
 
 """Model round-trip tests: from_dict(to_dict()) preserves data."""
 
+import pytest
+
 from tests.generated_helpers import load_fixture
 
 from workos.admin_portal.models import (
@@ -288,7 +290,7 @@ from workos.directory_sync.models import (
     DirectoryUserWithGroups,
     DirectoryUserWithGroupsEmail,
 )
-from workos.events.models import EventListListMetadata
+from workos.events.models import EventListListMetadata, EventSchema, EventSchemaUnknown
 from workos.feature_flags.models import FeatureFlag, FeatureFlagOwner, Flag, FlagOwner
 from workos.multi_factor_auth.models import (
     AuthenticationChallenge,
@@ -16246,3 +16248,29 @@ class TestModelRoundTrip:
         }
         instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
         assert instance.to_dict() == data
+
+
+class TestDiscriminatorDispatch:
+    def test_event_schema_dispatches_known_variant(self):
+        data = load_fixture("action_authentication_denied.json")
+        result = EventSchema.from_dict(data)
+        assert isinstance(result, ActionAuthenticationDenied)
+
+    def test_event_schema_returns_unknown_for_unrecognized_type(self):
+        data = load_fixture("action_authentication_denied.json")
+        data = {**data, "event": "future.unrecognized.type"}
+        result = EventSchema.from_dict(data)
+        assert isinstance(result, EventSchemaUnknown)
+        assert result.raw_data == data
+
+    def test_event_schema_raises_on_missing_discriminator(self):
+        data = load_fixture("action_authentication_denied.json")
+        data = {k: v for k, v in data.items() if k != "event"}
+        with pytest.raises(Exception):
+            EventSchema.from_dict(data)
+
+    def test_event_schema_raises_on_none_discriminator(self):
+        data = load_fixture("action_authentication_denied.json")
+        data = {**data, "event": None}
+        with pytest.raises(Exception):
+            EventSchema.from_dict(data)

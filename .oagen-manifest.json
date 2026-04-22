@@ -1,7 +1,7 @@
 {
   "version": 1,
   "language": "python",
-  "generatedAt": "2026-04-22T17:32:38.931Z",
+  "generatedAt": "2026-04-22T21:22:39.409Z",
   "files": [
     "src/workos/_client.py",
     "src/workos/admin_portal/__init__.py",
@@ -814,7 +814,6 @@
     "tests/fixtures/event_context_actor.json",
     "tests/fixtures/event_context_google_analytics_session.json",
     "tests/fixtures/event_list_list_metadata.json",
-    "tests/fixtures/event_schema.json",
     "tests/fixtures/external_auth_complete_response.json",
     "tests/fixtures/feature_flag.json",
     "tests/fixtures/feature_flag_owner.json",
@@ -885,7 +884,6 @@
     "tests/fixtures/list_directory.json",
     "tests/fixtures/list_directory_group.json",
     "tests/fixtures/list_directory_user_with_groups.json",
-    "tests/fixtures/list_event_schema.json",
     "tests/fixtures/list_flag.json",
     "tests/fixtures/list_organization.json",
     "tests/fixtures/list_role_assignment.json",

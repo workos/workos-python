@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any, ClassVar, Dict, Union, cast
 from workos._types import _raise_deserialize_error
 
@@ -132,6 +133,23 @@ from workos.common.models.vault_metadata_read import VaultMetadataRead
 from workos.common.models.vault_names_listed import VaultNamesListed
 
 
+@dataclass(slots=True)
+class EventSchemaUnknown:
+    """Unknown variant of EventSchema not yet recognized by this SDK version."""
+
+    raw_data: Dict[str, Any]
+    """The raw payload, preserved so callers can still inspect the data."""
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "EventSchemaUnknown":
+        """Wrap raw data in an unknown variant."""
+        return cls(raw_data=data)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Return the original raw data."""
+        return dict(self.raw_data)
+
+
 EventSchemaVariant = Union[
     ActionAuthenticationDenied,
     ActionUserRegistrationDenied,
@@ -222,6 +240,7 @@ EventSchemaVariant = Union[
     VaultKekCreated,
     VaultMetadataRead,
     VaultNamesListed,
+    EventSchemaUnknown,
 ]
 
 
@@ -327,11 +346,12 @@ class EventSchema:
             _raise_deserialize_error(
                 "EventSchema", ValueError("Missing required field 'event'")
             )
-        event_type = data["event"]
-        if event_type is not None:
-            dispatch_cls = cls._DISPATCH.get(str(event_type))
-            if dispatch_cls is not None:
-                return cast("EventSchemaVariant", dispatch_cls.from_dict(data))
-        _raise_deserialize_error(
-            "EventSchema", ValueError(f"Unknown event: {event_type!r}")
-        )
+        disc_value = data["event"]
+        if disc_value is None:
+            _raise_deserialize_error(
+                "EventSchema", ValueError("event must not be None")
+            )
+        dispatch_cls = cls._DISPATCH.get(disc_value)
+        if dispatch_cls is not None:
+            return cast("EventSchemaVariant", dispatch_cls.from_dict(data))
+        return EventSchemaUnknown.from_dict(data)

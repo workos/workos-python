@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.6](https://github.com/workos/workos-python/compare/v6.0.5...v6.0.6) (2026-04-22)
+
+
+### Bug Fixes
+
+* restore typed `EventSchema` discriminated union dispatcher ([#629](https://github.com/workos/workos-python/issues/629)) ([af95901](https://github.com/workos/workos-python/commit/af95901ed8e607622795a19b15c4a7bf88eca4f7))
+
 ## [6.0.5](https://github.com/workos/workos-python/compare/v6.0.4...v6.0.5) (2026-04-20)
 
 

@@ -323,7 +323,11 @@ class EventSchema:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "EventSchemaVariant":
         """Deserialize from a dictionary, dispatching to the correct variant."""
-        event_type = data.get("event")
+        if "event" not in data:
+            _raise_deserialize_error(
+                "EventSchema", ValueError("Missing required field 'event'")
+            )
+        event_type = data["event"]
         if event_type is not None:
             dispatch_cls = cls._DISPATCH.get(str(event_type))
             if dispatch_cls is not None:

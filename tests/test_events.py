@@ -5,6 +5,7 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
+from workos.common.models import ActionAuthenticationDenied
 from workos.events.models import EventsOrder
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
@@ -20,17 +21,15 @@ from workos._errors import (
 class TestEvents:
     def test_list_events(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("list_event_schema.json"),
+            json={
+                "data": [load_fixture("action_authentication_denied.json")],
+                "list_metadata": {},
+            },
         )
         page = workos.events.list_events()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
-
-    def test_list_events_empty_page(self, workos, httpx_mock):
-        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.events.list_events()
-        assert isinstance(page, SyncPage)
-        assert page.data == []
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], ActionAuthenticationDenied)
 
     def test_list_events_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -133,17 +132,16 @@ class TestEvents:
 class TestAsyncEvents:
     @pytest.mark.asyncio
     async def test_list_events(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("list_event_schema.json"))
+        httpx_mock.add_response(
+            json={
+                "data": [load_fixture("action_authentication_denied.json")],
+                "list_metadata": {},
+            },
+        )
         page = await async_workos.events.list_events()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
-
-    @pytest.mark.asyncio
-    async def test_list_events_empty_page(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.events.list_events()
-        assert isinstance(page, AsyncPage)
-        assert page.data == []
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], ActionAuthenticationDenied)
 
     @pytest.mark.asyncio
     async def test_list_events_encodes_query_params(self, async_workos, httpx_mock):

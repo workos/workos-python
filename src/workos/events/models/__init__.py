@@ -2,4 +2,6 @@
 
 from .event_list_list_metadata import EventListListMetadata as EventListListMetadata
 from .event_schema import EventSchema as EventSchema
+from .event_schema import EventSchemaUnknown as EventSchemaUnknown
+from .event_schema import EventSchemaVariant as EventSchemaVariant
 from .events_order import EventsOrder as EventsOrder

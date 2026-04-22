@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import EventSchema
+from .models import EventSchema, EventSchemaVariant
 from .models import EventsOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -31,7 +31,7 @@ class Events:
         range_end: Optional[str] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[EventSchema]:
+    ) -> SyncPage[EventSchemaVariant]:
         """List events
 
         List events for the current environment.
@@ -48,7 +48,7 @@ class Events:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            SyncPage[EventSchema]
+            SyncPage[EventSchemaVariant]
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -73,12 +73,15 @@ class Events:
             }.items()
             if v is not None
         }
-        return self._client.request_page(
-            method="get",
-            path="events",
-            model=EventSchema,
-            params=params,
-            request_options=request_options,
+        return cast(
+            SyncPage[EventSchemaVariant],
+            self._client.request_page(
+                method="get",
+                path="events",
+                model=EventSchema,  # type: ignore[arg-type]  # dispatcher; pagination only calls from_dict
+                params=params,
+                request_options=request_options,
+            ),
         )
 
 
@@ -100,7 +103,7 @@ class AsyncEvents:
         range_end: Optional[str] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[EventSchema]:
+    ) -> AsyncPage[EventSchemaVariant]:
         """List events
 
         List events for the current environment.
@@ -117,7 +120,7 @@ class AsyncEvents:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AsyncPage[EventSchema]
+            AsyncPage[EventSchemaVariant]
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -142,10 +145,13 @@ class AsyncEvents:
             }.items()
             if v is not None
         }
-        return await self._client.request_page(
-            method="get",
-            path="events",
-            model=EventSchema,
-            params=params,
-            request_options=request_options,
+        return cast(
+            AsyncPage[EventSchemaVariant],
+            await self._client.request_page(
+                method="get",
+                path="events",
+                model=EventSchema,  # type: ignore[arg-type]  # dispatcher; pagination only calls from_dict
+                params=params,
+                request_options=request_options,
+            ),
         )

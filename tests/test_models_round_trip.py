@@ -2,6 +2,8 @@
 
 """Model round-trip tests: from_dict(to_dict()) preserves data."""
 
+import pytest
+
 from tests.generated_helpers import load_fixture
 
 from workos.admin_portal.models import (
@@ -288,7 +290,7 @@ from workos.directory_sync.models import (
     DirectoryUserWithGroups,
     DirectoryUserWithGroupsEmail,
 )
-from workos.events.models import EventListListMetadata, EventSchema
+from workos.events.models import EventListListMetadata, EventSchema, EventSchemaUnknown
 from workos.feature_flags.models import FeatureFlag, FeatureFlagOwner, Flag, FlagOwner
 from workos.multi_factor_auth.models import (
     AuthenticationChallenge,
@@ -2186,78 +2188,6 @@ class TestModelRoundTrip:
         assert serialized["external_id"] is None
         assert serialized["last_sign_in_at"] is None
         assert serialized["locale"] is None
-
-    def test_event_schema_round_trip(self):
-        data = load_fixture("event_schema.json")
-        instance = EventSchema.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = EventSchema.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_event_schema_minimal_payload(self):
-        data = {
-            "object": "event",
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.user.created",
-            "data": {
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "state": "active",
-                "email": "veda@foo-corp.com",
-                "emails": [
-                    {"primary": True, "type": "work", "value": "veda@foo-corp.com"}
-                ],
-                "idp_id": "2836",
-                "object": "directory_user",
-                "username": "veda@foo-corp.com",
-                "last_name": "Torp",
-                "first_name": "Veda",
-                "raw_attributes": {},
-                "custom_attributes": {},
-                "created_at": "2021-06-25T19:07:33.155Z",
-                "updated_at": "2021-06-25T19:07:33.155Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = EventSchema.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["event"] == data["event"]
-        assert serialized["data"] == data["data"]
-        assert serialized["created_at"] == data["created_at"]
-
-    def test_event_schema_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "event",
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.user.created",
-            "data": {
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "state": "active",
-                "email": "veda@foo-corp.com",
-                "emails": [
-                    {"primary": True, "type": "work", "value": "veda@foo-corp.com"}
-                ],
-                "idp_id": "2836",
-                "object": "directory_user",
-                "username": "veda@foo-corp.com",
-                "last_name": "Torp",
-                "first_name": "Veda",
-                "raw_attributes": {},
-                "custom_attributes": {},
-                "created_at": "2021-06-25T19:07:33.155Z",
-                "updated_at": "2021-06-25T19:07:33.155Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = EventSchema.from_dict(data)
-        serialized = instance.to_dict()
-        assert "context" not in serialized
 
     def test_action_authentication_denied_round_trip(self):
         data = load_fixture("action_authentication_denied.json")
@@ -16318,3 +16248,29 @@ class TestModelRoundTrip:
         }
         instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
         assert instance.to_dict() == data
+
+
+class TestDiscriminatorDispatch:
+    def test_event_schema_dispatches_known_variant(self):
+        data = load_fixture("action_authentication_denied.json")
+        result = EventSchema.from_dict(data)
+        assert isinstance(result, ActionAuthenticationDenied)
+
+    def test_event_schema_returns_unknown_for_unrecognized_type(self):
+        data = load_fixture("action_authentication_denied.json")
+        data = {**data, "event": "future.unrecognized.type"}
+        result = EventSchema.from_dict(data)
+        assert isinstance(result, EventSchemaUnknown)
+        assert result.raw_data == data
+
+    def test_event_schema_raises_on_missing_discriminator(self):
+        data = load_fixture("action_authentication_denied.json")
+        data = {k: v for k, v in data.items() if k != "event"}
+        with pytest.raises(Exception):
+            EventSchema.from_dict(data)
+
+    def test_event_schema_raises_on_none_discriminator(self):
+        data = load_fixture("action_authentication_denied.json")
+        data = {**data, "event": None}
+        with pytest.raises(Exception):
+            EventSchema.from_dict(data)

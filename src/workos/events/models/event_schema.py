@@ -247,7 +247,7 @@ EventSchemaVariant = Union[
 class EventSchema:
     """An event emitted by WorkOS."""
 
-    _DISPATCH: ClassVar[Dict[str, Any]] = {
+    _DISPATCH: ClassVar[Dict[str, type]] = {
         "action.authentication.denied": ActionAuthenticationDenied,
         "action.user_registration.denied": ActionUserRegistrationDenied,
         "api_key.created": ApiKeyCreated,

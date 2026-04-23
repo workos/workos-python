@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.7](https://github.com/workos/workos-python/compare/v6.0.6...v6.0.7) (2026-04-23)
+
+
+### Bug Fixes
+
+* export missing types and update event tests ([#631](https://github.com/workos/workos-python/issues/631)) ([0bd6cf8](https://github.com/workos/workos-python/commit/0bd6cf87b69bc95d4a3fd1fabba4cf94f59baf15))
+
 ## [6.0.6](https://github.com/workos/workos-python/compare/v6.0.5...v6.0.6) (2026-04-22)
 
 

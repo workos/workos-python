@@ -25,7 +25,8 @@ class TestWebhooks:
         )
         page = workos.webhooks.list_webhook_endpoints()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], WebhookEndpointJson)
 
     def test_list_webhook_endpoints_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -166,7 +167,8 @@ class TestAsyncWebhooks:
         httpx_mock.add_response(json=load_fixture("list_webhook_endpoint_json.json"))
         page = await async_workos.webhooks.list_webhook_endpoints()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], WebhookEndpointJson)
 
     @pytest.mark.asyncio
     async def test_list_webhook_endpoints_empty_page(self, async_workos, httpx_mock):

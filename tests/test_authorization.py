@@ -14,6 +14,7 @@ from workos.authorization.models import (
     Role,
     RoleAssignment,
     RoleList,
+    UserOrganizationMembershipBaseListData,
     AuthorizationAssignment,
     AuthorizationOrder,
     PermissionsOrder,
@@ -64,7 +65,8 @@ class TestAuthorization:
             permission_slug="test_permission_slug",
         )
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizationResource)
 
     def test_list_organization_membership_resources_empty_page(
         self, workos, httpx_mock
@@ -111,7 +113,8 @@ class TestAuthorization:
             "test_organization_membership_id", "test_resource_id"
         )
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizationPermission)
 
     def test_list_resource_permissions_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -147,7 +150,8 @@ class TestAuthorization:
             "test_external_id",
         )
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizationPermission)
 
     def test_list_effective_permissions_by_external_id_empty_page(
         self, workos, httpx_mock
@@ -188,7 +192,8 @@ class TestAuthorization:
             "test_organization_membership_id"
         )
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], RoleAssignment)
 
     def test_list_organization_membership_role_assignments_empty_page(
         self, workos, httpx_mock
@@ -457,7 +462,8 @@ class TestAuthorization:
             permission_slug="test_permission_slug",
         )
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
 
     def test_list_resource_organization_memberships_empty_page(
         self, workos, httpx_mock
@@ -503,7 +509,8 @@ class TestAuthorization:
             parent=ParentById(parent_resource_id="test_value")
         )
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizationResource)
 
     def test_list_resources_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -611,7 +618,8 @@ class TestAuthorization:
             "test_resource_id", permission_slug="test_permission_slug"
         )
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
 
     def test_list_memberships_for_resource_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -732,7 +740,8 @@ class TestAuthorization:
         )
         page = workos.authorization.list_permissions()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizationPermission)
 
     def test_list_permissions_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -934,7 +943,8 @@ class TestAsyncAuthorization:
             permission_slug="test_permission_slug",
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizationResource)
 
     @pytest.mark.asyncio
     async def test_list_organization_membership_resources_empty_page(
@@ -982,7 +992,8 @@ class TestAsyncAuthorization:
             "test_organization_membership_id", "test_resource_id"
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizationPermission)
 
     @pytest.mark.asyncio
     async def test_list_resource_permissions_empty_page(self, async_workos, httpx_mock):
@@ -1025,7 +1036,8 @@ class TestAsyncAuthorization:
             )
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizationPermission)
 
     @pytest.mark.asyncio
     async def test_list_effective_permissions_by_external_id_empty_page(
@@ -1071,7 +1083,8 @@ class TestAsyncAuthorization:
             "test_organization_membership_id"
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], RoleAssignment)
 
     @pytest.mark.asyncio
     async def test_list_organization_membership_role_assignments_empty_page(
@@ -1338,7 +1351,8 @@ class TestAsyncAuthorization:
             permission_slug="test_permission_slug",
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
 
     @pytest.mark.asyncio
     async def test_list_resource_organization_memberships_empty_page(
@@ -1385,7 +1399,8 @@ class TestAsyncAuthorization:
             parent=ParentById(parent_resource_id="test_value")
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizationResource)
 
     @pytest.mark.asyncio
     async def test_list_resources_empty_page(self, async_workos, httpx_mock):
@@ -1492,7 +1507,8 @@ class TestAsyncAuthorization:
             "test_resource_id", permission_slug="test_permission_slug"
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
 
     @pytest.mark.asyncio
     async def test_list_memberships_for_resource_empty_page(
@@ -1603,7 +1619,8 @@ class TestAsyncAuthorization:
         httpx_mock.add_response(json=load_fixture("list_authorization_permission.json"))
         page = await async_workos.authorization.list_permissions()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizationPermission)
 
     @pytest.mark.asyncio
     async def test_list_permissions_empty_page(self, async_workos, httpx_mock):

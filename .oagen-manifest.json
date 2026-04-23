@@ -1,9 +1,8 @@
 {
   "version": 2,
   "language": "python",
-  "generatedAt": "2026-04-23T14:41:21.829Z",
+  "generatedAt": "2026-04-23T15:27:42.321Z",
   "files": [
-    "smoke-manifest.json",
     "src/workos/_client.py",
     "src/workos/admin_portal/__init__.py",
     "src/workos/admin_portal/_resource.py",

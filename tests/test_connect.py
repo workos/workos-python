@@ -52,7 +52,8 @@ class TestConnect:
         )
         page = workos.connect.list_applications()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], ConnectApplication)
 
     def test_list_applications_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -295,7 +296,8 @@ class TestAsyncConnect:
         httpx_mock.add_response(json=load_fixture("list_connect_application.json"))
         page = await async_workos.connect.list_applications()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], ConnectApplication)
 
     @pytest.mark.asyncio
     async def test_list_applications_empty_page(self, async_workos, httpx_mock):

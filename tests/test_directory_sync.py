@@ -31,7 +31,8 @@ class TestDirectorySync:
         )
         page = workos.directory_sync.list_directories()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], Directory)
 
     def test_list_directories_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -85,7 +86,8 @@ class TestDirectorySync:
         )
         page = workos.directory_sync.list_groups()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], DirectoryGroup)
 
     def test_list_groups_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -129,7 +131,8 @@ class TestDirectorySync:
         )
         page = workos.directory_sync.list_users()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], DirectoryUserWithGroups)
 
     def test_list_users_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -249,7 +252,8 @@ class TestAsyncDirectorySync:
         httpx_mock.add_response(json=load_fixture("list_directory.json"))
         page = await async_workos.directory_sync.list_directories()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], Directory)
 
     @pytest.mark.asyncio
     async def test_list_directories_empty_page(self, async_workos, httpx_mock):
@@ -306,7 +310,8 @@ class TestAsyncDirectorySync:
         httpx_mock.add_response(json=load_fixture("list_directory_group.json"))
         page = await async_workos.directory_sync.list_groups()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], DirectoryGroup)
 
     @pytest.mark.asyncio
     async def test_list_groups_empty_page(self, async_workos, httpx_mock):
@@ -352,7 +357,8 @@ class TestAsyncDirectorySync:
         )
         page = await async_workos.directory_sync.list_users()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], DirectoryUserWithGroups)
 
     @pytest.mark.asyncio
     async def test_list_users_empty_page(self, async_workos, httpx_mock):

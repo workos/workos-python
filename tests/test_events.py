@@ -5,6 +5,7 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
+from workos.common.models import DsyncUserCreated
 from workos.events.models import EventsOrder
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
@@ -24,7 +25,8 @@ class TestEvents:
         )
         page = workos.events.list_events()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], DsyncUserCreated)
 
     def test_list_events_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -136,7 +138,8 @@ class TestAsyncEvents:
         httpx_mock.add_response(json=load_fixture("list_event_schema.json"))
         page = await async_workos.events.list_events()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], DsyncUserCreated)
 
     @pytest.mark.asyncio
     async def test_list_events_empty_page(self, async_workos, httpx_mock):

@@ -7,6 +7,7 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.audit_logs.models import (
+    AuditLogActionJson,
     AuditLogEvent,
     AuditLogEventCreateResponse,
     AuditLogExportJson,
@@ -58,7 +59,8 @@ class TestAuditLogs:
         )
         page = workos.audit_logs.list_actions()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuditLogActionJson)
 
     def test_list_actions_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -86,7 +88,8 @@ class TestAuditLogs:
         )
         page = workos.audit_logs.list_action_schemas("test_actionName")
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuditLogSchemaJson)
 
     def test_list_action_schemas_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -286,7 +289,8 @@ class TestAsyncAuditLogs:
         httpx_mock.add_response(json=load_fixture("list_audit_log_action_json.json"))
         page = await async_workos.audit_logs.list_actions()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuditLogActionJson)
 
     @pytest.mark.asyncio
     async def test_list_actions_empty_page(self, async_workos, httpx_mock):
@@ -315,7 +319,8 @@ class TestAsyncAuditLogs:
         httpx_mock.add_response(json=load_fixture("list_audit_log_schema_json.json"))
         page = await async_workos.audit_logs.list_action_schemas("test_actionName")
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuditLogSchemaJson)
 
     @pytest.mark.asyncio
     async def test_list_action_schemas_empty_page(self, async_workos, httpx_mock):

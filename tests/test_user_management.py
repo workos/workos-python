@@ -8,6 +8,7 @@ from tests.generated_helpers import load_fixture
 
 from workos.user_management.models import (
     AuthenticateResponse,
+    AuthorizedConnectApplicationListData,
     CORSOriginResponse,
     DeviceAuthorizationResponse,
     EmailChange,
@@ -26,6 +27,7 @@ from workos.user_management.models import (
     UserIdentitiesGetItem,
     UserInvite,
     UserOrganizationMembership,
+    UserSessionsListItem,
     VerifyEmailResponse,
     UserManagementInvitationsOrder,
     UserManagementOrganizationMembershipOrder,
@@ -178,7 +180,8 @@ class TestUserManagement:
         )
         page = workos.user_management.list_users()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], User)
 
     def test_list_users_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -344,7 +347,8 @@ class TestUserManagement:
         )
         page = workos.user_management.list_sessions("test_id")
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserSessionsListItem)
 
     def test_list_sessions_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -373,7 +377,8 @@ class TestUserManagement:
         )
         page = workos.user_management.list_invitations()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserInvite)
 
     def test_list_invitations_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -521,7 +526,8 @@ class TestUserManagement:
         )
         page = workos.user_management.list_organization_memberships()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserOrganizationMembership)
 
     def test_list_organization_memberships_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -658,7 +664,8 @@ class TestUserManagement:
         )
         page = workos.user_management.list_user_authorized_applications("test_user_id")
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizedConnectApplicationListData)
 
     def test_list_user_authorized_applications_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -986,7 +993,8 @@ class TestAsyncUserManagement:
         httpx_mock.add_response(json=load_fixture("list_user.json"))
         page = await async_workos.user_management.list_users()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], User)
 
     @pytest.mark.asyncio
     async def test_list_users_empty_page(self, async_workos, httpx_mock):
@@ -1145,7 +1153,8 @@ class TestAsyncUserManagement:
         httpx_mock.add_response(json=load_fixture("list_user_sessions_list_item.json"))
         page = await async_workos.user_management.list_sessions("test_id")
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserSessionsListItem)
 
     @pytest.mark.asyncio
     async def test_list_sessions_empty_page(self, async_workos, httpx_mock):
@@ -1175,7 +1184,8 @@ class TestAsyncUserManagement:
         httpx_mock.add_response(json=load_fixture("list_user_invite.json"))
         page = await async_workos.user_management.list_invitations()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserInvite)
 
     @pytest.mark.asyncio
     async def test_list_invitations_empty_page(self, async_workos, httpx_mock):
@@ -1319,7 +1329,8 @@ class TestAsyncUserManagement:
         )
         page = await async_workos.user_management.list_organization_memberships()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserOrganizationMembership)
 
     @pytest.mark.asyncio
     async def test_list_organization_memberships_empty_page(
@@ -1461,7 +1472,8 @@ class TestAsyncUserManagement:
             "test_user_id"
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthorizedConnectApplicationListData)
 
     @pytest.mark.asyncio
     async def test_list_user_authorized_applications_empty_page(

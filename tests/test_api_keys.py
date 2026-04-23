@@ -7,6 +7,7 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.api_keys.models import (
+    ApiKey,
     ApiKeyValidationResponse,
     ApiKeyWithValue,
     OrganizationsApiKeysOrder,
@@ -49,7 +50,8 @@ class TestApiKeys:
         )
         page = workos.api_keys.list_organization_api_keys("test_organizationId")
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], ApiKey)
 
     def test_list_organization_api_keys_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -190,7 +192,8 @@ class TestAsyncApiKeys:
             "test_organizationId"
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], ApiKey)
 
     @pytest.mark.asyncio
     async def test_list_organization_api_keys_empty_page(

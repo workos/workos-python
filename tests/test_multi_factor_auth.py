@@ -94,7 +94,8 @@ class TestMultiFactorAuth:
         )
         page = workos.multi_factor_auth.list_user_auth_factors("test_userlandUserId")
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthenticationFactor)
 
     def test_list_user_auth_factors_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -281,7 +282,8 @@ class TestAsyncMultiFactorAuth:
             "test_userlandUserId"
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], AuthenticationFactor)
 
     @pytest.mark.asyncio
     async def test_list_user_auth_factors_empty_page(self, async_workos, httpx_mock):

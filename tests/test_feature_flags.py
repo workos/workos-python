@@ -30,7 +30,8 @@ class TestFeatureFlags:
         )
         page = workos.feature_flags.list_feature_flags()
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], Flag)
 
     def test_list_feature_flags_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -115,7 +116,8 @@ class TestFeatureFlags:
             "test_organizationId"
         )
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], Flag)
 
     def test_list_organization_feature_flags_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -148,7 +150,8 @@ class TestFeatureFlags:
         )
         page = workos.feature_flags.list_user_feature_flags("test_userId")
         assert isinstance(page, SyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], Flag)
 
     def test_list_user_feature_flags_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -253,7 +256,8 @@ class TestAsyncFeatureFlags:
         httpx_mock.add_response(json=load_fixture("list_flag.json"))
         page = await async_workos.feature_flags.list_feature_flags()
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], Flag)
 
     @pytest.mark.asyncio
     async def test_list_feature_flags_empty_page(self, async_workos, httpx_mock):
@@ -342,7 +346,8 @@ class TestAsyncFeatureFlags:
             "test_organizationId"
         )
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], Flag)
 
     @pytest.mark.asyncio
     async def test_list_organization_feature_flags_empty_page(
@@ -378,7 +383,8 @@ class TestAsyncFeatureFlags:
         httpx_mock.add_response(json=load_fixture("list_flag.json"))
         page = await async_workos.feature_flags.list_user_feature_flags("test_userId")
         assert isinstance(page, AsyncPage)
-        assert isinstance(page.data, list)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], Flag)
 
     @pytest.mark.asyncio
     async def test_list_user_feature_flags_empty_page(self, async_workos, httpx_mock):

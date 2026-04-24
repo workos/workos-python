@@ -17,6 +17,7 @@ class UserManagementAuthenticationProvider(str, Enum):
     GIT_HUB_OAUTH = "GitHubOAuth"
     GOOGLE_OAUTH = "GoogleOAuth"
     MICROSOFT_OAUTH = "MicrosoftOAuth"
+    SLACK_OAUTH = "SlackOAuth"
 
     @classmethod
     def _missing_(
@@ -31,5 +32,5 @@ class UserManagementAuthenticationProvider(str, Enum):
 
 
 UserManagementAuthenticationProviderLiteral: TypeAlias = Literal[
-    "authkit", "AppleOAuth", "GitHubOAuth", "GoogleOAuth", "MicrosoftOAuth"
+    "authkit", "AppleOAuth", "GitHubOAuth", "GoogleOAuth", "MicrosoftOAuth", "SlackOAuth"
 ]

@@ -13,9 +13,19 @@ class SSOProvider(str, Enum):
     """Known values for SSOProvider."""
 
     APPLE_OAUTH = "AppleOAuth"
+    BITBUCKET_OAUTH = "BitbucketOAuth"
+    DISCORD_OAUTH = "DiscordOAuth"
     GIT_HUB_OAUTH = "GitHubOAuth"
+    GIT_LAB_OAUTH = "GitLabOAuth"
     GOOGLE_OAUTH = "GoogleOAuth"
+    INTUIT_OAUTH = "IntuitOAuth"
+    LINKED_IN_OAUTH = "LinkedInOAuth"
     MICROSOFT_OAUTH = "MicrosoftOAuth"
+    SALESFORCE_OAUTH = "SalesforceOAuth"
+    SLACK_OAUTH = "SlackOAuth"
+    VERCEL_MARKETPLACE_OAUTH = "VercelMarketplaceOAuth"
+    VERCEL_OAUTH = "VercelOAuth"
+    XERO_OAUTH = "XeroOAuth"
 
     @classmethod
     def _missing_(cls, value: object) -> Optional["SSOProvider"]:
@@ -28,5 +38,18 @@ class SSOProvider(str, Enum):
 
 
 SSOProviderLiteral: TypeAlias = Literal[
-    "AppleOAuth", "GitHubOAuth", "GoogleOAuth", "MicrosoftOAuth"
+    "AppleOAuth",
+    "BitbucketOAuth",
+    "DiscordOAuth",
+    "GitHubOAuth",
+    "GitLabOAuth",
+    "GoogleOAuth",
+    "IntuitOAuth",
+    "LinkedInOAuth",
+    "MicrosoftOAuth",
+    "SalesforceOAuth",
+    "SlackOAuth",
+    "VercelMarketplaceOAuth",
+    "VercelOAuth",
+    "XeroOAuth",
 ]

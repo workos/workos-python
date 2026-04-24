@@ -5,8 +5,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
-from typing import Literal, TypeAlias
+from typing import Literal, Optional, TypeAlias
 
 
 class UserManagementAuthenticationProvider(str, Enum):
@@ -14,9 +13,19 @@ class UserManagementAuthenticationProvider(str, Enum):
 
     AUTHKIT = "authkit"
     APPLE_OAUTH = "AppleOAuth"
+    BITBUCKET_OAUTH = "BitbucketOAuth"
+    DISCORD_OAUTH = "DiscordOAuth"
     GIT_HUB_OAUTH = "GitHubOAuth"
+    GIT_LAB_OAUTH = "GitLabOAuth"
     GOOGLE_OAUTH = "GoogleOAuth"
+    INTUIT_OAUTH = "IntuitOAuth"
+    LINKED_IN_OAUTH = "LinkedInOAuth"
     MICROSOFT_OAUTH = "MicrosoftOAuth"
+    SALESFORCE_OAUTH = "SalesforceOAuth"
+    SLACK_OAUTH = "SlackOAuth"
+    VERCEL_MARKETPLACE_OAUTH = "VercelMarketplaceOAuth"
+    VERCEL_OAUTH = "VercelOAuth"
+    XERO_OAUTH = "XeroOAuth"
 
     @classmethod
     def _missing_(
@@ -31,5 +40,19 @@ class UserManagementAuthenticationProvider(str, Enum):
 
 
 UserManagementAuthenticationProviderLiteral: TypeAlias = Literal[
-    "authkit", "AppleOAuth", "GitHubOAuth", "GoogleOAuth", "MicrosoftOAuth"
+    "authkit",
+    "AppleOAuth",
+    "BitbucketOAuth",
+    "DiscordOAuth",
+    "GitHubOAuth",
+    "GitLabOAuth",
+    "GoogleOAuth",
+    "IntuitOAuth",
+    "LinkedInOAuth",
+    "MicrosoftOAuth",
+    "SalesforceOAuth",
+    "SlackOAuth",
+    "VercelMarketplaceOAuth",
+    "VercelOAuth",
+    "XeroOAuth",
 ]

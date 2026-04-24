@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.8](https://github.com/workos/workos-python/compare/v6.0.7...v6.0.8) (2026-04-24)
+
+
+### Bug Fixes
+
+* list Slack as an auth provider for the authorization URL ([#633](https://github.com/workos/workos-python/issues/633)) ([87fc5ab](https://github.com/workos/workos-python/commit/87fc5abf661514a5c54866bec41521b1909ccb38))
+
 ## [6.0.7](https://github.com/workos/workos-python/compare/v6.0.6...v6.0.7) (2026-04-23)
 
 

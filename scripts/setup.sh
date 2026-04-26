@@ -6,3 +6,8 @@ if ! command -v uv &>/dev/null; then
 fi
 
 uv sync --dev
+
+# Install ruff globally so formatters (e.g. oagen) can find it in PATH
+if ! command -v ruff &>/dev/null; then
+  uv tool install ruff
+fi

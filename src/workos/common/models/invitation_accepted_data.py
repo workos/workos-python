@@ -35,6 +35,8 @@ class InvitationAcceptedData:
     """The ID of the user who invited the recipient, if provided."""
     accepted_user_id: Optional[str]
     """The ID of the user who accepted the invitation, once accepted."""
+    role_slug: Optional[str]
+    """Slug of the role the invitee will be assigned on acceptance. Reflects the current role on the invitee's organization membership. null when the invitation has no associated organization."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
@@ -59,6 +61,7 @@ class InvitationAcceptedData:
                 organization_id=data["organization_id"],
                 inviter_user_id=data["inviter_user_id"],
                 accepted_user_id=data["accepted_user_id"],
+                role_slug=data["role_slug"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
             )
@@ -95,6 +98,10 @@ class InvitationAcceptedData:
             result["accepted_user_id"] = self.accepted_user_id
         else:
             result["accepted_user_id"] = None
+        if self.role_slug is not None:
+            result["role_slug"] = self.role_slug
+        else:
+            result["role_slug"] = None
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
         return result

@@ -22,19 +22,21 @@ from .organization_domains._resource import (
     AsyncOrganizationDomains,
 )
 from .organizations._resource import Organizations, AsyncOrganizations
+from .groups._resource import Groups, AsyncGroups
 from .admin_portal._resource import AdminPortal, AsyncAdminPortal
 from .radar._resource import Radar, AsyncRadar
 from .user_management._resource import UserManagement, AsyncUserManagement
+from .user_management_organization_membership_groups._resource import (
+    UserManagementOrganizationMembershipGroups,
+    AsyncUserManagementOrganizationMembershipGroups,
+)
 from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
-
-# @oagen-ignore-start — non-spec service imports (hand-maintained)
 from .passwordless import AsyncPasswordless, Passwordless
 from .vault import AsyncVault, Vault
 from .actions import Actions, AsyncActions
 from .pkce import PKCE
-# @oagen-ignore-end
 
 
 class WorkOSClient(_SyncBase):
@@ -96,6 +98,11 @@ class WorkOSClient(_SyncBase):
         return Organizations(self)
 
     @functools.cached_property
+    def groups(self) -> Groups:
+        """Groups API resources."""
+        return Groups(self)
+
+    @functools.cached_property
     def admin_portal(self) -> AdminPortal:
         """Admin Portal API resources."""
         return AdminPortal(self)
@@ -109,6 +116,13 @@ class WorkOSClient(_SyncBase):
     def user_management(self) -> UserManagement:
         """User Management API resources."""
         return UserManagement(self)
+
+    @functools.cached_property
+    def user_management_organization_membership_groups(
+        self,
+    ) -> UserManagementOrganizationMembershipGroups:
+        """User Management Organization Membership Groups API resources."""
+        return UserManagementOrganizationMembershipGroups(self)
 
     @functools.cached_property
     def webhooks(self) -> Webhooks:
@@ -214,6 +228,11 @@ class AsyncWorkOSClient(_AsyncBase):
         return AsyncOrganizations(self)
 
     @functools.cached_property
+    def groups(self) -> AsyncGroups:
+        """Groups API resources."""
+        return AsyncGroups(self)
+
+    @functools.cached_property
     def admin_portal(self) -> AsyncAdminPortal:
         """Admin Portal API resources."""
         return AsyncAdminPortal(self)
@@ -227,6 +246,13 @@ class AsyncWorkOSClient(_AsyncBase):
     def user_management(self) -> AsyncUserManagement:
         """User Management API resources."""
         return AsyncUserManagement(self)
+
+    @functools.cached_property
+    def user_management_organization_membership_groups(
+        self,
+    ) -> AsyncUserManagementOrganizationMembershipGroups:
+        """User Management Organization Membership Groups API resources."""
+        return AsyncUserManagementOrganizationMembershipGroups(self)
 
     @functools.cached_property
     def webhooks(self) -> AsyncWebhooks:
@@ -271,3 +297,7 @@ class AsyncWorkOSClient(_AsyncBase):
         return PKCE()
 
     # @oagen-ignore-end
+
+
+# @oagen-ignore-start — non-spec service imports (hand-maintained)
+# @oagen-ignore-end

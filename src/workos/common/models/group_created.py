@@ -10,7 +10,7 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .event_context import EventContext
-from .group import Group
+from workos.groups.models.group import Group
 
 
 @dataclass(slots=True)

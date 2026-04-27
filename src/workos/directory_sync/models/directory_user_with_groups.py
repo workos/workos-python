@@ -42,8 +42,6 @@ class DirectoryUserWithGroups:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    groups: List["DirectoryGroup"]
-    """The directory groups the user belongs to."""
     first_name: Optional[str] = None
     """The first name of the user."""
     last_name: Optional[str] = None
@@ -67,6 +65,10 @@ class DirectoryUserWithGroups:
     role: Optional["SlimRole"] = None
     roles: Optional[List["SlimRole"]] = None
     """All roles assigned to the user."""
+    groups: Optional[List["DirectoryGroup"]] = None
+    """The directory groups the user belongs to. Use the List Directory Groups endpoint with a user filter instead.
+
+    .. deprecated:: This field is deprecated."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DirectoryUserWithGroups":
@@ -83,10 +85,6 @@ class DirectoryUserWithGroups:
                 custom_attributes=data["custom_attributes"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                groups=[
-                    DirectoryGroup.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["groups"])
-                ],
                 first_name=data.get("first_name"),
                 last_name=data.get("last_name"),
                 emails=[
@@ -106,6 +104,12 @@ class DirectoryUserWithGroups:
                     for item in cast(list[Any], _v_roles)
                 ]
                 if (_v_roles := data.get("roles")) is not None
+                else None,
+                groups=[
+                    DirectoryGroup.from_dict(cast(Dict[str, Any], item))
+                    for item in cast(list[Any], _v_groups)
+                ]
+                if (_v_groups := data.get("groups")) is not None
                 else None,
             )
         except (KeyError, ValueError) as e:
@@ -129,7 +133,6 @@ class DirectoryUserWithGroups:
         result["custom_attributes"] = self.custom_attributes
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
-        result["groups"] = [item.to_dict() for item in self.groups]
         if self.first_name is not None:
             result["first_name"] = self.first_name
         else:
@@ -154,4 +157,6 @@ class DirectoryUserWithGroups:
             result["role"] = self.role.to_dict()
         if self.roles is not None:
             result["roles"] = [item.to_dict() for item in self.roles]
+        if self.groups is not None:
+            result["groups"] = [item.to_dict() for item in self.groups]
         return result

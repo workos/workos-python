@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, List, Literal
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
@@ -56,9 +57,7 @@ class WebhookEndpointJson:
         result["id"] = self.id
         result["endpoint_url"] = self.endpoint_url
         result["secret"] = self.secret
-        result["status"] = (
-            self.status.value if isinstance(self.status, Enum) else self.status
-        )
+        result["status"] = self.status.value if isinstance(self.status, Enum) else self.status
         result["events"] = self.events
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)

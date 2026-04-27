@@ -25,7 +25,4 @@ class RadarStandaloneResponseVerdict(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-RadarStandaloneResponseVerdictLiteral: TypeAlias = Literal[
-    "allow", "block", "challenge"
-]
+RadarStandaloneResponseVerdictLiteral: TypeAlias = Literal["allow", "block", "challenge"]

@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from .authentication_radar_risk_detected_data_action import (
-    AuthenticationRadarRiskDetectedDataAction,
-)
+from .authentication_radar_risk_detected_data_action import AuthenticationRadarRiskDetectedDataAction
 
 
 @dataclass(slots=True)
@@ -52,9 +51,7 @@ class AuthenticationRadarRiskDetectedData:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["auth_method"] = self.auth_method
-        result["action"] = (
-            self.action.value if isinstance(self.action, Enum) else self.action
-        )
+        result["action"] = self.action.value if isinstance(self.action, Enum) else self.action
         if self.control is not None:
             result["control"] = self.control
         else:

@@ -5,15 +5,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from workos.common.models.audit_log_configuration_log_stream_state import (
-    AuditLogConfigurationLogStreamState,
-)
-from workos.common.models.audit_log_configuration_log_stream_type import (
-    AuditLogConfigurationLogStreamType,
-)
+from workos.common.models.audit_log_configuration_log_stream_state import AuditLogConfigurationLogStreamState
+from workos.common.models.audit_log_configuration_log_stream_type import AuditLogConfigurationLogStreamType
 
 
 @dataclass(slots=True)
@@ -50,9 +47,7 @@ class AuditLogConfigurationLogStream:
         result: Dict[str, Any] = {}
         result["id"] = self.id
         result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         if self.last_synced_at is not None:
             result["last_synced_at"] = self.last_synced_at
         else:

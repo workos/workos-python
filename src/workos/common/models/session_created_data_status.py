@@ -25,5 +25,4 @@ class SessionCreatedDataStatus(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 SessionCreatedDataStatusLiteral: TypeAlias = Literal["active", "expired", "revoked"]

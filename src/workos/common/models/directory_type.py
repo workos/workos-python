@@ -43,27 +43,4 @@ class DirectoryType(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-DirectoryTypeLiteral: TypeAlias = Literal[
-    "azure scim v2.0",
-    "bamboohr",
-    "breathe hr",
-    "cezanne hr",
-    "cyberark scim v2.0",
-    "fourth hr",
-    "generic scim v2.0",
-    "gsuite directory",
-    "hibob",
-    "sailpoint scim v2.0",
-    "jump cloud scim v2.0",
-    "okta scim v2.0",
-    "onelogin scim v2.0",
-    "people hr",
-    "personio",
-    "pingfederate scim v2.0",
-    "rippling scim v2.0",
-    "s3",
-    "sftp",
-    "sftp workday",
-    "workday",
-]
+DirectoryTypeLiteral: TypeAlias = Literal["azure scim v2.0", "bamboohr", "breathe hr", "cezanne hr", "cyberark scim v2.0", "fourth hr", "generic scim v2.0", "gsuite directory", "hibob", "sailpoint scim v2.0", "jump cloud scim v2.0", "okta scim v2.0", "onelogin scim v2.0", "people hr", "personio", "pingfederate scim v2.0", "rippling scim v2.0", "s3", "sftp", "sftp workday", "workday"]

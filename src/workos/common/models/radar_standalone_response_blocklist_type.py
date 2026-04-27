@@ -21,9 +21,7 @@ class RadarStandaloneResponseBlocklistType(str, Enum):
     COUNTRY = "country"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["RadarStandaloneResponseBlocklistType"]:
+    def _missing_(cls, value: object) -> Optional["RadarStandaloneResponseBlocklistType"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -31,13 +29,4 @@ class RadarStandaloneResponseBlocklistType(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-RadarStandaloneResponseBlocklistTypeLiteral: TypeAlias = Literal[
-    "ip_address",
-    "domain",
-    "email",
-    "device",
-    "user_agent",
-    "device_fingerprint",
-    "country",
-]
+RadarStandaloneResponseBlocklistTypeLiteral: TypeAlias = Literal["ip_address", "domain", "email", "device", "user_agent", "device_fingerprint", "country"]

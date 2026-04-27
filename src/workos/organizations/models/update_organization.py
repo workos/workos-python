@@ -37,16 +37,9 @@ class UpdateOrganization:
         try:
             return cls(
                 name=data.get("name"),
-                allow_profiles_outside_organization=data.get(
-                    "allow_profiles_outside_organization"
-                ),
+                allow_profiles_outside_organization=data.get("allow_profiles_outside_organization"),
                 domains=data.get("domains"),
-                domain_data=[
-                    OrganizationDomainData.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v_domain_data)
-                ]
-                if (_v_domain_data := data.get("domain_data")) is not None
-                else None,
+                domain_data=[OrganizationDomainData.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], _v_domain_data)] if (_v_domain_data := data.get("domain_data")) is not None else None,
                 stripe_customer_id=data.get("stripe_customer_id"),
                 metadata=data.get("metadata"),
                 external_id=data.get("external_id"),
@@ -60,9 +53,7 @@ class UpdateOrganization:
         if self.name is not None:
             result["name"] = self.name
         if self.allow_profiles_outside_organization is not None:
-            result["allow_profiles_outside_organization"] = (
-                self.allow_profiles_outside_organization
-            )
+            result["allow_profiles_outside_organization"] = self.allow_profiles_outside_organization
         if self.domains is not None:
             result["domains"] = self.domains
         if self.domain_data is not None:

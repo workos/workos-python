@@ -9,9 +9,7 @@ from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 
 from .audit_log_configuration_log_stream import AuditLogConfigurationLogStream
-from workos.common.models.audit_log_configuration_state import (
-    AuditLogConfigurationState,
-)
+from workos.common.models.audit_log_configuration_state import AuditLogConfigurationState
 
 
 @dataclass(slots=True)
@@ -35,11 +33,7 @@ class AuditLogConfiguration:
                 organization_id=data["organization_id"],
                 retention_period_in_days=data["retention_period_in_days"],
                 state=AuditLogConfigurationState(data["state"]),
-                log_stream=AuditLogConfigurationLogStream.from_dict(
-                    cast(Dict[str, Any], _v_log_stream)
-                )
-                if (_v_log_stream := data.get("log_stream")) is not None
-                else None,
+                log_stream=AuditLogConfigurationLogStream.from_dict(cast(Dict[str, Any], _v_log_stream)) if (_v_log_stream := data.get("log_stream")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuditLogConfiguration", e)
@@ -49,9 +43,7 @@ class AuditLogConfiguration:
         result: Dict[str, Any] = {}
         result["organization_id"] = self.organization_id
         result["retention_period_in_days"] = self.retention_period_in_days
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         if self.log_stream is not None:
             result["log_stream"] = self.log_stream.to_dict()
         return result

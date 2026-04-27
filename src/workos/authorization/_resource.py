@@ -2,71 +2,49 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import (
-    AuthorizationCheck,
-    AuthorizationPermission,
-    AuthorizationResource,
-    Permission,
-    Role,
-    RoleAssignment,
-    RoleList,
-    UserOrganizationMembershipBaseListData,
-)
+from .models import AddRolePermission, AssignRole, AuthorizationCheck, AuthorizationPermission, AuthorizationResource, CheckAuthorization, CreateAuthorizationPermission, CreateAuthorizationResource, CreateOrganizationRole, CreateRole, Permission, RemoveRole, Role, RoleAssignment, RoleList, SetRolePermissions, UpdateAuthorizationPermission, UpdateAuthorizationResource, UpdateOrganizationRole, UpdateRole, UserOrganizationMembershipBaseListData
 from .models import AuthorizationAssignment, AuthorizationOrder, PermissionsOrder
 from .._pagination import AsyncPage, SyncPage
 from dataclasses import dataclass
 
-
 @dataclass
 class ResourceTargetById:
     """Identify resource target by id."""
-
     resource_id: str
-
 
 @dataclass
 class ResourceTargetByExternalId:
     """Identify resource target by external id."""
-
     resource_external_id: str
     resource_type_slug: str
-
 
 @dataclass
 class ParentResourceById:
     """Identify parent resource by id."""
-
     parent_resource_id: str
-
 
 @dataclass
 class ParentResourceByExternalId:
     """Identify parent resource by external id."""
-
     parent_resource_type_slug: str
     parent_resource_external_id: str
-
 
 @dataclass
 class ParentById:
     """Identify parent by id."""
-
     parent_resource_id: str
-
 
 @dataclass
 class ParentByExternalId:
     """Identify parent by external id."""
-
     parent_resource_type_slug: str
     parent_external_id: str
-
 
 class Authorization:
     """Authorization API resources."""
@@ -119,7 +97,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_organization_membership_resources(
+    def list_resources_for_membership(
         self,
         organization_membership_id: str,
         *,
@@ -159,26 +137,18 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "permission_slug": permission_slug,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "permission_slug": permission_slug,
+        }.items() if v is not None}
         if isinstance(parent_resource, ParentResourceById):
             params["parent_resource_id"] = parent_resource.parent_resource_id
         elif isinstance(parent_resource, ParentResourceByExternalId):
-            params["parent_resource_type_slug"] = (
-                parent_resource.parent_resource_type_slug
-            )
-            params["parent_resource_external_id"] = (
-                parent_resource.parent_resource_external_id
-            )
+            params["parent_resource_type_slug"] = parent_resource.parent_resource_type_slug
+            params["parent_resource_external_id"] = parent_resource.parent_resource_external_id
         return self._client.request_page(
             method="get",
             path=f"authorization/organization_memberships/{organization_membership_id}/resources",
@@ -187,7 +157,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_resource_permissions(
+    def list_effective_permissions(
         self,
         organization_membership_id: str,
         resource_id: str,
@@ -222,16 +192,12 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_id}/permissions",
@@ -277,16 +243,12 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_type_slug}/{external_id}/permissions",
@@ -295,7 +257,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_organization_membership_role_assignments(
+    def list_role_assignments(
         self,
         organization_membership_id: str,
         *,
@@ -327,16 +289,12 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
@@ -431,7 +389,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_organization_membership_role_assignment(
+    def remove_role_assignment(
         self,
         organization_membership_id: str,
         role_assignment_id: str,
@@ -526,16 +484,12 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "slug": slug,
-                "name": name,
-                "description": description,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "slug": slug,
+            "name": name,
+            "description": description,
+            "resource_type_slug": resource_type_slug,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path=f"authorization/organizations/{organization_id}/roles",
@@ -609,14 +563,10 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+        }.items() if v is not None}
         return self._client.request(
             method="patch",
             path=f"authorization/organizations/{organization_id}/roles/{slug}",
@@ -656,7 +606,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def create_role_permission(
+    def add_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -697,7 +647,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def update_role_permissions(
+    def set_organization_role_permissions(
         self,
         organization_id: str,
         slug: str,
@@ -737,7 +687,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_role_permission(
+    def remove_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -768,7 +718,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def get_organization_resource(
+    def get_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -803,7 +753,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def update_organization_resource(
+    def update_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -811,9 +761,7 @@ class Authorization:
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
+        parent_resource: Optional[Union[ParentResourceById, ParentResourceByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Update a resource by external ID
@@ -842,24 +790,16 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+        }.items() if v is not None}
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
-                body["parent_resource_type_slug"] = (
-                    parent_resource.parent_resource_type_slug
-                )
+                body["parent_resource_external_id"] = parent_resource.parent_resource_external_id
+                body["parent_resource_type_slug"] = parent_resource.parent_resource_type_slug
         return self._client.request(
             method="patch",
             path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
@@ -868,7 +808,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_organization_resource(
+    def delete_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -897,13 +837,9 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "cascade_delete": cascade_delete,
-            }.items()
-            if v is not None
-        }
+        params: Dict[str, Any] = {k: v for k, v in {
+            "cascade_delete": cascade_delete,
+        }.items() if v is not None}
         self._client.request(
             method="delete",
             path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
@@ -911,7 +847,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_resource_organization_memberships(
+    def list_memberships_for_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -953,20 +889,14 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "permission_slug": permission_slug,
-                "assignment": enum_value(assignment)
-                if assignment is not None
-                else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "permission_slug": permission_slug,
+            "assignment": enum_value(assignment) if assignment is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
@@ -984,6 +914,7 @@ class Authorization:
         order: Optional[Union[AuthorizationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
         search: Optional[str] = None,
         parent: Optional[Union[ParentById, ParentByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -999,6 +930,7 @@ class Authorization:
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
+            resource_external_id: Filter resources by external ID.
             search: Search resources by name.
             parent: Identifies the parent. One of: ParentById, ParentByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1013,19 +945,16 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-                "resource_type_slug": resource_type_slug,
-                "search": search,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization_id": organization_id,
+            "resource_type_slug": resource_type_slug,
+            "resource_external_id": resource_external_id,
+            "search": search,
+        }.items() if v is not None}
         if parent is not None:
             if isinstance(parent, ParentById):
                 params["parent_resource_id"] = parent.parent_resource_id
@@ -1048,9 +977,7 @@ class Authorization:
         resource_type_slug: str,
         organization_id: str,
         description: Optional[str] = None,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
+        parent_resource: Optional[Union[ParentResourceById, ParentResourceByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Create an authorization resource
@@ -1079,27 +1006,19 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "external_id": external_id,
-                "name": name,
-                "description": description,
-                "resource_type_slug": resource_type_slug,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "external_id": external_id,
+            "name": name,
+            "description": description,
+            "resource_type_slug": resource_type_slug,
+            "organization_id": organization_id,
+        }.items() if v is not None}
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
-                body["parent_resource_type_slug"] = (
-                    parent_resource.parent_resource_type_slug
-                )
+                body["parent_resource_external_id"] = parent_resource.parent_resource_external_id
+                body["parent_resource_type_slug"] = parent_resource.parent_resource_type_slug
         return self._client.request(
             method="post",
             path="authorization/resources",
@@ -1146,9 +1065,7 @@ class Authorization:
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
+        parent_resource: Optional[Union[ParentResourceById, ParentResourceByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Update a resource
@@ -1175,24 +1092,16 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+        }.items() if v is not None}
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
-                body["parent_resource_type_slug"] = (
-                    parent_resource.parent_resource_type_slug
-                )
+                body["parent_resource_external_id"] = parent_resource.parent_resource_external_id
+                body["parent_resource_type_slug"] = parent_resource.parent_resource_type_slug
         return self._client.request(
             method="patch",
             path=f"authorization/resources/{resource_id}",
@@ -1226,13 +1135,9 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "cascade_delete": cascade_delete,
-            }.items()
-            if v is not None
-        }
+        params: Dict[str, Any] = {k: v for k, v in {
+            "cascade_delete": cascade_delete,
+        }.items() if v is not None}
         self._client.request(
             method="delete",
             path=f"authorization/resources/{resource_id}",
@@ -1278,20 +1183,14 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "permission_slug": permission_slug,
-                "assignment": enum_value(assignment)
-                if assignment is not None
-                else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "permission_slug": permission_slug,
+            "assignment": enum_value(assignment) if assignment is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path=f"authorization/resources/{resource_id}/organization_memberships",
@@ -1358,16 +1257,12 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "slug": slug,
-                "name": name,
-                "description": description,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "slug": slug,
+            "name": name,
+            "description": description,
+            "resource_type_slug": resource_type_slug,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="authorization/roles",
@@ -1437,14 +1332,10 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+        }.items() if v is not None}
         return self._client.request(
             method="patch",
             path=f"authorization/roles/{slug}",
@@ -1560,16 +1451,12 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="authorization/permissions",
@@ -1610,16 +1497,12 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "slug": slug,
-                "name": name,
-                "description": description,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "slug": slug,
+            "name": name,
+            "description": description,
+            "resource_type_slug": resource_type_slug,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="authorization/permissions",
@@ -1687,14 +1570,10 @@ class Authorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+        }.items() if v is not None}
         return self._client.request(
             method="patch",
             path=f"authorization/permissions/{slug}",
@@ -1782,7 +1661,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_organization_membership_resources(
+    async def list_resources_for_membership(
         self,
         organization_membership_id: str,
         *,
@@ -1822,26 +1701,18 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "permission_slug": permission_slug,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "permission_slug": permission_slug,
+        }.items() if v is not None}
         if isinstance(parent_resource, ParentResourceById):
             params["parent_resource_id"] = parent_resource.parent_resource_id
         elif isinstance(parent_resource, ParentResourceByExternalId):
-            params["parent_resource_type_slug"] = (
-                parent_resource.parent_resource_type_slug
-            )
-            params["parent_resource_external_id"] = (
-                parent_resource.parent_resource_external_id
-            )
+            params["parent_resource_type_slug"] = parent_resource.parent_resource_type_slug
+            params["parent_resource_external_id"] = parent_resource.parent_resource_external_id
         return await self._client.request_page(
             method="get",
             path=f"authorization/organization_memberships/{organization_membership_id}/resources",
@@ -1850,7 +1721,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_resource_permissions(
+    async def list_effective_permissions(
         self,
         organization_membership_id: str,
         resource_id: str,
@@ -1885,16 +1756,12 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_id}/permissions",
@@ -1940,16 +1807,12 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_type_slug}/{external_id}/permissions",
@@ -1958,7 +1821,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_organization_membership_role_assignments(
+    async def list_role_assignments(
         self,
         organization_membership_id: str,
         *,
@@ -1990,16 +1853,12 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
@@ -2094,7 +1953,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_organization_membership_role_assignment(
+    async def remove_role_assignment(
         self,
         organization_membership_id: str,
         role_assignment_id: str,
@@ -2189,16 +2048,12 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "slug": slug,
-                "name": name,
-                "description": description,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "slug": slug,
+            "name": name,
+            "description": description,
+            "resource_type_slug": resource_type_slug,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path=f"authorization/organizations/{organization_id}/roles",
@@ -2272,14 +2127,10 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+        }.items() if v is not None}
         return await self._client.request(
             method="patch",
             path=f"authorization/organizations/{organization_id}/roles/{slug}",
@@ -2319,7 +2170,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def create_role_permission(
+    async def add_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -2360,7 +2211,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def update_role_permissions(
+    async def set_organization_role_permissions(
         self,
         organization_id: str,
         slug: str,
@@ -2400,7 +2251,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_role_permission(
+    async def remove_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -2431,7 +2282,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def get_organization_resource(
+    async def get_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2466,7 +2317,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def update_organization_resource(
+    async def update_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2474,9 +2325,7 @@ class AsyncAuthorization:
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
+        parent_resource: Optional[Union[ParentResourceById, ParentResourceByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Update a resource by external ID
@@ -2505,24 +2354,16 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+        }.items() if v is not None}
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
-                body["parent_resource_type_slug"] = (
-                    parent_resource.parent_resource_type_slug
-                )
+                body["parent_resource_external_id"] = parent_resource.parent_resource_external_id
+                body["parent_resource_type_slug"] = parent_resource.parent_resource_type_slug
         return await self._client.request(
             method="patch",
             path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
@@ -2531,7 +2372,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_organization_resource(
+    async def delete_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2560,13 +2401,9 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "cascade_delete": cascade_delete,
-            }.items()
-            if v is not None
-        }
+        params: Dict[str, Any] = {k: v for k, v in {
+            "cascade_delete": cascade_delete,
+        }.items() if v is not None}
         await self._client.request(
             method="delete",
             path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
@@ -2574,7 +2411,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_resource_organization_memberships(
+    async def list_memberships_for_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2616,20 +2453,14 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "permission_slug": permission_slug,
-                "assignment": enum_value(assignment)
-                if assignment is not None
-                else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "permission_slug": permission_slug,
+            "assignment": enum_value(assignment) if assignment is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
@@ -2647,6 +2478,7 @@ class AsyncAuthorization:
         order: Optional[Union[AuthorizationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
         search: Optional[str] = None,
         parent: Optional[Union[ParentById, ParentByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -2662,6 +2494,7 @@ class AsyncAuthorization:
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
+            resource_external_id: Filter resources by external ID.
             search: Search resources by name.
             parent: Identifies the parent. One of: ParentById, ParentByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -2676,19 +2509,16 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-                "resource_type_slug": resource_type_slug,
-                "search": search,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization_id": organization_id,
+            "resource_type_slug": resource_type_slug,
+            "resource_external_id": resource_external_id,
+            "search": search,
+        }.items() if v is not None}
         if parent is not None:
             if isinstance(parent, ParentById):
                 params["parent_resource_id"] = parent.parent_resource_id
@@ -2711,9 +2541,7 @@ class AsyncAuthorization:
         resource_type_slug: str,
         organization_id: str,
         description: Optional[str] = None,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
+        parent_resource: Optional[Union[ParentResourceById, ParentResourceByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Create an authorization resource
@@ -2742,27 +2570,19 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "external_id": external_id,
-                "name": name,
-                "description": description,
-                "resource_type_slug": resource_type_slug,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "external_id": external_id,
+            "name": name,
+            "description": description,
+            "resource_type_slug": resource_type_slug,
+            "organization_id": organization_id,
+        }.items() if v is not None}
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
-                body["parent_resource_type_slug"] = (
-                    parent_resource.parent_resource_type_slug
-                )
+                body["parent_resource_external_id"] = parent_resource.parent_resource_external_id
+                body["parent_resource_type_slug"] = parent_resource.parent_resource_type_slug
         return await self._client.request(
             method="post",
             path="authorization/resources",
@@ -2809,9 +2629,7 @@ class AsyncAuthorization:
         *,
         name: Optional[str] = None,
         description: Optional[str] = None,
-        parent_resource: Optional[
-            Union[ParentResourceById, ParentResourceByExternalId]
-        ] = None,
+        parent_resource: Optional[Union[ParentResourceById, ParentResourceByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AuthorizationResource:
         """Update a resource
@@ -2838,24 +2656,16 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+        }.items() if v is not None}
         if parent_resource is not None:
             if isinstance(parent_resource, ParentResourceById):
                 body["parent_resource_id"] = parent_resource.parent_resource_id
             elif isinstance(parent_resource, ParentResourceByExternalId):
-                body["parent_resource_external_id"] = (
-                    parent_resource.parent_resource_external_id
-                )
-                body["parent_resource_type_slug"] = (
-                    parent_resource.parent_resource_type_slug
-                )
+                body["parent_resource_external_id"] = parent_resource.parent_resource_external_id
+                body["parent_resource_type_slug"] = parent_resource.parent_resource_type_slug
         return await self._client.request(
             method="patch",
             path=f"authorization/resources/{resource_id}",
@@ -2889,13 +2699,9 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "cascade_delete": cascade_delete,
-            }.items()
-            if v is not None
-        }
+        params: Dict[str, Any] = {k: v for k, v in {
+            "cascade_delete": cascade_delete,
+        }.items() if v is not None}
         await self._client.request(
             method="delete",
             path=f"authorization/resources/{resource_id}",
@@ -2941,20 +2747,14 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "permission_slug": permission_slug,
-                "assignment": enum_value(assignment)
-                if assignment is not None
-                else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "permission_slug": permission_slug,
+            "assignment": enum_value(assignment) if assignment is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path=f"authorization/resources/{resource_id}/organization_memberships",
@@ -3021,16 +2821,12 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "slug": slug,
-                "name": name,
-                "description": description,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "slug": slug,
+            "name": name,
+            "description": description,
+            "resource_type_slug": resource_type_slug,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="authorization/roles",
@@ -3100,14 +2896,10 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+        }.items() if v is not None}
         return await self._client.request(
             method="patch",
             path=f"authorization/roles/{slug}",
@@ -3223,16 +3015,12 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="authorization/permissions",
@@ -3273,16 +3061,12 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "slug": slug,
-                "name": name,
-                "description": description,
-                "resource_type_slug": resource_type_slug,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "slug": slug,
+            "name": name,
+            "description": description,
+            "resource_type_slug": resource_type_slug,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="authorization/permissions",
@@ -3350,14 +3134,10 @@ class AsyncAuthorization:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+        }.items() if v is not None}
         return await self._client.request(
             method="patch",
             path=f"authorization/permissions/{slug}",

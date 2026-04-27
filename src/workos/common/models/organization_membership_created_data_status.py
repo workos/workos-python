@@ -17,9 +17,7 @@ class OrganizationMembershipCreatedDataStatus(str, Enum):
     PENDING = "pending"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["OrganizationMembershipCreatedDataStatus"]:
+    def _missing_(cls, value: object) -> Optional["OrganizationMembershipCreatedDataStatus"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -27,7 +25,4 @@ class OrganizationMembershipCreatedDataStatus(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-OrganizationMembershipCreatedDataStatusLiteral: TypeAlias = Literal[
-    "active", "inactive", "pending"
-]
+OrganizationMembershipCreatedDataStatusLiteral: TypeAlias = Literal["active", "inactive", "pending"]

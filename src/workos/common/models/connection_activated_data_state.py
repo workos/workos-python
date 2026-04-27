@@ -27,7 +27,4 @@ class ConnectionActivatedDataState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-ConnectionActivatedDataStateLiteral: TypeAlias = Literal[
-    "draft", "active", "validating", "inactive", "deleting"
-]
+ConnectionActivatedDataStateLiteral: TypeAlias = Literal["draft", "active", "validating", "inactive", "deleting"]

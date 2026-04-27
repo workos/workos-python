@@ -80,24 +80,12 @@ class DirectoryUser:
                 updated_at=_parse_datetime(data["updated_at"]),
                 first_name=data.get("first_name"),
                 last_name=data.get("last_name"),
-                emails=[
-                    DirectoryUserEmail.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v_emails)
-                ]
-                if (_v_emails := data.get("emails")) is not None
-                else None,
+                emails=[DirectoryUserEmail.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], _v_emails)] if (_v_emails := data.get("emails")) is not None else None,
                 job_title=data.get("job_title"),
                 username=data.get("username"),
                 raw_attributes=data.get("raw_attributes"),
-                role=SlimRole.from_dict(cast(Dict[str, Any], _v_role))
-                if (_v_role := data.get("role")) is not None
-                else None,
-                roles=[
-                    SlimRole.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v_roles)
-                ]
-                if (_v_roles := data.get("roles")) is not None
-                else None,
+                role=SlimRole.from_dict(cast(Dict[str, Any], _v_role)) if (_v_role := data.get("role")) is not None else None,
+                roles=[SlimRole.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], _v_roles)] if (_v_roles := data.get("roles")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DirectoryUser", e)
@@ -114,9 +102,7 @@ class DirectoryUser:
             result["email"] = self.email
         else:
             result["email"] = None
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         result["custom_attributes"] = self.custom_attributes
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)

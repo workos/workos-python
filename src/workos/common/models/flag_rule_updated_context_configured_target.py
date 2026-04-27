@@ -7,12 +7,8 @@ from typing import cast
 from typing import Any, Dict, List
 from workos._types import _raise_deserialize_error
 
-from .flag_rule_updated_context_configured_target_organization import (
-    FlagRuleUpdatedContextConfiguredTargetOrganization,
-)
-from .flag_rule_updated_context_configured_target_user import (
-    FlagRuleUpdatedContextConfiguredTargetUser,
-)
+from .flag_rule_updated_context_configured_target_organization import FlagRuleUpdatedContextConfiguredTargetOrganization
+from .flag_rule_updated_context_configured_target_user import FlagRuleUpdatedContextConfiguredTargetUser
 
 
 @dataclass(slots=True)
@@ -25,24 +21,12 @@ class FlagRuleUpdatedContextConfiguredTarget:
     """The users targeted by the flag rule."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "FlagRuleUpdatedContextConfiguredTarget":
+    def from_dict(cls, data: Dict[str, Any]) -> "FlagRuleUpdatedContextConfiguredTarget":
         """Deserialize from a dictionary."""
         try:
             return cls(
-                organizations=[
-                    FlagRuleUpdatedContextConfiguredTargetOrganization.from_dict(
-                        cast(Dict[str, Any], item)
-                    )
-                    for item in cast(list[Any], data["organizations"])
-                ],
-                users=[
-                    FlagRuleUpdatedContextConfiguredTargetUser.from_dict(
-                        cast(Dict[str, Any], item)
-                    )
-                    for item in cast(list[Any], data["users"])
-                ],
+                organizations=[FlagRuleUpdatedContextConfiguredTargetOrganization.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["organizations"])],
+                users=[FlagRuleUpdatedContextConfiguredTargetUser.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["users"])],
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagRuleUpdatedContextConfiguredTarget", e)

@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
@@ -42,9 +43,7 @@ class ConnectionDeletedData:
                 id=data["id"],
                 state=ConnectionDeletedDataState(data["state"]),
                 name=data["name"],
-                connection_type=ConnectionDeletedDataConnectionType(
-                    data["connection_type"]
-                ),
+                connection_type=ConnectionDeletedDataConnectionType(data["connection_type"]),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 organization_id=data.get("organization_id"),
@@ -57,15 +56,9 @@ class ConnectionDeletedData:
         result: Dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         result["name"] = self.name
-        result["connection_type"] = (
-            self.connection_type.value
-            if isinstance(self.connection_type, Enum)
-            else self.connection_type
-        )
+        result["connection_type"] = self.connection_type.value if isinstance(self.connection_type, Enum) else self.connection_type
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
         if self.organization_id is not None:

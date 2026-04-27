@@ -29,13 +29,7 @@ class UserManagementLoginRequest:
             return cls(
                 external_auth_id=data["external_auth_id"],
                 user=UserObject.from_dict(cast(Dict[str, Any], data["user"])),
-                user_consent_options=[
-                    UserConsentOption.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v_user_consent_options)
-                ]
-                if (_v_user_consent_options := data.get("user_consent_options"))
-                is not None
-                else None,
+                user_consent_options=[UserConsentOption.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], _v_user_consent_options)] if (_v_user_consent_options := data.get("user_consent_options")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserManagementLoginRequest", e)
@@ -46,7 +40,5 @@ class UserManagementLoginRequest:
         result["external_auth_id"] = self.external_auth_id
         result["user"] = self.user.to_dict()
         if self.user_consent_options is not None:
-            result["user_consent_options"] = [
-                item.to_dict() for item in self.user_consent_options
-            ]
+            result["user_consent_options"] = [item.to_dict() for item in self.user_consent_options]
         return result

@@ -5,12 +5,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from .connection_saml_certificate_renewed_data_certificate_certificate_type import (
-    ConnectionSAMLCertificateRenewedDataCertificateCertificateType,
-)
+from .connection_saml_certificate_renewed_data_certificate_certificate_type import ConnectionSAMLCertificateRenewedDataCertificateCertificateType
 
 
 @dataclass(slots=True)
@@ -23,29 +22,19 @@ class ConnectionSAMLCertificateRenewedDataCertificate:
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "ConnectionSAMLCertificateRenewedDataCertificate":
+    def from_dict(cls, data: Dict[str, Any]) -> "ConnectionSAMLCertificateRenewedDataCertificate":
         """Deserialize from a dictionary."""
         try:
             return cls(
-                certificate_type=ConnectionSAMLCertificateRenewedDataCertificateCertificateType(
-                    data["certificate_type"]
-                ),
+                certificate_type=ConnectionSAMLCertificateRenewedDataCertificateCertificateType(data["certificate_type"]),
                 expiry_date=_parse_datetime(data["expiry_date"]),
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error(
-                "ConnectionSAMLCertificateRenewedDataCertificate", e
-            )
+            _raise_deserialize_error("ConnectionSAMLCertificateRenewedDataCertificate", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["certificate_type"] = (
-            self.certificate_type.value
-            if isinstance(self.certificate_type, Enum)
-            else self.certificate_type
-        )
+        result["certificate_type"] = self.certificate_type.value if isinstance(self.certificate_type, Enum) else self.certificate_type
         result["expiry_date"] = _format_datetime(self.expiry_date)
         return result

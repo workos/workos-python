@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
@@ -15,9 +16,7 @@ class RadarStandaloneDeleteRadarListEntryRequest:
     """The value to remove from the list. Must match an existing entry."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "RadarStandaloneDeleteRadarListEntryRequest":
+    def from_dict(cls, data: Dict[str, Any]) -> "RadarStandaloneDeleteRadarListEntryRequest":
         """Deserialize from a dictionary."""
         try:
             return cls(

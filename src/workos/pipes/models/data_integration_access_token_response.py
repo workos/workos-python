@@ -8,12 +8,8 @@ from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 
-from .data_integration_access_token_response_access_token import (
-    DataIntegrationAccessTokenResponseAccessToken,
-)
-from workos.common.models.data_integration_access_token_response_error import (
-    DataIntegrationAccessTokenResponseError,
-)
+from .data_integration_access_token_response_access_token import DataIntegrationAccessTokenResponseAccessToken
+from workos.common.models.data_integration_access_token_response_error import DataIntegrationAccessTokenResponseError
 
 
 @dataclass(slots=True)
@@ -34,14 +30,8 @@ class DataIntegrationAccessTokenResponse:
         try:
             return cls(
                 active=data.get("active"),
-                access_token=DataIntegrationAccessTokenResponseAccessToken.from_dict(
-                    cast(Dict[str, Any], _v_access_token)
-                )
-                if (_v_access_token := data.get("access_token")) is not None
-                else None,
-                error=DataIntegrationAccessTokenResponseError(_v_error)
-                if (_v_error := data.get("error")) is not None
-                else None,
+                access_token=DataIntegrationAccessTokenResponseAccessToken.from_dict(cast(Dict[str, Any], _v_access_token)) if (_v_access_token := data.get("access_token")) is not None else None,
+                error=DataIntegrationAccessTokenResponseError(_v_error) if (_v_error := data.get("error")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationAccessTokenResponse", e)
@@ -54,7 +44,5 @@ class DataIntegrationAccessTokenResponse:
         if self.access_token is not None:
             result["access_token"] = self.access_token.to_dict()
         if self.error is not None:
-            result["error"] = (
-                self.error.value if isinstance(self.error, Enum) else self.error
-            )
+            result["error"] = self.error.value if isinstance(self.error, Enum) else self.error
         return result

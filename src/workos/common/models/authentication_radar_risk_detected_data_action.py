@@ -16,15 +16,12 @@ class AuthenticationRadarRiskDetectedDataAction(str, Enum):
     LOGIN = "login"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["AuthenticationRadarRiskDetectedDataAction"]:
+    def _missing_(cls, value: object) -> Optional["AuthenticationRadarRiskDetectedDataAction"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
         unknown._name_ = value.upper()
         unknown._value_ = value
         return unknown
-
 
 AuthenticationRadarRiskDetectedDataActionLiteral: TypeAlias = Literal["signup", "login"]

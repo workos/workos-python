@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 
@@ -19,9 +20,7 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
     """The URL to redirect the user to after authorization."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "DataIntegrationsGetDataIntegrationAuthorizeUrlRequest":
+    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationsGetDataIntegrationAuthorizeUrlRequest":
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -30,9 +29,7 @@ class DataIntegrationsGetDataIntegrationAuthorizeUrlRequest:
                 return_to=data.get("return_to"),
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error(
-                "DataIntegrationsGetDataIntegrationAuthorizeUrlRequest", e
-            )
+            _raise_deserialize_error("DataIntegrationsGetDataIntegrationAuthorizeUrlRequest", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

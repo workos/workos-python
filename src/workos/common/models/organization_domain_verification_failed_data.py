@@ -8,12 +8,8 @@ from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
-from .organization_domain_verification_failed_data_organization_domain import (
-    OrganizationDomainVerificationFailedDataOrganizationDomain,
-)
-from .organization_domain_verification_failed_data_reason import (
-    OrganizationDomainVerificationFailedDataReason,
-)
+from .organization_domain_verification_failed_data_organization_domain import OrganizationDomainVerificationFailedDataOrganizationDomain
+from .organization_domain_verification_failed_data_reason import OrganizationDomainVerificationFailedDataReason
 
 
 @dataclass(slots=True)
@@ -26,16 +22,12 @@ class OrganizationDomainVerificationFailedData:
     """The organization domain that failed verification."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "OrganizationDomainVerificationFailedData":
+    def from_dict(cls, data: Dict[str, Any]) -> "OrganizationDomainVerificationFailedData":
         """Deserialize from a dictionary."""
         try:
             return cls(
                 reason=OrganizationDomainVerificationFailedDataReason(data["reason"]),
-                organization_domain=OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
-                    cast(Dict[str, Any], data["organization_domain"])
-                ),
+                organization_domain=OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(cast(Dict[str, Any], data["organization_domain"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationDomainVerificationFailedData", e)
@@ -43,8 +35,6 @@ class OrganizationDomainVerificationFailedData:
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["reason"] = (
-            self.reason.value if isinstance(self.reason, Enum) else self.reason
-        )
+        result["reason"] = self.reason.value if isinstance(self.reason, Enum) else self.reason
         result["organization_domain"] = self.organization_domain.to_dict()
         return result

@@ -41,13 +41,8 @@ class AuditLogEvent:
                 action=data["action"],
                 occurred_at=_parse_datetime(data["occurred_at"]),
                 actor=AuditLogEventActor.from_dict(cast(Dict[str, Any], data["actor"])),
-                targets=[
-                    AuditLogEventTarget.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["targets"])
-                ],
-                context=AuditLogEventContext.from_dict(
-                    cast(Dict[str, Any], data["context"])
-                ),
+                targets=[AuditLogEventTarget.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["targets"])],
+                context=AuditLogEventContext.from_dict(cast(Dict[str, Any], data["context"])),
                 metadata=data.get("metadata"),
                 version=data.get("version"),
             )

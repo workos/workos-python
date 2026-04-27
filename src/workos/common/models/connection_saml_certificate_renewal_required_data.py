@@ -7,12 +7,8 @@ from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
-from .connection_saml_certificate_renewal_required_data_certificate import (
-    ConnectionSAMLCertificateRenewalRequiredDataCertificate,
-)
-from .connection_saml_certificate_renewal_required_data_connection import (
-    ConnectionSAMLCertificateRenewalRequiredDataConnection,
-)
+from .connection_saml_certificate_renewal_required_data_certificate import ConnectionSAMLCertificateRenewalRequiredDataCertificate
+from .connection_saml_certificate_renewal_required_data_connection import ConnectionSAMLCertificateRenewalRequiredDataConnection
 
 
 @dataclass(slots=True)
@@ -27,18 +23,12 @@ class ConnectionSAMLCertificateRenewalRequiredData:
     """The number of days until the certificate expires."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "ConnectionSAMLCertificateRenewalRequiredData":
+    def from_dict(cls, data: Dict[str, Any]) -> "ConnectionSAMLCertificateRenewalRequiredData":
         """Deserialize from a dictionary."""
         try:
             return cls(
-                connection=ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(
-                    cast(Dict[str, Any], data["connection"])
-                ),
-                certificate=ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(
-                    cast(Dict[str, Any], data["certificate"])
-                ),
+                connection=ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(cast(Dict[str, Any], data["connection"])),
+                certificate=ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(cast(Dict[str, Any], data["certificate"])),
                 days_until_expiry=data["days_until_expiry"],
             )
         except (KeyError, ValueError) as e:

@@ -25,5 +25,4 @@ class EventContextActorSource(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 EventContextActorSourceLiteral: TypeAlias = Literal["api", "dashboard", "system"]

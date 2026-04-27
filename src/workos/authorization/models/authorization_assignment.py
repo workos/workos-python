@@ -24,5 +24,4 @@ class AuthorizationAssignment(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 AuthorizationAssignmentLiteral: TypeAlias = Literal["direct", "indirect"]

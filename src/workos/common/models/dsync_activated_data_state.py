@@ -27,7 +27,4 @@ class DsyncActivatedDataState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-DsyncActivatedDataStateLiteral: TypeAlias = Literal[
-    "active", "validating", "invalid_credentials", "inactive", "deleting"
-]
+DsyncActivatedDataStateLiteral: TypeAlias = Literal["active", "validating", "invalid_credentials", "inactive", "deleting"]

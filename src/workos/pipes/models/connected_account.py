@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos.common.models.connected_account_state import ConnectedAccountState
@@ -64,9 +65,7 @@ class ConnectedAccount:
         else:
             result["organization_id"] = None
         result["scopes"] = self.scopes
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         result["created_at"] = self.created_at
         result["updated_at"] = self.updated_at
         return result

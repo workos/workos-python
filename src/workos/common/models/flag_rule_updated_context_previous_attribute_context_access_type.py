@@ -3,7 +3,5 @@
 from typing import TypeAlias
 from .flag_rule_updated_context_access_type import FlagRuleUpdatedContextAccessType
 
-FlagRuleUpdatedContextPreviousAttributeContextAccessType: TypeAlias = (
-    FlagRuleUpdatedContextAccessType
-)
+FlagRuleUpdatedContextPreviousAttributeContextAccessType: TypeAlias = FlagRuleUpdatedContextAccessType
 __all__ = ["FlagRuleUpdatedContextPreviousAttributeContextAccessType"]

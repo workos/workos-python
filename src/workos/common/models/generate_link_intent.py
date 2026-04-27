@@ -29,13 +29,4 @@ class GenerateLinkIntent(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-GenerateLinkIntentLiteral: TypeAlias = Literal[
-    "sso",
-    "dsync",
-    "audit_logs",
-    "log_streams",
-    "domain_verification",
-    "certificate_renewal",
-    "bring_your_own_key",
-]
+GenerateLinkIntentLiteral: TypeAlias = Literal["sso", "dsync", "audit_logs", "log_streams", "domain_verification", "certificate_renewal", "bring_your_own_key"]

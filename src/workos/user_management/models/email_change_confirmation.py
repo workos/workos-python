@@ -25,9 +25,7 @@ class EmailChangeConfirmation:
         try:
             return cls(
                 object=data["object"],
-                user=EmailChangeConfirmationUser.from_dict(
-                    cast(Dict[str, Any], data["user"])
-                ),
+                user=EmailChangeConfirmationUser.from_dict(cast(Dict[str, Any], data["user"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("EmailChangeConfirmation", e)

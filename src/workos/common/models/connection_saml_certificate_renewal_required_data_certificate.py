@@ -5,21 +5,18 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from .connection_saml_certificate_renewal_required_data_certificate_certificate_type import (
-    ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateType,
-)
+from .connection_saml_certificate_renewal_required_data_certificate_certificate_type import ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateType
 
 
 @dataclass(slots=True)
 class ConnectionSAMLCertificateRenewalRequiredDataCertificate:
     """The SAML certificate details."""
 
-    certificate_type: (
-        "ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateType"
-    )
+    certificate_type: "ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateType"
     """The type of the SAML certificate."""
     expiry_date: datetime
     """An ISO 8601 timestamp."""
@@ -27,31 +24,21 @@ class ConnectionSAMLCertificateRenewalRequiredDataCertificate:
     """Whether the certificate has already expired."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "ConnectionSAMLCertificateRenewalRequiredDataCertificate":
+    def from_dict(cls, data: Dict[str, Any]) -> "ConnectionSAMLCertificateRenewalRequiredDataCertificate":
         """Deserialize from a dictionary."""
         try:
             return cls(
-                certificate_type=ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateType(
-                    data["certificate_type"]
-                ),
+                certificate_type=ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateType(data["certificate_type"]),
                 expiry_date=_parse_datetime(data["expiry_date"]),
                 is_expired=data["is_expired"],
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error(
-                "ConnectionSAMLCertificateRenewalRequiredDataCertificate", e
-            )
+            _raise_deserialize_error("ConnectionSAMLCertificateRenewalRequiredDataCertificate", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["certificate_type"] = (
-            self.certificate_type.value
-            if isinstance(self.certificate_type, Enum)
-            else self.certificate_type
-        )
+        result["certificate_type"] = self.certificate_type.value if isinstance(self.certificate_type, Enum) else self.certificate_type
         result["expiry_date"] = _format_datetime(self.expiry_date)
         result["is_expired"] = self.is_expired
         return result

@@ -40,9 +40,7 @@ class ApiKeyCreatedData:
             return cls(
                 object=data["object"],
                 id=data["id"],
-                owner=ApiKeyCreatedDataOwner.from_dict(
-                    cast(Dict[str, Any], data["owner"])
-                ),
+                owner=ApiKeyCreatedDataOwner.from_dict(cast(Dict[str, Any], data["owner"])),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
                 last_used_at=data["last_used_at"],

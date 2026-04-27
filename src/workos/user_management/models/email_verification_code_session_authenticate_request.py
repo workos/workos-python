@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 
@@ -28,9 +29,7 @@ class EmailVerificationCodeSessionAuthenticateRequest:
     """The user agent string from the user's browser."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "EmailVerificationCodeSessionAuthenticateRequest":
+    def from_dict(cls, data: Dict[str, Any]) -> "EmailVerificationCodeSessionAuthenticateRequest":
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -44,9 +43,7 @@ class EmailVerificationCodeSessionAuthenticateRequest:
                 user_agent=data.get("user_agent"),
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error(
-                "EmailVerificationCodeSessionAuthenticateRequest", e
-            )
+            _raise_deserialize_error("EmailVerificationCodeSessionAuthenticateRequest", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

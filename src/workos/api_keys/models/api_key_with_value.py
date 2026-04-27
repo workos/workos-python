@@ -44,14 +44,10 @@ class ApiKeyWithValue:
             return cls(
                 object=data["object"],
                 id=data["id"],
-                owner=ApiKeyWithValueOwner.from_dict(
-                    cast(Dict[str, Any], data["owner"])
-                ),
+                owner=ApiKeyWithValueOwner.from_dict(cast(Dict[str, Any], data["owner"])),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
-                last_used_at=_parse_datetime(_v_last_used_at)
-                if (_v_last_used_at := data["last_used_at"]) is not None
-                else None,
+                last_used_at=_parse_datetime(_v_last_used_at) if (_v_last_used_at := data["last_used_at"]) is not None else None,
                 permissions=data["permissions"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),

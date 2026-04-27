@@ -7,26 +7,13 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.common.models import AuthenticationFactorsCreateRequestType
-from workos.multi_factor_auth.models import (
-    AuthenticationChallenge,
-    AuthenticationChallengeVerifyResponse,
-    AuthenticationFactor,
-    AuthenticationFactorEnrolled,
-    UserAuthenticationFactorEnrollResponse,
-    UserManagementMultiFactorAuthenticationOrder,
-)
+from workos.multi_factor_auth.models import AuthenticationChallenge, AuthenticationChallengeVerifyResponse, AuthenticationFactor, AuthenticationFactorEnrolled, UserAuthenticationFactorEnrollResponse, UserManagementMultiFactorAuthenticationOrder
 from workos._pagination import AsyncPage, SyncPage
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
+from workos._errors import AuthenticationError, BadRequestError, NotFoundError, RateLimitExceededError, ServerError, UnprocessableEntityError
 
 
 class TestMultiFactorAuth:
+
     def test_verify_challenge(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("authentication_challenge_verify_response.json"),
@@ -44,9 +31,7 @@ class TestMultiFactorAuth:
         httpx_mock.add_response(
             json=load_fixture("authentication_factor_enrolled.json"),
         )
-        result = workos.multi_factor_auth.enroll_factor(
-            type=AuthenticationFactorsCreateRequestType("generic_otp")
-        )
+        result = workos.multi_factor_auth.enroll_factor(type=AuthenticationFactorsCreateRequestType("generic_otp"))
         assert isinstance(result, AuthenticationFactorEnrolled)
         assert result.object == "authentication_factor"
         assert result.id == "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ"
@@ -105,13 +90,7 @@ class TestMultiFactorAuth:
 
     def test_list_user_auth_factors_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.multi_factor_auth.list_user_auth_factors(
-            "test_userlandUserId",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=UserManagementMultiFactorAuthenticationOrder("normal"),
-        )
+        workos.multi_factor_auth.list_user_auth_factors("test_userlandUserId", limit=10, before="cursor before", after="cursor/after", order=UserManagementMultiFactorAuthenticationOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -122,27 +101,17 @@ class TestMultiFactorAuth:
         httpx_mock.add_response(
             json=load_fixture("user_authentication_factor_enroll_response.json"),
         )
-        result = workos.multi_factor_auth.create_user_auth_factor(
-            "test_userlandUserId", type="totp"
-        )
+        result = workos.multi_factor_auth.create_user_auth_factor("test_userlandUserId", type="totp")
         assert isinstance(result, UserAuthenticationFactorEnrollResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith(
-            "/user_management/users/test_userlandUserId/auth_factors"
-        )
+        assert request.url.path.endswith("/user_management/users/test_userlandUserId/auth_factors")
         body = json.loads(request.content)
         assert body["type"] == "totp"
 
     def test_verify_challenge_with_request_options(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("authentication_challenge_verify_response.json")
-        )
-        workos.multi_factor_auth.verify_challenge(
-            "test_id",
-            code="test_code",
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        httpx_mock.add_response(json=load_fixture("authentication_challenge_verify_response.json"))
+        workos.multi_factor_auth.verify_challenge("test_id", code="test_code", request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -155,9 +124,7 @@ class TestMultiFactorAuth:
             workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
 
     def test_verify_challenge_not_found(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -166,24 +133,16 @@ class TestMultiFactorAuth:
             workos.close()
 
     def test_verify_challenge_rate_limited(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
                 workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
         finally:
             workos.close()
 
     def test_verify_challenge_server_error(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -192,9 +151,7 @@ class TestMultiFactorAuth:
             workos.close()
 
     def test_verify_challenge_bad_request(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
@@ -203,9 +160,7 @@ class TestMultiFactorAuth:
             workos.close()
 
     def test_verify_challenge_unprocessable(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
@@ -215,14 +170,11 @@ class TestMultiFactorAuth:
 
 
 class TestAsyncMultiFactorAuth:
+
     @pytest.mark.asyncio
     async def test_verify_challenge(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("authentication_challenge_verify_response.json")
-        )
-        result = await async_workos.multi_factor_auth.verify_challenge(
-            "test_id", code="test_code"
-        )
+        httpx_mock.add_response(json=load_fixture("authentication_challenge_verify_response.json"))
+        result = await async_workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
         assert isinstance(result, AuthenticationChallengeVerifyResponse)
         assert result.valid is True
         request = httpx_mock.get_request()
@@ -231,12 +183,8 @@ class TestAsyncMultiFactorAuth:
 
     @pytest.mark.asyncio
     async def test_enroll_factor(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("authentication_factor_enrolled.json")
-        )
-        result = await async_workos.multi_factor_auth.enroll_factor(
-            type=AuthenticationFactorsCreateRequestType("generic_otp")
-        )
+        httpx_mock.add_response(json=load_fixture("authentication_factor_enrolled.json"))
+        result = await async_workos.multi_factor_auth.enroll_factor(type=AuthenticationFactorsCreateRequestType("generic_otp"))
         assert isinstance(result, AuthenticationFactorEnrolled)
         assert result.object == "authentication_factor"
         assert result.id == "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ"
@@ -278,9 +226,7 @@ class TestAsyncMultiFactorAuth:
     @pytest.mark.asyncio
     async def test_list_user_auth_factors(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_authentication_factor.json"))
-        page = await async_workos.multi_factor_auth.list_user_auth_factors(
-            "test_userlandUserId"
-        )
+        page = await async_workos.multi_factor_auth.list_user_auth_factors("test_userlandUserId")
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], AuthenticationFactor)
@@ -288,24 +234,14 @@ class TestAsyncMultiFactorAuth:
     @pytest.mark.asyncio
     async def test_list_user_auth_factors_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.multi_factor_auth.list_user_auth_factors(
-            "test_userlandUserId"
-        )
+        page = await async_workos.multi_factor_auth.list_user_auth_factors("test_userlandUserId")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_user_auth_factors_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_user_auth_factors_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.multi_factor_auth.list_user_auth_factors(
-            "test_userlandUserId",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=UserManagementMultiFactorAuthenticationOrder("normal"),
-        )
+        await async_workos.multi_factor_auth.list_user_auth_factors("test_userlandUserId", limit=10, before="cursor before", after="cursor/after", order=UserManagementMultiFactorAuthenticationOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -314,31 +250,17 @@ class TestAsyncMultiFactorAuth:
 
     @pytest.mark.asyncio
     async def test_create_user_auth_factor(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("user_authentication_factor_enroll_response.json")
-        )
-        result = await async_workos.multi_factor_auth.create_user_auth_factor(
-            "test_userlandUserId", type="totp"
-        )
+        httpx_mock.add_response(json=load_fixture("user_authentication_factor_enroll_response.json"))
+        result = await async_workos.multi_factor_auth.create_user_auth_factor("test_userlandUserId", type="totp")
         assert isinstance(result, UserAuthenticationFactorEnrollResponse)
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith(
-            "/user_management/users/test_userlandUserId/auth_factors"
-        )
+        assert request.url.path.endswith("/user_management/users/test_userlandUserId/auth_factors")
 
     @pytest.mark.asyncio
-    async def test_verify_challenge_with_request_options(
-        self, async_workos, httpx_mock
-    ):
-        httpx_mock.add_response(
-            json=load_fixture("authentication_challenge_verify_response.json")
-        )
-        await async_workos.multi_factor_auth.verify_challenge(
-            "test_id",
-            code="test_code",
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+    async def test_verify_challenge_with_request_options(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("authentication_challenge_verify_response.json"))
+        await async_workos.multi_factor_auth.verify_challenge("test_id", code="test_code", request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -346,80 +268,54 @@ class TestAsyncMultiFactorAuth:
     async def test_verify_challenge_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.multi_factor_auth.verify_challenge(
-                "test_id", code="test_code"
-            )
+            await async_workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
 
     @pytest.mark.asyncio
     async def test_verify_challenge_not_found(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.multi_factor_auth.verify_challenge(
-                    "test_id", code="test_code"
-                )
+                await workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_verify_challenge_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
-                await workos.multi_factor_auth.verify_challenge(
-                    "test_id", code="test_code"
-                )
+                await workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_verify_challenge_server_error(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.multi_factor_auth.verify_challenge(
-                    "test_id", code="test_code"
-                )
+                await workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_verify_challenge_bad_request(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.multi_factor_auth.verify_challenge(
-                    "test_id", code="test_code"
-                )
+                await workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_verify_challenge_unprocessable(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.multi_factor_auth.verify_challenge(
-                    "test_id", code="test_code"
-                )
+                await workos.multi_factor_auth.verify_challenge("test_id", code="test_code")
         finally:
             await workos.close()

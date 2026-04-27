@@ -5,7 +5,8 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Literal, Optional, TypeAlias
+from typing import Optional
+from typing import Literal, TypeAlias
 
 
 class UserManagementAuthenticationProvider(str, Enum):
@@ -14,7 +15,6 @@ class UserManagementAuthenticationProvider(str, Enum):
     AUTHKIT = "authkit"
     APPLE_OAUTH = "AppleOAuth"
     BITBUCKET_OAUTH = "BitbucketOAuth"
-    DISCORD_OAUTH = "DiscordOAuth"
     GIT_HUB_OAUTH = "GitHubOAuth"
     GIT_LAB_OAUTH = "GitLabOAuth"
     GOOGLE_OAUTH = "GoogleOAuth"
@@ -28,9 +28,7 @@ class UserManagementAuthenticationProvider(str, Enum):
     XERO_OAUTH = "XeroOAuth"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["UserManagementAuthenticationProvider"]:
+    def _missing_(cls, value: object) -> Optional["UserManagementAuthenticationProvider"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -38,21 +36,4 @@ class UserManagementAuthenticationProvider(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-UserManagementAuthenticationProviderLiteral: TypeAlias = Literal[
-    "authkit",
-    "AppleOAuth",
-    "BitbucketOAuth",
-    "DiscordOAuth",
-    "GitHubOAuth",
-    "GitLabOAuth",
-    "GoogleOAuth",
-    "IntuitOAuth",
-    "LinkedInOAuth",
-    "MicrosoftOAuth",
-    "SalesforceOAuth",
-    "SlackOAuth",
-    "VercelMarketplaceOAuth",
-    "VercelOAuth",
-    "XeroOAuth",
-]
+UserManagementAuthenticationProviderLiteral: TypeAlias = Literal["authkit", "AppleOAuth", "BitbucketOAuth", "GitHubOAuth", "GitLabOAuth", "GoogleOAuth", "IntuitOAuth", "LinkedInOAuth", "MicrosoftOAuth", "SalesforceOAuth", "SlackOAuth", "VercelMarketplaceOAuth", "VercelOAuth", "XeroOAuth"]

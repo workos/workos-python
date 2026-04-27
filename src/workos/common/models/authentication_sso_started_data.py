@@ -38,9 +38,7 @@ class AuthenticationSSOStartedData:
                 user_agent=data["user_agent"],
                 user_id=data["user_id"],
                 email=data["email"],
-                sso=AuthenticationSSOStartedDataSSO.from_dict(
-                    cast(Dict[str, Any], data["sso"])
-                ),
+                sso=AuthenticationSSOStartedDataSSO.from_dict(cast(Dict[str, Any], data["sso"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationSSOStartedData", e)

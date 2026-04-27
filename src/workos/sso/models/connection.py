@@ -56,19 +56,12 @@ class Connection:
                 connection_type=ConnectionType(data["connection_type"]),
                 name=data["name"],
                 state=ConnectionState(data["state"]),
-                domains=[
-                    ConnectionDomain.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["domains"])
-                ],
+                domains=[ConnectionDomain.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["domains"])],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 organization_id=data.get("organization_id"),
-                status=ConnectionStatus(_v_status)
-                if (_v_status := data.get("status")) is not None
-                else None,
-                options=ConnectionOption.from_dict(cast(Dict[str, Any], _v_options))
-                if (_v_options := data.get("options")) is not None
-                else None,
+                status=ConnectionStatus(_v_status) if (_v_status := data.get("status")) is not None else None,
+                options=ConnectionOption.from_dict(cast(Dict[str, Any], _v_options)) if (_v_options := data.get("options")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("Connection", e)
@@ -78,24 +71,16 @@ class Connection:
         result: Dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
-        result["connection_type"] = (
-            self.connection_type.value
-            if isinstance(self.connection_type, Enum)
-            else self.connection_type
-        )
+        result["connection_type"] = self.connection_type.value if isinstance(self.connection_type, Enum) else self.connection_type
         result["name"] = self.name
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         result["domains"] = [item.to_dict() for item in self.domains]
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id
         if self.status is not None:
-            result["status"] = (
-                self.status.value if isinstance(self.status, Enum) else self.status
-            )
+            result["status"] = self.status.value if isinstance(self.status, Enum) else self.status
         if self.options is not None:
             result["options"] = self.options.to_dict()
         return result

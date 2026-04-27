@@ -9,12 +9,8 @@ from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
 from .flag_rule_updated_context_actor import FlagRuleUpdatedContextActor
-from .flag_rule_updated_context_configured_target import (
-    FlagRuleUpdatedContextConfiguredTarget,
-)
-from .flag_rule_updated_context_previous_attribute import (
-    FlagRuleUpdatedContextPreviousAttribute,
-)
+from .flag_rule_updated_context_configured_target import FlagRuleUpdatedContextConfiguredTarget
+from .flag_rule_updated_context_previous_attribute import FlagRuleUpdatedContextPreviousAttribute
 from .flag_rule_updated_context_access_type import FlagRuleUpdatedContextAccessType
 
 
@@ -39,16 +35,10 @@ class FlagRuleUpdatedContext:
         try:
             return cls(
                 client_id=data["client_id"],
-                actor=FlagRuleUpdatedContextActor.from_dict(
-                    cast(Dict[str, Any], data["actor"])
-                ),
+                actor=FlagRuleUpdatedContextActor.from_dict(cast(Dict[str, Any], data["actor"])),
                 access_type=FlagRuleUpdatedContextAccessType(data["access_type"]),
-                configured_targets=FlagRuleUpdatedContextConfiguredTarget.from_dict(
-                    cast(Dict[str, Any], data["configured_targets"])
-                ),
-                previous_attributes=FlagRuleUpdatedContextPreviousAttribute.from_dict(
-                    cast(Dict[str, Any], data["previous_attributes"])
-                ),
+                configured_targets=FlagRuleUpdatedContextConfiguredTarget.from_dict(cast(Dict[str, Any], data["configured_targets"])),
+                previous_attributes=FlagRuleUpdatedContextPreviousAttribute.from_dict(cast(Dict[str, Any], data["previous_attributes"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagRuleUpdatedContext", e)
@@ -58,11 +48,7 @@ class FlagRuleUpdatedContext:
         result: Dict[str, Any] = {}
         result["client_id"] = self.client_id
         result["actor"] = self.actor.to_dict()
-        result["access_type"] = (
-            self.access_type.value
-            if isinstance(self.access_type, Enum)
-            else self.access_type
-        )
+        result["access_type"] = self.access_type.value if isinstance(self.access_type, Enum) else self.access_type
         result["configured_targets"] = self.configured_targets.to_dict()
         result["previous_attributes"] = self.previous_attributes.to_dict()
         return result

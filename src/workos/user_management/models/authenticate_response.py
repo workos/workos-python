@@ -11,9 +11,7 @@ from workos._types import _raise_deserialize_error
 from .authenticate_response_impersonator import AuthenticateResponseImpersonator
 from .authenticate_response_oauth_token import AuthenticateResponseOAuthToken
 from .user import User
-from workos.common.models.authenticate_response_authentication_method import (
-    AuthenticateResponseAuthenticationMethod,
-)
+from workos.common.models.authenticate_response_authentication_method import AuthenticateResponseAuthenticationMethod
 
 
 @dataclass(slots=True)
@@ -47,22 +45,9 @@ class AuthenticateResponse:
                 refresh_token=data["refresh_token"],
                 organization_id=data.get("organization_id"),
                 authkit_authorization_code=data.get("authkit_authorization_code"),
-                authentication_method=AuthenticateResponseAuthenticationMethod(
-                    _v_authentication_method
-                )
-                if (_v_authentication_method := data.get("authentication_method"))
-                is not None
-                else None,
-                impersonator=AuthenticateResponseImpersonator.from_dict(
-                    cast(Dict[str, Any], _v_impersonator)
-                )
-                if (_v_impersonator := data.get("impersonator")) is not None
-                else None,
-                oauth_tokens=AuthenticateResponseOAuthToken.from_dict(
-                    cast(Dict[str, Any], _v_oauth_tokens)
-                )
-                if (_v_oauth_tokens := data.get("oauth_tokens")) is not None
-                else None,
+                authentication_method=AuthenticateResponseAuthenticationMethod(_v_authentication_method) if (_v_authentication_method := data.get("authentication_method")) is not None else None,
+                impersonator=AuthenticateResponseImpersonator.from_dict(cast(Dict[str, Any], _v_impersonator)) if (_v_impersonator := data.get("impersonator")) is not None else None,
+                oauth_tokens=AuthenticateResponseOAuthToken.from_dict(cast(Dict[str, Any], _v_oauth_tokens)) if (_v_oauth_tokens := data.get("oauth_tokens")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticateResponse", e)
@@ -78,11 +63,7 @@ class AuthenticateResponse:
         if self.authkit_authorization_code is not None:
             result["authkit_authorization_code"] = self.authkit_authorization_code
         if self.authentication_method is not None:
-            result["authentication_method"] = (
-                self.authentication_method.value
-                if isinstance(self.authentication_method, Enum)
-                else self.authentication_method
-            )
+            result["authentication_method"] = self.authentication_method.value if isinstance(self.authentication_method, Enum) else self.authentication_method
         if self.impersonator is not None:
             result["impersonator"] = self.impersonator.to_dict()
         if self.oauth_tokens is not None:

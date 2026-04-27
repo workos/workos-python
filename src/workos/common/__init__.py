@@ -10,48 +10,24 @@ from .models import ApiKeyCreatedDataOwner as ApiKeyCreatedDataOwner
 from .models import ApiKeyRevoked as ApiKeyRevoked
 from .models import ApiKeyRevokedData as ApiKeyRevokedData
 from .models import ApiKeyRevokedDataOwner as ApiKeyRevokedDataOwner
-from .models import (
-    AuditLogConfigurationLogStreamState as AuditLogConfigurationLogStreamState,
-)
-from .models import (
-    AuditLogConfigurationLogStreamType as AuditLogConfigurationLogStreamType,
-)
+from .models import AuditLogConfigurationLogStreamState as AuditLogConfigurationLogStreamState
+from .models import AuditLogConfigurationLogStreamType as AuditLogConfigurationLogStreamType
 from .models import AuditLogConfigurationState as AuditLogConfigurationState
 from .models import AuditLogExportJsonState as AuditLogExportJsonState
-from .models import (
-    AuthenticateResponseAuthenticationMethod as AuthenticateResponseAuthenticationMethod,
-)
-from .models import (
-    AuthenticationEmailVerificationFailed as AuthenticationEmailVerificationFailed,
-)
-from .models import (
-    AuthenticationEmailVerificationFailedData as AuthenticationEmailVerificationFailedData,
-)
-from .models import (
-    AuthenticationEmailVerificationFailedDataError as AuthenticationEmailVerificationFailedDataError,
-)
-from .models import (
-    AuthenticationEmailVerificationSucceeded as AuthenticationEmailVerificationSucceeded,
-)
-from .models import (
-    AuthenticationEmailVerificationSucceededData as AuthenticationEmailVerificationSucceededData,
-)
+from .models import AuthenticateResponseAuthenticationMethod as AuthenticateResponseAuthenticationMethod
+from .models import AuthenticationEmailVerificationFailed as AuthenticationEmailVerificationFailed
+from .models import AuthenticationEmailVerificationFailedData as AuthenticationEmailVerificationFailedData
+from .models import AuthenticationEmailVerificationFailedDataError as AuthenticationEmailVerificationFailedDataError
+from .models import AuthenticationEmailVerificationSucceeded as AuthenticationEmailVerificationSucceeded
+from .models import AuthenticationEmailVerificationSucceededData as AuthenticationEmailVerificationSucceededData
 from .models import AuthenticationFactorEnrolledType as AuthenticationFactorEnrolledType
 from .models import AuthenticationFactorType as AuthenticationFactorType
-from .models import (
-    AuthenticationFactorsCreateRequestType as AuthenticationFactorsCreateRequestType,
-)
+from .models import AuthenticationFactorsCreateRequestType as AuthenticationFactorsCreateRequestType
 from .models import AuthenticationMagicAuthFailed as AuthenticationMagicAuthFailed
-from .models import (
-    AuthenticationMagicAuthFailedData as AuthenticationMagicAuthFailedData,
-)
-from .models import (
-    AuthenticationMagicAuthFailedDataError as AuthenticationMagicAuthFailedDataError,
-)
+from .models import AuthenticationMagicAuthFailedData as AuthenticationMagicAuthFailedData
+from .models import AuthenticationMagicAuthFailedDataError as AuthenticationMagicAuthFailedDataError
 from .models import AuthenticationMagicAuthSucceeded as AuthenticationMagicAuthSucceeded
-from .models import (
-    AuthenticationMagicAuthSucceededData as AuthenticationMagicAuthSucceededData,
-)
+from .models import AuthenticationMagicAuthSucceededData as AuthenticationMagicAuthSucceededData
 from .models import AuthenticationMFAFailed as AuthenticationMFAFailed
 from .models import AuthenticationMFAFailedData as AuthenticationMFAFailedData
 from .models import AuthenticationMFAFailedDataError as AuthenticationMFAFailedDataError
@@ -59,33 +35,21 @@ from .models import AuthenticationMFASucceeded as AuthenticationMFASucceeded
 from .models import AuthenticationMFASucceededData as AuthenticationMFASucceededData
 from .models import AuthenticationOAuthFailed as AuthenticationOAuthFailed
 from .models import AuthenticationOAuthFailedData as AuthenticationOAuthFailedData
-from .models import (
-    AuthenticationOAuthFailedDataError as AuthenticationOAuthFailedDataError,
-)
+from .models import AuthenticationOAuthFailedDataError as AuthenticationOAuthFailedDataError
 from .models import AuthenticationOAuthSucceeded as AuthenticationOAuthSucceeded
 from .models import AuthenticationOAuthSucceededData as AuthenticationOAuthSucceededData
 from .models import AuthenticationPasskeyFailed as AuthenticationPasskeyFailed
 from .models import AuthenticationPasskeyFailedData as AuthenticationPasskeyFailedData
-from .models import (
-    AuthenticationPasskeyFailedDataError as AuthenticationPasskeyFailedDataError,
-)
+from .models import AuthenticationPasskeyFailedDataError as AuthenticationPasskeyFailedDataError
 from .models import AuthenticationPasskeySucceeded as AuthenticationPasskeySucceeded
-from .models import (
-    AuthenticationPasskeySucceededData as AuthenticationPasskeySucceededData,
-)
+from .models import AuthenticationPasskeySucceededData as AuthenticationPasskeySucceededData
 from .models import AuthenticationPasswordFailed as AuthenticationPasswordFailed
 from .models import AuthenticationPasswordFailedData as AuthenticationPasswordFailedData
-from .models import (
-    AuthenticationPasswordFailedDataError as AuthenticationPasswordFailedDataError,
-)
+from .models import AuthenticationPasswordFailedDataError as AuthenticationPasswordFailedDataError
 from .models import AuthenticationPasswordSucceeded as AuthenticationPasswordSucceeded
-from .models import (
-    AuthenticationPasswordSucceededData as AuthenticationPasswordSucceededData,
-)
+from .models import AuthenticationPasswordSucceededData as AuthenticationPasswordSucceededData
 from .models import AuthenticationRadarRiskDetected as AuthenticationRadarRiskDetected
-from .models import (
-    AuthenticationRadarRiskDetectedData as AuthenticationRadarRiskDetectedData,
-)
+from .models import AuthenticationRadarRiskDetectedData as AuthenticationRadarRiskDetectedData
 from .models import AuthenticationSSOFailed as AuthenticationSSOFailed
 from .models import AuthenticationSSOFailedData as AuthenticationSSOFailedData
 from .models import AuthenticationSSOFailedDataError as AuthenticationSSOFailedDataError
@@ -95,14 +59,10 @@ from .models import AuthenticationSSOStartedData as AuthenticationSSOStartedData
 from .models import AuthenticationSSOStartedDataSSO as AuthenticationSSOStartedDataSSO
 from .models import AuthenticationSSOSucceeded as AuthenticationSSOSucceeded
 from .models import AuthenticationSSOSucceededData as AuthenticationSSOSucceededData
-from .models import (
-    AuthenticationSSOSucceededDataSSO as AuthenticationSSOSucceededDataSSO,
-)
+from .models import AuthenticationSSOSucceededDataSSO as AuthenticationSSOSucceededDataSSO
 from .models import AuthenticationSSOTimedOut as AuthenticationSSOTimedOut
 from .models import AuthenticationSSOTimedOutData as AuthenticationSSOTimedOutData
-from .models import (
-    AuthenticationSSOTimedOutDataError as AuthenticationSSOTimedOutDataError,
-)
+from .models import AuthenticationSSOTimedOutDataError as AuthenticationSSOTimedOutDataError
 from .models import AuthenticationSSOTimedOutDataSSO as AuthenticationSSOTimedOutDataSSO
 from .models import ConnectedAccountState as ConnectedAccountState
 from .models import ConnectionActivated as ConnectionActivated
@@ -113,43 +73,23 @@ from .models import ConnectionDeactivatedData as ConnectionDeactivatedData
 from .models import ConnectionDeactivatedDataDomain as ConnectionDeactivatedDataDomain
 from .models import ConnectionDeleted as ConnectionDeleted
 from .models import ConnectionDeletedData as ConnectionDeletedData
-from .models import (
-    ConnectionSAMLCertificateRenewalRequired as ConnectionSAMLCertificateRenewalRequired,
-)
-from .models import (
-    ConnectionSAMLCertificateRenewalRequiredData as ConnectionSAMLCertificateRenewalRequiredData,
-)
-from .models import (
-    ConnectionSAMLCertificateRenewalRequiredDataCertificate as ConnectionSAMLCertificateRenewalRequiredDataCertificate,
-)
-from .models import (
-    ConnectionSAMLCertificateRenewalRequiredDataConnection as ConnectionSAMLCertificateRenewalRequiredDataConnection,
-)
+from .models import ConnectionSAMLCertificateRenewalRequired as ConnectionSAMLCertificateRenewalRequired
+from .models import ConnectionSAMLCertificateRenewalRequiredData as ConnectionSAMLCertificateRenewalRequiredData
+from .models import ConnectionSAMLCertificateRenewalRequiredDataCertificate as ConnectionSAMLCertificateRenewalRequiredDataCertificate
+from .models import ConnectionSAMLCertificateRenewalRequiredDataConnection as ConnectionSAMLCertificateRenewalRequiredDataConnection
 from .models import ConnectionSAMLCertificateRenewed as ConnectionSAMLCertificateRenewed
-from .models import (
-    ConnectionSAMLCertificateRenewedData as ConnectionSAMLCertificateRenewedData,
-)
-from .models import (
-    ConnectionSAMLCertificateRenewedDataCertificate as ConnectionSAMLCertificateRenewedDataCertificate,
-)
-from .models import (
-    ConnectionSAMLCertificateRenewedDataConnection as ConnectionSAMLCertificateRenewedDataConnection,
-)
+from .models import ConnectionSAMLCertificateRenewedData as ConnectionSAMLCertificateRenewedData
+from .models import ConnectionSAMLCertificateRenewedDataCertificate as ConnectionSAMLCertificateRenewedDataCertificate
+from .models import ConnectionSAMLCertificateRenewedDataConnection as ConnectionSAMLCertificateRenewedDataConnection
 from .models import ConnectionState as ConnectionState
 from .models import ConnectionStatus as ConnectionStatus
 from .models import ConnectionType as ConnectionType
 from .models import CreateUserInviteOptionsLocale as CreateUserInviteOptionsLocale
 from .models import CreateUserPasswordHashType as CreateUserPasswordHashType
 from .models import CreateWebhookEndpointEvents as CreateWebhookEndpointEvents
-from .models import (
-    DataIntegrationAccessTokenResponseError as DataIntegrationAccessTokenResponseError,
-)
-from .models import (
-    DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState,
-)
-from .models import (
-    DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
-)
+from .models import DataIntegrationAccessTokenResponseError as DataIntegrationAccessTokenResponseError
+from .models import DataIntegrationsListResponseDataConnectedAccountState as DataIntegrationsListResponseDataConnectedAccountState
+from .models import DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership
 from .models import DirectoryState as DirectoryState
 from .models import DirectoryType as DirectoryType
 from .models import DirectoryUser as DirectoryUser
@@ -180,9 +120,7 @@ from .models import EmailVerificationCreated as EmailVerificationCreated
 from .models import EmailVerificationCreatedData as EmailVerificationCreatedData
 from .models import EventContext as EventContext
 from .models import EventContextActor as EventContextActor
-from .models import (
-    EventContextGoogleAnalyticsSession as EventContextGoogleAnalyticsSession,
-)
+from .models import EventContextGoogleAnalyticsSession as EventContextGoogleAnalyticsSession
 from .models import FlagCreated as FlagCreated
 from .models import FlagCreatedContext as FlagCreatedContext
 from .models import FlagCreatedContextActor as FlagCreatedContextActor
@@ -196,48 +134,25 @@ from .models import FlagDeletedDataOwner as FlagDeletedDataOwner
 from .models import FlagRuleUpdated as FlagRuleUpdated
 from .models import FlagRuleUpdatedContext as FlagRuleUpdatedContext
 from .models import FlagRuleUpdatedContextActor as FlagRuleUpdatedContextActor
-from .models import (
-    FlagRuleUpdatedContextConfiguredTarget as FlagRuleUpdatedContextConfiguredTarget,
-)
-from .models import (
-    FlagRuleUpdatedContextConfiguredTargetOrganization as FlagRuleUpdatedContextConfiguredTargetOrganization,
-)
-from .models import (
-    FlagRuleUpdatedContextConfiguredTargetUser as FlagRuleUpdatedContextConfiguredTargetUser,
-)
-from .models import (
-    FlagRuleUpdatedContextPreviousAttribute as FlagRuleUpdatedContextPreviousAttribute,
-)
-from .models import (
-    FlagRuleUpdatedContextPreviousAttributeContext as FlagRuleUpdatedContextPreviousAttributeContext,
-)
-from .models import (
-    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget as FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget,
-)
-from .models import (
-    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization as FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization,
-)
-from .models import (
-    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser as FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser,
-)
-from .models import (
-    FlagRuleUpdatedContextPreviousAttributeData as FlagRuleUpdatedContextPreviousAttributeData,
-)
+from .models import FlagRuleUpdatedContextConfiguredTarget as FlagRuleUpdatedContextConfiguredTarget
+from .models import FlagRuleUpdatedContextConfiguredTargetOrganization as FlagRuleUpdatedContextConfiguredTargetOrganization
+from .models import FlagRuleUpdatedContextConfiguredTargetUser as FlagRuleUpdatedContextConfiguredTargetUser
+from .models import FlagRuleUpdatedContextPreviousAttribute as FlagRuleUpdatedContextPreviousAttribute
+from .models import FlagRuleUpdatedContextPreviousAttributeContext as FlagRuleUpdatedContextPreviousAttributeContext
+from .models import FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget as FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget
+from .models import FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization as FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization
+from .models import FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser as FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser
+from .models import FlagRuleUpdatedContextPreviousAttributeData as FlagRuleUpdatedContextPreviousAttributeData
 from .models import FlagRuleUpdatedData as FlagRuleUpdatedData
 from .models import FlagRuleUpdatedDataOwner as FlagRuleUpdatedDataOwner
 from .models import FlagUpdated as FlagUpdated
 from .models import FlagUpdatedContext as FlagUpdatedContext
 from .models import FlagUpdatedContextActor as FlagUpdatedContextActor
-from .models import (
-    FlagUpdatedContextPreviousAttribute as FlagUpdatedContextPreviousAttribute,
-)
-from .models import (
-    FlagUpdatedContextPreviousAttributeData as FlagUpdatedContextPreviousAttributeData,
-)
+from .models import FlagUpdatedContextPreviousAttribute as FlagUpdatedContextPreviousAttribute
+from .models import FlagUpdatedContextPreviousAttributeData as FlagUpdatedContextPreviousAttributeData
 from .models import FlagUpdatedData as FlagUpdatedData
 from .models import FlagUpdatedDataOwner as FlagUpdatedDataOwner
 from .models import GenerateLinkIntent as GenerateLinkIntent
-from .models import Group as Group
 from .models import GroupCreated as GroupCreated
 from .models import GroupDeleted as GroupDeleted
 from .models import GroupMemberAdded as GroupMemberAdded
@@ -267,42 +182,24 @@ from .models import OrganizationDomainCreatedData as OrganizationDomainCreatedDa
 from .models import OrganizationDomainDataState as OrganizationDomainDataState
 from .models import OrganizationDomainDeleted as OrganizationDomainDeleted
 from .models import OrganizationDomainDeletedData as OrganizationDomainDeletedData
-from .models import (
-    OrganizationDomainStandAloneState as OrganizationDomainStandAloneState,
-)
-from .models import (
-    OrganizationDomainStandAloneVerificationStrategy as OrganizationDomainStandAloneVerificationStrategy,
-)
+from .models import OrganizationDomainStandAloneState as OrganizationDomainStandAloneState
+from .models import OrganizationDomainStandAloneVerificationStrategy as OrganizationDomainStandAloneVerificationStrategy
 from .models import OrganizationDomainState as OrganizationDomainState
 from .models import OrganizationDomainUpdated as OrganizationDomainUpdated
 from .models import OrganizationDomainUpdatedData as OrganizationDomainUpdatedData
-from .models import (
-    OrganizationDomainVerificationFailed as OrganizationDomainVerificationFailed,
-)
-from .models import (
-    OrganizationDomainVerificationFailedData as OrganizationDomainVerificationFailedData,
-)
-from .models import (
-    OrganizationDomainVerificationFailedDataOrganizationDomain as OrganizationDomainVerificationFailedDataOrganizationDomain,
-)
-from .models import (
-    OrganizationDomainVerificationStrategy as OrganizationDomainVerificationStrategy,
-)
+from .models import OrganizationDomainVerificationFailed as OrganizationDomainVerificationFailed
+from .models import OrganizationDomainVerificationFailedData as OrganizationDomainVerificationFailedData
+from .models import OrganizationDomainVerificationFailedDataOrganizationDomain as OrganizationDomainVerificationFailedDataOrganizationDomain
+from .models import OrganizationDomainVerificationStrategy as OrganizationDomainVerificationStrategy
 from .models import OrganizationDomainVerified as OrganizationDomainVerified
 from .models import OrganizationDomainVerifiedData as OrganizationDomainVerifiedData
 from .models import OrganizationMembershipCreated as OrganizationMembershipCreated
-from .models import (
-    OrganizationMembershipCreatedData as OrganizationMembershipCreatedData,
-)
+from .models import OrganizationMembershipCreatedData as OrganizationMembershipCreatedData
 from .models import OrganizationMembershipDeleted as OrganizationMembershipDeleted
-from .models import (
-    OrganizationMembershipDeletedData as OrganizationMembershipDeletedData,
-)
+from .models import OrganizationMembershipDeletedData as OrganizationMembershipDeletedData
 from .models import OrganizationMembershipStatus as OrganizationMembershipStatus
 from .models import OrganizationMembershipUpdated as OrganizationMembershipUpdated
-from .models import (
-    OrganizationMembershipUpdatedData as OrganizationMembershipUpdatedData,
-)
+from .models import OrganizationMembershipUpdatedData as OrganizationMembershipUpdatedData
 from .models import OrganizationRoleCreated as OrganizationRoleCreated
 from .models import OrganizationRoleCreatedData as OrganizationRoleCreatedData
 from .models import OrganizationRoleDeleted as OrganizationRoleDeleted
@@ -323,15 +220,9 @@ from .models import PermissionDeletedData as PermissionDeletedData
 from .models import PermissionUpdated as PermissionUpdated
 from .models import PermissionUpdatedData as PermissionUpdatedData
 from .models import ProfileConnectionType as ProfileConnectionType
-from .models import (
-    RadarStandaloneAssessRequestAction as RadarStandaloneAssessRequestAction,
-)
-from .models import (
-    RadarStandaloneAssessRequestAuthMethod as RadarStandaloneAssessRequestAuthMethod,
-)
-from .models import (
-    RadarStandaloneResponseBlocklistType as RadarStandaloneResponseBlocklistType,
-)
+from .models import RadarStandaloneAssessRequestAction as RadarStandaloneAssessRequestAction
+from .models import RadarStandaloneAssessRequestAuthMethod as RadarStandaloneAssessRequestAuthMethod
+from .models import RadarStandaloneResponseBlocklistType as RadarStandaloneResponseBlocklistType
 from .models import RadarStandaloneResponseControl as RadarStandaloneResponseControl
 from .models import RadarStandaloneResponseVerdict as RadarStandaloneResponseVerdict
 from .models import ResendUserInviteOptionsLocale as ResendUserInviteOptionsLocale
@@ -355,19 +246,13 @@ from .models import UserCreated as UserCreated
 from .models import UserDeleted as UserDeleted
 from .models import UserIdentitiesGetItemProvider as UserIdentitiesGetItemProvider
 from .models import UserInviteState as UserInviteState
-from .models import (
-    UserOrganizationMembershipBaseListDataStatus as UserOrganizationMembershipBaseListDataStatus,
-)
+from .models import UserOrganizationMembershipBaseListDataStatus as UserOrganizationMembershipBaseListDataStatus
 from .models import UserOrganizationMembershipStatus as UserOrganizationMembershipStatus
 from .models import UserSessionsAuthMethod as UserSessionsAuthMethod
 from .models import UserSessionsStatus as UserSessionsStatus
 from .models import UserUpdated as UserUpdated
-from .models import (
-    VaultByokKeyVerificationCompleted as VaultByokKeyVerificationCompleted,
-)
-from .models import (
-    VaultByokKeyVerificationCompletedData as VaultByokKeyVerificationCompletedData,
-)
+from .models import VaultByokKeyVerificationCompleted as VaultByokKeyVerificationCompleted
+from .models import VaultByokKeyVerificationCompletedData as VaultByokKeyVerificationCompletedData
 from .models import VaultDataCreated as VaultDataCreated
 from .models import VaultDataCreatedData as VaultDataCreatedData
 from .models import VaultDataDeleted as VaultDataDeleted
@@ -386,5 +271,9 @@ from .models import VaultMetadataRead as VaultMetadataRead
 from .models import VaultMetadataReadData as VaultMetadataReadData
 from .models import VaultNamesListed as VaultNamesListed
 from .models import VaultNamesListedData as VaultNamesListedData
+from .models import WaitlistUser as WaitlistUser
+from .models import WaitlistUserApproved as WaitlistUserApproved
+from .models import WaitlistUserCreated as WaitlistUserCreated
+from .models import WaitlistUserDenied as WaitlistUserDenied
 from .models import WebhookEndpointJsonStatus as WebhookEndpointJsonStatus
 from .models import WidgetSessionTokenScopes as WidgetSessionTokenScopes

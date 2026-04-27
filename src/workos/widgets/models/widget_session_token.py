@@ -28,12 +28,7 @@ class WidgetSessionToken:
             return cls(
                 organization_id=data["organization_id"],
                 user_id=data.get("user_id"),
-                scopes=[
-                    WidgetSessionTokenScopes(item)
-                    for item in cast(list[Any], _v_scopes)
-                ]
-                if (_v_scopes := data.get("scopes")) is not None
-                else None,
+                scopes=[WidgetSessionTokenScopes(item) for item in cast(list[Any], _v_scopes)] if (_v_scopes := data.get("scopes")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("WidgetSessionToken", e)
@@ -45,7 +40,5 @@ class WidgetSessionToken:
         if self.user_id is not None:
             result["user_id"] = self.user_id
         if self.scopes is not None:
-            result["scopes"] = [
-                item.value if isinstance(item, Enum) else item for item in self.scopes
-            ]
+            result["scopes"] = [item.value if isinstance(item, Enum) else item for item in self.scopes]
         return result

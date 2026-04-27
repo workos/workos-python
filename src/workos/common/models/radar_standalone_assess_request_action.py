@@ -30,7 +30,4 @@ class RadarStandaloneAssessRequestAction(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-RadarStandaloneAssessRequestActionLiteral: TypeAlias = Literal[
-    "login", "signup", "sign-up", "sign-in", "sign_up", "sign_in", "sign in", "sign up"
-]
+RadarStandaloneAssessRequestActionLiteral: TypeAlias = Literal["login", "signup", "sign-up", "sign-in", "sign_up", "sign_in", "sign in", "sign up"]

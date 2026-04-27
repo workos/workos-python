@@ -4,17 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models.radar_standalone_response_blocklist_type import (
-    RadarStandaloneResponseBlocklistType,
-)
-from workos.common.models.radar_standalone_response_control import (
-    RadarStandaloneResponseControl,
-)
-from workos.common.models.radar_standalone_response_verdict import (
-    RadarStandaloneResponseVerdict,
-)
+from workos.common.models.radar_standalone_response_blocklist_type import RadarStandaloneResponseBlocklistType
+from workos.common.models.radar_standalone_response_control import RadarStandaloneResponseControl
+from workos.common.models.radar_standalone_response_verdict import RadarStandaloneResponseVerdict
 
 
 @dataclass(slots=True)
@@ -40,12 +35,8 @@ class RadarStandaloneResponse:
                 verdict=RadarStandaloneResponseVerdict(data["verdict"]),
                 reason=data["reason"],
                 attempt_id=data["attempt_id"],
-                control=RadarStandaloneResponseControl(_v_control)
-                if (_v_control := data.get("control")) is not None
-                else None,
-                blocklist_type=RadarStandaloneResponseBlocklistType(_v_blocklist_type)
-                if (_v_blocklist_type := data.get("blocklist_type")) is not None
-                else None,
+                control=RadarStandaloneResponseControl(_v_control) if (_v_control := data.get("control")) is not None else None,
+                blocklist_type=RadarStandaloneResponseBlocklistType(_v_blocklist_type) if (_v_blocklist_type := data.get("blocklist_type")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RadarStandaloneResponse", e)
@@ -53,19 +44,11 @@ class RadarStandaloneResponse:
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["verdict"] = (
-            self.verdict.value if isinstance(self.verdict, Enum) else self.verdict
-        )
+        result["verdict"] = self.verdict.value if isinstance(self.verdict, Enum) else self.verdict
         result["reason"] = self.reason
         result["attempt_id"] = self.attempt_id
         if self.control is not None:
-            result["control"] = (
-                self.control.value if isinstance(self.control, Enum) else self.control
-            )
+            result["control"] = self.control.value if isinstance(self.control, Enum) else self.control
         if self.blocklist_type is not None:
-            result["blocklist_type"] = (
-                self.blocklist_type.value
-                if isinstance(self.blocklist_type, Enum)
-                else self.blocklist_type
-            )
+            result["blocklist_type"] = self.blocklist_type.value if isinstance(self.blocklist_type, Enum) else self.blocklist_type
         return result

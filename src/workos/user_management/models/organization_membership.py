@@ -11,9 +11,7 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from workos.authorization.models.slim_role import SlimRole
-from workos.common.models.organization_membership_status import (
-    OrganizationMembershipStatus,
-)
+from workos.common.models.organization_membership_status import OrganizationMembershipStatus
 
 
 @dataclass(slots=True)
@@ -70,9 +68,7 @@ class OrganizationMembership:
         result["id"] = self.id
         result["user_id"] = self.user_id
         result["organization_id"] = self.organization_id
-        result["status"] = (
-            self.status.value if isinstance(self.status, Enum) else self.status
-        )
+        result["status"] = self.status.value if isinstance(self.status, Enum) else self.status
         result["directory_managed"] = self.directory_managed
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)

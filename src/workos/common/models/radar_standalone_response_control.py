@@ -32,16 +32,4 @@ class RadarStandaloneResponseControl(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-RadarStandaloneResponseControlLiteral: TypeAlias = Literal[
-    "bot_detection",
-    "brute_force_attack",
-    "credential_stuffing",
-    "domain_sign_up_rate_limit",
-    "ip_sign_up_rate_limit",
-    "impossible_travel",
-    "repeat_sign_up",
-    "stale_account",
-    "unrecognized_device",
-    "restriction",
-]
+RadarStandaloneResponseControlLiteral: TypeAlias = Literal["bot_detection", "brute_force_attack", "credential_stuffing", "domain_sign_up_rate_limit", "ip_sign_up_rate_limit", "impossible_travel", "repeat_sign_up", "stale_account", "unrecognized_device", "restriction"]

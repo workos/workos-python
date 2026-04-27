@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 from typing import Any, Dict, List, Literal
 from workos._types import _raise_deserialize_error
 

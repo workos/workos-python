@@ -24,9 +24,7 @@ class AuthenticationChallengeVerifyResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                challenge=AuthenticationChallenge.from_dict(
-                    cast(Dict[str, Any], data["challenge"])
-                ),
+                challenge=AuthenticationChallenge.from_dict(cast(Dict[str, Any], data["challenge"])),
                 valid=data["valid"],
             )
         except (KeyError, ValueError) as e:

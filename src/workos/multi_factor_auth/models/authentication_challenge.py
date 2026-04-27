@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
+from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
@@ -38,9 +39,7 @@ class AuthenticationChallenge:
                 authentication_factor_id=data["authentication_factor_id"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                expires_at=_parse_datetime(_v_expires_at)
-                if (_v_expires_at := data.get("expires_at")) is not None
-                else None,
+                expires_at=_parse_datetime(_v_expires_at) if (_v_expires_at := data.get("expires_at")) is not None else None,
                 code=data.get("code"),
             )
         except (KeyError, ValueError) as e:

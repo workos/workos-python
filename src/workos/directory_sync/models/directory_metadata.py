@@ -24,9 +24,7 @@ class DirectoryMetadata:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                users=DirectoryMetadataUser.from_dict(
-                    cast(Dict[str, Any], data["users"])
-                ),
+                users=DirectoryMetadataUser.from_dict(cast(Dict[str, Any], data["users"])),
                 groups=data["groups"],
             )
         except (KeyError, ValueError) as e:

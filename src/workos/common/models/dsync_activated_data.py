@@ -53,10 +53,7 @@ class DsyncActivatedData:
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 external_key=data["external_key"],
-                domains=[
-                    DsyncActivatedDataDomain.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["domains"])
-                ],
+                domains=[DsyncActivatedDataDomain.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["domains"])],
                 organization_id=data.get("organization_id"),
             )
         except (KeyError, ValueError) as e:
@@ -68,9 +65,7 @@ class DsyncActivatedData:
         result["object"] = self.object
         result["id"] = self.id
         result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         result["name"] = self.name
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)

@@ -59,16 +59,10 @@ class UserSessionsListItem:
                 auth_method=UserSessionsAuthMethod(data["auth_method"]),
                 status=UserSessionsStatus(data["status"]),
                 expires_at=_parse_datetime(data["expires_at"]),
-                ended_at=_parse_datetime(_v_ended_at)
-                if (_v_ended_at := data["ended_at"]) is not None
-                else None,
+                ended_at=_parse_datetime(_v_ended_at) if (_v_ended_at := data["ended_at"]) is not None else None,
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                impersonator=UserSessionsImpersonator.from_dict(
-                    cast(Dict[str, Any], _v_impersonator)
-                )
-                if (_v_impersonator := data.get("impersonator")) is not None
-                else None,
+                impersonator=UserSessionsImpersonator.from_dict(cast(Dict[str, Any], _v_impersonator)) if (_v_impersonator := data.get("impersonator")) is not None else None,
                 organization_id=data.get("organization_id"),
             )
         except (KeyError, ValueError) as e:
@@ -88,14 +82,8 @@ class UserSessionsListItem:
         else:
             result["user_agent"] = None
         result["user_id"] = self.user_id
-        result["auth_method"] = (
-            self.auth_method.value
-            if isinstance(self.auth_method, Enum)
-            else self.auth_method
-        )
-        result["status"] = (
-            self.status.value if isinstance(self.status, Enum) else self.status
-        )
+        result["auth_method"] = self.auth_method.value if isinstance(self.auth_method, Enum) else self.auth_method
+        result["status"] = self.status.value if isinstance(self.status, Enum) else self.status
         result["expires_at"] = _format_datetime(self.expires_at)
         if self.ended_at is not None:
             result["ended_at"] = _format_datetime(self.ended_at)

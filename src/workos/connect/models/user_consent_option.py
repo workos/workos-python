@@ -31,10 +31,7 @@ class UserConsentOption:
                 claim=data["claim"],
                 type=data["type"],
                 label=data["label"],
-                choices=[
-                    UserConsentOptionChoice.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["choices"])
-                ],
+                choices=[UserConsentOptionChoice.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["choices"])],
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserConsentOption", e)

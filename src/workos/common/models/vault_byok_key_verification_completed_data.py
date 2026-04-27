@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
-from .vault_byok_key_verification_completed_data_key_provider import (
-    VaultByokKeyVerificationCompletedDataKeyProvider,
-)
+from .vault_byok_key_verification_completed_data_key_provider import VaultByokKeyVerificationCompletedDataKeyProvider
 
 
 @dataclass(slots=True)
@@ -28,9 +27,7 @@ class VaultByokKeyVerificationCompletedData:
         try:
             return cls(
                 organization_id=data["organization_id"],
-                key_provider=VaultByokKeyVerificationCompletedDataKeyProvider(
-                    data["key_provider"]
-                ),
+                key_provider=VaultByokKeyVerificationCompletedDataKeyProvider(data["key_provider"]),
                 verified=data["verified"],
             )
         except (KeyError, ValueError) as e:
@@ -40,10 +37,6 @@ class VaultByokKeyVerificationCompletedData:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["organization_id"] = self.organization_id
-        result["key_provider"] = (
-            self.key_provider.value
-            if isinstance(self.key_provider, Enum)
-            else self.key_provider
-        )
+        result["key_provider"] = self.key_provider.value if isinstance(self.key_provider, Enum) else self.key_provider
         result["verified"] = self.verified
         return result

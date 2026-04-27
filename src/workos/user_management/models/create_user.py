@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models.create_user_password_hash_type import (
-    CreateUserPasswordHashType,
-)
+from workos.common.models.create_user_password_hash_type import CreateUserPasswordHashType
 
 
 @dataclass(slots=True)
@@ -47,9 +46,7 @@ class CreateUser:
                 external_id=data.get("external_id"),
                 password=data.get("password"),
                 password_hash=data.get("password_hash"),
-                password_hash_type=CreateUserPasswordHashType(_v_password_hash_type)
-                if (_v_password_hash_type := data.get("password_hash_type")) is not None
-                else None,
+                password_hash_type=CreateUserPasswordHashType(_v_password_hash_type) if (_v_password_hash_type := data.get("password_hash_type")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateUser", e)
@@ -85,9 +82,5 @@ class CreateUser:
         if self.password_hash is not None:
             result["password_hash"] = self.password_hash
         if self.password_hash_type is not None:
-            result["password_hash_type"] = (
-                self.password_hash_type.value
-                if isinstance(self.password_hash_type, Enum)
-                else self.password_hash_type
-            )
+            result["password_hash_type"] = self.password_hash_type.value if isinstance(self.password_hash_type, Enum) else self.password_hash_type
         return result

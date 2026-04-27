@@ -3,7 +3,5 @@
 from typing import TypeAlias
 from .organization_created_data_domain_state import OrganizationCreatedDataDomainState
 
-OrganizationDomainVerificationFailedDataOrganizationDomainState: TypeAlias = (
-    OrganizationCreatedDataDomainState
-)
+OrganizationDomainVerificationFailedDataOrganizationDomainState: TypeAlias = OrganizationCreatedDataDomainState
 __all__ = ["OrganizationDomainVerificationFailedDataOrganizationDomainState"]

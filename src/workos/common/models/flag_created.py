@@ -38,9 +38,7 @@ class FlagCreated:
                 event=data["event"],
                 data=FlagCreatedData.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
-                context=FlagCreatedContext.from_dict(
-                    cast(Dict[str, Any], data["context"])
-                ),
+                context=FlagCreatedContext.from_dict(cast(Dict[str, Any], data["context"])),
                 object=data["object"],
             )
         except (KeyError, ValueError) as e:

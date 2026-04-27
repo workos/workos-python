@@ -36,9 +36,7 @@ class AuthenticateResponseAuthenticationMethod(str, Enum):
     MIGRATED_SESSION = "MigratedSession"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["AuthenticateResponseAuthenticationMethod"]:
+    def _missing_(cls, value: object) -> Optional["AuthenticateResponseAuthenticationMethod"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -46,28 +44,4 @@ class AuthenticateResponseAuthenticationMethod(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-AuthenticateResponseAuthenticationMethodLiteral: TypeAlias = Literal[
-    "SSO",
-    "Password",
-    "Passkey",
-    "AppleOAuth",
-    "BitbucketOAuth",
-    "CrossAppAuth",
-    "DiscordOAuth",
-    "ExternalAuth",
-    "GitHubOAuth",
-    "GitLabOAuth",
-    "GoogleOAuth",
-    "IntuitOAuth",
-    "LinkedInOAuth",
-    "MicrosoftOAuth",
-    "SalesforceOAuth",
-    "SlackOAuth",
-    "VercelMarketplaceOAuth",
-    "VercelOAuth",
-    "XeroOAuth",
-    "MagicAuth",
-    "Impersonation",
-    "MigratedSession",
-]
+AuthenticateResponseAuthenticationMethodLiteral: TypeAlias = Literal["SSO", "Password", "Passkey", "AppleOAuth", "BitbucketOAuth", "CrossAppAuth", "DiscordOAuth", "ExternalAuth", "GitHubOAuth", "GitLabOAuth", "GoogleOAuth", "IntuitOAuth", "LinkedInOAuth", "MicrosoftOAuth", "SalesforceOAuth", "SlackOAuth", "VercelMarketplaceOAuth", "VercelOAuth", "XeroOAuth", "MagicAuth", "Impersonation", "MigratedSession"]

@@ -7,9 +7,7 @@ from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 
-from .authentication_passkey_failed_data_error import (
-    AuthenticationPasskeyFailedDataError,
-)
+from .authentication_passkey_failed_data_error import AuthenticationPasskeyFailedDataError
 
 
 @dataclass(slots=True)
@@ -40,9 +38,7 @@ class AuthenticationPasskeyFailedData:
                 user_agent=data["user_agent"],
                 user_id=data["user_id"],
                 email=data["email"],
-                error=AuthenticationPasskeyFailedDataError.from_dict(
-                    cast(Dict[str, Any], data["error"])
-                ),
+                error=AuthenticationPasskeyFailedDataError.from_dict(cast(Dict[str, Any], data["error"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationPasskeyFailedData", e)

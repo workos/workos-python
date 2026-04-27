@@ -17,11 +17,7 @@ class ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateType(str
     RESPONSE_ENCRYPTION = "ResponseEncryption"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional[
-        "ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateType"
-    ]:
+    def _missing_(cls, value: object) -> Optional["ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateType"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -29,7 +25,4 @@ class ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateType(str
         unknown._value_ = value
         return unknown
 
-
-ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateTypeLiteral: TypeAlias = Literal[
-    "ResponseSigning", "RequestSigning", "ResponseEncryption"
-]
+ConnectionSAMLCertificateRenewalRequiredDataCertificateCertificateTypeLiteral: TypeAlias = Literal["ResponseSigning", "RequestSigning", "ResponseEncryption"]

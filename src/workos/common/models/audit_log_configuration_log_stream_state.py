@@ -18,9 +18,7 @@ class AuditLogConfigurationLogStreamState(str, Enum):
     INVALID = "invalid"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["AuditLogConfigurationLogStreamState"]:
+    def _missing_(cls, value: object) -> Optional["AuditLogConfigurationLogStreamState"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -28,7 +26,4 @@ class AuditLogConfigurationLogStreamState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-AuditLogConfigurationLogStreamStateLiteral: TypeAlias = Literal[
-    "active", "inactive", "error", "invalid"
-]
+AuditLogConfigurationLogStreamStateLiteral: TypeAlias = Literal["active", "inactive", "error", "invalid"]

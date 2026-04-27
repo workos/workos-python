@@ -35,11 +35,7 @@ class SSOTokenResponse:
                 access_token=data["access_token"],
                 expires_in=data["expires_in"],
                 profile=Profile.from_dict(cast(Dict[str, Any], data["profile"])),
-                oauth_tokens=SSOTokenResponseOAuthToken.from_dict(
-                    cast(Dict[str, Any], _v_oauth_tokens)
-                )
-                if (_v_oauth_tokens := data.get("oauth_tokens")) is not None
-                else None,
+                oauth_tokens=SSOTokenResponseOAuthToken.from_dict(cast(Dict[str, Any], _v_oauth_tokens)) if (_v_oauth_tokens := data.get("oauth_tokens")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("SSOTokenResponse", e)

@@ -28,7 +28,4 @@ class CreateUserPasswordHashType(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-CreateUserPasswordHashTypeLiteral: TypeAlias = Literal[
-    "bcrypt", "firebase-scrypt", "ssha", "scrypt", "pbkdf2", "argon2"
-]
+CreateUserPasswordHashTypeLiteral: TypeAlias = Literal["bcrypt", "firebase-scrypt", "ssha", "scrypt", "pbkdf2", "argon2"]

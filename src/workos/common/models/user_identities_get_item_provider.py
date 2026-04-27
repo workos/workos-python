@@ -36,20 +36,4 @@ class UserIdentitiesGetItemProvider(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-UserIdentitiesGetItemProviderLiteral: TypeAlias = Literal[
-    "AppleOAuth",
-    "BitbucketOAuth",
-    "DiscordOAuth",
-    "GithubOAuth",
-    "GitLabOAuth",
-    "GoogleOAuth",
-    "IntuitOAuth",
-    "LinkedInOAuth",
-    "MicrosoftOAuth",
-    "SalesforceOAuth",
-    "SlackOAuth",
-    "VercelMarketplaceOAuth",
-    "VercelOAuth",
-    "XeroOAuth",
-]
+UserIdentitiesGetItemProviderLiteral: TypeAlias = Literal["AppleOAuth", "BitbucketOAuth", "DiscordOAuth", "GithubOAuth", "GitLabOAuth", "GoogleOAuth", "IntuitOAuth", "LinkedInOAuth", "MicrosoftOAuth", "SalesforceOAuth", "SlackOAuth", "VercelMarketplaceOAuth", "VercelOAuth", "XeroOAuth"]

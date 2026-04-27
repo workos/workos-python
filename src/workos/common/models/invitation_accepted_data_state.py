@@ -26,7 +26,4 @@ class InvitationAcceptedDataState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-InvitationAcceptedDataStateLiteral: TypeAlias = Literal[
-    "pending", "accepted", "expired", "revoked"
-]
+InvitationAcceptedDataStateLiteral: TypeAlias = Literal["pending", "accepted", "expired", "revoked"]

@@ -17,9 +17,7 @@ class VaultByokKeyVerificationCompletedDataKeyProvider(str, Enum):
     AZURE_KEY_VAULT = "AZURE_KEY_VAULT"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["VaultByokKeyVerificationCompletedDataKeyProvider"]:
+    def _missing_(cls, value: object) -> Optional["VaultByokKeyVerificationCompletedDataKeyProvider"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -27,7 +25,4 @@ class VaultByokKeyVerificationCompletedDataKeyProvider(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-VaultByokKeyVerificationCompletedDataKeyProviderLiteral: TypeAlias = Literal[
-    "AWS_KMS", "GCP_KMS", "AZURE_KEY_VAULT"
-]
+VaultByokKeyVerificationCompletedDataKeyProviderLiteral: TypeAlias = Literal["AWS_KMS", "GCP_KMS", "AZURE_KEY_VAULT"]

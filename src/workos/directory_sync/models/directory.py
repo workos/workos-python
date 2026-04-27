@@ -57,9 +57,7 @@ class Directory:
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 domain=data.get("domain"),
-                metadata=DirectoryMetadata.from_dict(cast(Dict[str, Any], _v_metadata))
-                if (_v_metadata := data.get("metadata")) is not None
-                else None,
+                metadata=DirectoryMetadata.from_dict(cast(Dict[str, Any], _v_metadata)) if (_v_metadata := data.get("metadata")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("Directory", e)
@@ -72,9 +70,7 @@ class Directory:
         result["organization_id"] = self.organization_id
         result["external_key"] = self.external_key
         result["type"] = self.type.value if isinstance(self.type, Enum) else self.type
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         result["name"] = self.name
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)

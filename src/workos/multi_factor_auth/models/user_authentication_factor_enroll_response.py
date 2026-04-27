@@ -21,18 +21,12 @@ class UserAuthenticationFactorEnrollResponse:
     """The [authentication challenge](https://workos.com/docs/reference/authkit/mfa/authentication-challenge) object that is used to complete the authentication process."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "UserAuthenticationFactorEnrollResponse":
+    def from_dict(cls, data: Dict[str, Any]) -> "UserAuthenticationFactorEnrollResponse":
         """Deserialize from a dictionary."""
         try:
             return cls(
-                authentication_factor=AuthenticationFactorEnrolled.from_dict(
-                    cast(Dict[str, Any], data["authentication_factor"])
-                ),
-                authentication_challenge=AuthenticationChallenge.from_dict(
-                    cast(Dict[str, Any], data["authentication_challenge"])
-                ),
+                authentication_factor=AuthenticationFactorEnrolled.from_dict(cast(Dict[str, Any], data["authentication_factor"])),
+                authentication_challenge=AuthenticationChallenge.from_dict(cast(Dict[str, Any], data["authentication_challenge"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UserAuthenticationFactorEnrollResponse", e)

@@ -31,12 +31,7 @@ class UpdateOAuthApplication:
                 name=data.get("name"),
                 description=data.get("description"),
                 scopes=data.get("scopes"),
-                redirect_uris=[
-                    RedirectUriInput.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v_redirect_uris)
-                ]
-                if (_v_redirect_uris := data.get("redirect_uris")) is not None
-                else None,
+                redirect_uris=[RedirectUriInput.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], _v_redirect_uris)] if (_v_redirect_uris := data.get("redirect_uris")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateOAuthApplication", e)

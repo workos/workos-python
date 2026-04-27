@@ -2,19 +2,13 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions
-from .models import (
-    ConnectedAccount,
-    DataIntegrationAccessTokenResponse,
-    DataIntegrationAuthorizeUrlResponse,
-    DataIntegrationsListResponse,
-)
-
+from .models import ConnectedAccount, DataIntegrationAccessTokenResponse, DataIntegrationAuthorizeUrlResponse, DataIntegrationsGetDataIntegrationAuthorizeUrlRequest, DataIntegrationsGetUserTokenRequest, DataIntegrationsListResponse
 
 class Pipes:
     """Pipes API resources."""
@@ -53,15 +47,11 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-                "return_to": return_to,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "user_id": user_id,
+            "organization_id": organization_id,
+            "return_to": return_to,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path=f"data-integrations/{slug}/authorize",
@@ -98,14 +88,10 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "user_id": user_id,
+            "organization_id": organization_id,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path=f"data-integrations/{slug}/token",
@@ -141,13 +127,9 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        params: Dict[str, Any] = {k: v for k, v in {
+            "organization_id": organization_id,
+        }.items() if v is not None}
         return self._client.request(
             method="get",
             path=f"user_management/users/{user_id}/connected_accounts/{slug}",
@@ -180,13 +162,9 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        params: Dict[str, Any] = {k: v for k, v in {
+            "organization_id": organization_id,
+        }.items() if v is not None}
         self._client.request(
             method="delete",
             path=f"user_management/users/{user_id}/connected_accounts/{slug}",
@@ -219,13 +197,9 @@ class Pipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        params: Dict[str, Any] = {k: v for k, v in {
+            "organization_id": organization_id,
+        }.items() if v is not None}
         return self._client.request(
             method="get",
             path=f"user_management/users/{user_id}/data_providers",
@@ -272,15 +246,11 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-                "return_to": return_to,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "user_id": user_id,
+            "organization_id": organization_id,
+            "return_to": return_to,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path=f"data-integrations/{slug}/authorize",
@@ -317,14 +287,10 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "user_id": user_id,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "user_id": user_id,
+            "organization_id": organization_id,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path=f"data-integrations/{slug}/token",
@@ -360,13 +326,9 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        params: Dict[str, Any] = {k: v for k, v in {
+            "organization_id": organization_id,
+        }.items() if v is not None}
         return await self._client.request(
             method="get",
             path=f"user_management/users/{user_id}/connected_accounts/{slug}",
@@ -399,13 +361,9 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        params: Dict[str, Any] = {k: v for k, v in {
+            "organization_id": organization_id,
+        }.items() if v is not None}
         await self._client.request(
             method="delete",
             path=f"user_management/users/{user_id}/connected_accounts/{slug}",
@@ -438,13 +396,9 @@ class AsyncPipes:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        params: Dict[str, Any] = {k: v for k, v in {
+            "organization_id": organization_id,
+        }.items() if v is not None}
         return await self._client.request(
             method="get",
             path=f"user_management/users/{user_id}/data_providers",

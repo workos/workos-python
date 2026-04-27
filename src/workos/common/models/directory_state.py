@@ -27,7 +27,4 @@ class DirectoryState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-DirectoryStateLiteral: TypeAlias = Literal[
-    "linked", "validating", "invalid_credentials", "unlinked", "deleting"
-]
+DirectoryStateLiteral: TypeAlias = Literal["linked", "validating", "invalid_credentials", "unlinked", "deleting"]

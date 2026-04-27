@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 
@@ -30,9 +31,7 @@ class MagicAuthCodeSessionAuthenticateRequest:
     """The user agent string from the user's browser."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "MagicAuthCodeSessionAuthenticateRequest":
+    def from_dict(cls, data: Dict[str, Any]) -> "MagicAuthCodeSessionAuthenticateRequest":
         """Deserialize from a dictionary."""
         try:
             return cls(

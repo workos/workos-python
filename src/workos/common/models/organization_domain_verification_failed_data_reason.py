@@ -16,9 +16,7 @@ class OrganizationDomainVerificationFailedDataReason(str, Enum):
     DOMAIN_VERIFIED_BY_OTHER_ORGANIZATION = "domain_verified_by_other_organization"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["OrganizationDomainVerificationFailedDataReason"]:
+    def _missing_(cls, value: object) -> Optional["OrganizationDomainVerificationFailedDataReason"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -26,7 +24,4 @@ class OrganizationDomainVerificationFailedDataReason(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-OrganizationDomainVerificationFailedDataReasonLiteral: TypeAlias = Literal[
-    "domain_verification_period_expired", "domain_verified_by_other_organization"
-]
+OrganizationDomainVerificationFailedDataReasonLiteral: TypeAlias = Literal["domain_verification_period_expired", "domain_verified_by_other_organization"]

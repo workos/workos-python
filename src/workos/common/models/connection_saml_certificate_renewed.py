@@ -9,9 +9,7 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .connection_saml_certificate_renewed_data import (
-    ConnectionSAMLCertificateRenewedData,
-)
+from .connection_saml_certificate_renewed_data import ConnectionSAMLCertificateRenewedData
 from .event_context import EventContext
 
 
@@ -37,14 +35,10 @@ class ConnectionSAMLCertificateRenewed:
             return cls(
                 id=data["id"],
                 event=data["event"],
-                data=ConnectionSAMLCertificateRenewedData.from_dict(
-                    cast(Dict[str, Any], data["data"])
-                ),
+                data=ConnectionSAMLCertificateRenewedData.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 object=data["object"],
-                context=EventContext.from_dict(cast(Dict[str, Any], _v_context))
-                if (_v_context := data.get("context")) is not None
-                else None,
+                context=EventContext.from_dict(cast(Dict[str, Any], _v_context)) if (_v_context := data.get("context")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ConnectionSAMLCertificateRenewed", e)

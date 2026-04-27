@@ -2,21 +2,16 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import RadarListEntryAlreadyPresentResponse, RadarStandaloneResponse
+from .models import RadarListEntryAlreadyPresentResponse, RadarStandaloneAssessRequest, RadarStandaloneDeleteRadarListEntryRequest, RadarStandaloneResponse, RadarStandaloneUpdateRadarAttemptRequest, RadarStandaloneUpdateRadarListRequest
 from .models import RadarAction, RadarType
-from workos.common.models.radar_standalone_assess_request_action import (
-    RadarStandaloneAssessRequestAction,
-)
-from workos.common.models.radar_standalone_assess_request_auth_method import (
-    RadarStandaloneAssessRequestAuthMethod,
-)
-
+from workos.common.models.radar_standalone_assess_request_action import RadarStandaloneAssessRequestAction
+from workos.common.models.radar_standalone_assess_request_auth_method import RadarStandaloneAssessRequestAuthMethod
 
 class Radar:
     """Radar API resources."""
@@ -59,19 +54,15 @@ class Radar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "ip_address": ip_address,
-                "user_agent": user_agent,
-                "email": email,
-                "auth_method": enum_value(auth_method),
-                "action": enum_value(action),
-                "device_fingerprint": device_fingerprint,
-                "bot_score": bot_score,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+            "email": email,
+            "auth_method": enum_value(auth_method),
+            "action": enum_value(action),
+            "device_fingerprint": device_fingerprint,
+            "bot_score": bot_score,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="radar/attempts",
@@ -105,14 +96,10 @@ class Radar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "challenge_status": challenge_status,
-                "attempt_status": attempt_status,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "challenge_status": challenge_status,
+            "attempt_status": attempt_status,
+        }.items() if v is not None}
         self._client.request(
             method="put",
             path=f"radar/attempts/{id}",
@@ -235,19 +222,15 @@ class AsyncRadar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "ip_address": ip_address,
-                "user_agent": user_agent,
-                "email": email,
-                "auth_method": enum_value(auth_method),
-                "action": enum_value(action),
-                "device_fingerprint": device_fingerprint,
-                "bot_score": bot_score,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+            "email": email,
+            "auth_method": enum_value(auth_method),
+            "action": enum_value(action),
+            "device_fingerprint": device_fingerprint,
+            "bot_score": bot_score,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="radar/attempts",
@@ -281,14 +264,10 @@ class AsyncRadar:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "challenge_status": challenge_status,
-                "attempt_status": attempt_status,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "challenge_status": challenge_status,
+            "attempt_status": attempt_status,
+        }.items() if v is not None}
         await self._client.request(
             method="put",
             path=f"radar/attempts/{id}",

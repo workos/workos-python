@@ -16,15 +16,12 @@ class UserManagementAuthenticationScreenHint(str, Enum):
     SIGN_IN = "sign-in"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["UserManagementAuthenticationScreenHint"]:
+    def _missing_(cls, value: object) -> Optional["UserManagementAuthenticationScreenHint"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
         unknown._name_ = value.upper()
         unknown._value_ = value
         return unknown
-
 
 UserManagementAuthenticationScreenHintLiteral: TypeAlias = Literal["sign-up", "sign-in"]

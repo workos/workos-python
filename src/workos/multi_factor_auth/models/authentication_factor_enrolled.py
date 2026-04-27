@@ -12,9 +12,7 @@ from workos._types import _format_datetime, _parse_datetime
 
 from .authentication_factor_enrolled_sms import AuthenticationFactorEnrolledSms
 from .authentication_factor_enrolled_totp import AuthenticationFactorEnrolledTotp
-from workos.common.models.authentication_factor_enrolled_type import (
-    AuthenticationFactorEnrolledType,
-)
+from workos.common.models.authentication_factor_enrolled_type import AuthenticationFactorEnrolledType
 
 
 @dataclass(slots=True)
@@ -49,16 +47,8 @@ class AuthenticationFactorEnrolled:
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 user_id=data.get("user_id"),
-                sms=AuthenticationFactorEnrolledSms.from_dict(
-                    cast(Dict[str, Any], _v_sms)
-                )
-                if (_v_sms := data.get("sms")) is not None
-                else None,
-                totp=AuthenticationFactorEnrolledTotp.from_dict(
-                    cast(Dict[str, Any], _v_totp)
-                )
-                if (_v_totp := data.get("totp")) is not None
-                else None,
+                sms=AuthenticationFactorEnrolledSms.from_dict(cast(Dict[str, Any], _v_sms)) if (_v_sms := data.get("sms")) is not None else None,
+                totp=AuthenticationFactorEnrolledTotp.from_dict(cast(Dict[str, Any], _v_totp)) if (_v_totp := data.get("totp")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationFactorEnrolled", e)

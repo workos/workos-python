@@ -24,5 +24,4 @@ class VaultDataCreatedDataActorSource(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 VaultDataCreatedDataActorSourceLiteral: TypeAlias = Literal["api", "dashboard"]

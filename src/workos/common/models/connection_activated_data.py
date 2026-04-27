@@ -11,9 +11,7 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .connection_activated_data_domain import ConnectionActivatedDataDomain
-from .connection_activated_data_connection_type import (
-    ConnectionActivatedDataConnectionType,
-)
+from .connection_activated_data_connection_type import ConnectionActivatedDataConnectionType
 from .connection_activated_data_state import ConnectionActivatedDataState
 from .connection_activated_data_status import ConnectionActivatedDataStatus
 
@@ -54,17 +52,12 @@ class ConnectionActivatedData:
                 id=data["id"],
                 state=ConnectionActivatedDataState(data["state"]),
                 name=data["name"],
-                connection_type=ConnectionActivatedDataConnectionType(
-                    data["connection_type"]
-                ),
+                connection_type=ConnectionActivatedDataConnectionType(data["connection_type"]),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 external_key=data["external_key"],
                 status=ConnectionActivatedDataStatus(data["status"]),
-                domains=[
-                    ConnectionActivatedDataDomain.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["domains"])
-                ],
+                domains=[ConnectionActivatedDataDomain.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["domains"])],
                 organization_id=data.get("organization_id"),
             )
         except (KeyError, ValueError) as e:
@@ -75,21 +68,13 @@ class ConnectionActivatedData:
         result: Dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         result["name"] = self.name
-        result["connection_type"] = (
-            self.connection_type.value
-            if isinstance(self.connection_type, Enum)
-            else self.connection_type
-        )
+        result["connection_type"] = self.connection_type.value if isinstance(self.connection_type, Enum) else self.connection_type
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
         result["external_key"] = self.external_key
-        result["status"] = (
-            self.status.value if isinstance(self.status, Enum) else self.status
-        )
+        result["status"] = self.status.value if isinstance(self.status, Enum) else self.status
         result["domains"] = [item.to_dict() for item in self.domains]
         if self.organization_id is not None:
             result["organization_id"] = self.organization_id

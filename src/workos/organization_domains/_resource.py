@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions
-from .models import OrganizationDomain, OrganizationDomainStandAlone
-
+from .models import CreateOrganizationDomain, OrganizationDomain, OrganizationDomainStandAlone
 
 class OrganizationDomains:
     """Organization Domains API resources."""

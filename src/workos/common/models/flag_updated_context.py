@@ -28,15 +28,8 @@ class FlagUpdatedContext:
         try:
             return cls(
                 client_id=data["client_id"],
-                actor=FlagUpdatedContextActor.from_dict(
-                    cast(Dict[str, Any], data["actor"])
-                ),
-                previous_attributes=FlagUpdatedContextPreviousAttribute.from_dict(
-                    cast(Dict[str, Any], _v_previous_attributes)
-                )
-                if (_v_previous_attributes := data.get("previous_attributes"))
-                is not None
-                else None,
+                actor=FlagUpdatedContextActor.from_dict(cast(Dict[str, Any], data["actor"])),
+                previous_attributes=FlagUpdatedContextPreviousAttribute.from_dict(cast(Dict[str, Any], _v_previous_attributes)) if (_v_previous_attributes := data.get("previous_attributes")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagUpdatedContext", e)

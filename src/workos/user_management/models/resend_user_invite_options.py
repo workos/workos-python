@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models.resend_user_invite_options_locale import (
-    ResendUserInviteOptionsLocale,
-)
+from workos.common.models.resend_user_invite_options_locale import ResendUserInviteOptionsLocale
 
 
 @dataclass(slots=True)
@@ -23,9 +22,7 @@ class ResendUserInviteOptions:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                locale=ResendUserInviteOptionsLocale(_v_locale)
-                if (_v_locale := data.get("locale")) is not None
-                else None,
+                locale=ResendUserInviteOptionsLocale(_v_locale) if (_v_locale := data.get("locale")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ResendUserInviteOptions", e)
@@ -34,7 +31,5 @@ class ResendUserInviteOptions:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         if self.locale is not None:
-            result["locale"] = (
-                self.locale.value if isinstance(self.locale, Enum) else self.locale
-            )
+            result["locale"] = self.locale.value if isinstance(self.locale, Enum) else self.locale
         return result

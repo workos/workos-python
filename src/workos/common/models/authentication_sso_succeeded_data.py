@@ -38,9 +38,7 @@ class AuthenticationSSOSucceededData:
                 user_agent=data["user_agent"],
                 user_id=data["user_id"],
                 email=data["email"],
-                sso=AuthenticationSSOSucceededDataSSO.from_dict(
-                    cast(Dict[str, Any], data["sso"])
-                ),
+                sso=AuthenticationSSOSucceededDataSSO.from_dict(cast(Dict[str, Any], data["sso"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationSSOSucceededData", e)

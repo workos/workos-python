@@ -6,28 +6,17 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.organization_domains.models import (
-    OrganizationDomain,
-    OrganizationDomainStandAlone,
-)
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
+from workos.organization_domains.models import OrganizationDomain, OrganizationDomainStandAlone
+from workos._errors import AuthenticationError, BadRequestError, NotFoundError, RateLimitExceededError, ServerError, UnprocessableEntityError
 
 
 class TestOrganizationDomains:
+
     def test_create_organization_domain(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("organization_domain.json"),
         )
-        result = workos.organization_domains.create_organization_domain(
-            domain="test_domain", organization_id="test_organization_id"
-        )
+        result = workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         assert isinstance(result, OrganizationDomain)
         assert result.object == "organization_domain"
         assert result.id == "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A"
@@ -72,11 +61,7 @@ class TestOrganizationDomains:
 
     def test_create_organization_domain_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization_domain.json"))
-        workos.organization_domains.create_organization_domain(
-            domain="test_domain",
-            organization_id="test_organization_id",
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id", request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -86,87 +71,60 @@ class TestOrganizationDomains:
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationError):
-            workos.organization_domains.create_organization_domain(
-                domain="test_domain", organization_id="test_organization_id"
-            )
+            workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
 
     def test_create_organization_domain_not_found(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                workos.organization_domains.create_organization_domain(
-                    domain="test_domain", organization_id="test_organization_id"
-                )
+                workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         finally:
             workos.close()
 
     def test_create_organization_domain_rate_limited(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
-                workos.organization_domains.create_organization_domain(
-                    domain="test_domain", organization_id="test_organization_id"
-                )
+                workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         finally:
             workos.close()
 
     def test_create_organization_domain_server_error(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                workos.organization_domains.create_organization_domain(
-                    domain="test_domain", organization_id="test_organization_id"
-                )
+                workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         finally:
             workos.close()
 
     def test_create_organization_domain_bad_request(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.organization_domains.create_organization_domain(
-                    domain="test_domain", organization_id="test_organization_id"
-                )
+                workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         finally:
             workos.close()
 
     def test_create_organization_domain_unprocessable(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.organization_domains.create_organization_domain(
-                    domain="test_domain", organization_id="test_organization_id"
-                )
+                workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         finally:
             workos.close()
 
 
 class TestAsyncOrganizationDomains:
+
     @pytest.mark.asyncio
     async def test_create_organization_domain(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization_domain.json"))
-        result = await async_workos.organization_domains.create_organization_domain(
-            domain="test_domain", organization_id="test_organization_id"
-        )
+        result = await async_workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         assert isinstance(result, OrganizationDomain)
         assert result.object == "organization_domain"
         assert result.id == "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A"
@@ -176,12 +134,8 @@ class TestAsyncOrganizationDomains:
 
     @pytest.mark.asyncio
     async def test_get_organization_domain(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("organization_domain_stand_alone.json")
-        )
-        result = await async_workos.organization_domains.get_organization_domain(
-            "test_id"
-        )
+        httpx_mock.add_response(json=load_fixture("organization_domain_stand_alone.json"))
+        result = await async_workos.organization_domains.get_organization_domain("test_id")
         assert isinstance(result, OrganizationDomainStandAlone)
         assert result.object == "organization_domain"
         assert result.id == "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A"
@@ -192,9 +146,7 @@ class TestAsyncOrganizationDomains:
     @pytest.mark.asyncio
     async def test_delete_organization_domain(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.organization_domains.delete_organization_domain(
-            "test_id"
-        )
+        result = await async_workos.organization_domains.delete_organization_domain("test_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
@@ -202,12 +154,8 @@ class TestAsyncOrganizationDomains:
 
     @pytest.mark.asyncio
     async def test_verify_organization_domain(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("organization_domain_stand_alone.json")
-        )
-        result = await async_workos.organization_domains.verify_organization_domain(
-            "test_id"
-        )
+        httpx_mock.add_response(json=load_fixture("organization_domain_stand_alone.json"))
+        result = await async_workos.organization_domains.verify_organization_domain("test_id")
         assert isinstance(result, OrganizationDomainStandAlone)
         assert result.object == "organization_domain"
         assert result.id == "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A"
@@ -216,98 +164,64 @@ class TestAsyncOrganizationDomains:
         assert request.url.path.endswith("/organization_domains/test_id/verify")
 
     @pytest.mark.asyncio
-    async def test_create_organization_domain_with_request_options(
-        self, async_workos, httpx_mock
-    ):
+    async def test_create_organization_domain_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization_domain.json"))
-        await async_workos.organization_domains.create_organization_domain(
-            domain="test_domain",
-            organization_id="test_organization_id",
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        await async_workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id", request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
     @pytest.mark.asyncio
-    async def test_create_organization_domain_unauthorized(
-        self, async_workos, httpx_mock
-    ):
+    async def test_create_organization_domain_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.organization_domains.create_organization_domain(
-                domain="test_domain", organization_id="test_organization_id"
-            )
+            await async_workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
 
     @pytest.mark.asyncio
     async def test_create_organization_domain_not_found(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.organization_domains.create_organization_domain(
-                    domain="test_domain", organization_id="test_organization_id"
-                )
+                await workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_organization_domain_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
-                await workos.organization_domains.create_organization_domain(
-                    domain="test_domain", organization_id="test_organization_id"
-                )
+                await workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_organization_domain_server_error(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.organization_domains.create_organization_domain(
-                    domain="test_domain", organization_id="test_organization_id"
-                )
+                await workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_organization_domain_bad_request(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.organization_domains.create_organization_domain(
-                    domain="test_domain", organization_id="test_organization_id"
-                )
+                await workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_organization_domain_unprocessable(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.organization_domains.create_organization_domain(
-                    domain="test_domain", organization_id="test_organization_id"
-                )
+                await workos.organization_domains.create_organization_domain(domain="test_domain", organization_id="test_organization_id")
         finally:
             await workos.close()

@@ -24,5 +24,4 @@ class UpdateWebhookEndpointStatus(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 UpdateWebhookEndpointStatusLiteral: TypeAlias = Literal["enabled", "disabled"]

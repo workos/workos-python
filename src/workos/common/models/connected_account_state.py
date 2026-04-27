@@ -25,7 +25,4 @@ class ConnectedAccountState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-ConnectedAccountStateLiteral: TypeAlias = Literal[
-    "connected", "needs_reauthorization", "disconnected"
-]
+ConnectedAccountStateLiteral: TypeAlias = Literal["connected", "needs_reauthorization", "disconnected"]

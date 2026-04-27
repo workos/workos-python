@@ -7,12 +7,8 @@ from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 
-from .flag_rule_updated_context_previous_attribute_context import (
-    FlagRuleUpdatedContextPreviousAttributeContext,
-)
-from .flag_rule_updated_context_previous_attribute_data import (
-    FlagRuleUpdatedContextPreviousAttributeData,
-)
+from .flag_rule_updated_context_previous_attribute_context import FlagRuleUpdatedContextPreviousAttributeContext
+from .flag_rule_updated_context_previous_attribute_data import FlagRuleUpdatedContextPreviousAttributeData
 
 
 @dataclass(slots=True)
@@ -25,22 +21,12 @@ class FlagRuleUpdatedContextPreviousAttribute:
     """The previous context attributes of the flag rule."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "FlagRuleUpdatedContextPreviousAttribute":
+    def from_dict(cls, data: Dict[str, Any]) -> "FlagRuleUpdatedContextPreviousAttribute":
         """Deserialize from a dictionary."""
         try:
             return cls(
-                data=FlagRuleUpdatedContextPreviousAttributeData.from_dict(
-                    cast(Dict[str, Any], _v_data)
-                )
-                if (_v_data := data.get("data")) is not None
-                else None,
-                context=FlagRuleUpdatedContextPreviousAttributeContext.from_dict(
-                    cast(Dict[str, Any], _v_context)
-                )
-                if (_v_context := data.get("context")) is not None
-                else None,
+                data=FlagRuleUpdatedContextPreviousAttributeData.from_dict(cast(Dict[str, Any], _v_data)) if (_v_data := data.get("data")) is not None else None,
+                context=FlagRuleUpdatedContextPreviousAttributeContext.from_dict(cast(Dict[str, Any], _v_context)) if (_v_context := data.get("context")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagRuleUpdatedContextPreviousAttribute", e)

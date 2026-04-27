@@ -25,5 +25,4 @@ class FlagRuleUpdatedContextAccessType(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 FlagRuleUpdatedContextAccessTypeLiteral: TypeAlias = Literal["none", "some", "all"]

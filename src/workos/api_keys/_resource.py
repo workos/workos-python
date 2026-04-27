@@ -2,16 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import ApiKey, ApiKeyValidationResponse, ApiKeyWithValue
+from .models import ApiKey, ApiKeyValidationResponse, ApiKeyWithValue, CreateOrganizationApiKey, ValidateApiKey
 from .models import OrganizationsApiKeysOrder
 from .._pagination import AsyncPage, SyncPage
-
 
 class ApiKeys:
     """Api Keys API resources."""
@@ -110,16 +109,12 @@ class ApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path=f"organizations/{organization_id}/api_keys",
@@ -156,14 +151,10 @@ class ApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "permissions": permissions,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "permissions": permissions,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path=f"organizations/{organization_id}/api_keys",
@@ -270,16 +261,12 @@ class AsyncApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path=f"organizations/{organization_id}/api_keys",
@@ -316,14 +303,10 @@ class AsyncApiKeys:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "permissions": permissions,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "permissions": permissions,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path=f"organizations/{organization_id}/api_keys",

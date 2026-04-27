@@ -41,12 +41,7 @@ class CreateOAuthApplication:
                 is_first_party=data["is_first_party"],
                 description=data.get("description"),
                 scopes=data.get("scopes"),
-                redirect_uris=[
-                    RedirectUriInput.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v_redirect_uris)
-                ]
-                if (_v_redirect_uris := data.get("redirect_uris")) is not None
-                else None,
+                redirect_uris=[RedirectUriInput.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], _v_redirect_uris)] if (_v_redirect_uris := data.get("redirect_uris")) is not None else None,
                 uses_pkce=data.get("uses_pkce"),
                 organization_id=data.get("organization_id"),
             )

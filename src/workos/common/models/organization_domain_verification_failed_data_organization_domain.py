@@ -3,6 +3,4 @@
 from typing import TypeAlias
 from workos.organization_domains.models.organization_domain import OrganizationDomain
 
-OrganizationDomainVerificationFailedDataOrganizationDomain: TypeAlias = (
-    OrganizationDomain
-)
+OrganizationDomainVerificationFailedDataOrganizationDomain: TypeAlias = OrganizationDomain

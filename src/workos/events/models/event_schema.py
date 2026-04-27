@@ -7,44 +7,22 @@ from typing import Any, ClassVar, Dict, Union, cast
 from workos._types import _raise_deserialize_error
 
 from workos.common.models.action_authentication_denied import ActionAuthenticationDenied
-from workos.common.models.action_user_registration_denied import (
-    ActionUserRegistrationDenied,
-)
+from workos.common.models.action_user_registration_denied import ActionUserRegistrationDenied
 from workos.common.models.api_key_created import ApiKeyCreated
 from workos.common.models.api_key_revoked import ApiKeyRevoked
-from workos.common.models.authentication_email_verification_failed import (
-    AuthenticationEmailVerificationFailed,
-)
-from workos.common.models.authentication_email_verification_succeeded import (
-    AuthenticationEmailVerificationSucceeded,
-)
-from workos.common.models.authentication_magic_auth_failed import (
-    AuthenticationMagicAuthFailed,
-)
-from workos.common.models.authentication_magic_auth_succeeded import (
-    AuthenticationMagicAuthSucceeded,
-)
+from workos.common.models.authentication_email_verification_failed import AuthenticationEmailVerificationFailed
+from workos.common.models.authentication_email_verification_succeeded import AuthenticationEmailVerificationSucceeded
+from workos.common.models.authentication_magic_auth_failed import AuthenticationMagicAuthFailed
+from workos.common.models.authentication_magic_auth_succeeded import AuthenticationMagicAuthSucceeded
 from workos.common.models.authentication_mfa_failed import AuthenticationMFAFailed
 from workos.common.models.authentication_mfa_succeeded import AuthenticationMFASucceeded
 from workos.common.models.authentication_oauth_failed import AuthenticationOAuthFailed
-from workos.common.models.authentication_oauth_succeeded import (
-    AuthenticationOAuthSucceeded,
-)
-from workos.common.models.authentication_passkey_failed import (
-    AuthenticationPasskeyFailed,
-)
-from workos.common.models.authentication_passkey_succeeded import (
-    AuthenticationPasskeySucceeded,
-)
-from workos.common.models.authentication_password_failed import (
-    AuthenticationPasswordFailed,
-)
-from workos.common.models.authentication_password_succeeded import (
-    AuthenticationPasswordSucceeded,
-)
-from workos.common.models.authentication_radar_risk_detected import (
-    AuthenticationRadarRiskDetected,
-)
+from workos.common.models.authentication_oauth_succeeded import AuthenticationOAuthSucceeded
+from workos.common.models.authentication_passkey_failed import AuthenticationPasskeyFailed
+from workos.common.models.authentication_passkey_succeeded import AuthenticationPasskeySucceeded
+from workos.common.models.authentication_password_failed import AuthenticationPasswordFailed
+from workos.common.models.authentication_password_succeeded import AuthenticationPasswordSucceeded
+from workos.common.models.authentication_radar_risk_detected import AuthenticationRadarRiskDetected
 from workos.common.models.authentication_sso_failed import AuthenticationSSOFailed
 from workos.common.models.authentication_sso_started import AuthenticationSSOStarted
 from workos.common.models.authentication_sso_succeeded import AuthenticationSSOSucceeded
@@ -52,12 +30,8 @@ from workos.common.models.authentication_sso_timed_out import AuthenticationSSOT
 from workos.common.models.connection_activated import ConnectionActivated
 from workos.common.models.connection_deactivated import ConnectionDeactivated
 from workos.common.models.connection_deleted import ConnectionDeleted
-from workos.common.models.connection_saml_certificate_renewal_required import (
-    ConnectionSAMLCertificateRenewalRequired,
-)
-from workos.common.models.connection_saml_certificate_renewed import (
-    ConnectionSAMLCertificateRenewed,
-)
+from workos.common.models.connection_saml_certificate_renewal_required import ConnectionSAMLCertificateRenewalRequired
+from workos.common.models.connection_saml_certificate_renewed import ConnectionSAMLCertificateRenewed
 from workos.common.models.dsync_activated import DsyncActivated
 from workos.common.models.dsync_deactivated import DsyncDeactivated
 from workos.common.models.dsync_deleted import DsyncDeleted
@@ -89,19 +63,11 @@ from workos.common.models.organization_deleted import OrganizationDeleted
 from workos.common.models.organization_domain_created import OrganizationDomainCreated
 from workos.common.models.organization_domain_deleted import OrganizationDomainDeleted
 from workos.common.models.organization_domain_updated import OrganizationDomainUpdated
-from workos.common.models.organization_domain_verification_failed import (
-    OrganizationDomainVerificationFailed,
-)
+from workos.common.models.organization_domain_verification_failed import OrganizationDomainVerificationFailed
 from workos.common.models.organization_domain_verified import OrganizationDomainVerified
-from workos.common.models.organization_membership_created import (
-    OrganizationMembershipCreated,
-)
-from workos.common.models.organization_membership_deleted import (
-    OrganizationMembershipDeleted,
-)
-from workos.common.models.organization_membership_updated import (
-    OrganizationMembershipUpdated,
-)
+from workos.common.models.organization_membership_created import OrganizationMembershipCreated
+from workos.common.models.organization_membership_deleted import OrganizationMembershipDeleted
+from workos.common.models.organization_membership_updated import OrganizationMembershipUpdated
 from workos.common.models.organization_role_created import OrganizationRoleCreated
 from workos.common.models.organization_role_deleted import OrganizationRoleDeleted
 from workos.common.models.organization_role_updated import OrganizationRoleUpdated
@@ -119,9 +85,7 @@ from workos.common.models.session_revoked import SessionRevoked
 from workos.common.models.user_created import UserCreated
 from workos.common.models.user_deleted import UserDeleted
 from workos.common.models.user_updated import UserUpdated
-from workos.common.models.vault_byok_key_verification_completed import (
-    VaultByokKeyVerificationCompleted,
-)
+from workos.common.models.vault_byok_key_verification_completed import VaultByokKeyVerificationCompleted
 from workos.common.models.vault_data_created import VaultDataCreated
 from workos.common.models.vault_data_deleted import VaultDataDeleted
 from workos.common.models.vault_data_read import VaultDataRead
@@ -131,6 +95,9 @@ from workos.common.models.vault_dek_read import VaultDekRead
 from workos.common.models.vault_kek_created import VaultKekCreated
 from workos.common.models.vault_metadata_read import VaultMetadataRead
 from workos.common.models.vault_names_listed import VaultNamesListed
+from workos.common.models.waitlist_user_approved import WaitlistUserApproved
+from workos.common.models.waitlist_user_created import WaitlistUserCreated
+from workos.common.models.waitlist_user_denied import WaitlistUserDenied
 
 
 @dataclass(slots=True)
@@ -240,6 +207,9 @@ EventSchemaVariant = Union[
     VaultKekCreated,
     VaultMetadataRead,
     VaultNamesListed,
+    WaitlistUserApproved,
+    WaitlistUserCreated,
+    WaitlistUserDenied,
     EventSchemaUnknown,
 ]
 
@@ -337,20 +307,19 @@ class EventSchema:
         "vault.kek.created": VaultKekCreated,
         "vault.metadata.read": VaultMetadataRead,
         "vault.names.listed": VaultNamesListed,
+        "waitlist_user.approved": WaitlistUserApproved,
+        "waitlist_user.created": WaitlistUserCreated,
+        "waitlist_user.denied": WaitlistUserDenied,
     }
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "EventSchemaVariant":
         """Deserialize from a dictionary, dispatching to the correct variant."""
         if "event" not in data:
-            _raise_deserialize_error(
-                "EventSchema", ValueError("Missing required field 'event'")
-            )
+            _raise_deserialize_error("EventSchema", ValueError("Missing required field 'event'"))
         disc_value = data["event"]
         if disc_value is None:
-            _raise_deserialize_error(
-                "EventSchema", ValueError("event must not be None")
-            )
+            _raise_deserialize_error("EventSchema", ValueError("event must not be None"))
         dispatch_cls = cls._DISPATCH.get(disc_value)
         if dispatch_cls is not None:
             return cast("EventSchemaVariant", dispatch_cls.from_dict(data))

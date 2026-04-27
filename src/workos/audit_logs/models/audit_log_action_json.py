@@ -34,9 +34,7 @@ class AuditLogActionJson:
             return cls(
                 object=data["object"],
                 name=data["name"],
-                schema=AuditLogSchemaJson.from_dict(
-                    cast(Dict[str, Any], data["schema"])
-                ),
+                schema=AuditLogSchemaJson.from_dict(cast(Dict[str, Any], data["schema"])),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
             )

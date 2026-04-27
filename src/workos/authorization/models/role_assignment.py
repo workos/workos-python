@@ -38,9 +38,7 @@ class RoleAssignment:
                 object=data["object"],
                 id=data["id"],
                 role=SlimRole.from_dict(cast(Dict[str, Any], data["role"])),
-                resource=RoleAssignmentResource.from_dict(
-                    cast(Dict[str, Any], data["resource"])
-                ),
+                resource=RoleAssignmentResource.from_dict(cast(Dict[str, Any], data["resource"])),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
             )

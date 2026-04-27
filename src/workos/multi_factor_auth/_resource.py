@@ -2,25 +2,16 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import (
-    AuthenticationChallenge,
-    AuthenticationChallengeVerifyResponse,
-    AuthenticationFactor,
-    AuthenticationFactorEnrolled,
-    UserAuthenticationFactorEnrollResponse,
-)
+from .models import AuthenticationChallenge, AuthenticationChallengeVerifyResponse, AuthenticationChallengesVerifyRequest, AuthenticationFactor, AuthenticationFactorEnrolled, AuthenticationFactorsCreateRequest, ChallengeAuthenticationFactor, EnrollUserAuthenticationFactor, UserAuthenticationFactorEnrollResponse
 from .models import UserManagementMultiFactorAuthenticationOrder
-from workos.common.models.authentication_factors_create_request_type import (
-    AuthenticationFactorsCreateRequestType,
-)
+from workos.common.models.authentication_factors_create_request_type import AuthenticationFactorsCreateRequestType
 from .._pagination import AsyncPage, SyncPage
-
 
 class MultiFactorAuth:
     """Multi Factor Auth API resources."""
@@ -97,17 +88,13 @@ class MultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "type": enum_value(type),
-                "phone_number": phone_number,
-                "totp_issuer": totp_issuer,
-                "totp_user": totp_user,
-                "user_id": user_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "type": enum_value(type),
+            "phone_number": phone_number,
+            "totp_issuer": totp_issuer,
+            "totp_user": totp_user,
+            "user_id": user_id,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="auth/factors/enroll",
@@ -198,13 +185,9 @@ class MultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "sms_template": sms_template,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "sms_template": sms_template,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path=f"auth/factors/{id}/challenge",
@@ -220,9 +203,7 @@ class MultiFactorAuth:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementMultiFactorAuthenticationOrder, str]
-        ] = "desc",
+        order: Optional[Union[UserManagementMultiFactorAuthenticationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthenticationFactor]:
         """List authentication factors
@@ -246,16 +227,12 @@ class MultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path=f"user_management/users/{userland_user_id}/auth_factors",
@@ -295,16 +272,12 @@ class MultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "type": type,
-                "totp_issuer": totp_issuer,
-                "totp_user": totp_user,
-                "totp_secret": totp_secret,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "type": type,
+            "totp_issuer": totp_issuer,
+            "totp_user": totp_user,
+            "totp_secret": totp_secret,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path=f"user_management/users/{userland_user_id}/auth_factors",
@@ -389,17 +362,13 @@ class AsyncMultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "type": enum_value(type),
-                "phone_number": phone_number,
-                "totp_issuer": totp_issuer,
-                "totp_user": totp_user,
-                "user_id": user_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "type": enum_value(type),
+            "phone_number": phone_number,
+            "totp_issuer": totp_issuer,
+            "totp_user": totp_user,
+            "user_id": user_id,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="auth/factors/enroll",
@@ -490,13 +459,9 @@ class AsyncMultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "sms_template": sms_template,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "sms_template": sms_template,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path=f"auth/factors/{id}/challenge",
@@ -512,9 +477,7 @@ class AsyncMultiFactorAuth:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementMultiFactorAuthenticationOrder, str]
-        ] = "desc",
+        order: Optional[Union[UserManagementMultiFactorAuthenticationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthenticationFactor]:
         """List authentication factors
@@ -538,16 +501,12 @@ class AsyncMultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path=f"user_management/users/{userland_user_id}/auth_factors",
@@ -587,16 +546,12 @@ class AsyncMultiFactorAuth:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "type": type,
-                "totp_issuer": totp_issuer,
-                "totp_user": totp_user,
-                "totp_secret": totp_secret,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "type": type,
+            "totp_issuer": totp_issuer,
+            "totp_user": totp_user,
+            "totp_secret": totp_secret,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path=f"user_management/users/{userland_user_id}/auth_factors",

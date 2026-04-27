@@ -26,7 +26,4 @@ class AuthenticationFactorEnrolledType(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-AuthenticationFactorEnrolledTypeLiteral: TypeAlias = Literal[
-    "generic_otp", "sms", "totp", "webauthn"
-]
+AuthenticationFactorEnrolledTypeLiteral: TypeAlias = Literal["generic_otp", "sms", "totp", "webauthn"]

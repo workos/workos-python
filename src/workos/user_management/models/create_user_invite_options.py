@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models.create_user_invite_options_locale import (
-    CreateUserInviteOptionsLocale,
-)
+from workos.common.models.create_user_invite_options_locale import CreateUserInviteOptionsLocale
 
 
 @dataclass(slots=True)
@@ -38,9 +37,7 @@ class CreateUserInviteOptions:
                 role_slug=data.get("role_slug"),
                 expires_in_days=data.get("expires_in_days"),
                 inviter_user_id=data.get("inviter_user_id"),
-                locale=CreateUserInviteOptionsLocale(_v_locale)
-                if (_v_locale := data.get("locale")) is not None
-                else None,
+                locale=CreateUserInviteOptionsLocale(_v_locale) if (_v_locale := data.get("locale")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateUserInviteOptions", e)
@@ -58,7 +55,5 @@ class CreateUserInviteOptions:
         if self.inviter_user_id is not None:
             result["inviter_user_id"] = self.inviter_user_id
         if self.locale is not None:
-            result["locale"] = (
-                self.locale.value if isinstance(self.locale, Enum) else self.locale
-            )
+            result["locale"] = self.locale.value if isinstance(self.locale, Enum) else self.locale
         return result

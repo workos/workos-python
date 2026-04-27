@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Literal
 from workos._types import _raise_deserialize_error
-from workos.common.models.user_identities_get_item_provider import (
-    UserIdentitiesGetItemProvider,
-)
+from workos.common.models.user_identities_get_item_provider import UserIdentitiesGetItemProvider
 
 
 @dataclass(slots=True)
@@ -39,7 +38,5 @@ class UserIdentitiesGetItem:
         result: Dict[str, Any] = {}
         result["idp_id"] = self.idp_id
         result["type"] = self.type
-        result["provider"] = (
-            self.provider.value if isinstance(self.provider, Enum) else self.provider
-        )
+        result["provider"] = self.provider.value if isinstance(self.provider, Enum) else self.provider
         return result

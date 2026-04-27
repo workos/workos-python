@@ -27,13 +27,8 @@ class AuditLogSchema:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                targets=[
-                    AuditLogSchemaTarget.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["targets"])
-                ],
-                actor=AuditLogSchemaActor.from_dict(cast(Dict[str, Any], _v_actor))
-                if (_v_actor := data.get("actor")) is not None
-                else None,
+                targets=[AuditLogSchemaTarget.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["targets"])],
+                actor=AuditLogSchemaActor.from_dict(cast(Dict[str, Any], _v_actor)) if (_v_actor := data.get("actor")) is not None else None,
                 metadata=data.get("metadata"),
             )
         except (KeyError, ValueError) as e:

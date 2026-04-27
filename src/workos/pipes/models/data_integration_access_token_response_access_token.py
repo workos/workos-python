@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 
@@ -23,9 +24,7 @@ class DataIntegrationAccessTokenResponseAccessToken:
     """If the integration has requested scopes that aren't present on the access token, they're listed here."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "DataIntegrationAccessTokenResponseAccessToken":
+    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationAccessTokenResponseAccessToken":
         """Deserialize from a dictionary."""
         try:
             return cls(

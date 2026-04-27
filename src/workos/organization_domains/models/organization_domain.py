@@ -5,13 +5,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 from workos.common.models.organization_domain_state import OrganizationDomainState
-from workos.common.models.organization_domain_verification_strategy import (
-    OrganizationDomainVerificationStrategy,
-)
+from workos.common.models.organization_domain_verification_strategy import OrganizationDomainVerificationStrategy
 
 
 @dataclass(slots=True)
@@ -50,17 +49,10 @@ class OrganizationDomain:
                 domain=data["domain"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                state=OrganizationDomainState(_v_state)
-                if (_v_state := data.get("state")) is not None
-                else None,
+                state=OrganizationDomainState(_v_state) if (_v_state := data.get("state")) is not None else None,
                 verification_prefix=data.get("verification_prefix"),
                 verification_token=data.get("verification_token"),
-                verification_strategy=OrganizationDomainVerificationStrategy(
-                    _v_verification_strategy
-                )
-                if (_v_verification_strategy := data.get("verification_strategy"))
-                is not None
-                else None,
+                verification_strategy=OrganizationDomainVerificationStrategy(_v_verification_strategy) if (_v_verification_strategy := data.get("verification_strategy")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationDomain", e)
@@ -75,17 +67,11 @@ class OrganizationDomain:
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
         if self.state is not None:
-            result["state"] = (
-                self.state.value if isinstance(self.state, Enum) else self.state
-            )
+            result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         if self.verification_prefix is not None:
             result["verification_prefix"] = self.verification_prefix
         if self.verification_token is not None:
             result["verification_token"] = self.verification_token
         if self.verification_strategy is not None:
-            result["verification_strategy"] = (
-                self.verification_strategy.value
-                if isinstance(self.verification_strategy, Enum)
-                else self.verification_strategy
-            )
+            result["verification_strategy"] = self.verification_strategy.value if isinstance(self.verification_strategy, Enum) else self.verification_strategy
         return result

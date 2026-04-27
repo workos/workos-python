@@ -6,10 +6,6 @@ from .directory_group import DirectoryGroup as DirectoryGroup
 from .directory_groups_order import DirectoryGroupsOrder as DirectoryGroupsOrder
 from .directory_metadata import DirectoryMetadata as DirectoryMetadata
 from .directory_metadata_user import DirectoryMetadataUser as DirectoryMetadataUser
-from .directory_user_with_groups import (
-    DirectoryUserWithGroups as DirectoryUserWithGroups,
-)
-from .directory_user_with_groups_email import (
-    DirectoryUserWithGroupsEmail as DirectoryUserWithGroupsEmail,
-)
+from .directory_user_with_groups import DirectoryUserWithGroups as DirectoryUserWithGroups
+from .directory_user_with_groups_email import DirectoryUserWithGroupsEmail as DirectoryUserWithGroupsEmail
 from .directory_users_order import DirectoryUsersOrder as DirectoryUsersOrder

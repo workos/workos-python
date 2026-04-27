@@ -6,39 +6,20 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.connect.models import (
-    ApplicationCredentialsListItem,
-    ConnectApplication,
-    ExternalAuthCompleteResponse,
-    NewConnectApplicationSecret,
-    UserObject,
-    ApplicationsOrder,
-)
+from workos.connect.models import ApplicationCredentialsListItem, ConnectApplication, ExternalAuthCompleteResponse, NewConnectApplicationSecret, UserConsentOption, UserObject, ApplicationsOrder
 from workos._pagination import AsyncPage, SyncPage
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
+from workos._errors import AuthenticationError, BadRequestError, NotFoundError, RateLimitExceededError, ServerError, UnprocessableEntityError
 
 
 class TestConnect:
+
     def test_complete_oauth2(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("external_auth_complete_response.json"),
         )
-        result = workos.connect.complete_oauth2(
-            external_auth_id="test_external_auth_id",
-            user=UserObject.from_dict(load_fixture("user_object.json")),
-        )
+        result = workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         assert isinstance(result, ExternalAuthCompleteResponse)
-        assert (
-            result.redirect_uri
-            == "https://your-authkit-domain.workos.com/oauth/authorize/complete?state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGF0ZSI6InJhbmRvbV9zdGF0ZV9zdHJpbmciLCJpYXQiOjE3NDI2MDQ4NTN9.abc123def456ghi789"
-        )
+        assert result.redirect_uri == "https://your-authkit-domain.workos.com/oauth/authorize/complete?state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGF0ZSI6InJhbmRvbV9zdGF0ZV9zdHJpbmciLCJpYXQiOjE3NDI2MDQ4NTN9.abc123def456ghi789"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/authkit/oauth2/complete")
@@ -63,13 +44,7 @@ class TestConnect:
 
     def test_list_applications_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.connect.list_applications(
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=ApplicationsOrder("normal"),
-            organization_id="value organization_id/test",
-        )
+        workos.connect.list_applications(limit=10, before="cursor before", after="cursor/after", order=ApplicationsOrder("normal"), organization_id="value organization_id/test")
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -81,9 +56,7 @@ class TestConnect:
         httpx_mock.add_response(
             json=load_fixture("connect_application.json"),
         )
-        result = workos.connect.create_application(
-            body=load_fixture("create_oauth_application.json")
-        )
+        result = workos.connect.create_application(body=load_fixture("create_oauth_application.json"))
         assert isinstance(result, ConnectApplication)
         assert result.object == "connect_application"
         assert result.id == "conn_app_01HXYZ123456789ABCDEFGHIJ"
@@ -124,9 +97,7 @@ class TestConnect:
         assert request.url.path.endswith("/connect/applications/test_id")
 
     def test_list_application_client_secrets(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=[load_fixture("application_credentials_list_item.json")]
-        )
+        httpx_mock.add_response(json=[load_fixture("application_credentials_list_item.json")])
         result = workos.connect.list_application_client_secrets("test_id")
         assert isinstance(result, list)
         assert len(result) == 1
@@ -154,9 +125,7 @@ class TestConnect:
 
     def test_create_oauth_application(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
-        result = workos.connect.create_oauth_application(
-            name="test_name", is_first_party=True
-        )
+        result = workos.connect.create_oauth_application(name="test_name", is_first_party=True)
         assert isinstance(result, ConnectApplication)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -165,9 +134,7 @@ class TestConnect:
 
     def test_create_m2m_application(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
-        result = workos.connect.create_m2m_application(
-            name="test_name", organization_id="test_organization_id"
-        )
+        result = workos.connect.create_m2m_application(name="test_name", organization_id="test_organization_id")
         assert isinstance(result, ConnectApplication)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -175,14 +142,8 @@ class TestConnect:
         assert body["application_type"] == "m2m"
 
     def test_complete_oauth2_with_request_options(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("external_auth_complete_response.json")
-        )
-        workos.connect.complete_oauth2(
-            external_auth_id="test_external_auth_id",
-            user=UserObject.from_dict(load_fixture("user_object.json")),
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        httpx_mock.add_response(json=load_fixture("external_auth_complete_response.json"))
+        workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")), request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -192,101 +153,62 @@ class TestConnect:
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationError):
-            workos.connect.complete_oauth2(
-                external_auth_id="test_external_auth_id",
-                user=UserObject.from_dict(load_fixture("user_object.json")),
-            )
+            workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
 
     def test_complete_oauth2_not_found(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                workos.connect.complete_oauth2(
-                    external_auth_id="test_external_auth_id",
-                    user=UserObject.from_dict(load_fixture("user_object.json")),
-                )
+                workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         finally:
             workos.close()
 
     def test_complete_oauth2_rate_limited(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
-                workos.connect.complete_oauth2(
-                    external_auth_id="test_external_auth_id",
-                    user=UserObject.from_dict(load_fixture("user_object.json")),
-                )
+                workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         finally:
             workos.close()
 
     def test_complete_oauth2_server_error(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                workos.connect.complete_oauth2(
-                    external_auth_id="test_external_auth_id",
-                    user=UserObject.from_dict(load_fixture("user_object.json")),
-                )
+                workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         finally:
             workos.close()
 
     def test_complete_oauth2_bad_request(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.connect.complete_oauth2(
-                    external_auth_id="test_external_auth_id",
-                    user=UserObject.from_dict(load_fixture("user_object.json")),
-                )
+                workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         finally:
             workos.close()
 
     def test_complete_oauth2_unprocessable(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.connect.complete_oauth2(
-                    external_auth_id="test_external_auth_id",
-                    user=UserObject.from_dict(load_fixture("user_object.json")),
-                )
+                workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         finally:
             workos.close()
 
 
 class TestAsyncConnect:
+
     @pytest.mark.asyncio
     async def test_complete_oauth2(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("external_auth_complete_response.json")
-        )
-        result = await async_workos.connect.complete_oauth2(
-            external_auth_id="test_external_auth_id",
-            user=UserObject.from_dict(load_fixture("user_object.json")),
-        )
+        httpx_mock.add_response(json=load_fixture("external_auth_complete_response.json"))
+        result = await async_workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         assert isinstance(result, ExternalAuthCompleteResponse)
-        assert (
-            result.redirect_uri
-            == "https://your-authkit-domain.workos.com/oauth/authorize/complete?state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGF0ZSI6InJhbmRvbV9zdGF0ZV9zdHJpbmciLCJpYXQiOjE3NDI2MDQ4NTN9.abc123def456ghi789"
-        )
+        assert result.redirect_uri == "https://your-authkit-domain.workos.com/oauth/authorize/complete?state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGF0ZSI6InJhbmRvbV9zdGF0ZV9zdHJpbmciLCJpYXQiOjE3NDI2MDQ4NTN9.abc123def456ghi789"
         request = httpx_mock.get_request()
         assert request.method == "POST"
         assert request.url.path.endswith("/authkit/oauth2/complete")
@@ -307,17 +229,9 @@ class TestAsyncConnect:
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_applications_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_applications_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.connect.list_applications(
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=ApplicationsOrder("normal"),
-            organization_id="value organization_id/test",
-        )
+        await async_workos.connect.list_applications(limit=10, before="cursor before", after="cursor/after", order=ApplicationsOrder("normal"), organization_id="value organization_id/test")
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -328,9 +242,7 @@ class TestAsyncConnect:
     @pytest.mark.asyncio
     async def test_create_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
-        result = await async_workos.connect.create_application(
-            body=load_fixture("create_oauth_application.json")
-        )
+        result = await async_workos.connect.create_application(body=load_fixture("create_oauth_application.json"))
         assert isinstance(result, ConnectApplication)
         assert result.object == "connect_application"
         assert result.id == "conn_app_01HXYZ123456789ABCDEFGHIJ"
@@ -371,9 +283,7 @@ class TestAsyncConnect:
 
     @pytest.mark.asyncio
     async def test_list_application_client_secrets(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=[load_fixture("application_credentials_list_item.json")]
-        )
+        httpx_mock.add_response(json=[load_fixture("application_credentials_list_item.json")])
         result = await async_workos.connect.list_application_client_secrets("test_id")
         assert isinstance(result, list)
         assert len(result) == 1
@@ -381,9 +291,7 @@ class TestAsyncConnect:
 
     @pytest.mark.asyncio
     async def test_create_application_client_secret(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("new_connect_application_secret.json")
-        )
+        httpx_mock.add_response(json=load_fixture("new_connect_application_secret.json"))
         result = await async_workos.connect.create_application_client_secret("test_id")
         assert isinstance(result, NewConnectApplicationSecret)
         assert result.object == "connect_application_secret"
@@ -404,9 +312,7 @@ class TestAsyncConnect:
     @pytest.mark.asyncio
     async def test_create_oauth_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
-        result = await async_workos.connect.create_oauth_application(
-            name="test_name", is_first_party=True
-        )
+        result = await async_workos.connect.create_oauth_application(name="test_name", is_first_party=True)
         assert isinstance(result, ConnectApplication)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -416,9 +322,7 @@ class TestAsyncConnect:
     @pytest.mark.asyncio
     async def test_create_m2m_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
-        result = await async_workos.connect.create_m2m_application(
-            name="test_name", organization_id="test_organization_id"
-        )
+        result = await async_workos.connect.create_m2m_application(name="test_name", organization_id="test_organization_id")
         assert isinstance(result, ConnectApplication)
         request = httpx_mock.get_request()
         assert request.method == "POST"
@@ -427,14 +331,8 @@ class TestAsyncConnect:
 
     @pytest.mark.asyncio
     async def test_complete_oauth2_with_request_options(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("external_auth_complete_response.json")
-        )
-        await async_workos.connect.complete_oauth2(
-            external_auth_id="test_external_auth_id",
-            user=UserObject.from_dict(load_fixture("user_object.json")),
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        httpx_mock.add_response(json=load_fixture("external_auth_complete_response.json"))
+        await async_workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")), request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -442,86 +340,54 @@ class TestAsyncConnect:
     async def test_complete_oauth2_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.connect.complete_oauth2(
-                external_auth_id="test_external_auth_id",
-                user=UserObject.from_dict(load_fixture("user_object.json")),
-            )
+            await async_workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
 
     @pytest.mark.asyncio
     async def test_complete_oauth2_not_found(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.connect.complete_oauth2(
-                    external_auth_id="test_external_auth_id",
-                    user=UserObject.from_dict(load_fixture("user_object.json")),
-                )
+                await workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_complete_oauth2_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
-                await workos.connect.complete_oauth2(
-                    external_auth_id="test_external_auth_id",
-                    user=UserObject.from_dict(load_fixture("user_object.json")),
-                )
+                await workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_complete_oauth2_server_error(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.connect.complete_oauth2(
-                    external_auth_id="test_external_auth_id",
-                    user=UserObject.from_dict(load_fixture("user_object.json")),
-                )
+                await workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_complete_oauth2_bad_request(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.connect.complete_oauth2(
-                    external_auth_id="test_external_auth_id",
-                    user=UserObject.from_dict(load_fixture("user_object.json")),
-                )
+                await workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_complete_oauth2_unprocessable(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.connect.complete_oauth2(
-                    external_auth_id="test_external_auth_id",
-                    user=UserObject.from_dict(load_fixture("user_object.json")),
-                )
+                await workos.connect.complete_oauth2(external_auth_id="test_external_auth_id", user=UserObject.from_dict(load_fixture("user_object.json")))
         finally:
             await workos.close()

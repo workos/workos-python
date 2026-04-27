@@ -16,9 +16,7 @@ class DataIntegrationAccessTokenResponseError(str, Enum):
     NOT_INSTALLED = "not_installed"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["DataIntegrationAccessTokenResponseError"]:
+    def _missing_(cls, value: object) -> Optional["DataIntegrationAccessTokenResponseError"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -26,7 +24,4 @@ class DataIntegrationAccessTokenResponseError(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-DataIntegrationAccessTokenResponseErrorLiteral: TypeAlias = Literal[
-    "needs_reauthorization", "not_installed"
-]
+DataIntegrationAccessTokenResponseErrorLiteral: TypeAlias = Literal["needs_reauthorization", "not_installed"]

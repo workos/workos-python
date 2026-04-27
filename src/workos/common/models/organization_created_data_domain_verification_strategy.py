@@ -16,9 +16,7 @@ class OrganizationCreatedDataDomainVerificationStrategy(str, Enum):
     MANUAL = "manual"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["OrganizationCreatedDataDomainVerificationStrategy"]:
+    def _missing_(cls, value: object) -> Optional["OrganizationCreatedDataDomainVerificationStrategy"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -26,7 +24,4 @@ class OrganizationCreatedDataDomainVerificationStrategy(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-OrganizationCreatedDataDomainVerificationStrategyLiteral: TypeAlias = Literal[
-    "dns", "manual"
-]
+OrganizationCreatedDataDomainVerificationStrategyLiteral: TypeAlias = Literal["dns", "manual"]

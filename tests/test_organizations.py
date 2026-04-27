@@ -6,23 +6,13 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.organizations.models import (
-    AuditLogConfiguration,
-    Organization,
-    OrganizationsOrder,
-)
+from workos.organizations.models import AuditLogConfiguration, Organization, OrganizationDomainData, OrganizationsOrder
 from workos._pagination import AsyncPage, SyncPage
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
+from workos._errors import AuthenticationError, BadRequestError, NotFoundError, RateLimitExceededError, ServerError, UnprocessableEntityError
 
 
 class TestOrganizations:
+
     def test_list_organizations(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_organization.json"),
@@ -40,14 +30,7 @@ class TestOrganizations:
 
     def test_list_organizations_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.organizations.list_organizations(
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=OrganizationsOrder("normal"),
-            domains=["val1", "val2"],
-            search="value search/test",
-        )
+        workos.organizations.list_organizations(limit=10, before="cursor before", after="cursor/after", order=OrganizationsOrder("normal"), domains=["val1", "val2"], search="value search/test")
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -74,9 +57,7 @@ class TestOrganizations:
         httpx_mock.add_response(
             json=load_fixture("organization.json"),
         )
-        result = workos.organizations.get_organization_by_external_id(
-            "test_external_id"
-        )
+        result = workos.organizations.get_organization_by_external_id("test_external_id")
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -126,15 +107,11 @@ class TestOrganizations:
         assert result.retention_period_in_days == 30
         request = httpx_mock.get_request()
         assert request.method == "GET"
-        assert request.url.path.endswith(
-            "/organizations/test_id/audit_log_configuration"
-        )
+        assert request.url.path.endswith("/organizations/test_id/audit_log_configuration")
 
     def test_list_organizations_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.organizations.list_organizations(
-            request_options={"extra_headers": {"X-Custom": "value"}}
-        )
+        workos.organizations.list_organizations(request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -147,9 +124,7 @@ class TestOrganizations:
             workos.organizations.list_organizations()
 
     def test_list_organizations_not_found(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -158,24 +133,16 @@ class TestOrganizations:
             workos.close()
 
     def test_list_organizations_rate_limited(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
                 workos.organizations.list_organizations()
         finally:
             workos.close()
 
     def test_list_organizations_server_error(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -184,9 +151,7 @@ class TestOrganizations:
             workos.close()
 
     def test_list_organizations_bad_request(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
@@ -195,9 +160,7 @@ class TestOrganizations:
             workos.close()
 
     def test_list_organizations_unprocessable(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
@@ -207,6 +170,7 @@ class TestOrganizations:
 
 
 class TestAsyncOrganizations:
+
     @pytest.mark.asyncio
     async def test_list_organizations(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_organization.json"))
@@ -223,18 +187,9 @@ class TestAsyncOrganizations:
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_organizations_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_organizations_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.organizations.list_organizations(
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=OrganizationsOrder("normal"),
-            domains=["val1", "val2"],
-            search="value search/test",
-        )
+        await async_workos.organizations.list_organizations(limit=10, before="cursor before", after="cursor/after", order=OrganizationsOrder("normal"), domains=["val1", "val2"], search="value search/test")
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -257,9 +212,7 @@ class TestAsyncOrganizations:
     @pytest.mark.asyncio
     async def test_get_organization_by_external_id(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("organization.json"))
-        result = await async_workos.organizations.get_organization_by_external_id(
-            "test_external_id"
-        )
+        result = await async_workos.organizations.get_organization_by_external_id("test_external_id")
         assert isinstance(result, Organization)
         assert result.object == "organization"
         assert result.id == "org_01EHWNCE74X7JSDV0X3SZ3KJNY"
@@ -307,18 +260,12 @@ class TestAsyncOrganizations:
         assert result.retention_period_in_days == 30
         request = httpx_mock.get_request()
         assert request.method == "GET"
-        assert request.url.path.endswith(
-            "/organizations/test_id/audit_log_configuration"
-        )
+        assert request.url.path.endswith("/organizations/test_id/audit_log_configuration")
 
     @pytest.mark.asyncio
-    async def test_list_organizations_with_request_options(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_organizations_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.organizations.list_organizations(
-            request_options={"extra_headers": {"X-Custom": "value"}}
-        )
+        await async_workos.organizations.list_organizations(request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -330,9 +277,7 @@ class TestAsyncOrganizations:
 
     @pytest.mark.asyncio
     async def test_list_organizations_not_found(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -342,15 +287,9 @@ class TestAsyncOrganizations:
 
     @pytest.mark.asyncio
     async def test_list_organizations_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
                 await workos.organizations.list_organizations()
         finally:
@@ -358,9 +297,7 @@ class TestAsyncOrganizations:
 
     @pytest.mark.asyncio
     async def test_list_organizations_server_error(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -370,9 +307,7 @@ class TestAsyncOrganizations:
 
     @pytest.mark.asyncio
     async def test_list_organizations_bad_request(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
@@ -382,9 +317,7 @@ class TestAsyncOrganizations:
 
     @pytest.mark.asyncio
     async def test_list_organizations_unprocessable(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):

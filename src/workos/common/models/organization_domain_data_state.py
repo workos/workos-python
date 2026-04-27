@@ -24,5 +24,4 @@ class OrganizationDomainDataState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 OrganizationDomainDataStateLiteral: TypeAlias = Literal["pending", "verified"]

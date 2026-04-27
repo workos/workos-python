@@ -2,29 +2,22 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import WebhookEndpointJson
+from .models import CreateWebhookEndpoint, UpdateWebhookEndpoint, WebhookEndpointJson
 from .models import WebhooksOrder
-from workos.common.models.create_webhook_endpoint_events import (
-    CreateWebhookEndpointEvents,
-)
-from workos.common.models.update_webhook_endpoint_events import (
-    UpdateWebhookEndpointEvents,
-)
-from workos.common.models.update_webhook_endpoint_status import (
-    UpdateWebhookEndpointStatus,
-)
+from workos.common.models.create_webhook_endpoint_events import CreateWebhookEndpointEvents
+from workos.common.models.update_webhook_endpoint_events import UpdateWebhookEndpointEvents
+from workos.common.models.update_webhook_endpoint_status import UpdateWebhookEndpointStatus
 from .._pagination import AsyncPage, SyncPage
 import hashlib
 import hmac
 import json
 import time
-
 
 class Webhooks:
     """Webhooks API resources."""
@@ -60,16 +53,12 @@ class Webhooks:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="webhook_endpoints",
@@ -147,15 +136,11 @@ class Webhooks:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "endpoint_url": endpoint_url,
-                "status": enum_value(status) if status is not None else None,
-                "events": events,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "endpoint_url": endpoint_url,
+            "status": enum_value(status) if status is not None else None,
+            "events": events,
+        }.items() if v is not None}
         return self._client.request(
             method="patch",
             path=f"webhook_endpoints/{id}",
@@ -317,16 +302,12 @@ class AsyncWebhooks:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="webhook_endpoints",
@@ -404,15 +385,11 @@ class AsyncWebhooks:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "endpoint_url": endpoint_url,
-                "status": enum_value(status) if status is not None else None,
-                "events": events,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "endpoint_url": endpoint_url,
+            "status": enum_value(status) if status is not None else None,
+            "events": events,
+        }.items() if v is not None}
         return await self._client.request(
             method="patch",
             path=f"webhook_endpoints/{id}",
@@ -538,7 +515,6 @@ class AsyncWebhooks:
             )
 
     # @oagen-ignore-end
-
 
 # @oagen-ignore-start
 if TYPE_CHECKING:

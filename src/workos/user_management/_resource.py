@@ -2,100 +2,41 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import (
-    AuthenticateResponse,
-    AuthorizationCodeSessionAuthenticateRequest,
-    AuthorizedConnectApplicationListData,
-    CORSOriginResponse,
-    DeviceAuthorizationResponse,
-    EmailChange,
-    EmailChangeConfirmation,
-    EmailVerification,
-    Invitation,
-    JWTTemplateResponse,
-    JwksResponse,
-    MagicAuth,
-    OrganizationMembership,
-    PasswordReset,
-    PasswordSessionAuthenticateRequest,
-    RedirectUri,
-    RefreshTokenSessionAuthenticateRequest,
-    ResetPasswordResponse,
-    SendVerificationEmailResponse,
-    DeviceCodeSessionAuthenticateRequest,
-    EmailVerificationCodeSessionAuthenticateRequest,
-    MagicAuthCodeSessionAuthenticateRequest,
-    MFATotpSessionAuthenticateRequest,
-    OrganizationSelectionSessionAuthenticateRequest,
-    User,
-    UserIdentitiesGetItem,
-    UserInvite,
-    UserOrganizationMembership,
-    UserSessionsListItem,
-    VerifyEmailResponse,
-)
-from .models import (
-    UserManagementAuthenticationProvider,
-    UserManagementAuthenticationScreenHint,
-    UserManagementInvitationsOrder,
-    UserManagementOrganizationMembershipOrder,
-    UserManagementOrganizationMembershipStatuses,
-    UserManagementUsersAuthorizedApplicationsOrder,
-    UserManagementUsersOrder,
-)
-from workos.common.models.create_user_invite_options_locale import (
-    CreateUserInviteOptionsLocale,
-)
-from workos.common.models.resend_user_invite_options_locale import (
-    ResendUserInviteOptionsLocale,
-)
+from .models import AuthenticateResponse, AuthorizationCodeSessionAuthenticateRequest, AuthorizedConnectApplicationListData, ConfirmEmailChange, CORSOriginResponse, CreateCORSOrigin, CreateMagicCodeAndReturn, CreatePasswordReset, CreatePasswordResetToken, CreateRedirectUri, CreateUser, CreateUserInviteOptions, CreateUserOrganizationMembership, DeviceAuthorizationResponse, EmailChange, EmailChangeConfirmation, EmailVerification, Invitation, JWTTemplateResponse, JwksResponse, MagicAuth, OrganizationMembership, PasswordReset, PasswordSessionAuthenticateRequest, RedirectUri, RefreshTokenSessionAuthenticateRequest, ResendUserInviteOptions, ResetPasswordResponse, RevokeSession, SSODeviceAuthorizationRequest, SendEmailChange, SendVerificationEmailResponse, UpdateJWTTemplate, UpdateUser, UpdateUserOrganizationMembership, DeviceCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, User, UserIdentitiesGetItem, UserInvite, UserOrganizationMembership, UserSessionsListItem, VerifyEmailAddress, VerifyEmailResponse
+from .models import UserManagementAuthenticationProvider, UserManagementAuthenticationScreenHint, UserManagementInvitationsOrder, UserManagementOrganizationMembershipOrder, UserManagementOrganizationMembershipStatuses, UserManagementUsersAuthorizedApplicationsOrder, UserManagementUsersOrder
+from workos.common.models.create_user_invite_options_locale import CreateUserInviteOptionsLocale
+from workos.common.models.resend_user_invite_options_locale import ResendUserInviteOptionsLocale
 from .._pagination import AsyncPage, SyncPage
 from dataclasses import dataclass
-from workos.common.models.create_user_password_hash_type import (
-    CreateUserPasswordHashType,
-)
-from ..session import (
-    AsyncSession,
-    AuthenticateWithSessionCookieErrorResponse,
-    AuthenticateWithSessionCookieSuccessResponse,
-    Session,
-)
-
+from workos.common.models.create_user_password_hash_type import CreateUserPasswordHashType
+from ..session import AsyncSession, AuthenticateWithSessionCookieErrorResponse, AuthenticateWithSessionCookieSuccessResponse, Session
 
 @dataclass
 class PasswordPlaintext:
     """Identify password plaintext."""
-
     password: Optional[str]
-
 
 @dataclass
 class PasswordHashed:
     """Identify password hashed."""
-
     password_hash: str
     password_hash_type: Union[CreateUserPasswordHashType, str]
-
 
 @dataclass
 class RoleSingle:
     """Identify role single."""
-
     role_slug: str
-
 
 @dataclass
 class RoleMultiple:
     """Identify role multiple."""
-
     role_slugs: List[str]
-
 
 class UserManagement:
     """User Management API resources."""
@@ -136,17 +77,7 @@ class UserManagement:
     def create_authenticate(
         self,
         *,
-        body: Union[
-            AuthorizationCodeSessionAuthenticateRequest,
-            PasswordSessionAuthenticateRequest,
-            RefreshTokenSessionAuthenticateRequest,
-            MagicAuthCodeSessionAuthenticateRequest,
-            EmailVerificationCodeSessionAuthenticateRequest,
-            MFATotpSessionAuthenticateRequest,
-            OrganizationSelectionSessionAuthenticateRequest,
-            DeviceCodeSessionAuthenticateRequest,
-            Dict[str, Any],
-        ],
+        body: Union[AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, Dict[str, Any]],
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate
@@ -477,9 +408,7 @@ class UserManagement:
         provider_query_params: Optional[Dict[str, str]] = None,
         provider_scopes: Optional[List[str]] = None,
         invitation_token: Optional[str] = None,
-        screen_hint: Optional[
-            Union[UserManagementAuthenticationScreenHint, str]
-        ] = None,
+        screen_hint: Optional[Union[UserManagementAuthenticationScreenHint, str]] = None,
         login_hint: Optional[str] = None,
         provider: Optional[Union[UserManagementAuthenticationProvider, str]] = None,
         prompt: Optional[str] = None,
@@ -517,30 +446,22 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "code_challenge_method": code_challenge_method,
-                "code_challenge": code_challenge,
-                "domain_hint": domain_hint,
-                "connection_id": connection_id,
-                "provider_query_params": provider_query_params,
-                "provider_scopes": ",".join(str(v) for v in provider_scopes)
-                if provider_scopes is not None
-                else None,
-                "invitation_token": invitation_token,
-                "screen_hint": enum_value(screen_hint)
-                if screen_hint is not None
-                else None,
-                "login_hint": login_hint,
-                "provider": enum_value(provider) if provider is not None else None,
-                "prompt": prompt,
-                "state": state,
-                "organization_id": organization_id,
-                "redirect_uri": redirect_uri,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "code_challenge_method": code_challenge_method,
+            "code_challenge": code_challenge,
+            "domain_hint": domain_hint,
+            "connection_id": connection_id,
+            "provider_query_params": provider_query_params,
+            "provider_scopes": ",".join(str(v) for v in provider_scopes) if provider_scopes is not None else None,
+            "invitation_token": invitation_token,
+            "screen_hint": enum_value(screen_hint) if screen_hint is not None else None,
+            "login_hint": login_hint,
+            "provider": enum_value(provider) if provider is not None else None,
+            "prompt": prompt,
+            "state": state,
+            "organization_id": organization_id,
+            "redirect_uri": redirect_uri,
+        }.items() if v is not None}
         params["response_type"] = "code"
         if self._client.client_id is not None:
             params["client_id"] = self._client.client_id
@@ -606,14 +527,10 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "session_id": session_id,
-                "return_to": return_to,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "session_id": session_id,
+            "return_to": return_to,
+        }.items() if v is not None}
         return self._client.build_url("user_management/sessions/logout", params)
 
     def revoke_session(
@@ -638,14 +555,10 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "session_id": session_id,
-                "return_to": return_to,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "session_id": session_id,
+            "return_to": return_to,
+        }.items() if v is not None}
         self._client.request(
             method="post",
             path="user_management/sessions/revoke",
@@ -859,19 +772,15 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization": organization,
-                "organization_id": organization_id,
-                "email": email,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization": organization,
+            "organization_id": organization_id,
+            "email": email,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="user_management/users",
@@ -917,18 +826,14 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "email": email,
-                "first_name": first_name,
-                "last_name": last_name,
-                "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "email": email,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email_verified": email_verified,
+            "metadata": metadata,
+            "external_id": external_id,
+        }.items() if v is not None}
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -1043,19 +948,15 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "email": email,
-                "first_name": first_name,
-                "last_name": last_name,
-                "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-                "locale": locale,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "email": email,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email_verified": email_verified,
+            "metadata": metadata,
+            "external_id": external_id,
+            "locale": locale,
+        }.items() if v is not None}
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -1270,9 +1171,7 @@ class UserManagement:
             path=f"user_management/users/{id}/identities",
             request_options=request_options,
         )
-        return [
-            UserIdentitiesGetItem.from_dict(cast(Dict[str, Any], item)) for item in raw
-        ]
+        return [UserIdentitiesGetItem.from_dict(cast(Dict[str, Any], item)) for item in raw]
 
     def list_sessions(
         self,
@@ -1306,16 +1205,12 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path=f"user_management/users/{id}/sessions",
@@ -1357,18 +1252,14 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-                "email": email,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization_id": organization_id,
+            "email": email,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="user_management/invitations",
@@ -1412,18 +1303,14 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "email": email,
-                "organization_id": organization_id,
-                "role_slug": role_slug,
-                "expires_in_days": expires_in_days,
-                "inviter_user_id": inviter_user_id,
-                "locale": enum_value(locale) if locale is not None else None,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "email": email,
+            "organization_id": organization_id,
+            "role_slug": role_slug,
+            "expires_in_days": expires_in_days,
+            "inviter_user_id": inviter_user_id,
+            "locale": enum_value(locale) if locale is not None else None,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="user_management/invitations",
@@ -1550,13 +1437,9 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "locale": enum_value(locale) if locale is not None else None,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "locale": enum_value(locale) if locale is not None else None,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path=f"user_management/invitations/{id}/resend",
@@ -1655,14 +1538,10 @@ class UserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "email": email,
-                "invitation_token": invitation_token,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "email": email,
+            "invitation_token": invitation_token,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="user_management/magic_auth",
@@ -1709,9 +1588,7 @@ class UserManagement:
         after: Optional[str] = None,
         order: Optional[Union[UserManagementOrganizationMembershipOrder, str]] = "desc",
         organization_id: Optional[str] = None,
-        statuses: Optional[
-            List[Union[UserManagementOrganizationMembershipStatuses, str]]
-        ] = None,
+        statuses: Optional[List[Union[UserManagementOrganizationMembershipStatuses, str]]] = None,
         user_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserOrganizationMembership]:
@@ -1740,21 +1617,15 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-                "statuses": ",".join(str(v) for v in statuses)
-                if statuses is not None
-                else None,
-                "user_id": user_id,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization_id": organization_id,
+            "statuses": ",".join(str(v) for v in statuses) if statuses is not None else None,
+            "user_id": user_id,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="user_management/organization_memberships",
@@ -2023,9 +1894,7 @@ class UserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementUsersAuthorizedApplicationsOrder, str]
-        ] = "desc",
+        order: Optional[Union[UserManagementUsersAuthorizedApplicationsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizedConnectApplicationListData]:
         """List authorized applications
@@ -2050,16 +1919,12 @@ class UserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path=f"user_management/users/{user_id}/authorized_applications",
@@ -2304,17 +2169,7 @@ class AsyncUserManagement:
     async def create_authenticate(
         self,
         *,
-        body: Union[
-            AuthorizationCodeSessionAuthenticateRequest,
-            PasswordSessionAuthenticateRequest,
-            RefreshTokenSessionAuthenticateRequest,
-            MagicAuthCodeSessionAuthenticateRequest,
-            EmailVerificationCodeSessionAuthenticateRequest,
-            MFATotpSessionAuthenticateRequest,
-            OrganizationSelectionSessionAuthenticateRequest,
-            DeviceCodeSessionAuthenticateRequest,
-            Dict[str, Any],
-        ],
+        body: Union[AuthorizationCodeSessionAuthenticateRequest, PasswordSessionAuthenticateRequest, RefreshTokenSessionAuthenticateRequest, MagicAuthCodeSessionAuthenticateRequest, EmailVerificationCodeSessionAuthenticateRequest, MFATotpSessionAuthenticateRequest, OrganizationSelectionSessionAuthenticateRequest, DeviceCodeSessionAuthenticateRequest, Dict[str, Any]],
         request_options: Optional[RequestOptions] = None,
     ) -> AuthenticateResponse:
         """Authenticate
@@ -2645,9 +2500,7 @@ class AsyncUserManagement:
         provider_query_params: Optional[Dict[str, str]] = None,
         provider_scopes: Optional[List[str]] = None,
         invitation_token: Optional[str] = None,
-        screen_hint: Optional[
-            Union[UserManagementAuthenticationScreenHint, str]
-        ] = None,
+        screen_hint: Optional[Union[UserManagementAuthenticationScreenHint, str]] = None,
         login_hint: Optional[str] = None,
         provider: Optional[Union[UserManagementAuthenticationProvider, str]] = None,
         prompt: Optional[str] = None,
@@ -2685,30 +2538,22 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "code_challenge_method": code_challenge_method,
-                "code_challenge": code_challenge,
-                "domain_hint": domain_hint,
-                "connection_id": connection_id,
-                "provider_query_params": provider_query_params,
-                "provider_scopes": ",".join(str(v) for v in provider_scopes)
-                if provider_scopes is not None
-                else None,
-                "invitation_token": invitation_token,
-                "screen_hint": enum_value(screen_hint)
-                if screen_hint is not None
-                else None,
-                "login_hint": login_hint,
-                "provider": enum_value(provider) if provider is not None else None,
-                "prompt": prompt,
-                "state": state,
-                "organization_id": organization_id,
-                "redirect_uri": redirect_uri,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "code_challenge_method": code_challenge_method,
+            "code_challenge": code_challenge,
+            "domain_hint": domain_hint,
+            "connection_id": connection_id,
+            "provider_query_params": provider_query_params,
+            "provider_scopes": ",".join(str(v) for v in provider_scopes) if provider_scopes is not None else None,
+            "invitation_token": invitation_token,
+            "screen_hint": enum_value(screen_hint) if screen_hint is not None else None,
+            "login_hint": login_hint,
+            "provider": enum_value(provider) if provider is not None else None,
+            "prompt": prompt,
+            "state": state,
+            "organization_id": organization_id,
+            "redirect_uri": redirect_uri,
+        }.items() if v is not None}
         params["response_type"] = "code"
         if self._client.client_id is not None:
             params["client_id"] = self._client.client_id
@@ -2774,14 +2619,10 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "session_id": session_id,
-                "return_to": return_to,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "session_id": session_id,
+            "return_to": return_to,
+        }.items() if v is not None}
         return self._client.build_url("user_management/sessions/logout", params)
 
     async def revoke_session(
@@ -2806,14 +2647,10 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "session_id": session_id,
-                "return_to": return_to,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "session_id": session_id,
+            "return_to": return_to,
+        }.items() if v is not None}
         await self._client.request(
             method="post",
             path="user_management/sessions/revoke",
@@ -3027,19 +2864,15 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization": organization,
-                "organization_id": organization_id,
-                "email": email,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization": organization,
+            "organization_id": organization_id,
+            "email": email,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="user_management/users",
@@ -3085,18 +2918,14 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "email": email,
-                "first_name": first_name,
-                "last_name": last_name,
-                "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "email": email,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email_verified": email_verified,
+            "metadata": metadata,
+            "external_id": external_id,
+        }.items() if v is not None}
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -3211,19 +3040,15 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "email": email,
-                "first_name": first_name,
-                "last_name": last_name,
-                "email_verified": email_verified,
-                "metadata": metadata,
-                "external_id": external_id,
-                "locale": locale,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "email": email,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email_verified": email_verified,
+            "metadata": metadata,
+            "external_id": external_id,
+            "locale": locale,
+        }.items() if v is not None}
         if password is not None:
             if isinstance(password, PasswordPlaintext):
                 body["password"] = password.password
@@ -3438,9 +3263,7 @@ class AsyncUserManagement:
             path=f"user_management/users/{id}/identities",
             request_options=request_options,
         )
-        return [
-            UserIdentitiesGetItem.from_dict(cast(Dict[str, Any], item)) for item in raw
-        ]
+        return [UserIdentitiesGetItem.from_dict(cast(Dict[str, Any], item)) for item in raw]
 
     async def list_sessions(
         self,
@@ -3474,16 +3297,12 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path=f"user_management/users/{id}/sessions",
@@ -3525,18 +3344,14 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-                "email": email,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization_id": organization_id,
+            "email": email,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="user_management/invitations",
@@ -3580,18 +3395,14 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "email": email,
-                "organization_id": organization_id,
-                "role_slug": role_slug,
-                "expires_in_days": expires_in_days,
-                "inviter_user_id": inviter_user_id,
-                "locale": enum_value(locale) if locale is not None else None,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "email": email,
+            "organization_id": organization_id,
+            "role_slug": role_slug,
+            "expires_in_days": expires_in_days,
+            "inviter_user_id": inviter_user_id,
+            "locale": enum_value(locale) if locale is not None else None,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="user_management/invitations",
@@ -3718,13 +3529,9 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "locale": enum_value(locale) if locale is not None else None,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "locale": enum_value(locale) if locale is not None else None,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path=f"user_management/invitations/{id}/resend",
@@ -3823,14 +3630,10 @@ class AsyncUserManagement:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "email": email,
-                "invitation_token": invitation_token,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "email": email,
+            "invitation_token": invitation_token,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="user_management/magic_auth",
@@ -3877,9 +3680,7 @@ class AsyncUserManagement:
         after: Optional[str] = None,
         order: Optional[Union[UserManagementOrganizationMembershipOrder, str]] = "desc",
         organization_id: Optional[str] = None,
-        statuses: Optional[
-            List[Union[UserManagementOrganizationMembershipStatuses, str]]
-        ] = None,
+        statuses: Optional[List[Union[UserManagementOrganizationMembershipStatuses, str]]] = None,
         user_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserOrganizationMembership]:
@@ -3908,21 +3709,15 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-                "statuses": ",".join(str(v) for v in statuses)
-                if statuses is not None
-                else None,
-                "user_id": user_id,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization_id": organization_id,
+            "statuses": ",".join(str(v) for v in statuses) if statuses is not None else None,
+            "user_id": user_id,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="user_management/organization_memberships",
@@ -4191,9 +3986,7 @@ class AsyncUserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementUsersAuthorizedApplicationsOrder, str]
-        ] = "desc",
+        order: Optional[Union[UserManagementUsersAuthorizedApplicationsOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizedConnectApplicationListData]:
         """List authorized applications
@@ -4218,16 +4011,12 @@ class AsyncUserManagement:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path=f"user_management/users/{user_id}/authorized_applications",

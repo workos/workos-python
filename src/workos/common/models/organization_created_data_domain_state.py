@@ -27,7 +27,4 @@ class OrganizationCreatedDataDomainState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-OrganizationCreatedDataDomainStateLiteral: TypeAlias = Literal[
-    "failed", "legacy_verified", "pending", "unverified", "verified"
-]
+OrganizationCreatedDataDomainStateLiteral: TypeAlias = Literal["failed", "legacy_verified", "pending", "unverified", "verified"]

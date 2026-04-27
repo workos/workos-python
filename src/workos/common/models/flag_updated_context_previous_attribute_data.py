@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 from typing import Any, Dict, List, Optional
 from workos._types import _raise_deserialize_error
 
@@ -23,9 +24,7 @@ class FlagUpdatedContextPreviousAttributeData:
     """The previous default value of the flag."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "FlagUpdatedContextPreviousAttributeData":
+    def from_dict(cls, data: Dict[str, Any]) -> "FlagUpdatedContextPreviousAttributeData":
         """Deserialize from a dictionary."""
         try:
             return cls(

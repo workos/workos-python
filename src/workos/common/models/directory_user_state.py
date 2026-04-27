@@ -25,5 +25,4 @@ class DirectoryUserState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 DirectoryUserStateLiteral: TypeAlias = Literal["active", "suspended", "inactive"]

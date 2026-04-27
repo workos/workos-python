@@ -25,5 +25,4 @@ class AuditLogConfigurationState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 AuditLogConfigurationStateLiteral: TypeAlias = Literal["active", "inactive", "disabled"]

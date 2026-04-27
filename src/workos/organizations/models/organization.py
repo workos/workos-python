@@ -47,18 +47,13 @@ class Organization:
                 object=data["object"],
                 id=data["id"],
                 name=data["name"],
-                domains=[
-                    OrganizationDomain.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["domains"])
-                ],
+                domains=[OrganizationDomain.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["domains"])],
                 metadata=data["metadata"],
                 external_id=data["external_id"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 stripe_customer_id=data.get("stripe_customer_id"),
-                allow_profiles_outside_organization=data.get(
-                    "allow_profiles_outside_organization"
-                ),
+                allow_profiles_outside_organization=data.get("allow_profiles_outside_organization"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("Organization", e)
@@ -80,7 +75,5 @@ class Organization:
         if self.stripe_customer_id is not None:
             result["stripe_customer_id"] = self.stripe_customer_id
         if self.allow_profiles_outside_organization is not None:
-            result["allow_profiles_outside_organization"] = (
-                self.allow_profiles_outside_organization
-            )
+            result["allow_profiles_outside_organization"] = self.allow_profiles_outside_organization
         return result

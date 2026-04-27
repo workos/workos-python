@@ -64,9 +64,7 @@ class ConnectionActivatedDataConnectionType(str, Enum):
     XERO_OAUTH = "XeroOAuth"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["ConnectionActivatedDataConnectionType"]:
+    def _missing_(cls, value: object) -> Optional["ConnectionActivatedDataConnectionType"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -74,56 +72,4 @@ class ConnectionActivatedDataConnectionType(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-ConnectionActivatedDataConnectionTypeLiteral: TypeAlias = Literal[
-    "ADFSSAML",
-    "AdpOidc",
-    "AppleOAuth",
-    "Auth0Migration",
-    "Auth0SAML",
-    "AzureSAML",
-    "BitbucketOAuth",
-    "CasSAML",
-    "ClassLinkSAML",
-    "CleverOIDC",
-    "CloudflareSAML",
-    "CyberArkSAML",
-    "DiscordOAuth",
-    "DuoSAML",
-    "EntraIdOIDC",
-    "GenericOIDC",
-    "GenericSAML",
-    "GitHubOAuth",
-    "GitLabOAuth",
-    "GoogleOAuth",
-    "GoogleOIDC",
-    "GoogleSAML",
-    "IntuitOAuth",
-    "JumpCloudSAML",
-    "KeycloakSAML",
-    "LastPassSAML",
-    "LinkedInOAuth",
-    "LoginGovOidc",
-    "MagicLink",
-    "MicrosoftOAuth",
-    "MiniOrangeSAML",
-    "NetIqSAML",
-    "OktaOIDC",
-    "OktaSAML",
-    "OneLoginSAML",
-    "OracleSAML",
-    "PingFederateSAML",
-    "PingOneSAML",
-    "RipplingSAML",
-    "SalesforceSAML",
-    "ShibbolethGenericSAML",
-    "ShibbolethSAML",
-    "SimpleSamlPhpSAML",
-    "SalesforceOAuth",
-    "SlackOAuth",
-    "TestIdp",
-    "VercelMarketplaceOAuth",
-    "VercelOAuth",
-    "VMwareSAML",
-    "XeroOAuth",
-]
+ConnectionActivatedDataConnectionTypeLiteral: TypeAlias = Literal["ADFSSAML", "AdpOidc", "AppleOAuth", "Auth0Migration", "Auth0SAML", "AzureSAML", "BitbucketOAuth", "CasSAML", "ClassLinkSAML", "CleverOIDC", "CloudflareSAML", "CyberArkSAML", "DiscordOAuth", "DuoSAML", "EntraIdOIDC", "GenericOIDC", "GenericSAML", "GitHubOAuth", "GitLabOAuth", "GoogleOAuth", "GoogleOIDC", "GoogleSAML", "IntuitOAuth", "JumpCloudSAML", "KeycloakSAML", "LastPassSAML", "LinkedInOAuth", "LoginGovOidc", "MagicLink", "MicrosoftOAuth", "MiniOrangeSAML", "NetIqSAML", "OktaOIDC", "OktaSAML", "OneLoginSAML", "OracleSAML", "PingFederateSAML", "PingOneSAML", "RipplingSAML", "SalesforceSAML", "ShibbolethGenericSAML", "ShibbolethSAML", "SimpleSamlPhpSAML", "SalesforceOAuth", "SlackOAuth", "TestIdp", "VercelMarketplaceOAuth", "VercelOAuth", "VMwareSAML", "XeroOAuth"]

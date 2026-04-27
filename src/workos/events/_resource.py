@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -11,7 +11,6 @@ from .._types import RequestOptions, enum_value
 from .models import EventSchema, EventSchemaVariant
 from .models import EventsOrder
 from .._pagination import AsyncPage, SyncPage
-
 
 class Events:
     """Events API resources."""
@@ -57,22 +56,16 @@ class Events:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "events": ",".join(str(v) for v in events)
-                if events is not None
-                else None,
-                "range_start": range_start,
-                "range_end": range_end,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "events": ",".join(str(v) for v in events) if events is not None else None,
+            "range_start": range_start,
+            "range_end": range_end,
+            "organization_id": organization_id,
+        }.items() if v is not None}
         return cast(
             SyncPage[EventSchemaVariant],
             self._client.request_page(
@@ -81,7 +74,7 @@ class Events:
                 model=EventSchema,  # type: ignore[arg-type]  # dispatcher; pagination only calls from_dict
                 params=params,
                 request_options=request_options,
-            ),
+            )
         )
 
 
@@ -129,22 +122,16 @@ class AsyncEvents:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "events": ",".join(str(v) for v in events)
-                if events is not None
-                else None,
-                "range_start": range_start,
-                "range_end": range_end,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "events": ",".join(str(v) for v in events) if events is not None else None,
+            "range_start": range_start,
+            "range_end": range_end,
+            "organization_id": organization_id,
+        }.items() if v is not None}
         return cast(
             AsyncPage[EventSchemaVariant],
             await self._client.request_page(
@@ -153,5 +140,5 @@ class AsyncEvents:
                 model=EventSchema,  # type: ignore[arg-type]  # dispatcher; pagination only calls from_dict
                 params=params,
                 request_options=request_options,
-            ),
+            )
         )

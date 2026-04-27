@@ -32,16 +32,4 @@ class SessionCreatedDataAuthMethod(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-SessionCreatedDataAuthMethodLiteral: TypeAlias = Literal[
-    "cross_app_auth",
-    "external_auth",
-    "impersonation",
-    "magic_code",
-    "migrated_session",
-    "oauth",
-    "passkey",
-    "password",
-    "sso",
-    "unknown",
-]
+SessionCreatedDataAuthMethodLiteral: TypeAlias = Literal["cross_app_auth", "external_auth", "impersonation", "magic_code", "migrated_session", "oauth", "passkey", "password", "sso", "unknown"]

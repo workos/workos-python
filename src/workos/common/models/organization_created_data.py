@@ -43,10 +43,7 @@ class OrganizationCreatedData:
                 object=data["object"],
                 id=data["id"],
                 name=data["name"],
-                domains=[
-                    OrganizationCreatedDataDomain.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["domains"])
-                ],
+                domains=[OrganizationCreatedDataDomain.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["domains"])],
                 metadata=data["metadata"],
                 external_id=data["external_id"],
                 created_at=_parse_datetime(data["created_at"]),

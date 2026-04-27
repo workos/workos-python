@@ -25,9 +25,7 @@ class FlagCreatedContext:
         try:
             return cls(
                 client_id=data["client_id"],
-                actor=FlagCreatedContextActor.from_dict(
-                    cast(Dict[str, Any], data["actor"])
-                ),
+                actor=FlagCreatedContextActor.from_dict(cast(Dict[str, Any], data["actor"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagCreatedContext", e)

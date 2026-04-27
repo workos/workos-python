@@ -60,15 +60,8 @@ class Profile:
                 first_name=data["first_name"],
                 last_name=data["last_name"],
                 raw_attributes=data["raw_attributes"],
-                role=SlimRole.from_dict(cast(Dict[str, Any], _v_role))
-                if (_v_role := data.get("role")) is not None
-                else None,
-                roles=[
-                    SlimRole.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v_roles)
-                ]
-                if (_v_roles := data.get("roles")) is not None
-                else None,
+                role=SlimRole.from_dict(cast(Dict[str, Any], _v_role)) if (_v_role := data.get("role")) is not None else None,
+                roles=[SlimRole.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], _v_roles)] if (_v_roles := data.get("roles")) is not None else None,
                 groups=data.get("groups"),
                 custom_attributes=data.get("custom_attributes"),
             )
@@ -85,11 +78,7 @@ class Profile:
         else:
             result["organization_id"] = None
         result["connection_id"] = self.connection_id
-        result["connection_type"] = (
-            self.connection_type.value
-            if isinstance(self.connection_type, Enum)
-            else self.connection_type
-        )
+        result["connection_type"] = self.connection_type.value if isinstance(self.connection_type, Enum) else self.connection_type
         result["idp_id"] = self.idp_id
         result["email"] = self.email
         if self.first_name is not None:

@@ -2,26 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import (
-    ApplicationCredentialsListItem,
-    ConnectApplication,
-    CreateM2MApplication,
-    CreateOAuthApplication,
-    ExternalAuthCompleteResponse,
-    NewConnectApplicationSecret,
-    RedirectUriInput,
-    UserConsentOption,
-    UserObject,
-)
+from .models import ApplicationCredentialsListItem, ConnectApplication, CreateApplicationSecret, CreateM2MApplication, CreateOAuthApplication, ExternalAuthCompleteResponse, NewConnectApplicationSecret, RedirectUriInput, UpdateOAuthApplication, UserConsentOption, UserManagementLoginRequest, UserObject
 from .models import ApplicationsOrder
 from .._pagination import AsyncPage, SyncPage
-
 
 class Connect:
     """Connect API resources."""
@@ -67,19 +56,11 @@ class Connect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "external_auth_id": external_auth_id,
-                "user": user.to_dict(),
-                "user_consent_options": [
-                    item.to_dict() for item in user_consent_options
-                ]
-                if user_consent_options is not None
-                else None,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "external_auth_id": external_auth_id,
+            "user": user.to_dict(),
+            "user_consent_options": [item.to_dict() for item in user_consent_options] if user_consent_options is not None else None,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="authkit/oauth2/complete",
@@ -119,17 +100,13 @@ class Connect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization_id": organization_id,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="connect/applications",
@@ -298,18 +275,12 @@ class Connect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-                "scopes": scopes,
-                "redirect_uris": [item.to_dict() for item in redirect_uris]
-                if redirect_uris is not None
-                else None,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+            "scopes": scopes,
+            "redirect_uris": [item.to_dict() for item in redirect_uris] if redirect_uris is not None else None,
+        }.items() if v is not None}
         return self._client.request(
             method="put",
             path=f"connect/applications/{id}",
@@ -372,10 +343,7 @@ class Connect:
             path=f"connect/applications/{id}/client_secrets",
             request_options=request_options,
         )
-        return [
-            ApplicationCredentialsListItem.from_dict(cast(Dict[str, Any], item))
-            for item in raw
-        ]
+        return [ApplicationCredentialsListItem.from_dict(cast(Dict[str, Any], item)) for item in raw]
 
     def create_application_client_secret(
         self,
@@ -481,19 +449,11 @@ class AsyncConnect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "external_auth_id": external_auth_id,
-                "user": user.to_dict(),
-                "user_consent_options": [
-                    item.to_dict() for item in user_consent_options
-                ]
-                if user_consent_options is not None
-                else None,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "external_auth_id": external_auth_id,
+            "user": user.to_dict(),
+            "user_consent_options": [item.to_dict() for item in user_consent_options] if user_consent_options is not None else None,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="authkit/oauth2/complete",
@@ -533,17 +493,13 @@ class AsyncConnect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization_id": organization_id,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="connect/applications",
@@ -712,18 +668,12 @@ class AsyncConnect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "description": description,
-                "scopes": scopes,
-                "redirect_uris": [item.to_dict() for item in redirect_uris]
-                if redirect_uris is not None
-                else None,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "description": description,
+            "scopes": scopes,
+            "redirect_uris": [item.to_dict() for item in redirect_uris] if redirect_uris is not None else None,
+        }.items() if v is not None}
         return await self._client.request(
             method="put",
             path=f"connect/applications/{id}",
@@ -786,10 +736,7 @@ class AsyncConnect:
             path=f"connect/applications/{id}/client_secrets",
             request_options=request_options,
         )
-        return [
-            ApplicationCredentialsListItem.from_dict(cast(Dict[str, Any], item))
-            for item in raw
-        ]
+        return [ApplicationCredentialsListItem.from_dict(cast(Dict[str, Any], item)) for item in raw]
 
     async def create_application_client_secret(
         self,

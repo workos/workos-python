@@ -8,12 +8,8 @@ from .authorization_order import AuthorizationOrder as AuthorizationOrder
 from .authorization_permission import AuthorizationPermission as AuthorizationPermission
 from .authorization_resource import AuthorizationResource as AuthorizationResource
 from .check_authorization import CheckAuthorization as CheckAuthorization
-from .create_authorization_permission import (
-    CreateAuthorizationPermission as CreateAuthorizationPermission,
-)
-from .create_authorization_resource import (
-    CreateAuthorizationResource as CreateAuthorizationResource,
-)
+from .create_authorization_permission import CreateAuthorizationPermission as CreateAuthorizationPermission
+from .create_authorization_resource import CreateAuthorizationResource as CreateAuthorizationResource
 from .create_organization_role import CreateOrganizationRole as CreateOrganizationRole
 from .create_role import CreateRole as CreateRole
 from .permission import Permission as Permission
@@ -25,14 +21,8 @@ from .role_assignment_resource import RoleAssignmentResource as RoleAssignmentRe
 from .role_list import RoleList as RoleList
 from .set_role_permissions import SetRolePermissions as SetRolePermissions
 from .slim_role import SlimRole as SlimRole
-from .update_authorization_permission import (
-    UpdateAuthorizationPermission as UpdateAuthorizationPermission,
-)
-from .update_authorization_resource import (
-    UpdateAuthorizationResource as UpdateAuthorizationResource,
-)
+from .update_authorization_permission import UpdateAuthorizationPermission as UpdateAuthorizationPermission
+from .update_authorization_resource import UpdateAuthorizationResource as UpdateAuthorizationResource
 from .update_organization_role import UpdateOrganizationRole as UpdateOrganizationRole
 from .update_role import UpdateRole as UpdateRole
-from .user_organization_membership_base_list_data import (
-    UserOrganizationMembershipBaseListData as UserOrganizationMembershipBaseListData,
-)
+from .user_organization_membership_base_list_data import UserOrganizationMembershipBaseListData as UserOrganizationMembershipBaseListData

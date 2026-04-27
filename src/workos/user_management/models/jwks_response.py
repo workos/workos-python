@@ -22,10 +22,7 @@ class JwksResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                keys=[
-                    JwksResponseKeys.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["keys"])
-                ],
+                keys=[JwksResponseKeys.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["keys"])],
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("JwksResponse", e)

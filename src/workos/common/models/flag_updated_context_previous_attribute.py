@@ -7,9 +7,7 @@ from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 
-from .flag_updated_context_previous_attribute_data import (
-    FlagUpdatedContextPreviousAttributeData,
-)
+from .flag_updated_context_previous_attribute_data import FlagUpdatedContextPreviousAttributeData
 
 
 @dataclass(slots=True)
@@ -24,11 +22,7 @@ class FlagUpdatedContextPreviousAttribute:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                data=FlagUpdatedContextPreviousAttributeData.from_dict(
-                    cast(Dict[str, Any], _v_data)
-                )
-                if (_v_data := data.get("data")) is not None
-                else None,
+                data=FlagUpdatedContextPreviousAttributeData.from_dict(cast(Dict[str, Any], _v_data)) if (_v_data := data.get("data")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagUpdatedContextPreviousAttribute", e)

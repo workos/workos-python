@@ -25,5 +25,4 @@ class ApplicationsOrder(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 ApplicationsOrderLiteral: TypeAlias = Literal["normal", "desc", "asc"]

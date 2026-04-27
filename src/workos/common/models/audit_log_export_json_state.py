@@ -25,5 +25,4 @@ class AuditLogExportJsonState(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 AuditLogExportJsonStateLiteral: TypeAlias = Literal["pending", "ready", "error"]

@@ -49,9 +49,7 @@ class FeatureFlag:
                 slug=data["slug"],
                 name=data["name"],
                 description=data["description"],
-                owner=FeatureFlagOwner.from_dict(cast(Dict[str, Any], _v_owner))
-                if (_v_owner := data["owner"]) is not None
-                else None,
+                owner=FeatureFlagOwner.from_dict(cast(Dict[str, Any], _v_owner)) if (_v_owner := data["owner"]) is not None else None,
                 tags=data["tags"],
                 enabled=data["enabled"],
                 default_value=data["default_value"],

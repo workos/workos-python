@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
@@ -11,11 +12,13 @@ from workos._types import _raise_deserialize_error
 class CreateApplicationSecret:
     """Create Application Secret model."""
 
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "CreateApplicationSecret":
         """Deserialize from a dictionary."""
         try:
-            return cls()
+            return cls(
+            )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateApplicationSecret", e)
 

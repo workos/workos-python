@@ -6,371 +6,29 @@ import pytest
 
 from tests.generated_helpers import load_fixture
 
-from workos.admin_portal.models import (
-    IntentOptions,
-    PortalLinkResponse,
-    SSOIntentOptions,
-)
-from workos.api_keys.models import (
-    ApiKey,
-    ApiKeyOwner,
-    ApiKeyValidationResponse,
-    ApiKeyWithValue,
-    ApiKeyWithValueOwner,
-)
-from workos.audit_logs.models import (
-    AuditLogActionJson,
-    AuditLogEvent,
-    AuditLogEventActor,
-    AuditLogEventContext,
-    AuditLogEventCreateResponse,
-    AuditLogEventTarget,
-    AuditLogExportJson,
-    AuditLogSchemaActor,
-    AuditLogSchemaJson,
-    AuditLogSchemaJsonActor,
-    AuditLogSchemaJsonTarget,
-    AuditLogSchemaTarget,
-)
-from workos.authorization.models import (
-    AuthorizationCheck,
-    AuthorizationPermission,
-    AuthorizationResource,
-    Permission,
-    Role,
-    RoleAssignment,
-    RoleAssignmentResource,
-    RoleList,
-    SlimRole,
-    UserOrganizationMembershipBaseListData,
-)
-from workos.common.models import (
-    ActionAuthenticationDenied,
-    ActionAuthenticationDeniedData,
-    ActionUserRegistrationDenied,
-    ActionUserRegistrationDeniedData,
-    ApiKeyCreated,
-    ApiKeyCreatedData,
-    ApiKeyCreatedDataOwner,
-    ApiKeyRevoked,
-    ApiKeyRevokedData,
-    ApiKeyRevokedDataOwner,
-    AuthenticationEmailVerificationFailed,
-    AuthenticationEmailVerificationFailedData,
-    AuthenticationEmailVerificationFailedDataError,
-    AuthenticationEmailVerificationSucceeded,
-    AuthenticationEmailVerificationSucceededData,
-    AuthenticationMFAFailed,
-    AuthenticationMFAFailedData,
-    AuthenticationMFAFailedDataError,
-    AuthenticationMFASucceeded,
-    AuthenticationMFASucceededData,
-    AuthenticationMagicAuthFailed,
-    AuthenticationMagicAuthFailedData,
-    AuthenticationMagicAuthFailedDataError,
-    AuthenticationMagicAuthSucceeded,
-    AuthenticationMagicAuthSucceededData,
-    AuthenticationOAuthFailed,
-    AuthenticationOAuthFailedData,
-    AuthenticationOAuthFailedDataError,
-    AuthenticationOAuthSucceeded,
-    AuthenticationOAuthSucceededData,
-    AuthenticationPasskeyFailed,
-    AuthenticationPasskeyFailedData,
-    AuthenticationPasskeyFailedDataError,
-    AuthenticationPasskeySucceeded,
-    AuthenticationPasskeySucceededData,
-    AuthenticationPasswordFailed,
-    AuthenticationPasswordFailedData,
-    AuthenticationPasswordFailedDataError,
-    AuthenticationPasswordSucceeded,
-    AuthenticationPasswordSucceededData,
-    AuthenticationRadarRiskDetected,
-    AuthenticationRadarRiskDetectedData,
-    AuthenticationSSOFailed,
-    AuthenticationSSOFailedData,
-    AuthenticationSSOFailedDataError,
-    AuthenticationSSOFailedDataSSO,
-    AuthenticationSSOStarted,
-    AuthenticationSSOStartedData,
-    AuthenticationSSOStartedDataSSO,
-    AuthenticationSSOSucceeded,
-    AuthenticationSSOSucceededData,
-    AuthenticationSSOSucceededDataSSO,
-    AuthenticationSSOTimedOut,
-    AuthenticationSSOTimedOutData,
-    AuthenticationSSOTimedOutDataError,
-    AuthenticationSSOTimedOutDataSSO,
-    ConnectionActivated,
-    ConnectionActivatedData,
-    ConnectionActivatedDataDomain,
-    ConnectionDeactivated,
-    ConnectionDeactivatedData,
-    ConnectionDeactivatedDataDomain,
-    ConnectionDeleted,
-    ConnectionDeletedData,
-    ConnectionSAMLCertificateRenewalRequired,
-    ConnectionSAMLCertificateRenewalRequiredData,
-    ConnectionSAMLCertificateRenewalRequiredDataCertificate,
-    ConnectionSAMLCertificateRenewalRequiredDataConnection,
-    ConnectionSAMLCertificateRenewed,
-    ConnectionSAMLCertificateRenewedData,
-    ConnectionSAMLCertificateRenewedDataCertificate,
-    ConnectionSAMLCertificateRenewedDataConnection,
-    DirectoryUser,
-    DirectoryUserEmail,
-    DsyncActivated,
-    DsyncActivatedData,
-    DsyncActivatedDataDomain,
-    DsyncDeactivated,
-    DsyncDeactivatedData,
-    DsyncDeactivatedDataDomain,
-    DsyncDeleted,
-    DsyncDeletedData,
-    DsyncGroupCreated,
-    DsyncGroupDeleted,
-    DsyncGroupUpdated,
-    DsyncGroupUpdatedData,
-    DsyncGroupUserAdded,
-    DsyncGroupUserAddedData,
-    DsyncGroupUserRemoved,
-    DsyncGroupUserRemovedData,
-    DsyncUserCreated,
-    DsyncUserDeleted,
-    DsyncUserUpdated,
-    DsyncUserUpdatedData,
-    DsyncUserUpdatedDataEmail,
-    EmailVerificationCreated,
-    EmailVerificationCreatedData,
-    EventContext,
-    EventContextActor,
-    EventContextGoogleAnalyticsSession,
-    FlagCreated,
-    FlagCreatedContext,
-    FlagCreatedContextActor,
-    FlagCreatedData,
-    FlagCreatedDataOwner,
-    FlagDeleted,
-    FlagDeletedContext,
-    FlagDeletedContextActor,
-    FlagDeletedData,
-    FlagDeletedDataOwner,
-    FlagRuleUpdated,
-    FlagRuleUpdatedContext,
-    FlagRuleUpdatedContextActor,
-    FlagRuleUpdatedContextConfiguredTarget,
-    FlagRuleUpdatedContextConfiguredTargetOrganization,
-    FlagRuleUpdatedContextConfiguredTargetUser,
-    FlagRuleUpdatedContextPreviousAttribute,
-    FlagRuleUpdatedContextPreviousAttributeContext,
-    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget,
-    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization,
-    FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser,
-    FlagRuleUpdatedContextPreviousAttributeData,
-    FlagRuleUpdatedData,
-    FlagRuleUpdatedDataOwner,
-    FlagUpdated,
-    FlagUpdatedContext,
-    FlagUpdatedContextActor,
-    FlagUpdatedContextPreviousAttribute,
-    FlagUpdatedContextPreviousAttributeData,
-    FlagUpdatedData,
-    FlagUpdatedDataOwner,
-    Group,
-    GroupCreated,
-    GroupDeleted,
-    GroupMemberAdded,
-    GroupMemberAddedData,
-    GroupMemberRemoved,
-    GroupMemberRemovedData,
-    GroupUpdated,
-    InvitationAccepted,
-    InvitationAcceptedData,
-    InvitationCreated,
-    InvitationCreatedData,
-    InvitationResent,
-    InvitationResentData,
-    InvitationRevoked,
-    InvitationRevokedData,
-    MagicAuthCreated,
-    MagicAuthCreatedData,
-    OrganizationCreated,
-    OrganizationCreatedData,
-    OrganizationCreatedDataDomain,
-    OrganizationDeleted,
-    OrganizationDeletedData,
-    OrganizationDeletedDataDomain,
-    OrganizationDomainCreated,
-    OrganizationDomainCreatedData,
-    OrganizationDomainDeleted,
-    OrganizationDomainDeletedData,
-    OrganizationDomainUpdated,
-    OrganizationDomainUpdatedData,
-    OrganizationDomainVerificationFailed,
-    OrganizationDomainVerificationFailedData,
-    OrganizationDomainVerificationFailedDataOrganizationDomain,
-    OrganizationDomainVerified,
-    OrganizationDomainVerifiedData,
-    OrganizationMembershipCreated,
-    OrganizationMembershipCreatedData,
-    OrganizationMembershipDeleted,
-    OrganizationMembershipDeletedData,
-    OrganizationMembershipUpdated,
-    OrganizationMembershipUpdatedData,
-    OrganizationRoleCreated,
-    OrganizationRoleCreatedData,
-    OrganizationRoleDeleted,
-    OrganizationRoleDeletedData,
-    OrganizationRoleUpdated,
-    OrganizationRoleUpdatedData,
-    OrganizationUpdated,
-    OrganizationUpdatedData,
-    OrganizationUpdatedDataDomain,
-    PasswordResetCreated,
-    PasswordResetCreatedData,
-    PasswordResetSucceeded,
-    PasswordResetSucceededData,
-    PermissionCreated,
-    PermissionCreatedData,
-    PermissionDeleted,
-    PermissionDeletedData,
-    PermissionUpdated,
-    PermissionUpdatedData,
-    RoleCreated,
-    RoleCreatedData,
-    RoleDeleted,
-    RoleDeletedData,
-    RoleUpdated,
-    RoleUpdatedData,
-    SessionCreated,
-    SessionCreatedData,
-    SessionCreatedDataImpersonator,
-    SessionRevoked,
-    SessionRevokedData,
-    SessionRevokedDataImpersonator,
-    UserCreated,
-    UserDeleted,
-    UserUpdated,
-    VaultByokKeyVerificationCompleted,
-    VaultByokKeyVerificationCompletedData,
-    VaultDataCreated,
-    VaultDataCreatedData,
-    VaultDataDeleted,
-    VaultDataDeletedData,
-    VaultDataRead,
-    VaultDataReadData,
-    VaultDataUpdated,
-    VaultDataUpdatedData,
-    VaultDekDecrypted,
-    VaultDekDecryptedData,
-    VaultDekRead,
-    VaultDekReadData,
-    VaultKekCreated,
-    VaultKekCreatedData,
-    VaultMetadataRead,
-    VaultMetadataReadData,
-    VaultNamesListed,
-    VaultNamesListedData,
-)
-from workos.connect.models import (
-    ApplicationCredentialsListItem,
-    ConnectApplication,
-    ExternalAuthCompleteResponse,
-    NewConnectApplicationSecret,
-    RedirectUriInput,
-    UserConsentOption,
-    UserConsentOptionChoice,
-    UserObject,
-)
-from workos.directory_sync.models import (
-    Directory,
-    DirectoryGroup,
-    DirectoryMetadata,
-    DirectoryMetadataUser,
-    DirectoryUserWithGroups,
-    DirectoryUserWithGroupsEmail,
-)
+from workos.admin_portal.models import DomainVerificationIntentOptions, IntentOptions, PortalLinkResponse, SSOIntentOptions
+from workos.api_keys.models import ApiKey, ApiKeyOwner, ApiKeyValidationResponse, ApiKeyWithValue, ApiKeyWithValueOwner
+from workos.audit_logs.models import AuditLogActionJson, AuditLogEvent, AuditLogEventActor, AuditLogEventContext, AuditLogEventCreateResponse, AuditLogEventTarget, AuditLogExportJson, AuditLogSchemaActor, AuditLogSchemaJson, AuditLogSchemaJsonActor, AuditLogSchemaJsonTarget, AuditLogSchemaTarget
+from workos.authorization.models import AuthorizationCheck, AuthorizationPermission, AuthorizationResource, Permission, Role, RoleAssignment, RoleAssignmentResource, RoleList, SlimRole, UserOrganizationMembershipBaseListData
+from workos.common.models import ActionAuthenticationDenied, ActionAuthenticationDeniedData, ActionUserRegistrationDenied, ActionUserRegistrationDeniedData, ApiKeyCreated, ApiKeyCreatedData, ApiKeyCreatedDataOwner, ApiKeyRevoked, ApiKeyRevokedData, ApiKeyRevokedDataOwner, AuthenticationEmailVerificationFailed, AuthenticationEmailVerificationFailedData, AuthenticationEmailVerificationFailedDataError, AuthenticationEmailVerificationSucceeded, AuthenticationEmailVerificationSucceededData, AuthenticationMFAFailed, AuthenticationMFAFailedData, AuthenticationMFAFailedDataError, AuthenticationMFASucceeded, AuthenticationMFASucceededData, AuthenticationMagicAuthFailed, AuthenticationMagicAuthFailedData, AuthenticationMagicAuthFailedDataError, AuthenticationMagicAuthSucceeded, AuthenticationMagicAuthSucceededData, AuthenticationOAuthFailed, AuthenticationOAuthFailedData, AuthenticationOAuthFailedDataError, AuthenticationOAuthSucceeded, AuthenticationOAuthSucceededData, AuthenticationPasskeyFailed, AuthenticationPasskeyFailedData, AuthenticationPasskeyFailedDataError, AuthenticationPasskeySucceeded, AuthenticationPasskeySucceededData, AuthenticationPasswordFailed, AuthenticationPasswordFailedData, AuthenticationPasswordFailedDataError, AuthenticationPasswordSucceeded, AuthenticationPasswordSucceededData, AuthenticationRadarRiskDetected, AuthenticationRadarRiskDetectedData, AuthenticationSSOFailed, AuthenticationSSOFailedData, AuthenticationSSOFailedDataError, AuthenticationSSOFailedDataSSO, AuthenticationSSOStarted, AuthenticationSSOStartedData, AuthenticationSSOStartedDataSSO, AuthenticationSSOSucceeded, AuthenticationSSOSucceededData, AuthenticationSSOSucceededDataSSO, AuthenticationSSOTimedOut, AuthenticationSSOTimedOutData, AuthenticationSSOTimedOutDataError, AuthenticationSSOTimedOutDataSSO, ConnectionActivated, ConnectionActivatedData, ConnectionActivatedDataDomain, ConnectionDeactivated, ConnectionDeactivatedData, ConnectionDeactivatedDataDomain, ConnectionDeleted, ConnectionDeletedData, ConnectionSAMLCertificateRenewalRequired, ConnectionSAMLCertificateRenewalRequiredData, ConnectionSAMLCertificateRenewalRequiredDataCertificate, ConnectionSAMLCertificateRenewalRequiredDataConnection, ConnectionSAMLCertificateRenewed, ConnectionSAMLCertificateRenewedData, ConnectionSAMLCertificateRenewedDataCertificate, ConnectionSAMLCertificateRenewedDataConnection, DirectoryUser, DirectoryUserEmail, DsyncActivated, DsyncActivatedData, DsyncActivatedDataDomain, DsyncDeactivated, DsyncDeactivatedData, DsyncDeactivatedDataDomain, DsyncDeleted, DsyncDeletedData, DsyncGroupCreated, DsyncGroupDeleted, DsyncGroupUpdated, DsyncGroupUpdatedData, DsyncGroupUserAdded, DsyncGroupUserAddedData, DsyncGroupUserRemoved, DsyncGroupUserRemovedData, DsyncUserCreated, DsyncUserDeleted, DsyncUserUpdated, DsyncUserUpdatedData, DsyncUserUpdatedDataEmail, EmailVerificationCreated, EmailVerificationCreatedData, EventContext, EventContextActor, EventContextGoogleAnalyticsSession, FlagCreated, FlagCreatedContext, FlagCreatedContextActor, FlagCreatedData, FlagCreatedDataOwner, FlagDeleted, FlagDeletedContext, FlagDeletedContextActor, FlagDeletedData, FlagDeletedDataOwner, FlagRuleUpdated, FlagRuleUpdatedContext, FlagRuleUpdatedContextActor, FlagRuleUpdatedContextConfiguredTarget, FlagRuleUpdatedContextConfiguredTargetOrganization, FlagRuleUpdatedContextConfiguredTargetUser, FlagRuleUpdatedContextPreviousAttribute, FlagRuleUpdatedContextPreviousAttributeContext, FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget, FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization, FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser, FlagRuleUpdatedContextPreviousAttributeData, FlagRuleUpdatedData, FlagRuleUpdatedDataOwner, FlagUpdated, FlagUpdatedContext, FlagUpdatedContextActor, FlagUpdatedContextPreviousAttribute, FlagUpdatedContextPreviousAttributeData, FlagUpdatedData, FlagUpdatedDataOwner, GroupCreated, GroupDeleted, GroupMemberAdded, GroupMemberAddedData, GroupMemberRemoved, GroupMemberRemovedData, GroupUpdated, InvitationAccepted, InvitationAcceptedData, InvitationCreated, InvitationCreatedData, InvitationResent, InvitationResentData, InvitationRevoked, InvitationRevokedData, MagicAuthCreated, MagicAuthCreatedData, OrganizationCreated, OrganizationCreatedData, OrganizationCreatedDataDomain, OrganizationDeleted, OrganizationDeletedData, OrganizationDeletedDataDomain, OrganizationDomainCreated, OrganizationDomainCreatedData, OrganizationDomainDeleted, OrganizationDomainDeletedData, OrganizationDomainUpdated, OrganizationDomainUpdatedData, OrganizationDomainVerificationFailed, OrganizationDomainVerificationFailedData, OrganizationDomainVerificationFailedDataOrganizationDomain, OrganizationDomainVerified, OrganizationDomainVerifiedData, OrganizationMembershipCreated, OrganizationMembershipCreatedData, OrganizationMembershipDeleted, OrganizationMembershipDeletedData, OrganizationMembershipUpdated, OrganizationMembershipUpdatedData, OrganizationRoleCreated, OrganizationRoleCreatedData, OrganizationRoleDeleted, OrganizationRoleDeletedData, OrganizationRoleUpdated, OrganizationRoleUpdatedData, OrganizationUpdated, OrganizationUpdatedData, OrganizationUpdatedDataDomain, PasswordResetCreated, PasswordResetCreatedData, PasswordResetSucceeded, PasswordResetSucceededData, PermissionCreated, PermissionCreatedData, PermissionDeleted, PermissionDeletedData, PermissionUpdated, PermissionUpdatedData, RoleCreated, RoleCreatedData, RoleDeleted, RoleDeletedData, RoleUpdated, RoleUpdatedData, SessionCreated, SessionCreatedData, SessionCreatedDataImpersonator, SessionRevoked, SessionRevokedData, SessionRevokedDataImpersonator, UserCreated, UserDeleted, UserUpdated, VaultByokKeyVerificationCompleted, VaultByokKeyVerificationCompletedData, VaultDataCreated, VaultDataCreatedData, VaultDataDeleted, VaultDataDeletedData, VaultDataRead, VaultDataReadData, VaultDataUpdated, VaultDataUpdatedData, VaultDekDecrypted, VaultDekDecryptedData, VaultDekRead, VaultDekReadData, VaultKekCreated, VaultKekCreatedData, VaultMetadataRead, VaultMetadataReadData, VaultNamesListed, VaultNamesListedData, WaitlistUser, WaitlistUserApproved, WaitlistUserCreated, WaitlistUserDenied
+from workos.connect.models import ApplicationCredentialsListItem, ConnectApplication, ExternalAuthCompleteResponse, NewConnectApplicationSecret, RedirectUriInput, UserConsentOption, UserConsentOptionChoice, UserObject
+from workos.directory_sync.models import Directory, DirectoryGroup, DirectoryMetadata, DirectoryMetadataUser, DirectoryUserWithGroups, DirectoryUserWithGroupsEmail
 from workos.events.models import EventListListMetadata, EventSchema, EventSchemaUnknown
 from workos.feature_flags.models import FeatureFlag, FeatureFlagOwner, Flag, FlagOwner
-from workos.multi_factor_auth.models import (
-    AuthenticationChallenge,
-    AuthenticationChallengeVerifyResponse,
-    AuthenticationFactor,
-    AuthenticationFactorEnrolled,
-    AuthenticationFactorEnrolledSms,
-    AuthenticationFactorEnrolledTotp,
-    AuthenticationFactorSms,
-    AuthenticationFactorTotp,
-    UserAuthenticationFactorEnrollResponse,
-)
-from workos.organization_domains.models import (
-    OrganizationDomain,
-    OrganizationDomainStandAlone,
-)
-from workos.organizations.models import (
-    AuditLogConfiguration,
-    AuditLogConfigurationLogStream,
-    AuditLogsRetentionJson,
-    Organization,
-    OrganizationDomainData,
-)
-from workos.pipes.models import (
-    ConnectedAccount,
-    DataIntegrationAccessTokenResponse,
-    DataIntegrationAccessTokenResponseAccessToken,
-    DataIntegrationAuthorizeUrlResponse,
-    DataIntegrationsListResponse,
-    DataIntegrationsListResponseData,
-    DataIntegrationsListResponseDataConnectedAccount,
-)
-from workos.radar.models import (
-    RadarListEntryAlreadyPresentResponse,
-    RadarStandaloneResponse,
-)
-from workos.sso.models import (
-    Connection,
-    ConnectionDomain,
-    ConnectionOption,
-    Profile,
-    SSOAuthorizeUrlResponse,
-    SSOLogoutAuthorizeResponse,
-    SSOTokenResponse,
-    SSOTokenResponseOAuthToken,
-)
-from workos.user_management.models import (
-    AuthenticateResponse,
-    AuthenticateResponseImpersonator,
-    AuthenticateResponseOAuthToken,
-    AuthorizedConnectApplicationListData,
-    CORSOriginResponse,
-    DeviceAuthorizationResponse,
-    EmailChange,
-    EmailChangeConfirmation,
-    EmailChangeConfirmationUser,
-    EmailVerification,
-    Invitation,
-    JWTTemplateResponse,
-    JwksResponse,
-    JwksResponseKeys,
-    MagicAuth,
-    OrganizationMembership,
-    PasswordReset,
-    RedirectUri,
-    ResetPasswordResponse,
-    SendVerificationEmailResponse,
-    User,
-    UserIdentitiesGetItem,
-    UserInvite,
-    UserOrganizationMembership,
-    UserSessionsImpersonator,
-    UserSessionsListItem,
-    VerifyEmailResponse,
-)
+from workos.groups.models import Group
+from workos.multi_factor_auth.models import AuthenticationChallenge, AuthenticationChallengeVerifyResponse, AuthenticationFactor, AuthenticationFactorEnrolled, AuthenticationFactorEnrolledSms, AuthenticationFactorEnrolledTotp, AuthenticationFactorSms, AuthenticationFactorTotp, UserAuthenticationFactorEnrollResponse
+from workos.organization_domains.models import OrganizationDomain, OrganizationDomainStandAlone
+from workos.organizations.models import AuditLogConfiguration, AuditLogConfigurationLogStream, AuditLogsRetentionJson, Organization, OrganizationDomainData
+from workos.pipes.models import ConnectedAccount, DataIntegrationAccessTokenResponse, DataIntegrationAccessTokenResponseAccessToken, DataIntegrationAuthorizeUrlResponse, DataIntegrationsListResponse, DataIntegrationsListResponseData, DataIntegrationsListResponseDataConnectedAccount
+from workos.radar.models import RadarListEntryAlreadyPresentResponse, RadarStandaloneResponse
+from workos.sso.models import Connection, ConnectionDomain, ConnectionOption, Profile, SSOAuthorizeUrlResponse, SSOLogoutAuthorizeResponse, SSOTokenResponse, SSOTokenResponseOAuthToken
+from workos.user_management.models import AuthenticateResponse, AuthenticateResponseImpersonator, AuthenticateResponseOAuthToken, AuthorizedConnectApplicationListData, CORSOriginResponse, DeviceAuthorizationResponse, EmailChange, EmailChangeConfirmation, EmailChangeConfirmationUser, EmailVerification, Invitation, JWTTemplateResponse, JwksResponse, JwksResponseKeys, MagicAuth, OrganizationMembership, PasswordReset, RedirectUri, ResetPasswordResponse, SendVerificationEmailResponse, User, UserIdentitiesGetItem, UserInvite, UserOrganizationMembership, UserSessionsImpersonator, UserSessionsListItem, VerifyEmailResponse
 from workos.webhooks.models import WebhookEndpointJson
 from workos.widgets.models import WidgetSessionTokenResponse
 
 
 class TestModelRoundTrip:
+
     def test_user_object_round_trip(self):
         data = load_fixture("user_object.json")
         instance = UserObject.from_dict(data)
@@ -403,14 +61,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_consent_option_minimal_payload(self):
-        data = {
-            "claim": "tos_accepted",
-            "type": "enum",
-            "label": "Terms of Service",
-            "choices": [
-                {"value": "accepted", "label": "I accept the Terms of Service"}
-            ],
-        }
+        data = {"claim": "tos_accepted", "type": "enum", "label": "Terms of Service", "choices": [{"value": "accepted", "label": "I accept the Terms of Service"}]}
         instance = UserConsentOption.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["claim"] == data["claim"]
@@ -511,28 +162,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_audit_log_event_minimal_payload(self):
-        data = {
-            "action": "user.signed_in",
-            "occurred_at": "2026-02-02T16:35:39.317Z",
-            "actor": {
-                "id": "user_TF4C5938",
-                "type": "user",
-                "name": "Jon Smith",
-                "metadata": {"owner": "user_01GBTCQ2"},
-            },
-            "targets": [
-                {
-                    "id": "user_TF4C5938",
-                    "type": "user",
-                    "name": "Jon Smith",
-                    "metadata": {"owner": "user_01GBTCQ2"},
-                }
-            ],
-            "context": {
-                "location": "123.123.123.123",
-                "user_agent": "Chrome/104.0.0.0",
-            },
-        }
+        data = {"action": "user.signed_in", "occurred_at": "2026-02-02T16:35:39.317Z", "actor": {"id": "user_TF4C5938", "type": "user", "name": "Jon Smith", "metadata": {"owner": "user_01GBTCQ2"}}, "targets": [{"id": "user_TF4C5938", "type": "user", "name": "Jon Smith", "metadata": {"owner": "user_01GBTCQ2"}}], "context": {"location": "123.123.123.123", "user_agent": "Chrome/104.0.0.0"}}
         instance = AuditLogEvent.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["action"] == data["action"]
@@ -542,28 +172,7 @@ class TestModelRoundTrip:
         assert serialized["context"] == data["context"]
 
     def test_audit_log_event_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "action": "user.signed_in",
-            "occurred_at": "2026-02-02T16:35:39.317Z",
-            "actor": {
-                "id": "user_TF4C5938",
-                "type": "user",
-                "name": "Jon Smith",
-                "metadata": {"owner": "user_01GBTCQ2"},
-            },
-            "targets": [
-                {
-                    "id": "user_TF4C5938",
-                    "type": "user",
-                    "name": "Jon Smith",
-                    "metadata": {"owner": "user_01GBTCQ2"},
-                }
-            ],
-            "context": {
-                "location": "123.123.123.123",
-                "user_agent": "Chrome/104.0.0.0",
-            },
-        }
+        data = {"action": "user.signed_in", "occurred_at": "2026-02-02T16:35:39.317Z", "actor": {"id": "user_TF4C5938", "type": "user", "name": "Jon Smith", "metadata": {"owner": "user_01GBTCQ2"}}, "targets": [{"id": "user_TF4C5938", "type": "user", "name": "Jon Smith", "metadata": {"owner": "user_01GBTCQ2"}}], "context": {"location": "123.123.123.123", "user_agent": "Chrome/104.0.0.0"}}
         instance = AuditLogEvent.from_dict(data)
         serialized = instance.to_dict()
         assert "metadata" not in serialized
@@ -578,9 +187,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_audit_log_schema_actor_minimal_payload(self):
-        data = {
-            "metadata": {"type": "object", "properties": {"role": {"type": "string"}}}
-        }
+        data = {"metadata": {"type": "object", "properties": {"role": {"type": "string"}}}}
         instance = AuditLogSchemaActor.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["metadata"] == data["metadata"]
@@ -621,10 +228,7 @@ class TestModelRoundTrip:
         assert serialized["state"] == data["state"]
 
     def test_organization_domain_data_round_trips_unknown_enum_values(self):
-        data = {
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_domain_data_state",
-        }
+        data = {"domain": "foo-corp.com", "state": "unexpected_organization_domain_data_state"}
         instance = OrganizationDomainData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -648,6 +252,25 @@ class TestModelRoundTrip:
         assert "bookmark_slug" not in serialized
         assert "provider_type" not in serialized
 
+    def test_domain_verification_intent_options_round_trip(self):
+        data = load_fixture("domain_verification_intent_options.json")
+        instance = DomainVerificationIntentOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DomainVerificationIntentOptions.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_domain_verification_intent_options_minimal_payload(self):
+        data = {}
+        instance = DomainVerificationIntentOptions.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_domain_verification_intent_options_omits_absent_optional_non_nullable_fields(self):
+        data = {}
+        instance = DomainVerificationIntentOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert "domain_name" not in serialized
+
     def test_intent_options_round_trip(self):
         data = load_fixture("intent_options.json")
         instance = IntentOptions.from_dict(data)
@@ -657,10 +280,16 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_intent_options_minimal_payload(self):
-        data = {"sso": {"bookmark_slug": "chatgpt", "provider_type": "GoogleSAML"}}
+        data = {}
+        instance = IntentOptions.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_intent_options_omits_absent_optional_non_nullable_fields(self):
+        data = {}
         instance = IntentOptions.from_dict(data)
         serialized = instance.to_dict()
-        assert serialized["sso"] == data["sso"]
+        assert "sso" not in serialized
+        assert "domain_verification" not in serialized
 
     def test_external_auth_complete_response_round_trip(self):
         data = load_fixture("external_auth_complete_response.json")
@@ -671,9 +300,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_external_auth_complete_response_minimal_payload(self):
-        data = {
-            "redirect_uri": "https://your-authkit-domain.workos.com/oauth/authorize/complete?state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGF0ZSI6InJhbmRvbV9zdGF0ZV9zdHJpbmciLCJpYXQiOjE3NDI2MDQ4NTN9.abc123def456ghi789"
-        }
+        data = {"redirect_uri": "https://your-authkit-domain.workos.com/oauth/authorize/complete?state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdGF0ZSI6InJhbmRvbV9zdGF0ZV9zdHJpbmciLCJpYXQiOjE3NDI2MDQ4NTN9.abc123def456ghi789"}
         instance = ExternalAuthCompleteResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["redirect_uri"] == data["redirect_uri"]
@@ -687,17 +314,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_api_key_minimal_payload(self):
-        data = {
-            "object": "api_key",
-            "id": "api_key_01EHZNVPK3SFK441A1RGBFSHRT",
-            "owner": {"type": "organization", "id": "org_01EHZNVPK3SFK441A1RGBFSHRT"},
-            "name": "Production API Key",
-            "obfuscated_value": "sk_...3456",
-            "last_used_at": None,
-            "permissions": ["posts:read", "posts:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "api_key", "id": "api_key_01EHZNVPK3SFK441A1RGBFSHRT", "owner": {"type": "organization", "id": "org_01EHZNVPK3SFK441A1RGBFSHRT"}, "name": "Production API Key", "obfuscated_value": "sk_...3456", "last_used_at": None, "permissions": ["posts:read", "posts:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ApiKey.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -711,17 +328,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_api_key_preserves_nullable_fields(self):
-        data = {
-            "object": "api_key",
-            "id": "api_key_01EHZNVPK3SFK441A1RGBFSHRT",
-            "owner": {"type": "organization", "id": "org_01EHZNVPK3SFK441A1RGBFSHRT"},
-            "name": "Production API Key",
-            "obfuscated_value": "sk_...3456",
-            "last_used_at": None,
-            "permissions": ["posts:read", "posts:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "api_key", "id": "api_key_01EHZNVPK3SFK441A1RGBFSHRT", "owner": {"type": "organization", "id": "org_01EHZNVPK3SFK441A1RGBFSHRT"}, "name": "Production API Key", "obfuscated_value": "sk_...3456", "last_used_at": None, "permissions": ["posts:read", "posts:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ApiKey.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
@@ -755,16 +362,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connect_application_minimal_payload(self):
-        data = {
-            "object": "connect_application",
-            "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
-            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
-            "description": None,
-            "name": "My Application",
-            "scopes": ["openid", "profile", "email"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "connect_application", "id": "conn_app_01HXYZ123456789ABCDEFGHIJ", "client_id": "client_01HXYZ123456789ABCDEFGHIJ", "description": None, "name": "My Application", "scopes": ["openid", "profile", "email"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ConnectApplication.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -777,34 +375,14 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_connect_application_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "connect_application",
-            "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
-            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
-            "description": "An application for managing user access",
-            "name": "My Application",
-            "scopes": ["openid", "profile", "email"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "connect_application", "id": "conn_app_01HXYZ123456789ABCDEFGHIJ", "client_id": "client_01HXYZ123456789ABCDEFGHIJ", "description": "An application for managing user access", "name": "My Application", "scopes": ["openid", "profile", "email"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ConnectApplication.from_dict(data)
         serialized = instance.to_dict()
         assert "application_type" not in serialized
         assert "organization_id" not in serialized
 
     def test_connect_application_preserves_nullable_fields(self):
-        data = {
-            "object": "connect_application",
-            "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
-            "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
-            "description": None,
-            "name": "My Application",
-            "scopes": ["openid", "profile", "email"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "application_type": "m2m",
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-        }
+        data = {"object": "connect_application", "id": "conn_app_01HXYZ123456789ABCDEFGHIJ", "client_id": "client_01HXYZ123456789ABCDEFGHIJ", "description": None, "name": "My Application", "scopes": ["openid", "profile", "email"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "application_type": "m2m", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT"}
         instance = ConnectApplication.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -818,15 +396,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_new_connect_application_secret_minimal_payload(self):
-        data = {
-            "object": "connect_application_secret",
-            "id": "secret_01J9Q2Z3X4Y5W6V7U8T9S0R1Q",
-            "secret_hint": "abc123",
-            "last_used_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "secret": "abc123def456ghi789jkl012mno345pqr678stu901vwx234yz",
-        }
+        data = {"object": "connect_application_secret", "id": "secret_01J9Q2Z3X4Y5W6V7U8T9S0R1Q", "secret_hint": "abc123", "last_used_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "secret": "abc123def456ghi789jkl012mno345pqr678stu901vwx234yz"}
         instance = NewConnectApplicationSecret.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -838,15 +408,7 @@ class TestModelRoundTrip:
         assert serialized["secret"] == data["secret"]
 
     def test_new_connect_application_secret_preserves_nullable_fields(self):
-        data = {
-            "object": "connect_application_secret",
-            "id": "secret_01J9Q2Z3X4Y5W6V7U8T9S0R1Q",
-            "secret_hint": "abc123",
-            "last_used_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "secret": "abc123def456ghi789jkl012mno345pqr678stu901vwx234yz",
-        }
+        data = {"object": "connect_application_secret", "id": "secret_01J9Q2Z3X4Y5W6V7U8T9S0R1Q", "secret_hint": "abc123", "last_used_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "secret": "abc123def456ghi789jkl012mno345pqr678stu901vwx234yz"}
         instance = NewConnectApplicationSecret.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
@@ -874,13 +436,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_audit_log_export_json_minimal_payload(self):
-        data = {
-            "object": "audit_log_export",
-            "id": "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V",
-            "state": "ready",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "audit_log_export", "id": "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V", "state": "ready", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuditLogExportJson.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -890,27 +446,13 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_audit_log_export_json_preserves_nullable_fields(self):
-        data = {
-            "object": "audit_log_export",
-            "id": "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V",
-            "state": "ready",
-            "url": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "audit_log_export", "id": "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V", "state": "ready", "url": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuditLogExportJson.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["url"] is None
 
     def test_audit_log_export_json_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "audit_log_export",
-            "id": "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V",
-            "state": "unexpected_audit_log_export_json_state",
-            "url": "https://exports.audit-logs.com/audit-log-exports/export.csv",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "audit_log_export", "id": "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V", "state": "unexpected_audit_log_export_json_state", "url": "https://exports.audit-logs.com/audit-log-exports/export.csv", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuditLogExportJson.from_dict(data)
         assert instance.to_dict() == data
 
@@ -926,9 +468,7 @@ class TestModelRoundTrip:
         data = {"retention_period_in_days": None}
         instance = AuditLogsRetentionJson.from_dict(data)
         serialized = instance.to_dict()
-        assert (
-            serialized["retention_period_in_days"] == data["retention_period_in_days"]
-        )
+        assert serialized["retention_period_in_days"] == data["retention_period_in_days"]
 
     def test_audit_logs_retention_json_preserves_nullable_fields(self):
         data = {"retention_period_in_days": None}
@@ -945,20 +485,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_audit_log_schema_json_minimal_payload(self):
-        data = {
-            "object": "audit_log_schema",
-            "version": 1,
-            "targets": [
-                {
-                    "type": "invoice",
-                    "metadata": {
-                        "type": "object",
-                        "properties": {"cost": {"type": "number"}},
-                    },
-                }
-            ],
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "audit_log_schema", "version": 1, "targets": [{"type": "invoice", "metadata": {"type": "object", "properties": {"cost": {"type": "number"}}}}], "created_at": "2026-01-15T12:00:00.000Z"}
         instance = AuditLogSchemaJson.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -967,20 +494,7 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
 
     def test_audit_log_schema_json_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "audit_log_schema",
-            "version": 1,
-            "targets": [
-                {
-                    "type": "invoice",
-                    "metadata": {
-                        "type": "object",
-                        "properties": {"cost": {"type": "number"}},
-                    },
-                }
-            ],
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "audit_log_schema", "version": 1, "targets": [{"type": "invoice", "metadata": {"type": "object", "properties": {"cost": {"type": "number"}}}}], "created_at": "2026-01-15T12:00:00.000Z"}
         instance = AuditLogSchemaJson.from_dict(data)
         serialized = instance.to_dict()
         assert "actor" not in serialized
@@ -995,36 +509,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_audit_log_action_json_minimal_payload(self):
-        data = {
-            "object": "audit_log_action",
-            "name": "user.viewed_invoice",
-            "schema": {
-                "object": "audit_log_schema",
-                "version": 1,
-                "actor": {
-                    "metadata": {
-                        "type": "object",
-                        "properties": {"role": {"type": "string"}},
-                    }
-                },
-                "targets": [
-                    {
-                        "type": "invoice",
-                        "metadata": {
-                            "type": "object",
-                            "properties": {"cost": {"type": "number"}},
-                        },
-                    }
-                ],
-                "metadata": {
-                    "type": "object",
-                    "properties": {"transactionId": {"type": "string"}},
-                },
-                "created_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "audit_log_action", "name": "user.viewed_invoice", "schema": {"object": "audit_log_schema", "version": 1, "actor": {"metadata": {"type": "object", "properties": {"role": {"type": "string"}}}}, "targets": [{"type": "invoice", "metadata": {"type": "object", "properties": {"cost": {"type": "number"}}}}], "metadata": {"type": "object", "properties": {"transactionId": {"type": "string"}}}, "created_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuditLogActionJson.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1042,31 +527,17 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_challenge_minimal_payload(self):
-        data = {
-            "object": "authentication_challenge",
-            "id": "auth_challenge_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "authentication_challenge", "id": "auth_challenge_01FVYZ5QM8N98T9ME5BCB2BBMJ", "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthenticationChallenge.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
         assert serialized["id"] == data["id"]
-        assert (
-            serialized["authentication_factor_id"] == data["authentication_factor_id"]
-        )
+        assert serialized["authentication_factor_id"] == data["authentication_factor_id"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_authentication_challenge_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "authentication_challenge",
-            "id": "auth_challenge_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "authentication_challenge", "id": "auth_challenge_01FVYZ5QM8N98T9ME5BCB2BBMJ", "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthenticationChallenge.from_dict(data)
         serialized = instance.to_dict()
         assert "expires_at" not in serialized
@@ -1081,18 +552,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_challenge_verify_response_minimal_payload(self):
-        data = {
-            "challenge": {
-                "object": "authentication_challenge",
-                "id": "auth_challenge_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "code": "123456",
-                "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "valid": True,
-        }
+        data = {"challenge": {"object": "authentication_challenge", "id": "auth_challenge_01FVYZ5QM8N98T9ME5BCB2BBMJ", "expires_at": "2026-01-15T12:00:00.000Z", "code": "123456", "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "valid": True}
         instance = AuthenticationChallengeVerifyResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["challenge"] == data["challenge"]
@@ -1107,13 +567,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_factor_enrolled_minimal_payload(self):
-        data = {
-            "object": "authentication_factor",
-            "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            "type": "totp",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "authentication_factor", "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "type": "totp", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthenticationFactorEnrolled.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1122,16 +576,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_authentication_factor_enrolled_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "authentication_factor",
-            "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            "type": "totp",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_authentication_factor_enrolled_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "authentication_factor", "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "type": "totp", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthenticationFactorEnrolled.from_dict(data)
         serialized = instance.to_dict()
         assert "user_id" not in serialized
@@ -1139,22 +585,7 @@ class TestModelRoundTrip:
         assert "totp" not in serialized
 
     def test_authentication_factor_enrolled_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "authentication_factor",
-            "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            "type": "unexpected_authentication_factor_enrolled_type",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "sms": {"phone_number": "+15005550006"},
-            "totp": {
-                "issuer": "WorkOS",
-                "user": "user@example.com",
-                "secret": "JBSWY3DPEHPK3PXP",
-                "qr_code": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...",
-                "uri": "otpauth://totp/WorkOS:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=WorkOS",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "authentication_factor", "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "type": "unexpected_authentication_factor_enrolled_type", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "sms": {"phone_number": "+15005550006"}, "totp": {"issuer": "WorkOS", "user": "user@example.com", "secret": "JBSWY3DPEHPK3PXP", "qr_code": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...", "uri": "otpauth://totp/WorkOS:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=WorkOS"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthenticationFactorEnrolled.from_dict(data)
         assert instance.to_dict() == data
 
@@ -1167,13 +598,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_factor_minimal_payload(self):
-        data = {
-            "object": "authentication_factor",
-            "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            "type": "totp",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "authentication_factor", "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "type": "totp", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthenticationFactor.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1183,13 +608,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_authentication_factor_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "authentication_factor",
-            "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            "type": "totp",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "authentication_factor", "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "type": "totp", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthenticationFactor.from_dict(data)
         serialized = instance.to_dict()
         assert "user_id" not in serialized
@@ -1197,16 +616,7 @@ class TestModelRoundTrip:
         assert "totp" not in serialized
 
     def test_authentication_factor_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "authentication_factor",
-            "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-            "type": "unexpected_authentication_factor_type",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "sms": {"phone_number": "+15005550006"},
-            "totp": {"issuer": "WorkOS", "user": "user@example.com"},
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "authentication_factor", "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "type": "unexpected_authentication_factor_type", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "sms": {"phone_number": "+15005550006"}, "totp": {"issuer": "WorkOS", "user": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthenticationFactor.from_dict(data)
         assert instance.to_dict() == data
 
@@ -1233,18 +643,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authorization_resource_minimal_payload(self):
-        data = {
-            "object": "authorization_resource",
-            "name": "Website Redesign",
-            "description": None,
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "parent_resource_id": None,
-            "id": "authz_resource_01HXYZ123456789ABCDEFGH",
-            "external_id": "proj-456",
-            "resource_type_slug": "project",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "authorization_resource", "name": "Website Redesign", "description": None, "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "parent_resource_id": None, "id": "authz_resource_01HXYZ123456789ABCDEFGH", "external_id": "proj-456", "resource_type_slug": "project", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthorizationResource.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1259,18 +658,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_authorization_resource_preserves_nullable_fields(self):
-        data = {
-            "object": "authorization_resource",
-            "name": "Website Redesign",
-            "description": None,
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "parent_resource_id": None,
-            "id": "authz_resource_01HXYZ123456789ABCDEFGH",
-            "external_id": "proj-456",
-            "resource_type_slug": "project",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "authorization_resource", "name": "Website Redesign", "description": None, "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "parent_resource_id": None, "id": "authz_resource_01HXYZ123456789ABCDEFGH", "external_id": "proj-456", "resource_type_slug": "project", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthorizationResource.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -1285,17 +673,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authorization_permission_minimal_payload(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01HXYZ123456789ABCDEFGHIJ",
-            "slug": "documents:read",
-            "name": "View Documents",
-            "description": None,
-            "system": False,
-            "resource_type_slug": "workspace",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "permission", "id": "perm_01HXYZ123456789ABCDEFGHIJ", "slug": "documents:read", "name": "View Documents", "description": None, "system": False, "resource_type_slug": "workspace", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthorizationPermission.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1309,17 +687,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_authorization_permission_preserves_nullable_fields(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01HXYZ123456789ABCDEFGHIJ",
-            "slug": "documents:read",
-            "name": "View Documents",
-            "description": None,
-            "system": False,
-            "resource_type_slug": "workspace",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "permission", "id": "perm_01HXYZ123456789ABCDEFGHIJ", "slug": "documents:read", "name": "View Documents", "description": None, "system": False, "resource_type_slug": "workspace", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = AuthorizationPermission.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -1347,18 +715,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_role_assignment_minimal_payload(self):
-        data = {
-            "object": "role_assignment",
-            "id": "role_assignment_01HXYZ123456789ABCDEFGH",
-            "role": {"slug": "admin"},
-            "resource": {
-                "id": "authz_resource_01HXYZ123456789ABCDEFGH",
-                "external_id": "proj-456",
-                "resource_type_slug": "project",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "role_assignment", "id": "role_assignment_01HXYZ123456789ABCDEFGH", "role": {"slug": "admin"}, "resource": {"id": "authz_resource_01HXYZ123456789ABCDEFGH", "external_id": "proj-456", "resource_type_slug": "project"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = RoleAssignment.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1377,18 +734,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_role_minimal_payload(self):
-        data = {
-            "slug": "admin",
-            "object": "role",
-            "id": "role_01EHQMYV6MBK39QC5PZXHY59C3",
-            "name": "Admin",
-            "description": None,
-            "type": "EnvironmentRole",
-            "resource_type_slug": "organization",
-            "permissions": ["posts:read", "posts:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"slug": "admin", "object": "role", "id": "role_01EHQMYV6MBK39QC5PZXHY59C3", "name": "Admin", "description": None, "type": "EnvironmentRole", "resource_type_slug": "organization", "permissions": ["posts:read", "posts:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Role.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["slug"] == data["slug"]
@@ -1403,35 +749,13 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_role_preserves_nullable_fields(self):
-        data = {
-            "slug": "admin",
-            "object": "role",
-            "id": "role_01EHQMYV6MBK39QC5PZXHY59C3",
-            "name": "Admin",
-            "description": None,
-            "type": "EnvironmentRole",
-            "resource_type_slug": "organization",
-            "permissions": ["posts:read", "posts:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"slug": "admin", "object": "role", "id": "role_01EHQMYV6MBK39QC5PZXHY59C3", "name": "Admin", "description": None, "type": "EnvironmentRole", "resource_type_slug": "organization", "permissions": ["posts:read", "posts:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Role.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
 
     def test_role_round_trips_unknown_enum_values(self):
-        data = {
-            "slug": "admin",
-            "object": "role",
-            "id": "role_01EHQMYV6MBK39QC5PZXHY59C3",
-            "name": "Admin",
-            "description": "Can manage all resources",
-            "type": "unexpected_role_type",
-            "resource_type_slug": "organization",
-            "permissions": ["posts:read", "posts:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"slug": "admin", "object": "role", "id": "role_01EHQMYV6MBK39QC5PZXHY59C3", "name": "Admin", "description": "Can manage all resources", "type": "unexpected_role_type", "resource_type_slug": "organization", "permissions": ["posts:read", "posts:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Role.from_dict(data)
         assert instance.to_dict() == data
 
@@ -1444,23 +768,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_role_list_minimal_payload(self):
-        data = {
-            "object": "list",
-            "data": [
-                {
-                    "slug": "admin",
-                    "object": "role",
-                    "id": "role_01EHQMYV6MBK39QC5PZXHY59C3",
-                    "name": "Admin",
-                    "description": "Can manage all resources",
-                    "type": "EnvironmentRole",
-                    "resource_type_slug": "organization",
-                    "permissions": ["posts:read", "posts:write"],
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-        }
+        data = {"object": "list", "data": [{"slug": "admin", "object": "role", "id": "role_01EHQMYV6MBK39QC5PZXHY59C3", "name": "Admin", "description": "Can manage all resources", "type": "EnvironmentRole", "resource_type_slug": "organization", "permissions": ["posts:read", "posts:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}]}
         instance = RoleList.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1475,23 +783,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_minimal_payload(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "connection_type": "OktaSAML",
-            "name": "Foo Corp",
-            "state": "active",
-            "status": "linked",
-            "domains": [
-                {
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "object": "connection_domain",
-                    "domain": "foo-corp.com",
-                }
-            ],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "connection", "id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "connection_type": "OktaSAML", "name": "Foo Corp", "state": "active", "status": "linked", "domains": [{"id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "object": "connection_domain", "domain": "foo-corp.com"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Connection.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1505,48 +797,14 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_connection_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "connection_type": "OktaSAML",
-            "name": "Foo Corp",
-            "state": "active",
-            "status": "linked",
-            "domains": [
-                {
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "object": "connection_domain",
-                    "domain": "foo-corp.com",
-                }
-            ],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "connection", "id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "connection_type": "OktaSAML", "name": "Foo Corp", "state": "active", "status": "linked", "domains": [{"id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "object": "connection_domain", "domain": "foo-corp.com"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Connection.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_id" not in serialized
         assert "options" not in serialized
 
     def test_connection_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "connection_type": "unexpected_connection_connection_type",
-            "name": "Foo Corp",
-            "state": "active",
-            "status": "linked",
-            "domains": [
-                {
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "object": "connection_domain",
-                    "domain": "foo-corp.com",
-                }
-            ],
-            "options": {"signing_cert": None},
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "connection", "id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_type": "unexpected_connection_connection_type", "name": "Foo Corp", "state": "active", "status": "linked", "domains": [{"id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "object": "connection_domain", "domain": "foo-corp.com"}], "options": {"signing_cert": None}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Connection.from_dict(data)
         assert instance.to_dict() == data
 
@@ -1559,13 +817,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_cors_origin_response_minimal_payload(self):
-        data = {
-            "object": "cors_origin",
-            "id": "cors_origin_01HXYZ123456789ABCDEFGHIJ",
-            "origin": "https://example.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "cors_origin", "id": "cors_origin_01HXYZ123456789ABCDEFGHIJ", "origin": "https://example.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = CORSOriginResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1583,17 +835,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_directory_minimal_payload(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "external_key": "sPa12dwRQ",
-            "type": "gsuite directory",
-            "state": "linked",
-            "name": "Foo Corp",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory", "id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "external_key": "sPa12dwRQ", "type": "gsuite directory", "state": "linked", "name": "Foo Corp", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Directory.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1607,36 +849,14 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_directory_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "external_key": "sPa12dwRQ",
-            "type": "gsuite directory",
-            "state": "linked",
-            "name": "Foo Corp",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory", "id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "external_key": "sPa12dwRQ", "type": "gsuite directory", "state": "linked", "name": "Foo Corp", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Directory.from_dict(data)
         serialized = instance.to_dict()
         assert "domain" not in serialized
         assert "metadata" not in serialized
 
     def test_directory_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "external_key": "sPa12dwRQ",
-            "type": "unexpected_directory_type",
-            "state": "linked",
-            "name": "Foo Corp",
-            "domain": "foo-corp.com",
-            "metadata": {"users": {"active": 42, "inactive": 3}, "groups": 5},
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory", "id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "external_key": "sPa12dwRQ", "type": "unexpected_directory_type", "state": "linked", "name": "Foo Corp", "domain": "foo-corp.com", "metadata": {"users": {"active": 42, "inactive": 3}, "groups": 5}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Directory.from_dict(data)
         assert instance.to_dict() == data
 
@@ -1649,16 +869,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_directory_group_minimal_payload(self):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DirectoryGroup.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1671,16 +882,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_directory_group_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DirectoryGroup.from_dict(data)
         serialized = instance.to_dict()
         assert "raw_attributes" not in serialized
@@ -1694,35 +896,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_directory_user_with_groups_minimal_payload(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "groups": [
-                {
-                    "object": "directory_group",
-                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                    "idp_id": "02grqrue4294w24",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "name": "Developers",
-                    "raw_attributes": {"key": {}},
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": None, "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "groups": [{"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}]}
         instance = DirectoryUserWithGroups.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1739,39 +913,7 @@ class TestModelRoundTrip:
         assert serialized["groups"] == data["groups"]
 
     def test_directory_user_with_groups_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "groups": [
-                {
-                    "object": "directory_group",
-                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                    "idp_id": "02grqrue4294w24",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "name": "Developers",
-                    "raw_attributes": {"key": {}},
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "groups": [{"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}]}
         instance = DirectoryUserWithGroups.from_dict(data)
         serialized = instance.to_dict()
         assert "emails" not in serialized
@@ -1779,48 +921,7 @@ class TestModelRoundTrip:
         assert "roles" not in serialized
 
     def test_directory_user_with_groups_preserves_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "first_name": None,
-            "last_name": None,
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": None,
-            "username": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "groups": [
-                {
-                    "object": "directory_group",
-                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                    "idp_id": "02grqrue4294w24",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "name": "Developers",
-                    "raw_attributes": {"key": {}},
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": None, "first_name": None, "last_name": None, "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": None, "username": None, "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "groups": [{"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}]}
         instance = DirectoryUserWithGroups.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["email"] is None
@@ -1830,50 +931,35 @@ class TestModelRoundTrip:
         assert serialized["username"] is None
 
     def test_directory_user_with_groups_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "unexpected_directory_user_with_groups_state",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "groups": [
-                {
-                    "object": "directory_group",
-                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                    "idp_id": "02grqrue4294w24",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "name": "Developers",
-                    "raw_attributes": {"key": {}},
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "unexpected_directory_user_with_groups_state", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "groups": [{"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}]}
         instance = DirectoryUserWithGroups.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_group_round_trip(self):
+        data = load_fixture("group.json")
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = Group.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_minimal_payload(self):
+        data = {"object": "group", "id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Engineering", "description": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_group_preserves_nullable_fields(self):
+        data = {"object": "group", "id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Engineering", "description": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
 
     def test_event_context_actor_round_trip(self):
         data = load_fixture("event_context_actor.json")
@@ -1898,11 +984,7 @@ class TestModelRoundTrip:
         assert serialized["name"] is None
 
     def test_event_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_event_context_actor_source",
-            "name": "Jane Doe",
-        }
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "unexpected_event_context_actor_source", "name": "Jane Doe"}
         instance = EventContextActor.from_dict(data)
         assert instance.to_dict() == data
 
@@ -1939,22 +1021,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_directory_user_minimal_payload(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": None, "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DirectoryUser.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -1970,26 +1037,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_directory_user_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DirectoryUser.from_dict(data)
         serialized = instance.to_dict()
         assert "emails" not in serialized
@@ -1997,35 +1045,7 @@ class TestModelRoundTrip:
         assert "roles" not in serialized
 
     def test_directory_user_preserves_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "first_name": None,
-            "last_name": None,
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": None,
-            "username": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": None, "first_name": None, "last_name": None, "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": None, "username": None, "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DirectoryUser.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["email"] is None
@@ -2035,79 +1055,9 @@ class TestModelRoundTrip:
         assert serialized["username"] is None
 
     def test_directory_user_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "unexpected_directory_user_state",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "unexpected_directory_user_state", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DirectoryUser.from_dict(data)
         assert instance.to_dict() == data
-
-    def test_group_round_trip(self):
-        data = load_fixture("group.json")
-        instance = Group.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = Group.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_group_minimal_payload(self):
-        data = {
-            "object": "group",
-            "id": "group_01HXYZ123456789ABCDEFGHIJ",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Engineering",
-            "description": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = Group.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["name"] == data["name"]
-        assert serialized["description"] == data["description"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_group_preserves_nullable_fields(self):
-        data = {
-            "object": "group",
-            "id": "group_01HXYZ123456789ABCDEFGHIJ",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Engineering",
-            "description": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = Group.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["description"] is None
 
     def test_user_round_trip(self):
         data = load_fixture("user.json")
@@ -2118,19 +1068,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_minimal_payload(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "last_sign_in_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": None, "last_name": None, "profile_picture_url": None, "email": "marcelina.davis@example.com", "email_verified": True, "external_id": None, "last_sign_in_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = User.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -2146,40 +1084,13 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_user_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-            "locale": "en-US",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = User.from_dict(data)
         serialized = instance.to_dict()
         assert "metadata" not in serialized
 
     def test_user_preserves_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "marcelina.davis@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "metadata": {"timezone": "America/New_York"},
-            "last_sign_in_at": None,
-            "locale": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": None, "last_name": None, "profile_picture_url": None, "email": "marcelina.davis@example.com", "email_verified": True, "external_id": None, "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": None, "locale": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = User.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["first_name"] is None
@@ -2188,6 +1099,37 @@ class TestModelRoundTrip:
         assert serialized["external_id"] is None
         assert serialized["last_sign_in_at"] is None
         assert serialized["locale"] is None
+
+    def test_waitlist_user_round_trip(self):
+        data = load_fixture("waitlist_user.json")
+        instance = WaitlistUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistUser.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_user_minimal_payload(self):
+        data = {"object": "waitlist_user", "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "approved_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
+        instance = WaitlistUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["approved_at"] == data["approved_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_waitlist_user_preserves_nullable_fields(self):
+        data = {"object": "waitlist_user", "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "approved_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
+        instance = WaitlistUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["approved_at"] is None
+
+    def test_waitlist_user_round_trips_unknown_enum_values(self):
+        data = {"object": "waitlist_user", "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "unexpected_waitlist_user_state", "approved_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
+        instance = WaitlistUser.from_dict(data)
+        assert instance.to_dict() == data
 
     def test_action_authentication_denied_round_trip(self):
         data = load_fixture("action_authentication_denied.json")
@@ -2198,23 +1140,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_action_authentication_denied_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "action.authentication.denied",
-            "data": {
-                "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "authentication",
-                "verdict": "Deny",
-                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "email": "user@example.com",
-                "ip_address": "203.0.113.1",
-                "user_agent": "Mozilla/5.0",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "action.authentication.denied", "data": {"action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY", "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "authentication", "verdict": "Deny", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com", "ip_address": "203.0.113.1", "user_agent": "Mozilla/5.0"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ActionAuthenticationDenied.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -2223,26 +1149,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_action_authentication_denied_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "action.authentication.denied",
-            "data": {
-                "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "authentication",
-                "verdict": "Deny",
-                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "email": "user@example.com",
-                "ip_address": "203.0.113.1",
-                "user_agent": "Mozilla/5.0",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_action_authentication_denied_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "action.authentication.denied", "data": {"action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY", "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "authentication", "verdict": "Deny", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com", "ip_address": "203.0.113.1", "user_agent": "Mozilla/5.0"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ActionAuthenticationDenied.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -2256,17 +1164,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_action_authentication_denied_data_minimal_payload(self):
-        data = {
-            "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "authentication",
-            "verdict": "Deny",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": None,
-            "email": "user@example.com",
-            "ip_address": None,
-            "user_agent": None,
-        }
+        data = {"action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY", "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "authentication", "verdict": "Deny", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": None, "email": "user@example.com", "ip_address": None, "user_agent": None}
         instance = ActionAuthenticationDeniedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["action_endpoint_id"] == data["action_endpoint_id"]
@@ -2280,17 +1178,7 @@ class TestModelRoundTrip:
         assert serialized["user_agent"] == data["user_agent"]
 
     def test_action_authentication_denied_data_preserves_nullable_fields(self):
-        data = {
-            "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "authentication",
-            "verdict": "Deny",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": None,
-            "email": "user@example.com",
-            "ip_address": None,
-            "user_agent": None,
-        }
+        data = {"action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY", "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "authentication", "verdict": "Deny", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": None, "email": "user@example.com", "ip_address": None, "user_agent": None}
         instance = ActionAuthenticationDeniedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["organization_id"] is None
@@ -2306,22 +1194,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_action_user_registration_denied_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "action.user_registration.denied",
-            "data": {
-                "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "user_registration",
-                "verdict": "Deny",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "email": "user@example.com",
-                "ip_address": "203.0.113.1",
-                "user_agent": "Mozilla/5.0",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "action.user_registration.denied", "data": {"action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY", "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "user_registration", "verdict": "Deny", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com", "ip_address": "203.0.113.1", "user_agent": "Mozilla/5.0"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ActionUserRegistrationDenied.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -2330,25 +1203,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_action_user_registration_denied_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "action.user_registration.denied",
-            "data": {
-                "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "user_registration",
-                "verdict": "Deny",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "email": "user@example.com",
-                "ip_address": "203.0.113.1",
-                "user_agent": "Mozilla/5.0",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_action_user_registration_denied_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "action.user_registration.denied", "data": {"action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY", "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "user_registration", "verdict": "Deny", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com", "ip_address": "203.0.113.1", "user_agent": "Mozilla/5.0"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ActionUserRegistrationDenied.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -2362,16 +1218,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_action_user_registration_denied_data_minimal_payload(self):
-        data = {
-            "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "user_registration",
-            "verdict": "Deny",
-            "organization_id": None,
-            "email": "user@example.com",
-            "ip_address": None,
-            "user_agent": None,
-        }
+        data = {"action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY", "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "user_registration", "verdict": "Deny", "organization_id": None, "email": "user@example.com", "ip_address": None, "user_agent": None}
         instance = ActionUserRegistrationDeniedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["action_endpoint_id"] == data["action_endpoint_id"]
@@ -2384,16 +1231,7 @@ class TestModelRoundTrip:
         assert serialized["user_agent"] == data["user_agent"]
 
     def test_action_user_registration_denied_data_preserves_nullable_fields(self):
-        data = {
-            "action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "user_registration",
-            "verdict": "Deny",
-            "organization_id": None,
-            "email": "user@example.com",
-            "ip_address": None,
-            "user_agent": None,
-        }
+        data = {"action_endpoint_id": "action_endpoint_01EHWNCE74X7JSDV0X3SZ3KJNY", "action_execution_id": "action_execution_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "user_registration", "verdict": "Deny", "organization_id": None, "email": "user@example.com", "ip_address": None, "user_agent": None}
         instance = ActionUserRegistrationDeniedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["organization_id"] is None
@@ -2409,26 +1247,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_api_key_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "api_key.created",
-            "data": {
-                "object": "api_key",
-                "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "owner": {
-                    "type": "organization",
-                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                },
-                "name": "My API Key",
-                "obfuscated_value": "sk_test_...1234",
-                "last_used_at": "2026-01-15T12:00:00.000Z",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "api_key.created", "data": {"object": "api_key", "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY", "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "name": "My API Key", "obfuscated_value": "sk_test_...1234", "last_used_at": "2026-01-15T12:00:00.000Z", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ApiKeyCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -2438,26 +1257,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_api_key_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "api_key.created",
-            "data": {
-                "object": "api_key",
-                "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "owner": {
-                    "type": "organization",
-                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                },
-                "name": "My API Key",
-                "obfuscated_value": "sk_test_...1234",
-                "last_used_at": "2026-01-15T12:00:00.000Z",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "api_key.created", "data": {"object": "api_key", "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY", "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "name": "My API Key", "obfuscated_value": "sk_test_...1234", "last_used_at": "2026-01-15T12:00:00.000Z", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ApiKeyCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -2471,17 +1271,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_api_key_created_data_minimal_payload(self):
-        data = {
-            "object": "api_key",
-            "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"},
-            "name": "My API Key",
-            "obfuscated_value": "sk_test_...1234",
-            "last_used_at": None,
-            "permissions": ["users:read", "users:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "api_key", "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY", "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "name": "My API Key", "obfuscated_value": "sk_test_...1234", "last_used_at": None, "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ApiKeyCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -2495,17 +1285,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_api_key_created_data_preserves_nullable_fields(self):
-        data = {
-            "object": "api_key",
-            "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"},
-            "name": "My API Key",
-            "obfuscated_value": "sk_test_...1234",
-            "last_used_at": None,
-            "permissions": ["users:read", "users:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "api_key", "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY", "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "name": "My API Key", "obfuscated_value": "sk_test_...1234", "last_used_at": None, "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ApiKeyCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
@@ -2534,26 +1314,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_api_key_revoked_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "api_key.revoked",
-            "data": {
-                "object": "api_key",
-                "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "owner": {
-                    "type": "organization",
-                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                },
-                "name": "My API Key",
-                "obfuscated_value": "sk_test_...1234",
-                "last_used_at": "2026-01-15T12:00:00.000Z",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "api_key.revoked", "data": {"object": "api_key", "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY", "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "name": "My API Key", "obfuscated_value": "sk_test_...1234", "last_used_at": "2026-01-15T12:00:00.000Z", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ApiKeyRevoked.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -2563,26 +1324,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_api_key_revoked_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "api_key.revoked",
-            "data": {
-                "object": "api_key",
-                "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "owner": {
-                    "type": "organization",
-                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                },
-                "name": "My API Key",
-                "obfuscated_value": "sk_test_...1234",
-                "last_used_at": "2026-01-15T12:00:00.000Z",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "api_key.revoked", "data": {"object": "api_key", "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY", "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "name": "My API Key", "obfuscated_value": "sk_test_...1234", "last_used_at": "2026-01-15T12:00:00.000Z", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ApiKeyRevoked.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -2596,17 +1338,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_api_key_revoked_data_minimal_payload(self):
-        data = {
-            "object": "api_key",
-            "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"},
-            "name": "My API Key",
-            "obfuscated_value": "sk_test_...1234",
-            "last_used_at": None,
-            "permissions": ["users:read", "users:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "api_key", "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY", "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "name": "My API Key", "obfuscated_value": "sk_test_...1234", "last_used_at": None, "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ApiKeyRevokedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -2620,17 +1352,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_api_key_revoked_data_preserves_nullable_fields(self):
-        data = {
-            "object": "api_key",
-            "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"},
-            "name": "My API Key",
-            "obfuscated_value": "sk_test_...1234",
-            "last_used_at": None,
-            "permissions": ["users:read", "users:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "api_key", "id": "api_key_01EHWNCE74X7JSDV0X3SZ3KJNY", "owner": {"type": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "name": "My API Key", "obfuscated_value": "sk_test_...1234", "last_used_at": None, "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ApiKeyRevokedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
@@ -2659,24 +1381,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_email_verification_failed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.email_verification_failed",
-            "data": {
-                "type": "email_verification",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.email_verification_failed", "data": {"type": "email_verification", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationEmailVerificationFailed.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -2685,27 +1390,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_email_verification_failed_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.email_verification_failed",
-            "data": {
-                "type": "email_verification",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_email_verification_failed_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.email_verification_failed", "data": {"type": "email_verification", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationEmailVerificationFailed.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -2719,18 +1405,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_email_verification_failed_data_minimal_payload(self):
-        data = {
-            "type": "email_verification",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "email_verification", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationEmailVerificationFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -2741,21 +1416,8 @@ class TestModelRoundTrip:
         assert serialized["email"] == data["email"]
         assert serialized["error"] == data["error"]
 
-    def test_authentication_email_verification_failed_data_preserves_nullable_fields(
-        self,
-    ):
-        data = {
-            "type": "email_verification",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+    def test_authentication_email_verification_failed_data_preserves_nullable_fields(self):
+        data = {"type": "email_verification", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationEmailVerificationFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -2772,10 +1434,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_email_verification_failed_data_error_minimal_payload(self):
-        data = {
-            "code": "mfa_challenge_failed",
-            "message": "The MFA challenge has failed.",
-        }
+        data = {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}
         instance = AuthenticationEmailVerificationFailedDataError.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
@@ -2790,20 +1449,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_email_verification_succeeded_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.email_verification_succeeded",
-            "data": {
-                "type": "email_verification",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.email_verification_succeeded", "data": {"type": "email_verification", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationEmailVerificationSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -2812,23 +1458,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_email_verification_succeeded_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.email_verification_succeeded",
-            "data": {
-                "type": "email_verification",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_email_verification_succeeded_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.email_verification_succeeded", "data": {"type": "email_verification", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationEmailVerificationSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -2842,14 +1473,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_email_verification_succeeded_data_minimal_payload(self):
-        data = {
-            "type": "email_verification",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"type": "email_verification", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationEmailVerificationSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -2859,17 +1483,8 @@ class TestModelRoundTrip:
         assert serialized["user_id"] == data["user_id"]
         assert serialized["email"] == data["email"]
 
-    def test_authentication_email_verification_succeeded_data_preserves_nullable_fields(
-        self,
-    ):
-        data = {
-            "type": "email_verification",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+    def test_authentication_email_verification_succeeded_data_preserves_nullable_fields(self):
+        data = {"type": "email_verification", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationEmailVerificationSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -2884,24 +1499,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_magic_auth_failed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.magic_auth_failed",
-            "data": {
-                "type": "magic_auth",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.magic_auth_failed", "data": {"type": "magic_auth", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationMagicAuthFailed.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -2910,27 +1508,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_magic_auth_failed_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.magic_auth_failed",
-            "data": {
-                "type": "magic_auth",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_magic_auth_failed_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.magic_auth_failed", "data": {"type": "magic_auth", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationMagicAuthFailed.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -2944,18 +1523,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_magic_auth_failed_data_minimal_payload(self):
-        data = {
-            "type": "magic_auth",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "magic_auth", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationMagicAuthFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -2967,18 +1535,7 @@ class TestModelRoundTrip:
         assert serialized["error"] == data["error"]
 
     def test_authentication_magic_auth_failed_data_preserves_nullable_fields(self):
-        data = {
-            "type": "magic_auth",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "magic_auth", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationMagicAuthFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -2995,10 +1552,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_magic_auth_failed_data_error_minimal_payload(self):
-        data = {
-            "code": "mfa_challenge_failed",
-            "message": "The MFA challenge has failed.",
-        }
+        data = {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}
         instance = AuthenticationMagicAuthFailedDataError.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
@@ -3013,20 +1567,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_magic_auth_succeeded_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.magic_auth_succeeded",
-            "data": {
-                "type": "magic_auth",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.magic_auth_succeeded", "data": {"type": "magic_auth", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationMagicAuthSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -3035,23 +1576,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_magic_auth_succeeded_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.magic_auth_succeeded",
-            "data": {
-                "type": "magic_auth",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_magic_auth_succeeded_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.magic_auth_succeeded", "data": {"type": "magic_auth", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationMagicAuthSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -3065,14 +1591,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_magic_auth_succeeded_data_minimal_payload(self):
-        data = {
-            "type": "magic_auth",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"type": "magic_auth", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationMagicAuthSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -3083,14 +1602,7 @@ class TestModelRoundTrip:
         assert serialized["email"] == data["email"]
 
     def test_authentication_magic_auth_succeeded_data_preserves_nullable_fields(self):
-        data = {
-            "type": "magic_auth",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"type": "magic_auth", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationMagicAuthSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -3105,24 +1617,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_mfa_failed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.mfa_failed",
-            "data": {
-                "type": "mfa",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.mfa_failed", "data": {"type": "mfa", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationMFAFailed.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -3132,24 +1627,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_authentication_mfa_failed_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.mfa_failed",
-            "data": {
-                "type": "mfa",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.mfa_failed", "data": {"type": "mfa", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationMFAFailed.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -3163,18 +1641,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_mfa_failed_data_minimal_payload(self):
-        data = {
-            "type": "mfa",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "mfa", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationMFAFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -3186,18 +1653,7 @@ class TestModelRoundTrip:
         assert serialized["error"] == data["error"]
 
     def test_authentication_mfa_failed_data_preserves_nullable_fields(self):
-        data = {
-            "type": "mfa",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "mfa", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationMFAFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -3214,10 +1670,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_mfa_failed_data_error_minimal_payload(self):
-        data = {
-            "code": "mfa_challenge_failed",
-            "message": "The MFA challenge has failed.",
-        }
+        data = {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}
         instance = AuthenticationMFAFailedDataError.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
@@ -3232,20 +1685,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_mfa_succeeded_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.mfa_succeeded",
-            "data": {
-                "type": "mfa",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.mfa_succeeded", "data": {"type": "mfa", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationMFASucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -3254,23 +1694,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_mfa_succeeded_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.mfa_succeeded",
-            "data": {
-                "type": "mfa",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_mfa_succeeded_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.mfa_succeeded", "data": {"type": "mfa", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationMFASucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -3284,14 +1709,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_mfa_succeeded_data_minimal_payload(self):
-        data = {
-            "type": "mfa",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"type": "mfa", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationMFASucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -3302,14 +1720,7 @@ class TestModelRoundTrip:
         assert serialized["email"] == data["email"]
 
     def test_authentication_mfa_succeeded_data_preserves_nullable_fields(self):
-        data = {
-            "type": "mfa",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"type": "mfa", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationMFASucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -3324,24 +1735,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_oauth_failed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.oauth_failed",
-            "data": {
-                "type": "oauth",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.oauth_failed", "data": {"type": "oauth", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationOAuthFailed.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -3350,27 +1744,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_oauth_failed_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.oauth_failed",
-            "data": {
-                "type": "oauth",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_oauth_failed_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.oauth_failed", "data": {"type": "oauth", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationOAuthFailed.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -3384,18 +1759,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_oauth_failed_data_minimal_payload(self):
-        data = {
-            "type": "oauth",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "oauth", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationOAuthFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -3407,18 +1771,7 @@ class TestModelRoundTrip:
         assert serialized["error"] == data["error"]
 
     def test_authentication_oauth_failed_data_preserves_nullable_fields(self):
-        data = {
-            "type": "oauth",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "oauth", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationOAuthFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -3435,10 +1788,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_oauth_failed_data_error_minimal_payload(self):
-        data = {
-            "code": "mfa_challenge_failed",
-            "message": "The MFA challenge has failed.",
-        }
+        data = {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}
         instance = AuthenticationOAuthFailedDataError.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
@@ -3453,20 +1803,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_oauth_succeeded_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.oauth_succeeded",
-            "data": {
-                "type": "oauth",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.oauth_succeeded", "data": {"type": "oauth", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationOAuthSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -3475,23 +1812,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_oauth_succeeded_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.oauth_succeeded",
-            "data": {
-                "type": "oauth",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_oauth_succeeded_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.oauth_succeeded", "data": {"type": "oauth", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationOAuthSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -3505,14 +1827,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_oauth_succeeded_data_minimal_payload(self):
-        data = {
-            "type": "oauth",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": "user@example.com",
-        }
+        data = {"type": "oauth", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": None, "email": "user@example.com"}
         instance = AuthenticationOAuthSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -3523,14 +1838,7 @@ class TestModelRoundTrip:
         assert serialized["email"] == data["email"]
 
     def test_authentication_oauth_succeeded_data_preserves_nullable_fields(self):
-        data = {
-            "type": "oauth",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": "user@example.com",
-        }
+        data = {"type": "oauth", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": None, "email": "user@example.com"}
         instance = AuthenticationOAuthSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -3546,24 +1854,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_passkey_failed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.passkey_failed",
-            "data": {
-                "type": "passkey",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.passkey_failed", "data": {"type": "passkey", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationPasskeyFailed.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -3572,27 +1863,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_passkey_failed_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.passkey_failed",
-            "data": {
-                "type": "passkey",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_passkey_failed_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.passkey_failed", "data": {"type": "passkey", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationPasskeyFailed.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -3606,18 +1878,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_passkey_failed_data_minimal_payload(self):
-        data = {
-            "type": "passkey",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "passkey", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationPasskeyFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -3629,18 +1890,7 @@ class TestModelRoundTrip:
         assert serialized["error"] == data["error"]
 
     def test_authentication_passkey_failed_data_preserves_nullable_fields(self):
-        data = {
-            "type": "passkey",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "passkey", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationPasskeyFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -3657,10 +1907,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_passkey_failed_data_error_minimal_payload(self):
-        data = {
-            "code": "mfa_challenge_failed",
-            "message": "The MFA challenge has failed.",
-        }
+        data = {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}
         instance = AuthenticationPasskeyFailedDataError.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
@@ -3675,20 +1922,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_passkey_succeeded_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.passkey_succeeded",
-            "data": {
-                "type": "passkey",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.passkey_succeeded", "data": {"type": "passkey", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationPasskeySucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -3697,23 +1931,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_passkey_succeeded_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.passkey_succeeded",
-            "data": {
-                "type": "passkey",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_passkey_succeeded_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.passkey_succeeded", "data": {"type": "passkey", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationPasskeySucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -3727,14 +1946,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_passkey_succeeded_data_minimal_payload(self):
-        data = {
-            "type": "passkey",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"type": "passkey", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationPasskeySucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -3745,14 +1957,7 @@ class TestModelRoundTrip:
         assert serialized["email"] == data["email"]
 
     def test_authentication_passkey_succeeded_data_preserves_nullable_fields(self):
-        data = {
-            "type": "passkey",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"type": "passkey", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationPasskeySucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -3767,24 +1972,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_password_failed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.password_failed",
-            "data": {
-                "type": "password",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.password_failed", "data": {"type": "password", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationPasswordFailed.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -3793,27 +1981,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_password_failed_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.password_failed",
-            "data": {
-                "type": "password",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_password_failed_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.password_failed", "data": {"type": "password", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationPasswordFailed.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -3827,18 +1996,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_password_failed_data_minimal_payload(self):
-        data = {
-            "type": "password",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "password", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationPasswordFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -3850,18 +2008,7 @@ class TestModelRoundTrip:
         assert serialized["error"] == data["error"]
 
     def test_authentication_password_failed_data_preserves_nullable_fields(self):
-        data = {
-            "type": "password",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "password", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationPasswordFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -3878,10 +2025,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_password_failed_data_error_minimal_payload(self):
-        data = {
-            "code": "mfa_challenge_failed",
-            "message": "The MFA challenge has failed.",
-        }
+        data = {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}
         instance = AuthenticationPasswordFailedDataError.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
@@ -3896,20 +2040,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_password_succeeded_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.password_succeeded",
-            "data": {
-                "type": "password",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.password_succeeded", "data": {"type": "password", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationPasswordSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -3918,23 +2049,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_password_succeeded_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.password_succeeded",
-            "data": {
-                "type": "password",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_password_succeeded_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.password_succeeded", "data": {"type": "password", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationPasswordSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -3948,14 +2064,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_password_succeeded_data_minimal_payload(self):
-        data = {
-            "type": "password",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"type": "password", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationPasswordSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -3966,14 +2075,7 @@ class TestModelRoundTrip:
         assert serialized["email"] == data["email"]
 
     def test_authentication_password_succeeded_data_preserves_nullable_fields(self):
-        data = {
-            "type": "password",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"type": "password", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationPasswordSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -3988,22 +2090,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_radar_risk_detected_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.radar_risk_detected",
-            "data": {
-                "auth_method": "password",
-                "action": "signup",
-                "control": "block",
-                "blocklist_type": "ip",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.radar_risk_detected", "data": {"auth_method": "password", "action": "signup", "control": "block", "blocklist_type": "ip", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationRadarRiskDetected.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -4012,25 +2099,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_radar_risk_detected_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.radar_risk_detected",
-            "data": {
-                "auth_method": "password",
-                "action": "signup",
-                "control": "block",
-                "blocklist_type": "ip",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_radar_risk_detected_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.radar_risk_detected", "data": {"auth_method": "password", "action": "signup", "control": "block", "blocklist_type": "ip", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationRadarRiskDetected.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -4044,16 +2114,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_radar_risk_detected_data_minimal_payload(self):
-        data = {
-            "auth_method": "password",
-            "action": "signup",
-            "control": None,
-            "blocklist_type": None,
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"auth_method": "password", "action": "signup", "control": None, "blocklist_type": None, "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationRadarRiskDetectedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["auth_method"] == data["auth_method"]
@@ -4066,16 +2127,7 @@ class TestModelRoundTrip:
         assert serialized["email"] == data["email"]
 
     def test_authentication_radar_risk_detected_data_preserves_nullable_fields(self):
-        data = {
-            "auth_method": "password",
-            "action": "signup",
-            "control": None,
-            "blocklist_type": None,
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+        data = {"auth_method": "password", "action": "signup", "control": None, "blocklist_type": None, "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationRadarRiskDetectedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["control"] is None
@@ -4083,19 +2135,8 @@ class TestModelRoundTrip:
         assert serialized["ip_address"] is None
         assert serialized["user_agent"] is None
 
-    def test_authentication_radar_risk_detected_data_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "auth_method": "password",
-            "action": "unexpected_authentication_radar_risk_detected_data_action",
-            "control": "block",
-            "blocklist_type": "ip",
-            "ip_address": "203.0.113.42",
-            "user_agent": "Mozilla/5.0",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "user@example.com",
-        }
+    def test_authentication_radar_risk_detected_data_round_trips_unknown_enum_values(self):
+        data = {"auth_method": "password", "action": "unexpected_authentication_radar_risk_detected_data_action", "control": "block", "blocklist_type": "ip", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com"}
         instance = AuthenticationRadarRiskDetectedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -4108,29 +2149,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_sso_failed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.sso_failed",
-            "data": {
-                "type": "sso",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "sso": {
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-                },
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.sso_failed", "data": {"type": "sso", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationSSOFailed.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -4140,29 +2159,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_authentication_sso_failed_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.sso_failed",
-            "data": {
-                "type": "sso",
-                "status": "failed",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "sso": {
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-                },
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.sso_failed", "data": {"type": "sso", "status": "failed", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationSSOFailed.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -4176,23 +2173,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_sso_failed_data_minimal_payload(self):
-        data = {
-            "type": "sso",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "sso": {
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-            },
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "sso", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationSSOFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -4205,23 +2186,7 @@ class TestModelRoundTrip:
         assert serialized["error"] == data["error"]
 
     def test_authentication_sso_failed_data_preserves_nullable_fields(self):
-        data = {
-            "type": "sso",
-            "status": "failed",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "sso": {
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-            },
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "sso", "status": "failed", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationSSOFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -4262,10 +2227,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_sso_failed_data_error_minimal_payload(self):
-        data = {
-            "code": "mfa_challenge_failed",
-            "message": "The MFA challenge has failed.",
-        }
+        data = {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}
         instance = AuthenticationSSOFailedDataError.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
@@ -4280,25 +2242,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_sso_started_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.sso_started",
-            "data": {
-                "type": "sso",
-                "status": "started",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "sso": {
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.sso_started", "data": {"type": "sso", "status": "started", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationSSOStarted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -4308,25 +2252,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_authentication_sso_started_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.sso_started",
-            "data": {
-                "type": "sso",
-                "status": "started",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "sso": {
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.sso_started", "data": {"type": "sso", "status": "started", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationSSOStarted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -4340,19 +2266,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_sso_started_data_minimal_payload(self):
-        data = {
-            "type": "sso",
-            "status": "started",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "sso": {
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-            },
-        }
+        data = {"type": "sso", "status": "started", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}}
         instance = AuthenticationSSOStartedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -4364,19 +2278,7 @@ class TestModelRoundTrip:
         assert serialized["sso"] == data["sso"]
 
     def test_authentication_sso_started_data_preserves_nullable_fields(self):
-        data = {
-            "type": "sso",
-            "status": "started",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "sso": {
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-            },
-        }
+        data = {"type": "sso", "status": "started", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}}
         instance = AuthenticationSSOStartedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -4417,25 +2319,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_sso_succeeded_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.sso_succeeded",
-            "data": {
-                "type": "sso",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "sso": {
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.sso_succeeded", "data": {"type": "sso", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationSSOSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -4444,28 +2328,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_sso_succeeded_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.sso_succeeded",
-            "data": {
-                "type": "sso",
-                "status": "succeeded",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "sso": {
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_sso_succeeded_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.sso_succeeded", "data": {"type": "sso", "status": "succeeded", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationSSOSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -4479,19 +2343,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_sso_succeeded_data_minimal_payload(self):
-        data = {
-            "type": "sso",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": "user@example.com",
-            "sso": {
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-            },
-        }
+        data = {"type": "sso", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": None, "email": "user@example.com", "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}}
         instance = AuthenticationSSOSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -4503,19 +2355,7 @@ class TestModelRoundTrip:
         assert serialized["sso"] == data["sso"]
 
     def test_authentication_sso_succeeded_data_preserves_nullable_fields(self):
-        data = {
-            "type": "sso",
-            "status": "succeeded",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": "user@example.com",
-            "sso": {
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-            },
-        }
+        data = {"type": "sso", "status": "succeeded", "ip_address": None, "user_agent": None, "user_id": None, "email": "user@example.com", "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}}
         instance = AuthenticationSSOSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -4555,29 +2395,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_sso_timed_out_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.sso_timed_out",
-            "data": {
-                "type": "sso",
-                "status": "timed_out",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "sso": {
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-                },
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.sso_timed_out", "data": {"type": "sso", "status": "timed_out", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationSSOTimedOut.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -4586,32 +2404,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_authentication_sso_timed_out_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "authentication.sso_timed_out",
-            "data": {
-                "type": "sso",
-                "status": "timed_out",
-                "ip_address": "203.0.113.42",
-                "user_agent": "Mozilla/5.0",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "user@example.com",
-                "sso": {
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                    "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-                },
-                "error": {
-                    "code": "mfa_challenge_failed",
-                    "message": "The MFA challenge has failed.",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_authentication_sso_timed_out_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "authentication.sso_timed_out", "data": {"type": "sso", "status": "timed_out", "ip_address": "203.0.113.42", "user_agent": "Mozilla/5.0", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "user@example.com", "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = AuthenticationSSOTimedOut.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -4625,23 +2419,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_sso_timed_out_data_minimal_payload(self):
-        data = {
-            "type": "sso",
-            "status": "timed_out",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "sso": {
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-            },
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "sso", "status": "timed_out", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationSSOTimedOutData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
@@ -4654,23 +2432,7 @@ class TestModelRoundTrip:
         assert serialized["error"] == data["error"]
 
     def test_authentication_sso_timed_out_data_preserves_nullable_fields(self):
-        data = {
-            "type": "sso",
-            "status": "timed_out",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": None,
-            "email": None,
-            "sso": {
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5",
-            },
-            "error": {
-                "code": "mfa_challenge_failed",
-                "message": "The MFA challenge has failed.",
-            },
-        }
+        data = {"type": "sso", "status": "timed_out", "ip_address": None, "user_agent": None, "user_id": None, "email": None, "sso": {"organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "session_id": "sess_01E4ZCR3C56J083X43JQXF3JK5"}, "error": {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}}
         instance = AuthenticationSSOTimedOutData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -4711,10 +2473,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_sso_timed_out_data_error_minimal_payload(self):
-        data = {
-            "code": "mfa_challenge_failed",
-            "message": "The MFA challenge has failed.",
-        }
+        data = {"code": "mfa_challenge_failed", "message": "The MFA challenge has failed."}
         instance = AuthenticationSSOTimedOutDataError.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["code"] == data["code"]
@@ -4729,31 +2488,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_activated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "connection.activated",
-            "data": {
-                "object": "connection",
-                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "state": "active",
-                "name": "Acme SSO",
-                "connection_type": "OktaSAML",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "status": "linked",
-                "domains": [
-                    {
-                        "object": "connection_domain",
-                        "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "domain": "acme.com",
-                    }
-                ],
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "connection.activated", "data": {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "linked", "domains": [{"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ConnectionActivated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -4763,31 +2498,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_connection_activated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "connection.activated",
-            "data": {
-                "object": "connection",
-                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "state": "active",
-                "name": "Acme SSO",
-                "connection_type": "OktaSAML",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "status": "linked",
-                "domains": [
-                    {
-                        "object": "connection_domain",
-                        "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "domain": "acme.com",
-                    }
-                ],
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "connection.activated", "data": {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "linked", "domains": [{"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ConnectionActivated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -4801,24 +2512,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_activated_data_minimal_payload(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "state": "active",
-            "name": "Acme SSO",
-            "connection_type": "OktaSAML",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "linked",
-            "domains": [
-                {
-                    "object": "connection_domain",
-                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "linked", "domains": [{"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = ConnectionActivatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -4833,48 +2527,13 @@ class TestModelRoundTrip:
         assert serialized["domains"] == data["domains"]
 
     def test_connection_activated_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "state": "active",
-            "name": "Acme SSO",
-            "connection_type": "OktaSAML",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "linked",
-            "domains": [
-                {
-                    "object": "connection_domain",
-                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "linked", "domains": [{"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = ConnectionActivatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_id" not in serialized
 
     def test_connection_activated_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "state": "unexpected_connection_activated_data_state",
-            "name": "Acme SSO",
-            "connection_type": "OktaSAML",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "linked",
-            "domains": [
-                {
-                    "object": "connection_domain",
-                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "unexpected_connection_activated_data_state", "name": "Acme SSO", "connection_type": "OktaSAML", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "linked", "domains": [{"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = ConnectionActivatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -4887,11 +2546,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_activated_data_domain_minimal_payload(self):
-        data = {
-            "object": "connection_domain",
-            "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domain": "acme.com",
-        }
+        data = {"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}
         instance = ConnectionActivatedDataDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -4907,31 +2562,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_deactivated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "connection.deactivated",
-            "data": {
-                "object": "connection",
-                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "state": "active",
-                "name": "Acme SSO",
-                "connection_type": "OktaSAML",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "status": "linked",
-                "domains": [
-                    {
-                        "object": "connection_domain",
-                        "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "domain": "acme.com",
-                    }
-                ],
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "connection.deactivated", "data": {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "linked", "domains": [{"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ConnectionDeactivated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -4941,31 +2572,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_connection_deactivated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "connection.deactivated",
-            "data": {
-                "object": "connection",
-                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "state": "active",
-                "name": "Acme SSO",
-                "connection_type": "OktaSAML",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "status": "linked",
-                "domains": [
-                    {
-                        "object": "connection_domain",
-                        "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "domain": "acme.com",
-                    }
-                ],
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "connection.deactivated", "data": {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "linked", "domains": [{"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ConnectionDeactivated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -4979,24 +2586,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_deactivated_data_minimal_payload(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "state": "active",
-            "name": "Acme SSO",
-            "connection_type": "OktaSAML",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "linked",
-            "domains": [
-                {
-                    "object": "connection_domain",
-                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "linked", "domains": [{"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = ConnectionDeactivatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -5010,51 +2600,14 @@ class TestModelRoundTrip:
         assert serialized["status"] == data["status"]
         assert serialized["domains"] == data["domains"]
 
-    def test_connection_deactivated_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "connection",
-            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "state": "active",
-            "name": "Acme SSO",
-            "connection_type": "OktaSAML",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "linked",
-            "domains": [
-                {
-                    "object": "connection_domain",
-                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+    def test_connection_deactivated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "linked", "domains": [{"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = ConnectionDeactivatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_id" not in serialized
 
     def test_connection_deactivated_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "state": "unexpected_connection_deactivated_data_state",
-            "name": "Acme SSO",
-            "connection_type": "OktaSAML",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "linked",
-            "domains": [
-                {
-                    "object": "connection_domain",
-                    "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "unexpected_connection_deactivated_data_state", "name": "Acme SSO", "connection_type": "OktaSAML", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "linked", "domains": [{"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = ConnectionDeactivatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -5067,11 +2620,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_deactivated_data_domain_minimal_payload(self):
-        data = {
-            "object": "connection_domain",
-            "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domain": "acme.com",
-        }
+        data = {"object": "connection_domain", "id": "conn_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}
         instance = ConnectionDeactivatedDataDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -5087,22 +2636,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "connection.deleted",
-            "data": {
-                "object": "connection",
-                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "state": "active",
-                "name": "Acme SSO",
-                "connection_type": "OktaSAML",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "connection.deleted", "data": {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ConnectionDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -5112,22 +2646,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_connection_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "connection.deleted",
-            "data": {
-                "object": "connection",
-                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "state": "active",
-                "name": "Acme SSO",
-                "connection_type": "OktaSAML",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "connection.deleted", "data": {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ConnectionDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -5141,15 +2660,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_deleted_data_minimal_payload(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "state": "active",
-            "name": "Acme SSO",
-            "connection_type": "OktaSAML",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ConnectionDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -5161,30 +2672,13 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_connection_deleted_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "state": "active",
-            "name": "Acme SSO",
-            "connection_type": "OktaSAML",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "active", "name": "Acme SSO", "connection_type": "OktaSAML", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ConnectionDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_id" not in serialized
 
     def test_connection_deleted_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "connection",
-            "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "state": "unexpected_connection_deleted_data_state",
-            "name": "Acme SSO",
-            "connection_type": "OktaSAML",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "connection", "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "state": "unexpected_connection_deleted_data_state", "name": "Acme SSO", "connection_type": "OktaSAML", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ConnectionDeletedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -5197,24 +2691,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_saml_certificate_renewal_required_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "connection.saml_certificate_renewal_required",
-            "data": {
-                "connection": {
-                    "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                },
-                "certificate": {
-                    "certificate_type": "ResponseSigning",
-                    "expiry_date": "2026-01-15T12:00:00.000Z",
-                    "is_expired": False,
-                },
-                "days_until_expiry": 30,
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "connection.saml_certificate_renewal_required", "data": {"connection": {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "certificate": {"certificate_type": "ResponseSigning", "expiry_date": "2026-01-15T12:00:00.000Z", "is_expired": False}, "days_until_expiry": 30}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ConnectionSAMLCertificateRenewalRequired.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -5223,27 +2700,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_connection_saml_certificate_renewal_required_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "connection.saml_certificate_renewal_required",
-            "data": {
-                "connection": {
-                    "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                },
-                "certificate": {
-                    "certificate_type": "ResponseSigning",
-                    "expiry_date": "2026-01-15T12:00:00.000Z",
-                    "is_expired": False,
-                },
-                "days_until_expiry": 30,
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_connection_saml_certificate_renewal_required_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "connection.saml_certificate_renewal_required", "data": {"connection": {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "certificate": {"certificate_type": "ResponseSigning", "expiry_date": "2026-01-15T12:00:00.000Z", "is_expired": False}, "days_until_expiry": 30}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ConnectionSAMLCertificateRenewalRequired.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -5257,103 +2715,52 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_saml_certificate_renewal_required_data_minimal_payload(self):
-        data = {
-            "connection": {
-                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "certificate": {
-                "certificate_type": "ResponseSigning",
-                "expiry_date": "2026-01-15T12:00:00.000Z",
-                "is_expired": False,
-            },
-            "days_until_expiry": 30,
-        }
+        data = {"connection": {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "certificate": {"certificate_type": "ResponseSigning", "expiry_date": "2026-01-15T12:00:00.000Z", "is_expired": False}, "days_until_expiry": 30}
         instance = ConnectionSAMLCertificateRenewalRequiredData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["connection"] == data["connection"]
         assert serialized["certificate"] == data["certificate"]
         assert serialized["days_until_expiry"] == data["days_until_expiry"]
 
-    def test_connection_saml_certificate_renewal_required_data_connection_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "connection_saml_certificate_renewal_required_data_connection.json"
-        )
-        instance = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(
-            data
-        )
+    def test_connection_saml_certificate_renewal_required_data_connection_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewal_required_data_connection.json")
+        instance = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(
-            serialized
-        )
+        restored = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_connection_saml_certificate_renewal_required_data_connection_minimal_payload(
-        self,
-    ):
+    def test_connection_saml_certificate_renewal_required_data_connection_minimal_payload(self):
         data = {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY"}
-        instance = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(
-            data
-        )
+        instance = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
 
-    def test_connection_saml_certificate_renewal_required_data_connection_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_connection_saml_certificate_renewal_required_data_connection_omits_absent_optional_non_nullable_fields(self):
         data = {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY"}
-        instance = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(
-            data
-        )
+        instance = ConnectionSAMLCertificateRenewalRequiredDataConnection.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_id" not in serialized
 
-    def test_connection_saml_certificate_renewal_required_data_certificate_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "connection_saml_certificate_renewal_required_data_certificate.json"
-        )
-        instance = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(
-            data
-        )
+    def test_connection_saml_certificate_renewal_required_data_certificate_round_trip(self):
+        data = load_fixture("connection_saml_certificate_renewal_required_data_certificate.json")
+        instance = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(
-            serialized
-        )
+        restored = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_connection_saml_certificate_renewal_required_data_certificate_minimal_payload(
-        self,
-    ):
-        data = {
-            "certificate_type": "ResponseSigning",
-            "expiry_date": "2026-01-15T12:00:00.000Z",
-            "is_expired": False,
-        }
-        instance = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(
-            data
-        )
+    def test_connection_saml_certificate_renewal_required_data_certificate_minimal_payload(self):
+        data = {"certificate_type": "ResponseSigning", "expiry_date": "2026-01-15T12:00:00.000Z", "is_expired": False}
+        instance = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["certificate_type"] == data["certificate_type"]
         assert serialized["expiry_date"] == data["expiry_date"]
         assert serialized["is_expired"] == data["is_expired"]
 
-    def test_connection_saml_certificate_renewal_required_data_certificate_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "certificate_type": "unexpected_connection_saml_certificate_renewal_required_data_certificate_certificate_type",
-            "expiry_date": "2026-01-15T12:00:00.000Z",
-            "is_expired": False,
-        }
-        instance = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(
-            data
-        )
+    def test_connection_saml_certificate_renewal_required_data_certificate_round_trips_unknown_enum_values(self):
+        data = {"certificate_type": "unexpected_connection_saml_certificate_renewal_required_data_certificate_certificate_type", "expiry_date": "2026-01-15T12:00:00.000Z", "is_expired": False}
+        instance = ConnectionSAMLCertificateRenewalRequiredDataCertificate.from_dict(data)
         assert instance.to_dict() == data
 
     def test_connection_saml_certificate_renewed_round_trip(self):
@@ -5365,23 +2772,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_saml_certificate_renewed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "connection.saml_certificate_renewed",
-            "data": {
-                "connection": {
-                    "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                },
-                "certificate": {
-                    "certificate_type": "ResponseSigning",
-                    "expiry_date": "2026-01-15T12:00:00.000Z",
-                },
-                "renewed_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "connection.saml_certificate_renewed", "data": {"connection": {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "certificate": {"certificate_type": "ResponseSigning", "expiry_date": "2026-01-15T12:00:00.000Z"}, "renewed_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ConnectionSAMLCertificateRenewed.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -5390,26 +2781,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_connection_saml_certificate_renewed_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "connection.saml_certificate_renewed",
-            "data": {
-                "connection": {
-                    "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                },
-                "certificate": {
-                    "certificate_type": "ResponseSigning",
-                    "expiry_date": "2026-01-15T12:00:00.000Z",
-                },
-                "renewed_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_connection_saml_certificate_renewed_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "connection.saml_certificate_renewed", "data": {"connection": {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "certificate": {"certificate_type": "ResponseSigning", "expiry_date": "2026-01-15T12:00:00.000Z"}, "renewed_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = ConnectionSAMLCertificateRenewed.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -5423,17 +2796,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_saml_certificate_renewed_data_minimal_payload(self):
-        data = {
-            "connection": {
-                "id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "certificate": {
-                "certificate_type": "ResponseSigning",
-                "expiry_date": "2026-01-15T12:00:00.000Z",
-            },
-            "renewed_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"connection": {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "certificate": {"certificate_type": "ResponseSigning", "expiry_date": "2026-01-15T12:00:00.000Z"}, "renewed_at": "2026-01-15T12:00:00.000Z"}
         instance = ConnectionSAMLCertificateRenewedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["connection"] == data["connection"]
@@ -5454,9 +2817,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
 
-    def test_connection_saml_certificate_renewed_data_connection_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_connection_saml_certificate_renewed_data_connection_omits_absent_optional_non_nullable_fields(self):
         data = {"id": "conn_01EHWNCE74X7JSDV0X3SZ3KJNY"}
         instance = ConnectionSAMLCertificateRenewedDataConnection.from_dict(data)
         serialized = instance.to_dict()
@@ -5471,22 +2832,14 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_saml_certificate_renewed_data_certificate_minimal_payload(self):
-        data = {
-            "certificate_type": "ResponseSigning",
-            "expiry_date": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"certificate_type": "ResponseSigning", "expiry_date": "2026-01-15T12:00:00.000Z"}
         instance = ConnectionSAMLCertificateRenewedDataCertificate.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["certificate_type"] == data["certificate_type"]
         assert serialized["expiry_date"] == data["expiry_date"]
 
-    def test_connection_saml_certificate_renewed_data_certificate_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "certificate_type": "unexpected_connection_saml_certificate_renewed_data_certificate_certificate_type",
-            "expiry_date": "2026-01-15T12:00:00.000Z",
-        }
+    def test_connection_saml_certificate_renewed_data_certificate_round_trips_unknown_enum_values(self):
+        data = {"certificate_type": "unexpected_connection_saml_certificate_renewed_data_certificate_certificate_type", "expiry_date": "2026-01-15T12:00:00.000Z"}
         instance = ConnectionSAMLCertificateRenewedDataCertificate.from_dict(data)
         assert instance.to_dict() == data
 
@@ -5499,30 +2852,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_activated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.activated",
-            "data": {
-                "object": "directory",
-                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "okta scim v2.0",
-                "state": "active",
-                "name": "Acme Directory",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "domain": "acme.com",
-                    }
-                ],
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.activated", "data": {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "domains": [{"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncActivated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -5532,30 +2862,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_activated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.activated",
-            "data": {
-                "object": "directory",
-                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "okta scim v2.0",
-                "state": "active",
-                "name": "Acme Directory",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "domain": "acme.com",
-                    }
-                ],
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.activated", "data": {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "domains": [{"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncActivated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -5569,23 +2876,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_activated_data_minimal_payload(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "okta scim v2.0",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "domains": [{"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = DsyncActivatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -5599,46 +2890,13 @@ class TestModelRoundTrip:
         assert serialized["domains"] == data["domains"]
 
     def test_dsync_activated_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "okta scim v2.0",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "domains": [{"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = DsyncActivatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_id" not in serialized
 
     def test_dsync_activated_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "unexpected_dsync_activated_data_type",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "unexpected_dsync_activated_data_type", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "domains": [{"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = DsyncActivatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -5651,11 +2909,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_activated_data_domain_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domain": "acme.com",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}
         instance = DsyncActivatedDataDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -5671,30 +2925,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_deactivated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.deactivated",
-            "data": {
-                "object": "directory",
-                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "okta scim v2.0",
-                "state": "active",
-                "name": "Acme Directory",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "domain": "acme.com",
-                    }
-                ],
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.deactivated", "data": {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "domains": [{"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncDeactivated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -5704,30 +2935,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_deactivated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.deactivated",
-            "data": {
-                "object": "directory",
-                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "okta scim v2.0",
-                "state": "active",
-                "name": "Acme Directory",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "domain": "acme.com",
-                    }
-                ],
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.deactivated", "data": {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "domains": [{"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncDeactivated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -5741,23 +2949,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_deactivated_data_minimal_payload(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "okta scim v2.0",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "domains": [{"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = DsyncDeactivatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -5771,46 +2963,13 @@ class TestModelRoundTrip:
         assert serialized["domains"] == data["domains"]
 
     def test_dsync_deactivated_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "okta scim v2.0",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "domains": [{"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = DsyncDeactivatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_id" not in serialized
 
     def test_dsync_deactivated_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "unexpected_dsync_deactivated_data_type",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "domain": "acme.com",
-                }
-            ],
-        }
+        data = {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "unexpected_dsync_deactivated_data_type", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "external_key": "ext_01EHWNCE74X7JSDV0X3SZ3KJNY", "domains": [{"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}]}
         instance = DsyncDeactivatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -5823,11 +2982,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_deactivated_data_domain_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "domain": "acme.com",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHWNCE74X7JSDV0X3SZ3KJNY", "domain": "acme.com"}
         instance = DsyncDeactivatedDataDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -5843,22 +2998,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.deleted",
-            "data": {
-                "object": "directory",
-                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "okta scim v2.0",
-                "state": "active",
-                "name": "Acme Directory",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.deleted", "data": {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -5868,22 +3008,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.deleted",
-            "data": {
-                "object": "directory",
-                "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "type": "okta scim v2.0",
-                "state": "active",
-                "name": "Acme Directory",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.deleted", "data": {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -5897,15 +3022,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_deleted_data_minimal_payload(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "okta scim v2.0",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DsyncDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -5917,30 +3034,13 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_dsync_deleted_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "okta scim v2.0",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "okta scim v2.0", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DsyncDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_id" not in serialized
 
     def test_dsync_deleted_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory",
-            "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "type": "unexpected_dsync_deleted_data_type",
-            "state": "active",
-            "name": "Acme Directory",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory", "id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "type": "unexpected_dsync_deleted_data_type", "state": "active", "name": "Acme Directory", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DsyncDeletedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -5953,23 +3053,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_group_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.group.created",
-            "data": {
-                "object": "directory_group",
-                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                "idp_id": "02grqrue4294w24",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "name": "Developers",
-                "raw_attributes": {"key": {}},
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.group.created", "data": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncGroupCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -5979,23 +3063,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_group_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.group.created",
-            "data": {
-                "object": "directory_group",
-                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                "idp_id": "02grqrue4294w24",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "name": "Developers",
-                "raw_attributes": {"key": {}},
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.group.created", "data": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncGroupCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -6009,23 +3077,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_group_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.group.deleted",
-            "data": {
-                "object": "directory_group",
-                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                "idp_id": "02grqrue4294w24",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "name": "Developers",
-                "raw_attributes": {"key": {}},
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.group.deleted", "data": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncGroupDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -6035,23 +3087,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_group_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.group.deleted",
-            "data": {
-                "object": "directory_group",
-                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                "idp_id": "02grqrue4294w24",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "name": "Developers",
-                "raw_attributes": {"key": {}},
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.group.deleted", "data": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncGroupDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -6065,24 +3101,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_group_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.group.updated",
-            "data": {
-                "object": "directory_group",
-                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                "idp_id": "02grqrue4294w24",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "name": "Developers",
-                "raw_attributes": {"key": {}},
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "previous_attributes": {"key": {}},
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.group.updated", "data": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "previous_attributes": {"key": {}}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncGroupUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -6092,24 +3111,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_group_updated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.group.updated",
-            "data": {
-                "object": "directory_group",
-                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                "idp_id": "02grqrue4294w24",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "name": "Developers",
-                "raw_attributes": {"key": {}},
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "previous_attributes": {"key": {}},
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.group.updated", "data": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "previous_attributes": {"key": {}}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncGroupUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -6123,16 +3125,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_group_updated_data_minimal_payload(self):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DsyncGroupUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -6145,16 +3138,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_dsync_group_updated_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory_group",
-            "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-            "idp_id": "02grqrue4294w24",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "name": "Developers",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DsyncGroupUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "raw_attributes" not in serialized
@@ -6169,55 +3153,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_group_user_added_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.group.user_added",
-            "data": {
-                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "user": {
-                    "object": "directory_user",
-                    "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "idp_id": "2836",
-                    "email": "marcelina.davis@example.com",
-                    "first_name": "Marcelina",
-                    "last_name": "Davis",
-                    "emails": [
-                        {
-                            "primary": True,
-                            "type": "work",
-                            "value": "marcelina.davis@example.com",
-                        }
-                    ],
-                    "job_title": "Software Engineer",
-                    "username": "mdavis",
-                    "state": "active",
-                    "raw_attributes": {"key": {}},
-                    "custom_attributes": {
-                        "department": "Engineering",
-                        "job_title": "Software Engineer",
-                    },
-                    "role": {"slug": "admin"},
-                    "roles": [{"slug": "admin"}],
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                },
-                "group": {
-                    "object": "directory_group",
-                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                    "idp_id": "02grqrue4294w24",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "name": "Developers",
-                    "raw_attributes": {"key": {}},
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.group.user_added", "data": {"directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "user": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "group": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncGroupUserAdded.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -6227,55 +3163,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_group_user_added_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.group.user_added",
-            "data": {
-                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "user": {
-                    "object": "directory_user",
-                    "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "idp_id": "2836",
-                    "email": "marcelina.davis@example.com",
-                    "first_name": "Marcelina",
-                    "last_name": "Davis",
-                    "emails": [
-                        {
-                            "primary": True,
-                            "type": "work",
-                            "value": "marcelina.davis@example.com",
-                        }
-                    ],
-                    "job_title": "Software Engineer",
-                    "username": "mdavis",
-                    "state": "active",
-                    "raw_attributes": {"key": {}},
-                    "custom_attributes": {
-                        "department": "Engineering",
-                        "job_title": "Software Engineer",
-                    },
-                    "role": {"slug": "admin"},
-                    "roles": [{"slug": "admin"}],
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                },
-                "group": {
-                    "object": "directory_group",
-                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                    "idp_id": "02grqrue4294w24",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "name": "Developers",
-                    "raw_attributes": {"key": {}},
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.group.user_added", "data": {"directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "user": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "group": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncGroupUserAdded.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -6289,49 +3177,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_group_user_added_data_minimal_payload(self):
-        data = {
-            "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user": {
-                "object": "directory_user",
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "idp_id": "2836",
-                "email": "marcelina.davis@example.com",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "emails": [
-                    {
-                        "primary": True,
-                        "type": "work",
-                        "value": "marcelina.davis@example.com",
-                    }
-                ],
-                "job_title": "Software Engineer",
-                "username": "mdavis",
-                "state": "active",
-                "raw_attributes": {"key": {}},
-                "custom_attributes": {
-                    "department": "Engineering",
-                    "job_title": "Software Engineer",
-                },
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "group": {
-                "object": "directory_group",
-                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                "idp_id": "02grqrue4294w24",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "name": "Developers",
-                "raw_attributes": {"key": {}},
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-        }
+        data = {"directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "user": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "group": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}
         instance = DsyncGroupUserAddedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["directory_id"] == data["directory_id"]
@@ -6347,41 +3193,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_user_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.user.created",
-            "data": {
-                "object": "directory_user",
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "idp_id": "2836",
-                "email": "marcelina.davis@example.com",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "emails": [
-                    {
-                        "primary": True,
-                        "type": "work",
-                        "value": "marcelina.davis@example.com",
-                    }
-                ],
-                "job_title": "Software Engineer",
-                "username": "mdavis",
-                "state": "active",
-                "raw_attributes": {"key": {}},
-                "custom_attributes": {
-                    "department": "Engineering",
-                    "job_title": "Software Engineer",
-                },
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.user.created", "data": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncUserCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -6391,41 +3203,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_user_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.user.created",
-            "data": {
-                "object": "directory_user",
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "idp_id": "2836",
-                "email": "marcelina.davis@example.com",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "emails": [
-                    {
-                        "primary": True,
-                        "type": "work",
-                        "value": "marcelina.davis@example.com",
-                    }
-                ],
-                "job_title": "Software Engineer",
-                "username": "mdavis",
-                "state": "active",
-                "raw_attributes": {"key": {}},
-                "custom_attributes": {
-                    "department": "Engineering",
-                    "job_title": "Software Engineer",
-                },
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.user.created", "data": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncUserCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -6439,41 +3217,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_user_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.user.deleted",
-            "data": {
-                "object": "directory_user",
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "idp_id": "2836",
-                "email": "marcelina.davis@example.com",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "emails": [
-                    {
-                        "primary": True,
-                        "type": "work",
-                        "value": "marcelina.davis@example.com",
-                    }
-                ],
-                "job_title": "Software Engineer",
-                "username": "mdavis",
-                "state": "active",
-                "raw_attributes": {"key": {}},
-                "custom_attributes": {
-                    "department": "Engineering",
-                    "job_title": "Software Engineer",
-                },
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.user.deleted", "data": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncUserDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -6483,41 +3227,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_user_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.user.deleted",
-            "data": {
-                "object": "directory_user",
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "idp_id": "2836",
-                "email": "marcelina.davis@example.com",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "emails": [
-                    {
-                        "primary": True,
-                        "type": "work",
-                        "value": "marcelina.davis@example.com",
-                    }
-                ],
-                "job_title": "Software Engineer",
-                "username": "mdavis",
-                "state": "active",
-                "raw_attributes": {"key": {}},
-                "custom_attributes": {
-                    "department": "Engineering",
-                    "job_title": "Software Engineer",
-                },
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.user.deleted", "data": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncUserDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -6531,55 +3241,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_group_user_removed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.group.user_removed",
-            "data": {
-                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "user": {
-                    "object": "directory_user",
-                    "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "idp_id": "2836",
-                    "email": "marcelina.davis@example.com",
-                    "first_name": "Marcelina",
-                    "last_name": "Davis",
-                    "emails": [
-                        {
-                            "primary": True,
-                            "type": "work",
-                            "value": "marcelina.davis@example.com",
-                        }
-                    ],
-                    "job_title": "Software Engineer",
-                    "username": "mdavis",
-                    "state": "active",
-                    "raw_attributes": {"key": {}},
-                    "custom_attributes": {
-                        "department": "Engineering",
-                        "job_title": "Software Engineer",
-                    },
-                    "role": {"slug": "admin"},
-                    "roles": [{"slug": "admin"}],
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                },
-                "group": {
-                    "object": "directory_group",
-                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                    "idp_id": "02grqrue4294w24",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "name": "Developers",
-                    "raw_attributes": {"key": {}},
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.group.user_removed", "data": {"directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "user": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "group": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncGroupUserRemoved.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -6589,55 +3251,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_group_user_removed_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.group.user_removed",
-            "data": {
-                "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "user": {
-                    "object": "directory_user",
-                    "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "idp_id": "2836",
-                    "email": "marcelina.davis@example.com",
-                    "first_name": "Marcelina",
-                    "last_name": "Davis",
-                    "emails": [
-                        {
-                            "primary": True,
-                            "type": "work",
-                            "value": "marcelina.davis@example.com",
-                        }
-                    ],
-                    "job_title": "Software Engineer",
-                    "username": "mdavis",
-                    "state": "active",
-                    "raw_attributes": {"key": {}},
-                    "custom_attributes": {
-                        "department": "Engineering",
-                        "job_title": "Software Engineer",
-                    },
-                    "role": {"slug": "admin"},
-                    "roles": [{"slug": "admin"}],
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                },
-                "group": {
-                    "object": "directory_group",
-                    "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                    "idp_id": "02grqrue4294w24",
-                    "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                    "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                    "name": "Developers",
-                    "raw_attributes": {"key": {}},
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.group.user_removed", "data": {"directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "user": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "group": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncGroupUserRemoved.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -6651,49 +3265,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_group_user_removed_data_minimal_payload(self):
-        data = {
-            "directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user": {
-                "object": "directory_user",
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "idp_id": "2836",
-                "email": "marcelina.davis@example.com",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "emails": [
-                    {
-                        "primary": True,
-                        "type": "work",
-                        "value": "marcelina.davis@example.com",
-                    }
-                ],
-                "job_title": "Software Engineer",
-                "username": "mdavis",
-                "state": "active",
-                "raw_attributes": {"key": {}},
-                "custom_attributes": {
-                    "department": "Engineering",
-                    "job_title": "Software Engineer",
-                },
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "group": {
-                "object": "directory_group",
-                "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z",
-                "idp_id": "02grqrue4294w24",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "name": "Developers",
-                "raw_attributes": {"key": {}},
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-        }
+        data = {"directory_id": "directory_01EHWNCE74X7JSDV0X3SZ3KJNY", "user": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "group": {"object": "directory_group", "id": "directory_group_01E1JJS84MFPPQ3G655FHTKX6Z", "idp_id": "02grqrue4294w24", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "name": "Developers", "raw_attributes": {"key": {}}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}
         instance = DsyncGroupUserRemovedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["directory_id"] == data["directory_id"]
@@ -6709,42 +3281,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_user_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.user.updated",
-            "data": {
-                "object": "directory_user",
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "idp_id": "2836",
-                "email": "marcelina.davis@example.com",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "emails": [
-                    {
-                        "primary": True,
-                        "type": "work",
-                        "value": "marcelina.davis@example.com",
-                    }
-                ],
-                "job_title": "Software Engineer",
-                "username": "mdavis",
-                "state": "active",
-                "raw_attributes": {"key": {}},
-                "custom_attributes": {
-                    "department": "Engineering",
-                    "job_title": "Software Engineer",
-                },
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "previous_attributes": {"key": {}},
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.user.updated", "data": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "previous_attributes": {"key": {}}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncUserUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -6754,42 +3291,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_dsync_user_updated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "dsync.user.updated",
-            "data": {
-                "object": "directory_user",
-                "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-                "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-                "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-                "idp_id": "2836",
-                "email": "marcelina.davis@example.com",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "emails": [
-                    {
-                        "primary": True,
-                        "type": "work",
-                        "value": "marcelina.davis@example.com",
-                    }
-                ],
-                "job_title": "Software Engineer",
-                "username": "mdavis",
-                "state": "active",
-                "raw_attributes": {"key": {}},
-                "custom_attributes": {
-                    "department": "Engineering",
-                    "job_title": "Software Engineer",
-                },
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "previous_attributes": {"key": {}},
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "dsync.user.updated", "data": {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "previous_attributes": {"key": {}}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = DsyncUserUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -6803,22 +3305,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_dsync_user_updated_data_minimal_payload(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": None, "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DsyncUserUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -6834,26 +3321,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_dsync_user_updated_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "job_title": "Software Engineer", "username": "mdavis", "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = DsyncUserUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "emails" not in serialized
@@ -6862,36 +3330,7 @@ class TestModelRoundTrip:
         assert "previous_attributes" not in serialized
 
     def test_dsync_user_updated_data_preserves_nullable_fields(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": None,
-            "first_name": None,
-            "last_name": None,
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": None,
-            "username": None,
-            "state": "active",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "previous_attributes": {"key": {}},
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": None, "first_name": None, "last_name": None, "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": None, "username": None, "state": "active", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "previous_attributes": {"key": {}}}
         instance = DsyncUserUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["email"] is None
@@ -6901,36 +3340,7 @@ class TestModelRoundTrip:
         assert serialized["username"] is None
 
     def test_dsync_user_updated_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "directory_user",
-            "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
-            "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",
-            "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y",
-            "idp_id": "2836",
-            "email": "marcelina.davis@example.com",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "emails": [
-                {
-                    "primary": True,
-                    "type": "work",
-                    "value": "marcelina.davis@example.com",
-                }
-            ],
-            "job_title": "Software Engineer",
-            "username": "mdavis",
-            "state": "unexpected_dsync_user_updated_data_state",
-            "raw_attributes": {"key": {}},
-            "custom_attributes": {
-                "department": "Engineering",
-                "job_title": "Software Engineer",
-            },
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "previous_attributes": {"key": {}},
-        }
+        data = {"object": "directory_user", "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ", "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74", "organization_id": "org_01EZTR6WYX1A0DSE2CYMGXQ24Y", "idp_id": "2836", "email": "marcelina.davis@example.com", "first_name": "Marcelina", "last_name": "Davis", "emails": [{"primary": True, "type": "work", "value": "marcelina.davis@example.com"}], "job_title": "Software Engineer", "username": "mdavis", "state": "unexpected_dsync_user_updated_data_state", "raw_attributes": {"key": {}}, "custom_attributes": {"department": "Engineering", "job_title": "Software Engineer"}, "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "previous_attributes": {"key": {}}}
         instance = DsyncUserUpdatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -6947,9 +3357,7 @@ class TestModelRoundTrip:
         instance = DsyncUserUpdatedDataEmail.from_dict(data)
         assert instance.to_dict() is not None
 
-    def test_dsync_user_updated_data_email_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_dsync_user_updated_data_email_omits_absent_optional_non_nullable_fields(self):
         data = {"value": "marcelina.davis@example.com"}
         instance = DsyncUserUpdatedDataEmail.from_dict(data)
         serialized = instance.to_dict()
@@ -6971,21 +3379,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_email_verification_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "email_verification.created",
-            "data": {
-                "object": "email_verification",
-                "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "email_verification.created", "data": {"object": "email_verification", "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = EmailVerificationCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -6995,21 +3389,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_email_verification_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "email_verification.created",
-            "data": {
-                "object": "email_verification",
-                "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "email_verification.created", "data": {"object": "email_verification", "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = EmailVerificationCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -7023,15 +3403,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_email_verification_created_data_minimal_payload(self):
-        data = {
-            "object": "email_verification",
-            "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "email_verification", "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = EmailVerificationCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -7051,38 +3423,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "flag.created",
-            "data": {
-                "object": "feature_flag",
-                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "advanced-analytics",
-                "name": "Advanced Analytics",
-                "description": "Enable advanced analytics dashboard feature",
-                "owner": {
-                    "email": "jane@example.com",
-                    "first_name": "Jane",
-                    "last_name": "Doe",
-                },
-                "tags": ["reports"],
-                "enabled": True,
-                "default_value": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "context": {
-                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor": {
-                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "source": "api",
-                    "name": "Jane Doe",
-                },
-            },
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "flag.created", "data": {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": "Enable advanced analytics dashboard feature", "owner": {"email": "jane@example.com", "first_name": "Jane", "last_name": "Doe"}, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "context": {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor": {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": "Jane Doe"}}, "object": "event"}
         instance = FlagCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -7101,20 +3442,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_created_data_minimal_payload(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": True,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = FlagCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -7131,20 +3459,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_flag_created_data_preserves_nullable_fields(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": True,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = FlagCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -7182,14 +3497,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_created_context_minimal_payload(self):
-        data = {
-            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor": {
-                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "source": "api",
-                "name": "Jane Doe",
-            },
-        }
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor": {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": "Jane Doe"}}
         instance = FlagCreatedContext.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["client_id"] == data["client_id"]
@@ -7218,11 +3526,7 @@ class TestModelRoundTrip:
         assert serialized["name"] is None
 
     def test_flag_created_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_flag_created_context_actor_source",
-            "name": "Jane Doe",
-        }
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "unexpected_flag_created_context_actor_source", "name": "Jane Doe"}
         instance = FlagCreatedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
@@ -7235,38 +3539,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "flag.deleted",
-            "data": {
-                "object": "feature_flag",
-                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "advanced-analytics",
-                "name": "Advanced Analytics",
-                "description": "Enable advanced analytics dashboard feature",
-                "owner": {
-                    "email": "jane@example.com",
-                    "first_name": "Jane",
-                    "last_name": "Doe",
-                },
-                "tags": ["reports"],
-                "enabled": True,
-                "default_value": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "context": {
-                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor": {
-                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "source": "api",
-                    "name": "Jane Doe",
-                },
-            },
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "flag.deleted", "data": {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": "Enable advanced analytics dashboard feature", "owner": {"email": "jane@example.com", "first_name": "Jane", "last_name": "Doe"}, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "context": {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor": {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": "Jane Doe"}}, "object": "event"}
         instance = FlagDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -7285,20 +3558,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_deleted_data_minimal_payload(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": True,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = FlagDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -7315,20 +3575,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_flag_deleted_data_preserves_nullable_fields(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": True,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = FlagDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -7366,14 +3613,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_deleted_context_minimal_payload(self):
-        data = {
-            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor": {
-                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "source": "api",
-                "name": "Jane Doe",
-            },
-        }
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor": {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": "Jane Doe"}}
         instance = FlagDeletedContext.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["client_id"] == data["client_id"]
@@ -7402,11 +3642,7 @@ class TestModelRoundTrip:
         assert serialized["name"] is None
 
     def test_flag_deleted_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_flag_deleted_context_actor_source",
-            "name": "Jane Doe",
-        }
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "unexpected_flag_deleted_context_actor_source", "name": "Jane Doe"}
         instance = FlagDeletedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
@@ -7419,70 +3655,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_rule_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "flag.rule_updated",
-            "data": {
-                "object": "feature_flag",
-                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "advanced-analytics",
-                "name": "Advanced Analytics",
-                "description": "Enable advanced analytics dashboard feature",
-                "owner": {
-                    "email": "jane@example.com",
-                    "first_name": "Jane",
-                    "last_name": "Doe",
-                },
-                "tags": ["reports"],
-                "enabled": True,
-                "default_value": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "context": {
-                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor": {
-                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "source": "api",
-                    "name": "Jane Doe",
-                },
-                "access_type": "none",
-                "configured_targets": {
-                    "organizations": [
-                        {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-                    ],
-                    "users": [
-                        {
-                            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                            "email": "user@example.com",
-                        }
-                    ],
-                },
-                "previous_attributes": {
-                    "data": {"enabled": True, "default_value": False},
-                    "context": {
-                        "access_type": "none",
-                        "configured_targets": {
-                            "organizations": [
-                                {
-                                    "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                                    "name": "Acme Corp",
-                                }
-                            ],
-                            "users": [
-                                {
-                                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                                    "email": "user@example.com",
-                                }
-                            ],
-                        },
-                    },
-                },
-            },
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "flag.rule_updated", "data": {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": "Enable advanced analytics dashboard feature", "owner": {"email": "jane@example.com", "first_name": "Jane", "last_name": "Doe"}, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "context": {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor": {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": "Jane Doe"}, "access_type": "none", "configured_targets": {"organizations": [{"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}], "users": [{"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}]}, "previous_attributes": {"data": {"enabled": True, "default_value": False}, "context": {"access_type": "none", "configured_targets": {"organizations": [{"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}], "users": [{"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}]}}}}, "object": "event"}
         instance = FlagRuleUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -7501,20 +3674,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_rule_updated_data_minimal_payload(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": True,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = FlagRuleUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -7531,20 +3691,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_flag_rule_updated_data_preserves_nullable_fields(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": True,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = FlagRuleUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -7582,46 +3729,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_rule_updated_context_minimal_payload(self):
-        data = {
-            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor": {
-                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "source": "api",
-                "name": "Jane Doe",
-            },
-            "access_type": "none",
-            "configured_targets": {
-                "organizations": [
-                    {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-                ],
-                "users": [
-                    {
-                        "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "email": "user@example.com",
-                    }
-                ],
-            },
-            "previous_attributes": {
-                "data": {"enabled": True, "default_value": False},
-                "context": {
-                    "access_type": "none",
-                    "configured_targets": {
-                        "organizations": [
-                            {
-                                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                                "name": "Acme Corp",
-                            }
-                        ],
-                        "users": [
-                            {
-                                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                                "email": "user@example.com",
-                            }
-                        ],
-                    },
-                },
-            },
-        }
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor": {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": "Jane Doe"}, "access_type": "none", "configured_targets": {"organizations": [{"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}], "users": [{"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}]}, "previous_attributes": {"data": {"enabled": True, "default_value": False}, "context": {"access_type": "none", "configured_targets": {"organizations": [{"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}], "users": [{"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}]}}}}
         instance = FlagRuleUpdatedContext.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["client_id"] == data["client_id"]
@@ -7631,46 +3739,7 @@ class TestModelRoundTrip:
         assert serialized["previous_attributes"] == data["previous_attributes"]
 
     def test_flag_rule_updated_context_round_trips_unknown_enum_values(self):
-        data = {
-            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor": {
-                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "source": "api",
-                "name": "Jane Doe",
-            },
-            "access_type": "unexpected_flag_rule_updated_context_access_type",
-            "configured_targets": {
-                "organizations": [
-                    {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-                ],
-                "users": [
-                    {
-                        "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "email": "user@example.com",
-                    }
-                ],
-            },
-            "previous_attributes": {
-                "data": {"enabled": True, "default_value": False},
-                "context": {
-                    "access_type": "none",
-                    "configured_targets": {
-                        "organizations": [
-                            {
-                                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                                "name": "Acme Corp",
-                            }
-                        ],
-                        "users": [
-                            {
-                                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                                "email": "user@example.com",
-                            }
-                        ],
-                    },
-                },
-            },
-        }
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor": {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": "Jane Doe"}, "access_type": "unexpected_flag_rule_updated_context_access_type", "configured_targets": {"organizations": [{"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}], "users": [{"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}]}, "previous_attributes": {"data": {"enabled": True, "default_value": False}, "context": {"access_type": "none", "configured_targets": {"organizations": [{"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}], "users": [{"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}]}}}}
         instance = FlagRuleUpdatedContext.from_dict(data)
         assert instance.to_dict() == data
 
@@ -7697,11 +3766,7 @@ class TestModelRoundTrip:
         assert serialized["name"] is None
 
     def test_flag_rule_updated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_flag_rule_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "unexpected_flag_rule_updated_context_actor_source", "name": "Jane Doe"}
         instance = FlagRuleUpdatedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
@@ -7714,34 +3779,21 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_rule_updated_context_configured_target_minimal_payload(self):
-        data = {
-            "organizations": [
-                {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-            ],
-            "users": [
-                {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}
-            ],
-        }
+        data = {"organizations": [{"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}], "users": [{"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}]}
         instance = FlagRuleUpdatedContextConfiguredTarget.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["organizations"] == data["organizations"]
         assert serialized["users"] == data["users"]
 
     def test_flag_rule_updated_context_configured_target_organization_round_trip(self):
-        data = load_fixture(
-            "flag_rule_updated_context_configured_target_organization.json"
-        )
+        data = load_fixture("flag_rule_updated_context_configured_target_organization.json")
         instance = FlagRuleUpdatedContextConfiguredTargetOrganization.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = FlagRuleUpdatedContextConfiguredTargetOrganization.from_dict(
-            serialized
-        )
+        restored = FlagRuleUpdatedContextConfiguredTargetOrganization.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_flag_rule_updated_context_configured_target_organization_minimal_payload(
-        self,
-    ):
+    def test_flag_rule_updated_context_configured_target_organization_minimal_payload(self):
         data = {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
         instance = FlagRuleUpdatedContextConfiguredTargetOrganization.from_dict(data)
         serialized = instance.to_dict()
@@ -7776,9 +3828,7 @@ class TestModelRoundTrip:
         instance = FlagRuleUpdatedContextPreviousAttribute.from_dict(data)
         assert instance.to_dict() is not None
 
-    def test_flag_rule_updated_context_previous_attribute_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_flag_rule_updated_context_previous_attribute_omits_absent_optional_non_nullable_fields(self):
         data = {}
         instance = FlagRuleUpdatedContextPreviousAttribute.from_dict(data)
         serialized = instance.to_dict()
@@ -7798,9 +3848,7 @@ class TestModelRoundTrip:
         instance = FlagRuleUpdatedContextPreviousAttributeData.from_dict(data)
         assert instance.to_dict() is not None
 
-    def test_flag_rule_updated_context_previous_attribute_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_flag_rule_updated_context_previous_attribute_data_omits_absent_optional_non_nullable_fields(self):
         data = {}
         instance = FlagRuleUpdatedContextPreviousAttributeData.from_dict(data)
         serialized = instance.to_dict()
@@ -7820,125 +3868,59 @@ class TestModelRoundTrip:
         instance = FlagRuleUpdatedContextPreviousAttributeContext.from_dict(data)
         assert instance.to_dict() is not None
 
-    def test_flag_rule_updated_context_previous_attribute_context_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_flag_rule_updated_context_previous_attribute_context_omits_absent_optional_non_nullable_fields(self):
         data = {}
         instance = FlagRuleUpdatedContextPreviousAttributeContext.from_dict(data)
         serialized = instance.to_dict()
         assert "access_type" not in serialized
         assert "configured_targets" not in serialized
 
-    def test_flag_rule_updated_context_previous_attribute_context_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "access_type": "unexpected_flag_rule_updated_context_previous_attribute_context_access_type",
-            "configured_targets": {
-                "organizations": [
-                    {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-                ],
-                "users": [
-                    {
-                        "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                        "email": "user@example.com",
-                    }
-                ],
-            },
-        }
+    def test_flag_rule_updated_context_previous_attribute_context_round_trips_unknown_enum_values(self):
+        data = {"access_type": "unexpected_flag_rule_updated_context_previous_attribute_context_access_type", "configured_targets": {"organizations": [{"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}], "users": [{"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}]}}
         instance = FlagRuleUpdatedContextPreviousAttributeContext.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_flag_rule_updated_context_previous_attribute_context_configured_target_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "flag_rule_updated_context_previous_attribute_context_configured_target.json"
-        )
-        instance = (
-            FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(
-                data
-            )
-        )
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_round_trip(self):
+        data = load_fixture("flag_rule_updated_context_previous_attribute_context_configured_target.json")
+        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = (
-            FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(
-                serialized
-            )
-        )
+        restored = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_flag_rule_updated_context_previous_attribute_context_configured_target_minimal_payload(
-        self,
-    ):
-        data = {
-            "organizations": [
-                {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-            ],
-            "users": [
-                {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}
-            ],
-        }
-        instance = (
-            FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(
-                data
-            )
-        )
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_minimal_payload(self):
+        data = {"organizations": [{"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}], "users": [{"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}]}
+        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTarget.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["organizations"] == data["organizations"]
         assert serialized["users"] == data["users"]
 
-    def test_flag_rule_updated_context_previous_attribute_context_configured_target_organization_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "flag_rule_updated_context_previous_attribute_context_configured_target_organization.json"
-        )
-        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization.from_dict(
-            data
-        )
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_organization_round_trip(self):
+        data = load_fixture("flag_rule_updated_context_previous_attribute_context_configured_target_organization.json")
+        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization.from_dict(
-            serialized
-        )
+        restored = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_flag_rule_updated_context_previous_attribute_context_configured_target_organization_minimal_payload(
-        self,
-    ):
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_organization_minimal_payload(self):
         data = {"id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Corp"}
-        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization.from_dict(
-            data
-        )
+        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetOrganization.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
         assert serialized["name"] == data["name"]
 
-    def test_flag_rule_updated_context_previous_attribute_context_configured_target_user_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "flag_rule_updated_context_previous_attribute_context_configured_target_user.json"
-        )
-        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser.from_dict(
-            data
-        )
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_user_round_trip(self):
+        data = load_fixture("flag_rule_updated_context_previous_attribute_context_configured_target_user.json")
+        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser.from_dict(
-            serialized
-        )
+        restored = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_flag_rule_updated_context_previous_attribute_context_configured_target_user_minimal_payload(
-        self,
-    ):
+    def test_flag_rule_updated_context_previous_attribute_context_configured_target_user_minimal_payload(self):
         data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "email": "user@example.com"}
-        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser.from_dict(
-            data
-        )
+        instance = FlagRuleUpdatedContextPreviousAttributeContextConfiguredTargetUser.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
         assert serialized["email"] == data["email"]
@@ -7952,47 +3934,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "flag.updated",
-            "data": {
-                "object": "feature_flag",
-                "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-                "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "advanced-analytics",
-                "name": "Advanced Analytics",
-                "description": "Enable advanced analytics dashboard feature",
-                "owner": {
-                    "email": "jane@example.com",
-                    "first_name": "Jane",
-                    "last_name": "Doe",
-                },
-                "tags": ["reports"],
-                "enabled": True,
-                "default_value": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "context": {
-                "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor": {
-                    "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                    "source": "api",
-                    "name": "Jane Doe",
-                },
-                "previous_attributes": {
-                    "data": {
-                        "name": "My Feature Flag",
-                        "description": "Enables the new feature.",
-                        "tags": ["beta", "release"],
-                        "enabled": True,
-                        "default_value": False,
-                    }
-                },
-            },
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "flag.updated", "data": {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": "Enable advanced analytics dashboard feature", "owner": {"email": "jane@example.com", "first_name": "Jane", "last_name": "Doe"}, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "context": {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor": {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": "Jane Doe"}, "previous_attributes": {"data": {"name": "My Feature Flag", "description": "Enables the new feature.", "tags": ["beta", "release"], "enabled": True, "default_value": False}}}, "object": "event"}
         instance = FlagUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -8011,20 +3953,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_updated_data_minimal_payload(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": True,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = FlagUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -8041,20 +3970,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_flag_updated_data_preserves_nullable_fields(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": True,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "environment_id": "environment_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = FlagUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -8092,28 +4008,14 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_updated_context_minimal_payload(self):
-        data = {
-            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor": {
-                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "source": "api",
-                "name": "Jane Doe",
-            },
-        }
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor": {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": "Jane Doe"}}
         instance = FlagUpdatedContext.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["client_id"] == data["client_id"]
         assert serialized["actor"] == data["actor"]
 
     def test_flag_updated_context_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor": {
-                "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "source": "api",
-                "name": "Jane Doe",
-            },
-        }
+        data = {"client_id": "client_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor": {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "api", "name": "Jane Doe"}}
         instance = FlagUpdatedContext.from_dict(data)
         serialized = instance.to_dict()
         assert "previous_attributes" not in serialized
@@ -8141,11 +4043,7 @@ class TestModelRoundTrip:
         assert serialized["name"] is None
 
     def test_flag_updated_context_actor_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "source": "unexpected_flag_updated_context_actor_source",
-            "name": "Jane Doe",
-        }
+        data = {"id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "source": "unexpected_flag_updated_context_actor_source", "name": "Jane Doe"}
         instance = FlagUpdatedContextActor.from_dict(data)
         assert instance.to_dict() == data
 
@@ -8162,9 +4060,7 @@ class TestModelRoundTrip:
         instance = FlagUpdatedContextPreviousAttribute.from_dict(data)
         assert instance.to_dict() is not None
 
-    def test_flag_updated_context_previous_attribute_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_flag_updated_context_previous_attribute_omits_absent_optional_non_nullable_fields(self):
         data = {}
         instance = FlagUpdatedContextPreviousAttribute.from_dict(data)
         serialized = instance.to_dict()
@@ -8183,9 +4079,7 @@ class TestModelRoundTrip:
         instance = FlagUpdatedContextPreviousAttributeData.from_dict(data)
         assert instance.to_dict() is not None
 
-    def test_flag_updated_context_previous_attribute_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_flag_updated_context_previous_attribute_data_omits_absent_optional_non_nullable_fields(self):
         data = {"description": "Enables the new feature."}
         instance = FlagUpdatedContextPreviousAttributeData.from_dict(data)
         serialized = instance.to_dict()
@@ -8194,16 +4088,8 @@ class TestModelRoundTrip:
         assert "enabled" not in serialized
         assert "default_value" not in serialized
 
-    def test_flag_updated_context_previous_attribute_data_preserves_nullable_fields(
-        self,
-    ):
-        data = {
-            "name": "My Feature Flag",
-            "description": None,
-            "tags": ["beta", "release"],
-            "enabled": True,
-            "default_value": False,
-        }
+    def test_flag_updated_context_previous_attribute_data_preserves_nullable_fields(self):
+        data = {"name": "My Feature Flag", "description": None, "tags": ["beta", "release"], "enabled": True, "default_value": False}
         instance = FlagUpdatedContextPreviousAttributeData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -8217,21 +4103,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_group_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "group.created",
-            "data": {
-                "object": "group",
-                "id": "group_01HXYZ123456789ABCDEFGHIJ",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Engineering",
-                "description": "The engineering team",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "group.created", "data": {"object": "group", "id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Engineering", "description": "The engineering team", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = GroupCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -8241,21 +4113,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_group_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "group.created",
-            "data": {
-                "object": "group",
-                "id": "group_01HXYZ123456789ABCDEFGHIJ",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Engineering",
-                "description": "The engineering team",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "group.created", "data": {"object": "group", "id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Engineering", "description": "The engineering team", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = GroupCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -8269,21 +4127,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_group_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "group.deleted",
-            "data": {
-                "object": "group",
-                "id": "group_01HXYZ123456789ABCDEFGHIJ",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Engineering",
-                "description": "The engineering team",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "group.deleted", "data": {"object": "group", "id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Engineering", "description": "The engineering team", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = GroupDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -8293,21 +4137,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_group_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "group.deleted",
-            "data": {
-                "object": "group",
-                "id": "group_01HXYZ123456789ABCDEFGHIJ",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Engineering",
-                "description": "The engineering team",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "group.deleted", "data": {"object": "group", "id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Engineering", "description": "The engineering team", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = GroupDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -8321,16 +4151,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_group_member_added_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "group.member_added",
-            "data": {
-                "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
-                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "group.member_added", "data": {"group_id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = GroupMemberAdded.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -8340,16 +4161,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_group_member_added_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "group.member_added",
-            "data": {
-                "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
-                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "group.member_added", "data": {"group_id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = GroupMemberAdded.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -8363,17 +4175,11 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_group_member_added_data_minimal_payload(self):
-        data = {
-            "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
-            "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-        }
+        data = {"group_id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY"}
         instance = GroupMemberAddedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["group_id"] == data["group_id"]
-        assert (
-            serialized["organization_membership_id"]
-            == data["organization_membership_id"]
-        )
+        assert serialized["organization_membership_id"] == data["organization_membership_id"]
 
     def test_group_member_removed_round_trip(self):
         data = load_fixture("group_member_removed.json")
@@ -8384,16 +4190,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_group_member_removed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "group.member_removed",
-            "data": {
-                "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
-                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "group.member_removed", "data": {"group_id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = GroupMemberRemoved.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -8403,16 +4200,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_group_member_removed_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "group.member_removed",
-            "data": {
-                "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
-                "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "group.member_removed", "data": {"group_id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = GroupMemberRemoved.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -8426,17 +4214,11 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_group_member_removed_data_minimal_payload(self):
-        data = {
-            "group_id": "group_01HXYZ123456789ABCDEFGHIJ",
-            "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-        }
+        data = {"group_id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_membership_id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY"}
         instance = GroupMemberRemovedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["group_id"] == data["group_id"]
-        assert (
-            serialized["organization_membership_id"]
-            == data["organization_membership_id"]
-        )
+        assert serialized["organization_membership_id"] == data["organization_membership_id"]
 
     def test_group_updated_round_trip(self):
         data = load_fixture("group_updated.json")
@@ -8447,21 +4229,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_group_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "group.updated",
-            "data": {
-                "object": "group",
-                "id": "group_01HXYZ123456789ABCDEFGHIJ",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Engineering",
-                "description": "The engineering team",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "group.updated", "data": {"object": "group", "id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Engineering", "description": "The engineering team", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = GroupUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -8471,21 +4239,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_group_updated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "group.updated",
-            "data": {
-                "object": "group",
-                "id": "group_01HXYZ123456789ABCDEFGHIJ",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Engineering",
-                "description": "The engineering team",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "group.updated", "data": {"object": "group", "id": "group_01HXYZ123456789ABCDEFGHIJ", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Engineering", "description": "The engineering team", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = GroupUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -8499,26 +4253,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_invitation_accepted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "invitation.accepted",
-            "data": {
-                "object": "invitation",
-                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "state": "pending",
-                "accepted_at": None,
-                "revoked_at": None,
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-                "accepted_user_id": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "invitation.accepted", "data": {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = InvitationAccepted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -8528,26 +4263,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_invitation_accepted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "invitation.accepted",
-            "data": {
-                "object": "invitation",
-                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "state": "pending",
-                "accepted_at": None,
-                "revoked_at": None,
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-                "accepted_user_id": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "invitation.accepted", "data": {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = InvitationAccepted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -8561,20 +4277,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_invitation_accepted_data_minimal_payload(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "pending",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationAcceptedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -8587,24 +4290,12 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_invitation_accepted_data_preserves_nullable_fields(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "pending",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationAcceptedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["accepted_at"] is None
@@ -8612,22 +4303,10 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_invitation_accepted_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "unexpected_invitation_accepted_data_state",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-            "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "unexpected_invitation_accepted_data_state", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationAcceptedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -8640,26 +4319,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_invitation_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "invitation.created",
-            "data": {
-                "object": "invitation",
-                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "state": "pending",
-                "accepted_at": None,
-                "revoked_at": None,
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-                "accepted_user_id": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "invitation.created", "data": {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = InvitationCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -8669,26 +4329,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_invitation_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "invitation.created",
-            "data": {
-                "object": "invitation",
-                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "state": "pending",
-                "accepted_at": None,
-                "revoked_at": None,
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-                "accepted_user_id": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "invitation.created", "data": {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = InvitationCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -8702,20 +4343,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_invitation_created_data_minimal_payload(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "pending",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -8728,24 +4356,12 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_invitation_created_data_preserves_nullable_fields(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "pending",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["accepted_at"] is None
@@ -8753,22 +4369,10 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_invitation_created_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "unexpected_invitation_created_data_state",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-            "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "unexpected_invitation_created_data_state", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationCreatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -8781,26 +4385,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_invitation_resent_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "invitation.resent",
-            "data": {
-                "object": "invitation",
-                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "state": "pending",
-                "accepted_at": None,
-                "revoked_at": None,
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-                "accepted_user_id": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "invitation.resent", "data": {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = InvitationResent.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -8810,26 +4395,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_invitation_resent_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "invitation.resent",
-            "data": {
-                "object": "invitation",
-                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "state": "pending",
-                "accepted_at": None,
-                "revoked_at": None,
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-                "accepted_user_id": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "invitation.resent", "data": {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = InvitationResent.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -8843,20 +4409,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_invitation_resent_data_minimal_payload(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "pending",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationResentData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -8869,24 +4422,12 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_invitation_resent_data_preserves_nullable_fields(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "pending",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationResentData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["accepted_at"] is None
@@ -8894,22 +4435,10 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_invitation_resent_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "unexpected_invitation_resent_data_state",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-            "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "unexpected_invitation_resent_data_state", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationResentData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -8922,26 +4451,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_invitation_revoked_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "invitation.revoked",
-            "data": {
-                "object": "invitation",
-                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "state": "pending",
-                "accepted_at": None,
-                "revoked_at": None,
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-                "accepted_user_id": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "invitation.revoked", "data": {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = InvitationRevoked.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -8951,26 +4461,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_invitation_revoked_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "invitation.revoked",
-            "data": {
-                "object": "invitation",
-                "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "state": "pending",
-                "accepted_at": None,
-                "revoked_at": None,
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-                "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-                "accepted_user_id": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "invitation.revoked", "data": {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = InvitationRevoked.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -8984,20 +4475,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_invitation_revoked_data_minimal_payload(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "pending",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationRevokedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -9010,24 +4488,12 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_invitation_revoked_data_preserves_nullable_fields(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "pending",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationRevokedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["accepted_at"] is None
@@ -9035,22 +4501,10 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_invitation_revoked_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "unexpected_invitation_revoked_data_state",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-            "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "unexpected_invitation_revoked_data_state", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = InvitationRevokedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -9063,21 +4517,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_magic_auth_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "magic_auth.created",
-            "data": {
-                "object": "magic_auth",
-                "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "magic_auth.created", "data": {"object": "magic_auth", "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = MagicAuthCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -9087,21 +4527,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_magic_auth_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "magic_auth.created",
-            "data": {
-                "object": "magic_auth",
-                "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "magic_auth.created", "data": {"object": "magic_auth", "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = MagicAuthCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -9115,15 +4541,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_magic_auth_created_data_minimal_payload(self):
-        data = {
-            "object": "magic_auth",
-            "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "magic_auth", "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = MagicAuthCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -9143,36 +4561,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization.created",
-            "data": {
-                "object": "organization",
-                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Acme Inc.",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                        "domain": "foo-corp.com",
-                        "state": "pending",
-                        "verification_prefix": "superapp-domain-verification-z3kjny",
-                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                        "verification_strategy": "dns",
-                        "created_at": "2026-01-15T12:00:00.000Z",
-                        "updated_at": "2026-01-15T12:00:00.000Z",
-                    }
-                ],
-                "metadata": {"tier": "diamond"},
-                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
-                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization.created", "data": {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191", "stripe_customer_id": "cus_R9qWAGMQ6nGE7V", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -9182,36 +4571,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_organization_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization.created",
-            "data": {
-                "object": "organization",
-                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Acme Inc.",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                        "domain": "foo-corp.com",
-                        "state": "pending",
-                        "verification_prefix": "superapp-domain-verification-z3kjny",
-                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                        "verification_strategy": "dns",
-                        "created_at": "2026-01-15T12:00:00.000Z",
-                        "updated_at": "2026-01-15T12:00:00.000Z",
-                    }
-                ],
-                "metadata": {"tier": "diamond"},
-                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
-                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization.created", "data": {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191", "stripe_customer_id": "cus_R9qWAGMQ6nGE7V", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -9225,29 +4585,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_created_data_minimal_payload(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -9260,58 +4598,13 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_organization_created_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "stripe_customer_id" not in serialized
 
     def test_organization_created_data_preserves_nullable_fields(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": None,
-            "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": None, "stripe_customer_id": "cus_R9qWAGMQ6nGE7V", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["external_id"] is None
@@ -9325,14 +4618,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_created_data_domain_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationCreatedDataDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -9342,17 +4628,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_created_data_domain_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_created_data_domain_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationCreatedDataDomain.from_dict(data)
         serialized = instance.to_dict()
         assert "state" not in serialized
@@ -9361,18 +4638,7 @@ class TestModelRoundTrip:
         assert "verification_strategy" not in serialized
 
     def test_organization_created_data_domain_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_created_data_domain_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "unexpected_organization_created_data_domain_state", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationCreatedDataDomain.from_dict(data)
         assert instance.to_dict() == data
 
@@ -9385,36 +4651,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization.deleted",
-            "data": {
-                "object": "organization",
-                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Acme Inc.",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                        "domain": "foo-corp.com",
-                        "state": "pending",
-                        "verification_prefix": "superapp-domain-verification-z3kjny",
-                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                        "verification_strategy": "dns",
-                        "created_at": "2026-01-15T12:00:00.000Z",
-                        "updated_at": "2026-01-15T12:00:00.000Z",
-                    }
-                ],
-                "metadata": {"tier": "diamond"},
-                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
-                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization.deleted", "data": {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191", "stripe_customer_id": "cus_R9qWAGMQ6nGE7V", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -9424,36 +4661,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_organization_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization.deleted",
-            "data": {
-                "object": "organization",
-                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Acme Inc.",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                        "domain": "foo-corp.com",
-                        "state": "pending",
-                        "verification_prefix": "superapp-domain-verification-z3kjny",
-                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                        "verification_strategy": "dns",
-                        "created_at": "2026-01-15T12:00:00.000Z",
-                        "updated_at": "2026-01-15T12:00:00.000Z",
-                    }
-                ],
-                "metadata": {"tier": "diamond"},
-                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
-                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization.deleted", "data": {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191", "stripe_customer_id": "cus_R9qWAGMQ6nGE7V", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -9467,29 +4675,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_deleted_data_minimal_payload(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -9502,58 +4688,13 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_organization_deleted_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert "stripe_customer_id" not in serialized
 
     def test_organization_deleted_data_preserves_nullable_fields(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": None,
-            "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": None, "stripe_customer_id": "cus_R9qWAGMQ6nGE7V", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["external_id"] is None
@@ -9567,14 +4708,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_deleted_data_domain_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDeletedDataDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -9584,17 +4718,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_deleted_data_domain_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_deleted_data_domain_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDeletedDataDomain.from_dict(data)
         serialized = instance.to_dict()
         assert "state" not in serialized
@@ -9603,18 +4728,7 @@ class TestModelRoundTrip:
         assert "verification_strategy" not in serialized
 
     def test_organization_deleted_data_domain_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_deleted_data_domain_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "unexpected_organization_deleted_data_domain_state", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDeletedDataDomain.from_dict(data)
         assert instance.to_dict() == data
 
@@ -9627,24 +4741,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_domain.created",
-            "data": {
-                "object": "organization_domain",
-                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                "domain": "foo-corp.com",
-                "state": "pending",
-                "verification_prefix": "superapp-domain-verification-z3kjny",
-                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                "verification_strategy": "dns",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_domain.created", "data": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDomainCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -9653,27 +4750,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_organization_domain_created_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_domain.created",
-            "data": {
-                "object": "organization_domain",
-                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                "domain": "foo-corp.com",
-                "state": "pending",
-                "verification_prefix": "superapp-domain-verification-z3kjny",
-                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                "verification_strategy": "dns",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_organization_domain_created_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_domain.created", "data": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDomainCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -9687,14 +4765,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_created_data_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -9704,17 +4775,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_domain_created_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_domain_created_data_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "state" not in serialized
@@ -9723,18 +4785,7 @@ class TestModelRoundTrip:
         assert "verification_strategy" not in serialized
 
     def test_organization_domain_created_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_domain_created_data_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "unexpected_organization_domain_created_data_state", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainCreatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -9747,24 +4798,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_domain.deleted",
-            "data": {
-                "object": "organization_domain",
-                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                "domain": "foo-corp.com",
-                "state": "pending",
-                "verification_prefix": "superapp-domain-verification-z3kjny",
-                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                "verification_strategy": "dns",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_domain.deleted", "data": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDomainDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -9773,27 +4807,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_organization_domain_deleted_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_domain.deleted",
-            "data": {
-                "object": "organization_domain",
-                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                "domain": "foo-corp.com",
-                "state": "pending",
-                "verification_prefix": "superapp-domain-verification-z3kjny",
-                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                "verification_strategy": "dns",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_organization_domain_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_domain.deleted", "data": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDomainDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -9807,14 +4822,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_deleted_data_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -9824,17 +4832,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_domain_deleted_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_domain_deleted_data_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert "state" not in serialized
@@ -9843,18 +4842,7 @@ class TestModelRoundTrip:
         assert "verification_strategy" not in serialized
 
     def test_organization_domain_deleted_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_domain_deleted_data_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "unexpected_organization_domain_deleted_data_state", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainDeletedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -9867,24 +4855,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_domain.updated",
-            "data": {
-                "object": "organization_domain",
-                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                "domain": "foo-corp.com",
-                "state": "pending",
-                "verification_prefix": "superapp-domain-verification-z3kjny",
-                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                "verification_strategy": "dns",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_domain.updated", "data": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDomainUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -9893,27 +4864,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_organization_domain_updated_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_domain.updated",
-            "data": {
-                "object": "organization_domain",
-                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                "domain": "foo-corp.com",
-                "state": "pending",
-                "verification_prefix": "superapp-domain-verification-z3kjny",
-                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                "verification_strategy": "dns",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_organization_domain_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_domain.updated", "data": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDomainUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -9927,14 +4879,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_updated_data_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -9944,17 +4889,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_domain_updated_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_domain_updated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "state" not in serialized
@@ -9963,18 +4899,7 @@ class TestModelRoundTrip:
         assert "verification_strategy" not in serialized
 
     def test_organization_domain_updated_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_domain_updated_data_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "unexpected_organization_domain_updated_data_state", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainUpdatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -9987,27 +4912,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_verification_failed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_domain.verification_failed",
-            "data": {
-                "reason": "domain_verification_period_expired",
-                "organization_domain": {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_domain.verification_failed", "data": {"reason": "domain_verification_period_expired", "organization_domain": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDomainVerificationFailed.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -10016,30 +4921,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_organization_domain_verification_failed_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_domain.verification_failed",
-            "data": {
-                "reason": "domain_verification_period_expired",
-                "organization_domain": {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                },
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_organization_domain_verification_failed_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_domain.verification_failed", "data": {"reason": "domain_verification_period_expired", "organization_domain": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDomainVerificationFailed.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -10053,77 +4936,28 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_verification_failed_data_minimal_payload(self):
-        data = {
-            "reason": "domain_verification_period_expired",
-            "organization_domain": {
-                "object": "organization_domain",
-                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                "domain": "foo-corp.com",
-                "state": "pending",
-                "verification_prefix": "superapp-domain-verification-z3kjny",
-                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                "verification_strategy": "dns",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-        }
+        data = {"reason": "domain_verification_period_expired", "organization_domain": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}
         instance = OrganizationDomainVerificationFailedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["reason"] == data["reason"]
         assert serialized["organization_domain"] == data["organization_domain"]
 
-    def test_organization_domain_verification_failed_data_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "reason": "unexpected_organization_domain_verification_failed_data_reason",
-            "organization_domain": {
-                "object": "organization_domain",
-                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                "domain": "foo-corp.com",
-                "state": "pending",
-                "verification_prefix": "superapp-domain-verification-z3kjny",
-                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                "verification_strategy": "dns",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-        }
+    def test_organization_domain_verification_failed_data_round_trips_unknown_enum_values(self):
+        data = {"reason": "unexpected_organization_domain_verification_failed_data_reason", "organization_domain": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}
         instance = OrganizationDomainVerificationFailedData.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_organization_domain_verification_failed_data_organization_domain_round_trip(
-        self,
-    ):
-        data = load_fixture(
-            "organization_domain_verification_failed_data_organization_domain.json"
-        )
-        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
-            data
-        )
+    def test_organization_domain_verification_failed_data_organization_domain_round_trip(self):
+        data = load_fixture("organization_domain_verification_failed_data_organization_domain.json")
+        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
-            serialized
-        )
+        restored = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_organization_domain_verification_failed_data_organization_domain_minimal_payload(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
-            data
-        )
+    def test_organization_domain_verification_failed_data_organization_domain_minimal_payload(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
+        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
         assert serialized["id"] == data["id"]
@@ -10132,44 +4966,18 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_domain_verification_failed_data_organization_domain_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
-            data
-        )
+    def test_organization_domain_verification_failed_data_organization_domain_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
+        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(data)
         serialized = instance.to_dict()
         assert "state" not in serialized
         assert "verification_prefix" not in serialized
         assert "verification_token" not in serialized
         assert "verification_strategy" not in serialized
 
-    def test_organization_domain_verification_failed_data_organization_domain_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_domain_verification_failed_data_organization_domain_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(
-            data
-        )
+    def test_organization_domain_verification_failed_data_organization_domain_round_trips_unknown_enum_values(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "unexpected_organization_domain_verification_failed_data_organization_domain_state", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
+        instance = OrganizationDomainVerificationFailedDataOrganizationDomain.from_dict(data)
         assert instance.to_dict() == data
 
     def test_organization_domain_verified_round_trip(self):
@@ -10181,24 +4989,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_verified_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_domain.verified",
-            "data": {
-                "object": "organization_domain",
-                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                "domain": "foo-corp.com",
-                "state": "pending",
-                "verification_prefix": "superapp-domain-verification-z3kjny",
-                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                "verification_strategy": "dns",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_domain.verified", "data": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDomainVerified.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -10207,27 +4998,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_organization_domain_verified_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_domain.verified",
-            "data": {
-                "object": "organization_domain",
-                "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                "domain": "foo-corp.com",
-                "state": "pending",
-                "verification_prefix": "superapp-domain-verification-z3kjny",
-                "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                "verification_strategy": "dns",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_organization_domain_verified_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_domain.verified", "data": {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationDomainVerified.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -10241,14 +5013,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_verified_data_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainVerifiedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -10258,17 +5023,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_domain_verified_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_domain_verified_data_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainVerifiedData.from_dict(data)
         serialized = instance.to_dict()
         assert "state" not in serialized
@@ -10277,18 +5033,7 @@ class TestModelRoundTrip:
         assert "verification_strategy" not in serialized
 
     def test_organization_domain_verified_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_domain_verified_data_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "unexpected_organization_domain_verified_data_state", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainVerifiedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -10301,25 +5046,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_membership_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_membership.created",
-            "data": {
-                "object": "organization_membership",
-                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "status": "active",
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "custom_attributes": {"key": {}},
-                "directory_managed": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_membership.created", "data": {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationMembershipCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -10328,28 +5055,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_organization_membership_created_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_membership.created",
-            "data": {
-                "object": "organization_membership",
-                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "status": "active",
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "custom_attributes": {"key": {}},
-                "directory_managed": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_organization_membership_created_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_membership.created", "data": {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationMembershipCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -10363,18 +5070,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_membership_created_data_minimal_payload(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "active",
-            "role": {"slug": "admin"},
-            "custom_attributes": {"key": {}},
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationMembershipCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -10388,39 +5084,14 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_membership_created_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "active",
-            "role": {"slug": "admin"},
-            "custom_attributes": {"key": {}},
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_membership_created_data_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationMembershipCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "roles" not in serialized
 
     def test_organization_membership_created_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "unexpected_organization_membership_created_data_status",
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "custom_attributes": {"key": {}},
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "unexpected_organization_membership_created_data_status", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationMembershipCreatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -10433,25 +5104,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_membership_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_membership.deleted",
-            "data": {
-                "object": "organization_membership",
-                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "status": "active",
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "custom_attributes": {"key": {}},
-                "directory_managed": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_membership.deleted", "data": {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationMembershipDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -10460,28 +5113,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_organization_membership_deleted_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_membership.deleted",
-            "data": {
-                "object": "organization_membership",
-                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "status": "active",
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "custom_attributes": {"key": {}},
-                "directory_managed": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_organization_membership_deleted_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_membership.deleted", "data": {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationMembershipDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -10495,18 +5128,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_membership_deleted_data_minimal_payload(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "active",
-            "role": {"slug": "admin"},
-            "custom_attributes": {"key": {}},
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationMembershipDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -10520,39 +5142,14 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_membership_deleted_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "active",
-            "role": {"slug": "admin"},
-            "custom_attributes": {"key": {}},
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_membership_deleted_data_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationMembershipDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert "roles" not in serialized
 
     def test_organization_membership_deleted_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "unexpected_organization_membership_deleted_data_status",
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "custom_attributes": {"key": {}},
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "unexpected_organization_membership_deleted_data_status", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationMembershipDeletedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -10565,25 +5162,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_membership_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_membership.updated",
-            "data": {
-                "object": "organization_membership",
-                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "status": "active",
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "custom_attributes": {"key": {}},
-                "directory_managed": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_membership.updated", "data": {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationMembershipUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -10592,28 +5171,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_organization_membership_updated_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_membership.updated",
-            "data": {
-                "object": "organization_membership",
-                "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "status": "active",
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "custom_attributes": {"key": {}},
-                "directory_managed": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_organization_membership_updated_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_membership.updated", "data": {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationMembershipUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -10627,18 +5186,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_membership_updated_data_minimal_payload(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "active",
-            "role": {"slug": "admin"},
-            "custom_attributes": {"key": {}},
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationMembershipUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -10652,39 +5200,14 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_membership_updated_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "active",
-            "role": {"slug": "admin"},
-            "custom_attributes": {"key": {}},
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_membership_updated_data_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "active", "role": {"slug": "admin"}, "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationMembershipUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "roles" not in serialized
 
     def test_organization_membership_updated_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "status": "unexpected_organization_membership_updated_data_status",
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "custom_attributes": {"key": {}},
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_membership", "id": "om_01EHWNCE74X7JSDV0X3SZ3KJNY", "user_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "status": "unexpected_organization_membership_updated_data_status", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "custom_attributes": {"key": {}}, "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationMembershipUpdatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -10697,23 +5220,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_role_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_role.created",
-            "data": {
-                "object": "organization_role",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing-admin",
-                "name": "Billing Administrator",
-                "description": "Can manage billing settings.",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_role.created", "data": {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": "Can manage billing settings.", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationRoleCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -10723,23 +5230,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_organization_role_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_role.created",
-            "data": {
-                "object": "organization_role",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing-admin",
-                "name": "Billing Administrator",
-                "description": "Can manage billing settings.",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_role.created", "data": {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": "Can manage billing settings.", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationRoleCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -10753,17 +5244,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_role_created_data_minimal_payload(self):
-        data = {
-            "object": "organization_role",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing-admin",
-            "name": "Billing Administrator",
-            "description": None,
-            "resource_type_slug": "organization",
-            "permissions": ["users:read", "users:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": None, "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationRoleCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -10777,17 +5258,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_organization_role_created_data_preserves_nullable_fields(self):
-        data = {
-            "object": "organization_role",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing-admin",
-            "name": "Billing Administrator",
-            "description": None,
-            "resource_type_slug": "organization",
-            "permissions": ["users:read", "users:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": None, "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationRoleCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -10801,23 +5272,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_role_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_role.deleted",
-            "data": {
-                "object": "organization_role",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing-admin",
-                "name": "Billing Administrator",
-                "description": "Can manage billing settings.",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_role.deleted", "data": {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": "Can manage billing settings.", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationRoleDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -10827,23 +5282,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_organization_role_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_role.deleted",
-            "data": {
-                "object": "organization_role",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing-admin",
-                "name": "Billing Administrator",
-                "description": "Can manage billing settings.",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_role.deleted", "data": {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": "Can manage billing settings.", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationRoleDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -10857,17 +5296,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_role_deleted_data_minimal_payload(self):
-        data = {
-            "object": "organization_role",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing-admin",
-            "name": "Billing Administrator",
-            "description": None,
-            "resource_type_slug": "organization",
-            "permissions": ["users:read", "users:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": None, "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationRoleDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -10881,17 +5310,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_organization_role_deleted_data_preserves_nullable_fields(self):
-        data = {
-            "object": "organization_role",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing-admin",
-            "name": "Billing Administrator",
-            "description": None,
-            "resource_type_slug": "organization",
-            "permissions": ["users:read", "users:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": None, "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationRoleDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -10905,23 +5324,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_role_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_role.updated",
-            "data": {
-                "object": "organization_role",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing-admin",
-                "name": "Billing Administrator",
-                "description": "Can manage billing settings.",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_role.updated", "data": {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": "Can manage billing settings.", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationRoleUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -10931,23 +5334,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_organization_role_updated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization_role.updated",
-            "data": {
-                "object": "organization_role",
-                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing-admin",
-                "name": "Billing Administrator",
-                "description": "Can manage billing settings.",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization_role.updated", "data": {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": "Can manage billing settings.", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationRoleUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -10961,17 +5348,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_role_updated_data_minimal_payload(self):
-        data = {
-            "object": "organization_role",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing-admin",
-            "name": "Billing Administrator",
-            "description": None,
-            "resource_type_slug": "organization",
-            "permissions": ["users:read", "users:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": None, "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationRoleUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -10985,17 +5362,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_organization_role_updated_data_preserves_nullable_fields(self):
-        data = {
-            "object": "organization_role",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing-admin",
-            "name": "Billing Administrator",
-            "description": None,
-            "resource_type_slug": "organization",
-            "permissions": ["users:read", "users:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_role", "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing-admin", "name": "Billing Administrator", "description": None, "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationRoleUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -11009,36 +5376,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization.updated",
-            "data": {
-                "object": "organization",
-                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Acme Inc.",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                        "domain": "foo-corp.com",
-                        "state": "pending",
-                        "verification_prefix": "superapp-domain-verification-z3kjny",
-                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                        "verification_strategy": "dns",
-                        "created_at": "2026-01-15T12:00:00.000Z",
-                        "updated_at": "2026-01-15T12:00:00.000Z",
-                    }
-                ],
-                "metadata": {"tier": "diamond"},
-                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
-                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization.updated", "data": {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191", "stripe_customer_id": "cus_R9qWAGMQ6nGE7V", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -11048,36 +5386,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_organization_updated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "organization.updated",
-            "data": {
-                "object": "organization",
-                "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "name": "Acme Inc.",
-                "domains": [
-                    {
-                        "object": "organization_domain",
-                        "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                        "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                        "domain": "foo-corp.com",
-                        "state": "pending",
-                        "verification_prefix": "superapp-domain-verification-z3kjny",
-                        "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                        "verification_strategy": "dns",
-                        "created_at": "2026-01-15T12:00:00.000Z",
-                        "updated_at": "2026-01-15T12:00:00.000Z",
-                    }
-                ],
-                "metadata": {"tier": "diamond"},
-                "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
-                "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "organization.updated", "data": {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191", "stripe_customer_id": "cus_R9qWAGMQ6nGE7V", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = OrganizationUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -11091,29 +5400,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_updated_data_minimal_payload(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -11126,58 +5413,13 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_organization_updated_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "stripe_customer_id" not in serialized
 
     def test_organization_updated_data_preserves_nullable_fields(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": None,
-            "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": None, "stripe_customer_id": "cus_R9qWAGMQ6nGE7V", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["external_id"] is None
@@ -11191,14 +5433,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_updated_data_domain_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationUpdatedDataDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -11208,17 +5443,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_updated_data_domain_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_updated_data_domain_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationUpdatedDataDomain.from_dict(data)
         serialized = instance.to_dict()
         assert "state" not in serialized
@@ -11227,18 +5453,7 @@ class TestModelRoundTrip:
         assert "verification_strategy" not in serialized
 
     def test_organization_updated_data_domain_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_updated_data_domain_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "unexpected_organization_updated_data_domain_state", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationUpdatedDataDomain.from_dict(data)
         assert instance.to_dict() == data
 
@@ -11251,20 +5466,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_password_reset_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "password_reset.created",
-            "data": {
-                "object": "password_reset",
-                "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "created_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "password_reset.created", "data": {"object": "password_reset", "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = PasswordResetCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -11274,20 +5476,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_password_reset_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "password_reset.created",
-            "data": {
-                "object": "password_reset",
-                "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "created_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "password_reset.created", "data": {"object": "password_reset", "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = PasswordResetCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -11301,14 +5490,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_password_reset_created_data_minimal_payload(self):
-        data = {
-            "object": "password_reset",
-            "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "password_reset", "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z"}
         instance = PasswordResetCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -11327,20 +5509,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_password_reset_succeeded_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "password_reset.succeeded",
-            "data": {
-                "object": "password_reset",
-                "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "created_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "password_reset.succeeded", "data": {"object": "password_reset", "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = PasswordResetSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -11350,20 +5519,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_password_reset_succeeded_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "password_reset.succeeded",
-            "data": {
-                "object": "password_reset",
-                "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "email": "marcelina.davis@example.com",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "created_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "password_reset.succeeded", "data": {"object": "password_reset", "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = PasswordResetSucceeded.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -11377,14 +5533,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_password_reset_succeeded_data_minimal_payload(self):
-        data = {
-            "object": "password_reset",
-            "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "password_reset", "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z"}
         instance = PasswordResetSucceededData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -11403,22 +5552,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_permission_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "permission.created",
-            "data": {
-                "object": "permission",
-                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing:manage",
-                "name": "Manage Billing",
-                "description": "Allows managing billing settings.",
-                "system": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "permission.created", "data": {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": "Allows managing billing settings.", "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = PermissionCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -11428,22 +5562,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_permission_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "permission.created",
-            "data": {
-                "object": "permission",
-                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing:manage",
-                "name": "Manage Billing",
-                "description": "Allows managing billing settings.",
-                "system": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "permission.created", "data": {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": "Allows managing billing settings.", "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = PermissionCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -11457,16 +5576,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_permission_created_data_minimal_payload(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing:manage",
-            "name": "Manage Billing",
-            "description": None,
-            "system": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": None, "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = PermissionCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -11479,16 +5589,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_permission_created_data_preserves_nullable_fields(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing:manage",
-            "name": "Manage Billing",
-            "description": None,
-            "system": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": None, "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = PermissionCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -11502,22 +5603,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_permission_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "permission.deleted",
-            "data": {
-                "object": "permission",
-                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing:manage",
-                "name": "Manage Billing",
-                "description": "Allows managing billing settings.",
-                "system": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "permission.deleted", "data": {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": "Allows managing billing settings.", "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = PermissionDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -11527,22 +5613,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_permission_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "permission.deleted",
-            "data": {
-                "object": "permission",
-                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing:manage",
-                "name": "Manage Billing",
-                "description": "Allows managing billing settings.",
-                "system": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "permission.deleted", "data": {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": "Allows managing billing settings.", "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = PermissionDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -11556,16 +5627,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_permission_deleted_data_minimal_payload(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing:manage",
-            "name": "Manage Billing",
-            "description": None,
-            "system": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": None, "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = PermissionDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -11578,16 +5640,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_permission_deleted_data_preserves_nullable_fields(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing:manage",
-            "name": "Manage Billing",
-            "description": None,
-            "system": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": None, "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = PermissionDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -11601,22 +5654,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_permission_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "permission.updated",
-            "data": {
-                "object": "permission",
-                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing:manage",
-                "name": "Manage Billing",
-                "description": "Allows managing billing settings.",
-                "system": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "permission.updated", "data": {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": "Allows managing billing settings.", "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = PermissionUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -11626,22 +5664,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_permission_updated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "permission.updated",
-            "data": {
-                "object": "permission",
-                "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "slug": "billing:manage",
-                "name": "Manage Billing",
-                "description": "Allows managing billing settings.",
-                "system": False,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "permission.updated", "data": {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": "Allows managing billing settings.", "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = PermissionUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -11655,16 +5678,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_permission_updated_data_minimal_payload(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing:manage",
-            "name": "Manage Billing",
-            "description": None,
-            "system": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": None, "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = PermissionUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -11677,16 +5691,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_permission_updated_data_preserves_nullable_fields(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "slug": "billing:manage",
-            "name": "Manage Billing",
-            "description": None,
-            "system": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "permission", "id": "perm_01EHWNCE74X7JSDV0X3SZ3KJNY", "slug": "billing:manage", "name": "Manage Billing", "description": None, "system": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = PermissionUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -11700,20 +5705,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_role_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "role.created",
-            "data": {
-                "object": "role",
-                "slug": "admin",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "role.created", "data": {"object": "role", "slug": "admin", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = RoleCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -11723,20 +5715,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_role_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "role.created",
-            "data": {
-                "object": "role",
-                "slug": "admin",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "role.created", "data": {"object": "role", "slug": "admin", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = RoleCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -11750,13 +5729,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_role_created_data_minimal_payload(self):
-        data = {
-            "object": "role",
-            "slug": "admin",
-            "resource_type_slug": "organization",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "role", "slug": "admin", "resource_type_slug": "organization", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = RoleCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -11766,13 +5739,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_role_created_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "role",
-            "slug": "admin",
-            "resource_type_slug": "organization",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "role", "slug": "admin", "resource_type_slug": "organization", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = RoleCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "permissions" not in serialized
@@ -11786,20 +5753,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_role_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "role.deleted",
-            "data": {
-                "object": "role",
-                "slug": "admin",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "role.deleted", "data": {"object": "role", "slug": "admin", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = RoleDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -11809,20 +5763,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_role_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "role.deleted",
-            "data": {
-                "object": "role",
-                "slug": "admin",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "role.deleted", "data": {"object": "role", "slug": "admin", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = RoleDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -11836,13 +5777,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_role_deleted_data_minimal_payload(self):
-        data = {
-            "object": "role",
-            "slug": "admin",
-            "resource_type_slug": "organization",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "role", "slug": "admin", "resource_type_slug": "organization", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = RoleDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -11852,13 +5787,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_role_deleted_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "role",
-            "slug": "admin",
-            "resource_type_slug": "organization",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "role", "slug": "admin", "resource_type_slug": "organization", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = RoleDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert "permissions" not in serialized
@@ -11872,20 +5801,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_role_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "role.updated",
-            "data": {
-                "object": "role",
-                "slug": "admin",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "role.updated", "data": {"object": "role", "slug": "admin", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = RoleUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -11895,20 +5811,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_role_updated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "role.updated",
-            "data": {
-                "object": "role",
-                "slug": "admin",
-                "resource_type_slug": "organization",
-                "permissions": ["users:read", "users:write"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "role.updated", "data": {"object": "role", "slug": "admin", "resource_type_slug": "organization", "permissions": ["users:read", "users:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = RoleUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -11922,13 +5825,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_role_updated_data_minimal_payload(self):
-        data = {
-            "object": "role",
-            "slug": "admin",
-            "resource_type_slug": "organization",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "role", "slug": "admin", "resource_type_slug": "organization", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = RoleUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -11938,13 +5835,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_role_updated_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "role",
-            "slug": "admin",
-            "resource_type_slug": "organization",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "role", "slug": "admin", "resource_type_slug": "organization", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = RoleUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "permissions" not in serialized
@@ -11958,30 +5849,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_session_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "session.created",
-            "data": {
-                "object": "session",
-                "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-                "impersonator": {
-                    "email": "admin@foocorp.com",
-                    "reason": "Investigating an issue with the customer's account.",
-                },
-                "ip_address": "198.51.100.42",
-                "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "auth_method": "sso",
-                "status": "active",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "ended_at": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "session.created", "data": {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "ip_address": "198.51.100.42", "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = SessionCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -11991,30 +5859,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_session_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "session.created",
-            "data": {
-                "object": "session",
-                "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-                "impersonator": {
-                    "email": "admin@foocorp.com",
-                    "reason": "Investigating an issue with the customer's account.",
-                },
-                "ip_address": "198.51.100.42",
-                "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "auth_method": "sso",
-                "status": "active",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "ended_at": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "session.created", "data": {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "ip_address": "198.51.100.42", "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = SessionCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12028,19 +5873,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_session_created_data_minimal_payload(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "sso",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = SessionCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -12056,43 +5889,14 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_session_created_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "ip_address": "198.51.100.42",
-            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "sso",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "ip_address": "198.51.100.42", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = SessionCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert "impersonator" not in serialized
         assert "organization_id" not in serialized
 
     def test_session_created_data_preserves_nullable_fields(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "impersonator": {
-                "email": "admin@foocorp.com",
-                "reason": "Investigating an issue with the customer's account.",
-            },
-            "ip_address": None,
-            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "sso",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "ip_address": None, "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = SessionCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -12100,24 +5904,7 @@ class TestModelRoundTrip:
         assert serialized["ended_at"] is None
 
     def test_session_created_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "impersonator": {
-                "email": "admin@foocorp.com",
-                "reason": "Investigating an issue with the customer's account.",
-            },
-            "ip_address": "198.51.100.42",
-            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "unexpected_session_created_data_auth_method",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "ip_address": "198.51.100.42", "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "unexpected_session_created_data_auth_method", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = SessionCreatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -12151,30 +5938,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_session_revoked_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "session.revoked",
-            "data": {
-                "object": "session",
-                "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-                "impersonator": {
-                    "email": "admin@foocorp.com",
-                    "reason": "Investigating an issue with the customer's account.",
-                },
-                "ip_address": "198.51.100.42",
-                "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "auth_method": "sso",
-                "status": "active",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "ended_at": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "session.revoked", "data": {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "ip_address": "198.51.100.42", "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = SessionRevoked.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -12184,30 +5948,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_session_revoked_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "session.revoked",
-            "data": {
-                "object": "session",
-                "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-                "impersonator": {
-                    "email": "admin@foocorp.com",
-                    "reason": "Investigating an issue with the customer's account.",
-                },
-                "ip_address": "198.51.100.42",
-                "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-                "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "auth_method": "sso",
-                "status": "active",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "ended_at": None,
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "session.revoked", "data": {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "ip_address": "198.51.100.42", "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = SessionRevoked.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12221,19 +5962,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_session_revoked_data_minimal_payload(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "sso",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = SessionRevokedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -12249,43 +5978,14 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_session_revoked_data_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "ip_address": "198.51.100.42",
-            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "sso",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "ip_address": "198.51.100.42", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = SessionRevokedData.from_dict(data)
         serialized = instance.to_dict()
         assert "impersonator" not in serialized
         assert "organization_id" not in serialized
 
     def test_session_revoked_data_preserves_nullable_fields(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "impersonator": {
-                "email": "admin@foocorp.com",
-                "reason": "Investigating an issue with the customer's account.",
-            },
-            "ip_address": None,
-            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "sso",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "ip_address": None, "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = SessionRevokedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -12293,24 +5993,7 @@ class TestModelRoundTrip:
         assert serialized["ended_at"] is None
 
     def test_session_revoked_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "impersonator": {
-                "email": "admin@foocorp.com",
-                "reason": "Investigating an issue with the customer's account.",
-            },
-            "ip_address": "198.51.100.42",
-            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "unexpected_session_revoked_data_auth_method",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "ip_address": "198.51.100.42", "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "unexpected_session_revoked_data_auth_method", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = SessionRevokedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -12344,27 +6027,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "user.created",
-            "data": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "user.created", "data": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = UserCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -12374,27 +6037,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_user_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "user.created",
-            "data": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "user.created", "data": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = UserCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12408,27 +6051,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "user.deleted",
-            "data": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "user.deleted", "data": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = UserDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -12438,27 +6061,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_user_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "user.deleted",
-            "data": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "user.deleted", "data": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = UserDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12472,27 +6075,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "user.updated",
-            "data": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "user.updated", "data": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = UserUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -12502,27 +6085,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_user_updated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "user.updated",
-            "data": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "user.updated", "data": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = UserUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12536,17 +6099,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_byok_key_verification_completed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.byok_key.verification_completed",
-            "data": {
-                "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                "key_provider": "AWS_KMS",
-                "verified": True,
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.byok_key.verification_completed", "data": {"organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T", "key_provider": "AWS_KMS", "verified": True}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultByokKeyVerificationCompleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -12555,20 +6108,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["object"] == data["object"]
 
-    def test_vault_byok_key_verification_completed_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.byok_key.verification_completed",
-            "data": {
-                "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-                "key_provider": "AWS_KMS",
-                "verified": True,
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+    def test_vault_byok_key_verification_completed_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.byok_key.verification_completed", "data": {"organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T", "key_provider": "AWS_KMS", "verified": True}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultByokKeyVerificationCompleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12582,25 +6123,15 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_byok_key_verification_completed_data_minimal_payload(self):
-        data = {
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            "key_provider": "AWS_KMS",
-            "verified": True,
-        }
+        data = {"organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T", "key_provider": "AWS_KMS", "verified": True}
         instance = VaultByokKeyVerificationCompletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["key_provider"] == data["key_provider"]
         assert serialized["verified"] == data["verified"]
 
-    def test_vault_byok_key_verification_completed_data_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T",
-            "key_provider": "unexpected_vault_byok_key_verification_completed_data_key_provider",
-            "verified": True,
-        }
+    def test_vault_byok_key_verification_completed_data_round_trips_unknown_enum_values(self):
+        data = {"organization_id": "org_01EHT88Z8J8795GZNQ4ZP1J81T", "key_provider": "unexpected_vault_byok_key_verification_completed_data_key_provider", "verified": True}
         instance = VaultByokKeyVerificationCompletedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -12613,20 +6144,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_data_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.data.created",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "kv_name": "user-secrets",
-                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "key_context": {"key": "test_value"},
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.data.created", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY", "key_context": {"key": "test_value"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDataCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -12636,20 +6154,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_vault_data_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.data.created",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "kv_name": "user-secrets",
-                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "key_context": {"key": "test_value"},
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.data.created", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY", "key_context": {"key": "test_value"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDataCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12663,14 +6168,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_data_created_data_minimal_payload(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "api",
-            "actor_name": "Jane Doe",
-            "kv_name": "user-secrets",
-            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "key_context": {"key": "test_value"},
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY", "key_context": {"key": "test_value"}}
         instance = VaultDataCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["actor_id"] == data["actor_id"]
@@ -12681,14 +6179,7 @@ class TestModelRoundTrip:
         assert serialized["key_context"] == data["key_context"]
 
     def test_vault_data_created_data_round_trips_unknown_enum_values(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "unexpected_vault_data_created_data_actor_source",
-            "actor_name": "Jane Doe",
-            "kv_name": "user-secrets",
-            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "key_context": {"key": "test_value"},
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "unexpected_vault_data_created_data_actor_source", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY", "key_context": {"key": "test_value"}}
         instance = VaultDataCreatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -12701,18 +6192,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_data_deleted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.data.deleted",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "kv_name": "user-secrets",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.data.deleted", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDataDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -12722,18 +6202,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_vault_data_deleted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.data.deleted",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "kv_name": "user-secrets",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.data.deleted", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDataDeleted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12747,12 +6216,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_data_deleted_data_minimal_payload(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "api",
-            "actor_name": "Jane Doe",
-            "kv_name": "user-secrets",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets"}
         instance = VaultDataDeletedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["actor_id"] == data["actor_id"]
@@ -12761,12 +6225,7 @@ class TestModelRoundTrip:
         assert serialized["kv_name"] == data["kv_name"]
 
     def test_vault_data_deleted_data_round_trips_unknown_enum_values(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "unexpected_vault_data_deleted_data_actor_source",
-            "actor_name": "Jane Doe",
-            "kv_name": "user-secrets",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "unexpected_vault_data_deleted_data_actor_source", "actor_name": "Jane Doe", "kv_name": "user-secrets"}
         instance = VaultDataDeletedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -12779,19 +6238,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_data_read_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.data.read",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "kv_name": "user-secrets",
-                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.data.read", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDataRead.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -12801,19 +6248,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_vault_data_read_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.data.read",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "kv_name": "user-secrets",
-                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.data.read", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDataRead.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12827,13 +6262,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_data_read_data_minimal_payload(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "api",
-            "actor_name": "Jane Doe",
-            "kv_name": "user-secrets",
-            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}
         instance = VaultDataReadData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["actor_id"] == data["actor_id"]
@@ -12843,13 +6272,7 @@ class TestModelRoundTrip:
         assert serialized["key_id"] == data["key_id"]
 
     def test_vault_data_read_data_round_trips_unknown_enum_values(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "unexpected_vault_data_read_data_actor_source",
-            "actor_name": "Jane Doe",
-            "kv_name": "user-secrets",
-            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "unexpected_vault_data_read_data_actor_source", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}
         instance = VaultDataReadData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -12862,20 +6285,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_data_updated_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.data.updated",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "kv_name": "user-secrets",
-                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "key_context": {"key": "test_value"},
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.data.updated", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY", "key_context": {"key": "test_value"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDataUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -12885,20 +6295,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_vault_data_updated_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.data.updated",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "kv_name": "user-secrets",
-                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "key_context": {"key": "test_value"},
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.data.updated", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY", "key_context": {"key": "test_value"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDataUpdated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12912,14 +6309,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_data_updated_data_minimal_payload(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "api",
-            "actor_name": "Jane Doe",
-            "kv_name": "user-secrets",
-            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "key_context": {"key": "test_value"},
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY", "key_context": {"key": "test_value"}}
         instance = VaultDataUpdatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["actor_id"] == data["actor_id"]
@@ -12930,14 +6320,7 @@ class TestModelRoundTrip:
         assert serialized["key_context"] == data["key_context"]
 
     def test_vault_data_updated_data_round_trips_unknown_enum_values(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "unexpected_vault_data_updated_data_actor_source",
-            "actor_name": "Jane Doe",
-            "kv_name": "user-secrets",
-            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "key_context": {"key": "test_value"},
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "unexpected_vault_data_updated_data_actor_source", "actor_name": "Jane Doe", "kv_name": "user-secrets", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY", "key_context": {"key": "test_value"}}
         instance = VaultDataUpdatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -12950,18 +6333,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_dek_decrypted_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.dek.decrypted",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.dek.decrypted", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDekDecrypted.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -12971,18 +6343,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_vault_dek_decrypted_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.dek.decrypted",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.dek.decrypted", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDekDecrypted.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -12996,12 +6357,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_dek_decrypted_data_minimal_payload(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "api",
-            "actor_name": "Jane Doe",
-            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}
         instance = VaultDekDecryptedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["actor_id"] == data["actor_id"]
@@ -13010,12 +6366,7 @@ class TestModelRoundTrip:
         assert serialized["key_id"] == data["key_id"]
 
     def test_vault_dek_decrypted_data_round_trips_unknown_enum_values(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "unexpected_vault_dek_decrypted_data_actor_source",
-            "actor_name": "Jane Doe",
-            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "unexpected_vault_dek_decrypted_data_actor_source", "actor_name": "Jane Doe", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}
         instance = VaultDekDecryptedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -13028,19 +6379,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_dek_read_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.dek.read",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
-                "key_context": {"key": "test_value"},
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.dek.read", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"], "key_context": {"key": "test_value"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDekRead.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -13050,19 +6389,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_vault_dek_read_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.dek.read",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
-                "key_context": {"key": "test_value"},
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.dek.read", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"], "key_context": {"key": "test_value"}}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultDekRead.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -13076,13 +6403,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_dek_read_data_minimal_payload(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "api",
-            "actor_name": "Jane Doe",
-            "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
-            "key_context": {"key": "test_value"},
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"], "key_context": {"key": "test_value"}}
         instance = VaultDekReadData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["actor_id"] == data["actor_id"]
@@ -13092,13 +6413,7 @@ class TestModelRoundTrip:
         assert serialized["key_context"] == data["key_context"]
 
     def test_vault_dek_read_data_round_trips_unknown_enum_values(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "unexpected_vault_dek_read_data_actor_source",
-            "actor_name": "Jane Doe",
-            "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"],
-            "key_context": {"key": "test_value"},
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "unexpected_vault_dek_read_data_actor_source", "actor_name": "Jane Doe", "key_ids": ["dek_01EHWNCE74X7JSDV0X3SZ3KJNY"], "key_context": {"key": "test_value"}}
         instance = VaultDekReadData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -13111,19 +6426,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_kek_created_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.kek.created",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "key_name": "production-kek",
-                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.kek.created", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "key_name": "production-kek", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultKekCreated.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -13133,19 +6436,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_vault_kek_created_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.kek.created",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "key_name": "production-kek",
-                "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.kek.created", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "key_name": "production-kek", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultKekCreated.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -13159,13 +6450,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_kek_created_data_minimal_payload(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "api",
-            "actor_name": "Jane Doe",
-            "key_name": "production-kek",
-            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "key_name": "production-kek", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}
         instance = VaultKekCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["actor_id"] == data["actor_id"]
@@ -13175,13 +6460,7 @@ class TestModelRoundTrip:
         assert serialized["key_id"] == data["key_id"]
 
     def test_vault_kek_created_data_round_trips_unknown_enum_values(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "unexpected_vault_kek_created_data_actor_source",
-            "actor_name": "Jane Doe",
-            "key_name": "production-kek",
-            "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "unexpected_vault_kek_created_data_actor_source", "actor_name": "Jane Doe", "key_name": "production-kek", "key_id": "key_01EHWNCE74X7JSDV0X3SZ3KJNY"}
         instance = VaultKekCreatedData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -13194,18 +6473,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_metadata_read_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.metadata.read",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "kv_name": "user-secrets",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.metadata.read", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultMetadataRead.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -13215,18 +6483,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_vault_metadata_read_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.metadata.read",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-                "kv_name": "user-secrets",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.metadata.read", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultMetadataRead.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -13240,12 +6497,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_metadata_read_data_minimal_payload(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "api",
-            "actor_name": "Jane Doe",
-            "kv_name": "user-secrets",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe", "kv_name": "user-secrets"}
         instance = VaultMetadataReadData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["actor_id"] == data["actor_id"]
@@ -13254,12 +6506,7 @@ class TestModelRoundTrip:
         assert serialized["kv_name"] == data["kv_name"]
 
     def test_vault_metadata_read_data_round_trips_unknown_enum_values(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "unexpected_vault_metadata_read_data_actor_source",
-            "actor_name": "Jane Doe",
-            "kv_name": "user-secrets",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "unexpected_vault_metadata_read_data_actor_source", "actor_name": "Jane Doe", "kv_name": "user-secrets"}
         instance = VaultMetadataReadData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -13272,17 +6519,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_names_listed_minimal_payload(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.names.listed",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.names.listed", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultNamesListed.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -13292,17 +6529,7 @@ class TestModelRoundTrip:
         assert serialized["object"] == data["object"]
 
     def test_vault_names_listed_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-            "event": "vault.names.listed",
-            "data": {
-                "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-                "actor_source": "api",
-                "actor_name": "Jane Doe",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "object": "event",
-        }
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "vault.names.listed", "data": {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
         instance = VaultNamesListed.from_dict(data)
         serialized = instance.to_dict()
         assert "context" not in serialized
@@ -13316,11 +6543,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_vault_names_listed_data_minimal_payload(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "api",
-            "actor_name": "Jane Doe",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "api", "actor_name": "Jane Doe"}
         instance = VaultNamesListedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["actor_id"] == data["actor_id"]
@@ -13328,13 +6551,81 @@ class TestModelRoundTrip:
         assert serialized["actor_name"] == data["actor_name"]
 
     def test_vault_names_listed_data_round_trips_unknown_enum_values(self):
-        data = {
-            "actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "actor_source": "unexpected_vault_names_listed_data_actor_source",
-            "actor_name": "Jane Doe",
-        }
+        data = {"actor_id": "user_01EHWNCE74X7JSDV0X3SZ3KJNY", "actor_source": "unexpected_vault_names_listed_data_actor_source", "actor_name": "Jane Doe"}
         instance = VaultNamesListedData.from_dict(data)
         assert instance.to_dict() == data
+
+    def test_waitlist_user_approved_round_trip(self):
+        data = load_fixture("waitlist_user_approved.json")
+        instance = WaitlistUserApproved.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistUserApproved.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_user_approved_minimal_payload(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "waitlist_user.approved", "data": {"object": "waitlist_user", "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "approved_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
+        instance = WaitlistUserApproved.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_waitlist_user_approved_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "waitlist_user.approved", "data": {"object": "waitlist_user", "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "approved_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
+        instance = WaitlistUserApproved.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_waitlist_user_created_round_trip(self):
+        data = load_fixture("waitlist_user_created.json")
+        instance = WaitlistUserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistUserCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_user_created_minimal_payload(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "waitlist_user.created", "data": {"object": "waitlist_user", "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "approved_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
+        instance = WaitlistUserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_waitlist_user_created_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "waitlist_user.created", "data": {"object": "waitlist_user", "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "approved_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
+        instance = WaitlistUserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_waitlist_user_denied_round_trip(self):
+        data = load_fixture("waitlist_user_denied.json")
+        instance = WaitlistUserDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistUserDenied.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_user_denied_minimal_payload(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "waitlist_user.denied", "data": {"object": "waitlist_user", "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "approved_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
+        instance = WaitlistUserDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_waitlist_user_denied_omits_absent_optional_non_nullable_fields(self):
+        data = {"id": "event_01EHZNVPK3SFK441A1RGBFSHRT", "event": "waitlist_user.denied", "data": {"object": "waitlist_user", "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "approved_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "created_at": "2026-01-15T12:00:00.000Z", "object": "event"}
+        instance = WaitlistUserDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
 
     def test_jwt_template_response_round_trip(self):
         data = load_fixture("jwt_template_response.json")
@@ -13345,12 +6636,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_jwt_template_response_minimal_payload(self):
-        data = {
-            "object": "jwt_template",
-            "content": '{"iss": "{{environment.id}}", "sub": "{{user.id}}"}',
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "jwt_template", "content": "{\"iss\": \"{{environment.id}}\", \"sub\": \"{{user.id}}\"}", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = JWTTemplateResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -13367,14 +6653,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_stand_alone_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainStandAlone.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -13384,17 +6663,8 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_organization_domain_stand_alone_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_organization_domain_stand_alone_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainStandAlone.from_dict(data)
         serialized = instance.to_dict()
         assert "state" not in serialized
@@ -13403,18 +6673,7 @@ class TestModelRoundTrip:
         assert "verification_strategy" not in serialized
 
     def test_organization_domain_stand_alone_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_domain_stand_alone_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "unexpected_organization_domain_stand_alone_state", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomainStandAlone.from_dict(data)
         assert instance.to_dict() == data
 
@@ -13427,19 +6686,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_flag_minimal_payload(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": True,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Flag.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -13455,19 +6702,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_flag_preserves_nullable_fields(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": True,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": True, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Flag.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -13482,18 +6717,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_api_key_with_value_minimal_payload(self):
-        data = {
-            "object": "api_key",
-            "id": "api_key_01EHZNVPK3SFK441A1RGBFSHRT",
-            "owner": {"type": "organization", "id": "org_01EHZNVPK3SFK441A1RGBFSHRT"},
-            "name": "Production API Key",
-            "obfuscated_value": "sk_...3456",
-            "last_used_at": None,
-            "permissions": ["posts:read", "posts:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "value": "sk_abcdefghijklmnop123456",
-        }
+        data = {"object": "api_key", "id": "api_key_01EHZNVPK3SFK441A1RGBFSHRT", "owner": {"type": "organization", "id": "org_01EHZNVPK3SFK441A1RGBFSHRT"}, "name": "Production API Key", "obfuscated_value": "sk_...3456", "last_used_at": None, "permissions": ["posts:read", "posts:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "value": "sk_abcdefghijklmnop123456"}
         instance = ApiKeyWithValue.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -13508,18 +6732,7 @@ class TestModelRoundTrip:
         assert serialized["value"] == data["value"]
 
     def test_api_key_with_value_preserves_nullable_fields(self):
-        data = {
-            "object": "api_key",
-            "id": "api_key_01EHZNVPK3SFK441A1RGBFSHRT",
-            "owner": {"type": "organization", "id": "org_01EHZNVPK3SFK441A1RGBFSHRT"},
-            "name": "Production API Key",
-            "obfuscated_value": "sk_...3456",
-            "last_used_at": None,
-            "permissions": ["posts:read", "posts:write"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "value": "sk_abcdefghijklmnop123456",
-        }
+        data = {"object": "api_key", "id": "api_key_01EHZNVPK3SFK441A1RGBFSHRT", "owner": {"type": "organization", "id": "org_01EHZNVPK3SFK441A1RGBFSHRT"}, "name": "Production API Key", "obfuscated_value": "sk_...3456", "last_used_at": None, "permissions": ["posts:read", "posts:write"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "value": "sk_abcdefghijklmnop123456"}
         instance = ApiKeyWithValue.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
@@ -13533,29 +6746,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_minimal_payload(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Organization.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -13568,60 +6759,14 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_organization_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": "2fe01467-f7ea-4dd2-8b79-c2b4f56d0191", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Organization.from_dict(data)
         serialized = instance.to_dict()
         assert "stripe_customer_id" not in serialized
         assert "allow_profiles_outside_organization" not in serialized
 
     def test_organization_preserves_nullable_fields(self):
-        data = {
-            "object": "organization",
-            "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Acme Inc.",
-            "domains": [
-                {
-                    "object": "organization_domain",
-                    "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-                    "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-                    "domain": "foo-corp.com",
-                    "state": "pending",
-                    "verification_prefix": "superapp-domain-verification-z3kjny",
-                    "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-                    "verification_strategy": "dns",
-                    "created_at": "2026-01-15T12:00:00.000Z",
-                    "updated_at": "2026-01-15T12:00:00.000Z",
-                }
-            ],
-            "metadata": {"tier": "diamond"},
-            "external_id": None,
-            "stripe_customer_id": "cus_R9qWAGMQ6nGE7V",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "allow_profiles_outside_organization": False,
-        }
+        data = {"object": "organization", "id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY", "name": "Acme Inc.", "domains": [{"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "pending", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}], "metadata": {"tier": "diamond"}, "external_id": None, "stripe_customer_id": "cus_R9qWAGMQ6nGE7V", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "allow_profiles_outside_organization": False}
         instance = Organization.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["external_id"] is None
@@ -13635,42 +6780,21 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_audit_log_configuration_minimal_payload(self):
-        data = {
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "retention_period_in_days": 30,
-            "state": "active",
-        }
+        data = {"organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "retention_period_in_days": 30, "state": "active"}
         instance = AuditLogConfiguration.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["organization_id"] == data["organization_id"]
-        assert (
-            serialized["retention_period_in_days"] == data["retention_period_in_days"]
-        )
+        assert serialized["retention_period_in_days"] == data["retention_period_in_days"]
         assert serialized["state"] == data["state"]
 
     def test_audit_log_configuration_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "retention_period_in_days": 30,
-            "state": "active",
-        }
+        data = {"organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "retention_period_in_days": 30, "state": "active"}
         instance = AuditLogConfiguration.from_dict(data)
         serialized = instance.to_dict()
         assert "log_stream" not in serialized
 
     def test_audit_log_configuration_round_trips_unknown_enum_values(self):
-        data = {
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "retention_period_in_days": 30,
-            "state": "unexpected_audit_log_configuration_state",
-            "log_stream": {
-                "id": "als_01EHZNVPK3SFK441A1RGBFSHRT",
-                "type": "Datadog",
-                "state": "active",
-                "last_synced_at": "2026-01-15T12:00:00.000Z",
-                "created_at": "2026-01-15T12:00:00.000Z",
-            },
-        }
+        data = {"organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "retention_period_in_days": 30, "state": "unexpected_audit_log_configuration_state", "log_stream": {"id": "als_01EHZNVPK3SFK441A1RGBFSHRT", "type": "Datadog", "state": "active", "last_synced_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z"}}
         instance = AuditLogConfiguration.from_dict(data)
         assert instance.to_dict() == data
 
@@ -13683,9 +6807,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_data_integration_authorize_url_response_minimal_payload(self):
-        data = {
-            "url": "https://api.workos.com/data-integrations/q2czJKmVAraSBg8xFpT7M9uR/authorize-redirect"
-        }
+        data = {"url": "https://api.workos.com/data-integrations/q2czJKmVAraSBg8xFpT7M9uR/authorize-redirect"}
         instance = DataIntegrationAuthorizeUrlResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["url"] == data["url"]
@@ -13703,9 +6825,7 @@ class TestModelRoundTrip:
         instance = DataIntegrationAccessTokenResponse.from_dict(data)
         assert instance.to_dict() is not None
 
-    def test_data_integration_access_token_response_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_data_integration_access_token_response_omits_absent_optional_non_nullable_fields(self):
         data = {}
         instance = DataIntegrationAccessTokenResponse.from_dict(data)
         serialized = instance.to_dict()
@@ -13713,20 +6833,8 @@ class TestModelRoundTrip:
         assert "access_token" not in serialized
         assert "error" not in serialized
 
-    def test_data_integration_access_token_response_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "active": True,
-            "access_token": {
-                "object": "access_token",
-                "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
-                "expires_at": "2025-12-31T23:59:59.000Z",
-                "scopes": ["repo", "user:email"],
-                "missing_scopes": [],
-            },
-            "error": "unexpected_data_integration_access_token_response_error",
-        }
+    def test_data_integration_access_token_response_round_trips_unknown_enum_values(self):
+        data = {"active": True, "access_token": {"object": "access_token", "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a", "expires_at": "2025-12-31T23:59:59.000Z", "scopes": ["repo", "user:email"], "missing_scopes": []}, "error": "unexpected_data_integration_access_token_response_error"}
         instance = DataIntegrationAccessTokenResponse.from_dict(data)
         assert instance.to_dict() == data
 
@@ -13739,16 +6847,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connected_account_minimal_payload(self):
-        data = {
-            "object": "connected_account",
-            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": None,
-            "organization_id": None,
-            "scopes": ["repo", "user:email"],
-            "state": "connected",
-            "created_at": "2024-01-16T14:20:00.000Z",
-            "updated_at": "2024-01-16T14:20:00.000Z",
-        }
+        data = {"object": "connected_account", "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT", "user_id": None, "organization_id": None, "scopes": ["repo", "user:email"], "state": "connected", "created_at": "2024-01-16T14:20:00.000Z", "updated_at": "2024-01-16T14:20:00.000Z"}
         instance = ConnectedAccount.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -13761,32 +6860,14 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_connected_account_preserves_nullable_fields(self):
-        data = {
-            "object": "connected_account",
-            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": None,
-            "organization_id": None,
-            "scopes": ["repo", "user:email"],
-            "state": "connected",
-            "created_at": "2024-01-16T14:20:00.000Z",
-            "updated_at": "2024-01-16T14:20:00.000Z",
-        }
+        data = {"object": "connected_account", "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT", "user_id": None, "organization_id": None, "scopes": ["repo", "user:email"], "state": "connected", "created_at": "2024-01-16T14:20:00.000Z", "updated_at": "2024-01-16T14:20:00.000Z"}
         instance = ConnectedAccount.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
 
     def test_connected_account_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "connected_account",
-            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-            "organization_id": None,
-            "scopes": ["repo", "user:email"],
-            "state": "unexpected_connected_account_state",
-            "created_at": "2024-01-16T14:20:00.000Z",
-            "updated_at": "2024-01-16T14:20:00.000Z",
-        }
+        data = {"object": "connected_account", "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT", "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT", "organization_id": None, "scopes": ["repo", "user:email"], "state": "unexpected_connected_account_state", "created_at": "2024-01-16T14:20:00.000Z", "updated_at": "2024-01-16T14:20:00.000Z"}
         instance = ConnectedAccount.from_dict(data)
         assert instance.to_dict() == data
 
@@ -13799,35 +6880,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_data_integrations_list_response_minimal_payload(self):
-        data = {
-            "object": "list",
-            "data": [
-                {
-                    "object": "data_provider",
-                    "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
-                    "name": "GitHub",
-                    "description": "Connect your GitHub account to access repositories.",
-                    "slug": "github",
-                    "integration_type": "github",
-                    "credentials_type": "oauth2",
-                    "scopes": ["repo", "user:email"],
-                    "ownership": "userland_user",
-                    "created_at": "2024-01-15T10:30:00.000Z",
-                    "updated_at": "2024-01-15T10:30:00.000Z",
-                    "connected_account": {
-                        "object": "connected_account",
-                        "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-                        "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-                        "organization_id": None,
-                        "scopes": ["repo", "user:email"],
-                        "state": "connected",
-                        "created_at": "2024-01-16T14:20:00.000Z",
-                        "updated_at": "2024-01-16T14:20:00.000Z",
-                        "userlandUserId": "test_userlandUserId",
-                    },
-                }
-            ],
-        }
+        data = {"object": "list", "data": [{"object": "data_provider", "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT", "name": "GitHub", "description": "Connect your GitHub account to access repositories.", "slug": "github", "integration_type": "github", "credentials_type": "oauth2", "scopes": ["repo", "user:email"], "ownership": "userland_user", "created_at": "2024-01-15T10:30:00.000Z", "updated_at": "2024-01-15T10:30:00.000Z", "connected_account": {"object": "connected_account", "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT", "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT", "organization_id": None, "scopes": ["repo", "user:email"], "state": "connected", "created_at": "2024-01-16T14:20:00.000Z", "updated_at": "2024-01-16T14:20:00.000Z", "userlandUserId": "test_userlandUserId"}}]}
         instance = DataIntegrationsListResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -13842,9 +6895,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_portal_link_response_minimal_payload(self):
-        data = {
-            "link": "https://setup.workos.com?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        }
+        data = {"link": "https://setup.workos.com?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
         instance = PortalLinkResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["link"] == data["link"]
@@ -13858,11 +6909,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_radar_standalone_response_minimal_payload(self):
-        data = {
-            "verdict": "block",
-            "reason": "Detected enabled Radar control",
-            "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
-        }
+        data = {"verdict": "block", "reason": "Detected enabled Radar control", "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X"}
         instance = RadarStandaloneResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["verdict"] == data["verdict"]
@@ -13870,24 +6917,14 @@ class TestModelRoundTrip:
         assert serialized["attempt_id"] == data["attempt_id"]
 
     def test_radar_standalone_response_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "verdict": "block",
-            "reason": "Detected enabled Radar control",
-            "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
-        }
+        data = {"verdict": "block", "reason": "Detected enabled Radar control", "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X"}
         instance = RadarStandaloneResponse.from_dict(data)
         serialized = instance.to_dict()
         assert "control" not in serialized
         assert "blocklist_type" not in serialized
 
     def test_radar_standalone_response_round_trips_unknown_enum_values(self):
-        data = {
-            "verdict": "unexpected_radar_standalone_response_verdict",
-            "reason": "Detected enabled Radar control",
-            "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
-            "control": "bot_detection",
-            "blocklist_type": "ip_address",
-        }
+        data = {"verdict": "unexpected_radar_standalone_response_verdict", "reason": "Detected enabled Radar control", "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X", "control": "bot_detection", "blocklist_type": "ip_address"}
         instance = RadarStandaloneResponse.from_dict(data)
         assert instance.to_dict() == data
 
@@ -13914,14 +6951,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_redirect_uri_minimal_payload(self):
-        data = {
-            "object": "redirect_uri",
-            "id": "ruri_01EHZNVPK3SFK441A1RGBFSHRT",
-            "uri": "https://example.com/callback",
-            "default": True,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "redirect_uri", "id": "ruri_01EHZNVPK3SFK441A1RGBFSHRT", "uri": "https://example.com/callback", "default": True, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = RedirectUri.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -13940,39 +6970,11 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_authentication_factor_enroll_response_minimal_payload(self):
-        data = {
-            "authentication_factor": {
-                "object": "authentication_factor",
-                "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-                "type": "totp",
-                "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "sms": {"phone_number": "+15005550006"},
-                "totp": {
-                    "issuer": "WorkOS",
-                    "user": "user@example.com",
-                    "secret": "JBSWY3DPEHPK3PXP",
-                    "qr_code": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...",
-                    "uri": "otpauth://totp/WorkOS:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=WorkOS",
-                },
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "authentication_challenge": {
-                "object": "authentication_challenge",
-                "id": "auth_challenge_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-                "expires_at": "2026-01-15T12:00:00.000Z",
-                "code": "123456",
-                "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-        }
+        data = {"authentication_factor": {"object": "authentication_factor", "id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "type": "totp", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "sms": {"phone_number": "+15005550006"}, "totp": {"issuer": "WorkOS", "user": "user@example.com", "secret": "JBSWY3DPEHPK3PXP", "qr_code": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...", "uri": "otpauth://totp/WorkOS:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=WorkOS"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "authentication_challenge": {"object": "authentication_challenge", "id": "auth_challenge_01FVYZ5QM8N98T9ME5BCB2BBMJ", "expires_at": "2026-01-15T12:00:00.000Z", "code": "123456", "authentication_factor_id": "auth_factor_01FVYZ5QM8N98T9ME5BCB2BBMJ", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}
         instance = UserAuthenticationFactorEnrollResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["authentication_factor"] == data["authentication_factor"]
-        assert (
-            serialized["authentication_challenge"] == data["authentication_challenge"]
-        )
+        assert serialized["authentication_challenge"] == data["authentication_challenge"]
 
     def test_magic_auth_round_trip(self):
         data = load_fixture("magic_auth.json")
@@ -13983,16 +6985,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_magic_auth_minimal_payload(self):
-        data = {
-            "object": "magic_auth",
-            "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "code": "123456",
-        }
+        data = {"object": "magic_auth", "id": "magic_auth_01HWZBQZY2M3AMQW166Q22K88F", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "code": "123456"}
         instance = MagicAuth.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -14013,22 +7006,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_invite_minimal_payload(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "pending",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
-            "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "token": "Z1uX3RbwcIl5fIGJJJCXXisdI", "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI"}
         instance = UserInvite.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -14041,28 +7019,14 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["token"] == data["token"]
         assert serialized["accept_invitation_url"] == data["accept_invitation_url"]
 
     def test_user_invite_preserves_nullable_fields(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "pending",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
-            "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "pending", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "token": "Z1uX3RbwcIl5fIGJJJCXXisdI", "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI"}
         instance = UserInvite.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["accepted_at"] is None
@@ -14070,24 +7034,10 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_user_invite_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "unexpected_user_invite_state",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-            "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
-            "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "unexpected_user_invite_state", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": None, "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "token": "Z1uX3RbwcIl5fIGJJJCXXisdI", "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI"}
         instance = UserInvite.from_dict(data)
         assert instance.to_dict() == data
 
@@ -14100,17 +7050,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_organization_membership_minimal_payload(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01HXYZ123456789ABCDEFGHIJ",
-            "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB",
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "status": "active",
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "role": {"slug": "admin"},
-        }
+        data = {"object": "organization_membership", "id": "om_01HXYZ123456789ABCDEFGHIJ", "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "status": "active", "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "role": {"slug": "admin"}}
         instance = UserOrganizationMembership.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -14123,43 +7063,15 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["role"] == data["role"]
 
-    def test_user_organization_membership_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01HXYZ123456789ABCDEFGHIJ",
-            "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB",
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "status": "active",
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "role": {"slug": "admin"},
-        }
+    def test_user_organization_membership_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_membership", "id": "om_01HXYZ123456789ABCDEFGHIJ", "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "status": "active", "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "role": {"slug": "admin"}}
         instance = UserOrganizationMembership.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_name" not in serialized
         assert "custom_attributes" not in serialized
 
     def test_user_organization_membership_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01HXYZ123456789ABCDEFGHIJ",
-            "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB",
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "status": "unexpected_user_organization_membership_status",
-            "directory_managed": False,
-            "organization_name": "Acme Corp",
-            "custom_attributes": {
-                "department": "Engineering",
-                "title": "Developer Experience Engineer",
-                "location": "Brooklyn",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "role": {"slug": "admin"},
-        }
+        data = {"object": "organization_membership", "id": "om_01HXYZ123456789ABCDEFGHIJ", "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "status": "unexpected_user_organization_membership_status", "directory_managed": False, "organization_name": "Acme Corp", "custom_attributes": {"department": "Engineering", "title": "Developer Experience Engineer", "location": "Brooklyn"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "role": {"slug": "admin"}}
         instance = UserOrganizationMembership.from_dict(data)
         assert instance.to_dict() == data
 
@@ -14172,16 +7084,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_email_verification_minimal_payload(self):
-        data = {
-            "object": "email_verification",
-            "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "code": "123456",
-        }
+        data = {"object": "email_verification", "id": "email_verification_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "code": "123456"}
         instance = EmailVerification.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -14202,23 +7105,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_send_verification_email_response_minimal_payload(self):
-        data = {
-            "user": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            }
-        }
+        data = {"user": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}
         instance = SendVerificationEmailResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["user"] == data["user"]
@@ -14232,23 +7119,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_verify_email_response_minimal_payload(self):
-        data = {
-            "user": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            }
-        }
+        data = {"user": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}
         instance = VerifyEmailResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["user"] == data["user"]
@@ -14262,16 +7133,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_password_reset_minimal_payload(self):
-        data = {
-            "object": "password_reset",
-            "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "password_reset_token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
-            "password_reset_url": "https://your-app.com/reset-password?token=Z1uX3RbwcIl5fIGJJJCXXisdI",
-        }
+        data = {"object": "password_reset", "id": "password_reset_01E4ZCR3C56J083X43JQXF3JK5", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z", "password_reset_token": "Z1uX3RbwcIl5fIGJJJCXXisdI", "password_reset_url": "https://your-app.com/reset-password?token=Z1uX3RbwcIl5fIGJJJCXXisdI"}
         instance = PasswordReset.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -14292,23 +7154,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_reset_password_response_minimal_payload(self):
-        data = {
-            "user": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            }
-        }
+        data = {"user": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}
         instance = ResetPasswordResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["user"] == data["user"]
@@ -14322,27 +7168,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_email_change_minimal_payload(self):
-        data = {
-            "object": "email_change",
-            "user": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "new_email": "new.email@example.com",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "email_change", "user": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "new_email": "new.email@example.com", "expires_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z"}
         instance = EmailChange.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -14360,25 +7186,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authenticate_response_minimal_payload(self):
-        data = {
-            "user": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "access_token": "eyJhb.nNzb19vaWRjX2tleV9.lc5Uk4yWVk5In0",
-            "refresh_token": "yAjhKk123NLIjdrBdGZPf8pLIDvK",
-        }
+        data = {"user": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "access_token": "eyJhb.nNzb19vaWRjX2tleV9.lc5Uk4yWVk5In0", "refresh_token": "yAjhKk123NLIjdrBdGZPf8pLIDvK"}
         instance = AuthenticateResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["user"] == data["user"]
@@ -14386,25 +7194,7 @@ class TestModelRoundTrip:
         assert serialized["refresh_token"] == data["refresh_token"]
 
     def test_authenticate_response_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "user": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "access_token": "eyJhb.nNzb19vaWRjX2tleV9.lc5Uk4yWVk5In0",
-            "refresh_token": "yAjhKk123NLIjdrBdGZPf8pLIDvK",
-        }
+        data = {"user": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "access_token": "eyJhb.nNzb19vaWRjX2tleV9.lc5Uk4yWVk5In0", "refresh_token": "yAjhKk123NLIjdrBdGZPf8pLIDvK"}
         instance = AuthenticateResponse.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_id" not in serialized
@@ -14414,39 +7204,7 @@ class TestModelRoundTrip:
         assert "oauth_tokens" not in serialized
 
     def test_authenticate_response_round_trips_unknown_enum_values(self):
-        data = {
-            "user": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "marcelina.davis@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-            "authkit_authorization_code": "authkit_authz_code_abc123",
-            "access_token": "eyJhb.nNzb19vaWRjX2tleV9.lc5Uk4yWVk5In0",
-            "refresh_token": "yAjhKk123NLIjdrBdGZPf8pLIDvK",
-            "authentication_method": "unexpected_authenticate_response_authentication_method",
-            "impersonator": {
-                "email": "admin@foocorp.com",
-                "reason": "Investigating an issue with the customer's account.",
-            },
-            "oauth_tokens": {
-                "provider": "GoogleOAuth",
-                "refresh_token": "1//04g...",
-                "access_token": "ya29.a0ARrdaM...",
-                "expires_at": 1735141800,
-                "scopes": ["profile", "email", "openid"],
-            },
-        }
+        data = {"user": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "marcelina.davis@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}, "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "authkit_authorization_code": "authkit_authz_code_abc123", "access_token": "eyJhb.nNzb19vaWRjX2tleV9.lc5Uk4yWVk5In0", "refresh_token": "yAjhKk123NLIjdrBdGZPf8pLIDvK", "authentication_method": "unexpected_authenticate_response_authentication_method", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "oauth_tokens": {"provider": "GoogleOAuth", "refresh_token": "1//04g...", "access_token": "ya29.a0ARrdaM...", "expires_at": 1735141800, "scopes": ["profile", "email", "openid"]}}
         instance = AuthenticateResponse.from_dict(data)
         assert instance.to_dict() == data
 
@@ -14459,12 +7217,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_device_authorization_response_minimal_payload(self):
-        data = {
-            "device_code": "CVE2wOfIFK4vhmiDBntpX9s8KT2f0qngpWYL0LGy9HxYgBRXUKIUkZB9BgIFho5h",
-            "user_code": "BCDF-GHJK",
-            "verification_uri": "https://authkit_domain/device",
-            "expires_in": 300,
-        }
+        data = {"device_code": "CVE2wOfIFK4vhmiDBntpX9s8KT2f0qngpWYL0LGy9HxYgBRXUKIUkZB9BgIFho5h", "user_code": "BCDF-GHJK", "verification_uri": "https://authkit_domain/device", "expires_in": 300}
         instance = DeviceAuthorizationResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["device_code"] == data["device_code"]
@@ -14472,15 +7225,8 @@ class TestModelRoundTrip:
         assert serialized["verification_uri"] == data["verification_uri"]
         assert serialized["expires_in"] == data["expires_in"]
 
-    def test_device_authorization_response_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "device_code": "CVE2wOfIFK4vhmiDBntpX9s8KT2f0qngpWYL0LGy9HxYgBRXUKIUkZB9BgIFho5h",
-            "user_code": "BCDF-GHJK",
-            "verification_uri": "https://authkit_domain/device",
-            "expires_in": 300,
-        }
+    def test_device_authorization_response_omits_absent_optional_non_nullable_fields(self):
+        data = {"device_code": "CVE2wOfIFK4vhmiDBntpX9s8KT2f0qngpWYL0LGy9HxYgBRXUKIUkZB9BgIFho5h", "user_code": "BCDF-GHJK", "verification_uri": "https://authkit_domain/device", "expires_in": 300}
         instance = DeviceAuthorizationResponse.from_dict(data)
         serialized = instance.to_dict()
         assert "verification_uri_complete" not in serialized
@@ -14495,16 +7241,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_webhook_endpoint_json_minimal_payload(self):
-        data = {
-            "object": "webhook_endpoint",
-            "id": "we_0123456789",
-            "endpoint_url": "https://example.com/webhooks",
-            "secret": "whsec_0FWAiVGkEfGBqqsJH4aNAGBJ4",
-            "status": "enabled",
-            "events": ["user.created", "dsync.user.created"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "webhook_endpoint", "id": "we_0123456789", "endpoint_url": "https://example.com/webhooks", "secret": "whsec_0FWAiVGkEfGBqqsJH4aNAGBJ4", "status": "enabled", "events": ["user.created", "dsync.user.created"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = WebhookEndpointJson.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -14517,16 +7254,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_webhook_endpoint_json_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "webhook_endpoint",
-            "id": "we_0123456789",
-            "endpoint_url": "https://example.com/webhooks",
-            "secret": "whsec_0FWAiVGkEfGBqqsJH4aNAGBJ4",
-            "status": "unexpected_webhook_endpoint_json_status",
-            "events": ["user.created", "dsync.user.created"],
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "webhook_endpoint", "id": "we_0123456789", "endpoint_url": "https://example.com/webhooks", "secret": "whsec_0FWAiVGkEfGBqqsJH4aNAGBJ4", "status": "unexpected_webhook_endpoint_json_status", "events": ["user.created", "dsync.user.created"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = WebhookEndpointJson.from_dict(data)
         assert instance.to_dict() == data
 
@@ -14553,9 +7281,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_sso_authorize_url_response_minimal_payload(self):
-        data = {
-            "url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=example&redirect_uri=https%3A%2F%2Fapi.workos.com%2Fsso%2Fcallback&response_type=code&scope=openid%20profile%20email"
-        }
+        data = {"url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=example&redirect_uri=https%3A%2F%2Fapi.workos.com%2Fsso%2Fcallback&response_type=code&scope=openid%20profile%20email"}
         instance = SSOAuthorizeUrlResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["url"] == data["url"]
@@ -14569,18 +7295,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_profile_minimal_payload(self):
-        data = {
-            "object": "profile",
-            "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
-            "organization_id": None,
-            "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "connection_type": "GoogleOAuth",
-            "idp_id": "103456789012345678901",
-            "email": "todd@example.com",
-            "first_name": None,
-            "last_name": None,
-            "raw_attributes": {"key": {}},
-        }
+        data = {"object": "profile", "id": "prof_01DMC79VCBZ0NY2099737PSVF1", "organization_id": None, "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "connection_type": "GoogleOAuth", "idp_id": "103456789012345678901", "email": "todd@example.com", "first_name": None, "last_name": None, "raw_attributes": {"key": {}}}
         instance = Profile.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -14595,42 +7310,14 @@ class TestModelRoundTrip:
         assert serialized["raw_attributes"] == data["raw_attributes"]
 
     def test_profile_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "profile",
-            "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
-            "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
-            "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "connection_type": "GoogleOAuth",
-            "idp_id": "103456789012345678901",
-            "email": "todd@example.com",
-            "first_name": "Todd",
-            "last_name": "Rundgren",
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "raw_attributes": {"key": {}},
-        }
+        data = {"object": "profile", "id": "prof_01DMC79VCBZ0NY2099737PSVF1", "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "connection_type": "GoogleOAuth", "idp_id": "103456789012345678901", "email": "todd@example.com", "first_name": "Todd", "last_name": "Rundgren", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "raw_attributes": {"key": {}}}
         instance = Profile.from_dict(data)
         serialized = instance.to_dict()
         assert "groups" not in serialized
         assert "custom_attributes" not in serialized
 
     def test_profile_preserves_nullable_fields(self):
-        data = {
-            "object": "profile",
-            "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
-            "organization_id": None,
-            "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "connection_type": "GoogleOAuth",
-            "idp_id": "103456789012345678901",
-            "email": "todd@example.com",
-            "first_name": None,
-            "last_name": None,
-            "role": None,
-            "roles": None,
-            "groups": ["Engineering", "Admins"],
-            "custom_attributes": {"key": {}},
-            "raw_attributes": {"key": {}},
-        }
+        data = {"object": "profile", "id": "prof_01DMC79VCBZ0NY2099737PSVF1", "organization_id": None, "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "connection_type": "GoogleOAuth", "idp_id": "103456789012345678901", "email": "todd@example.com", "first_name": None, "last_name": None, "role": None, "roles": None, "groups": ["Engineering", "Admins"], "custom_attributes": {"key": {}}, "raw_attributes": {"key": {}}}
         instance = Profile.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["organization_id"] is None
@@ -14640,22 +7327,7 @@ class TestModelRoundTrip:
         assert serialized["roles"] is None
 
     def test_profile_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "profile",
-            "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
-            "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
-            "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "connection_type": "unexpected_profile_connection_type",
-            "idp_id": "103456789012345678901",
-            "email": "todd@example.com",
-            "first_name": "Todd",
-            "last_name": "Rundgren",
-            "role": {"slug": "admin"},
-            "roles": [{"slug": "admin"}],
-            "groups": ["Engineering", "Admins"],
-            "custom_attributes": {"key": {}},
-            "raw_attributes": {"key": {}},
-        }
+        data = {"object": "profile", "id": "prof_01DMC79VCBZ0NY2099737PSVF1", "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "connection_type": "unexpected_profile_connection_type", "idp_id": "103456789012345678901", "email": "todd@example.com", "first_name": "Todd", "last_name": "Rundgren", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "groups": ["Engineering", "Admins"], "custom_attributes": {"key": {}}, "raw_attributes": {"key": {}}}
         instance = Profile.from_dict(data)
         assert instance.to_dict() == data
 
@@ -14668,27 +7340,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_sso_token_response_minimal_payload(self):
-        data = {
-            "token_type": "Bearer",
-            "access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6InNzby...",
-            "expires_in": 600,
-            "profile": {
-                "object": "profile",
-                "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
-                "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
-                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "connection_type": "GoogleOAuth",
-                "idp_id": "103456789012345678901",
-                "email": "todd@example.com",
-                "first_name": "Todd",
-                "last_name": "Rundgren",
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "groups": ["Engineering", "Admins"],
-                "custom_attributes": {"key": {}},
-                "raw_attributes": {"key": {}},
-            },
-        }
+        data = {"token_type": "Bearer", "access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6InNzby...", "expires_in": 600, "profile": {"object": "profile", "id": "prof_01DMC79VCBZ0NY2099737PSVF1", "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "connection_type": "GoogleOAuth", "idp_id": "103456789012345678901", "email": "todd@example.com", "first_name": "Todd", "last_name": "Rundgren", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "groups": ["Engineering", "Admins"], "custom_attributes": {"key": {}}, "raw_attributes": {"key": {}}}}
         instance = SSOTokenResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["token_type"] == data["token_type"]
@@ -14697,27 +7349,7 @@ class TestModelRoundTrip:
         assert serialized["profile"] == data["profile"]
 
     def test_sso_token_response_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "token_type": "Bearer",
-            "access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6InNzby...",
-            "expires_in": 600,
-            "profile": {
-                "object": "profile",
-                "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
-                "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
-                "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "connection_type": "GoogleOAuth",
-                "idp_id": "103456789012345678901",
-                "email": "todd@example.com",
-                "first_name": "Todd",
-                "last_name": "Rundgren",
-                "role": {"slug": "admin"},
-                "roles": [{"slug": "admin"}],
-                "groups": ["Engineering", "Admins"],
-                "custom_attributes": {"key": {}},
-                "raw_attributes": {"key": {}},
-            },
-        }
+        data = {"token_type": "Bearer", "access_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6InNzby...", "expires_in": 600, "profile": {"object": "profile", "id": "prof_01DMC79VCBZ0NY2099737PSVF1", "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3", "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5", "connection_type": "GoogleOAuth", "idp_id": "103456789012345678901", "email": "todd@example.com", "first_name": "Todd", "last_name": "Rundgren", "role": {"slug": "admin"}, "roles": [{"slug": "admin"}], "groups": ["Engineering", "Admins"], "custom_attributes": {"key": {}}, "raw_attributes": {"key": {}}}}
         instance = SSOTokenResponse.from_dict(data)
         serialized = instance.to_dict()
         assert "oauth_tokens" not in serialized
@@ -14731,10 +7363,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_sso_logout_authorize_response_minimal_payload(self):
-        data = {
-            "logout_url": "https://auth.workos.com/sso/logout?token=eyJhbGciOiJSUzI1NiJ9",
-            "logout_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9maWxlX2lkIjoicHJvZl8wMUdXUTFHMEgyRk02QVNFRjBIUzEzSENXOS0zMDRrZzAzZyIsImV4cCI6IjE1MTYyMzkwMjIifQ.Wru9Qlnf5DpohtGCKhZU4cVOd3zpiu7QQ-XEX--5A_4",
-        }
+        data = {"logout_url": "https://auth.workos.com/sso/logout?token=eyJhbGciOiJSUzI1NiJ9", "logout_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9maWxlX2lkIjoicHJvZl8wMUdXUTFHMEgyRk02QVNFRjBIUzEzSENXOS0zMDRrZzAzZyIsImV4cCI6IjE1MTYyMzkwMjIifQ.Wru9Qlnf5DpohtGCKhZU4cVOd3zpiu7QQ-XEX--5A_4"}
         instance = SSOLogoutAuthorizeResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["logout_url"] == data["logout_url"]
@@ -14749,20 +7378,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_jwks_response_minimal_payload(self):
-        data = {
-            "keys": [
-                {
-                    "alg": "RS256",
-                    "kty": "RSA",
-                    "use": "sig",
-                    "x5c": ["MIIDQjCCAiqgAwIBAgIGATz/FuLiMA0GCSqGSIb3DQEBCwUA..."],
-                    "n": "0vx7agoebGc...eKnNs",
-                    "e": "AQAB",
-                    "kid": "key_01HXYZ123456789ABCDEFGHIJ",
-                    "x5t#S256": "ZjQzYjI0OT...NmNjU0",
-                }
-            ]
-        }
+        data = {"keys": [{"alg": "RS256", "kty": "RSA", "use": "sig", "x5c": ["MIIDQjCCAiqgAwIBAgIGATz/FuLiMA0GCSqGSIb3DQEBCwUA..."], "n": "0vx7agoebGc...eKnNs", "e": "AQAB", "kid": "key_01HXYZ123456789ABCDEFGHIJ", "x5t#S256": "ZjQzYjI0OT...NmNjU0"}]}
         instance = JwksResponse.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["keys"] == data["keys"]
@@ -14776,16 +7392,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_jwks_response_keys_minimal_payload(self):
-        data = {
-            "alg": "RS256",
-            "kty": "RSA",
-            "use": "sig",
-            "x5c": ["MIIDQjCCAiqgAwIBAgIGATz/FuLiMA0GCSqGSIb3DQEBCwUA..."],
-            "n": "0vx7agoebGc...eKnNs",
-            "e": "AQAB",
-            "kid": "key_01HXYZ123456789ABCDEFGHIJ",
-            "x5t#S256": "ZjQzYjI0OT...NmNjU0",
-        }
+        data = {"alg": "RS256", "kty": "RSA", "use": "sig", "x5c": ["MIIDQjCCAiqgAwIBAgIGATz/FuLiMA0GCSqGSIb3DQEBCwUA..."], "n": "0vx7agoebGc...eKnNs", "e": "AQAB", "kid": "key_01HXYZ123456789ABCDEFGHIJ", "x5t#S256": "ZjQzYjI0OT...NmNjU0"}
         instance = JwksResponseKeys.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["alg"] == data["alg"]
@@ -14806,13 +7413,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_sso_token_response_oauth_token_minimal_payload(self):
-        data = {
-            "provider": "GoogleOAuth",
-            "refresh_token": "1//04g...",
-            "access_token": "ya29.a0ARrdaM...",
-            "expires_at": 1735141800,
-            "scopes": ["profile", "email", "openid"],
-        }
+        data = {"provider": "GoogleOAuth", "refresh_token": "1//04g...", "access_token": "ya29.a0ARrdaM...", "expires_at": 1735141800, "scopes": ["profile", "email", "openid"]}
         instance = SSOTokenResponseOAuthToken.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["provider"] == data["provider"]
@@ -14851,13 +7452,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authenticate_response_oauth_token_minimal_payload(self):
-        data = {
-            "provider": "GoogleOAuth",
-            "refresh_token": "1//04g...",
-            "access_token": "ya29.a0ARrdaM...",
-            "expires_at": 1735141800,
-            "scopes": ["profile", "email", "openid"],
-        }
+        data = {"provider": "GoogleOAuth", "refresh_token": "1//04g...", "access_token": "ya29.a0ARrdaM...", "expires_at": 1735141800, "scopes": ["profile", "email", "openid"]}
         instance = AuthenticateResponseOAuthToken.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["provider"] == data["provider"]
@@ -14875,20 +7470,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_data_integrations_list_response_data_minimal_payload(self):
-        data = {
-            "object": "data_provider",
-            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
-            "name": "GitHub",
-            "description": None,
-            "slug": "github",
-            "integration_type": "github",
-            "credentials_type": "oauth2",
-            "scopes": None,
-            "ownership": "userland_user",
-            "created_at": "2024-01-15T10:30:00.000Z",
-            "updated_at": "2024-01-15T10:30:00.000Z",
-            "connected_account": None,
-        }
+        data = {"object": "data_provider", "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT", "name": "GitHub", "description": None, "slug": "github", "integration_type": "github", "credentials_type": "oauth2", "scopes": None, "ownership": "userland_user", "created_at": "2024-01-15T10:30:00.000Z", "updated_at": "2024-01-15T10:30:00.000Z", "connected_account": None}
         instance = DataIntegrationsListResponseData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -14905,20 +7487,7 @@ class TestModelRoundTrip:
         assert serialized["connected_account"] == data["connected_account"]
 
     def test_data_integrations_list_response_data_preserves_nullable_fields(self):
-        data = {
-            "object": "data_provider",
-            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
-            "name": "GitHub",
-            "description": None,
-            "slug": "github",
-            "integration_type": "github",
-            "credentials_type": "oauth2",
-            "scopes": None,
-            "ownership": "userland_user",
-            "created_at": "2024-01-15T10:30:00.000Z",
-            "updated_at": "2024-01-15T10:30:00.000Z",
-            "connected_account": None,
-        }
+        data = {"object": "data_provider", "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT", "name": "GitHub", "description": None, "slug": "github", "integration_type": "github", "credentials_type": "oauth2", "scopes": None, "ownership": "userland_user", "created_at": "2024-01-15T10:30:00.000Z", "updated_at": "2024-01-15T10:30:00.000Z", "connected_account": None}
         instance = DataIntegrationsListResponseData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -14926,30 +7495,7 @@ class TestModelRoundTrip:
         assert serialized["connected_account"] is None
 
     def test_data_integrations_list_response_data_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "data_provider",
-            "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
-            "name": "GitHub",
-            "description": "Connect your GitHub account to access repositories.",
-            "slug": "github",
-            "integration_type": "github",
-            "credentials_type": "oauth2",
-            "scopes": ["repo", "user:email"],
-            "ownership": "unexpected_data_integrations_list_response_data_ownership",
-            "created_at": "2024-01-15T10:30:00.000Z",
-            "updated_at": "2024-01-15T10:30:00.000Z",
-            "connected_account": {
-                "object": "connected_account",
-                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-                "organization_id": None,
-                "scopes": ["repo", "user:email"],
-                "state": "connected",
-                "created_at": "2024-01-16T14:20:00.000Z",
-                "updated_at": "2024-01-16T14:20:00.000Z",
-                "userlandUserId": "test_userlandUserId",
-            },
-        }
+        data = {"object": "data_provider", "id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT", "name": "GitHub", "description": "Connect your GitHub account to access repositories.", "slug": "github", "integration_type": "github", "credentials_type": "oauth2", "scopes": ["repo", "user:email"], "ownership": "unexpected_data_integrations_list_response_data_ownership", "created_at": "2024-01-15T10:30:00.000Z", "updated_at": "2024-01-15T10:30:00.000Z", "connected_account": {"object": "connected_account", "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT", "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT", "organization_id": None, "scopes": ["repo", "user:email"], "state": "connected", "created_at": "2024-01-16T14:20:00.000Z", "updated_at": "2024-01-16T14:20:00.000Z", "userlandUserId": "test_userlandUserId"}}
         instance = DataIntegrationsListResponseData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -14962,13 +7508,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_data_integration_access_token_response_access_token_minimal_payload(self):
-        data = {
-            "object": "access_token",
-            "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
-            "expires_at": None,
-            "scopes": ["repo", "user:email"],
-            "missing_scopes": [],
-        }
+        data = {"object": "access_token", "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a", "expires_at": None, "scopes": ["repo", "user:email"], "missing_scopes": []}
         instance = DataIntegrationAccessTokenResponseAccessToken.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -14977,16 +7517,8 @@ class TestModelRoundTrip:
         assert serialized["scopes"] == data["scopes"]
         assert serialized["missing_scopes"] == data["missing_scopes"]
 
-    def test_data_integration_access_token_response_access_token_preserves_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "access_token",
-            "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a",
-            "expires_at": None,
-            "scopes": ["repo", "user:email"],
-            "missing_scopes": [],
-        }
+    def test_data_integration_access_token_response_access_token_preserves_nullable_fields(self):
+        data = {"object": "access_token", "access_token": "gho_16C7e42F292c6912E7710c838347Ae178B4a", "expires_at": None, "scopes": ["repo", "user:email"], "missing_scopes": []}
         instance = DataIntegrationAccessTokenResponseAccessToken.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["expires_at"] is None
@@ -15000,13 +7532,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_audit_log_configuration_log_stream_minimal_payload(self):
-        data = {
-            "id": "als_01EHZNVPK3SFK441A1RGBFSHRT",
-            "type": "Datadog",
-            "state": "active",
-            "last_synced_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"id": "als_01EHZNVPK3SFK441A1RGBFSHRT", "type": "Datadog", "state": "active", "last_synced_at": None, "created_at": "2026-01-15T12:00:00.000Z"}
         instance = AuditLogConfigurationLogStream.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -15016,25 +7542,13 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
 
     def test_audit_log_configuration_log_stream_preserves_nullable_fields(self):
-        data = {
-            "id": "als_01EHZNVPK3SFK441A1RGBFSHRT",
-            "type": "Datadog",
-            "state": "active",
-            "last_synced_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"id": "als_01EHZNVPK3SFK441A1RGBFSHRT", "type": "Datadog", "state": "active", "last_synced_at": None, "created_at": "2026-01-15T12:00:00.000Z"}
         instance = AuditLogConfigurationLogStream.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_synced_at"] is None
 
     def test_audit_log_configuration_log_stream_round_trips_unknown_enum_values(self):
-        data = {
-            "id": "als_01EHZNVPK3SFK441A1RGBFSHRT",
-            "type": "unexpected_audit_log_configuration_log_stream_type",
-            "state": "active",
-            "last_synced_at": "2026-01-15T12:00:00.000Z",
-            "created_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"id": "als_01EHZNVPK3SFK441A1RGBFSHRT", "type": "unexpected_audit_log_configuration_log_stream_type", "state": "active", "last_synced_at": "2026-01-15T12:00:00.000Z", "created_at": "2026-01-15T12:00:00.000Z"}
         instance = AuditLogConfigurationLogStream.from_dict(data)
         assert instance.to_dict() == data
 
@@ -15047,14 +7561,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_domain_minimal_payload(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -15065,14 +7572,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_organization_domain_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomain.from_dict(data)
         serialized = instance.to_dict()
         assert "state" not in serialized
@@ -15081,18 +7581,7 @@ class TestModelRoundTrip:
         assert "verification_strategy" not in serialized
 
     def test_organization_domain_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_domain",
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP",
-            "domain": "foo-corp.com",
-            "state": "unexpected_organization_domain_state",
-            "verification_prefix": "superapp-domain-verification-z3kjny",
-            "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw",
-            "verification_strategy": "dns",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_domain", "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "organization_id": "org_01HE8GSH8FQPASKSY27THRKRBP", "domain": "foo-corp.com", "state": "unexpected_organization_domain_state", "verification_prefix": "superapp-domain-verification-z3kjny", "verification_token": "m5Oztg3jdK4NJLgs8uIlIprMw", "verification_strategy": "dns", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = OrganizationDomain.from_dict(data)
         assert instance.to_dict() == data
 
@@ -15194,9 +7683,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["containerId"] == data["containerId"]
 
-    def test_event_context_google_analytics_session_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_event_context_google_analytics_session_omits_absent_optional_non_nullable_fields(self):
         data = {"containerId": "GTM-ABCDEF"}
         instance = EventContextGoogleAnalyticsSession.from_dict(data)
         serialized = instance.to_dict()
@@ -15216,9 +7703,7 @@ class TestModelRoundTrip:
         instance = DirectoryUserWithGroupsEmail.from_dict(data)
         assert instance.to_dict() is not None
 
-    def test_directory_user_with_groups_email_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_directory_user_with_groups_email_omits_absent_optional_non_nullable_fields(self):
         data = {"value": "marcelina.davis@example.com"}
         instance = DirectoryUserWithGroupsEmail.from_dict(data)
         serialized = instance.to_dict()
@@ -15255,11 +7740,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_connection_domain_minimal_payload(self):
-        data = {
-            "id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A",
-            "object": "connection_domain",
-            "domain": "foo-corp.com",
-        }
+        data = {"id": "org_domain_01EHZNVPK2QXHMVWCEDQEKY69A", "object": "connection_domain", "domain": "foo-corp.com"}
         instance = ConnectionDomain.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -15295,16 +7776,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_organization_membership_base_list_data_minimal_payload(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01HXYZ123456789ABCDEFGHIJ",
-            "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB",
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "status": "active",
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "organization_membership", "id": "om_01HXYZ123456789ABCDEFGHIJ", "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "status": "active", "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = UserOrganizationMembershipBaseListData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -15316,43 +7788,15 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_user_organization_membership_base_list_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01HXYZ123456789ABCDEFGHIJ",
-            "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB",
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "status": "active",
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_user_organization_membership_base_list_data_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "organization_membership", "id": "om_01HXYZ123456789ABCDEFGHIJ", "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "status": "active", "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = UserOrganizationMembershipBaseListData.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_name" not in serialized
         assert "custom_attributes" not in serialized
 
-    def test_user_organization_membership_base_list_data_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01HXYZ123456789ABCDEFGHIJ",
-            "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB",
-            "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            "status": "unexpected_user_organization_membership_base_list_data_status",
-            "directory_managed": False,
-            "organization_name": "Acme Corp",
-            "custom_attributes": {
-                "department": "Engineering",
-                "title": "Developer Experience Engineer",
-                "location": "Brooklyn",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_user_organization_membership_base_list_data_round_trips_unknown_enum_values(self):
+        data = {"object": "organization_membership", "id": "om_01HXYZ123456789ABCDEFGHIJ", "user_id": "user_01EHQTV6MWP9P1F4ZXGXMC8ABB", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT", "status": "unexpected_user_organization_membership_base_list_data_status", "directory_managed": False, "organization_name": "Acme Corp", "custom_attributes": {"department": "Engineering", "title": "Developer Experience Engineer", "location": "Brooklyn"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = UserOrganizationMembershipBaseListData.from_dict(data)
         assert instance.to_dict() == data
 
@@ -15365,11 +7809,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_role_assignment_resource_minimal_payload(self):
-        data = {
-            "id": "authz_resource_01HXYZ123456789ABCDEFGH",
-            "external_id": "proj-456",
-            "resource_type_slug": "project",
-        }
+        data = {"id": "authz_resource_01HXYZ123456789ABCDEFGH", "external_id": "proj-456", "resource_type_slug": "project"}
         instance = RoleAssignmentResource.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
@@ -15428,13 +7868,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authentication_factor_enrolled_totp_minimal_payload(self):
-        data = {
-            "issuer": "WorkOS",
-            "user": "user@example.com",
-            "secret": "JBSWY3DPEHPK3PXP",
-            "qr_code": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...",
-            "uri": "otpauth://totp/WorkOS:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=WorkOS",
-        }
+        data = {"issuer": "WorkOS", "user": "user@example.com", "secret": "JBSWY3DPEHPK3PXP", "qr_code": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...", "uri": "otpauth://totp/WorkOS:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=WorkOS"}
         instance = AuthenticationFactorEnrolledTotp.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["issuer"] == data["issuer"]
@@ -15471,9 +7905,7 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["type"] == data["type"]
 
-    def test_audit_log_schema_json_target_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
+    def test_audit_log_schema_json_target_omits_absent_optional_non_nullable_fields(self):
         data = {"type": "invoice"}
         instance = AuditLogSchemaJsonTarget.from_dict(data)
         serialized = instance.to_dict()
@@ -15488,23 +7920,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_authorized_connect_application_list_data_minimal_payload(self):
-        data = {
-            "object": "authorized_connect_application",
-            "id": "authorized_connect_app_01HXYZ123456789ABCDEFGHIJ",
-            "granted_scopes": ["openid", "profile", "email"],
-            "application": {
-                "object": "connect_application",
-                "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
-                "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
-                "description": "An application for managing user access",
-                "name": "My Application",
-                "scopes": ["openid", "profile", "email"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "application_type": "m2m",
-                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            },
-        }
+        data = {"object": "authorized_connect_application", "id": "authorized_connect_app_01HXYZ123456789ABCDEFGHIJ", "granted_scopes": ["openid", "profile", "email"], "application": {"object": "connect_application", "id": "conn_app_01HXYZ123456789ABCDEFGHIJ", "client_id": "client_01HXYZ123456789ABCDEFGHIJ", "description": "An application for managing user access", "name": "My Application", "scopes": ["openid", "profile", "email"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "application_type": "m2m", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT"}}
         instance = AuthorizedConnectApplicationListData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -15512,26 +7928,8 @@ class TestModelRoundTrip:
         assert serialized["granted_scopes"] == data["granted_scopes"]
         assert serialized["application"] == data["application"]
 
-    def test_authorized_connect_application_list_data_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "authorized_connect_application",
-            "id": "authorized_connect_app_01HXYZ123456789ABCDEFGHIJ",
-            "granted_scopes": ["openid", "profile", "email"],
-            "application": {
-                "object": "connect_application",
-                "id": "conn_app_01HXYZ123456789ABCDEFGHIJ",
-                "client_id": "client_01HXYZ123456789ABCDEFGHIJ",
-                "description": "An application for managing user access",
-                "name": "My Application",
-                "scopes": ["openid", "profile", "email"],
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-                "application_type": "m2m",
-                "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
-            },
-        }
+    def test_authorized_connect_application_list_data_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "authorized_connect_application", "id": "authorized_connect_app_01HXYZ123456789ABCDEFGHIJ", "granted_scopes": ["openid", "profile", "email"], "application": {"object": "connect_application", "id": "conn_app_01HXYZ123456789ABCDEFGHIJ", "client_id": "client_01HXYZ123456789ABCDEFGHIJ", "description": "An application for managing user access", "name": "My Application", "scopes": ["openid", "profile", "email"], "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "application_type": "m2m", "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT"}}
         instance = AuthorizedConnectApplicationListData.from_dict(data)
         serialized = instance.to_dict()
         assert "oauth_resource" not in serialized
@@ -15580,17 +7978,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_permission_minimal_payload(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01HXYZ123456789ABCDEFGHIJ",
-            "slug": "documents:read",
-            "name": "View Documents",
-            "description": None,
-            "system": False,
-            "resource_type_slug": "document",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "permission", "id": "perm_01HXYZ123456789ABCDEFGHIJ", "slug": "documents:read", "name": "View Documents", "description": None, "system": False, "resource_type_slug": "document", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Permission.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -15604,17 +7992,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_permission_preserves_nullable_fields(self):
-        data = {
-            "object": "permission",
-            "id": "perm_01HXYZ123456789ABCDEFGHIJ",
-            "slug": "documents:read",
-            "name": "View Documents",
-            "description": None,
-            "system": False,
-            "resource_type_slug": "document",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "permission", "id": "perm_01HXYZ123456789ABCDEFGHIJ", "slug": "documents:read", "name": "View Documents", "description": None, "system": False, "resource_type_slug": "document", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = Permission.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -15628,14 +8006,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_application_credentials_list_item_minimal_payload(self):
-        data = {
-            "object": "connect_application_secret",
-            "id": "secret_01J9Q2Z3X4Y5W6V7U8T9S0R1Q",
-            "secret_hint": "abc123",
-            "last_used_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "connect_application_secret", "id": "secret_01J9Q2Z3X4Y5W6V7U8T9S0R1Q", "secret_hint": "abc123", "last_used_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ApplicationCredentialsListItem.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -15646,14 +8017,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_application_credentials_list_item_preserves_nullable_fields(self):
-        data = {
-            "object": "connect_application_secret",
-            "id": "secret_01J9Q2Z3X4Y5W6V7U8T9S0R1Q",
-            "secret_hint": "abc123",
-            "last_used_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "connect_application_secret", "id": "secret_01J9Q2Z3X4Y5W6V7U8T9S0R1Q", "secret_hint": "abc123", "last_used_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = ApplicationCredentialsListItem.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
@@ -15667,19 +8031,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_feature_flag_minimal_payload(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": False,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": False, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = FeatureFlag.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -15695,19 +8047,7 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_feature_flag_preserves_nullable_fields(self):
-        data = {
-            "object": "feature_flag",
-            "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT",
-            "slug": "advanced-analytics",
-            "name": "Advanced Analytics",
-            "description": None,
-            "owner": None,
-            "tags": ["reports"],
-            "enabled": False,
-            "default_value": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "feature_flag", "id": "flag_01EHZNVPK3SFK441A1RGBFSHRT", "slug": "advanced-analytics", "name": "Advanced Analytics", "description": None, "owner": None, "tags": ["reports"], "enabled": False, "default_value": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = FeatureFlag.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["description"] is None
@@ -15745,22 +8085,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_invitation_minimal_payload(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "accepted",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
-            "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "accepted", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "token": "Z1uX3RbwcIl5fIGJJJCXXisdI", "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI"}
         instance = Invitation.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -15773,28 +8098,14 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["token"] == data["token"]
         assert serialized["accept_invitation_url"] == data["accept_invitation_url"]
 
     def test_invitation_preserves_nullable_fields(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "accepted",
-            "accepted_at": None,
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": None,
-            "inviter_user_id": None,
-            "accepted_user_id": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
-            "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "accepted", "accepted_at": None, "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": None, "inviter_user_id": None, "accepted_user_id": None, "role_slug": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "token": "Z1uX3RbwcIl5fIGJJJCXXisdI", "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI"}
         instance = Invitation.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["accepted_at"] is None
@@ -15802,24 +8113,10 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_invitation_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "invitation",
-            "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5",
-            "email": "marcelina.davis@example.com",
-            "state": "unexpected_invitation_state",
-            "accepted_at": "2026-01-15T12:00:00.000Z",
-            "revoked_at": None,
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-            "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
-            "accepted_user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
-            "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI",
-        }
+        data = {"object": "invitation", "id": "invitation_01E4ZCR3C56J083X43JQXF3JK5", "email": "marcelina.davis@example.com", "state": "unexpected_invitation_state", "accepted_at": "2026-01-15T12:00:00.000Z", "revoked_at": None, "expires_at": "2026-01-15T12:00:00.000Z", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3", "accepted_user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "role_slug": "admin", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "token": "Z1uX3RbwcIl5fIGJJJCXXisdI", "accept_invitation_url": "https://your-app.com/invite?invitation_token=Z1uX3RbwcIl5fIGJJJCXXisdI"}
         instance = Invitation.from_dict(data)
         assert instance.to_dict() == data
 
@@ -15832,17 +8129,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_organization_membership_minimal_payload(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01HXYZ123456789ABCDEFGHIJ",
-            "user_id": "user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E",
-            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-            "status": "active",
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "role": {"slug": "admin"},
-        }
+        data = {"object": "organization_membership", "id": "om_01HXYZ123456789ABCDEFGHIJ", "user_id": "user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "status": "active", "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "role": {"slug": "admin"}}
         instance = OrganizationMembership.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -15856,40 +8143,14 @@ class TestModelRoundTrip:
         assert serialized["role"] == data["role"]
 
     def test_organization_membership_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01HXYZ123456789ABCDEFGHIJ",
-            "user_id": "user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E",
-            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-            "status": "active",
-            "directory_managed": False,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "role": {"slug": "admin"},
-        }
+        data = {"object": "organization_membership", "id": "om_01HXYZ123456789ABCDEFGHIJ", "user_id": "user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "status": "active", "directory_managed": False, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "role": {"slug": "admin"}}
         instance = OrganizationMembership.from_dict(data)
         serialized = instance.to_dict()
         assert "organization_name" not in serialized
         assert "custom_attributes" not in serialized
 
     def test_organization_membership_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "organization_membership",
-            "id": "om_01HXYZ123456789ABCDEFGHIJ",
-            "user_id": "user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E",
-            "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
-            "status": "unexpected_organization_membership_status",
-            "directory_managed": False,
-            "organization_name": "Acme Corp",
-            "custom_attributes": {
-                "department": "Engineering",
-                "title": "Developer Experience Engineer",
-                "location": "Brooklyn",
-            },
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-            "role": {"slug": "admin"},
-        }
+        data = {"object": "organization_membership", "id": "om_01HXYZ123456789ABCDEFGHIJ", "user_id": "user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E", "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5", "status": "unexpected_organization_membership_status", "directory_managed": False, "organization_name": "Acme Corp", "custom_attributes": {"department": "Engineering", "title": "Developer Experience Engineer", "location": "Brooklyn"}, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z", "role": {"slug": "admin"}}
         instance = OrganizationMembership.from_dict(data)
         assert instance.to_dict() == data
 
@@ -15902,24 +8163,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_email_change_confirmation_minimal_payload(self):
-        data = {
-            "object": "email_change_confirmation",
-            "user": {
-                "object": "user",
-                "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-                "first_name": "Marcelina",
-                "last_name": "Davis",
-                "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-                "email": "new.email@example.com",
-                "email_verified": True,
-                "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-                "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-                "locale": "en-US",
-                "created_at": "2026-01-15T12:00:00.000Z",
-                "updated_at": "2026-01-15T12:00:00.000Z",
-            },
-        }
+        data = {"object": "email_change_confirmation", "user": {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "new.email@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}}
         instance = EmailChangeConfirmation.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -15934,19 +8178,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_email_change_confirmation_user_minimal_payload(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "new.email@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "last_sign_in_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": None, "last_name": None, "profile_picture_url": None, "email": "new.email@example.com", "email_verified": True, "external_id": None, "last_sign_in_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = EmailChangeConfirmationUser.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -15961,43 +8193,14 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_email_change_confirmation_user_omits_absent_optional_non_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": "Marcelina",
-            "last_name": "Davis",
-            "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
-            "email": "new.email@example.com",
-            "email_verified": True,
-            "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
-            "locale": "en-US",
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+    def test_email_change_confirmation_user_omits_absent_optional_non_nullable_fields(self):
+        data = {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": "Marcelina", "last_name": "Davis", "profile_picture_url": "https://workoscdn.com/images/v1/123abc", "email": "new.email@example.com", "email_verified": True, "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222", "last_sign_in_at": "2025-06-25T19:07:33.155Z", "locale": "en-US", "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = EmailChangeConfirmationUser.from_dict(data)
         serialized = instance.to_dict()
         assert "metadata" not in serialized
 
     def test_email_change_confirmation_user_preserves_nullable_fields(self):
-        data = {
-            "object": "user",
-            "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "first_name": None,
-            "last_name": None,
-            "profile_picture_url": None,
-            "email": "new.email@example.com",
-            "email_verified": True,
-            "external_id": None,
-            "metadata": {"timezone": "America/New_York"},
-            "last_sign_in_at": None,
-            "locale": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "user", "id": "user_01E4ZCR3C56J083X43JQXF3JK5", "first_name": None, "last_name": None, "profile_picture_url": None, "email": "new.email@example.com", "email_verified": True, "external_id": None, "metadata": {"timezone": "America/New_York"}, "last_sign_in_at": None, "locale": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = EmailChangeConfirmationUser.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["first_name"] is None
@@ -16016,11 +8219,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_identities_get_item_minimal_payload(self):
-        data = {
-            "idp_id": "4F42ABDE-1E44-4B66-824A-5F733C037A6D",
-            "type": "OAuth",
-            "provider": "MicrosoftOAuth",
-        }
+        data = {"idp_id": "4F42ABDE-1E44-4B66-824A-5F733C037A6D", "type": "OAuth", "provider": "MicrosoftOAuth"}
         instance = UserIdentitiesGetItem.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["idp_id"] == data["idp_id"]
@@ -16028,11 +8227,7 @@ class TestModelRoundTrip:
         assert serialized["provider"] == data["provider"]
 
     def test_user_identities_get_item_round_trips_unknown_enum_values(self):
-        data = {
-            "idp_id": "4F42ABDE-1E44-4B66-824A-5F733C037A6D",
-            "type": "OAuth",
-            "provider": "unexpected_user_identities_get_item_provider",
-        }
+        data = {"idp_id": "4F42ABDE-1E44-4B66-824A-5F733C037A6D", "type": "OAuth", "provider": "unexpected_user_identities_get_item_provider"}
         instance = UserIdentitiesGetItem.from_dict(data)
         assert instance.to_dict() == data
 
@@ -16045,19 +8240,7 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_user_sessions_list_item_minimal_payload(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "ip_address": None,
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "sso",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "ip_address": None, "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = UserSessionsListItem.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -16073,43 +8256,14 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
 
     def test_user_sessions_list_item_omits_absent_optional_non_nullable_fields(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "ip_address": "198.51.100.42",
-            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "sso",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "ip_address": "198.51.100.42", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = UserSessionsListItem.from_dict(data)
         serialized = instance.to_dict()
         assert "impersonator" not in serialized
         assert "organization_id" not in serialized
 
     def test_user_sessions_list_item_preserves_nullable_fields(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "impersonator": {
-                "email": "admin@foocorp.com",
-                "reason": "Investigating an issue with the customer's account.",
-            },
-            "ip_address": None,
-            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-            "user_agent": None,
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "sso",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "ip_address": None, "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "user_agent": None, "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "sso", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = UserSessionsListItem.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["ip_address"] is None
@@ -16117,24 +8271,7 @@ class TestModelRoundTrip:
         assert serialized["ended_at"] is None
 
     def test_user_sessions_list_item_round_trips_unknown_enum_values(self):
-        data = {
-            "object": "session",
-            "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8",
-            "impersonator": {
-                "email": "admin@foocorp.com",
-                "reason": "Investigating an issue with the customer's account.",
-            },
-            "ip_address": "198.51.100.42",
-            "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG",
-            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-            "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
-            "auth_method": "unexpected_user_sessions_list_item_auth_method",
-            "status": "active",
-            "expires_at": "2026-01-15T12:00:00.000Z",
-            "ended_at": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
+        data = {"object": "session", "id": "session_01H93ZY4F80QPBEZ1R5B2SHQG8", "impersonator": {"email": "admin@foocorp.com", "reason": "Investigating an issue with the customer's account."}, "ip_address": "198.51.100.42", "organization_id": "org_01H945H0YD4F97JN9MATX7BYAG", "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5", "auth_method": "unexpected_user_sessions_list_item_auth_method", "status": "active", "expires_at": "2026-01-15T12:00:00.000Z", "ended_at": None, "created_at": "2026-01-15T12:00:00.000Z", "updated_at": "2026-01-15T12:00:00.000Z"}
         instance = UserSessionsListItem.from_dict(data)
         assert instance.to_dict() == data
 
@@ -16175,31 +8312,15 @@ class TestModelRoundTrip:
         assert serialized["inactive"] == data["inactive"]
 
     def test_data_integrations_list_response_data_connected_account_round_trip(self):
-        data = load_fixture(
-            "data_integrations_list_response_data_connected_account.json"
-        )
+        data = load_fixture("data_integrations_list_response_data_connected_account.json")
         instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = DataIntegrationsListResponseDataConnectedAccount.from_dict(
-            serialized
-        )
+        restored = DataIntegrationsListResponseDataConnectedAccount.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_data_integrations_list_response_data_connected_account_minimal_payload(
-        self,
-    ):
-        data = {
-            "object": "connected_account",
-            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": None,
-            "organization_id": None,
-            "scopes": ["repo", "user:email"],
-            "state": "connected",
-            "created_at": "2024-01-16T14:20:00.000Z",
-            "updated_at": "2024-01-16T14:20:00.000Z",
-            "userlandUserId": None,
-        }
+    def test_data_integrations_list_response_data_connected_account_minimal_payload(self):
+        data = {"object": "connected_account", "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT", "user_id": None, "organization_id": None, "scopes": ["repo", "user:email"], "state": "connected", "created_at": "2024-01-16T14:20:00.000Z", "updated_at": "2024-01-16T14:20:00.000Z", "userlandUserId": None}
         instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
@@ -16212,45 +8333,22 @@ class TestModelRoundTrip:
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["userlandUserId"] == data["userlandUserId"]
 
-    def test_data_integrations_list_response_data_connected_account_preserves_nullable_fields(
-        self,
-    ):
-        data = {
-            "object": "connected_account",
-            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": None,
-            "organization_id": None,
-            "scopes": ["repo", "user:email"],
-            "state": "connected",
-            "created_at": "2024-01-16T14:20:00.000Z",
-            "updated_at": "2024-01-16T14:20:00.000Z",
-            "userlandUserId": None,
-        }
+    def test_data_integrations_list_response_data_connected_account_preserves_nullable_fields(self):
+        data = {"object": "connected_account", "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT", "user_id": None, "organization_id": None, "scopes": ["repo", "user:email"], "state": "connected", "created_at": "2024-01-16T14:20:00.000Z", "updated_at": "2024-01-16T14:20:00.000Z", "userlandUserId": None}
         instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["user_id"] is None
         assert serialized["organization_id"] is None
         assert serialized["userlandUserId"] is None
 
-    def test_data_integrations_list_response_data_connected_account_round_trips_unknown_enum_values(
-        self,
-    ):
-        data = {
-            "object": "connected_account",
-            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
-            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
-            "organization_id": None,
-            "scopes": ["repo", "user:email"],
-            "state": "unexpected_data_integrations_list_response_data_connected_account_state",
-            "created_at": "2024-01-16T14:20:00.000Z",
-            "updated_at": "2024-01-16T14:20:00.000Z",
-            "userlandUserId": "test_userlandUserId",
-        }
+    def test_data_integrations_list_response_data_connected_account_round_trips_unknown_enum_values(self):
+        data = {"object": "connected_account", "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT", "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT", "organization_id": None, "scopes": ["repo", "user:email"], "state": "unexpected_data_integrations_list_response_data_connected_account_state", "created_at": "2024-01-16T14:20:00.000Z", "updated_at": "2024-01-16T14:20:00.000Z", "userlandUserId": "test_userlandUserId"}
         instance = DataIntegrationsListResponseDataConnectedAccount.from_dict(data)
         assert instance.to_dict() == data
 
 
 class TestDiscriminatorDispatch:
+
     def test_event_schema_dispatches_known_variant(self):
         data = load_fixture("action_authentication_denied.json")
         result = EventSchema.from_dict(data)

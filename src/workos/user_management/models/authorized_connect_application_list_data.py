@@ -32,9 +32,7 @@ class AuthorizedConnectApplicationListData:
                 object=data["object"],
                 id=data["id"],
                 granted_scopes=data["granted_scopes"],
-                application=ConnectApplication.from_dict(
-                    cast(Dict[str, Any], data["application"])
-                ),
+                application=ConnectApplication.from_dict(cast(Dict[str, Any], data["application"])),
                 oauth_resource=data.get("oauth_resource"),
             )
         except (KeyError, ValueError) as e:

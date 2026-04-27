@@ -5,12 +5,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from workos.common.models.user_organization_membership_base_list_data_status import (
-    UserOrganizationMembershipBaseListDataStatus,
-)
+from workos.common.models.user_organization_membership_base_list_data_status import UserOrganizationMembershipBaseListDataStatus
 
 
 @dataclass(slots=True)
@@ -39,9 +38,7 @@ class UserOrganizationMembershipBaseListData:
     """An object containing IdP-sourced attributes from the linked [Directory User](https://workos.com/docs/reference/directory-sync/directory-user) or [SSO Profile](https://workos.com/docs/reference/sso/profile). Directory User attributes take precedence when both are linked."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "UserOrganizationMembershipBaseListData":
+    def from_dict(cls, data: Dict[str, Any]) -> "UserOrganizationMembershipBaseListData":
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -66,9 +63,7 @@ class UserOrganizationMembershipBaseListData:
         result["id"] = self.id
         result["user_id"] = self.user_id
         result["organization_id"] = self.organization_id
-        result["status"] = (
-            self.status.value if isinstance(self.status, Enum) else self.status
-        )
+        result["status"] = self.status.value if isinstance(self.status, Enum) else self.status
         result["directory_managed"] = self.directory_managed
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)

@@ -7,9 +7,7 @@ from enum import Enum
 from typing import cast
 from typing import Any, Dict, List
 from workos._types import _raise_deserialize_error
-from workos.common.models.create_webhook_endpoint_events import (
-    CreateWebhookEndpointEvents,
-)
+from workos.common.models.create_webhook_endpoint_events import CreateWebhookEndpointEvents
 
 
 @dataclass(slots=True)
@@ -27,10 +25,7 @@ class CreateWebhookEndpoint:
         try:
             return cls(
                 endpoint_url=data["endpoint_url"],
-                events=[
-                    CreateWebhookEndpointEvents(item)
-                    for item in cast(list[Any], data["events"])
-                ],
+                events=[CreateWebhookEndpointEvents(item) for item in cast(list[Any], data["events"])],
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("CreateWebhookEndpoint", e)
@@ -39,7 +34,5 @@ class CreateWebhookEndpoint:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["endpoint_url"] = self.endpoint_url
-        result["events"] = [
-            item.value if isinstance(item, Enum) else item for item in self.events
-        ]
+        result["events"] = [item.value if isinstance(item, Enum) else item for item in self.events]
         return result

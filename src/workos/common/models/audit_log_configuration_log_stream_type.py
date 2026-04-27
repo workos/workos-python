@@ -28,7 +28,4 @@ class AuditLogConfigurationLogStreamType(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-AuditLogConfigurationLogStreamTypeLiteral: TypeAlias = Literal[
-    "AzureSentinel", "Datadog", "GenericHttps", "GoogleCloudStorage", "S3", "Splunk"
-]
+AuditLogConfigurationLogStreamTypeLiteral: TypeAlias = Literal["AzureSentinel", "Datadog", "GenericHttps", "GoogleCloudStorage", "S3", "Splunk"]

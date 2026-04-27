@@ -7,12 +7,8 @@ from enum import Enum
 from typing import cast
 from typing import Any, Dict, List, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models.update_webhook_endpoint_events import (
-    UpdateWebhookEndpointEvents,
-)
-from workos.common.models.update_webhook_endpoint_status import (
-    UpdateWebhookEndpointStatus,
-)
+from workos.common.models.update_webhook_endpoint_events import UpdateWebhookEndpointEvents
+from workos.common.models.update_webhook_endpoint_status import UpdateWebhookEndpointStatus
 
 
 @dataclass(slots=True)
@@ -32,15 +28,8 @@ class UpdateWebhookEndpoint:
         try:
             return cls(
                 endpoint_url=data.get("endpoint_url"),
-                status=UpdateWebhookEndpointStatus(_v_status)
-                if (_v_status := data.get("status")) is not None
-                else None,
-                events=[
-                    UpdateWebhookEndpointEvents(item)
-                    for item in cast(list[Any], _v_events)
-                ]
-                if (_v_events := data.get("events")) is not None
-                else None,
+                status=UpdateWebhookEndpointStatus(_v_status) if (_v_status := data.get("status")) is not None else None,
+                events=[UpdateWebhookEndpointEvents(item) for item in cast(list[Any], _v_events)] if (_v_events := data.get("events")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("UpdateWebhookEndpoint", e)
@@ -51,11 +40,7 @@ class UpdateWebhookEndpoint:
         if self.endpoint_url is not None:
             result["endpoint_url"] = self.endpoint_url
         if self.status is not None:
-            result["status"] = (
-                self.status.value if isinstance(self.status, Enum) else self.status
-            )
+            result["status"] = self.status.value if isinstance(self.status, Enum) else self.status
         if self.events is not None:
-            result["events"] = [
-                item.value if isinstance(item, Enum) else item for item in self.events
-            ]
+            result["events"] = [item.value if isinstance(item, Enum) else item for item in self.events]
         return result

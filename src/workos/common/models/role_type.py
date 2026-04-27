@@ -24,5 +24,4 @@ class RoleType(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 RoleTypeLiteral: TypeAlias = Literal["EnvironmentRole", "OrganizationRole"]

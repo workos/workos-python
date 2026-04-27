@@ -24,5 +24,4 @@ class ConnectionActivatedDataStatus(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 ConnectionActivatedDataStatusLiteral: TypeAlias = Literal["linked", "unlinked"]

@@ -2,16 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import Connection, Profile, SSOLogoutAuthorizeResponse, SSOTokenResponse
+from .models import Connection, Profile, SSOAuthorizeUrlResponse, SSOLogoutAuthorizeRequest, SSOLogoutAuthorizeResponse, SSOTokenResponse, TokenQuery
 from .models import ConnectionsConnectionType, ConnectionsOrder, SSOProvider
 from .._pagination import AsyncPage, SyncPage
-
 
 class SSO:
     """SSO API resources."""
@@ -57,22 +56,16 @@ class SSO:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "connection_type": enum_value(connection_type)
-                if connection_type is not None
-                else None,
-                "domain": domain,
-                "organization_id": organization_id,
-                "search": search,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "connection_type": enum_value(connection_type) if connection_type is not None else None,
+            "domain": domain,
+            "organization_id": organization_id,
+            "search": search,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="connections",
@@ -163,7 +156,7 @@ class SSO:
             provider_scopes: Additional scopes to request from the identity provider. Applicable when using OAuth or OpenID Connect connections.
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
             domain: (deprecated) Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
-            provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
+            provider: Used to initiate OAuth authentication with various providers.
             redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
             state: An optional parameter that can be used to encode arbitrary information to help restore application state between redirects. If included, the redirect URI received from WorkOS will contain the exact `state` that was passed.
             connection: Used to initiate SSO for a connection. The value should be a WorkOS connection ID.
@@ -183,25 +176,19 @@ class SSO:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "provider_scopes": ",".join(str(v) for v in provider_scopes)
-                if provider_scopes is not None
-                else None,
-                "provider_query_params": provider_query_params,
-                "domain": domain,
-                "provider": enum_value(provider) if provider is not None else None,
-                "redirect_uri": redirect_uri,
-                "state": state,
-                "connection": connection,
-                "organization": organization,
-                "domain_hint": domain_hint,
-                "login_hint": login_hint,
-                "nonce": nonce,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "provider_scopes": ",".join(str(v) for v in provider_scopes) if provider_scopes is not None else None,
+            "provider_query_params": provider_query_params,
+            "domain": domain,
+            "provider": enum_value(provider) if provider is not None else None,
+            "redirect_uri": redirect_uri,
+            "state": state,
+            "connection": connection,
+            "organization": organization,
+            "domain_hint": domain_hint,
+            "login_hint": login_hint,
+            "nonce": nonce,
+        }.items() if v is not None}
         params["response_type"] = "code"
         if self._client.client_id is not None:
             params["client_id"] = self._client.client_id
@@ -232,13 +219,9 @@ class SSO:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "token": token,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "token": token,
+        }.items() if v is not None}
         return self._client.build_url("sso/logout", params)
 
     def authorize_logout(
@@ -300,13 +283,7 @@ class SSO:
             ServerError: If the server returns a 5xx error.
         """
         request_options = request_options or {}
-        request_options = {
-            **request_options,
-            "extra_headers": {
-                **(request_options.get("extra_headers") or {}),
-                "Authorization": f"Bearer {access_token}",
-            },
-        }
+        request_options = {**request_options, "extra_headers": {**(request_options.get("extra_headers") or {}), "Authorization": f"Bearer {access_token}"}}
         return self._client.request(
             method="get",
             path="sso/profile",
@@ -474,22 +451,16 @@ class AsyncSSO:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "connection_type": enum_value(connection_type)
-                if connection_type is not None
-                else None,
-                "domain": domain,
-                "organization_id": organization_id,
-                "search": search,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "connection_type": enum_value(connection_type) if connection_type is not None else None,
+            "domain": domain,
+            "organization_id": organization_id,
+            "search": search,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="connections",
@@ -580,7 +551,7 @@ class AsyncSSO:
             provider_scopes: Additional scopes to request from the identity provider. Applicable when using OAuth or OpenID Connect connections.
             provider_query_params: Key/value pairs of query parameters to pass to the OAuth provider. Only applicable when using OAuth connections.
             domain: (deprecated) Deprecated. Use `connection` or `organization` instead. Used to initiate SSO for a connection by domain. The domain must be associated with a connection in your WorkOS environment.
-            provider: Used to initiate OAuth authentication with Google, Microsoft, GitHub, or Apple.
+            provider: Used to initiate OAuth authentication with various providers.
             redirect_uri: Where to redirect the user after they complete the authentication process. You must use one of the redirect URIs configured via the [Redirects](https://dashboard.workos.com/redirects) page on the dashboard.
             state: An optional parameter that can be used to encode arbitrary information to help restore application state between redirects. If included, the redirect URI received from WorkOS will contain the exact `state` that was passed.
             connection: Used to initiate SSO for a connection. The value should be a WorkOS connection ID.
@@ -600,25 +571,19 @@ class AsyncSSO:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "provider_scopes": ",".join(str(v) for v in provider_scopes)
-                if provider_scopes is not None
-                else None,
-                "provider_query_params": provider_query_params,
-                "domain": domain,
-                "provider": enum_value(provider) if provider is not None else None,
-                "redirect_uri": redirect_uri,
-                "state": state,
-                "connection": connection,
-                "organization": organization,
-                "domain_hint": domain_hint,
-                "login_hint": login_hint,
-                "nonce": nonce,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "provider_scopes": ",".join(str(v) for v in provider_scopes) if provider_scopes is not None else None,
+            "provider_query_params": provider_query_params,
+            "domain": domain,
+            "provider": enum_value(provider) if provider is not None else None,
+            "redirect_uri": redirect_uri,
+            "state": state,
+            "connection": connection,
+            "organization": organization,
+            "domain_hint": domain_hint,
+            "login_hint": login_hint,
+            "nonce": nonce,
+        }.items() if v is not None}
         params["response_type"] = "code"
         if self._client.client_id is not None:
             params["client_id"] = self._client.client_id
@@ -649,13 +614,9 @@ class AsyncSSO:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "token": token,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "token": token,
+        }.items() if v is not None}
         return self._client.build_url("sso/logout", params)
 
     async def authorize_logout(
@@ -717,13 +678,7 @@ class AsyncSSO:
             ServerError: If the server returns a 5xx error.
         """
         request_options = request_options or {}
-        request_options = {
-            **request_options,
-            "extra_headers": {
-                **(request_options.get("extra_headers") or {}),
-                "Authorization": f"Bearer {access_token}",
-            },
-        }
+        request_options = {**request_options, "extra_headers": {**(request_options.get("extra_headers") or {}), "Authorization": f"Bearer {access_token}"}}
         return await self._client.request(
             method="get",
             path="sso/profile",

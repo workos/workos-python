@@ -38,9 +38,7 @@ class AuthenticationOAuthFailedData:
                 user_agent=data["user_agent"],
                 user_id=data["user_id"],
                 email=data["email"],
-                error=AuthenticationOAuthFailedDataError.from_dict(
-                    cast(Dict[str, Any], data["error"])
-                ),
+                error=AuthenticationOAuthFailedDataError.from_dict(cast(Dict[str, Any], data["error"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationOAuthFailedData", e)

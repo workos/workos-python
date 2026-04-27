@@ -28,12 +28,4 @@ class WidgetSessionTokenScopes(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-WidgetSessionTokenScopesLiteral: TypeAlias = Literal[
-    "widgets:users-table:manage",
-    "widgets:domain-verification:manage",
-    "widgets:sso:manage",
-    "widgets:api-keys:manage",
-    "widgets:dsync:manage",
-    "widgets:audit-log-streaming:manage",
-]
+WidgetSessionTokenScopesLiteral: TypeAlias = Literal["widgets:users-table:manage", "widgets:domain-verification:manage", "widgets:sso:manage", "widgets:api-keys:manage", "widgets:dsync:manage", "widgets:audit-log-streaming:manage"]

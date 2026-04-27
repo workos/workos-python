@@ -37,14 +37,9 @@ class AuditLogSchemaJson:
             return cls(
                 object=data["object"],
                 version=data["version"],
-                targets=[
-                    AuditLogSchemaJsonTarget.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], data["targets"])
-                ],
+                targets=[AuditLogSchemaJsonTarget.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], data["targets"])],
                 created_at=_parse_datetime(data["created_at"]),
-                actor=AuditLogSchemaJsonActor.from_dict(cast(Dict[str, Any], _v_actor))
-                if (_v_actor := data.get("actor")) is not None
-                else None,
+                actor=AuditLogSchemaJsonActor.from_dict(cast(Dict[str, Any], _v_actor)) if (_v_actor := data.get("actor")) is not None else None,
                 metadata=data.get("metadata"),
             )
         except (KeyError, ValueError) as e:

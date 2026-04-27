@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -11,7 +11,6 @@ from .._types import RequestOptions, enum_value
 from .models import Directory, DirectoryGroup, DirectoryUserWithGroups
 from .models import DirectoriesOrder, DirectoryGroupsOrder, DirectoryUsersOrder
 from .._pagination import AsyncPage, SyncPage
-
 
 class DirectorySync:
     """Directory Sync API resources."""
@@ -55,19 +54,15 @@ class DirectorySync:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-                "search": search,
-                "domain": domain,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization_id": organization_id,
+            "search": search,
+            "domain": domain,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="directories",
@@ -168,18 +163,14 @@ class DirectorySync:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "directory": directory,
-                "user": user,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "directory": directory,
+            "user": user,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="directory_groups",
@@ -254,18 +245,14 @@ class DirectorySync:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "directory": directory,
-                "group": group,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "directory": directory,
+            "group": group,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="directory_users",
@@ -348,19 +335,15 @@ class AsyncDirectorySync:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-                "search": search,
-                "domain": domain,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "organization_id": organization_id,
+            "search": search,
+            "domain": domain,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="directories",
@@ -461,18 +444,14 @@ class AsyncDirectorySync:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "directory": directory,
-                "user": user,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "directory": directory,
+            "user": user,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="directory_groups",
@@ -547,18 +526,14 @@ class AsyncDirectorySync:
             AuthenticationError: If the API key is invalid (401).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "directory": directory,
-                "group": group,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "directory": directory,
+            "group": group,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="directory_users",

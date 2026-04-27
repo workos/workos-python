@@ -4,9 +4,7 @@ from .audit_log_action_json import AuditLogActionJson as AuditLogActionJson
 from .audit_log_event import AuditLogEvent as AuditLogEvent
 from .audit_log_event_actor import AuditLogEventActor as AuditLogEventActor
 from .audit_log_event_context import AuditLogEventContext as AuditLogEventContext
-from .audit_log_event_create_response import (
-    AuditLogEventCreateResponse as AuditLogEventCreateResponse,
-)
+from .audit_log_event_create_response import AuditLogEventCreateResponse as AuditLogEventCreateResponse
 from .audit_log_event_ingestion import AuditLogEventIngestion as AuditLogEventIngestion
 from .audit_log_event_target import AuditLogEventTarget as AuditLogEventTarget
 from .audit_log_export_creation import AuditLogExportCreation as AuditLogExportCreation
@@ -14,11 +12,7 @@ from .audit_log_export_json import AuditLogExportJson as AuditLogExportJson
 from .audit_log_schema import AuditLogSchema as AuditLogSchema
 from .audit_log_schema_actor import AuditLogSchemaActor as AuditLogSchemaActor
 from .audit_log_schema_json import AuditLogSchemaJson as AuditLogSchemaJson
-from .audit_log_schema_json_actor import (
-    AuditLogSchemaJsonActor as AuditLogSchemaJsonActor,
-)
-from .audit_log_schema_json_target import (
-    AuditLogSchemaJsonTarget as AuditLogSchemaJsonTarget,
-)
+from .audit_log_schema_json_actor import AuditLogSchemaJsonActor as AuditLogSchemaJsonActor
+from .audit_log_schema_json_target import AuditLogSchemaJsonTarget as AuditLogSchemaJsonTarget
 from .audit_log_schema_target import AuditLogSchemaTarget as AuditLogSchemaTarget
 from .audit_logs_order import AuditLogsOrder as AuditLogsOrder

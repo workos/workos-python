@@ -4,14 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models.radar_standalone_assess_request_action import (
-    RadarStandaloneAssessRequestAction,
-)
-from workos.common.models.radar_standalone_assess_request_auth_method import (
-    RadarStandaloneAssessRequestAuthMethod,
-)
+from workos.common.models.radar_standalone_assess_request_action import RadarStandaloneAssessRequestAction
+from workos.common.models.radar_standalone_assess_request_auth_method import RadarStandaloneAssessRequestAuthMethod
 
 
 @dataclass(slots=True)
@@ -55,14 +52,8 @@ class RadarStandaloneAssessRequest:
         result["ip_address"] = self.ip_address
         result["user_agent"] = self.user_agent
         result["email"] = self.email
-        result["auth_method"] = (
-            self.auth_method.value
-            if isinstance(self.auth_method, Enum)
-            else self.auth_method
-        )
-        result["action"] = (
-            self.action.value if isinstance(self.action, Enum) else self.action
-        )
+        result["auth_method"] = self.auth_method.value if isinstance(self.auth_method, Enum) else self.auth_method
+        result["action"] = self.action.value if isinstance(self.action, Enum) else self.action
         if self.device_fingerprint is not None:
             result["device_fingerprint"] = self.device_fingerprint
         if self.bot_score is not None:

@@ -38,9 +38,7 @@ class FlagDeleted:
                 event=data["event"],
                 data=FlagDeletedData.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
-                context=FlagDeletedContext.from_dict(
-                    cast(Dict[str, Any], data["context"])
-                ),
+                context=FlagDeletedContext.from_dict(cast(Dict[str, Any], data["context"])),
                 object=data["object"],
             )
         except (KeyError, ValueError) as e:

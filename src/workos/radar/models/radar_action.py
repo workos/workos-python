@@ -24,5 +24,4 @@ class RadarAction(str, Enum):
         unknown._value_ = value
         return unknown
 
-
 RadarActionLiteral: TypeAlias = Literal["block", "allow"]

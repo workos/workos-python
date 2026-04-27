@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 from .event_context_actor_source import EventContextActorSource
@@ -36,9 +37,7 @@ class EventContextActor:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["id"] = self.id
-        result["source"] = (
-            self.source.value if isinstance(self.source, Enum) else self.source
-        )
+        result["source"] = self.source.value if isinstance(self.source, Enum) else self.source
         if self.name is not None:
             result["name"] = self.name
         else:

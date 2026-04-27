@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
-from workos.common.models.data_integrations_list_response_data_connected_account_state import (
-    DataIntegrationsListResponseDataConnectedAccountState,
-)
+from workos.common.models.data_integrations_list_response_data_connected_account_state import DataIntegrationsListResponseDataConnectedAccountState
 
 
 @dataclass(slots=True)
@@ -40,9 +39,7 @@ class DataIntegrationsListResponseDataConnectedAccount:
     .. deprecated:: This field is deprecated."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "DataIntegrationsListResponseDataConnectedAccount":
+    def from_dict(cls, data: Dict[str, Any]) -> "DataIntegrationsListResponseDataConnectedAccount":
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -51,17 +48,13 @@ class DataIntegrationsListResponseDataConnectedAccount:
                 user_id=data["user_id"],
                 organization_id=data["organization_id"],
                 scopes=data["scopes"],
-                state=DataIntegrationsListResponseDataConnectedAccountState(
-                    data["state"]
-                ),
+                state=DataIntegrationsListResponseDataConnectedAccountState(data["state"]),
                 created_at=data["created_at"],
                 updated_at=data["updated_at"],
                 userland_user_id=data.get("userlandUserId"),
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error(
-                "DataIntegrationsListResponseDataConnectedAccount", e
-            )
+            _raise_deserialize_error("DataIntegrationsListResponseDataConnectedAccount", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -77,9 +70,7 @@ class DataIntegrationsListResponseDataConnectedAccount:
         else:
             result["organization_id"] = None
         result["scopes"] = self.scopes
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         result["created_at"] = self.created_at
         result["updated_at"] = self.updated_at
         if self.userland_user_id is not None:

@@ -16,9 +16,7 @@ class DataIntegrationsListResponseDataOwnership(str, Enum):
     ORGANIZATION = "organization"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["DataIntegrationsListResponseDataOwnership"]:
+    def _missing_(cls, value: object) -> Optional["DataIntegrationsListResponseDataOwnership"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -26,7 +24,4 @@ class DataIntegrationsListResponseDataOwnership(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-DataIntegrationsListResponseDataOwnershipLiteral: TypeAlias = Literal[
-    "userland_user", "organization"
-]
+DataIntegrationsListResponseDataOwnershipLiteral: TypeAlias = Literal["userland_user", "organization"]

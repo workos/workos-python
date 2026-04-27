@@ -8,12 +8,8 @@ from typing import cast
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 
-from .data_integrations_list_response_data_connected_account import (
-    DataIntegrationsListResponseDataConnectedAccount,
-)
-from workos.common.models.data_integrations_list_response_data_ownership import (
-    DataIntegrationsListResponseDataOwnership,
-)
+from .data_integrations_list_response_data_connected_account import DataIntegrationsListResponseDataConnectedAccount
+from workos.common.models.data_integrations_list_response_data_ownership import DataIntegrationsListResponseDataOwnership
 
 
 @dataclass(slots=True)
@@ -61,11 +57,7 @@ class DataIntegrationsListResponseData:
                 ownership=DataIntegrationsListResponseDataOwnership(data["ownership"]),
                 created_at=data["created_at"],
                 updated_at=data["updated_at"],
-                connected_account=DataIntegrationsListResponseDataConnectedAccount.from_dict(
-                    cast(Dict[str, Any], _v_connected_account)
-                )
-                if (_v_connected_account := data["connected_account"]) is not None
-                else None,
+                connected_account=DataIntegrationsListResponseDataConnectedAccount.from_dict(cast(Dict[str, Any], _v_connected_account)) if (_v_connected_account := data["connected_account"]) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("DataIntegrationsListResponseData", e)
@@ -87,9 +79,7 @@ class DataIntegrationsListResponseData:
             result["scopes"] = self.scopes
         else:
             result["scopes"] = None
-        result["ownership"] = (
-            self.ownership.value if isinstance(self.ownership, Enum) else self.ownership
-        )
+        result["ownership"] = self.ownership.value if isinstance(self.ownership, Enum) else self.ownership
         result["created_at"] = self.created_at
         result["updated_at"] = self.updated_at
         if self.connected_account is not None:

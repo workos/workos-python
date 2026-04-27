@@ -11,9 +11,7 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from workos.authorization.models.slim_role import SlimRole
-from .organization_membership_created_data_status import (
-    OrganizationMembershipCreatedDataStatus,
-)
+from .organization_membership_created_data_status import OrganizationMembershipCreatedDataStatus
 
 
 @dataclass(slots=True)
@@ -58,12 +56,7 @@ class OrganizationMembershipCreatedData:
                 directory_managed=data["directory_managed"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                roles=[
-                    SlimRole.from_dict(cast(Dict[str, Any], item))
-                    for item in cast(list[Any], _v_roles)
-                ]
-                if (_v_roles := data.get("roles")) is not None
-                else None,
+                roles=[SlimRole.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], _v_roles)] if (_v_roles := data.get("roles")) is not None else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("OrganizationMembershipCreatedData", e)
@@ -75,9 +68,7 @@ class OrganizationMembershipCreatedData:
         result["id"] = self.id
         result["user_id"] = self.user_id
         result["organization_id"] = self.organization_id
-        result["status"] = (
-            self.status.value if isinstance(self.status, Enum) else self.status
-        )
+        result["status"] = self.status.value if isinstance(self.status, Enum) else self.status
         result["role"] = self.role.to_dict()
         result["custom_attributes"] = self.custom_attributes
         result["directory_managed"] = self.directory_managed

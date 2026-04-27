@@ -34,8 +34,8 @@ class GenerateLink:
         - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key"""
     intent_options: Optional["IntentOptions"] = None
     """Options to configure the Admin Portal based on the intent."""
-    admin_emails: Optional[List[str]] = None
-    """The email addresses of the IT admins to grant access to the Admin Portal for the given organization. Accepts up to 20 emails."""
+    it_contact_emails: Optional[List[str]] = None
+    """The email addresses of the IT contacts to grant access to the Admin Portal for the given organization. Accepts up to 20 emails."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "GenerateLink":
@@ -45,15 +45,9 @@ class GenerateLink:
                 organization=data["organization"],
                 return_url=data.get("return_url"),
                 success_url=data.get("success_url"),
-                intent=GenerateLinkIntent(_v_intent)
-                if (_v_intent := data.get("intent")) is not None
-                else None,
-                intent_options=IntentOptions.from_dict(
-                    cast(Dict[str, Any], _v_intent_options)
-                )
-                if (_v_intent_options := data.get("intent_options")) is not None
-                else None,
-                admin_emails=data.get("admin_emails"),
+                intent=GenerateLinkIntent(_v_intent) if (_v_intent := data.get("intent")) is not None else None,
+                intent_options=IntentOptions.from_dict(cast(Dict[str, Any], _v_intent_options)) if (_v_intent_options := data.get("intent_options")) is not None else None,
+                it_contact_emails=data.get("it_contact_emails"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("GenerateLink", e)
@@ -67,11 +61,9 @@ class GenerateLink:
         if self.success_url is not None:
             result["success_url"] = self.success_url
         if self.intent is not None:
-            result["intent"] = (
-                self.intent.value if isinstance(self.intent, Enum) else self.intent
-            )
+            result["intent"] = self.intent.value if isinstance(self.intent, Enum) else self.intent
         if self.intent_options is not None:
             result["intent_options"] = self.intent_options.to_dict()
-        if self.admin_emails is not None:
-            result["admin_emails"] = self.admin_emails
+        if self.it_contact_emails is not None:
+            result["it_contact_emails"] = self.it_contact_emails
         return result

@@ -6,36 +6,18 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.common.models import (
-    RadarStandaloneAssessRequestAction,
-    RadarStandaloneAssessRequestAuthMethod,
-)
-from workos.radar.models import (
-    RadarListEntryAlreadyPresentResponse,
-    RadarStandaloneResponse,
-)
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
+from workos.common.models import RadarStandaloneAssessRequestAction, RadarStandaloneAssessRequestAuthMethod
+from workos.radar.models import RadarListEntryAlreadyPresentResponse, RadarStandaloneResponse
+from workos._errors import AuthenticationError, BadRequestError, NotFoundError, RateLimitExceededError, ServerError, UnprocessableEntityError
 
 
 class TestRadar:
+
     def test_create_attempt(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("radar_standalone_response.json"),
         )
-        result = workos.radar.create_attempt(
-            ip_address="test_ip_address",
-            user_agent="test_user_agent",
-            email="test_email",
-            auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-            action=RadarStandaloneAssessRequestAction("login"),
-        )
+        result = workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         assert isinstance(result, RadarStandaloneResponse)
         assert result.verdict == "block"
         assert result.reason == "Detected enabled Radar control"
@@ -60,9 +42,7 @@ class TestRadar:
         httpx_mock.add_response(
             json=load_fixture("radar_list_entry_already_present_response.json"),
         )
-        result = workos.radar.add_list_entry(
-            "test_type", "test_action", entry="test_entry"
-        )
+        result = workos.radar.add_list_entry("test_type", "test_action", entry="test_entry")
         assert isinstance(result, RadarListEntryAlreadyPresentResponse)
         assert result.message == "Entry already present in list"
         request = httpx_mock.get_request()
@@ -73,9 +53,7 @@ class TestRadar:
 
     def test_remove_list_entry(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.radar.remove_list_entry(
-            "test_type", "test_action", entry="test_entry"
-        )
+        result = workos.radar.remove_list_entry("test_type", "test_action", entry="test_entry")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
@@ -83,14 +61,7 @@ class TestRadar:
 
     def test_create_attempt_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("radar_standalone_response.json"))
-        workos.radar.create_attempt(
-            ip_address="test_ip_address",
-            user_agent="test_user_agent",
-            email="test_email",
-            auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-            action=RadarStandaloneAssessRequestAction("login"),
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"), request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -100,115 +71,60 @@ class TestRadar:
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationError):
-            workos.radar.create_attempt(
-                ip_address="test_ip_address",
-                user_agent="test_user_agent",
-                email="test_email",
-                auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                action=RadarStandaloneAssessRequestAction("login"),
-            )
+            workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
 
     def test_create_attempt_not_found(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                workos.radar.create_attempt(
-                    ip_address="test_ip_address",
-                    user_agent="test_user_agent",
-                    email="test_email",
-                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
-                )
+                workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         finally:
             workos.close()
 
     def test_create_attempt_rate_limited(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
-                workos.radar.create_attempt(
-                    ip_address="test_ip_address",
-                    user_agent="test_user_agent",
-                    email="test_email",
-                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
-                )
+                workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         finally:
             workos.close()
 
     def test_create_attempt_server_error(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                workos.radar.create_attempt(
-                    ip_address="test_ip_address",
-                    user_agent="test_user_agent",
-                    email="test_email",
-                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
-                )
+                workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         finally:
             workos.close()
 
     def test_create_attempt_bad_request(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.radar.create_attempt(
-                    ip_address="test_ip_address",
-                    user_agent="test_user_agent",
-                    email="test_email",
-                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
-                )
+                workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         finally:
             workos.close()
 
     def test_create_attempt_unprocessable(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.radar.create_attempt(
-                    ip_address="test_ip_address",
-                    user_agent="test_user_agent",
-                    email="test_email",
-                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
-                )
+                workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         finally:
             workos.close()
 
 
 class TestAsyncRadar:
+
     @pytest.mark.asyncio
     async def test_create_attempt(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("radar_standalone_response.json"))
-        result = await async_workos.radar.create_attempt(
-            ip_address="test_ip_address",
-            user_agent="test_user_agent",
-            email="test_email",
-            auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-            action=RadarStandaloneAssessRequestAction("login"),
-        )
+        result = await async_workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         assert isinstance(result, RadarStandaloneResponse)
         assert result.verdict == "block"
         assert result.reason == "Detected enabled Radar control"
@@ -226,12 +142,8 @@ class TestAsyncRadar:
 
     @pytest.mark.asyncio
     async def test_add_list_entry(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("radar_list_entry_already_present_response.json")
-        )
-        result = await async_workos.radar.add_list_entry(
-            "test_type", "test_action", entry="test_entry"
-        )
+        httpx_mock.add_response(json=load_fixture("radar_list_entry_already_present_response.json"))
+        result = await async_workos.radar.add_list_entry("test_type", "test_action", entry="test_entry")
         assert isinstance(result, RadarListEntryAlreadyPresentResponse)
         assert result.message == "Entry already present in list"
         request = httpx_mock.get_request()
@@ -241,9 +153,7 @@ class TestAsyncRadar:
     @pytest.mark.asyncio
     async def test_remove_list_entry(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.radar.remove_list_entry(
-            "test_type", "test_action", entry="test_entry"
-        )
+        result = await async_workos.radar.remove_list_entry("test_type", "test_action", entry="test_entry")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
@@ -252,14 +162,7 @@ class TestAsyncRadar:
     @pytest.mark.asyncio
     async def test_create_attempt_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("radar_standalone_response.json"))
-        await async_workos.radar.create_attempt(
-            ip_address="test_ip_address",
-            user_agent="test_user_agent",
-            email="test_email",
-            auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-            action=RadarStandaloneAssessRequestAction("login"),
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        await async_workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"), request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -267,104 +170,54 @@ class TestAsyncRadar:
     async def test_create_attempt_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.radar.create_attempt(
-                ip_address="test_ip_address",
-                user_agent="test_user_agent",
-                email="test_email",
-                auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                action=RadarStandaloneAssessRequestAction("login"),
-            )
+            await async_workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
 
     @pytest.mark.asyncio
     async def test_create_attempt_not_found(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.radar.create_attempt(
-                    ip_address="test_ip_address",
-                    user_agent="test_user_agent",
-                    email="test_email",
-                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
-                )
+                await workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_attempt_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
-                await workos.radar.create_attempt(
-                    ip_address="test_ip_address",
-                    user_agent="test_user_agent",
-                    email="test_email",
-                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
-                )
+                await workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_attempt_server_error(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.radar.create_attempt(
-                    ip_address="test_ip_address",
-                    user_agent="test_user_agent",
-                    email="test_email",
-                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
-                )
+                await workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_attempt_bad_request(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.radar.create_attempt(
-                    ip_address="test_ip_address",
-                    user_agent="test_user_agent",
-                    email="test_email",
-                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
-                )
+                await workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_attempt_unprocessable(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.radar.create_attempt(
-                    ip_address="test_ip_address",
-                    user_agent="test_user_agent",
-                    email="test_email",
-                    auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
-                )
+                await workos.radar.create_attempt(ip_address="test_ip_address", user_agent="test_user_agent", email="test_email", auth_method=RadarStandaloneAssessRequestAuthMethod("Password"), action=RadarStandaloneAssessRequestAction("login"))
         finally:
             await workos.close()

@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
-from workos.common.models.organization_domain_data_state import (
-    OrganizationDomainDataState,
-)
+from workos.common.models.organization_domain_data_state import OrganizationDomainDataState
 
 
 @dataclass(slots=True)
@@ -35,7 +34,5 @@ class OrganizationDomainData:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["domain"] = self.domain
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         return result

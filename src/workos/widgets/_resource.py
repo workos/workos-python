@@ -2,15 +2,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions
-from .models import WidgetSessionTokenResponse
+from .._types import RequestOptions, enum_value
+from .models import WidgetSessionToken, WidgetSessionTokenResponse
 from workos.common.models.widget_session_token_scopes import WidgetSessionTokenScopes
-
 
 class Widgets:
     """Widgets API resources."""
@@ -47,15 +46,11 @@ class Widgets:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "organization_id": organization_id,
-                "user_id": user_id,
-                "scopes": scopes,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "organization_id": organization_id,
+            "user_id": user_id,
+            "scopes": scopes,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="widgets/token",
@@ -100,15 +95,11 @@ class AsyncWidgets:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "organization_id": organization_id,
-                "user_id": user_id,
-                "scopes": scopes,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "organization_id": organization_id,
+            "user_id": user_id,
+            "scopes": scopes,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="widgets/token",

@@ -17,9 +17,7 @@ class AuthenticationFactorsCreateRequestType(str, Enum):
     TOTP = "totp"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["AuthenticationFactorsCreateRequestType"]:
+    def _missing_(cls, value: object) -> Optional["AuthenticationFactorsCreateRequestType"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -27,7 +25,4 @@ class AuthenticationFactorsCreateRequestType(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-AuthenticationFactorsCreateRequestTypeLiteral: TypeAlias = Literal[
-    "generic_otp", "sms", "totp"
-]
+AuthenticationFactorsCreateRequestTypeLiteral: TypeAlias = Literal["generic_otp", "sms", "totp"]

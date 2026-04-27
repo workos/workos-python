@@ -7,17 +7,11 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.widgets.models import WidgetSessionTokenResponse
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
+from workos._errors import AuthenticationError, BadRequestError, NotFoundError, RateLimitExceededError, ServerError, UnprocessableEntityError
 
 
 class TestWidgets:
+
     def test_create_token(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("widget_session_token_response.json"),
@@ -33,10 +27,7 @@ class TestWidgets:
 
     def test_create_token_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("widget_session_token_response.json"))
-        workos.widgets.create_token(
-            organization_id="test_organization_id",
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        workos.widgets.create_token(organization_id="test_organization_id", request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -49,9 +40,7 @@ class TestWidgets:
             workos.widgets.create_token(organization_id="test_organization_id")
 
     def test_create_token_not_found(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -60,24 +49,16 @@ class TestWidgets:
             workos.close()
 
     def test_create_token_rate_limited(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
                 workos.widgets.create_token(organization_id="test_organization_id")
         finally:
             workos.close()
 
     def test_create_token_server_error(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -86,9 +67,7 @@ class TestWidgets:
             workos.close()
 
     def test_create_token_bad_request(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
@@ -97,9 +76,7 @@ class TestWidgets:
             workos.close()
 
     def test_create_token_unprocessable(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
@@ -109,12 +86,11 @@ class TestWidgets:
 
 
 class TestAsyncWidgets:
+
     @pytest.mark.asyncio
     async def test_create_token(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("widget_session_token_response.json"))
-        result = await async_workos.widgets.create_token(
-            organization_id="test_organization_id"
-        )
+        result = await async_workos.widgets.create_token(organization_id="test_organization_id")
         assert isinstance(result, WidgetSessionTokenResponse)
         assert result.token == "eyJhbGciOiJSUzI1NiIsImtpZCI6InNlc3Npb24..."
         request = httpx_mock.get_request()
@@ -124,10 +100,7 @@ class TestAsyncWidgets:
     @pytest.mark.asyncio
     async def test_create_token_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("widget_session_token_response.json"))
-        await async_workos.widgets.create_token(
-            organization_id="test_organization_id",
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        await async_workos.widgets.create_token(organization_id="test_organization_id", request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -135,80 +108,54 @@ class TestAsyncWidgets:
     async def test_create_token_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.widgets.create_token(
-                organization_id="test_organization_id"
-            )
+            await async_workos.widgets.create_token(organization_id="test_organization_id")
 
     @pytest.mark.asyncio
     async def test_create_token_not_found(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.widgets.create_token(
-                    organization_id="test_organization_id"
-                )
+                await workos.widgets.create_token(organization_id="test_organization_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_token_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
-                await workos.widgets.create_token(
-                    organization_id="test_organization_id"
-                )
+                await workos.widgets.create_token(organization_id="test_organization_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_token_server_error(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.widgets.create_token(
-                    organization_id="test_organization_id"
-                )
+                await workos.widgets.create_token(organization_id="test_organization_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_token_bad_request(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.widgets.create_token(
-                    organization_id="test_organization_id"
-                )
+                await workos.widgets.create_token(organization_id="test_organization_id")
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_create_token_unprocessable(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.widgets.create_token(
-                    organization_id="test_organization_id"
-                )
+                await workos.widgets.create_token(organization_id="test_organization_id")
         finally:
             await workos.close()

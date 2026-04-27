@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
@@ -35,6 +36,8 @@ class InvitationAcceptedData:
     """The ID of the user who invited the recipient, if provided."""
     accepted_user_id: Optional[str]
     """The ID of the user who accepted the invitation, once accepted."""
+    role_slug: Optional[str]
+    """Slug of the role the invitee will be assigned on acceptance. Reflects the current role on the invitee's organization membership. null when the invitation has no associated organization."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
@@ -49,16 +52,13 @@ class InvitationAcceptedData:
                 id=data["id"],
                 email=data["email"],
                 state=InvitationAcceptedDataState(data["state"]),
-                accepted_at=_parse_datetime(_v_accepted_at)
-                if (_v_accepted_at := data["accepted_at"]) is not None
-                else None,
-                revoked_at=_parse_datetime(_v_revoked_at)
-                if (_v_revoked_at := data["revoked_at"]) is not None
-                else None,
+                accepted_at=_parse_datetime(_v_accepted_at) if (_v_accepted_at := data["accepted_at"]) is not None else None,
+                revoked_at=_parse_datetime(_v_revoked_at) if (_v_revoked_at := data["revoked_at"]) is not None else None,
                 expires_at=_parse_datetime(data["expires_at"]),
                 organization_id=data["organization_id"],
                 inviter_user_id=data["inviter_user_id"],
                 accepted_user_id=data["accepted_user_id"],
+                role_slug=data["role_slug"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
             )
@@ -71,9 +71,7 @@ class InvitationAcceptedData:
         result["object"] = self.object
         result["id"] = self.id
         result["email"] = self.email
-        result["state"] = (
-            self.state.value if isinstance(self.state, Enum) else self.state
-        )
+        result["state"] = self.state.value if isinstance(self.state, Enum) else self.state
         if self.accepted_at is not None:
             result["accepted_at"] = _format_datetime(self.accepted_at)
         else:
@@ -95,6 +93,10 @@ class InvitationAcceptedData:
             result["accepted_user_id"] = self.accepted_user_id
         else:
             result["accepted_user_id"] = None
+        if self.role_slug is not None:
+            result["role_slug"] = self.role_slug
+        else:
+            result["role_slug"] = None
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
         return result

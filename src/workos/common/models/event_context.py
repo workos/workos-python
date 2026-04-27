@@ -17,9 +17,7 @@ class EventContext:
 
     google_analytics_client_id: Optional[str] = None
     """The Google Analytics client ID."""
-    google_analytics_sessions: Optional[List["EventContextGoogleAnalyticsSession"]] = (
-        None
-    )
+    google_analytics_sessions: Optional[List["EventContextGoogleAnalyticsSession"]] = None
     """The Google Analytics sessions associated with the event."""
     ajs_anonymous_id: Optional[str] = None
     """The anonymous ID from analytics."""
@@ -35,24 +33,10 @@ class EventContext:
         try:
             return cls(
                 google_analytics_client_id=data.get("google_analytics_client_id"),
-                google_analytics_sessions=[
-                    EventContextGoogleAnalyticsSession.from_dict(
-                        cast(Dict[str, Any], item)
-                    )
-                    for item in cast(list[Any], _v_google_analytics_sessions)
-                ]
-                if (
-                    _v_google_analytics_sessions := data.get(
-                        "google_analytics_sessions"
-                    )
-                )
-                is not None
-                else None,
+                google_analytics_sessions=[EventContextGoogleAnalyticsSession.from_dict(cast(Dict[str, Any], item)) for item in cast(list[Any], _v_google_analytics_sessions)] if (_v_google_analytics_sessions := data.get("google_analytics_sessions")) is not None else None,
                 ajs_anonymous_id=data.get("ajs_anonymous_id"),
                 client_id=data.get("client_id"),
-                actor=EventContextActor.from_dict(cast(Dict[str, Any], _v_actor))
-                if (_v_actor := data.get("actor")) is not None
-                else None,
+                actor=EventContextActor.from_dict(cast(Dict[str, Any], _v_actor)) if (_v_actor := data.get("actor")) is not None else None,
                 previous_attributes=data.get("previous_attributes"),
             )
         except (KeyError, ValueError) as e:
@@ -64,9 +48,7 @@ class EventContext:
         if self.google_analytics_client_id is not None:
             result["google_analytics_client_id"] = self.google_analytics_client_id
         if self.google_analytics_sessions is not None:
-            result["google_analytics_sessions"] = [
-                item.to_dict() for item in self.google_analytics_sessions
-            ]
+            result["google_analytics_sessions"] = [item.to_dict() for item in self.google_analytics_sessions]
         if self.ajs_anonymous_id is not None:
             result["ajs_anonymous_id"] = self.ajs_anonymous_id
         if self.client_id is not None:

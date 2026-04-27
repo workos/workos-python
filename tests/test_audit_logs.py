@@ -6,27 +6,14 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.audit_logs.models import (
-    AuditLogActionJson,
-    AuditLogEvent,
-    AuditLogEventCreateResponse,
-    AuditLogExportJson,
-    AuditLogSchemaJson,
-    AuditLogsOrder,
-)
+from workos.audit_logs.models import AuditLogActionJson, AuditLogEvent, AuditLogEventCreateResponse, AuditLogExportJson, AuditLogSchemaActor, AuditLogSchemaJson, AuditLogSchemaTarget, AuditLogsOrder
 from workos.organizations.models import AuditLogsRetentionJson
 from workos._pagination import AsyncPage, SyncPage
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
+from workos._errors import AuthenticationError, BadRequestError, NotFoundError, RateLimitExceededError, ServerError, UnprocessableEntityError
 
 
 class TestAuditLogs:
+
     def test_get_organization_audit_logs_retention(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("audit_logs_retention_json.json"),
@@ -42,9 +29,7 @@ class TestAuditLogs:
         httpx_mock.add_response(
             json=load_fixture("audit_logs_retention_json.json"),
         )
-        result = workos.audit_logs.update_organization_audit_logs_retention(
-            "test_id", retention_period_in_days=1
-        )
+        result = workos.audit_logs.update_organization_audit_logs_retention("test_id", retention_period_in_days=1)
         assert isinstance(result, AuditLogsRetentionJson)
         assert result.retention_period_in_days == 30
         request = httpx_mock.get_request()
@@ -70,12 +55,7 @@ class TestAuditLogs:
 
     def test_list_actions_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.audit_logs.list_actions(
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuditLogsOrder("normal"),
-        )
+        workos.audit_logs.list_actions(limit=10, before="cursor before", after="cursor/after", order=AuditLogsOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -99,13 +79,7 @@ class TestAuditLogs:
 
     def test_list_action_schemas_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.audit_logs.list_action_schemas(
-            "test_actionName",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuditLogsOrder("normal"),
-        )
+        workos.audit_logs.list_action_schemas("test_actionName", limit=10, before="cursor before", after="cursor/after", order=AuditLogsOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -130,10 +104,7 @@ class TestAuditLogs:
         httpx_mock.add_response(
             json=load_fixture("audit_log_event_create_response.json"),
         )
-        result = workos.audit_logs.create_event(
-            organization_id="test_organization_id",
-            event=AuditLogEvent.from_dict(load_fixture("audit_log_event.json")),
-        )
+        result = workos.audit_logs.create_event(organization_id="test_organization_id", event=AuditLogEvent.from_dict(load_fixture("audit_log_event.json")))
         assert isinstance(result, AuditLogEventCreateResponse)
         assert result.success is True
         request = httpx_mock.get_request()
@@ -147,11 +118,7 @@ class TestAuditLogs:
         httpx_mock.add_response(
             json=load_fixture("audit_log_export_json.json"),
         )
-        result = workos.audit_logs.create_export(
-            organization_id="test_organization_id",
-            range_start="test_range_start",
-            range_end="test_range_end",
-        )
+        result = workos.audit_logs.create_export(organization_id="test_organization_id", range_start="test_range_start", range_end="test_range_end")
         assert isinstance(result, AuditLogExportJson)
         assert result.object == "audit_log_export"
         assert result.id == "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V"
@@ -175,19 +142,13 @@ class TestAuditLogs:
         assert request.method == "GET"
         assert request.url.path.endswith("/audit_logs/exports/test_auditLogExportId")
 
-    def test_get_organization_audit_logs_retention_with_request_options(
-        self, workos, httpx_mock
-    ):
+    def test_get_organization_audit_logs_retention_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
-        workos.audit_logs.get_organization_audit_logs_retention(
-            "test_id", request_options={"extra_headers": {"X-Custom": "value"}}
-        )
+        workos.audit_logs.get_organization_audit_logs_retention("test_id", request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
-    def test_get_organization_audit_logs_retention_unauthorized(
-        self, workos, httpx_mock
-    ):
+    def test_get_organization_audit_logs_retention_unauthorized(self, workos, httpx_mock):
         httpx_mock.add_response(
             status_code=401,
             json={"message": "Unauthorized"},
@@ -196,9 +157,7 @@ class TestAuditLogs:
             workos.audit_logs.get_organization_audit_logs_retention("test_id")
 
     def test_get_organization_audit_logs_retention_not_found(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -207,24 +166,16 @@ class TestAuditLogs:
             workos.close()
 
     def test_get_organization_audit_logs_retention_rate_limited(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
                 workos.audit_logs.get_organization_audit_logs_retention("test_id")
         finally:
             workos.close()
 
     def test_get_organization_audit_logs_retention_server_error(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -233,9 +184,7 @@ class TestAuditLogs:
             workos.close()
 
     def test_get_organization_audit_logs_retention_bad_request(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
@@ -244,9 +193,7 @@ class TestAuditLogs:
             workos.close()
 
     def test_get_organization_audit_logs_retention_unprocessable(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
@@ -256,14 +203,11 @@ class TestAuditLogs:
 
 
 class TestAsyncAuditLogs:
+
     @pytest.mark.asyncio
-    async def test_get_organization_audit_logs_retention(
-        self, async_workos, httpx_mock
-    ):
+    async def test_get_organization_audit_logs_retention(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
-        result = await async_workos.audit_logs.get_organization_audit_logs_retention(
-            "test_id"
-        )
+        result = await async_workos.audit_logs.get_organization_audit_logs_retention("test_id")
         assert isinstance(result, AuditLogsRetentionJson)
         assert result.retention_period_in_days == 30
         request = httpx_mock.get_request()
@@ -271,13 +215,9 @@ class TestAsyncAuditLogs:
         assert request.url.path.endswith("/organizations/test_id/audit_logs_retention")
 
     @pytest.mark.asyncio
-    async def test_update_organization_audit_logs_retention(
-        self, async_workos, httpx_mock
-    ):
+    async def test_update_organization_audit_logs_retention(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
-        result = await async_workos.audit_logs.update_organization_audit_logs_retention(
-            "test_id", retention_period_in_days=1
-        )
+        result = await async_workos.audit_logs.update_organization_audit_logs_retention("test_id", retention_period_in_days=1)
         assert isinstance(result, AuditLogsRetentionJson)
         assert result.retention_period_in_days == 30
         request = httpx_mock.get_request()
@@ -302,12 +242,7 @@ class TestAsyncAuditLogs:
     @pytest.mark.asyncio
     async def test_list_actions_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.audit_logs.list_actions(
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuditLogsOrder("normal"),
-        )
+        await async_workos.audit_logs.list_actions(limit=10, before="cursor before", after="cursor/after", order=AuditLogsOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -330,17 +265,9 @@ class TestAsyncAuditLogs:
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_action_schemas_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_action_schemas_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.audit_logs.list_action_schemas(
-            "test_actionName",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuditLogsOrder("normal"),
-        )
+        await async_workos.audit_logs.list_action_schemas("test_actionName", limit=10, before="cursor before", after="cursor/after", order=AuditLogsOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -350,9 +277,7 @@ class TestAsyncAuditLogs:
     @pytest.mark.asyncio
     async def test_create_schema(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_schema_json.json"))
-        result = await async_workos.audit_logs.create_schema(
-            "test_actionName", targets=[]
-        )
+        result = await async_workos.audit_logs.create_schema("test_actionName", targets=[])
         assert isinstance(result, AuditLogSchemaJson)
         assert result.object == "audit_log_schema"
         assert result.version == 1
@@ -362,13 +287,8 @@ class TestAsyncAuditLogs:
 
     @pytest.mark.asyncio
     async def test_create_event(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("audit_log_event_create_response.json")
-        )
-        result = await async_workos.audit_logs.create_event(
-            organization_id="test_organization_id",
-            event=AuditLogEvent.from_dict(load_fixture("audit_log_event.json")),
-        )
+        httpx_mock.add_response(json=load_fixture("audit_log_event_create_response.json"))
+        result = await async_workos.audit_logs.create_event(organization_id="test_organization_id", event=AuditLogEvent.from_dict(load_fixture("audit_log_event.json")))
         assert isinstance(result, AuditLogEventCreateResponse)
         assert result.success is True
         request = httpx_mock.get_request()
@@ -378,11 +298,7 @@ class TestAsyncAuditLogs:
     @pytest.mark.asyncio
     async def test_create_export(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_log_export_json.json"))
-        result = await async_workos.audit_logs.create_export(
-            organization_id="test_organization_id",
-            range_start="test_range_start",
-            range_end="test_range_end",
-        )
+        result = await async_workos.audit_logs.create_export(organization_id="test_organization_id", range_start="test_range_start", range_end="test_range_end")
         assert isinstance(result, AuditLogExportJson)
         assert result.object == "audit_log_export"
         assert result.id == "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V"
@@ -402,31 +318,21 @@ class TestAsyncAuditLogs:
         assert request.url.path.endswith("/audit_logs/exports/test_auditLogExportId")
 
     @pytest.mark.asyncio
-    async def test_get_organization_audit_logs_retention_with_request_options(
-        self, async_workos, httpx_mock
-    ):
+    async def test_get_organization_audit_logs_retention_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
-        await async_workos.audit_logs.get_organization_audit_logs_retention(
-            "test_id", request_options={"extra_headers": {"X-Custom": "value"}}
-        )
+        await async_workos.audit_logs.get_organization_audit_logs_retention("test_id", request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
     @pytest.mark.asyncio
-    async def test_get_organization_audit_logs_retention_unauthorized(
-        self, async_workos, httpx_mock
-    ):
+    async def test_get_organization_audit_logs_retention_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.audit_logs.get_organization_audit_logs_retention(
-                "test_id"
-            )
+            await async_workos.audit_logs.get_organization_audit_logs_retention("test_id")
 
     @pytest.mark.asyncio
     async def test_get_organization_audit_logs_retention_not_found(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -436,15 +342,9 @@ class TestAsyncAuditLogs:
 
     @pytest.mark.asyncio
     async def test_get_organization_audit_logs_retention_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
                 await workos.audit_logs.get_organization_audit_logs_retention("test_id")
         finally:
@@ -452,9 +352,7 @@ class TestAsyncAuditLogs:
 
     @pytest.mark.asyncio
     async def test_get_organization_audit_logs_retention_server_error(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -464,9 +362,7 @@ class TestAsyncAuditLogs:
 
     @pytest.mark.asyncio
     async def test_get_organization_audit_logs_retention_bad_request(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
@@ -475,12 +371,8 @@ class TestAsyncAuditLogs:
             await workos.close()
 
     @pytest.mark.asyncio
-    async def test_get_organization_audit_logs_retention_unprocessable(
-        self, httpx_mock
-    ):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+    async def test_get_organization_audit_logs_retention_unprocessable(self, httpx_mock):
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):

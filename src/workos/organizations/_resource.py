@@ -2,16 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import AuditLogConfiguration, Organization, OrganizationDomainData
+from .models import AuditLogConfiguration, Organization, OrganizationDomainData, OrganizationInput, UpdateOrganization
 from .models import OrganizationsOrder
 from .._pagination import AsyncPage, SyncPage
-
 
 class Organizations:
     """Organizations API resources."""
@@ -52,20 +51,14 @@ class Organizations:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "domains": ",".join(str(v) for v in domains)
-                if domains is not None
-                else None,
-                "search": search,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "domains": ",".join(str(v) for v in domains) if domains is not None else None,
+            "search": search,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="organizations",
@@ -109,20 +102,14 @@ class Organizations:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "allow_profiles_outside_organization": allow_profiles_outside_organization,
-                "domains": domains,
-                "domain_data": [item.to_dict() for item in domain_data]
-                if domain_data is not None
-                else None,
-                "metadata": metadata,
-                "external_id": external_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "allow_profiles_outside_organization": allow_profiles_outside_organization,
+            "domains": domains,
+            "domain_data": [item.to_dict() for item in domain_data] if domain_data is not None else None,
+            "metadata": metadata,
+            "external_id": external_id,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="organizations",
@@ -232,21 +219,15 @@ class Organizations:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "allow_profiles_outside_organization": allow_profiles_outside_organization,
-                "domains": domains,
-                "domain_data": [item.to_dict() for item in domain_data]
-                if domain_data is not None
-                else None,
-                "stripe_customer_id": stripe_customer_id,
-                "metadata": metadata,
-                "external_id": external_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "allow_profiles_outside_organization": allow_profiles_outside_organization,
+            "domains": domains,
+            "domain_data": [item.to_dict() for item in domain_data] if domain_data is not None else None,
+            "stripe_customer_id": stripe_customer_id,
+            "metadata": metadata,
+            "external_id": external_id,
+        }.items() if v is not None}
         return self._client.request(
             method="put",
             path=f"organizations/{id}",
@@ -351,20 +332,14 @@ class AsyncOrganizations:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "domains": ",".join(str(v) for v in domains)
-                if domains is not None
-                else None,
-                "search": search,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+            "domains": ",".join(str(v) for v in domains) if domains is not None else None,
+            "search": search,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="organizations",
@@ -408,20 +383,14 @@ class AsyncOrganizations:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "allow_profiles_outside_organization": allow_profiles_outside_organization,
-                "domains": domains,
-                "domain_data": [item.to_dict() for item in domain_data]
-                if domain_data is not None
-                else None,
-                "metadata": metadata,
-                "external_id": external_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "allow_profiles_outside_organization": allow_profiles_outside_organization,
+            "domains": domains,
+            "domain_data": [item.to_dict() for item in domain_data] if domain_data is not None else None,
+            "metadata": metadata,
+            "external_id": external_id,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="organizations",
@@ -531,21 +500,15 @@ class AsyncOrganizations:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "allow_profiles_outside_organization": allow_profiles_outside_organization,
-                "domains": domains,
-                "domain_data": [item.to_dict() for item in domain_data]
-                if domain_data is not None
-                else None,
-                "stripe_customer_id": stripe_customer_id,
-                "metadata": metadata,
-                "external_id": external_id,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "name": name,
+            "allow_profiles_outside_organization": allow_profiles_outside_organization,
+            "domains": domains,
+            "domain_data": [item.to_dict() for item in domain_data] if domain_data is not None else None,
+            "stripe_customer_id": stripe_customer_id,
+            "metadata": metadata,
+            "external_id": external_id,
+        }.items() if v is not None}
         return await self._client.request(
             method="put",
             path=f"organizations/{id}",

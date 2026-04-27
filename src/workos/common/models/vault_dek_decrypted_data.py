@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 from .vault_dek_decrypted_data_actor_source import VaultDekDecryptedDataActorSource
@@ -38,11 +39,7 @@ class VaultDekDecryptedData:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["actor_id"] = self.actor_id
-        result["actor_source"] = (
-            self.actor_source.value
-            if isinstance(self.actor_source, Enum)
-            else self.actor_source
-        )
+        result["actor_source"] = self.actor_source.value if isinstance(self.actor_source, Enum) else self.actor_source
         result["actor_name"] = self.actor_name
         result["key_id"] = self.key_id
         return result

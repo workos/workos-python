@@ -6,24 +6,13 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.api_keys.models import (
-    ApiKey,
-    ApiKeyValidationResponse,
-    ApiKeyWithValue,
-    OrganizationsApiKeysOrder,
-)
+from workos.api_keys.models import ApiKey, ApiKeyValidationResponse, ApiKeyWithValue, OrganizationsApiKeysOrder
 from workos._pagination import AsyncPage, SyncPage
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
+from workos._errors import AuthenticationError, BadRequestError, NotFoundError, RateLimitExceededError, ServerError, UnprocessableEntityError
 
 
 class TestApiKeys:
+
     def test_create_validation(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("api_key_validation_response.json"),
@@ -61,13 +50,7 @@ class TestApiKeys:
 
     def test_list_organization_api_keys_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.api_keys.list_organization_api_keys(
-            "test_organizationId",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=OrganizationsApiKeysOrder("normal"),
-        )
+        workos.api_keys.list_organization_api_keys("test_organizationId", limit=10, before="cursor before", after="cursor/after", order=OrganizationsApiKeysOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -78,9 +61,7 @@ class TestApiKeys:
         httpx_mock.add_response(
             json=load_fixture("api_key_with_value.json"),
         )
-        result = workos.api_keys.create_organization_api_key(
-            "test_organizationId", name="test_name"
-        )
+        result = workos.api_keys.create_organization_api_key("test_organizationId", name="test_name")
         assert isinstance(result, ApiKeyWithValue)
         assert result.object == "api_key"
         assert result.id == "api_key_01EHZNVPK3SFK441A1RGBFSHRT"
@@ -92,9 +73,7 @@ class TestApiKeys:
 
     def test_create_validation_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("api_key_validation_response.json"))
-        workos.api_keys.create_validation(
-            value="test_value", request_options={"extra_headers": {"X-Custom": "value"}}
-        )
+        workos.api_keys.create_validation(value="test_value", request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -107,9 +86,7 @@ class TestApiKeys:
             workos.api_keys.create_validation(value="test_value")
 
     def test_create_validation_not_found(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -118,24 +95,16 @@ class TestApiKeys:
             workos.close()
 
     def test_create_validation_rate_limited(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
                 workos.api_keys.create_validation(value="test_value")
         finally:
             workos.close()
 
     def test_create_validation_server_error(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -144,9 +113,7 @@ class TestApiKeys:
             workos.close()
 
     def test_create_validation_bad_request(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
@@ -155,9 +122,7 @@ class TestApiKeys:
             workos.close()
 
     def test_create_validation_unprocessable(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
@@ -167,6 +132,7 @@ class TestApiKeys:
 
 
 class TestAsyncApiKeys:
+
     @pytest.mark.asyncio
     async def test_create_validation(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("api_key_validation_response.json"))
@@ -188,36 +154,22 @@ class TestAsyncApiKeys:
     @pytest.mark.asyncio
     async def test_list_organization_api_keys(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_api_key.json"))
-        page = await async_workos.api_keys.list_organization_api_keys(
-            "test_organizationId"
-        )
+        page = await async_workos.api_keys.list_organization_api_keys("test_organizationId")
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], ApiKey)
 
     @pytest.mark.asyncio
-    async def test_list_organization_api_keys_empty_page(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_organization_api_keys_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.api_keys.list_organization_api_keys(
-            "test_organizationId"
-        )
+        page = await async_workos.api_keys.list_organization_api_keys("test_organizationId")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_organization_api_keys_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_organization_api_keys_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.api_keys.list_organization_api_keys(
-            "test_organizationId",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=OrganizationsApiKeysOrder("normal"),
-        )
+        await async_workos.api_keys.list_organization_api_keys("test_organizationId", limit=10, before="cursor before", after="cursor/after", order=OrganizationsApiKeysOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -227,9 +179,7 @@ class TestAsyncApiKeys:
     @pytest.mark.asyncio
     async def test_create_organization_api_key(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("api_key_with_value.json"))
-        result = await async_workos.api_keys.create_organization_api_key(
-            "test_organizationId", name="test_name"
-        )
+        result = await async_workos.api_keys.create_organization_api_key("test_organizationId", name="test_name")
         assert isinstance(result, ApiKeyWithValue)
         assert result.object == "api_key"
         assert result.id == "api_key_01EHZNVPK3SFK441A1RGBFSHRT"
@@ -238,13 +188,9 @@ class TestAsyncApiKeys:
         assert request.url.path.endswith("/organizations/test_organizationId/api_keys")
 
     @pytest.mark.asyncio
-    async def test_create_validation_with_request_options(
-        self, async_workos, httpx_mock
-    ):
+    async def test_create_validation_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("api_key_validation_response.json"))
-        await async_workos.api_keys.create_validation(
-            value="test_value", request_options={"extra_headers": {"X-Custom": "value"}}
-        )
+        await async_workos.api_keys.create_validation(value="test_value", request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -256,9 +202,7 @@ class TestAsyncApiKeys:
 
     @pytest.mark.asyncio
     async def test_create_validation_not_found(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
@@ -268,15 +212,9 @@ class TestAsyncApiKeys:
 
     @pytest.mark.asyncio
     async def test_create_validation_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
                 await workos.api_keys.create_validation(value="test_value")
         finally:
@@ -284,9 +222,7 @@ class TestAsyncApiKeys:
 
     @pytest.mark.asyncio
     async def test_create_validation_server_error(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
@@ -296,9 +232,7 @@ class TestAsyncApiKeys:
 
     @pytest.mark.asyncio
     async def test_create_validation_bad_request(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
@@ -308,9 +242,7 @@ class TestAsyncApiKeys:
 
     @pytest.mark.asyncio
     async def test_create_validation_unprocessable(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):

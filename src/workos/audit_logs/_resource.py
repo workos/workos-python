@@ -2,25 +2,17 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import (
-    AuditLogActionJson,
-    AuditLogEvent,
-    AuditLogEventCreateResponse,
-    AuditLogExportJson,
-    AuditLogSchemaActor,
-    AuditLogSchemaJson,
-    AuditLogSchemaTarget,
-)
+from .models import AuditLogActionJson, AuditLogEvent, AuditLogEventCreateResponse, AuditLogEventIngestion, AuditLogExportCreation, AuditLogExportJson, AuditLogSchema, AuditLogSchemaActor, AuditLogSchemaJson, AuditLogSchemaTarget
 from workos.organizations.models.audit_logs_retention_json import AuditLogsRetentionJson
+from workos.organizations.models.update_audit_logs_retention import UpdateAuditLogsRetention
 from .models import AuditLogsOrder
 from .._pagination import AsyncPage, SyncPage
-
 
 class AuditLogs:
     """Audit Logs API resources."""
@@ -125,16 +117,12 @@ class AuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path="audit_logs/actions",
@@ -175,16 +163,12 @@ class AuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return self._client.request_page(
             method="get",
             path=f"audit_logs/actions/{action_name}/schemas",
@@ -222,15 +206,11 @@ class AuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "actor": actor.to_dict() if actor is not None else None,
-                "targets": [item.to_dict() for item in targets],
-                "metadata": metadata,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "actor": actor.to_dict() if actor is not None else None,
+            "targets": [item.to_dict() for item in targets],
+            "metadata": metadata,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path=f"audit_logs/actions/{action_name}/schemas",
@@ -324,20 +304,16 @@ class AuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "organization_id": organization_id,
-                "range_start": range_start,
-                "range_end": range_end,
-                "actions": actions,
-                "actors": actors,
-                "actor_names": actor_names,
-                "actor_ids": actor_ids,
-                "targets": targets,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "organization_id": organization_id,
+            "range_start": range_start,
+            "range_end": range_end,
+            "actions": actions,
+            "actors": actors,
+            "actor_names": actor_names,
+            "actor_ids": actor_ids,
+            "targets": targets,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="audit_logs/exports",
@@ -480,16 +456,12 @@ class AsyncAuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path="audit_logs/actions",
@@ -530,16 +502,12 @@ class AsyncAuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
+        params = {k: v for k, v in {
+            "limit": limit,
+            "before": before,
+            "after": after,
+            "order": enum_value(order) if order is not None else None,
+        }.items() if v is not None}
         return await self._client.request_page(
             method="get",
             path=f"audit_logs/actions/{action_name}/schemas",
@@ -577,15 +545,11 @@ class AsyncAuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "actor": actor.to_dict() if actor is not None else None,
-                "targets": [item.to_dict() for item in targets],
-                "metadata": metadata,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "actor": actor.to_dict() if actor is not None else None,
+            "targets": [item.to_dict() for item in targets],
+            "metadata": metadata,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path=f"audit_logs/actions/{action_name}/schemas",
@@ -679,20 +643,16 @@ class AsyncAuditLogs:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "organization_id": organization_id,
-                "range_start": range_start,
-                "range_end": range_end,
-                "actions": actions,
-                "actors": actors,
-                "actor_names": actor_names,
-                "actor_ids": actor_ids,
-                "targets": targets,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "organization_id": organization_id,
+            "range_start": range_start,
+            "range_end": range_end,
+            "actions": actions,
+            "actors": actors,
+            "actor_names": actor_names,
+            "actor_ids": actor_ids,
+            "targets": targets,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="audit_logs/exports",

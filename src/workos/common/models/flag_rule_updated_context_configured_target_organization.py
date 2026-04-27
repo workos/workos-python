@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
@@ -17,9 +18,7 @@ class FlagRuleUpdatedContextConfiguredTargetOrganization:
     """The name of the organization."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "FlagRuleUpdatedContextConfiguredTargetOrganization":
+    def from_dict(cls, data: Dict[str, Any]) -> "FlagRuleUpdatedContextConfiguredTargetOrganization":
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -27,9 +26,7 @@ class FlagRuleUpdatedContextConfiguredTargetOrganization:
                 name=data["name"],
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error(
-                "FlagRuleUpdatedContextConfiguredTargetOrganization", e
-            )
+            _raise_deserialize_error("FlagRuleUpdatedContextConfiguredTargetOrganization", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

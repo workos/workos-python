@@ -7,9 +7,7 @@ from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 
-from .authentication_email_verification_failed_data_error import (
-    AuthenticationEmailVerificationFailedDataError,
-)
+from .authentication_email_verification_failed_data_error import AuthenticationEmailVerificationFailedDataError
 
 
 @dataclass(slots=True)
@@ -30,9 +28,7 @@ class AuthenticationEmailVerificationFailedData:
     """Details about the authentication error."""
 
     @classmethod
-    def from_dict(
-        cls, data: Dict[str, Any]
-    ) -> "AuthenticationEmailVerificationFailedData":
+    def from_dict(cls, data: Dict[str, Any]) -> "AuthenticationEmailVerificationFailedData":
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -42,9 +38,7 @@ class AuthenticationEmailVerificationFailedData:
                 user_agent=data["user_agent"],
                 user_id=data["user_id"],
                 email=data["email"],
-                error=AuthenticationEmailVerificationFailedDataError.from_dict(
-                    cast(Dict[str, Any], data["error"])
-                ),
+                error=AuthenticationEmailVerificationFailedDataError.from_dict(cast(Dict[str, Any], data["error"])),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("AuthenticationEmailVerificationFailedData", e)

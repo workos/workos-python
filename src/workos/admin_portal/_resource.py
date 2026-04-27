@@ -2,15 +2,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Type, Union, cast
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import IntentOptions, PortalLinkResponse
+from .models import GenerateLink, IntentOptions, PortalLinkResponse
 from workos.common.models.generate_link_intent import GenerateLinkIntent
-
 
 class AdminPortal:
     """Admin Portal API resources."""
@@ -26,7 +25,7 @@ class AdminPortal:
         success_url: Optional[str] = None,
         intent: Optional[Union[GenerateLinkIntent, str]] = None,
         intent_options: Optional[IntentOptions] = None,
-        admin_emails: Optional[List[str]] = None,
+        it_contact_emails: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> PortalLinkResponse:
         """Generate a Portal Link
@@ -46,7 +45,7 @@ class AdminPortal:
                 - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
                 - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key
             intent_options: Options to configure the Admin Portal based on the intent.
-            admin_emails: The email addresses of the IT admins to grant access to the Admin Portal for the given organization. Accepts up to 20 emails.
+            it_contact_emails: The email addresses of the IT contacts to grant access to the Admin Portal for the given organization. Accepts up to 20 emails.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -61,20 +60,14 @@ class AdminPortal:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "return_url": return_url,
-                "success_url": success_url,
-                "organization": organization,
-                "intent": enum_value(intent) if intent is not None else None,
-                "intent_options": intent_options.to_dict()
-                if intent_options is not None
-                else None,
-                "admin_emails": admin_emails,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "return_url": return_url,
+            "success_url": success_url,
+            "organization": organization,
+            "intent": enum_value(intent) if intent is not None else None,
+            "intent_options": intent_options.to_dict() if intent_options is not None else None,
+            "it_contact_emails": it_contact_emails,
+        }.items() if v is not None}
         return self._client.request(
             method="post",
             path="portal/generate_link",
@@ -98,7 +91,7 @@ class AsyncAdminPortal:
         success_url: Optional[str] = None,
         intent: Optional[Union[GenerateLinkIntent, str]] = None,
         intent_options: Optional[IntentOptions] = None,
-        admin_emails: Optional[List[str]] = None,
+        it_contact_emails: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> PortalLinkResponse:
         """Generate a Portal Link
@@ -118,7 +111,7 @@ class AsyncAdminPortal:
                 - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
                 - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key
             intent_options: Options to configure the Admin Portal based on the intent.
-            admin_emails: The email addresses of the IT admins to grant access to the Admin Portal for the given organization. Accepts up to 20 emails.
+            it_contact_emails: The email addresses of the IT contacts to grant access to the Admin Portal for the given organization. Accepts up to 20 emails.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -133,20 +126,14 @@ class AsyncAdminPortal:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "return_url": return_url,
-                "success_url": success_url,
-                "organization": organization,
-                "intent": enum_value(intent) if intent is not None else None,
-                "intent_options": intent_options.to_dict()
-                if intent_options is not None
-                else None,
-                "admin_emails": admin_emails,
-            }.items()
-            if v is not None
-        }
+        body: Dict[str, Any] = {k: v for k, v in {
+            "return_url": return_url,
+            "success_url": success_url,
+            "organization": organization,
+            "intent": enum_value(intent) if intent is not None else None,
+            "intent_options": intent_options.to_dict() if intent_options is not None else None,
+            "it_contact_emails": it_contact_emails,
+        }.items() if v is not None}
         return await self._client.request(
             method="post",
             path="portal/generate_link",

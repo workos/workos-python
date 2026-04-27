@@ -9,12 +9,8 @@ from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .connection_saml_certificate_renewed_data_certificate import (
-    ConnectionSAMLCertificateRenewedDataCertificate,
-)
-from .connection_saml_certificate_renewed_data_connection import (
-    ConnectionSAMLCertificateRenewedDataConnection,
-)
+from .connection_saml_certificate_renewed_data_certificate import ConnectionSAMLCertificateRenewedDataCertificate
+from .connection_saml_certificate_renewed_data_connection import ConnectionSAMLCertificateRenewedDataConnection
 
 
 @dataclass(slots=True)
@@ -33,12 +29,8 @@ class ConnectionSAMLCertificateRenewedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                connection=ConnectionSAMLCertificateRenewedDataConnection.from_dict(
-                    cast(Dict[str, Any], data["connection"])
-                ),
-                certificate=ConnectionSAMLCertificateRenewedDataCertificate.from_dict(
-                    cast(Dict[str, Any], data["certificate"])
-                ),
+                connection=ConnectionSAMLCertificateRenewedDataConnection.from_dict(cast(Dict[str, Any], data["connection"])),
+                certificate=ConnectionSAMLCertificateRenewedDataCertificate.from_dict(cast(Dict[str, Any], data["certificate"])),
                 renewed_at=_parse_datetime(data["renewed_at"]),
             )
         except (KeyError, ValueError) as e:

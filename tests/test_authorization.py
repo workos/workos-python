@@ -6,134 +6,71 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.authorization.models import (
-    AuthorizationCheck,
-    AuthorizationPermission,
-    AuthorizationResource,
-    Permission,
-    Role,
-    RoleAssignment,
-    RoleList,
-    UserOrganizationMembershipBaseListData,
-    AuthorizationAssignment,
-    AuthorizationOrder,
-    PermissionsOrder,
-)
+from workos.authorization.models import AuthorizationCheck, AuthorizationPermission, AuthorizationResource, Permission, Role, RoleAssignment, RoleList, UserOrganizationMembershipBaseListData, AuthorizationAssignment, AuthorizationOrder, PermissionsOrder
 from workos._pagination import AsyncPage, SyncPage
-from workos._errors import (
-    AuthenticationError,
-    BadRequestError,
-    NotFoundError,
-    RateLimitExceededError,
-    ServerError,
-    UnprocessableEntityError,
-)
-from workos.authorization._resource import (
-    ResourceTargetById,
-    ParentResourceById,
-    ParentById,
-)
+from workos._errors import AuthenticationError, BadRequestError, NotFoundError, RateLimitExceededError, ServerError, UnprocessableEntityError
+from workos.authorization._resource import ResourceTargetById, ResourceTargetByExternalId, ParentResourceById, ParentResourceByExternalId, ParentById, ParentByExternalId
 
 
 class TestAuthorization:
+
     def test_check(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("authorization_check.json"),
         )
-        result = workos.authorization.check(
-            "test_organization_membership_id",
-            permission_slug="test_permission_slug",
-            resource_target=ResourceTargetById(resource_id="test_value"),
-        )
+        result = workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         assert isinstance(result, AuthorizationCheck)
         assert result.authorized is True
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith(
-            "/authorization/organization_memberships/test_organization_membership_id/check"
-        )
+        assert request.url.path.endswith("/authorization/organization_memberships/test_organization_membership_id/check")
         body = json.loads(request.content)
         assert body["permission_slug"] == "test_permission_slug"
 
-    def test_list_organization_membership_resources(self, workos, httpx_mock):
+    def test_list_resources_for_membership(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_authorization_resource.json"),
         )
-        page = workos.authorization.list_organization_membership_resources(
-            "test_organization_membership_id",
-            parent_resource=ParentResourceById(parent_resource_id="test_value"),
-            permission_slug="test_permission_slug",
-        )
+        page = workos.authorization.list_resources_for_membership("test_organization_membership_id", parent_resource=ParentResourceById(parent_resource_id="test_value"), permission_slug="test_permission_slug")
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], AuthorizationResource)
 
-    def test_list_organization_membership_resources_empty_page(
-        self, workos, httpx_mock
-    ):
+    def test_list_resources_for_membership_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.authorization.list_organization_membership_resources(
-            "test_organization_membership_id",
-            parent_resource=ParentResourceById(parent_resource_id="test_value"),
-            permission_slug="test_permission_slug",
-        )
+        page = workos.authorization.list_resources_for_membership("test_organization_membership_id", parent_resource=ParentResourceById(parent_resource_id="test_value"), permission_slug="test_permission_slug")
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_organization_membership_resources_encodes_query_params(
-        self, workos, httpx_mock
-    ):
+    def test_list_resources_for_membership_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.authorization.list_organization_membership_resources(
-            "test_organization_membership_id",
-            parent_resource=ParentResourceById(
-                parent_resource_id="value parent_resource_id/test"
-            ),
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-            permission_slug="value permission_slug/test",
-        )
+        workos.authorization.list_resources_for_membership("test_organization_membership_id", parent_resource=ParentResourceById(parent_resource_id="value parent_resource_id/test"), limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"), permission_slug="value permission_slug/test")
         request = httpx_mock.get_request()
-        assert (
-            request.url.params["parent_resource_id"] == "value parent_resource_id/test"
-        )
+        assert request.url.params["parent_resource_id"] == "value parent_resource_id/test"
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
         assert request.url.params["permission_slug"] == "value permission_slug/test"
 
-    def test_list_resource_permissions(self, workos, httpx_mock):
+    def test_list_effective_permissions(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_authorization_permission.json"),
         )
-        page = workos.authorization.list_resource_permissions(
-            "test_organization_membership_id", "test_resource_id"
-        )
+        page = workos.authorization.list_effective_permissions("test_organization_membership_id", "test_resource_id")
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], AuthorizationPermission)
 
-    def test_list_resource_permissions_empty_page(self, workos, httpx_mock):
+    def test_list_effective_permissions_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.authorization.list_resource_permissions(
-            "test_organization_membership_id", "test_resource_id"
-        )
+        page = workos.authorization.list_effective_permissions("test_organization_membership_id", "test_resource_id")
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_resource_permissions_encodes_query_params(self, workos, httpx_mock):
+    def test_list_effective_permissions_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.authorization.list_resource_permissions(
-            "test_organization_membership_id",
-            "test_resource_id",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-        )
+        workos.authorization.list_effective_permissions("test_organization_membership_id", "test_resource_id", limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -144,78 +81,44 @@ class TestAuthorization:
         httpx_mock.add_response(
             json=load_fixture("list_authorization_permission.json"),
         )
-        page = workos.authorization.list_effective_permissions_by_external_id(
-            "test_organization_membership_id",
-            "test_resource_type_slug",
-            "test_external_id",
-        )
+        page = workos.authorization.list_effective_permissions_by_external_id("test_organization_membership_id", "test_resource_type_slug", "test_external_id")
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], AuthorizationPermission)
 
-    def test_list_effective_permissions_by_external_id_empty_page(
-        self, workos, httpx_mock
-    ):
+    def test_list_effective_permissions_by_external_id_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.authorization.list_effective_permissions_by_external_id(
-            "test_organization_membership_id",
-            "test_resource_type_slug",
-            "test_external_id",
-        )
+        page = workos.authorization.list_effective_permissions_by_external_id("test_organization_membership_id", "test_resource_type_slug", "test_external_id")
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_effective_permissions_by_external_id_encodes_query_params(
-        self, workos, httpx_mock
-    ):
+    def test_list_effective_permissions_by_external_id_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.authorization.list_effective_permissions_by_external_id(
-            "test_organization_membership_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-        )
+        workos.authorization.list_effective_permissions_by_external_id("test_organization_membership_id", "test_resource_type_slug", "test_external_id", limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
 
-    def test_list_organization_membership_role_assignments(self, workos, httpx_mock):
+    def test_list_role_assignments(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_role_assignment.json"),
         )
-        page = workos.authorization.list_organization_membership_role_assignments(
-            "test_organization_membership_id"
-        )
+        page = workos.authorization.list_role_assignments("test_organization_membership_id")
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], RoleAssignment)
 
-    def test_list_organization_membership_role_assignments_empty_page(
-        self, workos, httpx_mock
-    ):
+    def test_list_role_assignments_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.authorization.list_organization_membership_role_assignments(
-            "test_organization_membership_id"
-        )
+        page = workos.authorization.list_role_assignments("test_organization_membership_id")
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_organization_membership_role_assignments_encodes_query_params(
-        self, workos, httpx_mock
-    ):
+    def test_list_role_assignments_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.authorization.list_organization_membership_role_assignments(
-            "test_organization_membership_id",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-        )
+        workos.authorization.list_role_assignments("test_organization_membership_id", limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -226,47 +129,31 @@ class TestAuthorization:
         httpx_mock.add_response(
             json=load_fixture("role_assignment.json"),
         )
-        result = workos.authorization.assign_role(
-            "test_organization_membership_id",
-            role_slug="test_role_slug",
-            resource_target=ResourceTargetById(resource_id="test_value"),
-        )
+        result = workos.authorization.assign_role("test_organization_membership_id", role_slug="test_role_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         assert isinstance(result, RoleAssignment)
         assert result.object == "role_assignment"
         assert result.id == "role_assignment_01HXYZ123456789ABCDEFGH"
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith(
-            "/authorization/organization_memberships/test_organization_membership_id/role_assignments"
-        )
+        assert request.url.path.endswith("/authorization/organization_memberships/test_organization_membership_id/role_assignments")
         body = json.loads(request.content)
         assert body["role_slug"] == "test_role_slug"
 
     def test_remove_role(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.authorization.remove_role(
-            "test_organization_membership_id",
-            role_slug="test_role_slug",
-            resource_target=ResourceTargetById(resource_id="test_value"),
-        )
+        result = workos.authorization.remove_role("test_organization_membership_id", role_slug="test_role_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/authorization/organization_memberships/test_organization_membership_id/role_assignments"
-        )
+        assert request.url.path.endswith("/authorization/organization_memberships/test_organization_membership_id/role_assignments")
 
-    def test_delete_organization_membership_role_assignment(self, workos, httpx_mock):
+    def test_remove_role_assignment(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.authorization.delete_organization_membership_role_assignment(
-            "test_organization_membership_id", "test_role_assignment_id"
-        )
+        result = workos.authorization.remove_role_assignment("test_organization_membership_id", "test_role_assignment_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/authorization/organization_memberships/test_organization_membership_id/role_assignments/test_role_assignment_id"
-        )
+        assert request.url.path.endswith("/authorization/organization_memberships/test_organization_membership_id/role_assignments/test_role_assignment_id")
 
     def test_list_organization_roles(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -277,25 +164,19 @@ class TestAuthorization:
         assert result.object == "list"
         request = httpx_mock.get_request()
         assert request.method == "GET"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles")
 
     def test_create_organization_role(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.create_organization_role(
-            "test_organizationId", name="test_name"
-        )
+        result = workos.authorization.create_organization_role("test_organizationId", name="test_name")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles")
         body = json.loads(request.content)
         assert body["name"] == "test_name"
 
@@ -303,196 +184,126 @@ class TestAuthorization:
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.get_organization_role(
-            "test_organizationId", "test_slug"
-        )
+        result = workos.authorization.get_organization_role("test_organizationId", "test_slug")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
         request = httpx_mock.get_request()
         assert request.method == "GET"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug")
 
     def test_update_organization_role(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.update_organization_role(
-            "test_organizationId", "test_slug"
-        )
+        result = workos.authorization.update_organization_role("test_organizationId", "test_slug")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
         request = httpx_mock.get_request()
         assert request.method == "PATCH"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug")
 
     def test_delete_organization_role(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.authorization.delete_organization_role(
-            "test_organizationId", "test_slug"
-        )
+        result = workos.authorization.delete_organization_role("test_organizationId", "test_slug")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug")
 
-    def test_create_role_permission(self, workos, httpx_mock):
+    def test_add_organization_role_permission(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.create_role_permission(
-            "test_organizationId", "test_slug", body_slug="test_slug"
-        )
+        result = workos.authorization.add_organization_role_permission("test_organizationId", "test_slug", body_slug="test_slug")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug/permissions"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug/permissions")
         body = json.loads(request.content)
         assert body["slug"] == "test_slug"
 
-    def test_update_role_permissions(self, workos, httpx_mock):
+    def test_set_organization_role_permissions(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.update_role_permissions(
-            "test_organizationId", "test_slug", permissions=[]
-        )
+        result = workos.authorization.set_organization_role_permissions("test_organizationId", "test_slug", permissions=[])
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
         request = httpx_mock.get_request()
         assert request.method == "PUT"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug/permissions"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug/permissions")
         body = json.loads(request.content)
         assert "permissions" in body
 
-    def test_delete_role_permission(self, workos, httpx_mock):
+    def test_remove_organization_role_permission(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.authorization.delete_role_permission(
-            "test_organizationId", "test_slug", "test_permissionSlug"
-        )
+        result = workos.authorization.remove_organization_role_permission("test_organizationId", "test_slug", "test_permissionSlug")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug/permissions/test_permissionSlug"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug/permissions/test_permissionSlug")
 
-    def test_get_organization_resource(self, workos, httpx_mock):
+    def test_get_resource_by_external_id(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("authorization_resource.json"),
         )
-        result = workos.authorization.get_organization_resource(
-            "test_organization_id", "test_resource_type_slug", "test_external_id"
-        )
+        result = workos.authorization.get_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id")
         assert isinstance(result, AuthorizationResource)
         assert result.object == "authorization_resource"
         assert result.name == "Website Redesign"
         request = httpx_mock.get_request()
         assert request.method == "GET"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id")
 
-    def test_update_organization_resource(self, workos, httpx_mock):
+    def test_update_resource_by_external_id(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("authorization_resource.json"),
         )
-        result = workos.authorization.update_organization_resource(
-            "test_organization_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            parent_resource=ParentResourceById(parent_resource_id="test_value"),
-        )
+        result = workos.authorization.update_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id", parent_resource=ParentResourceById(parent_resource_id="test_value"))
         assert isinstance(result, AuthorizationResource)
         assert result.object == "authorization_resource"
         assert result.name == "Website Redesign"
         request = httpx_mock.get_request()
         assert request.method == "PATCH"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id")
 
-    def test_delete_organization_resource(self, workos, httpx_mock):
+    def test_delete_resource_by_external_id(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = workos.authorization.delete_organization_resource(
-            "test_organization_id", "test_resource_type_slug", "test_external_id"
-        )
+        result = workos.authorization.delete_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id")
 
-    def test_delete_organization_resource_encodes_query_params(
-        self, workos, httpx_mock
-    ):
+    def test_delete_resource_by_external_id_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        workos.authorization.delete_organization_resource(
-            "test_organization_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            cascade_delete=True,
-        )
+        workos.authorization.delete_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id", cascade_delete=True)
         request = httpx_mock.get_request()
         assert request.url.params["cascade_delete"] == "true"
 
-    def test_list_resource_organization_memberships(self, workos, httpx_mock):
+    def test_list_memberships_for_resource_by_external_id(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("list_user_organization_membership_base_list_data.json"),
         )
-        page = workos.authorization.list_resource_organization_memberships(
-            "test_organization_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            permission_slug="test_permission_slug",
-        )
+        page = workos.authorization.list_memberships_for_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id", permission_slug="test_permission_slug")
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
 
-    def test_list_resource_organization_memberships_empty_page(
-        self, workos, httpx_mock
-    ):
+    def test_list_memberships_for_resource_by_external_id_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.authorization.list_resource_organization_memberships(
-            "test_organization_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            permission_slug="test_permission_slug",
-        )
+        page = workos.authorization.list_memberships_for_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id", permission_slug="test_permission_slug")
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_resource_organization_memberships_encodes_query_params(
-        self, workos, httpx_mock
-    ):
+    def test_list_memberships_for_resource_by_external_id_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.authorization.list_resource_organization_memberships(
-            "test_organization_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-            permission_slug="value permission_slug/test",
-            assignment=AuthorizationAssignment("direct"),
-        )
+        workos.authorization.list_memberships_for_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id", limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"), permission_slug="value permission_slug/test", assignment=AuthorizationAssignment("direct"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -505,58 +316,36 @@ class TestAuthorization:
         httpx_mock.add_response(
             json=load_fixture("list_authorization_resource.json"),
         )
-        page = workos.authorization.list_resources(
-            parent=ParentById(parent_resource_id="test_value")
-        )
+        page = workos.authorization.list_resources(parent=ParentById(parent_resource_id="test_value"))
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], AuthorizationResource)
 
     def test_list_resources_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.authorization.list_resources(
-            parent=ParentById(parent_resource_id="test_value")
-        )
+        page = workos.authorization.list_resources(parent=ParentById(parent_resource_id="test_value"))
         assert isinstance(page, SyncPage)
         assert page.data == []
 
     def test_list_resources_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.authorization.list_resources(
-            parent=ParentById(parent_resource_id="value parent_resource_id/test"),
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-            organization_id="value organization_id/test",
-            resource_type_slug="value resource_type_slug/test",
-            search="value search/test",
-        )
+        workos.authorization.list_resources(parent=ParentById(parent_resource_id="value parent_resource_id/test"), limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"), organization_id="value organization_id/test", resource_type_slug="value resource_type_slug/test", resource_external_id="value resource_external_id/test", search="value search/test")
         request = httpx_mock.get_request()
-        assert (
-            request.url.params["parent_resource_id"] == "value parent_resource_id/test"
-        )
+        assert request.url.params["parent_resource_id"] == "value parent_resource_id/test"
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
         assert request.url.params["organization_id"] == "value organization_id/test"
-        assert (
-            request.url.params["resource_type_slug"] == "value resource_type_slug/test"
-        )
+        assert request.url.params["resource_type_slug"] == "value resource_type_slug/test"
+        assert request.url.params["resource_external_id"] == "value resource_external_id/test"
         assert request.url.params["search"] == "value search/test"
 
     def test_create_resource(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("authorization_resource.json"),
         )
-        result = workos.authorization.create_resource(
-            external_id="test_external_id",
-            name="test_name",
-            resource_type_slug="test_resource_type_slug",
-            organization_id="test_organization_id",
-            parent_resource=ParentResourceById(parent_resource_id="test_value"),
-        )
+        result = workos.authorization.create_resource(external_id="test_external_id", name="test_name", resource_type_slug="test_resource_type_slug", organization_id="test_organization_id", parent_resource=ParentResourceById(parent_resource_id="test_value"))
         assert isinstance(result, AuthorizationResource)
         assert result.object == "authorization_resource"
         assert result.name == "Website Redesign"
@@ -585,10 +374,7 @@ class TestAuthorization:
         httpx_mock.add_response(
             json=load_fixture("authorization_resource.json"),
         )
-        result = workos.authorization.update_resource(
-            "test_resource_id",
-            parent_resource=ParentResourceById(parent_resource_id="test_value"),
-        )
+        result = workos.authorization.update_resource("test_resource_id", parent_resource=ParentResourceById(parent_resource_id="test_value"))
         assert isinstance(result, AuthorizationResource)
         assert result.object == "authorization_resource"
         assert result.name == "Website Redesign"
@@ -614,34 +400,20 @@ class TestAuthorization:
         httpx_mock.add_response(
             json=load_fixture("list_user_organization_membership_base_list_data.json"),
         )
-        page = workos.authorization.list_memberships_for_resource(
-            "test_resource_id", permission_slug="test_permission_slug"
-        )
+        page = workos.authorization.list_memberships_for_resource("test_resource_id", permission_slug="test_permission_slug")
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
 
     def test_list_memberships_for_resource_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.authorization.list_memberships_for_resource(
-            "test_resource_id", permission_slug="test_permission_slug"
-        )
+        page = workos.authorization.list_memberships_for_resource("test_resource_id", permission_slug="test_permission_slug")
         assert isinstance(page, SyncPage)
         assert page.data == []
 
-    def test_list_memberships_for_resource_encodes_query_params(
-        self, workos, httpx_mock
-    ):
+    def test_list_memberships_for_resource_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.authorization.list_memberships_for_resource(
-            "test_resource_id",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-            permission_slug="value permission_slug/test",
-            assignment=AuthorizationAssignment("direct"),
-        )
+        workos.authorization.list_memberships_for_resource("test_resource_id", limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"), permission_slug="value permission_slug/test", assignment=AuthorizationAssignment("direct"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -665,9 +437,7 @@ class TestAuthorization:
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.create_environment_role(
-            slug="test_slug", name="test_name"
-        )
+        result = workos.authorization.create_environment_role(slug="test_slug", name="test_name")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
@@ -706,9 +476,7 @@ class TestAuthorization:
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.add_environment_role_permission(
-            "test_slug", body_slug="test_slug"
-        )
+        result = workos.authorization.add_environment_role_permission("test_slug", body_slug="test_slug")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
@@ -722,9 +490,7 @@ class TestAuthorization:
         httpx_mock.add_response(
             json=load_fixture("role.json"),
         )
-        result = workos.authorization.set_environment_role_permissions(
-            "test_slug", permissions=[]
-        )
+        result = workos.authorization.set_environment_role_permissions("test_slug", permissions=[])
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
@@ -751,12 +517,7 @@ class TestAuthorization:
 
     def test_list_permissions_encodes_query_params(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.authorization.list_permissions(
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=PermissionsOrder("normal"),
-        )
+        workos.authorization.list_permissions(limit=10, before="cursor before", after="cursor/after", order=PermissionsOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -767,9 +528,7 @@ class TestAuthorization:
         httpx_mock.add_response(
             json=load_fixture("permission.json"),
         )
-        result = workos.authorization.create_permission(
-            slug="test_slug", name="test_name"
-        )
+        result = workos.authorization.create_permission(slug="test_slug", name="test_name")
         assert isinstance(result, Permission)
         assert result.object == "permission"
         assert result.id == "perm_01HXYZ123456789ABCDEFGHIJ"
@@ -814,12 +573,7 @@ class TestAuthorization:
 
     def test_check_with_request_options(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authorization_check.json"))
-        workos.authorization.check(
-            "test_organization_membership_id",
-            permission_slug="test_permission_slug",
-            resource_target=ResourceTargetById(resource_id="test_value"),
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"), request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -829,156 +583,87 @@ class TestAuthorization:
             json={"message": "Unauthorized"},
         )
         with pytest.raises(AuthenticationError):
-            workos.authorization.check(
-                "test_organization_membership_id",
-                permission_slug="test_permission_slug",
-                resource_target=ResourceTargetById(resource_id="test_value"),
-            )
+            workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
 
     def test_check_not_found(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         finally:
             workos.close()
 
     def test_check_rate_limited(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
-                workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         finally:
             workos.close()
 
     def test_check_server_error(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         finally:
             workos.close()
 
     def test_check_bad_request(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         finally:
             workos.close()
 
     def test_check_unprocessable(self, httpx_mock):
-        workos = WorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = WorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         finally:
             workos.close()
 
 
 class TestAsyncAuthorization:
+
     @pytest.mark.asyncio
     async def test_check(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authorization_check.json"))
-        result = await async_workos.authorization.check(
-            "test_organization_membership_id",
-            permission_slug="test_permission_slug",
-            resource_target=ResourceTargetById(resource_id="test_value"),
-        )
+        result = await async_workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         assert isinstance(result, AuthorizationCheck)
         assert result.authorized is True
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith(
-            "/authorization/organization_memberships/test_organization_membership_id/check"
-        )
+        assert request.url.path.endswith("/authorization/organization_memberships/test_organization_membership_id/check")
 
     @pytest.mark.asyncio
-    async def test_list_organization_membership_resources(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_resources_for_membership(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_authorization_resource.json"))
-        page = await async_workos.authorization.list_organization_membership_resources(
-            "test_organization_membership_id",
-            parent_resource=ParentResourceById(parent_resource_id="test_value"),
-            permission_slug="test_permission_slug",
-        )
+        page = await async_workos.authorization.list_resources_for_membership("test_organization_membership_id", parent_resource=ParentResourceById(parent_resource_id="test_value"), permission_slug="test_permission_slug")
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], AuthorizationResource)
 
     @pytest.mark.asyncio
-    async def test_list_organization_membership_resources_empty_page(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_resources_for_membership_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.authorization.list_organization_membership_resources(
-            "test_organization_membership_id",
-            parent_resource=ParentResourceById(parent_resource_id="test_value"),
-            permission_slug="test_permission_slug",
-        )
+        page = await async_workos.authorization.list_resources_for_membership("test_organization_membership_id", parent_resource=ParentResourceById(parent_resource_id="test_value"), permission_slug="test_permission_slug")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_organization_membership_resources_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_resources_for_membership_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.authorization.list_organization_membership_resources(
-            "test_organization_membership_id",
-            parent_resource=ParentResourceById(
-                parent_resource_id="value parent_resource_id/test"
-            ),
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-            permission_slug="value permission_slug/test",
-        )
+        await async_workos.authorization.list_resources_for_membership("test_organization_membership_id", parent_resource=ParentResourceById(parent_resource_id="value parent_resource_id/test"), limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"), permission_slug="value permission_slug/test")
         request = httpx_mock.get_request()
-        assert (
-            request.url.params["parent_resource_id"] == "value parent_resource_id/test"
-        )
+        assert request.url.params["parent_resource_id"] == "value parent_resource_id/test"
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
@@ -986,37 +671,24 @@ class TestAsyncAuthorization:
         assert request.url.params["permission_slug"] == "value permission_slug/test"
 
     @pytest.mark.asyncio
-    async def test_list_resource_permissions(self, async_workos, httpx_mock):
+    async def test_list_effective_permissions(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_authorization_permission.json"))
-        page = await async_workos.authorization.list_resource_permissions(
-            "test_organization_membership_id", "test_resource_id"
-        )
+        page = await async_workos.authorization.list_effective_permissions("test_organization_membership_id", "test_resource_id")
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], AuthorizationPermission)
 
     @pytest.mark.asyncio
-    async def test_list_resource_permissions_empty_page(self, async_workos, httpx_mock):
+    async def test_list_effective_permissions_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.authorization.list_resource_permissions(
-            "test_organization_membership_id", "test_resource_id"
-        )
+        page = await async_workos.authorization.list_effective_permissions("test_organization_membership_id", "test_resource_id")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_resource_permissions_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_effective_permissions_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.authorization.list_resource_permissions(
-            "test_organization_membership_id",
-            "test_resource_id",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-        )
+        await async_workos.authorization.list_effective_permissions("test_organization_membership_id", "test_resource_id", limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -1024,50 +696,24 @@ class TestAsyncAuthorization:
         assert request.url.params["order"] == "normal"
 
     @pytest.mark.asyncio
-    async def test_list_effective_permissions_by_external_id(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_effective_permissions_by_external_id(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_authorization_permission.json"))
-        page = (
-            await async_workos.authorization.list_effective_permissions_by_external_id(
-                "test_organization_membership_id",
-                "test_resource_type_slug",
-                "test_external_id",
-            )
-        )
+        page = await async_workos.authorization.list_effective_permissions_by_external_id("test_organization_membership_id", "test_resource_type_slug", "test_external_id")
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], AuthorizationPermission)
 
     @pytest.mark.asyncio
-    async def test_list_effective_permissions_by_external_id_empty_page(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_effective_permissions_by_external_id_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = (
-            await async_workos.authorization.list_effective_permissions_by_external_id(
-                "test_organization_membership_id",
-                "test_resource_type_slug",
-                "test_external_id",
-            )
-        )
+        page = await async_workos.authorization.list_effective_permissions_by_external_id("test_organization_membership_id", "test_resource_type_slug", "test_external_id")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_effective_permissions_by_external_id_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_effective_permissions_by_external_id_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.authorization.list_effective_permissions_by_external_id(
-            "test_organization_membership_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-        )
+        await async_workos.authorization.list_effective_permissions_by_external_id("test_organization_membership_id", "test_resource_type_slug", "test_external_id", limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -1075,40 +721,24 @@ class TestAsyncAuthorization:
         assert request.url.params["order"] == "normal"
 
     @pytest.mark.asyncio
-    async def test_list_organization_membership_role_assignments(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_role_assignments(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_role_assignment.json"))
-        page = await async_workos.authorization.list_organization_membership_role_assignments(
-            "test_organization_membership_id"
-        )
+        page = await async_workos.authorization.list_role_assignments("test_organization_membership_id")
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], RoleAssignment)
 
     @pytest.mark.asyncio
-    async def test_list_organization_membership_role_assignments_empty_page(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_role_assignments_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.authorization.list_organization_membership_role_assignments(
-            "test_organization_membership_id"
-        )
+        page = await async_workos.authorization.list_role_assignments("test_organization_membership_id")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_organization_membership_role_assignments_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_role_assignments_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.authorization.list_organization_membership_role_assignments(
-            "test_organization_membership_id",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-        )
+        await async_workos.authorization.list_role_assignments("test_organization_membership_id", limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -1118,272 +748,172 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_assign_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role_assignment.json"))
-        result = await async_workos.authorization.assign_role(
-            "test_organization_membership_id",
-            role_slug="test_role_slug",
-            resource_target=ResourceTargetById(resource_id="test_value"),
-        )
+        result = await async_workos.authorization.assign_role("test_organization_membership_id", role_slug="test_role_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         assert isinstance(result, RoleAssignment)
         assert result.object == "role_assignment"
         assert result.id == "role_assignment_01HXYZ123456789ABCDEFGH"
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith(
-            "/authorization/organization_memberships/test_organization_membership_id/role_assignments"
-        )
+        assert request.url.path.endswith("/authorization/organization_memberships/test_organization_membership_id/role_assignments")
 
     @pytest.mark.asyncio
     async def test_remove_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.authorization.remove_role(
-            "test_organization_membership_id",
-            role_slug="test_role_slug",
-            resource_target=ResourceTargetById(resource_id="test_value"),
-        )
+        result = await async_workos.authorization.remove_role("test_organization_membership_id", role_slug="test_role_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/authorization/organization_memberships/test_organization_membership_id/role_assignments"
-        )
+        assert request.url.path.endswith("/authorization/organization_memberships/test_organization_membership_id/role_assignments")
 
     @pytest.mark.asyncio
-    async def test_delete_organization_membership_role_assignment(
-        self, async_workos, httpx_mock
-    ):
+    async def test_remove_role_assignment(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.authorization.delete_organization_membership_role_assignment(
-            "test_organization_membership_id", "test_role_assignment_id"
-        )
+        result = await async_workos.authorization.remove_role_assignment("test_organization_membership_id", "test_role_assignment_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/authorization/organization_memberships/test_organization_membership_id/role_assignments/test_role_assignment_id"
-        )
+        assert request.url.path.endswith("/authorization/organization_memberships/test_organization_membership_id/role_assignments/test_role_assignment_id")
 
     @pytest.mark.asyncio
     async def test_list_organization_roles(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role_list.json"))
-        result = await async_workos.authorization.list_organization_roles(
-            "test_organizationId"
-        )
+        result = await async_workos.authorization.list_organization_roles("test_organizationId")
         assert isinstance(result, RoleList)
         assert result.object == "list"
         request = httpx_mock.get_request()
         assert request.method == "GET"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles")
 
     @pytest.mark.asyncio
     async def test_create_organization_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.create_organization_role(
-            "test_organizationId", name="test_name"
-        )
+        result = await async_workos.authorization.create_organization_role("test_organizationId", name="test_name")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles")
 
     @pytest.mark.asyncio
     async def test_get_organization_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.get_organization_role(
-            "test_organizationId", "test_slug"
-        )
+        result = await async_workos.authorization.get_organization_role("test_organizationId", "test_slug")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
         request = httpx_mock.get_request()
         assert request.method == "GET"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug")
 
     @pytest.mark.asyncio
     async def test_update_organization_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.update_organization_role(
-            "test_organizationId", "test_slug"
-        )
+        result = await async_workos.authorization.update_organization_role("test_organizationId", "test_slug")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
         request = httpx_mock.get_request()
         assert request.method == "PATCH"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug")
 
     @pytest.mark.asyncio
     async def test_delete_organization_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.authorization.delete_organization_role(
-            "test_organizationId", "test_slug"
-        )
+        result = await async_workos.authorization.delete_organization_role("test_organizationId", "test_slug")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug")
 
     @pytest.mark.asyncio
-    async def test_create_role_permission(self, async_workos, httpx_mock):
+    async def test_add_organization_role_permission(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.create_role_permission(
-            "test_organizationId", "test_slug", body_slug="test_slug"
-        )
+        result = await async_workos.authorization.add_organization_role_permission("test_organizationId", "test_slug", body_slug="test_slug")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
         request = httpx_mock.get_request()
         assert request.method == "POST"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug/permissions"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug/permissions")
 
     @pytest.mark.asyncio
-    async def test_update_role_permissions(self, async_workos, httpx_mock):
+    async def test_set_organization_role_permissions(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.update_role_permissions(
-            "test_organizationId", "test_slug", permissions=[]
-        )
+        result = await async_workos.authorization.set_organization_role_permissions("test_organizationId", "test_slug", permissions=[])
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
         request = httpx_mock.get_request()
         assert request.method == "PUT"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug/permissions"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug/permissions")
 
     @pytest.mark.asyncio
-    async def test_delete_role_permission(self, async_workos, httpx_mock):
+    async def test_remove_organization_role_permission(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.authorization.delete_role_permission(
-            "test_organizationId", "test_slug", "test_permissionSlug"
-        )
+        result = await async_workos.authorization.remove_organization_role_permission("test_organizationId", "test_slug", "test_permissionSlug")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organizationId/roles/test_slug/permissions/test_permissionSlug"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organizationId/roles/test_slug/permissions/test_permissionSlug")
 
     @pytest.mark.asyncio
-    async def test_get_organization_resource(self, async_workos, httpx_mock):
+    async def test_get_resource_by_external_id(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authorization_resource.json"))
-        result = await async_workos.authorization.get_organization_resource(
-            "test_organization_id", "test_resource_type_slug", "test_external_id"
-        )
+        result = await async_workos.authorization.get_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id")
         assert isinstance(result, AuthorizationResource)
         assert result.object == "authorization_resource"
         assert result.name == "Website Redesign"
         request = httpx_mock.get_request()
         assert request.method == "GET"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id")
 
     @pytest.mark.asyncio
-    async def test_update_organization_resource(self, async_workos, httpx_mock):
+    async def test_update_resource_by_external_id(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authorization_resource.json"))
-        result = await async_workos.authorization.update_organization_resource(
-            "test_organization_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            parent_resource=ParentResourceById(parent_resource_id="test_value"),
-        )
+        result = await async_workos.authorization.update_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id", parent_resource=ParentResourceById(parent_resource_id="test_value"))
         assert isinstance(result, AuthorizationResource)
         assert result.object == "authorization_resource"
         assert result.name == "Website Redesign"
         request = httpx_mock.get_request()
         assert request.method == "PATCH"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id")
 
     @pytest.mark.asyncio
-    async def test_delete_organization_resource(self, async_workos, httpx_mock):
+    async def test_delete_resource_by_external_id(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        result = await async_workos.authorization.delete_organization_resource(
-            "test_organization_id", "test_resource_type_slug", "test_external_id"
-        )
+        result = await async_workos.authorization.delete_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id")
         assert result is None
         request = httpx_mock.get_request()
         assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id"
-        )
+        assert request.url.path.endswith("/authorization/organizations/test_organization_id/resources/test_resource_type_slug/test_external_id")
 
     @pytest.mark.asyncio
-    async def test_delete_organization_resource_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_delete_resource_by_external_id_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        await async_workos.authorization.delete_organization_resource(
-            "test_organization_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            cascade_delete=True,
-        )
+        await async_workos.authorization.delete_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id", cascade_delete=True)
         request = httpx_mock.get_request()
         assert request.url.params["cascade_delete"] == "true"
 
     @pytest.mark.asyncio
-    async def test_list_resource_organization_memberships(
-        self, async_workos, httpx_mock
-    ):
-        httpx_mock.add_response(
-            json=load_fixture("list_user_organization_membership_base_list_data.json")
-        )
-        page = await async_workos.authorization.list_resource_organization_memberships(
-            "test_organization_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            permission_slug="test_permission_slug",
-        )
+    async def test_list_memberships_for_resource_by_external_id(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_user_organization_membership_base_list_data.json"))
+        page = await async_workos.authorization.list_memberships_for_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id", permission_slug="test_permission_slug")
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
 
     @pytest.mark.asyncio
-    async def test_list_resource_organization_memberships_empty_page(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_memberships_for_resource_by_external_id_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.authorization.list_resource_organization_memberships(
-            "test_organization_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            permission_slug="test_permission_slug",
-        )
+        page = await async_workos.authorization.list_memberships_for_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id", permission_slug="test_permission_slug")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_resource_organization_memberships_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_memberships_for_resource_by_external_id_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.authorization.list_resource_organization_memberships(
-            "test_organization_id",
-            "test_resource_type_slug",
-            "test_external_id",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-            permission_slug="value permission_slug/test",
-            assignment=AuthorizationAssignment("direct"),
-        )
+        await async_workos.authorization.list_memberships_for_resource_by_external_id("test_organization_id", "test_resource_type_slug", "test_external_id", limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"), permission_slug="value permission_slug/test", assignment=AuthorizationAssignment("direct"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -1395,9 +925,7 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_list_resources(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("list_authorization_resource.json"))
-        page = await async_workos.authorization.list_resources(
-            parent=ParentById(parent_resource_id="test_value")
-        )
+        page = await async_workos.authorization.list_resources(parent=ParentById(parent_resource_id="test_value"))
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], AuthorizationResource)
@@ -1405,49 +933,29 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_list_resources_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.authorization.list_resources(
-            parent=ParentById(parent_resource_id="test_value")
-        )
+        page = await async_workos.authorization.list_resources(parent=ParentById(parent_resource_id="test_value"))
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
     async def test_list_resources_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.authorization.list_resources(
-            parent=ParentById(parent_resource_id="value parent_resource_id/test"),
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-            organization_id="value organization_id/test",
-            resource_type_slug="value resource_type_slug/test",
-            search="value search/test",
-        )
+        await async_workos.authorization.list_resources(parent=ParentById(parent_resource_id="value parent_resource_id/test"), limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"), organization_id="value organization_id/test", resource_type_slug="value resource_type_slug/test", resource_external_id="value resource_external_id/test", search="value search/test")
         request = httpx_mock.get_request()
-        assert (
-            request.url.params["parent_resource_id"] == "value parent_resource_id/test"
-        )
+        assert request.url.params["parent_resource_id"] == "value parent_resource_id/test"
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
         assert request.url.params["order"] == "normal"
         assert request.url.params["organization_id"] == "value organization_id/test"
-        assert (
-            request.url.params["resource_type_slug"] == "value resource_type_slug/test"
-        )
+        assert request.url.params["resource_type_slug"] == "value resource_type_slug/test"
+        assert request.url.params["resource_external_id"] == "value resource_external_id/test"
         assert request.url.params["search"] == "value search/test"
 
     @pytest.mark.asyncio
     async def test_create_resource(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authorization_resource.json"))
-        result = await async_workos.authorization.create_resource(
-            external_id="test_external_id",
-            name="test_name",
-            resource_type_slug="test_resource_type_slug",
-            organization_id="test_organization_id",
-            parent_resource=ParentResourceById(parent_resource_id="test_value"),
-        )
+        result = await async_workos.authorization.create_resource(external_id="test_external_id", name="test_name", resource_type_slug="test_resource_type_slug", organization_id="test_organization_id", parent_resource=ParentResourceById(parent_resource_id="test_value"))
         assert isinstance(result, AuthorizationResource)
         assert result.object == "authorization_resource"
         assert result.name == "Website Redesign"
@@ -1469,10 +977,7 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_update_resource(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authorization_resource.json"))
-        result = await async_workos.authorization.update_resource(
-            "test_resource_id",
-            parent_resource=ParentResourceById(parent_resource_id="test_value"),
-        )
+        result = await async_workos.authorization.update_resource("test_resource_id", parent_resource=ParentResourceById(parent_resource_id="test_value"))
         assert isinstance(result, AuthorizationResource)
         assert result.object == "authorization_resource"
         assert result.name == "Website Redesign"
@@ -1492,49 +997,29 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_delete_resource_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
-        await async_workos.authorization.delete_resource(
-            "test_resource_id", cascade_delete=True
-        )
+        await async_workos.authorization.delete_resource("test_resource_id", cascade_delete=True)
         request = httpx_mock.get_request()
         assert request.url.params["cascade_delete"] == "true"
 
     @pytest.mark.asyncio
     async def test_list_memberships_for_resource(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("list_user_organization_membership_base_list_data.json")
-        )
-        page = await async_workos.authorization.list_memberships_for_resource(
-            "test_resource_id", permission_slug="test_permission_slug"
-        )
+        httpx_mock.add_response(json=load_fixture("list_user_organization_membership_base_list_data.json"))
+        page = await async_workos.authorization.list_memberships_for_resource("test_resource_id", permission_slug="test_permission_slug")
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
         assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
 
     @pytest.mark.asyncio
-    async def test_list_memberships_for_resource_empty_page(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_memberships_for_resource_empty_page(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.authorization.list_memberships_for_resource(
-            "test_resource_id", permission_slug="test_permission_slug"
-        )
+        page = await async_workos.authorization.list_memberships_for_resource("test_resource_id", permission_slug="test_permission_slug")
         assert isinstance(page, AsyncPage)
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_memberships_for_resource_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_memberships_for_resource_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.authorization.list_memberships_for_resource(
-            "test_resource_id",
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=AuthorizationOrder("normal"),
-            permission_slug="value permission_slug/test",
-            assignment=AuthorizationAssignment("direct"),
-        )
+        await async_workos.authorization.list_memberships_for_resource("test_resource_id", limit=10, before="cursor before", after="cursor/after", order=AuthorizationOrder("normal"), permission_slug="value permission_slug/test", assignment=AuthorizationAssignment("direct"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -1556,9 +1041,7 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_create_environment_role(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.create_environment_role(
-            slug="test_slug", name="test_name"
-        )
+        result = await async_workos.authorization.create_environment_role(slug="test_slug", name="test_name")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
@@ -1591,9 +1074,7 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_add_environment_role_permission(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.add_environment_role_permission(
-            "test_slug", body_slug="test_slug"
-        )
+        result = await async_workos.authorization.add_environment_role_permission("test_slug", body_slug="test_slug")
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
@@ -1604,9 +1085,7 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_set_environment_role_permissions(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("role.json"))
-        result = await async_workos.authorization.set_environment_role_permissions(
-            "test_slug", permissions=[]
-        )
+        result = await async_workos.authorization.set_environment_role_permissions("test_slug", permissions=[])
         assert isinstance(result, Role)
         assert result.slug == "admin"
         assert result.object == "role"
@@ -1630,16 +1109,9 @@ class TestAsyncAuthorization:
         assert page.data == []
 
     @pytest.mark.asyncio
-    async def test_list_permissions_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
+    async def test_list_permissions_encodes_query_params(self, async_workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.authorization.list_permissions(
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=PermissionsOrder("normal"),
-        )
+        await async_workos.authorization.list_permissions(limit=10, before="cursor before", after="cursor/after", order=PermissionsOrder("normal"))
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
@@ -1649,9 +1121,7 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_create_permission(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("permission.json"))
-        result = await async_workos.authorization.create_permission(
-            slug="test_slug", name="test_name"
-        )
+        result = await async_workos.authorization.create_permission(slug="test_slug", name="test_name")
         assert isinstance(result, Permission)
         assert result.object == "permission"
         assert result.id == "perm_01HXYZ123456789ABCDEFGHIJ"
@@ -1693,12 +1163,7 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_check_with_request_options(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authorization_check.json"))
-        await async_workos.authorization.check(
-            "test_organization_membership_id",
-            permission_slug="test_permission_slug",
-            resource_target=ResourceTargetById(resource_id="test_value"),
-            request_options={"extra_headers": {"X-Custom": "value"}},
-        )
+        await async_workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"), request_options={"extra_headers": {"X-Custom": "value"}})
         request = httpx_mock.get_request()
         assert request.headers["X-Custom"] == "value"
 
@@ -1706,92 +1171,54 @@ class TestAsyncAuthorization:
     async def test_check_unauthorized(self, async_workos, httpx_mock):
         httpx_mock.add_response(status_code=401, json={"message": "Unauthorized"})
         with pytest.raises(AuthenticationError):
-            await async_workos.authorization.check(
-                "test_organization_membership_id",
-                permission_slug="test_permission_slug",
-                resource_target=ResourceTargetById(resource_id="test_value"),
-            )
+            await async_workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
 
     @pytest.mark.asyncio
     async def test_check_not_found(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=404, json={"message": "Not found"})
             with pytest.raises(NotFoundError):
-                await workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                await workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_check_rate_limited(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
-            httpx_mock.add_response(
-                status_code=429,
-                headers={"Retry-After": "0"},
-                json={"message": "Slow down"},
-            )
+            httpx_mock.add_response(status_code=429, headers={"Retry-After": "0"}, json={"message": "Slow down"})
             with pytest.raises(RateLimitExceededError):
-                await workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                await workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_check_server_error(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=500, json={"message": "Server error"})
             with pytest.raises(ServerError):
-                await workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                await workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_check_bad_request(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=400, json={"message": "Bad request"})
             with pytest.raises(BadRequestError):
-                await workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                await workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         finally:
             await workos.close()
 
     @pytest.mark.asyncio
     async def test_check_unprocessable(self, httpx_mock):
-        workos = AsyncWorkOSClient(
-            api_key="sk_test_123", client_id="client_test", max_retries=0
-        )
+        workos = AsyncWorkOSClient(api_key="sk_test_123", client_id="client_test", max_retries=0)
         try:
             httpx_mock.add_response(status_code=422, json={"message": "Unprocessable"})
             with pytest.raises(UnprocessableEntityError):
-                await workos.authorization.check(
-                    "test_organization_membership_id",
-                    permission_slug="test_permission_slug",
-                    resource_target=ResourceTargetById(resource_id="test_value"),
-                )
+                await workos.authorization.check("test_organization_membership_id", permission_slug="test_permission_slug", resource_target=ResourceTargetById(resource_id="test_value"))
         finally:
             await workos.close()

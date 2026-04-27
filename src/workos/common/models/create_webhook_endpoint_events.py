@@ -12,9 +12,7 @@ from typing import Literal, TypeAlias
 class CreateWebhookEndpointEvents(str, Enum):
     """Known values for CreateWebhookEndpointEvents."""
 
-    AUTHENTICATION_EMAIL_VERIFICATION_SUCCEEDED = (
-        "authentication.email_verification_succeeded"
-    )
+    AUTHENTICATION_EMAIL_VERIFICATION_SUCCEEDED = "authentication.email_verification_succeeded"
     AUTHENTICATION_MAGIC_AUTH_FAILED = "authentication.magic_auth_failed"
     AUTHENTICATION_MAGIC_AUTH_SUCCEEDED = "authentication.magic_auth_succeeded"
     AUTHENTICATION_MFA_SUCCEEDED = "authentication.mfa_succeeded"
@@ -33,9 +31,7 @@ class CreateWebhookEndpointEvents(str, Enum):
     API_KEY_REVOKED = "api_key.revoked"
     CONNECTION_ACTIVATED = "connection.activated"
     CONNECTION_DEACTIVATED = "connection.deactivated"
-    CONNECTION_SAML_CERTIFICATE_RENEWAL_REQUIRED = (
-        "connection.saml_certificate_renewal_required"
-    )
+    CONNECTION_SAML_CERTIFICATE_RENEWAL_REQUIRED = "connection.saml_certificate_renewal_required"
     CONNECTION_SAML_CERTIFICATE_RENEWED = "connection.saml_certificate_renewed"
     CONNECTION_DELETED = "connection.deleted"
     DSYNC_ACTIVATED = "dsync.activated"
@@ -90,6 +86,9 @@ class CreateWebhookEndpointEvents(str, Enum):
     PERMISSION_UPDATED = "permission.updated"
     SESSION_CREATED = "session.created"
     SESSION_REVOKED = "session.revoked"
+    WAITLIST_USER_APPROVED = "waitlist_user.approved"
+    WAITLIST_USER_CREATED = "waitlist_user.created"
+    WAITLIST_USER_DENIED = "waitlist_user.denied"
 
     @classmethod
     def _missing_(cls, value: object) -> Optional["CreateWebhookEndpointEvents"]:
@@ -100,80 +99,4 @@ class CreateWebhookEndpointEvents(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
-    "authentication.email_verification_succeeded",
-    "authentication.magic_auth_failed",
-    "authentication.magic_auth_succeeded",
-    "authentication.mfa_succeeded",
-    "authentication.oauth_failed",
-    "authentication.oauth_succeeded",
-    "authentication.password_failed",
-    "authentication.password_succeeded",
-    "authentication.passkey_failed",
-    "authentication.passkey_succeeded",
-    "authentication.sso_failed",
-    "authentication.sso_started",
-    "authentication.sso_succeeded",
-    "authentication.sso_timed_out",
-    "authentication.radar_risk_detected",
-    "api_key.created",
-    "api_key.revoked",
-    "connection.activated",
-    "connection.deactivated",
-    "connection.saml_certificate_renewal_required",
-    "connection.saml_certificate_renewed",
-    "connection.deleted",
-    "dsync.activated",
-    "dsync.deleted",
-    "dsync.group.created",
-    "dsync.group.deleted",
-    "dsync.group.updated",
-    "dsync.group.user_added",
-    "dsync.group.user_removed",
-    "dsync.user.created",
-    "dsync.user.deleted",
-    "dsync.user.updated",
-    "email_verification.created",
-    "group.created",
-    "group.deleted",
-    "group.member_added",
-    "group.member_removed",
-    "group.updated",
-    "flag.created",
-    "flag.deleted",
-    "flag.updated",
-    "flag.rule_updated",
-    "invitation.accepted",
-    "invitation.created",
-    "invitation.resent",
-    "invitation.revoked",
-    "magic_auth.created",
-    "organization.created",
-    "organization.deleted",
-    "organization.updated",
-    "organization_domain.created",
-    "organization_domain.deleted",
-    "organization_domain.updated",
-    "organization_domain.verified",
-    "organization_domain.verification_failed",
-    "password_reset.created",
-    "password_reset.succeeded",
-    "user.created",
-    "user.updated",
-    "user.deleted",
-    "organization_membership.created",
-    "organization_membership.deleted",
-    "organization_membership.updated",
-    "role.created",
-    "role.deleted",
-    "role.updated",
-    "organization_role.created",
-    "organization_role.deleted",
-    "organization_role.updated",
-    "permission.created",
-    "permission.deleted",
-    "permission.updated",
-    "session.created",
-    "session.revoked",
-]
+CreateWebhookEndpointEventsLiteral: TypeAlias = Literal["authentication.email_verification_succeeded", "authentication.magic_auth_failed", "authentication.magic_auth_succeeded", "authentication.mfa_succeeded", "authentication.oauth_failed", "authentication.oauth_succeeded", "authentication.password_failed", "authentication.password_succeeded", "authentication.passkey_failed", "authentication.passkey_succeeded", "authentication.sso_failed", "authentication.sso_started", "authentication.sso_succeeded", "authentication.sso_timed_out", "authentication.radar_risk_detected", "api_key.created", "api_key.revoked", "connection.activated", "connection.deactivated", "connection.saml_certificate_renewal_required", "connection.saml_certificate_renewed", "connection.deleted", "dsync.activated", "dsync.deleted", "dsync.group.created", "dsync.group.deleted", "dsync.group.updated", "dsync.group.user_added", "dsync.group.user_removed", "dsync.user.created", "dsync.user.deleted", "dsync.user.updated", "email_verification.created", "group.created", "group.deleted", "group.member_added", "group.member_removed", "group.updated", "flag.created", "flag.deleted", "flag.updated", "flag.rule_updated", "invitation.accepted", "invitation.created", "invitation.resent", "invitation.revoked", "magic_auth.created", "organization.created", "organization.deleted", "organization.updated", "organization_domain.created", "organization_domain.deleted", "organization_domain.updated", "organization_domain.verified", "organization_domain.verification_failed", "password_reset.created", "password_reset.succeeded", "user.created", "user.updated", "user.deleted", "organization_membership.created", "organization_membership.deleted", "organization_membership.updated", "role.created", "role.deleted", "role.updated", "organization_role.created", "organization_role.deleted", "organization_role.updated", "permission.created", "permission.deleted", "permission.updated", "session.created", "session.revoked", "waitlist_user.approved", "waitlist_user.created", "waitlist_user.denied"]

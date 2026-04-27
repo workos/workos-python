@@ -22,9 +22,7 @@ class RadarStandaloneAssessRequestAuthMethod(str, Enum):
     OTHER = "Other"
 
     @classmethod
-    def _missing_(
-        cls, value: object
-    ) -> Optional["RadarStandaloneAssessRequestAuthMethod"]:
+    def _missing_(cls, value: object) -> Optional["RadarStandaloneAssessRequestAuthMethod"]:
         if not isinstance(value, str):
             return None
         unknown = str.__new__(cls, value)
@@ -32,14 +30,4 @@ class RadarStandaloneAssessRequestAuthMethod(str, Enum):
         unknown._value_ = value
         return unknown
 
-
-RadarStandaloneAssessRequestAuthMethodLiteral: TypeAlias = Literal[
-    "Password",
-    "Passkey",
-    "Authenticator",
-    "SMS_OTP",
-    "Email_OTP",
-    "Social",
-    "SSO",
-    "Other",
-]
+RadarStandaloneAssessRequestAuthMethodLiteral: TypeAlias = Literal["Password", "Passkey", "Authenticator", "SMS_OTP", "Email_OTP", "Social", "SSO", "Other"]

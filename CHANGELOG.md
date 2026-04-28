@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.1.0](https://github.com/workos/workos-python/compare/v6.0.8...v6.1.0) (2026-04-28)
+
+
+### Features
+
+* **generated:** Add Groups API and Waitlist User events support ([#640](https://github.com/workos/workos-python/issues/640)) ([a10d02b](https://github.com/workos/workos-python/commit/a10d02b1bc88c20cab2b83c006aceae968b86bca))
+
+
+### Bug Fixes
+
+* Install ruff globally in setup script for code generation ([b12b1d3](https://github.com/workos/workos-python/commit/b12b1d3351bb209c6770c27d28677288c4458d38))
+
 ## [6.0.8](https://github.com/workos/workos-python/compare/v6.0.7...v6.0.8) (2026-04-24)
 
 

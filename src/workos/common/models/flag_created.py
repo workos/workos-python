@@ -35,13 +35,13 @@ class FlagCreated:
         try:
             return cls(
                 id=data["id"],
-                event=data["event"],
+                event=data.get("event", "flag.created"),
                 data=FlagCreatedData.from_dict(cast(Dict[str, Any], data["data"])),
                 created_at=_parse_datetime(data["created_at"]),
                 context=FlagCreatedContext.from_dict(
                     cast(Dict[str, Any], data["context"])
                 ),
-                object=data["object"],
+                object=data.get("object", "event"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagCreated", e)

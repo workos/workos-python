@@ -50,7 +50,7 @@ class ConnectionActivatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "connection"),
                 id=data["id"],
                 state=ConnectionActivatedDataState(data["state"]),
                 name=data["name"],

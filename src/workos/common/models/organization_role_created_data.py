@@ -37,7 +37,7 @@ class OrganizationRoleCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "organization_role"),
                 organization_id=data["organization_id"],
                 slug=data["slug"],
                 name=data["name"],

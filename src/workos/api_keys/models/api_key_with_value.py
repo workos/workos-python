@@ -42,7 +42,7 @@ class ApiKeyWithValue:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "api_key"),
                 id=data["id"],
                 owner=ApiKeyWithValueOwner.from_dict(
                     cast(Dict[str, Any], data["owner"])

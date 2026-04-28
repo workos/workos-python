@@ -39,7 +39,7 @@ class ConnectApplication:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "connect_application"),
                 id=data["id"],
                 client_id=data["client_id"],
                 description=data["description"],
@@ -47,7 +47,7 @@ class ConnectApplication:
                 scopes=data["scopes"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                application_type=data.get("application_type"),
+                application_type=data.get("application_type", "m2m"),
                 organization_id=data.get("organization_id"),
             )
         except (KeyError, ValueError) as e:

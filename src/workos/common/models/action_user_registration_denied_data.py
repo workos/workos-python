@@ -35,8 +35,8 @@ class ActionUserRegistrationDeniedData:
             return cls(
                 action_endpoint_id=data["action_endpoint_id"],
                 action_execution_id=data["action_execution_id"],
-                type=data["type"],
-                verdict=data["verdict"],
+                type=data.get("type", "user_registration"),
+                verdict=data.get("verdict", "Deny"),
                 organization_id=data["organization_id"],
                 email=data["email"],
                 ip_address=data["ip_address"],

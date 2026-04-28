@@ -33,9 +33,9 @@ class JwksResponseKeys:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                alg=data["alg"],
-                kty=data["kty"],
-                use=data["use"],
+                alg=data.get("alg", "RS256"),
+                kty=data.get("kty", "RSA"),
+                use=data.get("use", "sig"),
                 x_5_c=data["x5c"],
                 n=data["n"],
                 e=data["e"],

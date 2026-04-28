@@ -35,7 +35,7 @@ class AuditLogSchemaJson:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "audit_log_schema"),
                 version=data["version"],
                 targets=[
                     AuditLogSchemaJsonTarget.from_dict(cast(Dict[str, Any], item))

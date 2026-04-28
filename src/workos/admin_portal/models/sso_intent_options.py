@@ -22,7 +22,7 @@ class SSOIntentOptions:
         try:
             return cls(
                 bookmark_slug=data.get("bookmark_slug"),
-                provider_type=data.get("provider_type"),
+                provider_type=data.get("provider_type", "GoogleSAML"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("SSOIntentOptions", e)

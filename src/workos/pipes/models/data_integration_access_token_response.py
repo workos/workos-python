@@ -33,7 +33,7 @@ class DataIntegrationAccessTokenResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                active=data.get("active"),
+                active=data.get("active", True),
                 access_token=DataIntegrationAccessTokenResponseAccessToken.from_dict(
                     cast(Dict[str, Any], _v_access_token)
                 )

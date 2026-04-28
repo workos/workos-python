@@ -23,8 +23,8 @@ class RadarStandaloneUpdateRadarAttemptRequest:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                challenge_status=data.get("challenge_status"),
-                attempt_status=data.get("attempt_status"),
+                challenge_status=data.get("challenge_status", "success"),
+                attempt_status=data.get("attempt_status", "success"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RadarStandaloneUpdateRadarAttemptRequest", e)

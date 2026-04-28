@@ -29,7 +29,7 @@ class CORSOriginResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "cors_origin"),
                 id=data["id"],
                 origin=data["origin"],
                 created_at=_parse_datetime(data["created_at"]),

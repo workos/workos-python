@@ -45,7 +45,7 @@ class FlagCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "feature_flag"),
                 id=data["id"],
                 environment_id=data["environment_id"],
                 slug=data["slug"],

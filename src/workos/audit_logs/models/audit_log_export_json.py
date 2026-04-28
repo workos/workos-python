@@ -33,7 +33,7 @@ class AuditLogExportJson:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "audit_log_export"),
                 id=data["id"],
                 state=AuditLogExportJsonState(data["state"]),
                 created_at=_parse_datetime(data["created_at"]),

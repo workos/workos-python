@@ -32,8 +32,8 @@ class AuthenticationMFAFailedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                type=data["type"],
-                status=data["status"],
+                type=data.get("type", "mfa"),
+                status=data.get("status", "failed"),
                 ip_address=data["ip_address"],
                 user_agent=data["user_agent"],
                 user_id=data["user_id"],

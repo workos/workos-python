@@ -34,12 +34,12 @@ class ActionUserRegistrationDenied:
         try:
             return cls(
                 id=data["id"],
-                event=data["event"],
+                event=data.get("event", "action.user_registration.denied"),
                 data=ActionUserRegistrationDeniedData.from_dict(
                     cast(Dict[str, Any], data["data"])
                 ),
                 created_at=_parse_datetime(data["created_at"]),
-                object=data["object"],
+                object=data.get("object", "event"),
                 context=EventContext.from_dict(cast(Dict[str, Any], _v_context))
                 if (_v_context := data.get("context")) is not None
                 else None,

@@ -44,7 +44,7 @@ class Organization:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "organization"),
                 id=data["id"],
                 name=data["name"],
                 domains=[

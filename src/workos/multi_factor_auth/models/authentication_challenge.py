@@ -33,7 +33,7 @@ class AuthenticationChallenge:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "authentication_challenge"),
                 id=data["id"],
                 authentication_factor_id=data["authentication_factor_id"],
                 created_at=_parse_datetime(data["created_at"]),

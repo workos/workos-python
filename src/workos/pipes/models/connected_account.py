@@ -38,7 +38,7 @@ class ConnectedAccount:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "connected_account"),
                 id=data["id"],
                 user_id=data["user_id"],
                 organization_id=data["organization_id"],

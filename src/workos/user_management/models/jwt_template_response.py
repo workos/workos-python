@@ -25,7 +25,7 @@ class JWTTemplateResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "jwt_template"),
                 content=data["content"],
                 created_at=data["created_at"],
                 updated_at=data["updated_at"],

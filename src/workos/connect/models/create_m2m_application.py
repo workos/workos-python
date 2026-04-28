@@ -28,7 +28,7 @@ class CreateM2MApplication:
         try:
             return cls(
                 name=data["name"],
-                application_type=data["application_type"],
+                application_type=data.get("application_type", "m2m"),
                 organization_id=data["organization_id"],
                 description=data.get("description"),
                 scopes=data.get("scopes"),

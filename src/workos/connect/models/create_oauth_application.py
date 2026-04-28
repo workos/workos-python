@@ -37,7 +37,7 @@ class CreateOAuthApplication:
         try:
             return cls(
                 name=data["name"],
-                application_type=data["application_type"],
+                application_type=data.get("application_type", "oauth"),
                 is_first_party=data["is_first_party"],
                 description=data.get("description"),
                 scopes=data.get("scopes"),

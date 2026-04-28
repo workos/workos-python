@@ -51,7 +51,7 @@ class Connection:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "connection"),
                 id=data["id"],
                 connection_type=ConnectionType(data["connection_type"]),
                 name=data["name"],

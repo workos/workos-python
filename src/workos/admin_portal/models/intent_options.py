@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import cast
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 
+from .domain_verification_intent_options import DomainVerificationIntentOptions
 from .sso_intent_options import SSOIntentOptions
 
 
@@ -14,15 +15,25 @@ from .sso_intent_options import SSOIntentOptions
 class IntentOptions:
     """Intent Options model."""
 
-    sso: "SSOIntentOptions"
+    sso: Optional["SSOIntentOptions"] = None
     """SSO-specific options for the Admin Portal."""
+    domain_verification: Optional["DomainVerificationIntentOptions"] = None
+    """Domain verification-specific options for the Admin Portal."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "IntentOptions":
         """Deserialize from a dictionary."""
         try:
             return cls(
-                sso=SSOIntentOptions.from_dict(cast(Dict[str, Any], data["sso"])),
+                sso=SSOIntentOptions.from_dict(cast(Dict[str, Any], _v_sso))
+                if (_v_sso := data.get("sso")) is not None
+                else None,
+                domain_verification=DomainVerificationIntentOptions.from_dict(
+                    cast(Dict[str, Any], _v_domain_verification)
+                )
+                if (_v_domain_verification := data.get("domain_verification"))
+                is not None
+                else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("IntentOptions", e)
@@ -30,5 +41,8 @@ class IntentOptions:
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
-        result["sso"] = self.sso.to_dict()
+        if self.sso is not None:
+            result["sso"] = self.sso.to_dict()
+        if self.domain_verification is not None:
+            result["domain_verification"] = self.domain_verification.to_dict()
         return result

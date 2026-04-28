@@ -28,7 +28,7 @@ class UserIdentitiesGetItem:
         try:
             return cls(
                 idp_id=data["idp_id"],
-                type=data["type"],
+                type=data.get("type", "OAuth"),
                 provider=UserIdentitiesGetItemProvider(data["provider"]),
             )
         except (KeyError, ValueError) as e:

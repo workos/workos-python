@@ -31,7 +31,7 @@ class ApplicationCredentialsListItem:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "connect_application_secret"),
                 id=data["id"],
                 secret_hint=data["secret_hint"],
                 last_used_at=data["last_used_at"],

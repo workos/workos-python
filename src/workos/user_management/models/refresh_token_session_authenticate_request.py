@@ -36,7 +36,7 @@ class RefreshTokenSessionAuthenticateRequest:
             return cls(
                 client_id=data["client_id"],
                 client_secret=data["client_secret"],
-                grant_type=data["grant_type"],
+                grant_type=data.get("grant_type", "refresh_token"),
                 refresh_token=data["refresh_token"],
                 organization_id=data.get("organization_id"),
                 ip_address=data.get("ip_address"),

@@ -41,7 +41,7 @@ class AuthenticationFactor:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "authentication_factor"),
                 id=data["id"],
                 type=AuthenticationFactorType(data["type"]),
                 created_at=_parse_datetime(data["created_at"]),

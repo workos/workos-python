@@ -38,7 +38,7 @@ class DsyncDeletedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "directory"),
                 id=data["id"],
                 type=DsyncDeletedDataType(data["type"]),
                 state=DsyncDeletedDataState(data["state"]),

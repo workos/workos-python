@@ -29,7 +29,7 @@ class DataIntegrationAccessTokenResponseAccessToken:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "access_token"),
                 access_token=data["access_token"],
                 expires_at=data["expires_at"],
                 scopes=data["scopes"],

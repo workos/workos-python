@@ -39,7 +39,7 @@ class ConnectApplication:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "connect_application"),
                 id=data["id"],
                 client_id=data["client_id"],
                 description=data["description"],

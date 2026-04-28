@@ -33,7 +33,7 @@ class MagicAuthCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "magic_auth"),
                 id=data["id"],
                 user_id=data["user_id"],
                 email=data["email"],

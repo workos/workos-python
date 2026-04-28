@@ -29,7 +29,7 @@ class UserConsentOption:
         try:
             return cls(
                 claim=data["claim"],
-                type=data["type"],
+                type=data.get("type", "enum"),
                 label=data["label"],
                 choices=[
                     UserConsentOptionChoice.from_dict(cast(Dict[str, Any], item))

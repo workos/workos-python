@@ -47,7 +47,7 @@ class Directory:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "directory"),
                 id=data["id"],
                 organization_id=data["organization_id"],
                 external_key=data["external_key"],

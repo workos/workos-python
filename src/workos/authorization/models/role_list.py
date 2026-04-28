@@ -23,7 +23,7 @@ class RoleList:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "list"),
                 data=[
                     Role.from_dict(cast(Dict[str, Any], item))
                     for item in cast(list[Any], data["data"])

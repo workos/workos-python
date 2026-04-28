@@ -31,7 +31,7 @@ class EmailChange:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "email_change"),
                 user=User.from_dict(cast(Dict[str, Any], data["user"])),
                 new_email=data["new_email"],
                 expires_at=_parse_datetime(data["expires_at"]),

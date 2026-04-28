@@ -37,7 +37,7 @@ class AuthorizationPermission:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "permission"),
                 id=data["id"],
                 slug=data["slug"],
                 name=data["name"],

@@ -24,7 +24,7 @@ class DataIntegrationsListResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "list"),
                 data=[
                     DataIntegrationsListResponseData.from_dict(
                         cast(Dict[str, Any], item)

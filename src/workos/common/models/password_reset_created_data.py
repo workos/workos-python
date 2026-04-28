@@ -31,7 +31,7 @@ class PasswordResetCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "password_reset"),
                 id=data["id"],
                 user_id=data["user_id"],
                 email=data["email"],

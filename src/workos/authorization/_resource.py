@@ -119,7 +119,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_organization_membership_resources(
+    def list_resources_for_membership(
         self,
         organization_membership_id: str,
         *,
@@ -187,7 +187,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_resource_permissions(
+    def list_effective_permissions(
         self,
         organization_membership_id: str,
         resource_id: str,
@@ -295,7 +295,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_organization_membership_role_assignments(
+    def list_role_assignments(
         self,
         organization_membership_id: str,
         *,
@@ -431,7 +431,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_organization_membership_role_assignment(
+    def remove_role_assignment(
         self,
         organization_membership_id: str,
         role_assignment_id: str,
@@ -656,7 +656,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def create_role_permission(
+    def add_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -697,7 +697,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def update_role_permissions(
+    def set_organization_role_permissions(
         self,
         organization_id: str,
         slug: str,
@@ -737,7 +737,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_role_permission(
+    def remove_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -768,7 +768,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def get_organization_resource(
+    def get_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -803,7 +803,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def update_organization_resource(
+    def update_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -868,7 +868,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def delete_organization_resource(
+    def delete_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -911,7 +911,7 @@ class Authorization:
             request_options=request_options,
         )
 
-    def list_resource_organization_memberships(
+    def list_memberships_for_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -984,6 +984,7 @@ class Authorization:
         order: Optional[Union[AuthorizationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
         search: Optional[str] = None,
         parent: Optional[Union[ParentById, ParentByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -999,6 +1000,7 @@ class Authorization:
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
+            resource_external_id: Filter resources by external ID.
             search: Search resources by name.
             parent: Identifies the parent. One of: ParentById, ParentByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1022,6 +1024,7 @@ class Authorization:
                 "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
                 "resource_type_slug": resource_type_slug,
+                "resource_external_id": resource_external_id,
                 "search": search,
             }.items()
             if v is not None
@@ -1782,7 +1785,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_organization_membership_resources(
+    async def list_resources_for_membership(
         self,
         organization_membership_id: str,
         *,
@@ -1850,7 +1853,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_resource_permissions(
+    async def list_effective_permissions(
         self,
         organization_membership_id: str,
         resource_id: str,
@@ -1958,7 +1961,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_organization_membership_role_assignments(
+    async def list_role_assignments(
         self,
         organization_membership_id: str,
         *,
@@ -2094,7 +2097,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_organization_membership_role_assignment(
+    async def remove_role_assignment(
         self,
         organization_membership_id: str,
         role_assignment_id: str,
@@ -2319,7 +2322,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def create_role_permission(
+    async def add_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -2360,7 +2363,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def update_role_permissions(
+    async def set_organization_role_permissions(
         self,
         organization_id: str,
         slug: str,
@@ -2400,7 +2403,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_role_permission(
+    async def remove_organization_role_permission(
         self,
         organization_id: str,
         slug: str,
@@ -2431,7 +2434,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def get_organization_resource(
+    async def get_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2466,7 +2469,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def update_organization_resource(
+    async def update_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2531,7 +2534,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def delete_organization_resource(
+    async def delete_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2574,7 +2577,7 @@ class AsyncAuthorization:
             request_options=request_options,
         )
 
-    async def list_resource_organization_memberships(
+    async def list_memberships_for_resource_by_external_id(
         self,
         organization_id: str,
         resource_type_slug: str,
@@ -2647,6 +2650,7 @@ class AsyncAuthorization:
         order: Optional[Union[AuthorizationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
         search: Optional[str] = None,
         parent: Optional[Union[ParentById, ParentByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -2662,6 +2666,7 @@ class AsyncAuthorization:
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
+            resource_external_id: Filter resources by external ID.
             search: Search resources by name.
             parent: Identifies the parent. One of: ParentById, ParentByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -2685,6 +2690,7 @@ class AsyncAuthorization:
                 "order": enum_value(order) if order is not None else None,
                 "organization_id": organization_id,
                 "resource_type_slug": resource_type_slug,
+                "resource_external_id": resource_external_id,
                 "search": search,
             }.items()
             if v is not None

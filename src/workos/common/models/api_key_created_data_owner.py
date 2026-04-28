@@ -21,7 +21,7 @@ class ApiKeyCreatedDataOwner:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                type=data["type"],
+                type=data.get("type", "organization"),
                 id=data["id"],
             )
         except (KeyError, ValueError) as e:

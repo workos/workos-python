@@ -29,7 +29,9 @@ class DeviceCodeSessionAuthenticateRequest:
         try:
             return cls(
                 client_id=data["client_id"],
-                grant_type=data["grant_type"],
+                grant_type=data.get(
+                    "grant_type", "urn:ietf:params:oauth:grant-type:device_code"
+                ),
                 device_code=data["device_code"],
                 ip_address=data.get("ip_address"),
                 device_id=data.get("device_id"),

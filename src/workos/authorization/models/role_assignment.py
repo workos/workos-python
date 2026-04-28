@@ -35,7 +35,7 @@ class RoleAssignment:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "role_assignment"),
                 id=data["id"],
                 role=SlimRole.from_dict(cast(Dict[str, Any], data["role"])),
                 resource=RoleAssignmentResource.from_dict(

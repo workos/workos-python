@@ -38,7 +38,9 @@ class MagicAuthCodeSessionAuthenticateRequest:
             return cls(
                 client_id=data["client_id"],
                 client_secret=data["client_secret"],
-                grant_type=data["grant_type"],
+                grant_type=data.get(
+                    "grant_type", "urn:workos:oauth:grant-type:magic-auth:code"
+                ),
                 code=data["code"],
                 email=data["email"],
                 invitation_token=data.get("invitation_token"),

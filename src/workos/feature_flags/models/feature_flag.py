@@ -44,7 +44,7 @@ class FeatureFlag:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "feature_flag"),
                 id=data["id"],
                 slug=data["slug"],
                 name=data["name"],

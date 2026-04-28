@@ -37,7 +37,7 @@ class WebhookEndpointJson:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "webhook_endpoint"),
                 id=data["id"],
                 endpoint_url=data["endpoint_url"],
                 secret=data["secret"],

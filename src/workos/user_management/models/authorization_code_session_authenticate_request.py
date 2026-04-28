@@ -38,7 +38,7 @@ class AuthorizationCodeSessionAuthenticateRequest:
             return cls(
                 client_id=data["client_id"],
                 client_secret=data["client_secret"],
-                grant_type=data["grant_type"],
+                grant_type=data.get("grant_type", "authorization_code"),
                 code=data["code"],
                 code_verifier=data.get("code_verifier"),
                 invitation_token=data.get("invitation_token"),

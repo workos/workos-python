@@ -34,8 +34,8 @@ class GenerateLink:
         - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key"""
     intent_options: Optional["IntentOptions"] = None
     """Options to configure the Admin Portal based on the intent."""
-    admin_emails: Optional[List[str]] = None
-    """The email addresses of the IT admins to grant access to the Admin Portal for the given organization. Accepts up to 20 emails."""
+    it_contact_emails: Optional[List[str]] = None
+    """The email addresses of the IT contacts to grant access to the Admin Portal for the given organization. Accepts up to 20 emails."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "GenerateLink":
@@ -53,7 +53,7 @@ class GenerateLink:
                 )
                 if (_v_intent_options := data.get("intent_options")) is not None
                 else None,
-                admin_emails=data.get("admin_emails"),
+                it_contact_emails=data.get("it_contact_emails"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("GenerateLink", e)
@@ -72,6 +72,6 @@ class GenerateLink:
             )
         if self.intent_options is not None:
             result["intent_options"] = self.intent_options.to_dict()
-        if self.admin_emails is not None:
-            result["admin_emails"] = self.admin_emails
+        if self.it_contact_emails is not None:
+            result["it_contact_emails"] = self.it_contact_emails
         return result

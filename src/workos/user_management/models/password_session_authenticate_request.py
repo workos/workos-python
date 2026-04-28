@@ -36,7 +36,7 @@ class PasswordSessionAuthenticateRequest:
             return cls(
                 client_id=data["client_id"],
                 client_secret=data["client_secret"],
-                grant_type=data["grant_type"],
+                grant_type=data.get("grant_type", "password"),
                 email=data["email"],
                 password=data["password"],
                 invitation_token=data.get("invitation_token"),

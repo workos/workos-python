@@ -131,6 +131,9 @@ from workos.common.models.vault_dek_read import VaultDekRead
 from workos.common.models.vault_kek_created import VaultKekCreated
 from workos.common.models.vault_metadata_read import VaultMetadataRead
 from workos.common.models.vault_names_listed import VaultNamesListed
+from workos.common.models.waitlist_user_approved import WaitlistUserApproved
+from workos.common.models.waitlist_user_created import WaitlistUserCreated
+from workos.common.models.waitlist_user_denied import WaitlistUserDenied
 
 
 @dataclass(slots=True)
@@ -240,6 +243,9 @@ EventSchemaVariant = Union[
     VaultKekCreated,
     VaultMetadataRead,
     VaultNamesListed,
+    WaitlistUserApproved,
+    WaitlistUserCreated,
+    WaitlistUserDenied,
     EventSchemaUnknown,
 ]
 
@@ -337,6 +343,9 @@ class EventSchema:
         "vault.kek.created": VaultKekCreated,
         "vault.metadata.read": VaultMetadataRead,
         "vault.names.listed": VaultNamesListed,
+        "waitlist_user.approved": WaitlistUserApproved,
+        "waitlist_user.created": WaitlistUserCreated,
+        "waitlist_user.denied": WaitlistUserDenied,
     }
 
     @classmethod

@@ -31,7 +31,7 @@ class SSOTokenResponse:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                token_type=data["token_type"],
+                token_type=data.get("token_type", "Bearer"),
                 access_token=data["access_token"],
                 expires_in=data["expires_in"],
                 profile=Profile.from_dict(cast(Dict[str, Any], data["profile"])),

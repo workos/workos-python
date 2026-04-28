@@ -31,7 +31,7 @@ class RoleCreatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "role"),
                 slug=data["slug"],
                 resource_type_slug=data["resource_type_slug"],
                 created_at=_parse_datetime(data["created_at"]),

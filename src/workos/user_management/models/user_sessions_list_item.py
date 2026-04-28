@@ -51,7 +51,7 @@ class UserSessionsListItem:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "session"),
                 id=data["id"],
                 ip_address=data["ip_address"],
                 user_agent=data["user_agent"],

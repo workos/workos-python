@@ -23,7 +23,7 @@ class DsyncActivatedDataDomain:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "organization_domain"),
                 id=data["id"],
                 domain=data["domain"],
             )

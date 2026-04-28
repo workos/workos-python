@@ -42,7 +42,7 @@ class Role:
         try:
             return cls(
                 slug=data["slug"],
-                object=data["object"],
+                object=data.get("object", "role"),
                 id=data["id"],
                 name=data["name"],
                 description=data["description"],

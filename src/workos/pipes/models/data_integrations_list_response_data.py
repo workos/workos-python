@@ -50,7 +50,7 @@ class DataIntegrationsListResponseData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "data_provider"),
                 id=data["id"],
                 name=data["name"],
                 description=data["description"],

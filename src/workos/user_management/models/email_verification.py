@@ -35,7 +35,7 @@ class EmailVerification:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "email_verification"),
                 id=data["id"],
                 user_id=data["user_id"],
                 email=data["email"],

@@ -37,8 +37,8 @@ class ActionAuthenticationDeniedData:
             return cls(
                 action_endpoint_id=data["action_endpoint_id"],
                 action_execution_id=data["action_execution_id"],
-                type=data["type"],
-                verdict=data["verdict"],
+                type=data.get("type", "authentication"),
+                verdict=data.get("verdict", "Deny"),
                 user_id=data["user_id"],
                 organization_id=data["organization_id"],
                 email=data["email"],

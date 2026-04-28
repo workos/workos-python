@@ -7,6 +7,7 @@ import pytest
 from tests.generated_helpers import load_fixture
 
 from workos.admin_portal.models import (
+    DomainVerificationIntentOptions,
     IntentOptions,
     PortalLinkResponse,
     SSOIntentOptions,
@@ -176,7 +177,6 @@ from workos.common.models import (
     FlagUpdatedContextPreviousAttributeData,
     FlagUpdatedData,
     FlagUpdatedDataOwner,
-    Group,
     GroupCreated,
     GroupDeleted,
     GroupMemberAdded,
@@ -271,6 +271,10 @@ from workos.common.models import (
     VaultMetadataReadData,
     VaultNamesListed,
     VaultNamesListedData,
+    WaitlistUser,
+    WaitlistUserApproved,
+    WaitlistUserCreated,
+    WaitlistUserDenied,
 )
 from workos.connect.models import (
     ApplicationCredentialsListItem,
@@ -292,6 +296,7 @@ from workos.directory_sync.models import (
 )
 from workos.events.models import EventListListMetadata, EventSchema, EventSchemaUnknown
 from workos.feature_flags.models import FeatureFlag, FeatureFlagOwner, Flag, FlagOwner
+from workos.groups.models import Group
 from workos.multi_factor_auth.models import (
     AuthenticationChallenge,
     AuthenticationChallengeVerifyResponse,
@@ -648,6 +653,27 @@ class TestModelRoundTrip:
         assert "bookmark_slug" not in serialized
         assert "provider_type" not in serialized
 
+    def test_domain_verification_intent_options_round_trip(self):
+        data = load_fixture("domain_verification_intent_options.json")
+        instance = DomainVerificationIntentOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DomainVerificationIntentOptions.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_domain_verification_intent_options_minimal_payload(self):
+        data = {}
+        instance = DomainVerificationIntentOptions.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_domain_verification_intent_options_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {}
+        instance = DomainVerificationIntentOptions.from_dict(data)
+        serialized = instance.to_dict()
+        assert "domain_name" not in serialized
+
     def test_intent_options_round_trip(self):
         data = load_fixture("intent_options.json")
         instance = IntentOptions.from_dict(data)
@@ -657,10 +683,16 @@ class TestModelRoundTrip:
         assert restored.to_dict() == serialized
 
     def test_intent_options_minimal_payload(self):
-        data = {"sso": {"bookmark_slug": "chatgpt", "provider_type": "GoogleSAML"}}
+        data = {}
+        instance = IntentOptions.from_dict(data)
+        assert instance.to_dict() is not None
+
+    def test_intent_options_omits_absent_optional_non_nullable_fields(self):
+        data = {}
         instance = IntentOptions.from_dict(data)
         serialized = instance.to_dict()
-        assert serialized["sso"] == data["sso"]
+        assert "sso" not in serialized
+        assert "domain_verification" not in serialized
 
     def test_external_auth_complete_response_round_trip(self):
         data = load_fixture("external_auth_complete_response.json")
@@ -1875,6 +1907,48 @@ class TestModelRoundTrip:
         instance = DirectoryUserWithGroups.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_group_round_trip(self):
+        data = load_fixture("group.json")
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = Group.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_group_minimal_payload(self):
+        data = {
+            "object": "group",
+            "id": "group_01HXYZ123456789ABCDEFGHIJ",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Engineering",
+            "description": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["name"] == data["name"]
+        assert serialized["description"] == data["description"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_group_preserves_nullable_fields(self):
+        data = {
+            "object": "group",
+            "id": "group_01HXYZ123456789ABCDEFGHIJ",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "name": "Engineering",
+            "description": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = Group.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["description"] is None
+
     def test_event_context_actor_round_trip(self):
         data = load_fixture("event_context_actor.json")
         instance = EventContextActor.from_dict(data)
@@ -2067,48 +2141,6 @@ class TestModelRoundTrip:
         instance = DirectoryUser.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_group_round_trip(self):
-        data = load_fixture("group.json")
-        instance = Group.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized == data
-        restored = Group.from_dict(serialized)
-        assert restored.to_dict() == serialized
-
-    def test_group_minimal_payload(self):
-        data = {
-            "object": "group",
-            "id": "group_01HXYZ123456789ABCDEFGHIJ",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Engineering",
-            "description": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = Group.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["object"] == data["object"]
-        assert serialized["id"] == data["id"]
-        assert serialized["organization_id"] == data["organization_id"]
-        assert serialized["name"] == data["name"]
-        assert serialized["description"] == data["description"]
-        assert serialized["created_at"] == data["created_at"]
-        assert serialized["updated_at"] == data["updated_at"]
-
-    def test_group_preserves_nullable_fields(self):
-        data = {
-            "object": "group",
-            "id": "group_01HXYZ123456789ABCDEFGHIJ",
-            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
-            "name": "Engineering",
-            "description": None,
-            "created_at": "2026-01-15T12:00:00.000Z",
-            "updated_at": "2026-01-15T12:00:00.000Z",
-        }
-        instance = Group.from_dict(data)
-        serialized = instance.to_dict()
-        assert serialized["description"] is None
-
     def test_user_round_trip(self):
         data = load_fixture("user.json")
         instance = User.from_dict(data)
@@ -2188,6 +2220,61 @@ class TestModelRoundTrip:
         assert serialized["external_id"] is None
         assert serialized["last_sign_in_at"] is None
         assert serialized["locale"] is None
+
+    def test_waitlist_user_round_trip(self):
+        data = load_fixture("waitlist_user.json")
+        instance = WaitlistUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistUser.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_user_minimal_payload(self):
+        data = {
+            "object": "waitlist_user",
+            "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "approved_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = WaitlistUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["email"] == data["email"]
+        assert serialized["state"] == data["state"]
+        assert serialized["approved_at"] == data["approved_at"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_waitlist_user_preserves_nullable_fields(self):
+        data = {
+            "object": "waitlist_user",
+            "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "pending",
+            "approved_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = WaitlistUser.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["approved_at"] is None
+
+    def test_waitlist_user_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "waitlist_user",
+            "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+            "email": "marcelina.davis@example.com",
+            "state": "unexpected_waitlist_user_state",
+            "approved_at": None,
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = WaitlistUser.from_dict(data)
+        assert instance.to_dict() == data
 
     def test_action_authentication_denied_round_trip(self):
         data = load_fixture("action_authentication_denied.json")
@@ -8513,6 +8600,7 @@ class TestModelRoundTrip:
                 "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
                 "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
                 "accepted_user_id": None,
+                "role_slug": "admin",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -8542,6 +8630,7 @@ class TestModelRoundTrip:
                 "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
                 "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
                 "accepted_user_id": None,
+                "role_slug": "admin",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -8572,6 +8661,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -8587,6 +8677,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
@@ -8602,6 +8693,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -8612,6 +8704,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_invitation_accepted_data_round_trips_unknown_enum_values(self):
         data = {
@@ -8625,6 +8718,7 @@ class TestModelRoundTrip:
             "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
             "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
             "accepted_user_id": None,
+            "role_slug": "admin",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -8654,6 +8748,7 @@ class TestModelRoundTrip:
                 "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
                 "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
                 "accepted_user_id": None,
+                "role_slug": "admin",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -8683,6 +8778,7 @@ class TestModelRoundTrip:
                 "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
                 "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
                 "accepted_user_id": None,
+                "role_slug": "admin",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -8713,6 +8809,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -8728,6 +8825,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
@@ -8743,6 +8841,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -8753,6 +8852,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_invitation_created_data_round_trips_unknown_enum_values(self):
         data = {
@@ -8766,6 +8866,7 @@ class TestModelRoundTrip:
             "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
             "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
             "accepted_user_id": None,
+            "role_slug": "admin",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -8795,6 +8896,7 @@ class TestModelRoundTrip:
                 "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
                 "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
                 "accepted_user_id": None,
+                "role_slug": "admin",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -8824,6 +8926,7 @@ class TestModelRoundTrip:
                 "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
                 "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
                 "accepted_user_id": None,
+                "role_slug": "admin",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -8854,6 +8957,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -8869,6 +8973,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
@@ -8884,6 +8989,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -8894,6 +9000,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_invitation_resent_data_round_trips_unknown_enum_values(self):
         data = {
@@ -8907,6 +9014,7 @@ class TestModelRoundTrip:
             "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
             "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
             "accepted_user_id": None,
+            "role_slug": "admin",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -8936,6 +9044,7 @@ class TestModelRoundTrip:
                 "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
                 "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
                 "accepted_user_id": None,
+                "role_slug": "admin",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -8965,6 +9074,7 @@ class TestModelRoundTrip:
                 "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
                 "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
                 "accepted_user_id": None,
+                "role_slug": "admin",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
             },
@@ -8995,6 +9105,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -9010,6 +9121,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
@@ -9025,6 +9137,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -9035,6 +9148,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_invitation_revoked_data_round_trips_unknown_enum_values(self):
         data = {
@@ -9048,6 +9162,7 @@ class TestModelRoundTrip:
             "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
             "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
             "accepted_user_id": None,
+            "role_slug": "admin",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
@@ -13336,6 +13451,162 @@ class TestModelRoundTrip:
         instance = VaultNamesListedData.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_waitlist_user_approved_round_trip(self):
+        data = load_fixture("waitlist_user_approved.json")
+        instance = WaitlistUserApproved.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistUserApproved.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_user_approved_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "waitlist_user.approved",
+            "data": {
+                "object": "waitlist_user",
+                "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "approved_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = WaitlistUserApproved.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_waitlist_user_approved_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "waitlist_user.approved",
+            "data": {
+                "object": "waitlist_user",
+                "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "approved_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = WaitlistUserApproved.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_waitlist_user_created_round_trip(self):
+        data = load_fixture("waitlist_user_created.json")
+        instance = WaitlistUserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistUserCreated.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_user_created_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "waitlist_user.created",
+            "data": {
+                "object": "waitlist_user",
+                "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "approved_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = WaitlistUserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_waitlist_user_created_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "waitlist_user.created",
+            "data": {
+                "object": "waitlist_user",
+                "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "approved_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = WaitlistUserCreated.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_waitlist_user_denied_round_trip(self):
+        data = load_fixture("waitlist_user_denied.json")
+        instance = WaitlistUserDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = WaitlistUserDenied.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_waitlist_user_denied_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "waitlist_user.denied",
+            "data": {
+                "object": "waitlist_user",
+                "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "approved_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = WaitlistUserDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_waitlist_user_denied_omits_absent_optional_non_nullable_fields(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "waitlist_user.denied",
+            "data": {
+                "object": "waitlist_user",
+                "id": "wl_user_01E4ZCR3C56J083X43JQXF3JK5",
+                "email": "marcelina.davis@example.com",
+                "state": "pending",
+                "approved_at": None,
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = WaitlistUserDenied.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
     def test_jwt_template_response_round_trip(self):
         data = load_fixture("jwt_template_response.json")
         instance = JWTTemplateResponse.from_dict(data)
@@ -14024,6 +14295,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
@@ -14041,6 +14313,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["token"] == data["token"]
@@ -14058,6 +14331,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
@@ -14070,6 +14344,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_user_invite_round_trips_unknown_enum_values(self):
         data = {
@@ -14083,6 +14358,7 @@ class TestModelRoundTrip:
             "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
             "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
             "accepted_user_id": None,
+            "role_slug": "admin",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
@@ -15756,6 +16032,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
@@ -15773,6 +16050,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] == data["organization_id"]
         assert serialized["inviter_user_id"] == data["inviter_user_id"]
         assert serialized["accepted_user_id"] == data["accepted_user_id"]
+        assert serialized["role_slug"] == data["role_slug"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
         assert serialized["token"] == data["token"]
@@ -15790,6 +16068,7 @@ class TestModelRoundTrip:
             "organization_id": None,
             "inviter_user_id": None,
             "accepted_user_id": None,
+            "role_slug": None,
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",
@@ -15802,6 +16081,7 @@ class TestModelRoundTrip:
         assert serialized["organization_id"] is None
         assert serialized["inviter_user_id"] is None
         assert serialized["accepted_user_id"] is None
+        assert serialized["role_slug"] is None
 
     def test_invitation_round_trips_unknown_enum_values(self):
         data = {
@@ -15815,6 +16095,7 @@ class TestModelRoundTrip:
             "organization_id": "org_01E4ZCR3C56J083X43JQXF3JK5",
             "inviter_user_id": "user_01HYGBX8ZGD19949T3BM4FW1C3",
             "accepted_user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+            "role_slug": "admin",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
             "token": "Z1uX3RbwcIl5fIGJJJCXXisdI",

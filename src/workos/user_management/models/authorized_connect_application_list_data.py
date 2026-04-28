@@ -29,7 +29,7 @@ class AuthorizedConnectApplicationListData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "authorized_connect_application"),
                 id=data["id"],
                 granted_scopes=data["granted_scopes"],
                 application=ConnectApplication.from_dict(

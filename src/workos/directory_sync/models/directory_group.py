@@ -37,7 +37,7 @@ class DirectoryGroup:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "directory_group"),
                 id=data["id"],
                 idp_id=data["idp_id"],
                 directory_id=data["directory_id"],

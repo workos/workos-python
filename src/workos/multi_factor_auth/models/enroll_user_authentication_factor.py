@@ -25,7 +25,7 @@ class EnrollUserAuthenticationFactor:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                type=data["type"],
+                type=data.get("type", "totp"),
                 totp_issuer=data.get("totp_issuer"),
                 totp_user=data.get("totp_user"),
                 totp_secret=data.get("totp_secret"),

@@ -45,7 +45,7 @@ class User:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "user"),
                 id=data["id"],
                 first_name=data["first_name"],
                 last_name=data["last_name"],

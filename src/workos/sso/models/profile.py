@@ -50,7 +50,7 @@ class Profile:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "profile"),
                 id=data["id"],
                 organization_id=data["organization_id"],
                 connection_id=data["connection_id"],

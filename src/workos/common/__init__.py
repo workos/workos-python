@@ -237,7 +237,6 @@ from .models import (
 from .models import FlagUpdatedData as FlagUpdatedData
 from .models import FlagUpdatedDataOwner as FlagUpdatedDataOwner
 from .models import GenerateLinkIntent as GenerateLinkIntent
-from .models import Group as Group
 from .models import GroupCreated as GroupCreated
 from .models import GroupDeleted as GroupDeleted
 from .models import GroupMemberAdded as GroupMemberAdded
@@ -386,5 +385,9 @@ from .models import VaultMetadataRead as VaultMetadataRead
 from .models import VaultMetadataReadData as VaultMetadataReadData
 from .models import VaultNamesListed as VaultNamesListed
 from .models import VaultNamesListedData as VaultNamesListedData
+from .models import WaitlistUser as WaitlistUser
+from .models import WaitlistUserApproved as WaitlistUserApproved
+from .models import WaitlistUserCreated as WaitlistUserCreated
+from .models import WaitlistUserDenied as WaitlistUserDenied
 from .models import WebhookEndpointJsonStatus as WebhookEndpointJsonStatus
 from .models import WidgetSessionTokenScopes as WidgetSessionTokenScopes

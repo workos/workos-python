@@ -39,7 +39,7 @@ class AuthorizationResource:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "authorization_resource"),
                 name=data["name"],
                 description=data["description"],
                 organization_id=data["organization_id"],

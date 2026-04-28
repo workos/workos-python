@@ -24,7 +24,7 @@ class EmailChangeConfirmation:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "email_change_confirmation"),
                 user=EmailChangeConfirmationUser.from_dict(
                     cast(Dict[str, Any], data["user"])
                 ),

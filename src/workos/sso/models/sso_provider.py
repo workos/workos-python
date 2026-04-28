@@ -14,7 +14,6 @@ class SSOProvider(str, Enum):
 
     APPLE_OAUTH = "AppleOAuth"
     BITBUCKET_OAUTH = "BitbucketOAuth"
-    DISCORD_OAUTH = "DiscordOAuth"
     GIT_HUB_OAUTH = "GitHubOAuth"
     GIT_LAB_OAUTH = "GitLabOAuth"
     GOOGLE_OAUTH = "GoogleOAuth"
@@ -40,7 +39,6 @@ class SSOProvider(str, Enum):
 SSOProviderLiteral: TypeAlias = Literal[
     "AppleOAuth",
     "BitbucketOAuth",
-    "DiscordOAuth",
     "GitHubOAuth",
     "GitLabOAuth",
     "GoogleOAuth",

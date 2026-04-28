@@ -5,7 +5,8 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Literal, Optional, TypeAlias
+from typing import Optional
+from typing import Literal, TypeAlias
 
 
 class UserManagementAuthenticationProvider(str, Enum):
@@ -14,7 +15,6 @@ class UserManagementAuthenticationProvider(str, Enum):
     AUTHKIT = "authkit"
     APPLE_OAUTH = "AppleOAuth"
     BITBUCKET_OAUTH = "BitbucketOAuth"
-    DISCORD_OAUTH = "DiscordOAuth"
     GIT_HUB_OAUTH = "GitHubOAuth"
     GIT_LAB_OAUTH = "GitLabOAuth"
     GOOGLE_OAUTH = "GoogleOAuth"
@@ -43,7 +43,6 @@ UserManagementAuthenticationProviderLiteral: TypeAlias = Literal[
     "authkit",
     "AppleOAuth",
     "BitbucketOAuth",
-    "DiscordOAuth",
     "GitHubOAuth",
     "GitLabOAuth",
     "GoogleOAuth",

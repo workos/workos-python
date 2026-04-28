@@ -36,7 +36,9 @@ class EmailVerificationCodeSessionAuthenticateRequest:
             return cls(
                 client_id=data["client_id"],
                 client_secret=data["client_secret"],
-                grant_type=data["grant_type"],
+                grant_type=data.get(
+                    "grant_type", "urn:workos:oauth:grant-type:email-verification:code"
+                ),
                 code=data["code"],
                 pending_authentication_token=data["pending_authentication_token"],
                 ip_address=data.get("ip_address"),

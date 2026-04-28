@@ -90,6 +90,9 @@ class CreateWebhookEndpointEvents(str, Enum):
     PERMISSION_UPDATED = "permission.updated"
     SESSION_CREATED = "session.created"
     SESSION_REVOKED = "session.revoked"
+    WAITLIST_USER_APPROVED = "waitlist_user.approved"
+    WAITLIST_USER_CREATED = "waitlist_user.created"
+    WAITLIST_USER_DENIED = "waitlist_user.denied"
 
     @classmethod
     def _missing_(cls, value: object) -> Optional["CreateWebhookEndpointEvents"]:
@@ -176,4 +179,7 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "permission.updated",
     "session.created",
     "session.revoked",
+    "waitlist_user.approved",
+    "waitlist_user.created",
+    "waitlist_user.denied",
 ]

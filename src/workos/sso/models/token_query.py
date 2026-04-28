@@ -28,7 +28,7 @@ class TokenQuery:
                 client_id=data["client_id"],
                 client_secret=data["client_secret"],
                 code=data["code"],
-                grant_type=data["grant_type"],
+                grant_type=data.get("grant_type", "authorization_code"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("TokenQuery", e)

@@ -355,7 +355,6 @@ from .flag_updated_context_previous_attribute_data import (
 from .flag_updated_data import FlagUpdatedData as FlagUpdatedData
 from .flag_updated_data_owner import FlagUpdatedDataOwner as FlagUpdatedDataOwner
 from .generate_link_intent import GenerateLinkIntent as GenerateLinkIntent
-from .group import Group as Group
 from .group_created import GroupCreated as GroupCreated
 from .group_deleted import GroupDeleted as GroupDeleted
 from .group_member_added import GroupMemberAdded as GroupMemberAdded
@@ -580,6 +579,10 @@ from .vault_metadata_read import VaultMetadataRead as VaultMetadataRead
 from .vault_metadata_read_data import VaultMetadataReadData as VaultMetadataReadData
 from .vault_names_listed import VaultNamesListed as VaultNamesListed
 from .vault_names_listed_data import VaultNamesListedData as VaultNamesListedData
+from .waitlist_user import WaitlistUser as WaitlistUser
+from .waitlist_user_approved import WaitlistUserApproved as WaitlistUserApproved
+from .waitlist_user_created import WaitlistUserCreated as WaitlistUserCreated
+from .waitlist_user_denied import WaitlistUserDenied as WaitlistUserDenied
 from .webhook_endpoint_json_status import (
     WebhookEndpointJsonStatus as WebhookEndpointJsonStatus,
 )

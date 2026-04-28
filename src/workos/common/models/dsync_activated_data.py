@@ -45,7 +45,7 @@ class DsyncActivatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "directory"),
                 id=data["id"],
                 type=DsyncActivatedDataType(data["type"]),
                 state=DsyncActivatedDataState(data["state"]),

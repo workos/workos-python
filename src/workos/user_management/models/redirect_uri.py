@@ -29,7 +29,7 @@ class RedirectUri:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "redirect_uri"),
                 id=data["id"],
                 uri=data["uri"],
                 default=data["default"],

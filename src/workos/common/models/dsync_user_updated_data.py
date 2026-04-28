@@ -69,7 +69,7 @@ class DsyncUserUpdatedData:
         """Deserialize from a dictionary."""
         try:
             return cls(
-                object=data["object"],
+                object=data.get("object", "directory_user"),
                 id=data["id"],
                 directory_id=data["directory_id"],
                 organization_id=data["organization_id"],

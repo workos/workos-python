@@ -26,7 +26,7 @@ class AdminPortal:
         success_url: Optional[str] = None,
         intent: Optional[Union[GenerateLinkIntent, str]] = None,
         intent_options: Optional[IntentOptions] = None,
-        admin_emails: Optional[List[str]] = None,
+        it_contact_emails: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> PortalLinkResponse:
         """Generate a Portal Link
@@ -46,7 +46,7 @@ class AdminPortal:
                 - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
                 - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key
             intent_options: Options to configure the Admin Portal based on the intent.
-            admin_emails: The email addresses of the IT admins to grant access to the Admin Portal for the given organization. Accepts up to 20 emails.
+            it_contact_emails: The email addresses of the IT contacts to grant access to the Admin Portal for the given organization. Accepts up to 20 emails.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -71,7 +71,7 @@ class AdminPortal:
                 "intent_options": intent_options.to_dict()
                 if intent_options is not None
                 else None,
-                "admin_emails": admin_emails,
+                "it_contact_emails": it_contact_emails,
             }.items()
             if v is not None
         }
@@ -98,7 +98,7 @@ class AsyncAdminPortal:
         success_url: Optional[str] = None,
         intent: Optional[Union[GenerateLinkIntent, str]] = None,
         intent_options: Optional[IntentOptions] = None,
-        admin_emails: Optional[List[str]] = None,
+        it_contact_emails: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> PortalLinkResponse:
         """Generate a Portal Link
@@ -118,7 +118,7 @@ class AsyncAdminPortal:
                 - `certificate_renewal` - Launch Admin Portal for renewing SAML Certificates
                 - `bring_your_own_key` - Launch Admin Portal for configuring Bring Your Own Key
             intent_options: Options to configure the Admin Portal based on the intent.
-            admin_emails: The email addresses of the IT admins to grant access to the Admin Portal for the given organization. Accepts up to 20 emails.
+            it_contact_emails: The email addresses of the IT contacts to grant access to the Admin Portal for the given organization. Accepts up to 20 emails.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -143,7 +143,7 @@ class AsyncAdminPortal:
                 "intent_options": intent_options.to_dict()
                 if intent_options is not None
                 else None,
-                "admin_emails": admin_emails,
+                "it_contact_emails": it_contact_emails,
             }.items()
             if v is not None
         }

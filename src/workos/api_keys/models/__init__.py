@@ -5,6 +5,12 @@ from .api_key_owner import ApiKeyOwner as ApiKeyOwner
 from .api_key_validation_response import (
     ApiKeyValidationResponse as ApiKeyValidationResponse,
 )
+from .api_key_validation_response_api_key import (
+    ApiKeyValidationResponseApiKey as ApiKeyValidationResponseApiKey,
+)
+from .api_key_validation_response_api_key_owner import (
+    ApiKeyValidationResponseApiKeyOwner as ApiKeyValidationResponseApiKeyOwner,
+)
 from .api_key_with_value import ApiKeyWithValue as ApiKeyWithValue
 from .api_key_with_value_owner import ApiKeyWithValueOwner as ApiKeyWithValueOwner
 from .create_organization_api_key import (

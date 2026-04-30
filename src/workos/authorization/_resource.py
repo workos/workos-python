@@ -16,7 +16,7 @@ from .models import (
     Role,
     RoleAssignment,
     RoleList,
-    UserOrganizationMembershipBaseListData,
+    UserOrganizationMembershipBaseWithUser,
 )
 from .models import AuthorizationAssignment, AuthorizationOrder, PermissionsOrder
 from .._pagination import AsyncPage, SyncPage
@@ -924,7 +924,7 @@ class Authorization:
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[UserOrganizationMembershipBaseListData]:
+    ) -> SyncPage[UserOrganizationMembershipBaseWithUser]:
         """List memberships for a resource by external ID
 
         Returns all organization memberships that have a specific permission on a resource, using the resource's external ID. This is useful for answering "Who can access this resource?" when you only have the external ID.
@@ -942,7 +942,7 @@ class Authorization:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            SyncPage[UserOrganizationMembershipBaseListData]
+            SyncPage[UserOrganizationMembershipBaseWithUser]
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -970,7 +970,7 @@ class Authorization:
         return self._client.request_page(
             method="get",
             path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
-            model=UserOrganizationMembershipBaseListData,
+            model=UserOrganizationMembershipBaseWithUser,
             params=params,
             request_options=request_options,
         )
@@ -1254,7 +1254,7 @@ class Authorization:
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[UserOrganizationMembershipBaseListData]:
+    ) -> SyncPage[UserOrganizationMembershipBaseWithUser]:
         """List organization memberships for resource
 
         Returns all organization memberships that have a specific permission on a resource instance. This is useful for answering "Who can access this resource?".
@@ -1270,7 +1270,7 @@ class Authorization:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            SyncPage[UserOrganizationMembershipBaseListData]
+            SyncPage[UserOrganizationMembershipBaseWithUser]
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -1298,7 +1298,7 @@ class Authorization:
         return self._client.request_page(
             method="get",
             path=f"authorization/resources/{resource_id}/organization_memberships",
-            model=UserOrganizationMembershipBaseListData,
+            model=UserOrganizationMembershipBaseWithUser,
             params=params,
             request_options=request_options,
         )
@@ -2590,7 +2590,7 @@ class AsyncAuthorization:
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[UserOrganizationMembershipBaseListData]:
+    ) -> AsyncPage[UserOrganizationMembershipBaseWithUser]:
         """List memberships for a resource by external ID
 
         Returns all organization memberships that have a specific permission on a resource, using the resource's external ID. This is useful for answering "Who can access this resource?" when you only have the external ID.
@@ -2608,7 +2608,7 @@ class AsyncAuthorization:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AsyncPage[UserOrganizationMembershipBaseListData]
+            AsyncPage[UserOrganizationMembershipBaseWithUser]
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -2636,7 +2636,7 @@ class AsyncAuthorization:
         return await self._client.request_page(
             method="get",
             path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
-            model=UserOrganizationMembershipBaseListData,
+            model=UserOrganizationMembershipBaseWithUser,
             params=params,
             request_options=request_options,
         )
@@ -2920,7 +2920,7 @@ class AsyncAuthorization:
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[UserOrganizationMembershipBaseListData]:
+    ) -> AsyncPage[UserOrganizationMembershipBaseWithUser]:
         """List organization memberships for resource
 
         Returns all organization memberships that have a specific permission on a resource instance. This is useful for answering "Who can access this resource?".
@@ -2936,7 +2936,7 @@ class AsyncAuthorization:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AsyncPage[UserOrganizationMembershipBaseListData]
+            AsyncPage[UserOrganizationMembershipBaseWithUser]
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -2964,7 +2964,7 @@ class AsyncAuthorization:
         return await self._client.request_page(
             method="get",
             path=f"authorization/resources/{resource_id}/organization_memberships",
-            model=UserOrganizationMembershipBaseListData,
+            model=UserOrganizationMembershipBaseWithUser,
             params=params,
             request_options=request_options,
         )

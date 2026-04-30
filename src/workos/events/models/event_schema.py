@@ -66,6 +66,8 @@ from workos.common.models.dsync_group_deleted import DsyncGroupDeleted
 from workos.common.models.dsync_group_updated import DsyncGroupUpdated
 from workos.common.models.dsync_group_user_added import DsyncGroupUserAdded
 from workos.common.models.dsync_group_user_removed import DsyncGroupUserRemoved
+from workos.common.models.dsync_token_created import DsyncTokenCreated
+from workos.common.models.dsync_token_deleted import DsyncTokenDeleted
 from workos.common.models.dsync_user_created import DsyncUserCreated
 from workos.common.models.dsync_user_deleted import DsyncUserDeleted
 from workos.common.models.dsync_user_updated import DsyncUserUpdated
@@ -188,6 +190,8 @@ EventSchemaVariant = Union[
     DsyncGroupUpdated,
     DsyncGroupUserAdded,
     DsyncGroupUserRemoved,
+    DsyncTokenCreated,
+    DsyncTokenDeleted,
     DsyncUserCreated,
     DsyncUserDeleted,
     DsyncUserUpdated,
@@ -288,6 +292,8 @@ class EventSchema:
         "dsync.group.updated": DsyncGroupUpdated,
         "dsync.group.user_added": DsyncGroupUserAdded,
         "dsync.group.user_removed": DsyncGroupUserRemoved,
+        "dsync.token.created": DsyncTokenCreated,
+        "dsync.token.deleted": DsyncTokenDeleted,
         "dsync.user.created": DsyncUserCreated,
         "dsync.user.deleted": DsyncUserDeleted,
         "dsync.user.updated": DsyncUserUpdated,

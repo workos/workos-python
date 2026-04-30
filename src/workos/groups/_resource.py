@@ -8,10 +8,7 @@ if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import Group
-from workos.authorization.models.user_organization_membership_base_list_data import (
-    UserOrganizationMembershipBaseListData,
-)
+from .models import Group, UserOrganizationMembershipBaseListData
 from .models import GroupsOrder
 from .._pagination import AsyncPage, SyncPage
 

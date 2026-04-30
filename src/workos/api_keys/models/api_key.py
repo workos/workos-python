@@ -14,7 +14,7 @@ from .api_key_owner import ApiKeyOwner
 
 @dataclass(slots=True)
 class ApiKey:
-    """The API Key object if the value is valid, or `null` if invalid."""
+    """Api Key model."""
 
     object: Literal["api_key"]
     """Distinguishes the API Key object."""

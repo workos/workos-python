@@ -33,6 +33,6 @@ from .update_authorization_resource import (
 )
 from .update_organization_role import UpdateOrganizationRole as UpdateOrganizationRole
 from .update_role import UpdateRole as UpdateRole
-from .user_organization_membership_base_list_data import (
-    UserOrganizationMembershipBaseListData as UserOrganizationMembershipBaseListData,
+from .user_organization_membership_base_with_user import (
+    UserOrganizationMembershipBaseWithUser as UserOrganizationMembershipBaseWithUser,
 )

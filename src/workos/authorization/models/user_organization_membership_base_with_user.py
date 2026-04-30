@@ -10,16 +10,15 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from workos.authorization.models.slim_role import SlimRole
-from .user import User
-from workos.common.models.organization_membership_status import (
-    OrganizationMembershipStatus,
+from workos.user_management.models.user import User
+from workos.common.models.user_organization_membership_base_with_user_status import (
+    UserOrganizationMembershipBaseWithUserStatus,
 )
 
 
 @dataclass(slots=True)
-class OrganizationMembership:
-    """Organization Membership model."""
+class UserOrganizationMembershipBaseWithUser:
+    """User Organization Membership Base With User model."""
 
     object: Literal["organization_membership"]
     """Distinguishes the organization membership object."""
@@ -29,7 +28,7 @@ class OrganizationMembership:
     """The ID of the user."""
     organization_id: str
     """The ID of the organization which the user belongs to."""
-    status: "OrganizationMembershipStatus"
+    status: "UserOrganizationMembershipBaseWithUserStatus"
     """The status of the organization membership. One of `active`, `inactive`, or `pending`."""
     directory_managed: bool
     """Whether this organization membership is managed by a directory sync connection."""
@@ -37,8 +36,6 @@ class OrganizationMembership:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    role: "SlimRole"
-    """The primary role assigned to the user within the organization."""
     user: "User"
     """The user that belongs to the organization through this membership."""
     organization_name: Optional[str] = None
@@ -47,7 +44,9 @@ class OrganizationMembership:
     """An object containing IdP-sourced attributes from the linked [Directory User](https://workos.com/docs/reference/directory-sync/directory-user) or [SSO Profile](https://workos.com/docs/reference/sso/profile). Directory User attributes take precedence when both are linked."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "OrganizationMembership":
+    def from_dict(
+        cls, data: Dict[str, Any]
+    ) -> "UserOrganizationMembershipBaseWithUser":
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -55,17 +54,16 @@ class OrganizationMembership:
                 id=data["id"],
                 user_id=data["user_id"],
                 organization_id=data["organization_id"],
-                status=OrganizationMembershipStatus(data["status"]),
+                status=UserOrganizationMembershipBaseWithUserStatus(data["status"]),
                 directory_managed=data["directory_managed"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                role=SlimRole.from_dict(cast(Dict[str, Any], data["role"])),
                 user=User.from_dict(cast(Dict[str, Any], data["user"])),
                 organization_name=data.get("organization_name"),
                 custom_attributes=data.get("custom_attributes"),
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("OrganizationMembership", e)
+            _raise_deserialize_error("UserOrganizationMembershipBaseWithUser", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -80,7 +78,6 @@ class OrganizationMembership:
         result["directory_managed"] = self.directory_managed
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
-        result["role"] = self.role.to_dict()
         result["user"] = self.user.to_dict()
         if self.organization_name is not None:
             result["organization_name"] = self.organization_name

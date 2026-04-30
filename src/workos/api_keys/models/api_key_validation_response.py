@@ -7,21 +7,23 @@ from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 
-from .api_key import ApiKey
+from .api_key_validation_response_api_key import ApiKeyValidationResponseApiKey
 
 
 @dataclass(slots=True)
 class ApiKeyValidationResponse:
     """Api Key Validation Response model."""
 
-    api_key: Optional["ApiKey"]
+    api_key: Optional["ApiKeyValidationResponseApiKey"]
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ApiKeyValidationResponse":
         """Deserialize from a dictionary."""
         try:
             return cls(
-                api_key=ApiKey.from_dict(cast(Dict[str, Any], _v_api_key))
+                api_key=ApiKeyValidationResponseApiKey.from_dict(
+                    cast(Dict[str, Any], _v_api_key)
+                )
                 if (_v_api_key := data["api_key"]) is not None
                 else None,
             )

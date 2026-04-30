@@ -14,7 +14,7 @@ from workos.authorization.models import (
     Role,
     RoleAssignment,
     RoleList,
-    UserOrganizationMembershipBaseListData,
+    UserOrganizationMembershipBaseWithUser,
     AuthorizationAssignment,
     AuthorizationOrder,
     PermissionsOrder,
@@ -447,7 +447,7 @@ class TestAuthorization:
 
     def test_list_memberships_for_resource_by_external_id(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("list_user_organization_membership_base_list_data.json"),
+            json=load_fixture("list_user_organization_membership_base_with_user.json"),
         )
         page = workos.authorization.list_memberships_for_resource_by_external_id(
             "test_organization_id",
@@ -457,7 +457,7 @@ class TestAuthorization:
         )
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
+        assert isinstance(page.data[0], UserOrganizationMembershipBaseWithUser)
 
     def test_list_memberships_for_resource_by_external_id_empty_page(
         self, workos, httpx_mock
@@ -611,14 +611,14 @@ class TestAuthorization:
 
     def test_list_memberships_for_resource(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("list_user_organization_membership_base_list_data.json"),
+            json=load_fixture("list_user_organization_membership_base_with_user.json"),
         )
         page = workos.authorization.list_memberships_for_resource(
             "test_resource_id", permission_slug="test_permission_slug"
         )
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
+        assert isinstance(page.data[0], UserOrganizationMembershipBaseWithUser)
 
     def test_list_memberships_for_resource_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -1335,7 +1335,7 @@ class TestAsyncAuthorization:
         self, async_workos, httpx_mock
     ):
         httpx_mock.add_response(
-            json=load_fixture("list_user_organization_membership_base_list_data.json")
+            json=load_fixture("list_user_organization_membership_base_with_user.json")
         )
         page = await async_workos.authorization.list_memberships_for_resource_by_external_id(
             "test_organization_id",
@@ -1345,7 +1345,7 @@ class TestAsyncAuthorization:
         )
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
+        assert isinstance(page.data[0], UserOrganizationMembershipBaseWithUser)
 
     @pytest.mark.asyncio
     async def test_list_memberships_for_resource_by_external_id_empty_page(
@@ -1499,14 +1499,14 @@ class TestAsyncAuthorization:
     @pytest.mark.asyncio
     async def test_list_memberships_for_resource(self, async_workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("list_user_organization_membership_base_list_data.json")
+            json=load_fixture("list_user_organization_membership_base_with_user.json")
         )
         page = await async_workos.authorization.list_memberships_for_resource(
             "test_resource_id", permission_slug="test_permission_slug"
         )
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], UserOrganizationMembershipBaseListData)
+        assert isinstance(page.data[0], UserOrganizationMembershipBaseWithUser)
 
     @pytest.mark.asyncio
     async def test_list_memberships_for_resource_empty_page(

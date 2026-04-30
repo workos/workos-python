@@ -14,6 +14,7 @@ class EventContextActorSource(str, Enum):
 
     API = "api"
     DASHBOARD = "dashboard"
+    ADMIN_PORTAL = "admin_portal"
     SYSTEM = "system"
 
     @classmethod
@@ -26,4 +27,6 @@ class EventContextActorSource(str, Enum):
         return unknown
 
 
-EventContextActorSourceLiteral: TypeAlias = Literal["api", "dashboard", "system"]
+EventContextActorSourceLiteral: TypeAlias = Literal[
+    "api", "dashboard", "admin_portal", "system"
+]

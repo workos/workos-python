@@ -9,7 +9,7 @@ from workos._types import _raise_deserialize_error
 
 @dataclass(slots=True)
 class ApiKeyCreatedDataOwner:
-    """The owner of the API key."""
+    """Api Key Created Data Owner model."""
 
     type: Literal["organization"]
     """The type of the API key owner."""

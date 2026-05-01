@@ -1,7 +1,7 @@
 {
   "version": 2,
   "language": "python",
-  "generatedAt": "2026-04-28T16:15:39.420Z",
+  "generatedAt": "2026-05-01T16:11:18.992Z",
   "files": [
     "src/workos/_client.py",
     "src/workos/admin_portal/__init__.py",

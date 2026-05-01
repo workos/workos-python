@@ -271,3 +271,35 @@ class TestAsyncSSOPKCECodeExchange:
         request = httpx_mock.get_request()
         body = json.loads(request.content)
         assert body["code_verifier"] == "test_verifier_abc"
+
+
+class TestGetJwksUrl:
+    def test_uses_configured_client_id(self, workos):
+        url = workos.user_management.get_jwks_url()
+        assert url == "https://api.workos.com/sso/jwks/client_test"
+
+    def test_explicit_client_id_overrides_default(self, workos):
+        url = workos.user_management.get_jwks_url("client_other")
+        assert url == "https://api.workos.com/sso/jwks/client_other"
+
+    def test_raises_when_no_client_id_configured(self):
+        from workos import WorkOSClient
+        from workos._errors import ConfigurationError
+
+        client = WorkOSClient(api_key="sk_test_abc")
+        try:
+            with pytest.raises(ConfigurationError):
+                client.user_management.get_jwks_url()
+        finally:
+            client.close()
+
+
+@pytest.mark.asyncio
+class TestAsyncGetJwksUrl:
+    async def test_uses_configured_client_id(self, async_workos):
+        url = async_workos.user_management.get_jwks_url()
+        assert url == "https://api.workos.com/sso/jwks/client_test"
+
+    async def test_explicit_client_id_overrides_default(self, async_workos):
+        url = async_workos.user_management.get_jwks_url("client_other")
+        assert url == "https://api.workos.com/sso/jwks/client_other"

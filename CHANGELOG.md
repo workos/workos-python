@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.2.0](https://github.com/workos/workos-python/compare/v6.1.0...v6.2.0) (2026-05-01)
+
+
+### Features
+
+* add `get_jwks_url` helper to UserManagement ([#644](https://github.com/workos/workos-python/issues/644)) ([53134d3](https://github.com/workos/workos-python/commit/53134d32f168dd0da606672125e8cdd221832761))
+* **generated:** use explicit re-export form in service __init__.py ([#645](https://github.com/workos/workos-python/issues/645)) ([7ecb2e9](https://github.com/workos/workos-python/commit/7ecb2e9fafa030afdf27061b2b45f9d59fe2e900))
+
+
+### Bug Fixes
+
+* set canonical User-Agent header format ([#643](https://github.com/workos/workos-python/issues/643)) ([f9cf9a1](https://github.com/workos/workos-python/commit/f9cf9a1240556c31a0d028e74a255704d2e88380))
+
 ## [6.1.0](https://github.com/workos/workos-python/compare/v6.0.8...v6.1.0) (2026-04-28)
 
 

@@ -2098,6 +2098,23 @@ class UserManagement:
 
     # @oagen-ignore-start
 
+    def get_jwks_url(self, client_id: Optional[str] = None) -> str:
+        """Get the JWKS URL used to verify access tokens.
+
+        Use this when integrating with a JWT library that fetches and caches
+        the JWKS itself (e.g. ``PyJWKClient``). For the JWKS document, call
+        :meth:`get_jwks` instead.
+
+        Args:
+            client_id: The WorkOS client ID. Defaults to the client's
+                configured client_id.
+
+        Returns:
+            The JWKS URL.
+        """
+        resolved_client_id = client_id or self._client._require_client_id()
+        return f"{self._client.base_url}sso/jwks/{resolved_client_id}"
+
     def load_sealed_session(
         self,
         *,
@@ -4265,6 +4282,23 @@ class AsyncUserManagement:
         )
 
     # @oagen-ignore-start
+
+    def get_jwks_url(self, client_id: Optional[str] = None) -> str:
+        """Get the JWKS URL used to verify access tokens.
+
+        Use this when integrating with a JWT library that fetches and caches
+        the JWKS itself (e.g. ``PyJWKClient``). For the JWKS document, call
+        :meth:`get_jwks` instead.
+
+        Args:
+            client_id: The WorkOS client ID. Defaults to the client's
+                configured client_id.
+
+        Returns:
+            The JWKS URL.
+        """
+        resolved_client_id = client_id or self._client._require_client_id()
+        return f"{self._client.base_url}sso/jwks/{resolved_client_id}"
 
     def load_sealed_session(
         self,

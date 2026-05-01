@@ -167,7 +167,7 @@ class _BaseWorkOSClient:
     ) -> Dict[str, str]:
         headers: Dict[str, str] = {
             "Content-Type": "application/json",
-            "User-Agent": f"workos-python/{VERSION} python/{platform.python_version()}",
+            "User-Agent": f"WorkOS Python/{platform.python_version()} Python SDK/{VERSION}",
         }
         if self._api_key:
             headers["Authorization"] = f"Bearer {self._api_key}"

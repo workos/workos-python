@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -64,7 +65,7 @@ class UserManagementOrganizationMembershipGroups:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/organization_memberships/{om_id}/groups",
+            path=f"user_management/organization_memberships/{quote(str(om_id), safe='')}/groups",
             model=Group,
             params=params,
             request_options=request_options,
@@ -122,7 +123,7 @@ class AsyncUserManagementOrganizationMembershipGroups:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/organization_memberships/{om_id}/groups",
+            path=f"user_management/organization_memberships/{quote(str(om_id), safe='')}/groups",
             model=Group,
             params=params,
             request_options=request_options,

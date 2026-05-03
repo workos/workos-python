@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -107,7 +108,7 @@ class SSO:
         """
         return self._client.request(
             method="get",
-            path=f"connections/{id}",
+            path=f"connections/{quote(str(id), safe='')}",
             model=Connection,
             request_options=request_options,
         )
@@ -135,7 +136,7 @@ class SSO:
         """
         self._client.request(
             method="delete",
-            path=f"connections/{id}",
+            path=f"connections/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -524,7 +525,7 @@ class AsyncSSO:
         """
         return await self._client.request(
             method="get",
-            path=f"connections/{id}",
+            path=f"connections/{quote(str(id), safe='')}",
             model=Connection,
             request_options=request_options,
         )
@@ -552,7 +553,7 @@ class AsyncSSO:
         """
         await self._client.request(
             method="delete",
-            path=f"connections/{id}",
+            path=f"connections/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -113,7 +114,7 @@ class Authorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         return self._client.request(
             method="post",
-            path=f"authorization/organization_memberships/{organization_membership_id}/check",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/check",
             body=body,
             model=AuthorizationCheck,
             request_options=request_options,
@@ -181,7 +182,7 @@ class Authorization:
             )
         return self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources",
             model=AuthorizationResource,
             params=params,
             request_options=request_options,
@@ -234,7 +235,7 @@ class Authorization:
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_id}/permissions",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources/{quote(str(resource_id), safe='')}/permissions",
             model=AuthorizationPermission,
             params=params,
             request_options=request_options,
@@ -289,7 +290,7 @@ class Authorization:
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_type_slug}/{external_id}/permissions",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}/permissions",
             model=AuthorizationPermission,
             params=params,
             request_options=request_options,
@@ -339,7 +340,7 @@ class Authorization:
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
             model=RoleAssignment,
             params=params,
             request_options=request_options,
@@ -384,7 +385,7 @@ class Authorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         return self._client.request(
             method="post",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
             body=body,
             model=RoleAssignment,
             request_options=request_options,
@@ -426,7 +427,7 @@ class Authorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         self._client.request(
             method="delete",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
             body=body,
             request_options=request_options,
         )
@@ -456,7 +457,7 @@ class Authorization:
         """
         self._client.request(
             method="delete",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments/{role_assignment_id}",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments/{quote(str(role_assignment_id), safe='')}",
             request_options=request_options,
         )
 
@@ -486,7 +487,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/roles",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles",
             model=RoleList,
             request_options=request_options,
         )
@@ -538,7 +539,7 @@ class Authorization:
         }
         return self._client.request(
             method="post",
-            path=f"authorization/organizations/{organization_id}/roles",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles",
             body=body,
             model=Role,
             request_options=request_options,
@@ -572,7 +573,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             model=Role,
             request_options=request_options,
         )
@@ -619,7 +620,7 @@ class Authorization:
         }
         return self._client.request(
             method="patch",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             body=body,
             model=Role,
             request_options=request_options,
@@ -652,7 +653,7 @@ class Authorization:
         """
         self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             request_options=request_options,
         )
 
@@ -691,7 +692,7 @@ class Authorization:
         }
         return self._client.request(
             method="post",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -731,7 +732,7 @@ class Authorization:
         }
         return self._client.request(
             method="put",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -764,7 +765,7 @@ class Authorization:
         """
         self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions/{permission_slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions/{quote(str(permission_slug), safe='')}",
             request_options=request_options,
         )
 
@@ -798,7 +799,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             model=AuthorizationResource,
             request_options=request_options,
         )
@@ -862,7 +863,7 @@ class Authorization:
                 )
         return self._client.request(
             method="patch",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             body=body,
             model=AuthorizationResource,
             request_options=request_options,
@@ -906,7 +907,7 @@ class Authorization:
         }
         self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             params=params,
             request_options=request_options,
         )
@@ -969,7 +970,7 @@ class Authorization:
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}/organization_memberships",
             model=UserOrganizationMembershipBaseListData,
             params=params,
             request_options=request_options,
@@ -1138,7 +1139,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             model=AuthorizationResource,
             request_options=request_options,
         )
@@ -1198,7 +1199,7 @@ class Authorization:
                 )
         return self._client.request(
             method="patch",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             body=body,
             model=AuthorizationResource,
             request_options=request_options,
@@ -1238,7 +1239,7 @@ class Authorization:
         }
         self._client.request(
             method="delete",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             params=params,
             request_options=request_options,
         )
@@ -1297,7 +1298,7 @@ class Authorization:
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/resources/{resource_id}/organization_memberships",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}/organization_memberships",
             model=UserOrganizationMembershipBaseListData,
             params=params,
             request_options=request_options,
@@ -1405,7 +1406,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/roles/{slug}",
+            path=f"authorization/roles/{quote(str(slug), safe='')}",
             model=Role,
             request_options=request_options,
         )
@@ -1450,7 +1451,7 @@ class Authorization:
         }
         return self._client.request(
             method="patch",
-            path=f"authorization/roles/{slug}",
+            path=f"authorization/roles/{quote(str(slug), safe='')}",
             body=body,
             model=Role,
             request_options=request_options,
@@ -1489,7 +1490,7 @@ class Authorization:
         }
         return self._client.request(
             method="post",
-            path=f"authorization/roles/{slug}/permissions",
+            path=f"authorization/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -1528,7 +1529,7 @@ class Authorization:
         }
         return self._client.request(
             method="put",
-            path=f"authorization/roles/{slug}/permissions",
+            path=f"authorization/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -1656,7 +1657,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             model=AuthorizationPermission,
             request_options=request_options,
         )
@@ -1700,7 +1701,7 @@ class Authorization:
         }
         return self._client.request(
             method="patch",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             body=body,
             model=AuthorizationPermission,
             request_options=request_options,
@@ -1729,7 +1730,7 @@ class Authorization:
         """
         self._client.request(
             method="delete",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             request_options=request_options,
         )
 
@@ -1779,7 +1780,7 @@ class AsyncAuthorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         return await self._client.request(
             method="post",
-            path=f"authorization/organization_memberships/{organization_membership_id}/check",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/check",
             body=body,
             model=AuthorizationCheck,
             request_options=request_options,
@@ -1847,7 +1848,7 @@ class AsyncAuthorization:
             )
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources",
             model=AuthorizationResource,
             params=params,
             request_options=request_options,
@@ -1900,7 +1901,7 @@ class AsyncAuthorization:
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_id}/permissions",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources/{quote(str(resource_id), safe='')}/permissions",
             model=AuthorizationPermission,
             params=params,
             request_options=request_options,
@@ -1955,7 +1956,7 @@ class AsyncAuthorization:
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_type_slug}/{external_id}/permissions",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}/permissions",
             model=AuthorizationPermission,
             params=params,
             request_options=request_options,
@@ -2005,7 +2006,7 @@ class AsyncAuthorization:
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
             model=RoleAssignment,
             params=params,
             request_options=request_options,
@@ -2050,7 +2051,7 @@ class AsyncAuthorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         return await self._client.request(
             method="post",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
             body=body,
             model=RoleAssignment,
             request_options=request_options,
@@ -2092,7 +2093,7 @@ class AsyncAuthorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         await self._client.request(
             method="delete",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
             body=body,
             request_options=request_options,
         )
@@ -2122,7 +2123,7 @@ class AsyncAuthorization:
         """
         await self._client.request(
             method="delete",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments/{role_assignment_id}",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments/{quote(str(role_assignment_id), safe='')}",
             request_options=request_options,
         )
 
@@ -2152,7 +2153,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/roles",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles",
             model=RoleList,
             request_options=request_options,
         )
@@ -2204,7 +2205,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="post",
-            path=f"authorization/organizations/{organization_id}/roles",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles",
             body=body,
             model=Role,
             request_options=request_options,
@@ -2238,7 +2239,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             model=Role,
             request_options=request_options,
         )
@@ -2285,7 +2286,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="patch",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             body=body,
             model=Role,
             request_options=request_options,
@@ -2318,7 +2319,7 @@ class AsyncAuthorization:
         """
         await self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             request_options=request_options,
         )
 
@@ -2357,7 +2358,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="post",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -2397,7 +2398,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="put",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -2430,7 +2431,7 @@ class AsyncAuthorization:
         """
         await self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions/{permission_slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions/{quote(str(permission_slug), safe='')}",
             request_options=request_options,
         )
 
@@ -2464,7 +2465,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             model=AuthorizationResource,
             request_options=request_options,
         )
@@ -2528,7 +2529,7 @@ class AsyncAuthorization:
                 )
         return await self._client.request(
             method="patch",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             body=body,
             model=AuthorizationResource,
             request_options=request_options,
@@ -2572,7 +2573,7 @@ class AsyncAuthorization:
         }
         await self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             params=params,
             request_options=request_options,
         )
@@ -2635,7 +2636,7 @@ class AsyncAuthorization:
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}/organization_memberships",
             model=UserOrganizationMembershipBaseListData,
             params=params,
             request_options=request_options,
@@ -2804,7 +2805,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             model=AuthorizationResource,
             request_options=request_options,
         )
@@ -2864,7 +2865,7 @@ class AsyncAuthorization:
                 )
         return await self._client.request(
             method="patch",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             body=body,
             model=AuthorizationResource,
             request_options=request_options,
@@ -2904,7 +2905,7 @@ class AsyncAuthorization:
         }
         await self._client.request(
             method="delete",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             params=params,
             request_options=request_options,
         )
@@ -2963,7 +2964,7 @@ class AsyncAuthorization:
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/resources/{resource_id}/organization_memberships",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}/organization_memberships",
             model=UserOrganizationMembershipBaseListData,
             params=params,
             request_options=request_options,
@@ -3071,7 +3072,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/roles/{slug}",
+            path=f"authorization/roles/{quote(str(slug), safe='')}",
             model=Role,
             request_options=request_options,
         )
@@ -3116,7 +3117,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="patch",
-            path=f"authorization/roles/{slug}",
+            path=f"authorization/roles/{quote(str(slug), safe='')}",
             body=body,
             model=Role,
             request_options=request_options,
@@ -3155,7 +3156,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="post",
-            path=f"authorization/roles/{slug}/permissions",
+            path=f"authorization/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -3194,7 +3195,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="put",
-            path=f"authorization/roles/{slug}/permissions",
+            path=f"authorization/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -3322,7 +3323,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             model=AuthorizationPermission,
             request_options=request_options,
         )
@@ -3366,7 +3367,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="patch",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             body=body,
             model=AuthorizationPermission,
             request_options=request_options,
@@ -3395,6 +3396,6 @@ class AsyncAuthorization:
         """
         await self._client.request(
             method="delete",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             request_options=request_options,
         )

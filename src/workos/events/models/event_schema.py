@@ -119,6 +119,7 @@ from workos.common.models.session_revoked import SessionRevoked
 from workos.common.models.user_created import UserCreated
 from workos.common.models.user_deleted import UserDeleted
 from workos.common.models.user_updated import UserUpdated
+from workos.common.models.vault_byok_key_deleted import VaultByokKeyDeleted
 from workos.common.models.vault_byok_key_verification_completed import (
     VaultByokKeyVerificationCompleted,
 )
@@ -233,6 +234,7 @@ EventSchemaVariant = Union[
     UserCreated,
     UserDeleted,
     UserUpdated,
+    VaultByokKeyDeleted,
     VaultByokKeyVerificationCompleted,
     VaultDataCreated,
     VaultDataDeleted,
@@ -333,6 +335,7 @@ class EventSchema:
         "user.created": UserCreated,
         "user.deleted": UserDeleted,
         "user.updated": UserUpdated,
+        "vault.byok_key.deleted": VaultByokKeyDeleted,
         "vault.byok_key.verification_completed": VaultByokKeyVerificationCompleted,
         "vault.data.created": VaultDataCreated,
         "vault.data.deleted": VaultDataDeleted,

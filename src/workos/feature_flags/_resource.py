@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -97,7 +98,7 @@ class FeatureFlags:
         """
         return self._client.request(
             method="get",
-            path=f"feature-flags/{slug}",
+            path=f"feature-flags/{quote(str(slug), safe='')}",
             model=Flag,
             request_options=request_options,
         )
@@ -127,7 +128,7 @@ class FeatureFlags:
         """
         return self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/disable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/disable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -157,7 +158,7 @@ class FeatureFlags:
         """
         return self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/enable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/enable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -188,7 +189,7 @@ class FeatureFlags:
         """
         self._client.request(
             method="post",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -218,7 +219,7 @@ class FeatureFlags:
         """
         self._client.request(
             method="delete",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -265,7 +266,7 @@ class FeatureFlags:
         }
         return self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/feature-flags",
+            path=f"organizations/{quote(str(organization_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,
@@ -314,7 +315,7 @@ class FeatureFlags:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/users/{user_id}/feature-flags",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,
@@ -401,7 +402,7 @@ class AsyncFeatureFlags:
         """
         return await self._client.request(
             method="get",
-            path=f"feature-flags/{slug}",
+            path=f"feature-flags/{quote(str(slug), safe='')}",
             model=Flag,
             request_options=request_options,
         )
@@ -431,7 +432,7 @@ class AsyncFeatureFlags:
         """
         return await self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/disable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/disable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -461,7 +462,7 @@ class AsyncFeatureFlags:
         """
         return await self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/enable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/enable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -492,7 +493,7 @@ class AsyncFeatureFlags:
         """
         await self._client.request(
             method="post",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -522,7 +523,7 @@ class AsyncFeatureFlags:
         """
         await self._client.request(
             method="delete",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -569,7 +570,7 @@ class AsyncFeatureFlags:
         }
         return await self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/feature-flags",
+            path=f"organizations/{quote(str(organization_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,
@@ -618,7 +619,7 @@ class AsyncFeatureFlags:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/users/{user_id}/feature-flags",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,

@@ -555,6 +555,10 @@ from .user_organization_membership_status import (
 from .user_sessions_auth_method import UserSessionsAuthMethod as UserSessionsAuthMethod
 from .user_sessions_status import UserSessionsStatus as UserSessionsStatus
 from .user_updated import UserUpdated as UserUpdated
+from .vault_byok_key_deleted import VaultByokKeyDeleted as VaultByokKeyDeleted
+from .vault_byok_key_deleted_data import (
+    VaultByokKeyDeletedData as VaultByokKeyDeletedData,
+)
 from .vault_byok_key_verification_completed import (
     VaultByokKeyVerificationCompleted as VaultByokKeyVerificationCompleted,
 )

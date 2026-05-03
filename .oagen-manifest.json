@@ -1,7 +1,7 @@
 {
   "version": 2,
   "language": "python",
-  "generatedAt": "2026-05-01T16:11:18.992Z",
+  "generatedAt": "2026-05-03T22:57:53.434Z",
   "files": [
     "src/workos/_client.py",
     "src/workos/admin_portal/__init__.py",
@@ -18,9 +18,11 @@
     "src/workos/api_keys/models/api_key.py",
     "src/workos/api_keys/models/api_key_owner.py",
     "src/workos/api_keys/models/api_key_validation_response.py",
-    "src/workos/api_keys/models/api_key_with_value.py",
-    "src/workos/api_keys/models/api_key_with_value_owner.py",
     "src/workos/api_keys/models/create_organization_api_key.py",
+    "src/workos/api_keys/models/organization_api_key.py",
+    "src/workos/api_keys/models/organization_api_key_owner.py",
+    "src/workos/api_keys/models/organization_api_key_with_value.py",
+    "src/workos/api_keys/models/organization_api_key_with_value_owner.py",
     "src/workos/api_keys/models/organizations_api_keys_order.py",
     "src/workos/api_keys/models/validate_api_key.py",
     "src/workos/audit_logs/__init__.py",
@@ -378,6 +380,9 @@
     "src/workos/common/models/user_sessions_auth_method.py",
     "src/workos/common/models/user_sessions_status.py",
     "src/workos/common/models/user_updated.py",
+    "src/workos/common/models/vault_byok_key_deleted.py",
+    "src/workos/common/models/vault_byok_key_deleted_data.py",
+    "src/workos/common/models/vault_byok_key_deleted_data_key_provider.py",
     "src/workos/common/models/vault_byok_key_verification_completed.py",
     "src/workos/common/models/vault_byok_key_verification_completed_data.py",
     "src/workos/common/models/vault_byok_key_verification_completed_data_key_provider.py",
@@ -565,6 +570,7 @@
     "src/workos/user_management/__init__.py",
     "src/workos/user_management/_resource.py",
     "src/workos/user_management/models/__init__.py",
+    "src/workos/user_management/models/api_keys_order.py",
     "src/workos/user_management/models/authenticate_response.py",
     "src/workos/user_management/models/authenticate_response_impersonator.py",
     "src/workos/user_management/models/authenticate_response_oauth_token.py",
@@ -578,6 +584,7 @@
     "src/workos/user_management/models/create_password_reset_token.py",
     "src/workos/user_management/models/create_redirect_uri.py",
     "src/workos/user_management/models/create_user.py",
+    "src/workos/user_management/models/create_user_api_key.py",
     "src/workos/user_management/models/create_user_invite_options.py",
     "src/workos/user_management/models/create_user_organization_membership.py",
     "src/workos/user_management/models/device_authorization_response.py",
@@ -610,6 +617,10 @@
     "src/workos/user_management/models/update_user.py",
     "src/workos/user_management/models/update_user_organization_membership.py",
     "src/workos/user_management/models/user.py",
+    "src/workos/user_management/models/user_api_key.py",
+    "src/workos/user_management/models/user_api_key_owner.py",
+    "src/workos/user_management/models/user_api_key_with_value.py",
+    "src/workos/user_management/models/user_api_key_with_value_owner.py",
     "src/workos/user_management/models/user_identities_get_item.py",
     "src/workos/user_management/models/user_invite.py",
     "src/workos/user_management/models/user_management_authentication_provider.py",
@@ -654,8 +665,6 @@
     "tests/fixtures/api_key_revoked_data.json",
     "tests/fixtures/api_key_revoked_data_owner.json",
     "tests/fixtures/api_key_validation_response.json",
-    "tests/fixtures/api_key_with_value.json",
-    "tests/fixtures/api_key_with_value_owner.json",
     "tests/fixtures/application_credentials_list_item.json",
     "tests/fixtures/assign_role.json",
     "tests/fixtures/audit_log_action_json.json",
@@ -781,6 +790,7 @@
     "tests/fixtures/create_redirect_uri.json",
     "tests/fixtures/create_role.json",
     "tests/fixtures/create_user.json",
+    "tests/fixtures/create_user_api_key.json",
     "tests/fixtures/create_user_invite_options.json",
     "tests/fixtures/create_user_organization_membership.json",
     "tests/fixtures/create_webhook_endpoint.json",
@@ -895,7 +905,6 @@
     "tests/fixtures/jwks_response.json",
     "tests/fixtures/jwks_response_keys.json",
     "tests/fixtures/jwt_template_response.json",
-    "tests/fixtures/list_api_key.json",
     "tests/fixtures/list_audit_log_action_json.json",
     "tests/fixtures/list_audit_log_schema_json.json",
     "tests/fixtures/list_authentication_factor.json",
@@ -911,8 +920,10 @@
     "tests/fixtures/list_flag.json",
     "tests/fixtures/list_group.json",
     "tests/fixtures/list_organization.json",
+    "tests/fixtures/list_organization_api_key.json",
     "tests/fixtures/list_role_assignment.json",
     "tests/fixtures/list_user.json",
+    "tests/fixtures/list_user_api_key.json",
     "tests/fixtures/list_user_invite.json",
     "tests/fixtures/list_user_organization_membership.json",
     "tests/fixtures/list_user_organization_membership_base_list_data.json",
@@ -925,6 +936,10 @@
     "tests/fixtures/mfa_totp_session_authenticate_request.json",
     "tests/fixtures/new_connect_application_secret.json",
     "tests/fixtures/organization.json",
+    "tests/fixtures/organization_api_key.json",
+    "tests/fixtures/organization_api_key_owner.json",
+    "tests/fixtures/organization_api_key_with_value.json",
+    "tests/fixtures/organization_api_key_with_value_owner.json",
     "tests/fixtures/organization_created.json",
     "tests/fixtures/organization_created_data.json",
     "tests/fixtures/organization_created_data_domain.json",
@@ -1032,6 +1047,10 @@
     "tests/fixtures/update_user_organization_membership.json",
     "tests/fixtures/update_webhook_endpoint.json",
     "tests/fixtures/user.json",
+    "tests/fixtures/user_api_key.json",
+    "tests/fixtures/user_api_key_owner.json",
+    "tests/fixtures/user_api_key_with_value.json",
+    "tests/fixtures/user_api_key_with_value_owner.json",
     "tests/fixtures/user_authentication_factor_enroll_response.json",
     "tests/fixtures/user_consent_option.json",
     "tests/fixtures/user_consent_option_choice.json",
@@ -1047,6 +1066,8 @@
     "tests/fixtures/user_sessions_list_item.json",
     "tests/fixtures/user_updated.json",
     "tests/fixtures/validate_api_key.json",
+    "tests/fixtures/vault_byok_key_deleted.json",
+    "tests/fixtures/vault_byok_key_deleted_data.json",
     "tests/fixtures/vault_byok_key_verification_completed.json",
     "tests/fixtures/vault_byok_key_verification_completed_data.json",
     "tests/fixtures/vault_data_created.json",
@@ -1098,14 +1119,6 @@
     "tests/test_widgets.py"
   ],
   "operations": {
-    "POST /api_keys/validations": {
-      "sdkMethod": "create_validation",
-      "service": "api_keys"
-    },
-    "DELETE /api_keys/{id}": {
-      "sdkMethod": "delete_api_key",
-      "service": "api_keys"
-    },
     "POST /auth/challenges/{id}/verify": {
       "sdkMethod": "verify_challenge",
       "service": "multi_factor_auth"
@@ -1642,6 +1655,10 @@
       "sdkMethod": "revoke_invitation",
       "service": "user_management"
     },
+    "GET /user_management/jwt_template": {
+      "sdkMethod": "list_jwt_template",
+      "service": "user_management"
+    },
     "PUT /user_management/jwt_template": {
       "sdkMethod": "update_jwt_template",
       "service": "user_management"
@@ -1741,6 +1758,22 @@
     "POST /widgets/token": {
       "sdkMethod": "create_token",
       "service": "widgets"
+    },
+    "POST /api_keys/validations": {
+      "sdkMethod": "create_validation",
+      "service": "api_keys"
+    },
+    "DELETE /api_keys/{id}": {
+      "sdkMethod": "delete_api_key",
+      "service": "api_keys"
+    },
+    "GET /user_management/users/{userId}/api_keys": {
+      "sdkMethod": "list_user_api_keys",
+      "service": "user_management"
+    },
+    "POST /user_management/users/{userId}/api_keys": {
+      "sdkMethod": "create_user_api_key",
+      "service": "user_management"
     },
     "GET /audit_logs/actions": {
       "sdkMethod": "list_actions",

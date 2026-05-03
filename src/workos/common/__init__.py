@@ -361,6 +361,8 @@ from .models import UserOrganizationMembershipStatus as UserOrganizationMembersh
 from .models import UserSessionsAuthMethod as UserSessionsAuthMethod
 from .models import UserSessionsStatus as UserSessionsStatus
 from .models import UserUpdated as UserUpdated
+from .models import VaultByokKeyDeleted as VaultByokKeyDeleted
+from .models import VaultByokKeyDeletedData as VaultByokKeyDeletedData
 from .models import (
     VaultByokKeyVerificationCompleted as VaultByokKeyVerificationCompleted,
 )

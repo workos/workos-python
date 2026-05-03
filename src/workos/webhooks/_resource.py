@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -158,7 +159,7 @@ class Webhooks:
         }
         return self._client.request(
             method="patch",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             body=body,
             model=WebhookEndpointJson,
             request_options=request_options,
@@ -186,7 +187,7 @@ class Webhooks:
         """
         self._client.request(
             method="delete",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -415,7 +416,7 @@ class AsyncWebhooks:
         }
         return await self._client.request(
             method="patch",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             body=body,
             model=WebhookEndpointJson,
             request_options=request_options,
@@ -443,7 +444,7 @@ class AsyncWebhooks:
         """
         await self._client.request(
             method="delete",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 

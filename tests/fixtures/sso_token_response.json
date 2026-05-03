@@ -12,6 +12,7 @@
     "email": "todd@example.com",
     "first_name": "Todd",
     "last_name": "Rundgren",
+    "name": "Todd Rundgren",
     "role": {
       "slug": "admin"
     },

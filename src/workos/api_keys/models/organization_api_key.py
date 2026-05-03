@@ -9,18 +9,18 @@ from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .api_key_with_value_owner import ApiKeyWithValueOwner
+from .organization_api_key_owner import OrganizationApiKeyOwner
 
 
 @dataclass(slots=True)
-class ApiKeyWithValue:
-    """Api Key With Value model."""
+class OrganizationApiKey:
+    """Organization Api Key model."""
 
     object: Literal["api_key"]
     """Distinguishes the API Key object."""
     id: str
     """Unique identifier of the API Key."""
-    owner: "ApiKeyWithValueOwner"
+    owner: "OrganizationApiKeyOwner"
     """The entity that owns the API Key."""
     name: str
     """A descriptive name for the API Key."""
@@ -34,17 +34,15 @@ class ApiKeyWithValue:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
-    value: str
-    """The full API Key value. Only returned once at creation time."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ApiKeyWithValue":
+    def from_dict(cls, data: Dict[str, Any]) -> "OrganizationApiKey":
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "api_key"),
                 id=data["id"],
-                owner=ApiKeyWithValueOwner.from_dict(
+                owner=OrganizationApiKeyOwner.from_dict(
                     cast(Dict[str, Any], data["owner"])
                 ),
                 name=data["name"],
@@ -55,10 +53,9 @@ class ApiKeyWithValue:
                 permissions=data["permissions"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
-                value=data["value"],
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("ApiKeyWithValue", e)
+            _raise_deserialize_error("OrganizationApiKey", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
@@ -75,5 +72,4 @@ class ApiKeyWithValue:
         result["permissions"] = self.permissions
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
-        result["value"] = self.value
         return result

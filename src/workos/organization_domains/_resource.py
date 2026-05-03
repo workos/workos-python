@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Optional
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -79,7 +80,7 @@ class OrganizationDomains:
         """
         return self._client.request(
             method="get",
-            path=f"organization_domains/{id}",
+            path=f"organization_domains/{quote(str(id), safe='')}",
             model=OrganizationDomainStandAlone,
             request_options=request_options,
         )
@@ -106,7 +107,7 @@ class OrganizationDomains:
         """
         self._client.request(
             method="delete",
-            path=f"organization_domains/{id}",
+            path=f"organization_domains/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -135,7 +136,7 @@ class OrganizationDomains:
         """
         return self._client.request(
             method="post",
-            path=f"organization_domains/{id}/verify",
+            path=f"organization_domains/{quote(str(id), safe='')}/verify",
             model=OrganizationDomainStandAlone,
             request_options=request_options,
         )
@@ -209,7 +210,7 @@ class AsyncOrganizationDomains:
         """
         return await self._client.request(
             method="get",
-            path=f"organization_domains/{id}",
+            path=f"organization_domains/{quote(str(id), safe='')}",
             model=OrganizationDomainStandAlone,
             request_options=request_options,
         )
@@ -236,7 +237,7 @@ class AsyncOrganizationDomains:
         """
         await self._client.request(
             method="delete",
-            path=f"organization_domains/{id}",
+            path=f"organization_domains/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -265,7 +266,7 @@ class AsyncOrganizationDomains:
         """
         return await self._client.request(
             method="post",
-            path=f"organization_domains/{id}/verify",
+            path=f"organization_domains/{quote(str(id), safe='')}/verify",
             model=OrganizationDomainStandAlone,
             request_options=request_options,
         )

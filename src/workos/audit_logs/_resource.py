@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -53,7 +54,7 @@ class AuditLogs:
         """
         return self._client.request(
             method="get",
-            path=f"organizations/{id}/audit_logs_retention",
+            path=f"organizations/{quote(str(id), safe='')}/audit_logs_retention",
             model=AuditLogsRetentionJson,
             request_options=request_options,
         )
@@ -89,7 +90,7 @@ class AuditLogs:
         }
         return self._client.request(
             method="put",
-            path=f"organizations/{id}/audit_logs_retention",
+            path=f"organizations/{quote(str(id), safe='')}/audit_logs_retention",
             body=body,
             model=AuditLogsRetentionJson,
             request_options=request_options,
@@ -187,7 +188,7 @@ class AuditLogs:
         }
         return self._client.request_page(
             method="get",
-            path=f"audit_logs/actions/{action_name}/schemas",
+            path=f"audit_logs/actions/{quote(str(action_name), safe='')}/schemas",
             model=AuditLogSchemaJson,
             params=params,
             request_options=request_options,
@@ -233,7 +234,7 @@ class AuditLogs:
         }
         return self._client.request(
             method="post",
-            path=f"audit_logs/actions/{action_name}/schemas",
+            path=f"audit_logs/actions/{quote(str(action_name), safe='')}/schemas",
             body=body,
             model=AuditLogSchemaJson,
             request_options=request_options,
@@ -371,7 +372,7 @@ class AuditLogs:
         """
         return self._client.request(
             method="get",
-            path=f"audit_logs/exports/{audit_log_export_id}",
+            path=f"audit_logs/exports/{quote(str(audit_log_export_id), safe='')}",
             model=AuditLogExportJson,
             request_options=request_options,
         )
@@ -408,7 +409,7 @@ class AsyncAuditLogs:
         """
         return await self._client.request(
             method="get",
-            path=f"organizations/{id}/audit_logs_retention",
+            path=f"organizations/{quote(str(id), safe='')}/audit_logs_retention",
             model=AuditLogsRetentionJson,
             request_options=request_options,
         )
@@ -444,7 +445,7 @@ class AsyncAuditLogs:
         }
         return await self._client.request(
             method="put",
-            path=f"organizations/{id}/audit_logs_retention",
+            path=f"organizations/{quote(str(id), safe='')}/audit_logs_retention",
             body=body,
             model=AuditLogsRetentionJson,
             request_options=request_options,
@@ -542,7 +543,7 @@ class AsyncAuditLogs:
         }
         return await self._client.request_page(
             method="get",
-            path=f"audit_logs/actions/{action_name}/schemas",
+            path=f"audit_logs/actions/{quote(str(action_name), safe='')}/schemas",
             model=AuditLogSchemaJson,
             params=params,
             request_options=request_options,
@@ -588,7 +589,7 @@ class AsyncAuditLogs:
         }
         return await self._client.request(
             method="post",
-            path=f"audit_logs/actions/{action_name}/schemas",
+            path=f"audit_logs/actions/{quote(str(action_name), safe='')}/schemas",
             body=body,
             model=AuditLogSchemaJson,
             request_options=request_options,
@@ -726,7 +727,7 @@ class AsyncAuditLogs:
         """
         return await self._client.request(
             method="get",
-            path=f"audit_logs/exports/{audit_log_export_id}",
+            path=f"audit_logs/exports/{quote(str(audit_log_export_id), safe='')}",
             model=AuditLogExportJson,
             request_options=request_options,
         )

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -261,7 +262,7 @@ class Connect:
         """
         return self._client.request(
             method="get",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             model=ConnectApplication,
             request_options=request_options,
         )
@@ -312,7 +313,7 @@ class Connect:
         }
         return self._client.request(
             method="put",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             body=body,
             model=ConnectApplication,
             request_options=request_options,
@@ -340,7 +341,7 @@ class Connect:
         """
         self._client.request(
             method="delete",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -369,7 +370,7 @@ class Connect:
         """
         raw = self._client.request_list(
             method="get",
-            path=f"connect/applications/{id}/client_secrets",
+            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
             request_options=request_options,
         )
         return [
@@ -404,7 +405,7 @@ class Connect:
         body: Dict[str, Any] = {}
         return self._client.request(
             method="post",
-            path=f"connect/applications/{id}/client_secrets",
+            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
             body=body,
             model=NewConnectApplicationSecret,
             request_options=request_options,
@@ -432,7 +433,7 @@ class Connect:
         """
         self._client.request(
             method="delete",
-            path=f"connect/client_secrets/{id}",
+            path=f"connect/client_secrets/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -675,7 +676,7 @@ class AsyncConnect:
         """
         return await self._client.request(
             method="get",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             model=ConnectApplication,
             request_options=request_options,
         )
@@ -726,7 +727,7 @@ class AsyncConnect:
         }
         return await self._client.request(
             method="put",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             body=body,
             model=ConnectApplication,
             request_options=request_options,
@@ -754,7 +755,7 @@ class AsyncConnect:
         """
         await self._client.request(
             method="delete",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -783,7 +784,7 @@ class AsyncConnect:
         """
         raw = await self._client.request_list(
             method="get",
-            path=f"connect/applications/{id}/client_secrets",
+            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
             request_options=request_options,
         )
         return [
@@ -818,7 +819,7 @@ class AsyncConnect:
         body: Dict[str, Any] = {}
         return await self._client.request(
             method="post",
-            path=f"connect/applications/{id}/client_secrets",
+            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
             body=body,
             model=NewConnectApplicationSecret,
             request_options=request_options,
@@ -846,6 +847,6 @@ class AsyncConnect:
         """
         await self._client.request(
             method="delete",
-            path=f"connect/client_secrets/{id}",
+            path=f"connect/client_secrets/{quote(str(id), safe='')}",
             request_options=request_options,
         )

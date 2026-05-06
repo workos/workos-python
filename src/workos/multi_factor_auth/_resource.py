@@ -10,16 +10,18 @@ if TYPE_CHECKING:
 
 from .._types import RequestOptions, enum_value
 from .models import (
-    AuthenticationChallenge,
     AuthenticationChallengeVerifyResponse,
-    AuthenticationFactor,
-    AuthenticationFactorEnrolled,
     UserAuthenticationFactorEnrollResponse,
 )
-from workos.authorization.models.pagination_order import PaginationOrder
+from workos.common.models.authentication_challenge import AuthenticationChallenge
+from workos.common.models.authentication_factor import AuthenticationFactor
+from workos.common.models.authentication_factor_enrolled import (
+    AuthenticationFactorEnrolled,
+)
 from workos.common.models.authentication_factors_create_request_type import (
     AuthenticationFactorsCreateRequestType,
 )
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -233,7 +235,7 @@ class MultiFactorAuth:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time.
+            order: Order the results by the creation time. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -523,7 +525,7 @@ class AsyncMultiFactorAuth:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time.
+            order: Order the results by the creation time. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:

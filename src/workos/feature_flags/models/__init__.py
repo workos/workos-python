@@ -2,5 +2,3 @@
 
 from .feature_flag import FeatureFlag as FeatureFlag
 from .feature_flag_owner import FeatureFlagOwner as FeatureFlagOwner
-from .flag import Flag as Flag
-from .flag_owner import FlagOwner as FlagOwner

@@ -10,7 +10,7 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .api_key_owner import ApiKeyOwner
-from .user_api_key_owner import UserApiKeyOwner
+from workos.user_management.models.user_api_key_owner import UserApiKeyOwner
 
 
 @dataclass(slots=True)

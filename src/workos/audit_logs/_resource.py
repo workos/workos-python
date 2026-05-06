@@ -19,7 +19,7 @@ from .models import (
     AuditLogSchemaTarget,
 )
 from workos.organizations.models.audit_logs_retention_json import AuditLogsRetentionJson
-from workos.authorization.models.pagination_order import PaginationOrder
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -113,7 +113,7 @@ class AuditLogs:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time.
+            order: Order the results by the creation time. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -163,7 +163,7 @@ class AuditLogs:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time.
+            order: Order the results by the creation time. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -468,7 +468,7 @@ class AsyncAuditLogs:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time.
+            order: Order the results by the creation time. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -518,7 +518,7 @@ class AsyncAuditLogs:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time.
+            order: Order the results by the creation time. Defaults to `desc`.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:

@@ -2,5 +2,4 @@
 
 from .create_group import CreateGroup as CreateGroup
 from .create_group_membership import CreateGroupMembership as CreateGroupMembership
-from .group import Group as Group
 from .update_group import UpdateGroup as UpdateGroup

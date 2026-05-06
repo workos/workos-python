@@ -13,7 +13,7 @@ from workos.audit_logs.models import (
     AuditLogExportJson,
     AuditLogSchemaJson,
 )
-from workos.authorization.models import PaginationOrder
+from workos.common.models import PaginationOrder
 from workos.organizations.models import AuditLogsRetentionJson
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (

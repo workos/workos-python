@@ -11,7 +11,7 @@ from workos.api_keys.models import (
     OrganizationApiKey,
     OrganizationApiKeyWithValue,
 )
-from workos.authorization.models import PaginationOrder
+from workos.common.models import PaginationOrder
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,

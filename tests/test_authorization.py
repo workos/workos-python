@@ -8,14 +8,16 @@ from tests.generated_helpers import load_fixture
 
 from workos.authorization.models import (
     AuthorizationCheck,
-    AuthorizationPermission,
     AuthorizationResource,
     Permission,
     Role,
     RoleList,
-    UserOrganizationMembershipBaseListData,
     UserRoleAssignment,
     AuthorizationAssignment,
+)
+from workos.common.models import (
+    AuthorizationPermission,
+    UserOrganizationMembershipBaseListData,
     PaginationOrder,
 )
 from workos._pagination import AsyncPage, SyncPage

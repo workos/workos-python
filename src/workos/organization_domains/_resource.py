@@ -9,7 +9,8 @@ if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions
-from .models import OrganizationDomain, OrganizationDomainStandAlone
+from .models import OrganizationDomainStandAlone
+from workos.common.models.organization_domain import OrganizationDomain
 
 
 class OrganizationDomains:

@@ -9,7 +9,7 @@ from typing import Any, Dict, Literal
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .slim_role import SlimRole
+from workos.common.models.slim_role import SlimRole
 from .user_role_assignment_resource import UserRoleAssignmentResource
 
 

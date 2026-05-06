@@ -3,7 +3,6 @@
 from .application_credentials_list_item import (
     ApplicationCredentialsListItem as ApplicationCredentialsListItem,
 )
-from .connect_application import ConnectApplication as ConnectApplication
 from .create_application_secret import (
     CreateApplicationSecret as CreateApplicationSecret,
 )

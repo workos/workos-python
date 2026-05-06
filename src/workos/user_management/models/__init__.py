@@ -91,6 +91,7 @@ from .organization_selection_session_authenticate_request import (
 )
 from .user import User as User
 from .user_api_key import UserApiKey as UserApiKey
+from .user_api_key_owner import UserApiKeyOwner as UserApiKeyOwner
 from .user_api_key_with_value import UserApiKeyWithValue as UserApiKeyWithValue
 from .user_api_key_with_value_owner import (
     UserApiKeyWithValueOwner as UserApiKeyWithValueOwner,

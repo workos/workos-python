@@ -20,7 +20,6 @@ from workos.api_keys.models import (
     OrganizationApiKeyOwner,
     OrganizationApiKeyWithValue,
     OrganizationApiKeyWithValueOwner,
-    UserApiKeyOwner,
 )
 from workos.audit_logs.models import (
     AuditLogActionJson,
@@ -372,6 +371,7 @@ from workos.user_management.models import (
     SendVerificationEmailResponse,
     User,
     UserApiKey,
+    UserApiKeyOwner,
     UserApiKeyWithValue,
     UserApiKeyWithValueOwner,
     UserIdentitiesGetItem,

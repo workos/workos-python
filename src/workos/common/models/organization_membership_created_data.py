@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from workos.authorization.models.slim_role import SlimRole
+from .slim_role import SlimRole
 from .organization_membership_created_data_status import (
     OrganizationMembershipCreatedDataStatus,
 )

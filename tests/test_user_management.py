@@ -6,7 +6,7 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.authorization.models import PaginationOrder
+from workos.common.models import PaginationOrder
 from workos.user_management.models import (
     AuthenticateResponse,
     AuthorizedConnectApplicationListData,

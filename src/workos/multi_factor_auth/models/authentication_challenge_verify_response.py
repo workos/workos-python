@@ -7,7 +7,7 @@ from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
-from .authentication_challenge import AuthenticationChallenge
+from workos.common.models.authentication_challenge import AuthenticationChallenge
 
 
 @dataclass(slots=True)

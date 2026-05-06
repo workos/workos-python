@@ -7,7 +7,7 @@ from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
-from workos.directory_sync.models.directory_group import DirectoryGroup
+from .directory_group import DirectoryGroup
 from .directory_user import DirectoryUser
 
 

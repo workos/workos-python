@@ -5,12 +5,8 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.authorization.models import PaginationOrder
-from workos.directory_sync.models import (
-    Directory,
-    DirectoryGroup,
-    DirectoryUserWithGroups,
-)
+from workos.common.models import DirectoryGroup, PaginationOrder
+from workos.directory_sync.models import Directory, DirectoryUserWithGroups
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,

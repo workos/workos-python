@@ -18,5 +18,4 @@ from .organization_api_key_with_value import (
 from .organization_api_key_with_value_owner import (
     OrganizationApiKeyWithValueOwner as OrganizationApiKeyWithValueOwner,
 )
-from .user_api_key_owner import UserApiKeyOwner as UserApiKeyOwner
 from .validate_api_key import ValidateApiKey as ValidateApiKey

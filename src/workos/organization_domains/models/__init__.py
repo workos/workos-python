@@ -3,7 +3,6 @@
 from .create_organization_domain import (
     CreateOrganizationDomain as CreateOrganizationDomain,
 )
-from .organization_domain import OrganizationDomain as OrganizationDomain
 from .organization_domain_stand_alone import (
     OrganizationDomainStandAlone as OrganizationDomainStandAlone,
 )

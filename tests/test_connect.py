@@ -6,10 +6,9 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.authorization.models import PaginationOrder
+from workos.common.models import ConnectApplication, PaginationOrder
 from workos.connect.models import (
     ApplicationCredentialsListItem,
-    ConnectApplication,
     ExternalAuthCompleteResponse,
     NewConnectApplicationSecret,
     UserObject,

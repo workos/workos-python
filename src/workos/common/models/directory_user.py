@@ -11,7 +11,7 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .directory_user_email import DirectoryUserEmail
-from workos.authorization.models.slim_role import SlimRole
+from .slim_role import SlimRole
 from .directory_user_state import DirectoryUserState
 
 

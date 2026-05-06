@@ -5,8 +5,8 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.authorization.models import PaginationOrder
-from workos.feature_flags.models import FeatureFlag, Flag
+from workos.common.models import Flag, PaginationOrder
+from workos.feature_flags.models import FeatureFlag
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,

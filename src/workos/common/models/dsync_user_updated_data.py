@@ -11,7 +11,7 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .dsync_user_updated_data_email import DsyncUserUpdatedDataEmail
-from workos.authorization.models.slim_role import SlimRole
+from .slim_role import SlimRole
 from .dsync_user_updated_data_state import DsyncUserUpdatedDataState
 
 

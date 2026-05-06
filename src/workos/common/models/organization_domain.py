@@ -8,8 +8,8 @@ from enum import Enum
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
-from workos.common.models.organization_domain_state import OrganizationDomainState
-from workos.common.models.organization_domain_verification_strategy import (
+from .organization_domain_state import OrganizationDomainState
+from .organization_domain_verification_strategy import (
     OrganizationDomainVerificationStrategy,
 )
 

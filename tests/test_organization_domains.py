@@ -6,10 +6,8 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.organization_domains.models import (
-    OrganizationDomain,
-    OrganizationDomainStandAlone,
-)
+from workos.common.models import OrganizationDomain
+from workos.organization_domains.models import OrganizationDomainStandAlone
 from workos._errors import (
     AuthenticationError,
     BadRequestError,

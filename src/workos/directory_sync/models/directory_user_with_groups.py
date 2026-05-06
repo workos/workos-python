@@ -10,9 +10,9 @@ from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .directory_group import DirectoryGroup
+from workos.common.models.directory_group import DirectoryGroup
 from .directory_user_with_groups_email import DirectoryUserWithGroupsEmail
-from workos.authorization.models.slim_role import SlimRole
+from workos.common.models.slim_role import SlimRole
 from workos.common.models.directory_user_with_groups_state import (
     DirectoryUserWithGroupsState,
 )

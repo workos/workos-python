@@ -12,12 +12,11 @@ from workos.authorization.models import (
     AuthorizationResource,
     Permission,
     Role,
-    RoleAssignment,
     RoleList,
     UserOrganizationMembershipBaseListData,
+    UserRoleAssignment,
     AuthorizationAssignment,
-    AuthorizationOrder,
-    PermissionsOrder,
+    PaginationOrder,
 )
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
@@ -90,7 +89,7 @@ class TestAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
             permission_slug="value permission_slug/test",
         )
         request = httpx_mock.get_request()
@@ -100,7 +99,7 @@ class TestAuthorization:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["permission_slug"] == "value permission_slug/test"
 
     def test_list_effective_permissions(self, workos, httpx_mock):
@@ -130,13 +129,13 @@ class TestAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_list_effective_permissions_by_external_id(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -174,24 +173,24 @@ class TestAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_list_role_assignments(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("list_role_assignment.json"),
+            json=load_fixture("list_user_role_assignment.json"),
         )
         page = workos.authorization.list_role_assignments(
             "test_organization_membership_id"
         )
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], RoleAssignment)
+        assert isinstance(page.data[0], UserRoleAssignment)
 
     def test_list_role_assignments_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -208,24 +207,24 @@ class TestAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_assign_role(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("role_assignment.json"),
+            json=load_fixture("user_role_assignment.json"),
         )
         result = workos.authorization.assign_role(
             "test_organization_membership_id",
             role_slug="test_role_slug",
             resource_target=ResourceTargetById(resource_id="test_value"),
         )
-        assert isinstance(result, RoleAssignment)
+        assert isinstance(result, UserRoleAssignment)
         assert result.object == "role_assignment"
         assert result.id == "role_assignment_01HXYZ123456789ABCDEFGH"
         request = httpx_mock.get_request()
@@ -483,7 +482,7 @@ class TestAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
             permission_slug="value permission_slug/test",
             assignment=AuthorizationAssignment("direct"),
         )
@@ -491,9 +490,51 @@ class TestAuthorization:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["permission_slug"] == "value permission_slug/test"
         assert request.url.params["assignment"] == "direct"
+
+    def test_list_role_assignments_for_resource_by_external_id(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(
+            json=load_fixture("list_user_role_assignment.json"),
+        )
+        page = workos.authorization.list_role_assignments_for_resource_by_external_id(
+            "test_organization_id", "test_resource_type_slug", "test_external_id"
+        )
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserRoleAssignment)
+
+    def test_list_role_assignments_for_resource_by_external_id_empty_page(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.authorization.list_role_assignments_for_resource_by_external_id(
+            "test_organization_id", "test_resource_type_slug", "test_external_id"
+        )
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_role_assignments_for_resource_by_external_id_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.authorization.list_role_assignments_for_resource_by_external_id(
+            "test_organization_id",
+            "test_resource_type_slug",
+            "test_external_id",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
 
     def test_list_resources(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -521,7 +562,7 @@ class TestAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization_id="value organization_id/test",
             resource_type_slug="value resource_type_slug/test",
             resource_external_id="value resource_external_id/test",
@@ -534,7 +575,7 @@ class TestAuthorization:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert (
             request.url.params["resource_type_slug"] == "value resource_type_slug/test"
@@ -637,7 +678,7 @@ class TestAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
             permission_slug="value permission_slug/test",
             assignment=AuthorizationAssignment("direct"),
         )
@@ -645,9 +686,45 @@ class TestAuthorization:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["permission_slug"] == "value permission_slug/test"
         assert request.url.params["assignment"] == "direct"
+
+    def test_list_role_assignments_for_resource(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_user_role_assignment.json"),
+        )
+        page = workos.authorization.list_role_assignments_for_resource(
+            "test_resource_id"
+        )
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserRoleAssignment)
+
+    def test_list_role_assignments_for_resource_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.authorization.list_role_assignments_for_resource(
+            "test_resource_id"
+        )
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_role_assignments_for_resource_encodes_query_params(
+        self, workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.authorization.list_role_assignments_for_resource(
+            "test_resource_id",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
 
     def test_list_environment_roles(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -754,13 +831,13 @@ class TestAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=PermissionsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_create_permission(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -969,7 +1046,7 @@ class TestAsyncAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
             permission_slug="value permission_slug/test",
         )
         request = httpx_mock.get_request()
@@ -979,7 +1056,7 @@ class TestAsyncAuthorization:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["permission_slug"] == "value permission_slug/test"
 
     @pytest.mark.asyncio
@@ -1014,13 +1091,13 @@ class TestAsyncAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_list_effective_permissions_by_external_id(
@@ -1065,23 +1142,23 @@ class TestAsyncAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_list_role_assignments(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("list_role_assignment.json"))
+        httpx_mock.add_response(json=load_fixture("list_user_role_assignment.json"))
         page = await async_workos.authorization.list_role_assignments(
             "test_organization_membership_id"
         )
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], RoleAssignment)
+        assert isinstance(page.data[0], UserRoleAssignment)
 
     @pytest.mark.asyncio
     async def test_list_role_assignments_empty_page(self, async_workos, httpx_mock):
@@ -1102,23 +1179,23 @@ class TestAsyncAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_assign_role(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("role_assignment.json"))
+        httpx_mock.add_response(json=load_fixture("user_role_assignment.json"))
         result = await async_workos.authorization.assign_role(
             "test_organization_membership_id",
             role_slug="test_role_slug",
             resource_target=ResourceTargetById(resource_id="test_value"),
         )
-        assert isinstance(result, RoleAssignment)
+        assert isinstance(result, UserRoleAssignment)
         assert result.object == "role_assignment"
         assert result.id == "role_assignment_01HXYZ123456789ABCDEFGH"
         request = httpx_mock.get_request()
@@ -1373,7 +1450,7 @@ class TestAsyncAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
             permission_slug="value permission_slug/test",
             assignment=AuthorizationAssignment("direct"),
         )
@@ -1381,9 +1458,52 @@ class TestAsyncAuthorization:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["permission_slug"] == "value permission_slug/test"
         assert request.url.params["assignment"] == "direct"
+
+    @pytest.mark.asyncio
+    async def test_list_role_assignments_for_resource_by_external_id(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json=load_fixture("list_user_role_assignment.json"))
+        page = await async_workos.authorization.list_role_assignments_for_resource_by_external_id(
+            "test_organization_id", "test_resource_type_slug", "test_external_id"
+        )
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserRoleAssignment)
+
+    @pytest.mark.asyncio
+    async def test_list_role_assignments_for_resource_by_external_id_empty_page(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.authorization.list_role_assignments_for_resource_by_external_id(
+            "test_organization_id", "test_resource_type_slug", "test_external_id"
+        )
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_role_assignments_for_resource_by_external_id_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.authorization.list_role_assignments_for_resource_by_external_id(
+            "test_organization_id",
+            "test_resource_type_slug",
+            "test_external_id",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_list_resources(self, async_workos, httpx_mock):
@@ -1412,7 +1532,7 @@ class TestAsyncAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization_id="value organization_id/test",
             resource_type_slug="value resource_type_slug/test",
             resource_external_id="value resource_external_id/test",
@@ -1425,7 +1545,7 @@ class TestAsyncAuthorization:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert (
             request.url.params["resource_type_slug"] == "value resource_type_slug/test"
@@ -1529,7 +1649,7 @@ class TestAsyncAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuthorizationOrder("normal"),
+            order=PaginationOrder("value_order"),
             permission_slug="value permission_slug/test",
             assignment=AuthorizationAssignment("direct"),
         )
@@ -1537,9 +1657,48 @@ class TestAsyncAuthorization:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["permission_slug"] == "value permission_slug/test"
         assert request.url.params["assignment"] == "direct"
+
+    @pytest.mark.asyncio
+    async def test_list_role_assignments_for_resource(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_user_role_assignment.json"))
+        page = await async_workos.authorization.list_role_assignments_for_resource(
+            "test_resource_id"
+        )
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserRoleAssignment)
+
+    @pytest.mark.asyncio
+    async def test_list_role_assignments_for_resource_empty_page(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.authorization.list_role_assignments_for_resource(
+            "test_resource_id"
+        )
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_role_assignments_for_resource_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.authorization.list_role_assignments_for_resource(
+            "test_resource_id",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_list_environment_roles(self, async_workos, httpx_mock):
@@ -1636,13 +1795,13 @@ class TestAsyncAuthorization:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=PermissionsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_create_permission(self, async_workos, httpx_mock):

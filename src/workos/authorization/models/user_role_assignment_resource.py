@@ -8,8 +8,8 @@ from workos._types import _raise_deserialize_error
 
 
 @dataclass(slots=True)
-class RoleAssignmentResource:
-    """The resource to which the role is assigned."""
+class UserRoleAssignmentResource:
+    """The resource the role is assigned on."""
 
     id: str
     """The unique ID of the Resource."""
@@ -19,7 +19,7 @@ class RoleAssignmentResource:
     """The slug of the resource type this resource belongs to."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "RoleAssignmentResource":
+    def from_dict(cls, data: Dict[str, Any]) -> "UserRoleAssignmentResource":
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -28,7 +28,7 @@ class RoleAssignmentResource:
                 resource_type_slug=data["resource_type_slug"],
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("RoleAssignmentResource", e)
+            _raise_deserialize_error("UserRoleAssignmentResource", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

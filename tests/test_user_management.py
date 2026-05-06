@@ -6,6 +6,7 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
+from workos.authorization.models import PaginationOrder
 from workos.user_management.models import (
     AuthenticateResponse,
     AuthorizedConnectApplicationListData,
@@ -24,15 +25,13 @@ from workos.user_management.models import (
     ResetPasswordResponse,
     SendVerificationEmailResponse,
     User,
+    UserApiKey,
+    UserApiKeyWithValue,
     UserIdentitiesGetItem,
     UserInvite,
     UserOrganizationMembership,
     UserSessionsListItem,
     VerifyEmailResponse,
-    UserManagementInvitationsOrder,
-    UserManagementOrganizationMembershipOrder,
-    UserManagementUsersAuthorizedApplicationsOrder,
-    UserManagementUsersOrder,
 )
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
@@ -195,7 +194,7 @@ class TestUserManagement:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=UserManagementUsersOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization="value organization/test",
             organization_id="value organization_id/test",
             email="value email/test",
@@ -204,7 +203,7 @@ class TestUserManagement:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization"] == "value organization/test"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["email"] == "value email/test"
@@ -363,13 +362,13 @@ class TestUserManagement:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=UserManagementUsersOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_list_invitations(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -392,7 +391,7 @@ class TestUserManagement:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=UserManagementInvitationsOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization_id="value organization_id/test",
             email="value email/test",
         )
@@ -400,7 +399,7 @@ class TestUserManagement:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["email"] == "value email/test"
 
@@ -480,6 +479,18 @@ class TestUserManagement:
         assert request.method == "POST"
         assert request.url.path.endswith("/user_management/invitations/test_id/revoke")
 
+    def test_list_jwt_template(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("jwt_template_response.json"),
+        )
+        result = workos.user_management.list_jwt_template()
+        assert isinstance(result, JWTTemplateResponse)
+        assert result.object == "jwt_template"
+        assert result.created_at == "2026-01-15T12:00:00.000Z"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/user_management/jwt_template")
+
     def test_update_jwt_template(self, workos, httpx_mock):
         httpx_mock.add_response(
             json=load_fixture("jwt_template_response.json"),
@@ -543,7 +554,7 @@ class TestUserManagement:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=UserManagementOrganizationMembershipOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization_id="value organization_id/test",
             statuses=["val1", "val2"],
             user_id="value user_id/test",
@@ -552,7 +563,7 @@ class TestUserManagement:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["statuses"] == "val1,val2"
         assert request.url.params["user_id"] == "value user_id/test"
@@ -682,13 +693,13 @@ class TestUserManagement:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=UserManagementUsersAuthorizedApplicationsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_delete_user_authorized_application(self, workos, httpx_mock):
         httpx_mock.add_response(status_code=204)
@@ -701,6 +712,55 @@ class TestUserManagement:
         assert request.url.path.endswith(
             "/user_management/users/test_user_id/authorized_applications/test_application_id"
         )
+
+    def test_list_user_api_keys(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("list_user_api_key.json"),
+        )
+        page = workos.user_management.list_user_api_keys("test_userId")
+        assert isinstance(page, SyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserApiKey)
+
+    def test_list_user_api_keys_empty_page(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = workos.user_management.list_user_api_keys("test_userId")
+        assert isinstance(page, SyncPage)
+        assert page.data == []
+
+    def test_list_user_api_keys_encodes_query_params(self, workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        workos.user_management.list_user_api_keys(
+            "test_userId",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+            organization_id="value organization_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+        assert request.url.params["organization_id"] == "value organization_id/test"
+
+    def test_create_user_api_key(self, workos, httpx_mock):
+        httpx_mock.add_response(
+            json=load_fixture("user_api_key_with_value.json"),
+        )
+        result = workos.user_management.create_user_api_key(
+            "test_userId", name="test_name", organization_id="test_organization_id"
+        )
+        assert isinstance(result, UserApiKeyWithValue)
+        assert result.object == "api_key"
+        assert result.id == "api_key_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/user_management/users/test_userId/api_keys")
+        body = json.loads(request.content)
+        assert body["name"] == "test_name"
+        assert body["organization_id"] == "test_organization_id"
 
     def test_authenticate_with_password(self, workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("authenticate_response.json"))
@@ -1010,7 +1070,7 @@ class TestAsyncUserManagement:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=UserManagementUsersOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization="value organization/test",
             organization_id="value organization_id/test",
             email="value email/test",
@@ -1019,7 +1079,7 @@ class TestAsyncUserManagement:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization"] == "value organization/test"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["email"] == "value email/test"
@@ -1171,13 +1231,13 @@ class TestAsyncUserManagement:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=UserManagementUsersOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_list_invitations(self, async_workos, httpx_mock):
@@ -1203,7 +1263,7 @@ class TestAsyncUserManagement:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=UserManagementInvitationsOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization_id="value organization_id/test",
             email="value email/test",
         )
@@ -1211,7 +1271,7 @@ class TestAsyncUserManagement:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["email"] == "value email/test"
 
@@ -1286,6 +1346,17 @@ class TestAsyncUserManagement:
         assert request.url.path.endswith("/user_management/invitations/test_id/revoke")
 
     @pytest.mark.asyncio
+    async def test_list_jwt_template(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("jwt_template_response.json"))
+        result = await async_workos.user_management.list_jwt_template()
+        assert isinstance(result, JWTTemplateResponse)
+        assert result.object == "jwt_template"
+        assert result.created_at == "2026-01-15T12:00:00.000Z"
+        request = httpx_mock.get_request()
+        assert request.method == "GET"
+        assert request.url.path.endswith("/user_management/jwt_template")
+
+    @pytest.mark.asyncio
     async def test_update_jwt_template(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("jwt_template_response.json"))
         result = await async_workos.user_management.update_jwt_template(
@@ -1350,7 +1421,7 @@ class TestAsyncUserManagement:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=UserManagementOrganizationMembershipOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization_id="value organization_id/test",
             statuses=["val1", "val2"],
             user_id="value user_id/test",
@@ -1359,7 +1430,7 @@ class TestAsyncUserManagement:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["statuses"] == "val1,val2"
         assert request.url.params["user_id"] == "value user_id/test"
@@ -1496,13 +1567,13 @@ class TestAsyncUserManagement:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=UserManagementUsersAuthorizedApplicationsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_delete_user_authorized_application(self, async_workos, httpx_mock):
@@ -1516,6 +1587,54 @@ class TestAsyncUserManagement:
         assert request.url.path.endswith(
             "/user_management/users/test_user_id/authorized_applications/test_application_id"
         )
+
+    @pytest.mark.asyncio
+    async def test_list_user_api_keys(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("list_user_api_key.json"))
+        page = await async_workos.user_management.list_user_api_keys("test_userId")
+        assert isinstance(page, AsyncPage)
+        assert len(page.data) == 1
+        assert isinstance(page.data[0], UserApiKey)
+
+    @pytest.mark.asyncio
+    async def test_list_user_api_keys_empty_page(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        page = await async_workos.user_management.list_user_api_keys("test_userId")
+        assert isinstance(page, AsyncPage)
+        assert page.data == []
+
+    @pytest.mark.asyncio
+    async def test_list_user_api_keys_encodes_query_params(
+        self, async_workos, httpx_mock
+    ):
+        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
+        await async_workos.user_management.list_user_api_keys(
+            "test_userId",
+            limit=10,
+            before="cursor before",
+            after="cursor/after",
+            order=PaginationOrder("value_order"),
+            organization_id="value organization_id/test",
+        )
+        request = httpx_mock.get_request()
+        assert request.url.params["limit"] == "10"
+        assert request.url.params["before"] == "cursor before"
+        assert request.url.params["after"] == "cursor/after"
+        assert request.url.params["order"] == "value_order"
+        assert request.url.params["organization_id"] == "value organization_id/test"
+
+    @pytest.mark.asyncio
+    async def test_create_user_api_key(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("user_api_key_with_value.json"))
+        result = await async_workos.user_management.create_user_api_key(
+            "test_userId", name="test_name", organization_id="test_organization_id"
+        )
+        assert isinstance(result, UserApiKeyWithValue)
+        assert result.object == "api_key"
+        assert result.id == "api_key_01EHZNVPK3SFK441A1RGBFSHRT"
+        request = httpx_mock.get_request()
+        assert request.method == "POST"
+        assert request.url.path.endswith("/user_management/users/test_userId/api_keys")
 
     @pytest.mark.asyncio
     async def test_authenticate_with_password(self, async_workos, httpx_mock):

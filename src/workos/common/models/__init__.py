@@ -540,6 +540,12 @@ from .update_webhook_endpoint_events import (
 from .update_webhook_endpoint_status import (
     UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus,
 )
+from .user_api_key_created_data_owner import (
+    UserApiKeyCreatedDataOwner as UserApiKeyCreatedDataOwner,
+)
+from .user_api_key_revoked_data_owner import (
+    UserApiKeyRevokedDataOwner as UserApiKeyRevokedDataOwner,
+)
 from .user_created import UserCreated as UserCreated
 from .user_deleted import UserDeleted as UserDeleted
 from .user_identities_get_item_provider import (
@@ -555,6 +561,10 @@ from .user_organization_membership_status import (
 from .user_sessions_auth_method import UserSessionsAuthMethod as UserSessionsAuthMethod
 from .user_sessions_status import UserSessionsStatus as UserSessionsStatus
 from .user_updated import UserUpdated as UserUpdated
+from .vault_byok_key_deleted import VaultByokKeyDeleted as VaultByokKeyDeleted
+from .vault_byok_key_deleted_data import (
+    VaultByokKeyDeletedData as VaultByokKeyDeletedData,
+)
 from .vault_byok_key_verification_completed import (
     VaultByokKeyVerificationCompleted as VaultByokKeyVerificationCompleted,
 )

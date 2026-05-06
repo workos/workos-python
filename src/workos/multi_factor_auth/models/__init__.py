@@ -35,6 +35,3 @@ from .enroll_user_authentication_factor import (
 from .user_authentication_factor_enroll_response import (
     UserAuthenticationFactorEnrollResponse as UserAuthenticationFactorEnrollResponse,
 )
-from .user_management_multi_factor_authentication_order import (
-    UserManagementMultiFactorAuthenticationOrder as UserManagementMultiFactorAuthenticationOrder,
-)

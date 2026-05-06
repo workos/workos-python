@@ -6,13 +6,13 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
+from workos.authorization.models import PaginationOrder
 from workos.connect.models import (
     ApplicationCredentialsListItem,
     ConnectApplication,
     ExternalAuthCompleteResponse,
     NewConnectApplicationSecret,
     UserObject,
-    ApplicationsOrder,
 )
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
@@ -67,14 +67,14 @@ class TestConnect:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=ApplicationsOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization_id="value organization_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization_id"] == "value organization_id/test"
 
     def test_create_application(self, workos, httpx_mock):
@@ -315,14 +315,14 @@ class TestAsyncConnect:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=ApplicationsOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization_id="value organization_id/test",
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization_id"] == "value organization_id/test"
 
     @pytest.mark.asyncio

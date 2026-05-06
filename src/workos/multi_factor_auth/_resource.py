@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -15,7 +16,7 @@ from .models import (
     AuthenticationFactorEnrolled,
     UserAuthenticationFactorEnrollResponse,
 )
-from .models import UserManagementMultiFactorAuthenticationOrder
+from workos.authorization.models.pagination_order import PaginationOrder
 from workos.common.models.authentication_factors_create_request_type import (
     AuthenticationFactorsCreateRequestType,
 )
@@ -60,7 +61,7 @@ class MultiFactorAuth:
         }
         return self._client.request(
             method="post",
-            path=f"auth/challenges/{id}/verify",
+            path=f"auth/challenges/{quote(str(id), safe='')}/verify",
             body=body,
             model=AuthenticationChallengeVerifyResponse,
             request_options=request_options,
@@ -141,7 +142,7 @@ class MultiFactorAuth:
         """
         return self._client.request(
             method="get",
-            path=f"auth/factors/{id}",
+            path=f"auth/factors/{quote(str(id), safe='')}",
             model=AuthenticationFactor,
             request_options=request_options,
         )
@@ -168,7 +169,7 @@ class MultiFactorAuth:
         """
         self._client.request(
             method="delete",
-            path=f"auth/factors/{id}",
+            path=f"auth/factors/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -207,7 +208,7 @@ class MultiFactorAuth:
         }
         return self._client.request(
             method="post",
-            path=f"auth/factors/{id}/challenge",
+            path=f"auth/factors/{quote(str(id), safe='')}/challenge",
             body=body,
             model=AuthenticationChallenge,
             request_options=request_options,
@@ -220,9 +221,7 @@ class MultiFactorAuth:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementMultiFactorAuthenticationOrder, str]
-        ] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthenticationFactor]:
         """List authentication factors
@@ -234,7 +233,7 @@ class MultiFactorAuth:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
+            order: Order the results by the creation time.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -258,7 +257,7 @@ class MultiFactorAuth:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/users/{userland_user_id}/auth_factors",
+            path=f"user_management/users/{quote(str(userland_user_id), safe='')}/auth_factors",
             model=AuthenticationFactor,
             params=params,
             request_options=request_options,
@@ -307,7 +306,7 @@ class MultiFactorAuth:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/users/{userland_user_id}/auth_factors",
+            path=f"user_management/users/{quote(str(userland_user_id), safe='')}/auth_factors",
             body=body,
             model=UserAuthenticationFactorEnrollResponse,
             request_options=request_options,
@@ -352,7 +351,7 @@ class AsyncMultiFactorAuth:
         }
         return await self._client.request(
             method="post",
-            path=f"auth/challenges/{id}/verify",
+            path=f"auth/challenges/{quote(str(id), safe='')}/verify",
             body=body,
             model=AuthenticationChallengeVerifyResponse,
             request_options=request_options,
@@ -433,7 +432,7 @@ class AsyncMultiFactorAuth:
         """
         return await self._client.request(
             method="get",
-            path=f"auth/factors/{id}",
+            path=f"auth/factors/{quote(str(id), safe='')}",
             model=AuthenticationFactor,
             request_options=request_options,
         )
@@ -460,7 +459,7 @@ class AsyncMultiFactorAuth:
         """
         await self._client.request(
             method="delete",
-            path=f"auth/factors/{id}",
+            path=f"auth/factors/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -499,7 +498,7 @@ class AsyncMultiFactorAuth:
         }
         return await self._client.request(
             method="post",
-            path=f"auth/factors/{id}/challenge",
+            path=f"auth/factors/{quote(str(id), safe='')}/challenge",
             body=body,
             model=AuthenticationChallenge,
             request_options=request_options,
@@ -512,9 +511,7 @@ class AsyncMultiFactorAuth:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementMultiFactorAuthenticationOrder, str]
-        ] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthenticationFactor]:
         """List authentication factors
@@ -526,7 +523,7 @@ class AsyncMultiFactorAuth:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
+            order: Order the results by the creation time.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -550,7 +547,7 @@ class AsyncMultiFactorAuth:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/users/{userland_user_id}/auth_factors",
+            path=f"user_management/users/{quote(str(userland_user_id), safe='')}/auth_factors",
             model=AuthenticationFactor,
             params=params,
             request_options=request_options,
@@ -599,7 +596,7 @@ class AsyncMultiFactorAuth:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{userland_user_id}/auth_factors",
+            path=f"user_management/users/{quote(str(userland_user_id), safe='')}/auth_factors",
             body=body,
             model=UserAuthenticationFactorEnrollResponse,
             request_options=request_options,

@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
 from .models import Directory, DirectoryGroup, DirectoryUserWithGroups
-from .models import DirectoriesOrder, DirectoryGroupsOrder, DirectoryUsersOrder
+from workos.authorization.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -25,7 +26,7 @@ class DirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoriesOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         search: Optional[str] = None,
         domain: Optional[str] = None,
@@ -39,7 +40,7 @@ class DirectorySync:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
+            order: Order the results by the creation time.
             organization_id: Filter Directories by their associated organization.
             search: Searchable text to match against Directory names.
             domain: (deprecated) Filter Directories by their associated domain.
@@ -102,7 +103,7 @@ class DirectorySync:
         """
         return self._client.request(
             method="get",
-            path=f"directories/{id}",
+            path=f"directories/{quote(str(id), safe='')}",
             model=Directory,
             request_options=request_options,
         )
@@ -129,7 +130,7 @@ class DirectorySync:
         """
         self._client.request(
             method="delete",
-            path=f"directories/{id}",
+            path=f"directories/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -139,7 +140,7 @@ class DirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoryGroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         directory: Optional[str] = None,
         user: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -152,7 +153,7 @@ class DirectorySync:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
             user: Unique identifier of the WorkOS Directory User. This value can be obtained from the WorkOS API.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -214,7 +215,7 @@ class DirectorySync:
         """
         return self._client.request(
             method="get",
-            path=f"directory_groups/{id}",
+            path=f"directory_groups/{quote(str(id), safe='')}",
             model=DirectoryGroup,
             request_options=request_options,
         )
@@ -225,7 +226,7 @@ class DirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoryUsersOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         directory: Optional[str] = None,
         group: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -238,7 +239,7 @@ class DirectorySync:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
             group: Unique identifier of the WorkOS Directory Group. This value can be obtained from the WorkOS API.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -300,7 +301,7 @@ class DirectorySync:
         """
         return self._client.request(
             method="get",
-            path=f"directory_users/{id}",
+            path=f"directory_users/{quote(str(id), safe='')}",
             model=DirectoryUserWithGroups,
             request_options=request_options,
         )
@@ -318,7 +319,7 @@ class AsyncDirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoriesOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         search: Optional[str] = None,
         domain: Optional[str] = None,
@@ -332,7 +333,7 @@ class AsyncDirectorySync:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
+            order: Order the results by the creation time.
             organization_id: Filter Directories by their associated organization.
             search: Searchable text to match against Directory names.
             domain: (deprecated) Filter Directories by their associated domain.
@@ -395,7 +396,7 @@ class AsyncDirectorySync:
         """
         return await self._client.request(
             method="get",
-            path=f"directories/{id}",
+            path=f"directories/{quote(str(id), safe='')}",
             model=Directory,
             request_options=request_options,
         )
@@ -422,7 +423,7 @@ class AsyncDirectorySync:
         """
         await self._client.request(
             method="delete",
-            path=f"directories/{id}",
+            path=f"directories/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -432,7 +433,7 @@ class AsyncDirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoryGroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         directory: Optional[str] = None,
         user: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -445,7 +446,7 @@ class AsyncDirectorySync:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
             user: Unique identifier of the WorkOS Directory User. This value can be obtained from the WorkOS API.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -507,7 +508,7 @@ class AsyncDirectorySync:
         """
         return await self._client.request(
             method="get",
-            path=f"directory_groups/{id}",
+            path=f"directory_groups/{quote(str(id), safe='')}",
             model=DirectoryGroup,
             request_options=request_options,
         )
@@ -518,7 +519,7 @@ class AsyncDirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoryUsersOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         directory: Optional[str] = None,
         group: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -531,7 +532,7 @@ class AsyncDirectorySync:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             directory: Unique identifier of the WorkOS Directory. This value can be obtained from the WorkOS dashboard or from the WorkOS API.
             group: Unique identifier of the WorkOS Directory Group. This value can be obtained from the WorkOS API.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -593,7 +594,7 @@ class AsyncDirectorySync:
         """
         return await self._client.request(
             method="get",
-            path=f"directory_users/{id}",
+            path=f"directory_users/{quote(str(id), safe='')}",
             model=DirectoryUserWithGroups,
             request_options=request_options,
         )

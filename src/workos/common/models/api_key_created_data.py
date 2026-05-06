@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import cast
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
 from workos._types import _raise_deserialize_error
 
 from .api_key_created_data_owner import ApiKeyCreatedDataOwner
+from .user_api_key_created_data_owner import UserApiKeyCreatedDataOwner
 
 
 @dataclass(slots=True)
@@ -18,7 +19,7 @@ class ApiKeyCreatedData:
     """Distinguishes the API key object."""
     id: str
     """Unique identifier of the API key."""
-    owner: "ApiKeyCreatedDataOwner"
+    owner: Union["ApiKeyCreatedDataOwner", "UserApiKeyCreatedDataOwner"]
     """The owner of the API key."""
     name: str
     """The name of the API key."""
@@ -40,8 +41,18 @@ class ApiKeyCreatedData:
             return cls(
                 object=data.get("object", "api_key"),
                 id=data["id"],
-                owner=ApiKeyCreatedDataOwner.from_dict(
-                    cast(Dict[str, Any], data["owner"])
+                owner=(
+                    _disc.from_dict(cast(Dict[str, Any], data["owner"]))
+                    if (
+                        _disc := {
+                            "organization": ApiKeyCreatedDataOwner,
+                            "user": UserApiKeyCreatedDataOwner,
+                        }.get(
+                            cast(str, cast(Dict[str, Any], data["owner"]).get("type"))
+                        )
+                    )
+                    is not None
+                    else data["owner"]
                 ),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
@@ -58,7 +69,9 @@ class ApiKeyCreatedData:
         result: Dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
-        result["owner"] = self.owner.to_dict()
+        result["owner"] = (
+            self.owner.to_dict() if hasattr(self.owner, "to_dict") else self.owner
+        )
         result["name"] = self.name
         result["obfuscated_value"] = self.obfuscated_value
         if self.last_used_at is not None:

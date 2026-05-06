@@ -8,7 +8,6 @@ from ._base_client import (
     WorkOSClient as _SyncBase,
     AsyncWorkOSClient as _AsyncBase,
 )
-from .api_keys._resource import ApiKeys, AsyncApiKeys
 from .multi_factor_auth._resource import MultiFactorAuth, AsyncMultiFactorAuth
 from .connect._resource import Connect, AsyncConnect
 from .authorization._resource import Authorization, AsyncAuthorization
@@ -22,6 +21,7 @@ from .organization_domains._resource import (
     AsyncOrganizationDomains,
 )
 from .organizations._resource import Organizations, AsyncOrganizations
+from .api_keys._resource import ApiKeys, AsyncApiKeys
 from .groups._resource import Groups, AsyncGroups
 from .admin_portal._resource import AdminPortal, AsyncAdminPortal
 from .radar._resource import Radar, AsyncRadar
@@ -41,11 +41,6 @@ from .pkce import PKCE
 
 class WorkOSClient(_SyncBase):
     """Synchronous WorkOS API client with service accessors."""
-
-    @functools.cached_property
-    def api_keys(self) -> ApiKeys:
-        """Api Keys API resources."""
-        return ApiKeys(self)
 
     @functools.cached_property
     def multi_factor_auth(self) -> MultiFactorAuth:
@@ -96,6 +91,11 @@ class WorkOSClient(_SyncBase):
     def organizations(self) -> Organizations:
         """Organizations API resources."""
         return Organizations(self)
+
+    @functools.cached_property
+    def api_keys(self) -> ApiKeys:
+        """Api Keys API resources."""
+        return ApiKeys(self)
 
     @functools.cached_property
     def groups(self) -> Groups:
@@ -173,11 +173,6 @@ class AsyncWorkOSClient(_AsyncBase):
     """Asynchronous WorkOS API client with service accessors."""
 
     @functools.cached_property
-    def api_keys(self) -> AsyncApiKeys:
-        """Api Keys API resources."""
-        return AsyncApiKeys(self)
-
-    @functools.cached_property
     def multi_factor_auth(self) -> AsyncMultiFactorAuth:
         """Multi Factor Auth API resources."""
         return AsyncMultiFactorAuth(self)
@@ -226,6 +221,11 @@ class AsyncWorkOSClient(_AsyncBase):
     def organizations(self) -> AsyncOrganizations:
         """Organizations API resources."""
         return AsyncOrganizations(self)
+
+    @functools.cached_property
+    def api_keys(self) -> AsyncApiKeys:
+        """Api Keys API resources."""
+        return AsyncApiKeys(self)
 
     @functools.cached_property
     def groups(self) -> AsyncGroups:

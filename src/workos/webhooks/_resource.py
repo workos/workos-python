@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
 from .models import WebhookEndpointJson
-from .models import WebhooksOrder
+from workos.authorization.models.pagination_order import PaginationOrder
 from workos.common.models.create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents,
 )
@@ -38,7 +39,7 @@ class Webhooks:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[WebhooksOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[WebhookEndpointJson]:
         """List Webhook Endpoints
@@ -49,7 +50,7 @@ class Webhooks:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -158,7 +159,7 @@ class Webhooks:
         }
         return self._client.request(
             method="patch",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             body=body,
             model=WebhookEndpointJson,
             request_options=request_options,
@@ -186,7 +187,7 @@ class Webhooks:
         """
         self._client.request(
             method="delete",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -295,7 +296,7 @@ class AsyncWebhooks:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[WebhooksOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[WebhookEndpointJson]:
         """List Webhook Endpoints
@@ -306,7 +307,7 @@ class AsyncWebhooks:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -415,7 +416,7 @@ class AsyncWebhooks:
         }
         return await self._client.request(
             method="patch",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             body=body,
             model=WebhookEndpointJson,
             request_options=request_options,
@@ -443,7 +444,7 @@ class AsyncWebhooks:
         """
         await self._client.request(
             method="delete",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 

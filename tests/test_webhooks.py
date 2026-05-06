@@ -6,7 +6,8 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.webhooks.models import WebhookEndpointJson, WebhooksOrder
+from workos.authorization.models import PaginationOrder
+from workos.webhooks.models import WebhookEndpointJson
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
@@ -40,13 +41,13 @@ class TestWebhooks:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=WebhooksOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_create_webhook_endpoint(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -186,13 +187,13 @@ class TestAsyncWebhooks:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=WebhooksOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_create_webhook_endpoint(self, async_workos, httpx_mock):

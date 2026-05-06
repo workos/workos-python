@@ -3,4 +3,4 @@
 from typing import TypeAlias
 from workos.common.models.api_key_created_data_owner import ApiKeyCreatedDataOwner
 
-ApiKeyWithValueOwner: TypeAlias = ApiKeyCreatedDataOwner
+OrganizationApiKeyWithValueOwner: TypeAlias = ApiKeyCreatedDataOwner

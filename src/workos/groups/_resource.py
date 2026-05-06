@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -12,7 +13,7 @@ from .models import Group
 from workos.authorization.models.user_organization_membership_base_list_data import (
     UserOrganizationMembershipBaseListData,
 )
-from .models import GroupsOrder
+from workos.authorization.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -29,7 +30,7 @@ class Groups:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[GroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Group]:
         """List groups
@@ -41,7 +42,7 @@ class Groups:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -66,7 +67,7 @@ class Groups:
         }
         return self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/groups",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups",
             model=Group,
             params=params,
             request_options=request_options,
@@ -112,7 +113,7 @@ class Groups:
         }
         return self._client.request(
             method="post",
-            path=f"organizations/{organization_id}/groups",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups",
             body=body,
             model=Group,
             request_options=request_options,
@@ -146,7 +147,7 @@ class Groups:
         """
         return self._client.request(
             method="get",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             model=Group,
             request_options=request_options,
         )
@@ -193,7 +194,7 @@ class Groups:
         }
         return self._client.request(
             method="patch",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             body=body,
             model=Group,
             request_options=request_options,
@@ -224,7 +225,7 @@ class Groups:
         """
         self._client.request(
             method="delete",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             request_options=request_options,
         )
 
@@ -236,7 +237,7 @@ class Groups:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[GroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserOrganizationMembershipBaseListData]:
         """List Group members
@@ -249,7 +250,7 @@ class Groups:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -274,7 +275,7 @@ class Groups:
         }
         return self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships",
             model=UserOrganizationMembershipBaseListData,
             params=params,
             request_options=request_options,
@@ -314,7 +315,7 @@ class Groups:
         }
         return self._client.request(
             method="post",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships",
             body=body,
             model=Group,
             request_options=request_options,
@@ -347,7 +348,7 @@ class Groups:
         """
         self._client.request(
             method="delete",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships/{om_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships/{quote(str(om_id), safe='')}",
             request_options=request_options,
         )
 
@@ -365,7 +366,7 @@ class AsyncGroups:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[GroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Group]:
         """List groups
@@ -377,7 +378,7 @@ class AsyncGroups:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -402,7 +403,7 @@ class AsyncGroups:
         }
         return await self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/groups",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups",
             model=Group,
             params=params,
             request_options=request_options,
@@ -448,7 +449,7 @@ class AsyncGroups:
         }
         return await self._client.request(
             method="post",
-            path=f"organizations/{organization_id}/groups",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups",
             body=body,
             model=Group,
             request_options=request_options,
@@ -482,7 +483,7 @@ class AsyncGroups:
         """
         return await self._client.request(
             method="get",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             model=Group,
             request_options=request_options,
         )
@@ -529,7 +530,7 @@ class AsyncGroups:
         }
         return await self._client.request(
             method="patch",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             body=body,
             model=Group,
             request_options=request_options,
@@ -560,7 +561,7 @@ class AsyncGroups:
         """
         await self._client.request(
             method="delete",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             request_options=request_options,
         )
 
@@ -572,7 +573,7 @@ class AsyncGroups:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[GroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserOrganizationMembershipBaseListData]:
         """List Group members
@@ -585,7 +586,7 @@ class AsyncGroups:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -610,7 +611,7 @@ class AsyncGroups:
         }
         return await self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships",
             model=UserOrganizationMembershipBaseListData,
             params=params,
             request_options=request_options,
@@ -650,7 +651,7 @@ class AsyncGroups:
         }
         return await self._client.request(
             method="post",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships",
             body=body,
             model=Group,
             request_options=request_options,
@@ -683,6 +684,6 @@ class AsyncGroups:
         """
         await self._client.request(
             method="delete",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships/{om_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships/{quote(str(om_id), safe='')}",
             request_options=request_options,
         )

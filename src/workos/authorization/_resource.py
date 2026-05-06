@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -14,11 +15,11 @@ from .models import (
     AuthorizationResource,
     Permission,
     Role,
-    RoleAssignment,
     RoleList,
     UserOrganizationMembershipBaseListData,
+    UserRoleAssignment,
 )
-from .models import AuthorizationAssignment, AuthorizationOrder, PermissionsOrder
+from .models import AuthorizationAssignment, PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 from dataclasses import dataclass
 
@@ -113,7 +114,7 @@ class Authorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         return self._client.request(
             method="post",
-            path=f"authorization/organization_memberships/{organization_membership_id}/check",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/check",
             body=body,
             model=AuthorizationCheck,
             request_options=request_options,
@@ -126,7 +127,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         permission_slug: str,
         parent_resource: Union[ParentResourceById, ParentResourceByExternalId],
         request_options: Optional[RequestOptions] = None,
@@ -142,7 +143,7 @@ class Authorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only child resources where the organization membership has this permission are returned.
             parent_resource: Identifies the parent resource. One of: ParentResourceById, ParentResourceByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -181,7 +182,7 @@ class Authorization:
             )
         return self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources",
             model=AuthorizationResource,
             params=params,
             request_options=request_options,
@@ -195,7 +196,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource
@@ -208,7 +209,7 @@ class Authorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -234,7 +235,7 @@ class Authorization:
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_id}/permissions",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources/{quote(str(resource_id), safe='')}/permissions",
             model=AuthorizationPermission,
             params=params,
             request_options=request_options,
@@ -249,7 +250,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource by external ID
@@ -263,7 +264,7 @@ class Authorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -289,7 +290,7 @@ class Authorization:
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_type_slug}/{external_id}/permissions",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}/permissions",
             model=AuthorizationPermission,
             params=params,
             request_options=request_options,
@@ -302,9 +303,9 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[RoleAssignment]:
+    ) -> SyncPage[UserRoleAssignment]:
         """List role assignments
 
         List all role assignments for an organization membership. This returns all roles that have been assigned to the user on resources, including organization-level and sub-resource roles.
@@ -314,11 +315,11 @@ class Authorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            SyncPage[RoleAssignment]
+            SyncPage[UserRoleAssignment]
 
         Raises:
             AuthorizationError: If the request is forbidden (403).
@@ -339,8 +340,8 @@ class Authorization:
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
-            model=RoleAssignment,
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
+            model=UserRoleAssignment,
             params=params,
             request_options=request_options,
         )
@@ -352,7 +353,7 @@ class Authorization:
         role_slug: str,
         resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
         request_options: Optional[RequestOptions] = None,
-    ) -> RoleAssignment:
+    ) -> UserRoleAssignment:
         """Assign a role
 
         Assign a role to an organization membership on a specific resource.
@@ -364,7 +365,7 @@ class Authorization:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            RoleAssignment
+            UserRoleAssignment
 
         Raises:
             AuthorizationError: If the request is forbidden (403).
@@ -384,9 +385,9 @@ class Authorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         return self._client.request(
             method="post",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
             body=body,
-            model=RoleAssignment,
+            model=UserRoleAssignment,
             request_options=request_options,
         )
 
@@ -426,7 +427,7 @@ class Authorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         self._client.request(
             method="delete",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
             body=body,
             request_options=request_options,
         )
@@ -456,7 +457,7 @@ class Authorization:
         """
         self._client.request(
             method="delete",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments/{role_assignment_id}",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments/{quote(str(role_assignment_id), safe='')}",
             request_options=request_options,
         )
 
@@ -486,7 +487,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/roles",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles",
             model=RoleList,
             request_options=request_options,
         )
@@ -538,7 +539,7 @@ class Authorization:
         }
         return self._client.request(
             method="post",
-            path=f"authorization/organizations/{organization_id}/roles",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles",
             body=body,
             model=Role,
             request_options=request_options,
@@ -572,7 +573,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             model=Role,
             request_options=request_options,
         )
@@ -619,7 +620,7 @@ class Authorization:
         }
         return self._client.request(
             method="patch",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             body=body,
             model=Role,
             request_options=request_options,
@@ -652,7 +653,7 @@ class Authorization:
         """
         self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             request_options=request_options,
         )
 
@@ -691,7 +692,7 @@ class Authorization:
         }
         return self._client.request(
             method="post",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -731,7 +732,7 @@ class Authorization:
         }
         return self._client.request(
             method="put",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -764,7 +765,7 @@ class Authorization:
         """
         self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions/{permission_slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions/{quote(str(permission_slug), safe='')}",
             request_options=request_options,
         )
 
@@ -798,7 +799,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             model=AuthorizationResource,
             request_options=request_options,
         )
@@ -862,7 +863,7 @@ class Authorization:
                 )
         return self._client.request(
             method="patch",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             body=body,
             model=AuthorizationResource,
             request_options=request_options,
@@ -906,7 +907,7 @@ class Authorization:
         }
         self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             params=params,
             request_options=request_options,
         )
@@ -920,7 +921,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -936,7 +937,7 @@ class Authorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
             assignment: Filter by assignment type. Use "direct" for direct assignments only, or "indirect" to include inherited assignments.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -969,8 +970,62 @@ class Authorization:
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}/organization_memberships",
             model=UserOrganizationMembershipBaseListData,
+            params=params,
+            request_options=request_options,
+        )
+
+    def list_role_assignments_for_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type_slug: str,
+        external_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[UserRoleAssignment]:
+        """List role assignments for a resource by external ID
+
+        List all role assignments granted on a resource, identified by its external ID. Each assignment includes the organization membership it was granted to.
+
+        Args:
+            organization_id: The ID of the organization that owns the resource.
+            resource_type_slug: The slug of the resource type.
+            external_id: An identifier you provide to reference the resource in your system.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[UserRoleAssignment]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}/role_assignments",
+            model=UserRoleAssignment,
             params=params,
             request_options=request_options,
         )
@@ -981,7 +1036,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
         resource_external_id: Optional[str] = None,
@@ -997,7 +1052,7 @@ class Authorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
             resource_external_id: Filter resources by external ID.
@@ -1138,7 +1193,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             model=AuthorizationResource,
             request_options=request_options,
         )
@@ -1198,7 +1253,7 @@ class Authorization:
                 )
         return self._client.request(
             method="patch",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             body=body,
             model=AuthorizationResource,
             request_options=request_options,
@@ -1238,7 +1293,7 @@ class Authorization:
         }
         self._client.request(
             method="delete",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             params=params,
             request_options=request_options,
         )
@@ -1250,7 +1305,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -1264,7 +1319,7 @@ class Authorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
             assignment: Filter by assignment type. Use `direct` for direct assignments only, or `indirect` to include inherited assignments.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1297,8 +1352,58 @@ class Authorization:
         }
         return self._client.request_page(
             method="get",
-            path=f"authorization/resources/{resource_id}/organization_memberships",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}/organization_memberships",
             model=UserOrganizationMembershipBaseListData,
+            params=params,
+            request_options=request_options,
+        )
+
+    def list_role_assignments_for_resource(
+        self,
+        resource_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[UserRoleAssignment]:
+        """List role assignments for a resource
+
+        List all role assignments granted on a specific resource instance. Each assignment includes the organization membership it was granted to.
+
+        Args:
+            resource_id: The ID of the authorization resource.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[UserRoleAssignment]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}/role_assignments",
+            model=UserRoleAssignment,
             params=params,
             request_options=request_options,
         )
@@ -1405,7 +1510,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/roles/{slug}",
+            path=f"authorization/roles/{quote(str(slug), safe='')}",
             model=Role,
             request_options=request_options,
         )
@@ -1450,7 +1555,7 @@ class Authorization:
         }
         return self._client.request(
             method="patch",
-            path=f"authorization/roles/{slug}",
+            path=f"authorization/roles/{quote(str(slug), safe='')}",
             body=body,
             model=Role,
             request_options=request_options,
@@ -1489,7 +1594,7 @@ class Authorization:
         }
         return self._client.request(
             method="post",
-            path=f"authorization/roles/{slug}/permissions",
+            path=f"authorization/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -1528,7 +1633,7 @@ class Authorization:
         }
         return self._client.request(
             method="put",
-            path=f"authorization/roles/{slug}/permissions",
+            path=f"authorization/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -1540,7 +1645,7 @@ class Authorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[PermissionsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizationPermission]:
         """List permissions
@@ -1551,7 +1656,7 @@ class Authorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1656,7 +1761,7 @@ class Authorization:
         """
         return self._client.request(
             method="get",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             model=AuthorizationPermission,
             request_options=request_options,
         )
@@ -1700,7 +1805,7 @@ class Authorization:
         }
         return self._client.request(
             method="patch",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             body=body,
             model=AuthorizationPermission,
             request_options=request_options,
@@ -1729,7 +1834,7 @@ class Authorization:
         """
         self._client.request(
             method="delete",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             request_options=request_options,
         )
 
@@ -1779,7 +1884,7 @@ class AsyncAuthorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         return await self._client.request(
             method="post",
-            path=f"authorization/organization_memberships/{organization_membership_id}/check",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/check",
             body=body,
             model=AuthorizationCheck,
             request_options=request_options,
@@ -1792,7 +1897,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         permission_slug: str,
         parent_resource: Union[ParentResourceById, ParentResourceByExternalId],
         request_options: Optional[RequestOptions] = None,
@@ -1808,7 +1913,7 @@ class AsyncAuthorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only child resources where the organization membership has this permission are returned.
             parent_resource: Identifies the parent resource. One of: ParentResourceById, ParentResourceByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -1847,7 +1952,7 @@ class AsyncAuthorization:
             )
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources",
             model=AuthorizationResource,
             params=params,
             request_options=request_options,
@@ -1861,7 +1966,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource
@@ -1874,7 +1979,7 @@ class AsyncAuthorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1900,7 +2005,7 @@ class AsyncAuthorization:
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_id}/permissions",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources/{quote(str(resource_id), safe='')}/permissions",
             model=AuthorizationPermission,
             params=params,
             request_options=request_options,
@@ -1915,7 +2020,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizationPermission]:
         """List effective permissions for an organization membership on a resource by external ID
@@ -1929,7 +2034,7 @@ class AsyncAuthorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1955,7 +2060,7 @@ class AsyncAuthorization:
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/resources/{resource_type_slug}/{external_id}/permissions",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}/permissions",
             model=AuthorizationPermission,
             params=params,
             request_options=request_options,
@@ -1968,9 +2073,9 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[RoleAssignment]:
+    ) -> AsyncPage[UserRoleAssignment]:
         """List role assignments
 
         List all role assignments for an organization membership. This returns all roles that have been assigned to the user on resources, including organization-level and sub-resource roles.
@@ -1980,11 +2085,11 @@ class AsyncAuthorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AsyncPage[RoleAssignment]
+            AsyncPage[UserRoleAssignment]
 
         Raises:
             AuthorizationError: If the request is forbidden (403).
@@ -2005,8 +2110,8 @@ class AsyncAuthorization:
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
-            model=RoleAssignment,
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
+            model=UserRoleAssignment,
             params=params,
             request_options=request_options,
         )
@@ -2018,7 +2123,7 @@ class AsyncAuthorization:
         role_slug: str,
         resource_target: Union[ResourceTargetById, ResourceTargetByExternalId],
         request_options: Optional[RequestOptions] = None,
-    ) -> RoleAssignment:
+    ) -> UserRoleAssignment:
         """Assign a role
 
         Assign a role to an organization membership on a specific resource.
@@ -2030,7 +2135,7 @@ class AsyncAuthorization:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            RoleAssignment
+            UserRoleAssignment
 
         Raises:
             AuthorizationError: If the request is forbidden (403).
@@ -2050,9 +2155,9 @@ class AsyncAuthorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         return await self._client.request(
             method="post",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
             body=body,
-            model=RoleAssignment,
+            model=UserRoleAssignment,
             request_options=request_options,
         )
 
@@ -2092,7 +2197,7 @@ class AsyncAuthorization:
             body["resource_type_slug"] = resource_target.resource_type_slug
         await self._client.request(
             method="delete",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments",
             body=body,
             request_options=request_options,
         )
@@ -2122,7 +2227,7 @@ class AsyncAuthorization:
         """
         await self._client.request(
             method="delete",
-            path=f"authorization/organization_memberships/{organization_membership_id}/role_assignments/{role_assignment_id}",
+            path=f"authorization/organization_memberships/{quote(str(organization_membership_id), safe='')}/role_assignments/{quote(str(role_assignment_id), safe='')}",
             request_options=request_options,
         )
 
@@ -2152,7 +2257,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/roles",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles",
             model=RoleList,
             request_options=request_options,
         )
@@ -2204,7 +2309,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="post",
-            path=f"authorization/organizations/{organization_id}/roles",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles",
             body=body,
             model=Role,
             request_options=request_options,
@@ -2238,7 +2343,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             model=Role,
             request_options=request_options,
         )
@@ -2285,7 +2390,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="patch",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             body=body,
             model=Role,
             request_options=request_options,
@@ -2318,7 +2423,7 @@ class AsyncAuthorization:
         """
         await self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}",
             request_options=request_options,
         )
 
@@ -2357,7 +2462,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="post",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -2397,7 +2502,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="put",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -2430,7 +2535,7 @@ class AsyncAuthorization:
         """
         await self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/roles/{slug}/permissions/{permission_slug}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/roles/{quote(str(slug), safe='')}/permissions/{quote(str(permission_slug), safe='')}",
             request_options=request_options,
         )
 
@@ -2464,7 +2569,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             model=AuthorizationResource,
             request_options=request_options,
         )
@@ -2528,7 +2633,7 @@ class AsyncAuthorization:
                 )
         return await self._client.request(
             method="patch",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             body=body,
             model=AuthorizationResource,
             request_options=request_options,
@@ -2572,7 +2677,7 @@ class AsyncAuthorization:
         }
         await self._client.request(
             method="delete",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}",
             params=params,
             request_options=request_options,
         )
@@ -2586,7 +2691,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -2602,7 +2707,7 @@ class AsyncAuthorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
             assignment: Filter by assignment type. Use "direct" for direct assignments only, or "indirect" to include inherited assignments.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -2635,8 +2740,62 @@ class AsyncAuthorization:
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/organizations/{organization_id}/resources/{resource_type_slug}/{external_id}/organization_memberships",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}/organization_memberships",
             model=UserOrganizationMembershipBaseListData,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def list_role_assignments_for_resource_by_external_id(
+        self,
+        organization_id: str,
+        resource_type_slug: str,
+        external_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[UserRoleAssignment]:
+        """List role assignments for a resource by external ID
+
+        List all role assignments granted on a resource, identified by its external ID. Each assignment includes the organization membership it was granted to.
+
+        Args:
+            organization_id: The ID of the organization that owns the resource.
+            resource_type_slug: The slug of the resource type.
+            external_id: An identifier you provide to reference the resource in your system.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[UserRoleAssignment]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=f"authorization/organizations/{quote(str(organization_id), safe='')}/resources/{quote(str(resource_type_slug), safe='')}/{quote(str(external_id), safe='')}/role_assignments",
+            model=UserRoleAssignment,
             params=params,
             request_options=request_options,
         )
@@ -2647,7 +2806,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
         resource_external_id: Optional[str] = None,
@@ -2663,7 +2822,7 @@ class AsyncAuthorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
             resource_external_id: Filter resources by external ID.
@@ -2804,7 +2963,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             model=AuthorizationResource,
             request_options=request_options,
         )
@@ -2864,7 +3023,7 @@ class AsyncAuthorization:
                 )
         return await self._client.request(
             method="patch",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             body=body,
             model=AuthorizationResource,
             request_options=request_options,
@@ -2904,7 +3063,7 @@ class AsyncAuthorization:
         }
         await self._client.request(
             method="delete",
-            path=f"authorization/resources/{resource_id}",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}",
             params=params,
             request_options=request_options,
         )
@@ -2916,7 +3075,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[AuthorizationOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         permission_slug: str,
         assignment: Optional[Union[AuthorizationAssignment, str]] = None,
         request_options: Optional[RequestOptions] = None,
@@ -2930,7 +3089,7 @@ class AsyncAuthorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             permission_slug: The permission slug to filter by. Only users with this permission on the resource are returned.
             assignment: Filter by assignment type. Use `direct` for direct assignments only, or `indirect` to include inherited assignments.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
@@ -2963,8 +3122,58 @@ class AsyncAuthorization:
         }
         return await self._client.request_page(
             method="get",
-            path=f"authorization/resources/{resource_id}/organization_memberships",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}/organization_memberships",
             model=UserOrganizationMembershipBaseListData,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def list_role_assignments_for_resource(
+        self,
+        resource_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[UserRoleAssignment]:
+        """List role assignments for a resource
+
+        List all role assignments granted on a specific resource instance. Each assignment includes the organization membership it was granted to.
+
+        Args:
+            resource_id: The ID of the authorization resource.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[UserRoleAssignment]
+
+        Raises:
+            AuthorizationError: If the request is forbidden (403).
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=f"authorization/resources/{quote(str(resource_id), safe='')}/role_assignments",
+            model=UserRoleAssignment,
             params=params,
             request_options=request_options,
         )
@@ -3071,7 +3280,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/roles/{slug}",
+            path=f"authorization/roles/{quote(str(slug), safe='')}",
             model=Role,
             request_options=request_options,
         )
@@ -3116,7 +3325,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="patch",
-            path=f"authorization/roles/{slug}",
+            path=f"authorization/roles/{quote(str(slug), safe='')}",
             body=body,
             model=Role,
             request_options=request_options,
@@ -3155,7 +3364,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="post",
-            path=f"authorization/roles/{slug}/permissions",
+            path=f"authorization/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -3194,7 +3403,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="put",
-            path=f"authorization/roles/{slug}/permissions",
+            path=f"authorization/roles/{quote(str(slug), safe='')}/permissions",
             body=body,
             model=Role,
             request_options=request_options,
@@ -3206,7 +3415,7 @@ class AsyncAuthorization:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[PermissionsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizationPermission]:
         """List permissions
@@ -3217,7 +3426,7 @@ class AsyncAuthorization:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3322,7 +3531,7 @@ class AsyncAuthorization:
         """
         return await self._client.request(
             method="get",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             model=AuthorizationPermission,
             request_options=request_options,
         )
@@ -3366,7 +3575,7 @@ class AsyncAuthorization:
         }
         return await self._client.request(
             method="patch",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             body=body,
             model=AuthorizationPermission,
             request_options=request_options,
@@ -3395,6 +3604,6 @@ class AsyncAuthorization:
         """
         await self._client.request(
             method="delete",
-            path=f"authorization/permissions/{slug}",
+            path=f"authorization/permissions/{quote(str(slug), safe='')}",
             request_options=request_options,
         )

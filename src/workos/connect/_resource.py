@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -19,7 +20,7 @@ from .models import (
     UserConsentOption,
     UserObject,
 )
-from .models import ApplicationsOrder
+from workos.authorization.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -94,7 +95,7 @@ class Connect:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[ApplicationsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[ConnectApplication]:
@@ -106,7 +107,7 @@ class Connect:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: Filter Connect Applications by organization ID.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -261,7 +262,7 @@ class Connect:
         """
         return self._client.request(
             method="get",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             model=ConnectApplication,
             request_options=request_options,
         )
@@ -312,7 +313,7 @@ class Connect:
         }
         return self._client.request(
             method="put",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             body=body,
             model=ConnectApplication,
             request_options=request_options,
@@ -340,7 +341,7 @@ class Connect:
         """
         self._client.request(
             method="delete",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -369,7 +370,7 @@ class Connect:
         """
         raw = self._client.request_list(
             method="get",
-            path=f"connect/applications/{id}/client_secrets",
+            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
             request_options=request_options,
         )
         return [
@@ -404,7 +405,7 @@ class Connect:
         body: Dict[str, Any] = {}
         return self._client.request(
             method="post",
-            path=f"connect/applications/{id}/client_secrets",
+            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
             body=body,
             model=NewConnectApplicationSecret,
             request_options=request_options,
@@ -432,7 +433,7 @@ class Connect:
         """
         self._client.request(
             method="delete",
-            path=f"connect/client_secrets/{id}",
+            path=f"connect/client_secrets/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -508,7 +509,7 @@ class AsyncConnect:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[ApplicationsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[ConnectApplication]:
@@ -520,7 +521,7 @@ class AsyncConnect:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending.
             organization_id: Filter Connect Applications by organization ID.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -675,7 +676,7 @@ class AsyncConnect:
         """
         return await self._client.request(
             method="get",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             model=ConnectApplication,
             request_options=request_options,
         )
@@ -726,7 +727,7 @@ class AsyncConnect:
         }
         return await self._client.request(
             method="put",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             body=body,
             model=ConnectApplication,
             request_options=request_options,
@@ -754,7 +755,7 @@ class AsyncConnect:
         """
         await self._client.request(
             method="delete",
-            path=f"connect/applications/{id}",
+            path=f"connect/applications/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -783,7 +784,7 @@ class AsyncConnect:
         """
         raw = await self._client.request_list(
             method="get",
-            path=f"connect/applications/{id}/client_secrets",
+            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
             request_options=request_options,
         )
         return [
@@ -818,7 +819,7 @@ class AsyncConnect:
         body: Dict[str, Any] = {}
         return await self._client.request(
             method="post",
-            path=f"connect/applications/{id}/client_secrets",
+            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
             body=body,
             model=NewConnectApplicationSecret,
             request_options=request_options,
@@ -846,6 +847,6 @@ class AsyncConnect:
         """
         await self._client.request(
             method="delete",
-            path=f"connect/client_secrets/{id}",
+            path=f"connect/client_secrets/{quote(str(id), safe='')}",
             request_options=request_options,
         )

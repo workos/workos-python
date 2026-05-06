@@ -350,6 +350,8 @@ from .models import SessionRevokedDataImpersonator as SessionRevokedDataImperson
 from .models import UpdateUserPasswordHashType as UpdateUserPasswordHashType
 from .models import UpdateWebhookEndpointEvents as UpdateWebhookEndpointEvents
 from .models import UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus
+from .models import UserApiKeyCreatedDataOwner as UserApiKeyCreatedDataOwner
+from .models import UserApiKeyRevokedDataOwner as UserApiKeyRevokedDataOwner
 from .models import UserCreated as UserCreated
 from .models import UserDeleted as UserDeleted
 from .models import UserIdentitiesGetItemProvider as UserIdentitiesGetItemProvider
@@ -361,6 +363,8 @@ from .models import UserOrganizationMembershipStatus as UserOrganizationMembersh
 from .models import UserSessionsAuthMethod as UserSessionsAuthMethod
 from .models import UserSessionsStatus as UserSessionsStatus
 from .models import UserUpdated as UserUpdated
+from .models import VaultByokKeyDeleted as VaultByokKeyDeleted
+from .models import VaultByokKeyDeletedData as VaultByokKeyDeletedData
 from .models import (
     VaultByokKeyVerificationCompleted as VaultByokKeyVerificationCompleted,
 )

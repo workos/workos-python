@@ -5,9 +5,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from typing import cast
 from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
+
+from workos.user_management.models.user import User
 from workos.common.models.user_organization_membership_base_list_data_status import (
     UserOrganizationMembershipBaseListDataStatus,
 )
@@ -33,6 +36,8 @@ class UserOrganizationMembershipBaseListData:
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
+    user: "User"
+    """The user that belongs to the organization through this membership."""
     organization_name: Optional[str] = None
     """The name of the organization which the user belongs to."""
     custom_attributes: Optional[Dict[str, Any]] = None
@@ -53,6 +58,7 @@ class UserOrganizationMembershipBaseListData:
                 directory_managed=data["directory_managed"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
+                user=User.from_dict(cast(Dict[str, Any], data["user"])),
                 organization_name=data.get("organization_name"),
                 custom_attributes=data.get("custom_attributes"),
             )
@@ -72,6 +78,7 @@ class UserOrganizationMembershipBaseListData:
         result["directory_managed"] = self.directory_managed
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
+        result["user"] = self.user.to_dict()
         if self.organization_name is not None:
             result["organization_name"] = self.organization_name
         if self.custom_attributes is not None:

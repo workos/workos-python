@@ -25,6 +25,7 @@ from .create_password_reset_token import (
 )
 from .create_redirect_uri import CreateRedirectUri as CreateRedirectUri
 from .create_user import CreateUser as CreateUser
+from .create_user_api_key import CreateUserApiKey as CreateUserApiKey
 from .create_user_invite_options import (
     CreateUserInviteOptions as CreateUserInviteOptions,
 )
@@ -89,6 +90,11 @@ from .organization_selection_session_authenticate_request import (
     OrganizationSelectionSessionAuthenticateRequest as OrganizationSelectionSessionAuthenticateRequest,
 )
 from .user import User as User
+from .user_api_key import UserApiKey as UserApiKey
+from .user_api_key_with_value import UserApiKeyWithValue as UserApiKeyWithValue
+from .user_api_key_with_value_owner import (
+    UserApiKeyWithValueOwner as UserApiKeyWithValueOwner,
+)
 from .user_identities_get_item import UserIdentitiesGetItem as UserIdentitiesGetItem
 from .user_invite import UserInvite as UserInvite
 from .user_management_authentication_provider import (
@@ -97,20 +103,8 @@ from .user_management_authentication_provider import (
 from .user_management_authentication_screen_hint import (
     UserManagementAuthenticationScreenHint as UserManagementAuthenticationScreenHint,
 )
-from .user_management_invitations_order import (
-    UserManagementInvitationsOrder as UserManagementInvitationsOrder,
-)
-from .user_management_organization_membership_order import (
-    UserManagementOrganizationMembershipOrder as UserManagementOrganizationMembershipOrder,
-)
 from .user_management_organization_membership_statuses import (
     UserManagementOrganizationMembershipStatuses as UserManagementOrganizationMembershipStatuses,
-)
-from .user_management_users_authorized_applications_order import (
-    UserManagementUsersAuthorizedApplicationsOrder as UserManagementUsersAuthorizedApplicationsOrder,
-)
-from .user_management_users_order import (
-    UserManagementUsersOrder as UserManagementUsersOrder,
 )
 from .user_organization_membership import (
     UserOrganizationMembership as UserOrganizationMembership,

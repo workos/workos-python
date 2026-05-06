@@ -3,17 +3,14 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
 from .models import FeatureFlag, Flag
-from .models import (
-    FeatureFlagsOrder,
-    OrganizationsFeatureFlagsOrder,
-    UserManagementUsersFeatureFlagsOrder,
-)
+from workos.authorization.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -29,7 +26,7 @@ class FeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[FeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List feature flags
@@ -40,7 +37,7 @@ class FeatureFlags:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
+            order: Order the results by the creation time.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -97,7 +94,7 @@ class FeatureFlags:
         """
         return self._client.request(
             method="get",
-            path=f"feature-flags/{slug}",
+            path=f"feature-flags/{quote(str(slug), safe='')}",
             model=Flag,
             request_options=request_options,
         )
@@ -127,7 +124,7 @@ class FeatureFlags:
         """
         return self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/disable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/disable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -157,7 +154,7 @@ class FeatureFlags:
         """
         return self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/enable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/enable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -188,7 +185,7 @@ class FeatureFlags:
         """
         self._client.request(
             method="post",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -218,7 +215,7 @@ class FeatureFlags:
         """
         self._client.request(
             method="delete",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -229,7 +226,7 @@ class FeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List enabled feature flags for an organization
@@ -241,7 +238,7 @@ class FeatureFlags:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
+            order: Order the results by the creation time.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -265,7 +262,7 @@ class FeatureFlags:
         }
         return self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/feature-flags",
+            path=f"organizations/{quote(str(organization_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,
@@ -278,7 +275,7 @@ class FeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersFeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List enabled feature flags for a user
@@ -290,7 +287,7 @@ class FeatureFlags:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
+            order: Order the results by the creation time.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -314,7 +311,7 @@ class FeatureFlags:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/users/{user_id}/feature-flags",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,
@@ -333,7 +330,7 @@ class AsyncFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[FeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List feature flags
@@ -344,7 +341,7 @@ class AsyncFeatureFlags:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
+            order: Order the results by the creation time.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -401,7 +398,7 @@ class AsyncFeatureFlags:
         """
         return await self._client.request(
             method="get",
-            path=f"feature-flags/{slug}",
+            path=f"feature-flags/{quote(str(slug), safe='')}",
             model=Flag,
             request_options=request_options,
         )
@@ -431,7 +428,7 @@ class AsyncFeatureFlags:
         """
         return await self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/disable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/disable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -461,7 +458,7 @@ class AsyncFeatureFlags:
         """
         return await self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/enable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/enable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -492,7 +489,7 @@ class AsyncFeatureFlags:
         """
         await self._client.request(
             method="post",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -522,7 +519,7 @@ class AsyncFeatureFlags:
         """
         await self._client.request(
             method="delete",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -533,7 +530,7 @@ class AsyncFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List enabled feature flags for an organization
@@ -545,7 +542,7 @@ class AsyncFeatureFlags:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
+            order: Order the results by the creation time.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -569,7 +566,7 @@ class AsyncFeatureFlags:
         }
         return await self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/feature-flags",
+            path=f"organizations/{quote(str(organization_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,
@@ -582,7 +579,7 @@ class AsyncFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersFeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List enabled feature flags for a user
@@ -594,7 +591,7 @@ class AsyncFeatureFlags:
             limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
+            order: Order the results by the creation time.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -618,7 +615,7 @@ class AsyncFeatureFlags:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/users/{user_id}/feature-flags",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,

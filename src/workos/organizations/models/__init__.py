@@ -8,7 +8,6 @@ from .audit_logs_retention_json import AuditLogsRetentionJson as AuditLogsRetent
 from .organization import Organization as Organization
 from .organization_domain_data import OrganizationDomainData as OrganizationDomainData
 from .organization_input import OrganizationInput as OrganizationInput
-from .organizations_order import OrganizationsOrder as OrganizationsOrder
 from .update_audit_logs_retention import (
     UpdateAuditLogsRetention as UpdateAuditLogsRetention,
 )

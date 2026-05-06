@@ -9,49 +9,53 @@ from typing import Any, Dict, Literal
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .role_assignment_resource import RoleAssignmentResource
 from .slim_role import SlimRole
+from .user_role_assignment_resource import UserRoleAssignmentResource
 
 
 @dataclass(slots=True)
-class RoleAssignment:
-    """Role Assignment model."""
+class UserRoleAssignment:
+    """User Role Assignment model."""
 
     object: Literal["role_assignment"]
     """Distinguishes the role assignment object."""
     id: str
     """Unique identifier of the role assignment."""
+    organization_membership_id: str
+    """The ID of the organization membership the role is assigned to."""
     role: "SlimRole"
     """The role included in the assignment."""
-    resource: "RoleAssignmentResource"
-    """The resource to which the role is assigned."""
+    resource: "UserRoleAssignmentResource"
+    """The resource the role is assigned on."""
     created_at: datetime
     """An ISO 8601 timestamp."""
     updated_at: datetime
     """An ISO 8601 timestamp."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "RoleAssignment":
+    def from_dict(cls, data: Dict[str, Any]) -> "UserRoleAssignment":
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "role_assignment"),
                 id=data["id"],
+                organization_membership_id=data["organization_membership_id"],
                 role=SlimRole.from_dict(cast(Dict[str, Any], data["role"])),
-                resource=RoleAssignmentResource.from_dict(
+                resource=UserRoleAssignmentResource.from_dict(
                     cast(Dict[str, Any], data["resource"])
                 ),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("RoleAssignment", e)
+            _raise_deserialize_error("UserRoleAssignment", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
+        result["organization_membership_id"] = self.organization_membership_id
         result["role"] = self.role.to_dict()
         result["resource"] = self.resource.to_dict()
         result["created_at"] = _format_datetime(self.created_at)

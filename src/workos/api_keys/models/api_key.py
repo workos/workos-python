@@ -5,22 +5,23 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .api_key_owner import ApiKeyOwner
+from .user_api_key_owner import UserApiKeyOwner
 
 
 @dataclass(slots=True)
 class ApiKey:
-    """The API Key object if the value is valid, or `null` if invalid."""
+    """Api Key model."""
 
     object: Literal["api_key"]
     """Distinguishes the API Key object."""
     id: str
     """Unique identifier of the API Key."""
-    owner: "ApiKeyOwner"
+    owner: Union["ApiKeyOwner", "UserApiKeyOwner"]
     """The entity that owns the API Key."""
     name: str
     """A descriptive name for the API Key."""
@@ -42,7 +43,19 @@ class ApiKey:
             return cls(
                 object=data.get("object", "api_key"),
                 id=data["id"],
-                owner=ApiKeyOwner.from_dict(cast(Dict[str, Any], data["owner"])),
+                owner=(
+                    _disc.from_dict(cast(Dict[str, Any], data["owner"]))
+                    if (
+                        _disc := {
+                            "organization": ApiKeyOwner,
+                            "user": UserApiKeyOwner,
+                        }.get(
+                            cast(str, cast(Dict[str, Any], data["owner"]).get("type"))
+                        )
+                    )
+                    is not None
+                    else data["owner"]
+                ),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
                 last_used_at=_parse_datetime(_v_last_used_at)
@@ -60,7 +73,9 @@ class ApiKey:
         result: Dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
-        result["owner"] = self.owner.to_dict()
+        result["owner"] = (
+            self.owner.to_dict() if hasattr(self.owner, "to_dict") else self.owner
+        )
         result["name"] = self.name
         result["obfuscated_value"] = self.obfuscated_value
         if self.last_used_at is not None:

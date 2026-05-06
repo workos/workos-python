@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -115,7 +116,7 @@ class Radar:
         }
         self._client.request(
             method="put",
-            path=f"radar/attempts/{id}",
+            path=f"radar/attempts/{quote(str(id), safe='')}",
             body=body,
             request_options=request_options,
         )
@@ -152,7 +153,7 @@ class Radar:
         }
         return self._client.request(
             method="post",
-            path=f"radar/lists/{enum_value(type)}/{enum_value(action)}",
+            path=f"radar/lists/{quote(str(enum_value(type)), safe='')}/{quote(str(enum_value(action)), safe='')}",
             body=body,
             model=RadarListEntryAlreadyPresentResponse,
             request_options=request_options,
@@ -188,7 +189,7 @@ class Radar:
         }
         self._client.request(
             method="delete",
-            path=f"radar/lists/{enum_value(type)}/{enum_value(action)}",
+            path=f"radar/lists/{quote(str(enum_value(type)), safe='')}/{quote(str(enum_value(action)), safe='')}",
             body=body,
             request_options=request_options,
         )
@@ -291,7 +292,7 @@ class AsyncRadar:
         }
         await self._client.request(
             method="put",
-            path=f"radar/attempts/{id}",
+            path=f"radar/attempts/{quote(str(id), safe='')}",
             body=body,
             request_options=request_options,
         )
@@ -328,7 +329,7 @@ class AsyncRadar:
         }
         return await self._client.request(
             method="post",
-            path=f"radar/lists/{enum_value(type)}/{enum_value(action)}",
+            path=f"radar/lists/{quote(str(enum_value(type)), safe='')}/{quote(str(enum_value(action)), safe='')}",
             body=body,
             model=RadarListEntryAlreadyPresentResponse,
             request_options=request_options,
@@ -364,7 +365,7 @@ class AsyncRadar:
         }
         await self._client.request(
             method="delete",
-            path=f"radar/lists/{enum_value(type)}/{enum_value(action)}",
+            path=f"radar/lists/{quote(str(enum_value(type)), safe='')}/{quote(str(enum_value(action)), safe='')}",
             body=body,
             request_options=request_options,
         )

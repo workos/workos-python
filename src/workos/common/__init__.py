@@ -4,6 +4,7 @@ from .models import ActionAuthenticationDenied as ActionAuthenticationDenied
 from .models import ActionAuthenticationDeniedData as ActionAuthenticationDeniedData
 from .models import ActionUserRegistrationDenied as ActionUserRegistrationDenied
 from .models import ActionUserRegistrationDeniedData as ActionUserRegistrationDeniedData
+from .models import AddRolePermission as AddRolePermission
 from .models import ApiKeyCreated as ApiKeyCreated
 from .models import ApiKeyCreatedData as ApiKeyCreatedData
 from .models import ApiKeyCreatedDataOwner as ApiKeyCreatedDataOwner
@@ -21,6 +22,7 @@ from .models import AuditLogExportJsonState as AuditLogExportJsonState
 from .models import (
     AuthenticateResponseAuthenticationMethod as AuthenticateResponseAuthenticationMethod,
 )
+from .models import AuthenticateResponseImpersonator as AuthenticateResponseImpersonator
 from .models import AuthenticationChallenge as AuthenticationChallenge
 from .models import (
     AuthenticationEmailVerificationFailed as AuthenticationEmailVerificationFailed,
@@ -42,12 +44,12 @@ from .models import AuthenticationFactorEnrolled as AuthenticationFactorEnrolled
 from .models import AuthenticationFactorEnrolledSms as AuthenticationFactorEnrolledSms
 from .models import AuthenticationFactorEnrolledTotp as AuthenticationFactorEnrolledTotp
 from .models import AuthenticationFactorEnrolledType as AuthenticationFactorEnrolledType
-from .models import AuthenticationFactorSms as AuthenticationFactorSms
-from .models import AuthenticationFactorTotp as AuthenticationFactorTotp
-from .models import AuthenticationFactorType as AuthenticationFactorType
 from .models import (
     AuthenticationFactorsCreateRequestType as AuthenticationFactorsCreateRequestType,
 )
+from .models import AuthenticationFactorSms as AuthenticationFactorSms
+from .models import AuthenticationFactorTotp as AuthenticationFactorTotp
+from .models import AuthenticationFactorType as AuthenticationFactorType
 from .models import AuthenticationMagicAuthFailed as AuthenticationMagicAuthFailed
 from .models import (
     AuthenticationMagicAuthFailedData as AuthenticationMagicAuthFailedData,
@@ -193,6 +195,8 @@ from .models import EventContextActor as EventContextActor
 from .models import (
     EventContextGoogleAnalyticsSession as EventContextGoogleAnalyticsSession,
 )
+from .models import FeatureFlag as FeatureFlag
+from .models import FeatureFlagOwner as FeatureFlagOwner
 from .models import Flag as Flag
 from .models import FlagCreated as FlagCreated
 from .models import FlagCreatedContext as FlagCreatedContext
@@ -366,6 +370,7 @@ from .models import SlimRole as SlimRole
 from .models import UpdateUserPasswordHashType as UpdateUserPasswordHashType
 from .models import UpdateWebhookEndpointEvents as UpdateWebhookEndpointEvents
 from .models import UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus
+from .models import User as User
 from .models import UserApiKeyCreatedDataOwner as UserApiKeyCreatedDataOwner
 from .models import UserApiKeyRevokedDataOwner as UserApiKeyRevokedDataOwner
 from .models import UserCreated as UserCreated
@@ -380,6 +385,8 @@ from .models import (
 )
 from .models import UserOrganizationMembershipStatus as UserOrganizationMembershipStatus
 from .models import UserSessionsAuthMethod as UserSessionsAuthMethod
+from .models import UserSessionsImpersonator as UserSessionsImpersonator
+from .models import UserSessionsListItem as UserSessionsListItem
 from .models import UserSessionsStatus as UserSessionsStatus
 from .models import UserUpdated as UserUpdated
 from .models import VaultByokKeyDeleted as VaultByokKeyDeleted

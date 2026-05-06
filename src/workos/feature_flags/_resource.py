@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import FeatureFlag
+from workos.common.models.feature_flag import FeatureFlag
 from workos.common.models.flag import Flag
 from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage

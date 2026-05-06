@@ -10,7 +10,7 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from workos.user_management.models.user import User
+from .user import User
 from .user_organization_membership_base_list_data_status import (
     UserOrganizationMembershipBaseListDataStatus,
 )

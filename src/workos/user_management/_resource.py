@@ -34,15 +34,15 @@ from .models import (
     MagicAuthCodeSessionAuthenticateRequest,
     MFATotpSessionAuthenticateRequest,
     OrganizationSelectionSessionAuthenticateRequest,
-    User,
     UserApiKey,
     UserApiKeyWithValue,
     UserIdentitiesGetItem,
     UserInvite,
     UserOrganizationMembership,
-    UserSessionsListItem,
     VerifyEmailResponse,
 )
+from workos.common.models.user import User
+from workos.common.models.user_sessions_list_item import UserSessionsListItem
 from .models import (
     UserManagementAuthenticationProvider,
     UserManagementAuthenticationScreenHint,

@@ -12,6 +12,7 @@ from .action_user_registration_denied import (
 from .action_user_registration_denied_data import (
     ActionUserRegistrationDeniedData as ActionUserRegistrationDeniedData,
 )
+from .add_role_permission import AddRolePermission as AddRolePermission
 from .api_key_created import ApiKeyCreated as ApiKeyCreated
 from .api_key_created_data import ApiKeyCreatedData as ApiKeyCreatedData
 from .api_key_created_data_owner import ApiKeyCreatedDataOwner as ApiKeyCreatedDataOwner
@@ -32,6 +33,9 @@ from .audit_log_export_json_state import (
 )
 from .authenticate_response_authentication_method import (
     AuthenticateResponseAuthenticationMethod as AuthenticateResponseAuthenticationMethod,
+)
+from .authenticate_response_impersonator import (
+    AuthenticateResponseImpersonator as AuthenticateResponseImpersonator,
 )
 from .authentication_challenge import AuthenticationChallenge as AuthenticationChallenge
 from .authentication_email_verification_failed import (
@@ -62,6 +66,9 @@ from .authentication_factor_enrolled_totp import (
 from .authentication_factor_enrolled_type import (
     AuthenticationFactorEnrolledType as AuthenticationFactorEnrolledType,
 )
+from .authentication_factors_create_request_type import (
+    AuthenticationFactorsCreateRequestType as AuthenticationFactorsCreateRequestType,
+)
 from .authentication_factor_sms import (
     AuthenticationFactorSms as AuthenticationFactorSms,
 )
@@ -70,9 +77,6 @@ from .authentication_factor_totp import (
 )
 from .authentication_factor_type import (
     AuthenticationFactorType as AuthenticationFactorType,
-)
-from .authentication_factors_create_request_type import (
-    AuthenticationFactorsCreateRequestType as AuthenticationFactorsCreateRequestType,
 )
 from .authentication_magic_auth_failed import (
     AuthenticationMagicAuthFailed as AuthenticationMagicAuthFailed,
@@ -311,6 +315,8 @@ from .event_context_actor import EventContextActor as EventContextActor
 from .event_context_google_analytics_session import (
     EventContextGoogleAnalyticsSession as EventContextGoogleAnalyticsSession,
 )
+from .feature_flag import FeatureFlag as FeatureFlag
+from .feature_flag_owner import FeatureFlagOwner as FeatureFlagOwner
 from .flag import Flag as Flag
 from .flag_created import FlagCreated as FlagCreated
 from .flag_created_context import FlagCreatedContext as FlagCreatedContext
@@ -566,6 +572,7 @@ from .update_webhook_endpoint_events import (
 from .update_webhook_endpoint_status import (
     UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus,
 )
+from .user import User as User
 from .user_api_key_created_data_owner import (
     UserApiKeyCreatedDataOwner as UserApiKeyCreatedDataOwner,
 )
@@ -588,6 +595,10 @@ from .user_organization_membership_status import (
     UserOrganizationMembershipStatus as UserOrganizationMembershipStatus,
 )
 from .user_sessions_auth_method import UserSessionsAuthMethod as UserSessionsAuthMethod
+from .user_sessions_impersonator import (
+    UserSessionsImpersonator as UserSessionsImpersonator,
+)
+from .user_sessions_list_item import UserSessionsListItem as UserSessionsListItem
 from .user_sessions_status import UserSessionsStatus as UserSessionsStatus
 from .user_updated import UserUpdated as UserUpdated
 from .vault_byok_key_deleted import VaultByokKeyDeleted as VaultByokKeyDeleted

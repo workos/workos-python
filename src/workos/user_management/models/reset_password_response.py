@@ -7,7 +7,7 @@ from typing import cast
 from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 
-from .user import User
+from workos.common.models.user import User
 
 
 @dataclass(slots=True)

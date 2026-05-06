@@ -3,6 +3,9 @@
 from .application_credentials_list_item import (
     ApplicationCredentialsListItem as ApplicationCredentialsListItem,
 )
+from workos.common.models.connect_application import (
+    ConnectApplication as ConnectApplication,
+)
 from .create_application_secret import (
     CreateApplicationSecret as CreateApplicationSecret,
 )

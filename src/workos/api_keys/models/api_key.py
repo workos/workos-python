@@ -40,22 +40,23 @@ class ApiKey:
     def from_dict(cls, data: Dict[str, Any]) -> "ApiKey":
         """Deserialize from a dictionary."""
         try:
+            _owner_raw = data["owner"]
+            _owner_data = cast(Dict[str, Any], _owner_raw)
+            _owner_disc = cast(str, _owner_data.get("type"))
+            _owner_disc_map: Dict[str, Any] = {
+                "organization": ApiKeyOwner,
+                "user": UserApiKeyOwner,
+            }
+            _owner_cls = _owner_disc_map.get(_owner_disc)
+            if _owner_cls is None:
+                raise ValueError(
+                    f"Unknown discriminator 'type' for ApiKey.owner: {_owner_disc!r}. "
+                    f"Expected one of {sorted(_owner_disc_map)}."
+                )
             return cls(
                 object=data.get("object", "api_key"),
                 id=data["id"],
-                owner=(
-                    _disc.from_dict(cast(Dict[str, Any], data["owner"]))
-                    if (
-                        _disc := {
-                            "organization": ApiKeyOwner,
-                            "user": UserApiKeyOwner,
-                        }.get(
-                            cast(str, cast(Dict[str, Any], data["owner"]).get("type"))
-                        )
-                    )
-                    is not None
-                    else data["owner"]
-                ),
+                owner=_owner_cls.from_dict(_owner_data),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
                 last_used_at=_parse_datetime(_v_last_used_at)
@@ -73,9 +74,7 @@ class ApiKey:
         result: Dict[str, Any] = {}
         result["object"] = self.object
         result["id"] = self.id
-        result["owner"] = (
-            self.owner.to_dict() if hasattr(self.owner, "to_dict") else self.owner
-        )
+        result["owner"] = self.owner.to_dict()
         result["name"] = self.name
         result["obfuscated_value"] = self.obfuscated_value
         if self.last_used_at is not None:

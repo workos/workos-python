@@ -10,6 +10,7 @@ import random
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from typing import Any, Dict, Optional, Type, cast, overload
+from urllib.parse import quote
 
 import httpx
 
@@ -127,6 +128,21 @@ class _BaseWorkOSClient:
             if base_url:
                 return str(base_url).rstrip("/")
         return self._base_url.rstrip("/")
+
+    @staticmethod
+    def _encode_path(path: str) -> str:
+        """Percent-encode each path segment to prevent path-traversal/injection.
+
+        Splits on ``/`` and applies ``urllib.parse.quote(seg, safe='')`` to each
+        segment so that user-supplied IDs containing reserved characters (``/``,
+        ``?``, ``#``, ``%``, etc.) cannot escape their intended segment. The
+        leading slash (if any) is preserved.
+        """
+        if not path:
+            return path
+        leading = "/" if path.startswith("/") else ""
+        body = path[1:] if leading else path
+        return leading + "/".join(quote(seg, safe="") for seg in body.split("/"))
 
     def _resolve_timeout(self, request_options: Optional[RequestOptions]) -> float:
         timeout = self._request_timeout
@@ -406,7 +422,7 @@ class WorkOSClient(_BaseWorkOSClient):
         request_options: Optional[RequestOptions] = None,
     ) -> Any:
         """Make an HTTP request with retry logic."""
-        url = f"{self._resolve_base_url(request_options)}/{path}"
+        url = f"{self._resolve_base_url(request_options)}/{self._encode_path(path).lstrip('/')}"
         headers = self._build_headers(method, idempotency_key, request_options)
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
@@ -631,7 +647,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         request_options: Optional[RequestOptions] = None,
     ) -> Any:
         """Make an async HTTP request with retry logic."""
-        url = f"{self._resolve_base_url(request_options)}/{path}"
+        url = f"{self._resolve_base_url(request_options)}/{self._encode_path(path).lstrip('/')}"
         headers = self._build_headers(method, idempotency_key, request_options)
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)

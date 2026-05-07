@@ -70,7 +70,9 @@ def _map_refresh_exception_to_reason(
     if isinstance(exc, EmailVerificationRequiredError):
         return AuthenticateWithSessionCookieFailureReason.EMAIL_VERIFICATION_REQUIRED
     if isinstance(exc, OrganizationSelectionRequiredError):
-        return AuthenticateWithSessionCookieFailureReason.ORGANIZATION_SELECTION_REQUIRED
+        return (
+            AuthenticateWithSessionCookieFailureReason.ORGANIZATION_SELECTION_REQUIRED
+        )
     if isinstance(exc, AuthenticationError):
         return AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED
     if isinstance(exc, (WorkOSConnectionError, WorkOSTimeoutError)):

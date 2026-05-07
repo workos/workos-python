@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
 from .models import AuditLogConfiguration, Organization, OrganizationDomainData
-from .models import OrganizationsOrder
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -25,7 +26,7 @@ class Organizations:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         domains: Optional[List[str]] = None,
         search: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -156,7 +157,7 @@ class Organizations:
         """
         return self._client.request(
             method="get",
-            path=f"organizations/external_id/{external_id}",
+            path=f"organizations/external_id/{quote(str(external_id), safe='')}",
             model=Organization,
             request_options=request_options,
         )
@@ -186,7 +187,7 @@ class Organizations:
         """
         return self._client.request(
             method="get",
-            path=f"organizations/{id}",
+            path=f"organizations/{quote(str(id), safe='')}",
             model=Organization,
             request_options=request_options,
         )
@@ -249,7 +250,7 @@ class Organizations:
         }
         return self._client.request(
             method="put",
-            path=f"organizations/{id}",
+            path=f"organizations/{quote(str(id), safe='')}",
             body=body,
             model=Organization,
             request_options=request_options,
@@ -277,7 +278,7 @@ class Organizations:
         """
         self._client.request(
             method="delete",
-            path=f"organizations/{id}",
+            path=f"organizations/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -306,7 +307,7 @@ class Organizations:
         """
         return self._client.request(
             method="get",
-            path=f"organizations/{id}/audit_log_configuration",
+            path=f"organizations/{quote(str(id), safe='')}/audit_log_configuration",
             model=AuditLogConfiguration,
             request_options=request_options,
         )
@@ -324,7 +325,7 @@ class AsyncOrganizations:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         domains: Optional[List[str]] = None,
         search: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -455,7 +456,7 @@ class AsyncOrganizations:
         """
         return await self._client.request(
             method="get",
-            path=f"organizations/external_id/{external_id}",
+            path=f"organizations/external_id/{quote(str(external_id), safe='')}",
             model=Organization,
             request_options=request_options,
         )
@@ -485,7 +486,7 @@ class AsyncOrganizations:
         """
         return await self._client.request(
             method="get",
-            path=f"organizations/{id}",
+            path=f"organizations/{quote(str(id), safe='')}",
             model=Organization,
             request_options=request_options,
         )
@@ -548,7 +549,7 @@ class AsyncOrganizations:
         }
         return await self._client.request(
             method="put",
-            path=f"organizations/{id}",
+            path=f"organizations/{quote(str(id), safe='')}",
             body=body,
             model=Organization,
             request_options=request_options,
@@ -576,7 +577,7 @@ class AsyncOrganizations:
         """
         await self._client.request(
             method="delete",
-            path=f"organizations/{id}",
+            path=f"organizations/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -605,7 +606,7 @@ class AsyncOrganizations:
         """
         return await self._client.request(
             method="get",
-            path=f"organizations/{id}/audit_log_configuration",
+            path=f"organizations/{quote(str(id), safe='')}/audit_log_configuration",
             model=AuditLogConfiguration,
             request_options=request_options,
         )

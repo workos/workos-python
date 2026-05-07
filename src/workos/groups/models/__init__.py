@@ -2,6 +2,5 @@
 
 from .create_group import CreateGroup as CreateGroup
 from .create_group_membership import CreateGroupMembership as CreateGroupMembership
-from .group import Group as Group
-from .groups_order import GroupsOrder as GroupsOrder
+from workos.common.models.group import Group as Group
 from .update_group import UpdateGroup as UpdateGroup

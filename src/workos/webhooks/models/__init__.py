@@ -3,4 +3,3 @@
 from .create_webhook_endpoint import CreateWebhookEndpoint as CreateWebhookEndpoint
 from .update_webhook_endpoint import UpdateWebhookEndpoint as UpdateWebhookEndpoint
 from .webhook_endpoint_json import WebhookEndpointJson as WebhookEndpointJson
-from .webhooks_order import WebhooksOrder as WebhooksOrder

@@ -3,16 +3,17 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
 from .models import WebhookEndpointJson
-from .models import WebhooksOrder
 from workos.common.models.create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents,
 )
+from workos.common.models.pagination_order import PaginationOrder
 from workos.common.models.update_webhook_endpoint_events import (
     UpdateWebhookEndpointEvents,
 )
@@ -38,7 +39,7 @@ class Webhooks:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[WebhooksOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[WebhookEndpointJson]:
         """List Webhook Endpoints
@@ -158,7 +159,7 @@ class Webhooks:
         }
         return self._client.request(
             method="patch",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             body=body,
             model=WebhookEndpointJson,
             request_options=request_options,
@@ -186,7 +187,7 @@ class Webhooks:
         """
         self._client.request(
             method="delete",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -295,7 +296,7 @@ class AsyncWebhooks:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[WebhooksOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[WebhookEndpointJson]:
         """List Webhook Endpoints
@@ -415,7 +416,7 @@ class AsyncWebhooks:
         }
         return await self._client.request(
             method="patch",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             body=body,
             model=WebhookEndpointJson,
             request_options=request_options,
@@ -443,7 +444,7 @@ class AsyncWebhooks:
         """
         await self._client.request(
             method="delete",
-            path=f"webhook_endpoints/{id}",
+            path=f"webhook_endpoints/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 

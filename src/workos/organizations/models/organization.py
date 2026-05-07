@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from workos.organization_domains.models.organization_domain import OrganizationDomain
+from workos.common.models.organization_domain import OrganizationDomain
 
 
 @dataclass(slots=True)

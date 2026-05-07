@@ -21,4 +21,3 @@ from .audit_log_schema_json_target import (
     AuditLogSchemaJsonTarget as AuditLogSchemaJsonTarget,
 )
 from .audit_log_schema_target import AuditLogSchemaTarget as AuditLogSchemaTarget
-from .audit_logs_order import AuditLogsOrder as AuditLogsOrder

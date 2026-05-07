@@ -10,9 +10,9 @@ from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .directory_group import DirectoryGroup
+from workos.common.models.directory_group import DirectoryGroup
 from .directory_user_with_groups_email import DirectoryUserWithGroupsEmail
-from workos.authorization.models.slim_role import SlimRole
+from workos.common.models.slim_role import SlimRole
 from workos.common.models.directory_user_with_groups_state import (
     DirectoryUserWithGroupsState,
 )
@@ -46,6 +46,8 @@ class DirectoryUserWithGroups:
     """The first name of the user."""
     last_name: Optional[str] = None
     """The last name of the user."""
+    name: Optional[str] = None
+    """The full name of the user."""
     emails: Optional[List["DirectoryUserWithGroupsEmail"]] = None
     """A list of email addresses for the user.
 
@@ -66,7 +68,7 @@ class DirectoryUserWithGroups:
     roles: Optional[List["SlimRole"]] = None
     """All roles assigned to the user."""
     groups: Optional[List["DirectoryGroup"]] = None
-    """The directory groups the user belongs to. Use the List Directory Groups endpoint with a user filter instead.
+    """The directory groups the user belongs to. Deprecated: starting May 1, 2026, this field returns an empty array by default for newly created teams. Existing teams currently depending on this field should migrate to the new access pattern for better throughput performance — the field is unbounded by user, so users with many group memberships produce large, slow response payloads. Use the List Directory Groups endpoint with a `user` filter to fetch a user's group memberships.
 
     .. deprecated:: This field is deprecated."""
 
@@ -87,6 +89,7 @@ class DirectoryUserWithGroups:
                 updated_at=_parse_datetime(data["updated_at"]),
                 first_name=data.get("first_name"),
                 last_name=data.get("last_name"),
+                name=data.get("name"),
                 emails=[
                     DirectoryUserWithGroupsEmail.from_dict(cast(Dict[str, Any], item))
                     for item in cast(list[Any], _v_emails)
@@ -141,6 +144,10 @@ class DirectoryUserWithGroups:
             result["last_name"] = self.last_name
         else:
             result["last_name"] = None
+        if self.name is not None:
+            result["name"] = self.name
+        else:
+            result["name"] = None
         if self.emails is not None:
             result["emails"] = [item.to_dict() for item in self.emails]
         if self.job_title is not None:

@@ -5,12 +5,17 @@ from .api_key_owner import ApiKeyOwner as ApiKeyOwner
 from .api_key_validation_response import (
     ApiKeyValidationResponse as ApiKeyValidationResponse,
 )
-from .api_key_with_value import ApiKeyWithValue as ApiKeyWithValue
-from .api_key_with_value_owner import ApiKeyWithValueOwner as ApiKeyWithValueOwner
 from .create_organization_api_key import (
     CreateOrganizationApiKey as CreateOrganizationApiKey,
 )
-from .organizations_api_keys_order import (
-    OrganizationsApiKeysOrder as OrganizationsApiKeysOrder,
+from .organization_api_key import OrganizationApiKey as OrganizationApiKey
+from .organization_api_key_owner import (
+    OrganizationApiKeyOwner as OrganizationApiKeyOwner,
+)
+from .organization_api_key_with_value import (
+    OrganizationApiKeyWithValue as OrganizationApiKeyWithValue,
+)
+from .organization_api_key_with_value_owner import (
+    OrganizationApiKeyWithValueOwner as OrganizationApiKeyWithValueOwner,
 )
 from .validate_api_key import ValidateApiKey as ValidateApiKey

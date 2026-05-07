@@ -3,17 +3,15 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import FeatureFlag, Flag
-from .models import (
-    FeatureFlagsOrder,
-    OrganizationsFeatureFlagsOrder,
-    UserManagementUsersFeatureFlagsOrder,
-)
+from workos.common.models.feature_flag import FeatureFlag
+from workos.common.models.flag import Flag
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -29,7 +27,7 @@ class FeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[FeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List feature flags
@@ -97,7 +95,7 @@ class FeatureFlags:
         """
         return self._client.request(
             method="get",
-            path=f"feature-flags/{slug}",
+            path=f"feature-flags/{quote(str(slug), safe='')}",
             model=Flag,
             request_options=request_options,
         )
@@ -127,7 +125,7 @@ class FeatureFlags:
         """
         return self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/disable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/disable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -157,7 +155,7 @@ class FeatureFlags:
         """
         return self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/enable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/enable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -188,7 +186,7 @@ class FeatureFlags:
         """
         self._client.request(
             method="post",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -218,7 +216,7 @@ class FeatureFlags:
         """
         self._client.request(
             method="delete",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -229,7 +227,7 @@ class FeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List enabled feature flags for an organization
@@ -265,7 +263,7 @@ class FeatureFlags:
         }
         return self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/feature-flags",
+            path=f"organizations/{quote(str(organization_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,
@@ -278,7 +276,7 @@ class FeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersFeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Flag]:
         """List enabled feature flags for a user
@@ -314,7 +312,7 @@ class FeatureFlags:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/users/{user_id}/feature-flags",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,
@@ -333,7 +331,7 @@ class AsyncFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[FeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List feature flags
@@ -401,7 +399,7 @@ class AsyncFeatureFlags:
         """
         return await self._client.request(
             method="get",
-            path=f"feature-flags/{slug}",
+            path=f"feature-flags/{quote(str(slug), safe='')}",
             model=Flag,
             request_options=request_options,
         )
@@ -431,7 +429,7 @@ class AsyncFeatureFlags:
         """
         return await self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/disable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/disable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -461,7 +459,7 @@ class AsyncFeatureFlags:
         """
         return await self._client.request(
             method="put",
-            path=f"feature-flags/{slug}/enable",
+            path=f"feature-flags/{quote(str(slug), safe='')}/enable",
             model=FeatureFlag,
             request_options=request_options,
         )
@@ -492,7 +490,7 @@ class AsyncFeatureFlags:
         """
         await self._client.request(
             method="post",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -522,7 +520,7 @@ class AsyncFeatureFlags:
         """
         await self._client.request(
             method="delete",
-            path=f"feature-flags/{slug}/targets/{resource_id}",
+            path=f"feature-flags/{quote(str(slug), safe='')}/targets/{quote(str(resource_id), safe='')}",
             request_options=request_options,
         )
 
@@ -533,7 +531,7 @@ class AsyncFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsFeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List enabled feature flags for an organization
@@ -569,7 +567,7 @@ class AsyncFeatureFlags:
         }
         return await self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/feature-flags",
+            path=f"organizations/{quote(str(organization_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,
@@ -582,7 +580,7 @@ class AsyncFeatureFlags:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersFeatureFlagsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Flag]:
         """List enabled feature flags for a user
@@ -618,7 +616,7 @@ class AsyncFeatureFlags:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/users/{user_id}/feature-flags",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/feature-flags",
             model=Flag,
             params=params,
             request_options=request_options,

@@ -3,22 +3,25 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
 from .models import (
-    AuthenticationChallenge,
     AuthenticationChallengeVerifyResponse,
-    AuthenticationFactor,
-    AuthenticationFactorEnrolled,
     UserAuthenticationFactorEnrollResponse,
 )
-from .models import UserManagementMultiFactorAuthenticationOrder
+from workos.common.models.authentication_challenge import AuthenticationChallenge
+from workos.common.models.authentication_factor import AuthenticationFactor
+from workos.common.models.authentication_factor_enrolled import (
+    AuthenticationFactorEnrolled,
+)
 from workos.common.models.authentication_factors_create_request_type import (
     AuthenticationFactorsCreateRequestType,
 )
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -60,7 +63,7 @@ class MultiFactorAuth:
         }
         return self._client.request(
             method="post",
-            path=f"auth/challenges/{id}/verify",
+            path=f"auth/challenges/{quote(str(id), safe='')}/verify",
             body=body,
             model=AuthenticationChallengeVerifyResponse,
             request_options=request_options,
@@ -141,7 +144,7 @@ class MultiFactorAuth:
         """
         return self._client.request(
             method="get",
-            path=f"auth/factors/{id}",
+            path=f"auth/factors/{quote(str(id), safe='')}",
             model=AuthenticationFactor,
             request_options=request_options,
         )
@@ -168,7 +171,7 @@ class MultiFactorAuth:
         """
         self._client.request(
             method="delete",
-            path=f"auth/factors/{id}",
+            path=f"auth/factors/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -207,7 +210,7 @@ class MultiFactorAuth:
         }
         return self._client.request(
             method="post",
-            path=f"auth/factors/{id}/challenge",
+            path=f"auth/factors/{quote(str(id), safe='')}/challenge",
             body=body,
             model=AuthenticationChallenge,
             request_options=request_options,
@@ -220,9 +223,7 @@ class MultiFactorAuth:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementMultiFactorAuthenticationOrder, str]
-        ] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthenticationFactor]:
         """List authentication factors
@@ -258,7 +259,7 @@ class MultiFactorAuth:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/users/{userland_user_id}/auth_factors",
+            path=f"user_management/users/{quote(str(userland_user_id), safe='')}/auth_factors",
             model=AuthenticationFactor,
             params=params,
             request_options=request_options,
@@ -307,7 +308,7 @@ class MultiFactorAuth:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/users/{userland_user_id}/auth_factors",
+            path=f"user_management/users/{quote(str(userland_user_id), safe='')}/auth_factors",
             body=body,
             model=UserAuthenticationFactorEnrollResponse,
             request_options=request_options,
@@ -352,7 +353,7 @@ class AsyncMultiFactorAuth:
         }
         return await self._client.request(
             method="post",
-            path=f"auth/challenges/{id}/verify",
+            path=f"auth/challenges/{quote(str(id), safe='')}/verify",
             body=body,
             model=AuthenticationChallengeVerifyResponse,
             request_options=request_options,
@@ -433,7 +434,7 @@ class AsyncMultiFactorAuth:
         """
         return await self._client.request(
             method="get",
-            path=f"auth/factors/{id}",
+            path=f"auth/factors/{quote(str(id), safe='')}",
             model=AuthenticationFactor,
             request_options=request_options,
         )
@@ -460,7 +461,7 @@ class AsyncMultiFactorAuth:
         """
         await self._client.request(
             method="delete",
-            path=f"auth/factors/{id}",
+            path=f"auth/factors/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -499,7 +500,7 @@ class AsyncMultiFactorAuth:
         }
         return await self._client.request(
             method="post",
-            path=f"auth/factors/{id}/challenge",
+            path=f"auth/factors/{quote(str(id), safe='')}/challenge",
             body=body,
             model=AuthenticationChallenge,
             request_options=request_options,
@@ -512,9 +513,7 @@ class AsyncMultiFactorAuth:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementMultiFactorAuthenticationOrder, str]
-        ] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthenticationFactor]:
         """List authentication factors
@@ -550,7 +549,7 @@ class AsyncMultiFactorAuth:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/users/{userland_user_id}/auth_factors",
+            path=f"user_management/users/{quote(str(userland_user_id), safe='')}/auth_factors",
             model=AuthenticationFactor,
             params=params,
             request_options=request_options,
@@ -599,7 +598,7 @@ class AsyncMultiFactorAuth:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{userland_user_id}/auth_factors",
+            path=f"user_management/users/{quote(str(userland_user_id), safe='')}/auth_factors",
             body=body,
             model=UserAuthenticationFactorEnrollResponse,
             request_options=request_options,

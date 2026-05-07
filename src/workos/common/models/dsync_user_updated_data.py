@@ -11,7 +11,7 @@ from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .dsync_user_updated_data_email import DsyncUserUpdatedDataEmail
-from workos.authorization.models.slim_role import SlimRole
+from .slim_role import SlimRole
 from .dsync_user_updated_data_state import DsyncUserUpdatedDataState
 
 
@@ -43,6 +43,8 @@ class DsyncUserUpdatedData:
     """The first name of the user."""
     last_name: Optional[str] = None
     """The last name of the user."""
+    name: Optional[str] = None
+    """The full name of the user."""
     emails: Optional[List["DsyncUserUpdatedDataEmail"]] = None
     """A list of email addresses for the user.
 
@@ -81,6 +83,7 @@ class DsyncUserUpdatedData:
                 updated_at=_parse_datetime(data["updated_at"]),
                 first_name=data.get("first_name"),
                 last_name=data.get("last_name"),
+                name=data.get("name"),
                 emails=[
                     DsyncUserUpdatedDataEmail.from_dict(cast(Dict[str, Any], item))
                     for item in cast(list[Any], _v_emails)
@@ -130,6 +133,10 @@ class DsyncUserUpdatedData:
             result["last_name"] = self.last_name
         else:
             result["last_name"] = None
+        if self.name is not None:
+            result["name"] = self.name
+        else:
+            result["name"] = None
         if self.emails is not None:
             result["emails"] = [item.to_dict() for item in self.emails]
         if self.job_title is not None:

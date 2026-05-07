@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from workos.groups.models.group import Group
-from .models import UserManagementOrganizationMembershipGroupsOrder
+from workos.common.models.group import Group
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -26,9 +27,7 @@ class UserManagementOrganizationMembershipGroups:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementOrganizationMembershipGroupsOrder, str]
-        ] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Group]:
         """List groups
@@ -64,7 +63,7 @@ class UserManagementOrganizationMembershipGroups:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/organization_memberships/{om_id}/groups",
+            path=f"user_management/organization_memberships/{quote(str(om_id), safe='')}/groups",
             model=Group,
             params=params,
             request_options=request_options,
@@ -84,9 +83,7 @@ class AsyncUserManagementOrganizationMembershipGroups:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementOrganizationMembershipGroupsOrder, str]
-        ] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Group]:
         """List groups
@@ -122,7 +119,7 @@ class AsyncUserManagementOrganizationMembershipGroups:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/organization_memberships/{om_id}/groups",
+            path=f"user_management/organization_memberships/{quote(str(om_id), safe='')}/groups",
             model=Group,
             params=params,
             request_options=request_options,

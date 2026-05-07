@@ -6,7 +6,6 @@ from .connection_option import ConnectionOption as ConnectionOption
 from .connections_connection_type import (
     ConnectionsConnectionType as ConnectionsConnectionType,
 )
-from .connections_order import ConnectionsOrder as ConnectionsOrder
 from .profile import Profile as Profile
 from .sso_authorize_url_response import (
     SSOAuthorizeUrlResponse as SSOAuthorizeUrlResponse,

@@ -3,13 +3,15 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
 from .models import Connection, Profile, SSOLogoutAuthorizeResponse, SSOTokenResponse
-from .models import ConnectionsConnectionType, ConnectionsOrder, SSOProvider
+from .models import ConnectionsConnectionType, SSOProvider
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -25,7 +27,7 @@ class SSO:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[ConnectionsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         connection_type: Optional[Union[ConnectionsConnectionType, str]] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
@@ -107,7 +109,7 @@ class SSO:
         """
         return self._client.request(
             method="get",
-            path=f"connections/{id}",
+            path=f"connections/{quote(str(id), safe='')}",
             model=Connection,
             request_options=request_options,
         )
@@ -135,7 +137,7 @@ class SSO:
         """
         self._client.request(
             method="delete",
-            path=f"connections/{id}",
+            path=f"connections/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -442,7 +444,7 @@ class AsyncSSO:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[ConnectionsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         connection_type: Optional[Union[ConnectionsConnectionType, str]] = None,
         domain: Optional[str] = None,
         organization_id: Optional[str] = None,
@@ -524,7 +526,7 @@ class AsyncSSO:
         """
         return await self._client.request(
             method="get",
-            path=f"connections/{id}",
+            path=f"connections/{quote(str(id), safe='')}",
             model=Connection,
             request_options=request_options,
         )
@@ -552,7 +554,7 @@ class AsyncSSO:
         """
         await self._client.request(
             method="delete",
-            path=f"connections/{id}",
+            path=f"connections/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 

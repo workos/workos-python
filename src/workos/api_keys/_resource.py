@@ -3,13 +3,18 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import ApiKey, ApiKeyValidationResponse, ApiKeyWithValue
-from .models import OrganizationsApiKeysOrder
+from .models import (
+    ApiKeyValidationResponse,
+    OrganizationApiKey,
+    OrganizationApiKeyWithValue,
+)
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -18,6 +23,99 @@ class ApiKeys:
 
     def __init__(self, client: "WorkOSClient") -> None:
         self._client = client
+
+    def list_organization_api_keys(
+        self,
+        organization_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[OrganizationApiKey]:
+        """List API keys for an organization
+
+        Get a list of all API keys for an organization.
+
+        Args:
+            organization_id: Unique identifier of the Organization.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
+            order: Order the results by the creation time. Defaults to `desc`.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[OrganizationApiKey]
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=f"organizations/{quote(str(organization_id), safe='')}/api_keys",
+            model=OrganizationApiKey,
+            params=params,
+            request_options=request_options,
+        )
+
+    def create_organization_api_key(
+        self,
+        organization_id: str,
+        *,
+        name: str,
+        permissions: Optional[List[str]] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> OrganizationApiKeyWithValue:
+        """Create an API key for an organization
+
+        Create a new API key for an organization.
+
+        Args:
+            organization_id: Unique identifier of the Organization.
+            name: The name for the API key.
+            permissions: The permission slugs to assign to the API key.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            OrganizationApiKeyWithValue
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "permissions": permissions,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=f"organizations/{quote(str(organization_id), safe='')}/api_keys",
+            body=body,
+            model=OrganizationApiKeyWithValue,
+            request_options=request_options,
+        )
 
     def create_validation(
         self,
@@ -75,20 +173,27 @@ class ApiKeys:
         """
         self._client.request(
             method="delete",
-            path=f"api_keys/{id}",
+            path=f"api_keys/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
-    def list_organization_api_keys(
+
+class AsyncApiKeys:
+    """Api Keys API resources (async)."""
+
+    def __init__(self, client: "AsyncWorkOSClient") -> None:
+        self._client = client
+
+    async def list_organization_api_keys(
         self,
         organization_id: str,
         *,
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[OrganizationsApiKeysOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[ApiKey]:
+    ) -> AsyncPage[OrganizationApiKey]:
         """List API keys for an organization
 
         Get a list of all API keys for an organization.
@@ -102,7 +207,7 @@ class ApiKeys:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            SyncPage[ApiKey]
+            AsyncPage[OrganizationApiKey]
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -120,22 +225,22 @@ class ApiKeys:
             }.items()
             if v is not None
         }
-        return self._client.request_page(
+        return await self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/api_keys",
-            model=ApiKey,
+            path=f"organizations/{quote(str(organization_id), safe='')}/api_keys",
+            model=OrganizationApiKey,
             params=params,
             request_options=request_options,
         )
 
-    def create_organization_api_key(
+    async def create_organization_api_key(
         self,
         organization_id: str,
         *,
         name: str,
         permissions: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> ApiKeyWithValue:
+    ) -> OrganizationApiKeyWithValue:
         """Create an API key for an organization
 
         Create a new API key for an organization.
@@ -147,7 +252,7 @@ class ApiKeys:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ApiKeyWithValue
+            OrganizationApiKeyWithValue
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -164,20 +269,13 @@ class ApiKeys:
             }.items()
             if v is not None
         }
-        return self._client.request(
+        return await self._client.request(
             method="post",
-            path=f"organizations/{organization_id}/api_keys",
+            path=f"organizations/{quote(str(organization_id), safe='')}/api_keys",
             body=body,
-            model=ApiKeyWithValue,
+            model=OrganizationApiKeyWithValue,
             request_options=request_options,
         )
-
-
-class AsyncApiKeys:
-    """Api Keys API resources (async)."""
-
-    def __init__(self, client: "AsyncWorkOSClient") -> None:
-        self._client = client
 
     async def create_validation(
         self,
@@ -235,99 +333,6 @@ class AsyncApiKeys:
         """
         await self._client.request(
             method="delete",
-            path=f"api_keys/{id}",
-            request_options=request_options,
-        )
-
-    async def list_organization_api_keys(
-        self,
-        organization_id: str,
-        *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[OrganizationsApiKeysOrder, str]] = "desc",
-        request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[ApiKey]:
-        """List API keys for an organization
-
-        Get a list of all API keys for an organization.
-
-        Args:
-            organization_id: Unique identifier of the Organization.
-            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
-            order: Order the results by the creation time. Defaults to `desc`.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            AsyncPage[ApiKey]
-
-        Raises:
-            NotFoundError: If the resource is not found (404).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-            }.items()
-            if v is not None
-        }
-        return await self._client.request_page(
-            method="get",
-            path=f"organizations/{organization_id}/api_keys",
-            model=ApiKey,
-            params=params,
-            request_options=request_options,
-        )
-
-    async def create_organization_api_key(
-        self,
-        organization_id: str,
-        *,
-        name: str,
-        permissions: Optional[List[str]] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> ApiKeyWithValue:
-        """Create an API key for an organization
-
-        Create a new API key for an organization.
-
-        Args:
-            organization_id: Unique identifier of the Organization.
-            name: The name for the API key.
-            permissions: The permission slugs to assign to the API key.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            ApiKeyWithValue
-
-        Raises:
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        body: Dict[str, Any] = {
-            k: v
-            for k, v in {
-                "name": name,
-                "permissions": permissions,
-            }.items()
-            if v is not None
-        }
-        return await self._client.request(
-            method="post",
-            path=f"organizations/{organization_id}/api_keys",
-            body=body,
-            model=ApiKeyWithValue,
+            path=f"api_keys/{quote(str(id), safe='')}",
             request_options=request_options,
         )

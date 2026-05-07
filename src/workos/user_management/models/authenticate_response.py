@@ -8,9 +8,11 @@ from typing import cast
 from typing import Any, Dict, Optional
 from workos._types import _raise_deserialize_error
 
-from .authenticate_response_impersonator import AuthenticateResponseImpersonator
+from workos.common.models.authenticate_response_impersonator import (
+    AuthenticateResponseImpersonator,
+)
 from .authenticate_response_oauth_token import AuthenticateResponseOAuthToken
-from .user import User
+from workos.common.models.user import User
 from workos.common.models.authenticate_response_authentication_method import (
     AuthenticateResponseAuthenticationMethod,
 )

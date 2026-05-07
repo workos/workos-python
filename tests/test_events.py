@@ -5,8 +5,7 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.common.models import DsyncUserCreated
-from workos.events.models import EventsOrder
+from workos.common.models import DsyncUserCreated, PaginationOrder
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
@@ -40,7 +39,7 @@ class TestEvents:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=EventsOrder("normal"),
+            order=PaginationOrder("value_order"),
             events=["val1", "val2"],
             range_start="value range_start/test",
             range_end="value range_end/test",
@@ -50,7 +49,7 @@ class TestEvents:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["events"] == "val1,val2"
         assert request.url.params["range_start"] == "value range_start/test"
         assert request.url.params["range_end"] == "value range_end/test"
@@ -155,7 +154,7 @@ class TestAsyncEvents:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=EventsOrder("normal"),
+            order=PaginationOrder("value_order"),
             events=["val1", "val2"],
             range_start="value range_start/test",
             range_end="value range_end/test",
@@ -165,7 +164,7 @@ class TestAsyncEvents:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["events"] == "val1,val2"
         assert request.url.params["range_start"] == "value range_start/test"
         assert request.url.params["range_end"] == "value range_end/test"

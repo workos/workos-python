@@ -5,22 +5,23 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from typing import cast
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
 from .api_key_owner import ApiKeyOwner
+from workos.user_management.models.user_api_key_owner import UserApiKeyOwner
 
 
 @dataclass(slots=True)
 class ApiKey:
-    """The API Key object if the value is valid, or `null` if invalid."""
+    """Api Key model."""
 
     object: Literal["api_key"]
     """Distinguishes the API Key object."""
     id: str
     """Unique identifier of the API Key."""
-    owner: "ApiKeyOwner"
+    owner: Union["ApiKeyOwner", "UserApiKeyOwner"]
     """The entity that owns the API Key."""
     name: str
     """A descriptive name for the API Key."""
@@ -39,10 +40,23 @@ class ApiKey:
     def from_dict(cls, data: Dict[str, Any]) -> "ApiKey":
         """Deserialize from a dictionary."""
         try:
+            _owner_raw = data["owner"]
+            _owner_data = cast(Dict[str, Any], _owner_raw)
+            _owner_disc = cast(str, _owner_data.get("type"))
+            _owner_disc_map: Dict[str, Any] = {
+                "organization": ApiKeyOwner,
+                "user": UserApiKeyOwner,
+            }
+            _owner_cls = _owner_disc_map.get(_owner_disc)
+            if _owner_cls is None:
+                raise ValueError(
+                    f"Unknown discriminator 'type' for ApiKey.owner: {_owner_disc!r}. "
+                    f"Expected one of {sorted(_owner_disc_map)}."
+                )
             return cls(
                 object=data.get("object", "api_key"),
                 id=data["id"],
-                owner=ApiKeyOwner.from_dict(cast(Dict[str, Any], data["owner"])),
+                owner=_owner_cls.from_dict(_owner_data),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
                 last_used_at=_parse_datetime(_v_last_used_at)

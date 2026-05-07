@@ -6,11 +6,8 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.organizations.models import (
-    AuditLogConfiguration,
-    Organization,
-    OrganizationsOrder,
-)
+from workos.common.models import PaginationOrder
+from workos.organizations.models import AuditLogConfiguration, Organization
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
@@ -44,7 +41,7 @@ class TestOrganizations:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=OrganizationsOrder("normal"),
+            order=PaginationOrder("value_order"),
             domains=["val1", "val2"],
             search="value search/test",
         )
@@ -52,7 +49,7 @@ class TestOrganizations:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["domains"] == "val1,val2"
         assert request.url.params["search"] == "value search/test"
 
@@ -231,7 +228,7 @@ class TestAsyncOrganizations:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=OrganizationsOrder("normal"),
+            order=PaginationOrder("value_order"),
             domains=["val1", "val2"],
             search="value search/test",
         )
@@ -239,7 +236,7 @@ class TestAsyncOrganizations:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["domains"] == "val1,val2"
         assert request.url.params["search"] == "value search/test"
 

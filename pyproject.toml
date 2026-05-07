@@ -36,7 +36,7 @@ test = [
 lint = ["ruff~=0.15"]
 type_check = ["pyright~=1.1"]
 nox = ["nox~=2026.2", "nox-uv~=0.7"]
-docs = ["pdoc>=14", "pydoc-markdown>=4"]
+docs = ["pdoc>=14", "pydoc-markdown>=4", "black~=26.3"]
 
 
 [tool.pytest.ini_options]

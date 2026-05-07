@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import cast
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
 from workos._types import _raise_deserialize_error
 
 from .api_key_created_data_owner import ApiKeyCreatedDataOwner
+from .user_api_key_created_data_owner import UserApiKeyCreatedDataOwner
 
 
 @dataclass(slots=True)
@@ -18,7 +19,7 @@ class ApiKeyCreatedData:
     """Distinguishes the API key object."""
     id: str
     """Unique identifier of the API key."""
-    owner: "ApiKeyCreatedDataOwner"
+    owner: Union["ApiKeyCreatedDataOwner", "UserApiKeyCreatedDataOwner"]
     """The owner of the API key."""
     name: str
     """The name of the API key."""
@@ -37,12 +38,23 @@ class ApiKeyCreatedData:
     def from_dict(cls, data: Dict[str, Any]) -> "ApiKeyCreatedData":
         """Deserialize from a dictionary."""
         try:
+            _owner_raw = data["owner"]
+            _owner_data = cast(Dict[str, Any], _owner_raw)
+            _owner_disc = cast(str, _owner_data.get("type"))
+            _owner_disc_map: Dict[str, Any] = {
+                "organization": ApiKeyCreatedDataOwner,
+                "user": UserApiKeyCreatedDataOwner,
+            }
+            _owner_cls = _owner_disc_map.get(_owner_disc)
+            if _owner_cls is None:
+                raise ValueError(
+                    f"Unknown discriminator 'type' for ApiKeyCreatedData.owner: {_owner_disc!r}. "
+                    f"Expected one of {sorted(_owner_disc_map)}."
+                )
             return cls(
                 object=data.get("object", "api_key"),
                 id=data["id"],
-                owner=ApiKeyCreatedDataOwner.from_dict(
-                    cast(Dict[str, Any], data["owner"])
-                ),
+                owner=_owner_cls.from_dict(_owner_data),
                 name=data["name"],
                 obfuscated_value=data["obfuscated_value"],
                 last_used_at=data["last_used_at"],

@@ -6,8 +6,11 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.authorization.models import UserOrganizationMembershipBaseListData
-from workos.groups.models import Group, GroupsOrder
+from workos.common.models import (
+    Group,
+    UserOrganizationMembershipBaseListData,
+    PaginationOrder,
+)
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
@@ -42,13 +45,13 @@ class TestGroups:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=GroupsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_create_organization_group(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -139,13 +142,13 @@ class TestGroups:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=GroupsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_create_group_organization_membership(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -282,13 +285,13 @@ class TestAsyncGroups:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=GroupsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_create_organization_group(self, async_workos, httpx_mock):
@@ -380,13 +383,13 @@ class TestAsyncGroups:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=GroupsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_create_group_organization_membership(self, async_workos, httpx_mock):

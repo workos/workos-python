@@ -3,13 +3,15 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import Directory, DirectoryGroup, DirectoryUserWithGroups
-from .models import DirectoriesOrder, DirectoryGroupsOrder, DirectoryUsersOrder
+from .models import Directory, DirectoryUserWithGroups
+from workos.common.models.directory_group import DirectoryGroup
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -25,7 +27,7 @@ class DirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoriesOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         search: Optional[str] = None,
         domain: Optional[str] = None,
@@ -102,7 +104,7 @@ class DirectorySync:
         """
         return self._client.request(
             method="get",
-            path=f"directories/{id}",
+            path=f"directories/{quote(str(id), safe='')}",
             model=Directory,
             request_options=request_options,
         )
@@ -129,7 +131,7 @@ class DirectorySync:
         """
         self._client.request(
             method="delete",
-            path=f"directories/{id}",
+            path=f"directories/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -139,7 +141,7 @@ class DirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoryGroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         directory: Optional[str] = None,
         user: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -214,7 +216,7 @@ class DirectorySync:
         """
         return self._client.request(
             method="get",
-            path=f"directory_groups/{id}",
+            path=f"directory_groups/{quote(str(id), safe='')}",
             model=DirectoryGroup,
             request_options=request_options,
         )
@@ -225,7 +227,7 @@ class DirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoryUsersOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         directory: Optional[str] = None,
         group: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -300,7 +302,7 @@ class DirectorySync:
         """
         return self._client.request(
             method="get",
-            path=f"directory_users/{id}",
+            path=f"directory_users/{quote(str(id), safe='')}",
             model=DirectoryUserWithGroups,
             request_options=request_options,
         )
@@ -318,7 +320,7 @@ class AsyncDirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoriesOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         search: Optional[str] = None,
         domain: Optional[str] = None,
@@ -395,7 +397,7 @@ class AsyncDirectorySync:
         """
         return await self._client.request(
             method="get",
-            path=f"directories/{id}",
+            path=f"directories/{quote(str(id), safe='')}",
             model=Directory,
             request_options=request_options,
         )
@@ -422,7 +424,7 @@ class AsyncDirectorySync:
         """
         await self._client.request(
             method="delete",
-            path=f"directories/{id}",
+            path=f"directories/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -432,7 +434,7 @@ class AsyncDirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoryGroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         directory: Optional[str] = None,
         user: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -507,7 +509,7 @@ class AsyncDirectorySync:
         """
         return await self._client.request(
             method="get",
-            path=f"directory_groups/{id}",
+            path=f"directory_groups/{quote(str(id), safe='')}",
             model=DirectoryGroup,
             request_options=request_options,
         )
@@ -518,7 +520,7 @@ class AsyncDirectorySync:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[DirectoryUsersOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         directory: Optional[str] = None,
         group: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -593,7 +595,7 @@ class AsyncDirectorySync:
         """
         return await self._client.request(
             method="get",
-            path=f"directory_users/{id}",
+            path=f"directory_users/{quote(str(id), safe='')}",
             model=DirectoryUserWithGroups,
             request_options=request_options,
         )

@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 from .._types import RequestOptions, enum_value
 from .models import EventSchema, EventSchemaVariant
-from .models import EventsOrder
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -25,7 +25,7 @@ class Events:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[EventsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         events: Optional[List[str]] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,
@@ -97,7 +97,7 @@ class AsyncEvents:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[EventsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         events: Optional[List[str]] = None,
         range_start: Optional[str] = None,
         range_end: Optional[str] = None,

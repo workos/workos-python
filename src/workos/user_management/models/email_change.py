@@ -9,7 +9,7 @@ from typing import Any, Dict, Literal
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .user import User
+from workos.common.models.user import User
 
 
 @dataclass(slots=True)

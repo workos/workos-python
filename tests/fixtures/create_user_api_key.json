@@ -1,0 +1,8 @@
+{
+  "name": "Production API Key",
+  "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+  "permissions": [
+    "posts:read",
+    "posts:write"
+  ]
+}

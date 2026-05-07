@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union, cast
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -33,25 +34,24 @@ from .models import (
     MagicAuthCodeSessionAuthenticateRequest,
     MFATotpSessionAuthenticateRequest,
     OrganizationSelectionSessionAuthenticateRequest,
-    User,
+    UserApiKey,
+    UserApiKeyWithValue,
     UserIdentitiesGetItem,
     UserInvite,
     UserOrganizationMembership,
-    UserSessionsListItem,
     VerifyEmailResponse,
 )
+from workos.common.models.user import User
+from workos.common.models.user_sessions_list_item import UserSessionsListItem
 from .models import (
     UserManagementAuthenticationProvider,
     UserManagementAuthenticationScreenHint,
-    UserManagementInvitationsOrder,
-    UserManagementOrganizationMembershipOrder,
     UserManagementOrganizationMembershipStatuses,
-    UserManagementUsersAuthorizedApplicationsOrder,
-    UserManagementUsersOrder,
 )
 from workos.common.models.create_user_invite_options_locale import (
     CreateUserInviteOptionsLocale,
 )
+from workos.common.models.pagination_order import PaginationOrder
 from workos.common.models.resend_user_invite_options_locale import (
     ResendUserInviteOptionsLocale,
 )
@@ -128,7 +128,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"sso/jwks/{client_id}",
+            path=f"sso/jwks/{quote(str(client_id), safe='')}",
             model=JwksResponse,
             request_options=request_options,
         )
@@ -713,7 +713,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/email_verification/{id}",
+            path=f"user_management/email_verification/{quote(str(id), safe='')}",
             model=EmailVerification,
             request_options=request_options,
         )
@@ -819,7 +819,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/password_reset/{id}",
+            path=f"user_management/password_reset/{quote(str(id), safe='')}",
             model=PasswordReset,
             request_options=request_options,
         )
@@ -830,7 +830,7 @@ class UserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization: Optional[str] = None,
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
@@ -968,7 +968,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/users/external_id/{external_id}",
+            path=f"user_management/users/external_id/{quote(str(external_id), safe='')}",
             model=User,
             request_options=request_options,
         )
@@ -998,7 +998,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/users/{id}",
+            path=f"user_management/users/{quote(str(id), safe='')}",
             model=User,
             request_options=request_options,
         )
@@ -1064,7 +1064,7 @@ class UserManagement:
                 body["password_hash_type"] = enum_value(password.password_hash_type)
         return self._client.request(
             method="put",
-            path=f"user_management/users/{id}",
+            path=f"user_management/users/{quote(str(id), safe='')}",
             body=body,
             model=User,
             request_options=request_options,
@@ -1092,7 +1092,7 @@ class UserManagement:
         """
         self._client.request(
             method="delete",
-            path=f"user_management/users/{id}",
+            path=f"user_management/users/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -1129,7 +1129,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/users/{id}/email_change/confirm",
+            path=f"user_management/users/{quote(str(id), safe='')}/email_change/confirm",
             body=body,
             model=EmailChangeConfirmation,
             request_options=request_options,
@@ -1167,7 +1167,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/users/{id}/email_change/send",
+            path=f"user_management/users/{quote(str(id), safe='')}/email_change/send",
             body=body,
             model=EmailChange,
             request_options=request_options,
@@ -1205,7 +1205,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/users/{id}/email_verification/confirm",
+            path=f"user_management/users/{quote(str(id), safe='')}/email_verification/confirm",
             body=body,
             model=VerifyEmailResponse,
             request_options=request_options,
@@ -1237,7 +1237,7 @@ class UserManagement:
         """
         return self._client.request(
             method="post",
-            path=f"user_management/users/{id}/email_verification/send",
+            path=f"user_management/users/{quote(str(id), safe='')}/email_verification/send",
             model=SendVerificationEmailResponse,
             request_options=request_options,
         )
@@ -1267,7 +1267,7 @@ class UserManagement:
         """
         raw = self._client.request_list(
             method="get",
-            path=f"user_management/users/{id}/identities",
+            path=f"user_management/users/{quote(str(id), safe='')}/identities",
             request_options=request_options,
         )
         return [
@@ -1281,7 +1281,7 @@ class UserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserSessionsListItem]:
         """List sessions
@@ -1318,7 +1318,7 @@ class UserManagement:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/users/{id}/sessions",
+            path=f"user_management/users/{quote(str(id), safe='')}/sessions",
             model=UserSessionsListItem,
             params=params,
             request_options=request_options,
@@ -1330,7 +1330,7 @@ class UserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementInvitationsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -1457,7 +1457,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/invitations/by_token/{token}",
+            path=f"user_management/invitations/by_token/{quote(str(token), safe='')}",
             model=UserInvite,
             request_options=request_options,
         )
@@ -1487,7 +1487,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/invitations/{id}",
+            path=f"user_management/invitations/{quote(str(id), safe='')}",
             model=UserInvite,
             request_options=request_options,
         )
@@ -1518,7 +1518,7 @@ class UserManagement:
         """
         return self._client.request(
             method="post",
-            path=f"user_management/invitations/{id}/accept",
+            path=f"user_management/invitations/{quote(str(id), safe='')}/accept",
             model=Invitation,
             request_options=request_options,
         )
@@ -1559,7 +1559,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/invitations/{id}/resend",
+            path=f"user_management/invitations/{quote(str(id), safe='')}/resend",
             body=body,
             model=UserInvite,
             request_options=request_options,
@@ -1590,8 +1590,33 @@ class UserManagement:
         """
         return self._client.request(
             method="post",
-            path=f"user_management/invitations/{id}/revoke",
+            path=f"user_management/invitations/{quote(str(id), safe='')}/revoke",
             model=Invitation,
+            request_options=request_options,
+        )
+
+    def list_jwt_template(
+        self,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> JWTTemplateResponse:
+        """Get JWT template
+
+        Get the JWT template for the current environment.
+
+        Returns:
+            JWTTemplateResponse
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return self._client.request(
+            method="get",
+            path="user_management/jwt_template",
+            model=JWTTemplateResponse,
             request_options=request_options,
         )
 
@@ -1696,7 +1721,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/magic_auth/{id}",
+            path=f"user_management/magic_auth/{quote(str(id), safe='')}",
             model=MagicAuth,
             request_options=request_options,
         )
@@ -1707,7 +1732,7 @@ class UserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementOrganizationMembershipOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         statuses: Optional[
             List[Union[UserManagementOrganizationMembershipStatuses, str]]
@@ -1836,7 +1861,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/organization_memberships/{id}",
+            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
             model=UserOrganizationMembership,
             request_options=request_options,
         )
@@ -1875,7 +1900,7 @@ class UserManagement:
                 body["role_slugs"] = role.role_slugs
         return self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{id}",
+            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
             body=body,
             model=UserOrganizationMembership,
             request_options=request_options,
@@ -1903,7 +1928,7 @@ class UserManagement:
         """
         self._client.request(
             method="delete",
-            path=f"user_management/organization_memberships/{id}",
+            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -1939,7 +1964,7 @@ class UserManagement:
         """
         return self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{id}/deactivate",
+            path=f"user_management/organization_memberships/{quote(str(id), safe='')}/deactivate",
             model=OrganizationMembership,
             request_options=request_options,
         )
@@ -1976,7 +2001,7 @@ class UserManagement:
         """
         return self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{id}/reactivate",
+            path=f"user_management/organization_memberships/{quote(str(id), safe='')}/reactivate",
             model=UserOrganizationMembership,
             request_options=request_options,
         )
@@ -2023,9 +2048,7 @@ class UserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementUsersAuthorizedApplicationsOrder, str]
-        ] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizedConnectApplicationListData]:
         """List authorized applications
@@ -2062,7 +2085,7 @@ class UserManagement:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/users/{user_id}/authorized_applications",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/authorized_applications",
             model=AuthorizedConnectApplicationListData,
             params=params,
             request_options=request_options,
@@ -2092,7 +2115,107 @@ class UserManagement:
         """
         self._client.request(
             method="delete",
-            path=f"user_management/users/{user_id}/authorized_applications/{application_id}",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/authorized_applications/{quote(str(application_id), safe='')}",
+            request_options=request_options,
+        )
+
+    def list_user_api_keys(
+        self,
+        user_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[UserApiKey]:
+        """List API keys for a user
+
+        Get a list of API keys owned by a specific user.
+
+        Args:
+            user_id: Unique identifier of the user.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
+            order: Order the results by the creation time. Defaults to `desc`.
+            organization_id: The ID of the organization to filter user API keys by. When provided, only API keys created against that organization membership are returned.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            SyncPage[UserApiKey]
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return self._client.request_page(
+            method="get",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/api_keys",
+            model=UserApiKey,
+            params=params,
+            request_options=request_options,
+        )
+
+    def create_user_api_key(
+        self,
+        user_id: str,
+        *,
+        name: str,
+        organization_id: str,
+        permissions: Optional[List[str]] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> UserApiKeyWithValue:
+        """Create an API key for a user
+
+        Create a new API key owned by a user. The user must have an active membership in the specified organization.
+
+        Args:
+            user_id: Unique identifier of the user.
+            name: A descriptive name for the API key.
+            organization_id: The ID of the organization the user API key is associated with. The user must have an active membership in this organization.
+            permissions: The permission slugs to assign to the API key. Each permission must be enabled for user API keys.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            UserApiKeyWithValue
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "organization_id": organization_id,
+                "permissions": permissions,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/api_keys",
+            body=body,
+            model=UserApiKeyWithValue,
             request_options=request_options,
         )
 
@@ -2313,7 +2436,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"sso/jwks/{client_id}",
+            path=f"sso/jwks/{quote(str(client_id), safe='')}",
             model=JwksResponse,
             request_options=request_options,
         )
@@ -2898,7 +3021,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/email_verification/{id}",
+            path=f"user_management/email_verification/{quote(str(id), safe='')}",
             model=EmailVerification,
             request_options=request_options,
         )
@@ -3004,7 +3127,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/password_reset/{id}",
+            path=f"user_management/password_reset/{quote(str(id), safe='')}",
             model=PasswordReset,
             request_options=request_options,
         )
@@ -3015,7 +3138,7 @@ class AsyncUserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization: Optional[str] = None,
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
@@ -3153,7 +3276,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/users/external_id/{external_id}",
+            path=f"user_management/users/external_id/{quote(str(external_id), safe='')}",
             model=User,
             request_options=request_options,
         )
@@ -3183,7 +3306,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/users/{id}",
+            path=f"user_management/users/{quote(str(id), safe='')}",
             model=User,
             request_options=request_options,
         )
@@ -3249,7 +3372,7 @@ class AsyncUserManagement:
                 body["password_hash_type"] = enum_value(password.password_hash_type)
         return await self._client.request(
             method="put",
-            path=f"user_management/users/{id}",
+            path=f"user_management/users/{quote(str(id), safe='')}",
             body=body,
             model=User,
             request_options=request_options,
@@ -3277,7 +3400,7 @@ class AsyncUserManagement:
         """
         await self._client.request(
             method="delete",
-            path=f"user_management/users/{id}",
+            path=f"user_management/users/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -3314,7 +3437,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{id}/email_change/confirm",
+            path=f"user_management/users/{quote(str(id), safe='')}/email_change/confirm",
             body=body,
             model=EmailChangeConfirmation,
             request_options=request_options,
@@ -3352,7 +3475,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{id}/email_change/send",
+            path=f"user_management/users/{quote(str(id), safe='')}/email_change/send",
             body=body,
             model=EmailChange,
             request_options=request_options,
@@ -3390,7 +3513,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{id}/email_verification/confirm",
+            path=f"user_management/users/{quote(str(id), safe='')}/email_verification/confirm",
             body=body,
             model=VerifyEmailResponse,
             request_options=request_options,
@@ -3422,7 +3545,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{id}/email_verification/send",
+            path=f"user_management/users/{quote(str(id), safe='')}/email_verification/send",
             model=SendVerificationEmailResponse,
             request_options=request_options,
         )
@@ -3452,7 +3575,7 @@ class AsyncUserManagement:
         """
         raw = await self._client.request_list(
             method="get",
-            path=f"user_management/users/{id}/identities",
+            path=f"user_management/users/{quote(str(id), safe='')}/identities",
             request_options=request_options,
         )
         return [
@@ -3466,7 +3589,7 @@ class AsyncUserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementUsersOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserSessionsListItem]:
         """List sessions
@@ -3503,7 +3626,7 @@ class AsyncUserManagement:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/users/{id}/sessions",
+            path=f"user_management/users/{quote(str(id), safe='')}/sessions",
             model=UserSessionsListItem,
             params=params,
             request_options=request_options,
@@ -3515,7 +3638,7 @@ class AsyncUserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementInvitationsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         email: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -3642,7 +3765,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/invitations/by_token/{token}",
+            path=f"user_management/invitations/by_token/{quote(str(token), safe='')}",
             model=UserInvite,
             request_options=request_options,
         )
@@ -3672,7 +3795,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/invitations/{id}",
+            path=f"user_management/invitations/{quote(str(id), safe='')}",
             model=UserInvite,
             request_options=request_options,
         )
@@ -3703,7 +3826,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="post",
-            path=f"user_management/invitations/{id}/accept",
+            path=f"user_management/invitations/{quote(str(id), safe='')}/accept",
             model=Invitation,
             request_options=request_options,
         )
@@ -3744,7 +3867,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/invitations/{id}/resend",
+            path=f"user_management/invitations/{quote(str(id), safe='')}/resend",
             body=body,
             model=UserInvite,
             request_options=request_options,
@@ -3775,8 +3898,33 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="post",
-            path=f"user_management/invitations/{id}/revoke",
+            path=f"user_management/invitations/{quote(str(id), safe='')}/revoke",
             model=Invitation,
+            request_options=request_options,
+        )
+
+    async def list_jwt_template(
+        self,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> JWTTemplateResponse:
+        """Get JWT template
+
+        Get the JWT template for the current environment.
+
+        Returns:
+            JWTTemplateResponse
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        return await self._client.request(
+            method="get",
+            path="user_management/jwt_template",
+            model=JWTTemplateResponse,
             request_options=request_options,
         )
 
@@ -3881,7 +4029,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/magic_auth/{id}",
+            path=f"user_management/magic_auth/{quote(str(id), safe='')}",
             model=MagicAuth,
             request_options=request_options,
         )
@@ -3892,7 +4040,7 @@ class AsyncUserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[UserManagementOrganizationMembershipOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         statuses: Optional[
             List[Union[UserManagementOrganizationMembershipStatuses, str]]
@@ -4021,7 +4169,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/organization_memberships/{id}",
+            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
             model=UserOrganizationMembership,
             request_options=request_options,
         )
@@ -4060,7 +4208,7 @@ class AsyncUserManagement:
                 body["role_slugs"] = role.role_slugs
         return await self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{id}",
+            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
             body=body,
             model=UserOrganizationMembership,
             request_options=request_options,
@@ -4088,7 +4236,7 @@ class AsyncUserManagement:
         """
         await self._client.request(
             method="delete",
-            path=f"user_management/organization_memberships/{id}",
+            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
             request_options=request_options,
         )
 
@@ -4124,7 +4272,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{id}/deactivate",
+            path=f"user_management/organization_memberships/{quote(str(id), safe='')}/deactivate",
             model=OrganizationMembership,
             request_options=request_options,
         )
@@ -4161,7 +4309,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{id}/reactivate",
+            path=f"user_management/organization_memberships/{quote(str(id), safe='')}/reactivate",
             model=UserOrganizationMembership,
             request_options=request_options,
         )
@@ -4208,9 +4356,7 @@ class AsyncUserManagement:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[
-            Union[UserManagementUsersAuthorizedApplicationsOrder, str]
-        ] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizedConnectApplicationListData]:
         """List authorized applications
@@ -4247,7 +4393,7 @@ class AsyncUserManagement:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/users/{user_id}/authorized_applications",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/authorized_applications",
             model=AuthorizedConnectApplicationListData,
             params=params,
             request_options=request_options,
@@ -4277,7 +4423,107 @@ class AsyncUserManagement:
         """
         await self._client.request(
             method="delete",
-            path=f"user_management/users/{user_id}/authorized_applications/{application_id}",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/authorized_applications/{quote(str(application_id), safe='')}",
+            request_options=request_options,
+        )
+
+    async def list_user_api_keys(
+        self,
+        user_id: str,
+        *,
+        limit: Optional[int] = None,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        order: Optional[Union[PaginationOrder, str]] = "desc",
+        organization_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> AsyncPage[UserApiKey]:
+        """List API keys for a user
+
+        Get a list of API keys owned by a specific user.
+
+        Args:
+            user_id: Unique identifier of the user.
+            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
+            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
+            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.
+            order: Order the results by the creation time. Defaults to `desc`.
+            organization_id: The ID of the organization to filter user API keys by. When provided, only API keys created against that organization membership are returned.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            AsyncPage[UserApiKey]
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        params = {
+            k: v
+            for k, v in {
+                "limit": limit,
+                "before": before,
+                "after": after,
+                "order": enum_value(order) if order is not None else None,
+                "organization_id": organization_id,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request_page(
+            method="get",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/api_keys",
+            model=UserApiKey,
+            params=params,
+            request_options=request_options,
+        )
+
+    async def create_user_api_key(
+        self,
+        user_id: str,
+        *,
+        name: str,
+        organization_id: str,
+        permissions: Optional[List[str]] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> UserApiKeyWithValue:
+        """Create an API key for a user
+
+        Create a new API key owned by a user. The user must have an active membership in the specified organization.
+
+        Args:
+            user_id: Unique identifier of the user.
+            name: A descriptive name for the API key.
+            organization_id: The ID of the organization the user API key is associated with. The user must have an active membership in this organization.
+            permissions: The permission slugs to assign to the API key. Each permission must be enabled for user API keys.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            UserApiKeyWithValue
+
+        Raises:
+            BadRequestError: If the request is malformed (400).
+            NotFoundError: If the resource is not found (404).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "name": name,
+                "organization_id": organization_id,
+                "permissions": permissions,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=f"user_management/users/{quote(str(user_id), safe='')}/api_keys",
+            body=body,
+            model=UserApiKeyWithValue,
             request_options=request_options,
         )
 

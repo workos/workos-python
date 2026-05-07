@@ -5,14 +5,8 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.directory_sync.models import (
-    Directory,
-    DirectoryGroup,
-    DirectoryUserWithGroups,
-    DirectoriesOrder,
-    DirectoryGroupsOrder,
-    DirectoryUsersOrder,
-)
+from workos.common.models import DirectoryGroup, PaginationOrder
+from workos.directory_sync.models import Directory, DirectoryUserWithGroups
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
@@ -46,7 +40,7 @@ class TestDirectorySync:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=DirectoriesOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization_id="value organization_id/test",
             search="value search/test",
             domain="value domain/test",
@@ -55,7 +49,7 @@ class TestDirectorySync:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["search"] == "value search/test"
         assert request.url.params["domain"] == "value domain/test"
@@ -101,7 +95,7 @@ class TestDirectorySync:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=DirectoryGroupsOrder("normal"),
+            order=PaginationOrder("value_order"),
             directory="value directory/test",
             user="value user/test",
         )
@@ -109,7 +103,7 @@ class TestDirectorySync:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["directory"] == "value directory/test"
         assert request.url.params["user"] == "value user/test"
 
@@ -146,7 +140,7 @@ class TestDirectorySync:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=DirectoryUsersOrder("normal"),
+            order=PaginationOrder("value_order"),
             directory="value directory/test",
             group="value group/test",
         )
@@ -154,7 +148,7 @@ class TestDirectorySync:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["directory"] == "value directory/test"
         assert request.url.params["group"] == "value group/test"
 
@@ -271,7 +265,7 @@ class TestAsyncDirectorySync:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=DirectoriesOrder("normal"),
+            order=PaginationOrder("value_order"),
             organization_id="value organization_id/test",
             search="value search/test",
             domain="value domain/test",
@@ -280,7 +274,7 @@ class TestAsyncDirectorySync:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["organization_id"] == "value organization_id/test"
         assert request.url.params["search"] == "value search/test"
         assert request.url.params["domain"] == "value domain/test"
@@ -327,7 +321,7 @@ class TestAsyncDirectorySync:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=DirectoryGroupsOrder("normal"),
+            order=PaginationOrder("value_order"),
             directory="value directory/test",
             user="value user/test",
         )
@@ -335,7 +329,7 @@ class TestAsyncDirectorySync:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["directory"] == "value directory/test"
         assert request.url.params["user"] == "value user/test"
 
@@ -374,7 +368,7 @@ class TestAsyncDirectorySync:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=DirectoryUsersOrder("normal"),
+            order=PaginationOrder("value_order"),
             directory="value directory/test",
             group="value group/test",
         )
@@ -382,7 +376,7 @@ class TestAsyncDirectorySync:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["directory"] == "value directory/test"
         assert request.url.params["group"] == "value group/test"
 

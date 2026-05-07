@@ -3,16 +3,17 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import Group
-from workos.authorization.models.user_organization_membership_base_list_data import (
+from workos.common.models.group import Group
+from workos.common.models.user_organization_membership_base_list_data import (
     UserOrganizationMembershipBaseListData,
 )
-from .models import GroupsOrder
+from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
 
@@ -29,7 +30,7 @@ class Groups:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[GroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[Group]:
         """List groups
@@ -66,7 +67,7 @@ class Groups:
         }
         return self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/groups",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups",
             model=Group,
             params=params,
             request_options=request_options,
@@ -112,7 +113,7 @@ class Groups:
         }
         return self._client.request(
             method="post",
-            path=f"organizations/{organization_id}/groups",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups",
             body=body,
             model=Group,
             request_options=request_options,
@@ -146,7 +147,7 @@ class Groups:
         """
         return self._client.request(
             method="get",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             model=Group,
             request_options=request_options,
         )
@@ -193,7 +194,7 @@ class Groups:
         }
         return self._client.request(
             method="patch",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             body=body,
             model=Group,
             request_options=request_options,
@@ -224,7 +225,7 @@ class Groups:
         """
         self._client.request(
             method="delete",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             request_options=request_options,
         )
 
@@ -236,7 +237,7 @@ class Groups:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[GroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserOrganizationMembershipBaseListData]:
         """List Group members
@@ -274,7 +275,7 @@ class Groups:
         }
         return self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships",
             model=UserOrganizationMembershipBaseListData,
             params=params,
             request_options=request_options,
@@ -314,7 +315,7 @@ class Groups:
         }
         return self._client.request(
             method="post",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships",
             body=body,
             model=Group,
             request_options=request_options,
@@ -347,7 +348,7 @@ class Groups:
         """
         self._client.request(
             method="delete",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships/{om_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships/{quote(str(om_id), safe='')}",
             request_options=request_options,
         )
 
@@ -365,7 +366,7 @@ class AsyncGroups:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[GroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[Group]:
         """List groups
@@ -402,7 +403,7 @@ class AsyncGroups:
         }
         return await self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/groups",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups",
             model=Group,
             params=params,
             request_options=request_options,
@@ -448,7 +449,7 @@ class AsyncGroups:
         }
         return await self._client.request(
             method="post",
-            path=f"organizations/{organization_id}/groups",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups",
             body=body,
             model=Group,
             request_options=request_options,
@@ -482,7 +483,7 @@ class AsyncGroups:
         """
         return await self._client.request(
             method="get",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             model=Group,
             request_options=request_options,
         )
@@ -529,7 +530,7 @@ class AsyncGroups:
         }
         return await self._client.request(
             method="patch",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             body=body,
             model=Group,
             request_options=request_options,
@@ -560,7 +561,7 @@ class AsyncGroups:
         """
         await self._client.request(
             method="delete",
-            path=f"organizations/{organization_id}/groups/{group_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}",
             request_options=request_options,
         )
 
@@ -572,7 +573,7 @@ class AsyncGroups:
         limit: Optional[int] = None,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        order: Optional[Union[GroupsOrder, str]] = "desc",
+        order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserOrganizationMembershipBaseListData]:
         """List Group members
@@ -610,7 +611,7 @@ class AsyncGroups:
         }
         return await self._client.request_page(
             method="get",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships",
             model=UserOrganizationMembershipBaseListData,
             params=params,
             request_options=request_options,
@@ -650,7 +651,7 @@ class AsyncGroups:
         }
         return await self._client.request(
             method="post",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships",
             body=body,
             model=Group,
             request_options=request_options,
@@ -683,6 +684,6 @@ class AsyncGroups:
         """
         await self._client.request(
             method="delete",
-            path=f"organizations/{organization_id}/groups/{group_id}/organization-memberships/{om_id}",
+            path=f"organizations/{quote(str(organization_id), safe='')}/groups/{quote(str(group_id), safe='')}/organization-memberships/{quote(str(om_id), safe='')}",
             request_options=request_options,
         )

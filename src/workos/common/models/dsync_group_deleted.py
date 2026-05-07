@@ -9,7 +9,7 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from workos.directory_sync.models.directory_group import DirectoryGroup
+from .directory_group import DirectoryGroup
 from .event_context import EventContext
 
 

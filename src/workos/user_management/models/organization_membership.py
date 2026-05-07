@@ -10,7 +10,8 @@ from typing import Any, Dict, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from workos.authorization.models.slim_role import SlimRole
+from workos.common.models.slim_role import SlimRole
+from workos.common.models.user import User
 from workos.common.models.organization_membership_status import (
     OrganizationMembershipStatus,
 )
@@ -38,6 +39,8 @@ class OrganizationMembership:
     """An ISO 8601 timestamp."""
     role: "SlimRole"
     """The primary role assigned to the user within the organization."""
+    user: "User"
+    """The user that belongs to the organization through this membership."""
     organization_name: Optional[str] = None
     """The name of the organization which the user belongs to."""
     custom_attributes: Optional[Dict[str, Any]] = None
@@ -57,6 +60,7 @@ class OrganizationMembership:
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
                 role=SlimRole.from_dict(cast(Dict[str, Any], data["role"])),
+                user=User.from_dict(cast(Dict[str, Any], data["user"])),
                 organization_name=data.get("organization_name"),
                 custom_attributes=data.get("custom_attributes"),
             )
@@ -77,6 +81,7 @@ class OrganizationMembership:
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)
         result["role"] = self.role.to_dict()
+        result["user"] = self.user.to_dict()
         if self.organization_name is not None:
             result["organization_name"] = self.organization_name
         if self.custom_attributes is not None:

@@ -12,6 +12,7 @@ from .action_user_registration_denied import (
 from .action_user_registration_denied_data import (
     ActionUserRegistrationDeniedData as ActionUserRegistrationDeniedData,
 )
+from .add_role_permission import AddRolePermission as AddRolePermission
 from .api_key_created import ApiKeyCreated as ApiKeyCreated
 from .api_key_created_data import ApiKeyCreatedData as ApiKeyCreatedData
 from .api_key_created_data_owner import ApiKeyCreatedDataOwner as ApiKeyCreatedDataOwner
@@ -33,6 +34,10 @@ from .audit_log_export_json_state import (
 from .authenticate_response_authentication_method import (
     AuthenticateResponseAuthenticationMethod as AuthenticateResponseAuthenticationMethod,
 )
+from .authenticate_response_impersonator import (
+    AuthenticateResponseImpersonator as AuthenticateResponseImpersonator,
+)
+from .authentication_challenge import AuthenticationChallenge as AuthenticationChallenge
 from .authentication_email_verification_failed import (
     AuthenticationEmailVerificationFailed as AuthenticationEmailVerificationFailed,
 )
@@ -48,14 +53,30 @@ from .authentication_email_verification_succeeded import (
 from .authentication_email_verification_succeeded_data import (
     AuthenticationEmailVerificationSucceededData as AuthenticationEmailVerificationSucceededData,
 )
+from .authentication_factor import AuthenticationFactor as AuthenticationFactor
+from .authentication_factor_enrolled import (
+    AuthenticationFactorEnrolled as AuthenticationFactorEnrolled,
+)
+from .authentication_factor_enrolled_sms import (
+    AuthenticationFactorEnrolledSms as AuthenticationFactorEnrolledSms,
+)
+from .authentication_factor_enrolled_totp import (
+    AuthenticationFactorEnrolledTotp as AuthenticationFactorEnrolledTotp,
+)
 from .authentication_factor_enrolled_type import (
     AuthenticationFactorEnrolledType as AuthenticationFactorEnrolledType,
 )
-from .authentication_factor_type import (
-    AuthenticationFactorType as AuthenticationFactorType,
-)
 from .authentication_factors_create_request_type import (
     AuthenticationFactorsCreateRequestType as AuthenticationFactorsCreateRequestType,
+)
+from .authentication_factor_sms import (
+    AuthenticationFactorSms as AuthenticationFactorSms,
+)
+from .authentication_factor_totp import (
+    AuthenticationFactorTotp as AuthenticationFactorTotp,
+)
+from .authentication_factor_type import (
+    AuthenticationFactorType as AuthenticationFactorType,
 )
 from .authentication_magic_auth_failed import (
     AuthenticationMagicAuthFailed as AuthenticationMagicAuthFailed,
@@ -180,6 +201,8 @@ from .authentication_sso_timed_out_data_error import (
 from .authentication_sso_timed_out_data_sso import (
     AuthenticationSSOTimedOutDataSSO as AuthenticationSSOTimedOutDataSSO,
 )
+from .authorization_permission import AuthorizationPermission as AuthorizationPermission
+from .connect_application import ConnectApplication as ConnectApplication
 from .connected_account_state import ConnectedAccountState as ConnectedAccountState
 from .connection_activated import ConnectionActivated as ConnectionActivated
 from .connection_activated_data import (
@@ -242,6 +265,7 @@ from .data_integrations_list_response_data_connected_account_state import (
 from .data_integrations_list_response_data_ownership import (
     DataIntegrationsListResponseDataOwnership as DataIntegrationsListResponseDataOwnership,
 )
+from .directory_group import DirectoryGroup as DirectoryGroup
 from .directory_state import DirectoryState as DirectoryState
 from .directory_type import DirectoryType as DirectoryType
 from .directory_user import DirectoryUser as DirectoryUser
@@ -291,6 +315,9 @@ from .event_context_actor import EventContextActor as EventContextActor
 from .event_context_google_analytics_session import (
     EventContextGoogleAnalyticsSession as EventContextGoogleAnalyticsSession,
 )
+from .feature_flag import FeatureFlag as FeatureFlag
+from .feature_flag_owner import FeatureFlagOwner as FeatureFlagOwner
+from .flag import Flag as Flag
 from .flag_created import FlagCreated as FlagCreated
 from .flag_created_context import FlagCreatedContext as FlagCreatedContext
 from .flag_created_context_actor import (
@@ -305,6 +332,7 @@ from .flag_deleted_context_actor import (
 )
 from .flag_deleted_data import FlagDeletedData as FlagDeletedData
 from .flag_deleted_data_owner import FlagDeletedDataOwner as FlagDeletedDataOwner
+from .flag_owner import FlagOwner as FlagOwner
 from .flag_rule_updated import FlagRuleUpdated as FlagRuleUpdated
 from .flag_rule_updated_context import FlagRuleUpdatedContext as FlagRuleUpdatedContext
 from .flag_rule_updated_context_actor import (
@@ -355,6 +383,7 @@ from .flag_updated_context_previous_attribute_data import (
 from .flag_updated_data import FlagUpdatedData as FlagUpdatedData
 from .flag_updated_data_owner import FlagUpdatedDataOwner as FlagUpdatedDataOwner
 from .generate_link_intent import GenerateLinkIntent as GenerateLinkIntent
+from .group import Group as Group
 from .group_created import GroupCreated as GroupCreated
 from .group_deleted import GroupDeleted as GroupDeleted
 from .group_member_added import GroupMemberAdded as GroupMemberAdded
@@ -387,6 +416,7 @@ from .organization_deleted_data import (
 from .organization_deleted_data_domain import (
     OrganizationDeletedDataDomain as OrganizationDeletedDataDomain,
 )
+from .organization_domain import OrganizationDomain as OrganizationDomain
 from .organization_domain_created import (
     OrganizationDomainCreated as OrganizationDomainCreated,
 )
@@ -481,6 +511,7 @@ from .organization_updated_data import (
 from .organization_updated_data_domain import (
     OrganizationUpdatedDataDomain as OrganizationUpdatedDataDomain,
 )
+from .pagination_order import PaginationOrder as PaginationOrder
 from .password_reset_created import PasswordResetCreated as PasswordResetCreated
 from .password_reset_created_data import (
     PasswordResetCreatedData as PasswordResetCreatedData,
@@ -531,6 +562,7 @@ from .session_revoked_data import SessionRevokedData as SessionRevokedData
 from .session_revoked_data_impersonator import (
     SessionRevokedDataImpersonator as SessionRevokedDataImpersonator,
 )
+from .slim_role import SlimRole as SlimRole
 from .update_user_password_hash_type import (
     UpdateUserPasswordHashType as UpdateUserPasswordHashType,
 )
@@ -540,12 +572,22 @@ from .update_webhook_endpoint_events import (
 from .update_webhook_endpoint_status import (
     UpdateWebhookEndpointStatus as UpdateWebhookEndpointStatus,
 )
+from .user import User as User
+from .user_api_key_created_data_owner import (
+    UserApiKeyCreatedDataOwner as UserApiKeyCreatedDataOwner,
+)
+from .user_api_key_revoked_data_owner import (
+    UserApiKeyRevokedDataOwner as UserApiKeyRevokedDataOwner,
+)
 from .user_created import UserCreated as UserCreated
 from .user_deleted import UserDeleted as UserDeleted
 from .user_identities_get_item_provider import (
     UserIdentitiesGetItemProvider as UserIdentitiesGetItemProvider,
 )
 from .user_invite_state import UserInviteState as UserInviteState
+from .user_organization_membership_base_list_data import (
+    UserOrganizationMembershipBaseListData as UserOrganizationMembershipBaseListData,
+)
 from .user_organization_membership_base_list_data_status import (
     UserOrganizationMembershipBaseListDataStatus as UserOrganizationMembershipBaseListDataStatus,
 )
@@ -553,8 +595,16 @@ from .user_organization_membership_status import (
     UserOrganizationMembershipStatus as UserOrganizationMembershipStatus,
 )
 from .user_sessions_auth_method import UserSessionsAuthMethod as UserSessionsAuthMethod
+from .user_sessions_impersonator import (
+    UserSessionsImpersonator as UserSessionsImpersonator,
+)
+from .user_sessions_list_item import UserSessionsListItem as UserSessionsListItem
 from .user_sessions_status import UserSessionsStatus as UserSessionsStatus
 from .user_updated import UserUpdated as UserUpdated
+from .vault_byok_key_deleted import VaultByokKeyDeleted as VaultByokKeyDeleted
+from .vault_byok_key_deleted_data import (
+    VaultByokKeyDeletedData as VaultByokKeyDeletedData,
+)
 from .vault_byok_key_verification_completed import (
     VaultByokKeyVerificationCompleted as VaultByokKeyVerificationCompleted,
 )

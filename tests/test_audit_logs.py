@@ -12,8 +12,8 @@ from workos.audit_logs.models import (
     AuditLogEventCreateResponse,
     AuditLogExportJson,
     AuditLogSchemaJson,
-    AuditLogsOrder,
 )
+from workos.common.models import PaginationOrder
 from workos.organizations.models import AuditLogsRetentionJson
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
@@ -74,13 +74,13 @@ class TestAuditLogs:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuditLogsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_list_action_schemas(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -104,13 +104,13 @@ class TestAuditLogs:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuditLogsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     def test_create_schema(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -306,13 +306,13 @@ class TestAsyncAuditLogs:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuditLogsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_list_action_schemas(self, async_workos, httpx_mock):
@@ -339,13 +339,13 @@ class TestAsyncAuditLogs:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=AuditLogsOrder("normal"),
+            order=PaginationOrder("value_order"),
         )
         request = httpx_mock.get_request()
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
 
     @pytest.mark.asyncio
     async def test_create_schema(self, async_workos, httpx_mock):

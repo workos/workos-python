@@ -6,13 +6,13 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
+from workos.common.models import PaginationOrder
 from workos.sso.models import (
     Connection,
     Profile,
     SSOLogoutAuthorizeResponse,
     SSOTokenResponse,
     ConnectionsConnectionType,
-    ConnectionsOrder,
 )
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
@@ -47,7 +47,7 @@ class TestSSO:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=ConnectionsOrder("normal"),
+            order=PaginationOrder("value_order"),
             connection_type=ConnectionsConnectionType("ADFSSAML"),
             domain="value domain/test",
             organization_id="value organization_id/test",
@@ -57,7 +57,7 @@ class TestSSO:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["connection_type"] == "ADFSSAML"
         assert request.url.params["domain"] == "value domain/test"
         assert request.url.params["organization_id"] == "value organization_id/test"
@@ -240,7 +240,7 @@ class TestAsyncSSO:
             limit=10,
             before="cursor before",
             after="cursor/after",
-            order=ConnectionsOrder("normal"),
+            order=PaginationOrder("value_order"),
             connection_type=ConnectionsConnectionType("ADFSSAML"),
             domain="value domain/test",
             organization_id="value organization_id/test",
@@ -250,7 +250,7 @@ class TestAsyncSSO:
         assert request.url.params["limit"] == "10"
         assert request.url.params["before"] == "cursor before"
         assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "normal"
+        assert request.url.params["order"] == "value_order"
         assert request.url.params["connection_type"] == "ADFSSAML"
         assert request.url.params["domain"] == "value domain/test"
         assert request.url.params["organization_id"] == "value organization_id/test"

@@ -8,7 +8,7 @@ from typing import cast
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 
-from workos.authorization.models.slim_role import SlimRole
+from workos.common.models.slim_role import SlimRole
 from workos.common.models.profile_connection_type import ProfileConnectionType
 
 
@@ -34,6 +34,8 @@ class Profile:
     """The user's first name."""
     last_name: Optional[str]
     """The user's last name."""
+    name: Optional[str]
+    """The user's full name."""
     raw_attributes: Dict[str, Any]
     """The complete set of raw attributes returned by the identity provider."""
     role: Optional["SlimRole"] = None
@@ -59,6 +61,7 @@ class Profile:
                 email=data["email"],
                 first_name=data["first_name"],
                 last_name=data["last_name"],
+                name=data["name"],
                 raw_attributes=data["raw_attributes"],
                 role=SlimRole.from_dict(cast(Dict[str, Any], _v_role))
                 if (_v_role := data.get("role")) is not None
@@ -100,6 +103,10 @@ class Profile:
             result["last_name"] = self.last_name
         else:
             result["last_name"] = None
+        if self.name is not None:
+            result["name"] = self.name
+        else:
+            result["name"] = None
         result["raw_attributes"] = self.raw_attributes
         if self.role is not None:
             result["role"] = self.role.to_dict()

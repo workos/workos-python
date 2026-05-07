@@ -282,10 +282,12 @@ def _decode_u32_leb128(buf: bytes) -> Tuple[int, int]:
     res = 0
     bit = 0
     for i, b in enumerate(buf):
-        if i > 4:
+        if i >= 4 and (b & 0x80) != 0:
             raise ValueError("LEB128 integer overflow (was more than 4 bytes)")
         res |= (b & 0x7F) << (7 * bit)
         if (b & 0x80) == 0:
+            if res > 0xFFFFFFFF:
+                raise ValueError("LEB128 integer overflow (exceeds 32 bits)")
             return res, i + 1
         bit += 1
     raise ValueError("LEB128 integer not found")

@@ -1,5 +1,27 @@
 # Changelog
 
+## [7.0.0](https://github.com/workos/workos-python/compare/v6.2.0...v7.0.0) (2026-05-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api_keys:** Restructure API key models for dual ownership
+* **common:** Add user API key event models and refactor BYOK key provider
+* **authorization:** Refactor role assignment models and add list endpoints
+
+### Features
+
+* **api_keys:** Restructure API key models for dual ownership ([8b5e91d](https://github.com/workos/workos-python/commit/8b5e91d7038485ee012ea6f784a1ed27c5fc25cd))
+* **authorization:** Refactor role assignment models and add list endpoints ([8b5e91d](https://github.com/workos/workos-python/commit/8b5e91d7038485ee012ea6f784a1ed27c5fc25cd))
+* **common:** Add user API key event models and refactor BYOK key provider ([8b5e91d](https://github.com/workos/workos-python/commit/8b5e91d7038485ee012ea6f784a1ed27c5fc25cd))
+* **docs:** Publish pdoc-generated API reference to GitHub Pages ([#651](https://github.com/workos/workos-python/issues/651)) ([05831ea](https://github.com/workos/workos-python/commit/05831ea7ce339448cb9f1986b41e5e34bf8442e7))
+* **user_management:** Add user API key management endpoints ([8b5e91d](https://github.com/workos/workos-python/commit/8b5e91d7038485ee012ea6f784a1ed27c5fc25cd))
+
+
+### Bug Fixes
+
+* **generated:** Remove service-specific pagination order enums across SDK ([8b5e91d](https://github.com/workos/workos-python/commit/8b5e91d7038485ee012ea6f784a1ed27c5fc25cd))
+
 ## [6.2.0](https://github.com/workos/workos-python/compare/v6.1.0...v6.2.0) (2026-05-01)
 
 

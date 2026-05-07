@@ -240,7 +240,7 @@ def _aes_gcm_encrypt(
     encryptor = Cipher(
         algorithms.AES(key), modes.GCM(iv), backend=default_backend()
     ).encryptor()
-    if aad:
+    if aad is not None:
         encryptor.authenticate_additional_data(aad)
     ciphertext = encryptor.update(plaintext) + encryptor.finalize()
     return {"ciphertext": ciphertext, "iv": iv, "tag": encryptor.tag}
@@ -256,7 +256,7 @@ def _aes_gcm_decrypt(
     decryptor = Cipher(
         algorithms.AES(key), modes.GCM(iv, tag), backend=default_backend()
     ).decryptor()
-    if aad:
+    if aad is not None:
         decryptor.authenticate_additional_data(aad)
     return decryptor.update(ciphertext) + decryptor.finalize()
 
@@ -470,7 +470,9 @@ class Vault:
         key = base64.b64decode(key_pair.data_key.key)
         key_blob = base64.b64decode(key_pair.encrypted_keys)
         prefix_len_buffer = _encode_u32_leb128(len(key_blob))
-        aad_buffer = associated_data.encode("utf-8") if associated_data else None
+        aad_buffer = (
+            associated_data.encode("utf-8") if associated_data is not None else None
+        )
         iv = os.urandom(12)
 
         result = _aes_gcm_encrypt(data.encode("utf-8"), key, iv, aad_buffer)
@@ -492,7 +494,9 @@ class Vault:
         data_key = self.decrypt_data_key(keys=decoded.keys)
 
         key = base64.b64decode(data_key.key)
-        aad_buffer = associated_data.encode("utf-8") if associated_data else None
+        aad_buffer = (
+            associated_data.encode("utf-8") if associated_data is not None else None
+        )
 
         decrypted_bytes = _aes_gcm_decrypt(
             ciphertext=decoded.ciphertext,
@@ -649,7 +653,9 @@ class AsyncVault:
         key = base64.b64decode(key_pair.data_key.key)
         key_blob = base64.b64decode(key_pair.encrypted_keys)
         prefix_len_buffer = _encode_u32_leb128(len(key_blob))
-        aad_buffer = associated_data.encode("utf-8") if associated_data else None
+        aad_buffer = (
+            associated_data.encode("utf-8") if associated_data is not None else None
+        )
         iv = os.urandom(12)
 
         result = _aes_gcm_encrypt(data.encode("utf-8"), key, iv, aad_buffer)
@@ -670,7 +676,9 @@ class AsyncVault:
         data_key = await self.decrypt_data_key(keys=decoded.keys)
 
         key = base64.b64decode(data_key.key)
-        aad_buffer = associated_data.encode("utf-8") if associated_data else None
+        aad_buffer = (
+            associated_data.encode("utf-8") if associated_data is not None else None
+        )
 
         decrypted_bytes = _aes_gcm_decrypt(
             ciphertext=decoded.ciphertext,

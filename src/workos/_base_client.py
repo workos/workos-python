@@ -54,8 +54,15 @@ class _BaseWorkOSClient:
         request_timeout: Optional[int] = None,
         jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
+        is_public: bool = False,
     ) -> None:
-        self._api_key = api_key or os.environ.get("WORKOS_API_KEY")
+        self._is_public = is_public
+        # Public clients (PKCE / browser / mobile / CLI) must never attach
+        # an API key, even if WORKOS_API_KEY is present in the environment.
+        if is_public:
+            self._api_key: Optional[str] = None
+        else:
+            self._api_key = api_key or os.environ.get("WORKOS_API_KEY")
         self.client_id = client_id or os.environ.get("WORKOS_CLIENT_ID")
         if not self._api_key and not self.client_id:
             raise ValueError(
@@ -348,6 +355,7 @@ class WorkOSClient(_BaseWorkOSClient):
         request_timeout: Optional[int] = None,
         jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
+        is_public: bool = False,
     ) -> None:
         """Initialize the WorkOS client.
 
@@ -358,6 +366,10 @@ class WorkOSClient(_BaseWorkOSClient):
             request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 60.
             jwt_leeway: JWT clock skew leeway in seconds.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
+            is_public: When True, mark this client as public (PKCE / browser
+                / mobile / CLI). The API key is forced to None and the
+                ``WORKOS_API_KEY`` environment variable is ignored. Use
+                ``create_public_client`` instead of setting this directly.
 
         Raises:
             ValueError: If neither api_key nor client_id is provided, directly or via environment variables.
@@ -369,6 +381,7 @@ class WorkOSClient(_BaseWorkOSClient):
             request_timeout=request_timeout,
             jwt_leeway=jwt_leeway,
             max_retries=max_retries,
+            is_public=is_public,
         )
         self._client = httpx.Client(
             timeout=self._request_timeout, follow_redirects=True
@@ -573,6 +586,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         request_timeout: Optional[int] = None,
         jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
+        is_public: bool = False,
     ) -> None:
         """Initialize the async WorkOS client.
 
@@ -594,6 +608,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             request_timeout=request_timeout,
             jwt_leeway=jwt_leeway,
             max_retries=max_retries,
+            is_public=is_public,
         )
         self._client = httpx.AsyncClient(
             timeout=self._request_timeout, follow_redirects=True

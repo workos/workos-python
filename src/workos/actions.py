@@ -44,7 +44,7 @@ def _verify_signature(
     timestamp_in_seconds = int(issued_timestamp) / 1000
     seconds_since_issued = current_time - timestamp_in_seconds
 
-    if seconds_since_issued > tolerance:
+    if abs(seconds_since_issued) > tolerance:
         raise ValueError("Timestamp outside the tolerance zone")
 
     body_str = payload.decode("utf-8") if isinstance(payload, bytes) else payload

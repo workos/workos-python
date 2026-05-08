@@ -83,7 +83,7 @@ def verify_header(
     timestamp_in_seconds = int(issued_timestamp) / 1000
     seconds_since_issued = current_time - timestamp_in_seconds
 
-    if seconds_since_issued > max_seconds_since_issued:
+    if abs(seconds_since_issued) > max_seconds_since_issued:
         raise ValueError("Timestamp outside the tolerance zone")
 
     unhashed_string = "{0}.{1}".format(issued_timestamp, event_body.decode("utf-8"))

@@ -124,6 +124,17 @@ class TestWebhooksVerifyHeader:
                 tolerance=180,
             )
 
+    def test_verify_header_future_timestamp(self, workos):
+        future_ts = int((time.time() + 300) * 1000)
+        sig = _make_sig_header(SAMPLE_EVENT, SECRET, future_ts)
+        with pytest.raises(ValueError, match="tolerance zone"):
+            workos.webhooks.verify_header(
+                event_body=SAMPLE_EVENT,
+                event_signature=sig,
+                secret=SECRET,
+                tolerance=180,
+            )
+
 
 class TestStandaloneVerifyEvent:
     def test_standalone_verify_event(self):
@@ -156,4 +167,15 @@ class TestStandaloneVerifyEvent:
                 event_body=SAMPLE_EVENT.encode("utf-8"),
                 event_signature=sig,
                 secret=SECRET,
+            )
+
+    def test_standalone_verify_header_future_timestamp(self):
+        future_ts = int((time.time() + 300) * 1000)
+        sig = _make_sig_header(SAMPLE_EVENT, SECRET, future_ts)
+        with pytest.raises(ValueError, match="tolerance zone"):
+            standalone_verify_header(
+                event_body=SAMPLE_EVENT.encode("utf-8"),
+                event_signature=sig,
+                secret=SECRET,
+                tolerance=180,
             )

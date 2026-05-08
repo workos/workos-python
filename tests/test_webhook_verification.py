@@ -179,3 +179,14 @@ class TestStandaloneVerifyEvent:
                 secret=SECRET,
                 tolerance=180,
             )
+
+    def test_standalone_verify_header_tolerance_zero_rejects_old_timestamp(self):
+        old_ts = int((time.time() - 1) * 1000)
+        sig = _make_sig_header(SAMPLE_EVENT, SECRET, old_ts)
+        with pytest.raises(ValueError, match="tolerance zone"):
+            standalone_verify_header(
+                event_body=SAMPLE_EVENT.encode("utf-8"),
+                event_signature=sig,
+                secret=SECRET,
+                tolerance=0,
+            )

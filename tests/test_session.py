@@ -7,6 +7,19 @@ from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives.asymmetric import rsa
 
 from workos import WorkOSClient
+from workos._errors import (
+    AuthenticationError,
+    AuthenticationMethodNotAllowedError,
+    EmailVerificationRequiredError,
+    MfaChallengeError,
+    MfaEnrollmentError,
+    OrganizationAuthMethodsRequiredError,
+    OrganizationSelectionRequiredError,
+    RadarChallengeError,
+    SsoRequiredError,
+    WorkOSConnectionError,
+    WorkOSTimeoutError,
+)
 from workos.session import (
     AsyncSession,
     AuthenticateWithSessionCookieErrorResponse,
@@ -14,6 +27,7 @@ from workos.session import (
     AuthenticateWithSessionCookieSuccessResponse,
     RefreshWithSessionCookieErrorResponse,
     Session,
+    _map_refresh_exception_to_reason,
     seal_data,
     seal_session_from_auth_response,
     unseal_data,
@@ -210,6 +224,64 @@ class TestSession:
         )
         result = session.refresh()
         assert isinstance(result, RefreshWithSessionCookieErrorResponse)
+
+
+class TestMapRefreshExceptionToReason:
+    @pytest.mark.parametrize(
+        "exc, expected",
+        [
+            (
+                MfaChallengeError("mfa challenge"),
+                AuthenticateWithSessionCookieFailureReason.MFA_CHALLENGE_REQUIRED,
+            ),
+            (
+                MfaEnrollmentError("mfa enrollment"),
+                AuthenticateWithSessionCookieFailureReason.MFA_ENROLLMENT_REQUIRED,
+            ),
+            (
+                SsoRequiredError("sso required"),
+                AuthenticateWithSessionCookieFailureReason.SSO_REQUIRED,
+            ),
+            (
+                EmailVerificationRequiredError("email verification required"),
+                AuthenticateWithSessionCookieFailureReason.EMAIL_VERIFICATION_REQUIRED,
+            ),
+            (
+                OrganizationSelectionRequiredError("org selection required"),
+                AuthenticateWithSessionCookieFailureReason.ORGANIZATION_SELECTION_REQUIRED,
+            ),
+            (
+                OrganizationAuthMethodsRequiredError("org auth methods required"),
+                AuthenticateWithSessionCookieFailureReason.ORGANIZATION_AUTH_METHODS_REQUIRED,
+            ),
+            (
+                AuthenticationMethodNotAllowedError("method not allowed"),
+                AuthenticateWithSessionCookieFailureReason.AUTHENTICATION_METHOD_NOT_ALLOWED,
+            ),
+            (
+                RadarChallengeError("radar challenge"),
+                AuthenticateWithSessionCookieFailureReason.RADAR_CHALLENGE_REQUIRED,
+            ),
+            (
+                AuthenticationError("unauthorized"),
+                AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED,
+            ),
+            (
+                WorkOSConnectionError("connection failed"),
+                AuthenticateWithSessionCookieFailureReason.REFRESH_NETWORK_ERROR,
+            ),
+            (
+                WorkOSTimeoutError("timeout"),
+                AuthenticateWithSessionCookieFailureReason.REFRESH_NETWORK_ERROR,
+            ),
+        ],
+    )
+    def test_known_exceptions_map_to_reason(self, exc, expected):
+        assert _map_refresh_exception_to_reason(exc) == expected
+
+    def test_unknown_exception_falls_back_to_string(self):
+        result = _map_refresh_exception_to_reason(RuntimeError("boom"))
+        assert result == "boom"
 
 
 @pytest.mark.asyncio

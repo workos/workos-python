@@ -26,9 +26,13 @@ from jwt import PyJWKClient
 
 from ._errors import (
     AuthenticationError,
+    AuthenticationMethodNotAllowedError,
     EmailVerificationRequiredError,
     MfaChallengeError,
+    MfaEnrollmentError,
+    OrganizationAuthMethodsRequiredError,
     OrganizationSelectionRequiredError,
+    RadarChallengeError,
     SsoRequiredError,
     WorkOSConnectionError,
     WorkOSTimeoutError,
@@ -48,9 +52,13 @@ class AuthenticateWithSessionCookieFailureReason(Enum):
     INVALID_SESSION_COOKIE = "invalid_session_cookie"
     NO_SESSION_COOKIE_PROVIDED = "no_session_cookie_provided"
     MFA_CHALLENGE_REQUIRED = "mfa_challenge_required"
+    MFA_ENROLLMENT_REQUIRED = "mfa_enrollment_required"
     SSO_REQUIRED = "sso_required"
     EMAIL_VERIFICATION_REQUIRED = "email_verification_required"
     ORGANIZATION_SELECTION_REQUIRED = "organization_selection_required"
+    ORGANIZATION_AUTH_METHODS_REQUIRED = "organization_auth_methods_required"
+    AUTHENTICATION_METHOD_NOT_ALLOWED = "authentication_method_not_allowed"
+    RADAR_CHALLENGE_REQUIRED = "radar_challenge_required"
     REFRESH_DENIED = "refresh_denied"
     REFRESH_NETWORK_ERROR = "refresh_network_error"
 
@@ -65,6 +73,8 @@ def _map_refresh_exception_to_reason(
     """
     if isinstance(exc, MfaChallengeError):
         return AuthenticateWithSessionCookieFailureReason.MFA_CHALLENGE_REQUIRED
+    if isinstance(exc, MfaEnrollmentError):
+        return AuthenticateWithSessionCookieFailureReason.MFA_ENROLLMENT_REQUIRED
     if isinstance(exc, SsoRequiredError):
         return AuthenticateWithSessionCookieFailureReason.SSO_REQUIRED
     if isinstance(exc, EmailVerificationRequiredError):
@@ -73,6 +83,14 @@ def _map_refresh_exception_to_reason(
         return (
             AuthenticateWithSessionCookieFailureReason.ORGANIZATION_SELECTION_REQUIRED
         )
+    if isinstance(exc, OrganizationAuthMethodsRequiredError):
+        return AuthenticateWithSessionCookieFailureReason.ORGANIZATION_AUTH_METHODS_REQUIRED
+    if isinstance(exc, AuthenticationMethodNotAllowedError):
+        return (
+            AuthenticateWithSessionCookieFailureReason.AUTHENTICATION_METHOD_NOT_ALLOWED
+        )
+    if isinstance(exc, RadarChallengeError):
+        return AuthenticateWithSessionCookieFailureReason.RADAR_CHALLENGE_REQUIRED
     if isinstance(exc, AuthenticationError):
         return AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED
     if isinstance(exc, (WorkOSConnectionError, WorkOSTimeoutError)):

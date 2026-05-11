@@ -77,7 +77,7 @@ class AdminPortal:
         }
         return self._client.request(
             method="post",
-            path="portal/generate_link",
+            path=("portal", "generate_link"),
             body=body,
             model=PortalLinkResponse,
             request_options=request_options,
@@ -149,7 +149,7 @@ class AsyncAdminPortal:
         }
         return await self._client.request(
             method="post",
-            path="portal/generate_link",
+            path=("portal", "generate_link"),
             body=body,
             model=PortalLinkResponse,
             request_options=request_options,

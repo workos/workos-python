@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
-from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -83,7 +82,7 @@ class Connect:
         }
         return self._client.request(
             method="post",
-            path="authkit/oauth2/complete",
+            path=("authkit", "oauth2", "complete"),
             body=body,
             model=ExternalAuthCompleteResponse,
             request_options=request_options,
@@ -133,7 +132,7 @@ class Connect:
         }
         return self._client.request_page(
             method="get",
-            path="connect/applications",
+            path=("connect", "applications"),
             model=ConnectApplication,
             params=params,
             request_options=request_options,
@@ -166,7 +165,7 @@ class Connect:
         _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return self._client.request(
             method="post",
-            path="connect/applications",
+            path=("connect", "applications"),
             body=_body,
             model=ConnectApplication,
             request_options=request_options,
@@ -203,7 +202,7 @@ class Connect:
 
         return self._client.request(
             method="POST",
-            path="connect/applications",
+            path=("connect", "applications"),
             body=body,
             model=ConnectApplication,
             request_options=request_options,
@@ -231,7 +230,7 @@ class Connect:
 
         return self._client.request(
             method="POST",
-            path="connect/applications",
+            path=("connect", "applications"),
             body=body,
             model=ConnectApplication,
             request_options=request_options,
@@ -262,7 +261,7 @@ class Connect:
         """
         return self._client.request(
             method="get",
-            path=f"connect/applications/{quote(str(id), safe='')}",
+            path=("connect", "applications", str(id)),
             model=ConnectApplication,
             request_options=request_options,
         )
@@ -313,7 +312,7 @@ class Connect:
         }
         return self._client.request(
             method="put",
-            path=f"connect/applications/{quote(str(id), safe='')}",
+            path=("connect", "applications", str(id)),
             body=body,
             model=ConnectApplication,
             request_options=request_options,
@@ -341,7 +340,7 @@ class Connect:
         """
         self._client.request(
             method="delete",
-            path=f"connect/applications/{quote(str(id), safe='')}",
+            path=("connect", "applications", str(id)),
             request_options=request_options,
         )
 
@@ -370,7 +369,7 @@ class Connect:
         """
         raw = self._client.request_list(
             method="get",
-            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
+            path=("connect", "applications", str(id), "client_secrets"),
             request_options=request_options,
         )
         return [
@@ -405,7 +404,7 @@ class Connect:
         body: Dict[str, Any] = {}
         return self._client.request(
             method="post",
-            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
+            path=("connect", "applications", str(id), "client_secrets"),
             body=body,
             model=NewConnectApplicationSecret,
             request_options=request_options,
@@ -433,7 +432,7 @@ class Connect:
         """
         self._client.request(
             method="delete",
-            path=f"connect/client_secrets/{quote(str(id), safe='')}",
+            path=("connect", "client_secrets", str(id)),
             request_options=request_options,
         )
 
@@ -497,7 +496,7 @@ class AsyncConnect:
         }
         return await self._client.request(
             method="post",
-            path="authkit/oauth2/complete",
+            path=("authkit", "oauth2", "complete"),
             body=body,
             model=ExternalAuthCompleteResponse,
             request_options=request_options,
@@ -547,7 +546,7 @@ class AsyncConnect:
         }
         return await self._client.request_page(
             method="get",
-            path="connect/applications",
+            path=("connect", "applications"),
             model=ConnectApplication,
             params=params,
             request_options=request_options,
@@ -580,7 +579,7 @@ class AsyncConnect:
         _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return await self._client.request(
             method="post",
-            path="connect/applications",
+            path=("connect", "applications"),
             body=_body,
             model=ConnectApplication,
             request_options=request_options,
@@ -617,7 +616,7 @@ class AsyncConnect:
 
         return await self._client.request(
             method="POST",
-            path="connect/applications",
+            path=("connect", "applications"),
             body=body,
             model=ConnectApplication,
             request_options=request_options,
@@ -645,7 +644,7 @@ class AsyncConnect:
 
         return await self._client.request(
             method="POST",
-            path="connect/applications",
+            path=("connect", "applications"),
             body=body,
             model=ConnectApplication,
             request_options=request_options,
@@ -676,7 +675,7 @@ class AsyncConnect:
         """
         return await self._client.request(
             method="get",
-            path=f"connect/applications/{quote(str(id), safe='')}",
+            path=("connect", "applications", str(id)),
             model=ConnectApplication,
             request_options=request_options,
         )
@@ -727,7 +726,7 @@ class AsyncConnect:
         }
         return await self._client.request(
             method="put",
-            path=f"connect/applications/{quote(str(id), safe='')}",
+            path=("connect", "applications", str(id)),
             body=body,
             model=ConnectApplication,
             request_options=request_options,
@@ -755,7 +754,7 @@ class AsyncConnect:
         """
         await self._client.request(
             method="delete",
-            path=f"connect/applications/{quote(str(id), safe='')}",
+            path=("connect", "applications", str(id)),
             request_options=request_options,
         )
 
@@ -784,7 +783,7 @@ class AsyncConnect:
         """
         raw = await self._client.request_list(
             method="get",
-            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
+            path=("connect", "applications", str(id), "client_secrets"),
             request_options=request_options,
         )
         return [
@@ -819,7 +818,7 @@ class AsyncConnect:
         body: Dict[str, Any] = {}
         return await self._client.request(
             method="post",
-            path=f"connect/applications/{quote(str(id), safe='')}/client_secrets",
+            path=("connect", "applications", str(id), "client_secrets"),
             body=body,
             model=NewConnectApplicationSecret,
             request_options=request_options,
@@ -847,6 +846,6 @@ class AsyncConnect:
         """
         await self._client.request(
             method="delete",
-            path=f"connect/client_secrets/{quote(str(id), safe='')}",
+            path=("connect", "client_secrets", str(id)),
             request_options=request_options,
         )

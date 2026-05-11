@@ -84,7 +84,7 @@ class Passwordless:
 
         response = self._client.request(
             method="post",
-            path="passwordless/sessions",
+            path=("passwordless", "sessions"),
             body=body,
             model=PasswordlessSession,
         )
@@ -101,7 +101,7 @@ class Passwordless:
         """
         self._client.request(
             method="post",
-            path=f"passwordless/sessions/{session_id}/send",
+            path=("passwordless", "sessions", str(session_id), "send"),
         )
         return True
 
@@ -147,7 +147,7 @@ class AsyncPasswordless:
 
         response = await self._client.request(
             method="post",
-            path="passwordless/sessions",
+            path=("passwordless", "sessions"),
             body=body,
             model=PasswordlessSession,
         )
@@ -164,6 +164,6 @@ class AsyncPasswordless:
         """
         await self._client.request(
             method="post",
-            path=f"passwordless/sessions/{session_id}/send",
+            path=("passwordless", "sessions", str(session_id), "send"),
         )
         return True

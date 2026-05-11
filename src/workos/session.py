@@ -354,7 +354,7 @@ class Session:
 
             auth_response = self._client.request_raw(
                 method="post",
-                path="user_management/authenticate",
+                path=("user_management", "authenticate"),
                 body=body,
             )
 
@@ -533,7 +533,7 @@ class AsyncSession:
 
             auth_response = await self._client.request_raw(
                 method="post",
-                path="user_management/authenticate",
+                path=("user_management", "authenticate"),
                 body=body,
             )
 

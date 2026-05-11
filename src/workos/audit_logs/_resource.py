@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
-from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -54,7 +53,7 @@ class AuditLogs:
         """
         return self._client.request(
             method="get",
-            path=f"organizations/{quote(str(id), safe='')}/audit_logs_retention",
+            path=("organizations", str(id), "audit_logs_retention"),
             model=AuditLogsRetentionJson,
             request_options=request_options,
         )
@@ -90,7 +89,7 @@ class AuditLogs:
         }
         return self._client.request(
             method="put",
-            path=f"organizations/{quote(str(id), safe='')}/audit_logs_retention",
+            path=("organizations", str(id), "audit_logs_retention"),
             body=body,
             model=AuditLogsRetentionJson,
             request_options=request_options,
@@ -138,7 +137,7 @@ class AuditLogs:
         }
         return self._client.request_page(
             method="get",
-            path="audit_logs/actions",
+            path=("audit_logs", "actions"),
             model=AuditLogActionJson,
             params=params,
             request_options=request_options,
@@ -188,7 +187,7 @@ class AuditLogs:
         }
         return self._client.request_page(
             method="get",
-            path=f"audit_logs/actions/{quote(str(action_name), safe='')}/schemas",
+            path=("audit_logs", "actions", str(action_name), "schemas"),
             model=AuditLogSchemaJson,
             params=params,
             request_options=request_options,
@@ -234,7 +233,7 @@ class AuditLogs:
         }
         return self._client.request(
             method="post",
-            path=f"audit_logs/actions/{quote(str(action_name), safe='')}/schemas",
+            path=("audit_logs", "actions", str(action_name), "schemas"),
             body=body,
             model=AuditLogSchemaJson,
             request_options=request_options,
@@ -281,7 +280,7 @@ class AuditLogs:
         }
         return self._client.request(
             method="post",
-            path="audit_logs/events",
+            path=("audit_logs", "events"),
             body=body,
             model=AuditLogEventCreateResponse,
             idempotency_key=idempotency_key,
@@ -341,7 +340,7 @@ class AuditLogs:
         }
         return self._client.request(
             method="post",
-            path="audit_logs/exports",
+            path=("audit_logs", "exports"),
             body=body,
             model=AuditLogExportJson,
             request_options=request_options,
@@ -372,7 +371,7 @@ class AuditLogs:
         """
         return self._client.request(
             method="get",
-            path=f"audit_logs/exports/{quote(str(audit_log_export_id), safe='')}",
+            path=("audit_logs", "exports", str(audit_log_export_id)),
             model=AuditLogExportJson,
             request_options=request_options,
         )
@@ -409,7 +408,7 @@ class AsyncAuditLogs:
         """
         return await self._client.request(
             method="get",
-            path=f"organizations/{quote(str(id), safe='')}/audit_logs_retention",
+            path=("organizations", str(id), "audit_logs_retention"),
             model=AuditLogsRetentionJson,
             request_options=request_options,
         )
@@ -445,7 +444,7 @@ class AsyncAuditLogs:
         }
         return await self._client.request(
             method="put",
-            path=f"organizations/{quote(str(id), safe='')}/audit_logs_retention",
+            path=("organizations", str(id), "audit_logs_retention"),
             body=body,
             model=AuditLogsRetentionJson,
             request_options=request_options,
@@ -493,7 +492,7 @@ class AsyncAuditLogs:
         }
         return await self._client.request_page(
             method="get",
-            path="audit_logs/actions",
+            path=("audit_logs", "actions"),
             model=AuditLogActionJson,
             params=params,
             request_options=request_options,
@@ -543,7 +542,7 @@ class AsyncAuditLogs:
         }
         return await self._client.request_page(
             method="get",
-            path=f"audit_logs/actions/{quote(str(action_name), safe='')}/schemas",
+            path=("audit_logs", "actions", str(action_name), "schemas"),
             model=AuditLogSchemaJson,
             params=params,
             request_options=request_options,
@@ -589,7 +588,7 @@ class AsyncAuditLogs:
         }
         return await self._client.request(
             method="post",
-            path=f"audit_logs/actions/{quote(str(action_name), safe='')}/schemas",
+            path=("audit_logs", "actions", str(action_name), "schemas"),
             body=body,
             model=AuditLogSchemaJson,
             request_options=request_options,
@@ -636,7 +635,7 @@ class AsyncAuditLogs:
         }
         return await self._client.request(
             method="post",
-            path="audit_logs/events",
+            path=("audit_logs", "events"),
             body=body,
             model=AuditLogEventCreateResponse,
             idempotency_key=idempotency_key,
@@ -696,7 +695,7 @@ class AsyncAuditLogs:
         }
         return await self._client.request(
             method="post",
-            path="audit_logs/exports",
+            path=("audit_logs", "exports"),
             body=body,
             model=AuditLogExportJson,
             request_options=request_options,
@@ -727,7 +726,7 @@ class AsyncAuditLogs:
         """
         return await self._client.request(
             method="get",
-            path=f"audit_logs/exports/{quote(str(audit_log_export_id), safe='')}",
+            path=("audit_logs", "exports", str(audit_log_export_id)),
             model=AuditLogExportJson,
             request_options=request_options,
         )

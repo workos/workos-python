@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
-from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -77,7 +76,7 @@ class SSO:
         }
         return self._client.request_page(
             method="get",
-            path="connections",
+            path=("connections",),
             model=Connection,
             params=params,
             request_options=request_options,
@@ -109,7 +108,7 @@ class SSO:
         """
         return self._client.request(
             method="get",
-            path=f"connections/{quote(str(id), safe='')}",
+            path=("connections", str(id)),
             model=Connection,
             request_options=request_options,
         )
@@ -137,7 +136,7 @@ class SSO:
         """
         self._client.request(
             method="delete",
-            path=f"connections/{quote(str(id), safe='')}",
+            path=("connections", str(id)),
             request_options=request_options,
         )
 
@@ -207,7 +206,7 @@ class SSO:
         params["response_type"] = "code"
         if self._client.client_id is not None:
             params["client_id"] = self._client.client_id
-        return self._client.build_url("sso/authorize", params)
+        return self._client.build_url(("sso", "authorize"), params)
 
     def get_logout_url(
         self,
@@ -241,7 +240,7 @@ class SSO:
             }.items()
             if v is not None
         }
-        return self._client.build_url("sso/logout", params)
+        return self._client.build_url(("sso", "logout"), params)
 
     def authorize_logout(
         self,
@@ -272,7 +271,7 @@ class SSO:
         }
         return self._client.request(
             method="post",
-            path="sso/logout/authorize",
+            path=("sso", "logout", "authorize"),
             body=body,
             model=SSOLogoutAuthorizeResponse,
             request_options=request_options,
@@ -311,7 +310,7 @@ class SSO:
         }
         return self._client.request(
             method="get",
-            path="sso/profile",
+            path=("sso", "profile"),
             model=Profile,
             request_options=request_options,
         )
@@ -351,7 +350,7 @@ class SSO:
             body["client_secret"] = self._client._api_key
         return self._client.request(
             method="post",
-            path="sso/token",
+            path=("sso", "token"),
             body=body,
             model=SSOTokenResponse,
             request_options=request_options,
@@ -399,7 +398,7 @@ class SSO:
             }.items()
             if v is not None
         }
-        url = self._client.build_url("sso/authorize", params)
+        url = self._client.build_url(("sso", "authorize"), params)
         return {"url": url, "state": state, "code_verifier": pair.code_verifier}
 
     def get_profile_and_token_pkce(
@@ -423,7 +422,7 @@ class SSO:
 
         return self._client.request(
             method="post",
-            path="sso/token",
+            path=("sso", "token"),
             body=body,
             model=SSOTokenResponse,
             request_options=request_options,
@@ -494,7 +493,7 @@ class AsyncSSO:
         }
         return await self._client.request_page(
             method="get",
-            path="connections",
+            path=("connections",),
             model=Connection,
             params=params,
             request_options=request_options,
@@ -526,7 +525,7 @@ class AsyncSSO:
         """
         return await self._client.request(
             method="get",
-            path=f"connections/{quote(str(id), safe='')}",
+            path=("connections", str(id)),
             model=Connection,
             request_options=request_options,
         )
@@ -554,7 +553,7 @@ class AsyncSSO:
         """
         await self._client.request(
             method="delete",
-            path=f"connections/{quote(str(id), safe='')}",
+            path=("connections", str(id)),
             request_options=request_options,
         )
 
@@ -624,7 +623,7 @@ class AsyncSSO:
         params["response_type"] = "code"
         if self._client.client_id is not None:
             params["client_id"] = self._client.client_id
-        return self._client.build_url("sso/authorize", params)
+        return self._client.build_url(("sso", "authorize"), params)
 
     def get_logout_url(
         self,
@@ -658,7 +657,7 @@ class AsyncSSO:
             }.items()
             if v is not None
         }
-        return self._client.build_url("sso/logout", params)
+        return self._client.build_url(("sso", "logout"), params)
 
     async def authorize_logout(
         self,
@@ -689,7 +688,7 @@ class AsyncSSO:
         }
         return await self._client.request(
             method="post",
-            path="sso/logout/authorize",
+            path=("sso", "logout", "authorize"),
             body=body,
             model=SSOLogoutAuthorizeResponse,
             request_options=request_options,
@@ -728,7 +727,7 @@ class AsyncSSO:
         }
         return await self._client.request(
             method="get",
-            path="sso/profile",
+            path=("sso", "profile"),
             model=Profile,
             request_options=request_options,
         )
@@ -768,7 +767,7 @@ class AsyncSSO:
             body["client_secret"] = self._client._api_key
         return await self._client.request(
             method="post",
-            path="sso/token",
+            path=("sso", "token"),
             body=body,
             model=SSOTokenResponse,
             request_options=request_options,
@@ -816,7 +815,7 @@ class AsyncSSO:
             }.items()
             if v is not None
         }
-        url = self._client.build_url("sso/authorize", params)
+        url = self._client.build_url(("sso", "authorize"), params)
         return {"url": url, "state": state, "code_verifier": pair.code_verifier}
 
     async def get_profile_and_token_pkce(
@@ -840,7 +839,7 @@ class AsyncSSO:
 
         return await self._client.request(
             method="post",
-            path="sso/token",
+            path=("sso", "token"),
             body=body,
             model=SSOTokenResponse,
             request_options=request_options,

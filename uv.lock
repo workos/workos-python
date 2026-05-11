@@ -1327,7 +1327,7 @@ wheels = [
 
 [[package]]
 name = "workos"
-version = "7.0.0"
+version = "7.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "cryptography" },

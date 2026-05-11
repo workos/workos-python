@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.1](https://github.com/workos/workos-python/compare/v7.0.0...v7.0.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* Harden webhook, vault, session, and base client paths ([#654](https://github.com/workos/workos-python/issues/654)) ([d21f3b4](https://github.com/workos/workos-python/commit/d21f3b422b4cf14f8f4a58768bdadff1c3fd49d5))
+
 ## [7.0.0](https://github.com/workos/workos-python/compare/v6.2.0...v7.0.0) (2026-05-07)
 
 

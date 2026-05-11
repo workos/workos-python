@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, Union
-from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -72,7 +71,7 @@ class DirectorySync:
         }
         return self._client.request_page(
             method="get",
-            path="directories",
+            path=("directories",),
             model=Directory,
             params=params,
             request_options=request_options,
@@ -104,7 +103,7 @@ class DirectorySync:
         """
         return self._client.request(
             method="get",
-            path=f"directories/{quote(str(id), safe='')}",
+            path=("directories", str(id)),
             model=Directory,
             request_options=request_options,
         )
@@ -131,7 +130,7 @@ class DirectorySync:
         """
         self._client.request(
             method="delete",
-            path=f"directories/{quote(str(id), safe='')}",
+            path=("directories", str(id)),
             request_options=request_options,
         )
 
@@ -184,7 +183,7 @@ class DirectorySync:
         }
         return self._client.request_page(
             method="get",
-            path="directory_groups",
+            path=("directory_groups",),
             model=DirectoryGroup,
             params=params,
             request_options=request_options,
@@ -216,7 +215,7 @@ class DirectorySync:
         """
         return self._client.request(
             method="get",
-            path=f"directory_groups/{quote(str(id), safe='')}",
+            path=("directory_groups", str(id)),
             model=DirectoryGroup,
             request_options=request_options,
         )
@@ -270,7 +269,7 @@ class DirectorySync:
         }
         return self._client.request_page(
             method="get",
-            path="directory_users",
+            path=("directory_users",),
             model=DirectoryUserWithGroups,
             params=params,
             request_options=request_options,
@@ -302,7 +301,7 @@ class DirectorySync:
         """
         return self._client.request(
             method="get",
-            path=f"directory_users/{quote(str(id), safe='')}",
+            path=("directory_users", str(id)),
             model=DirectoryUserWithGroups,
             request_options=request_options,
         )
@@ -365,7 +364,7 @@ class AsyncDirectorySync:
         }
         return await self._client.request_page(
             method="get",
-            path="directories",
+            path=("directories",),
             model=Directory,
             params=params,
             request_options=request_options,
@@ -397,7 +396,7 @@ class AsyncDirectorySync:
         """
         return await self._client.request(
             method="get",
-            path=f"directories/{quote(str(id), safe='')}",
+            path=("directories", str(id)),
             model=Directory,
             request_options=request_options,
         )
@@ -424,7 +423,7 @@ class AsyncDirectorySync:
         """
         await self._client.request(
             method="delete",
-            path=f"directories/{quote(str(id), safe='')}",
+            path=("directories", str(id)),
             request_options=request_options,
         )
 
@@ -477,7 +476,7 @@ class AsyncDirectorySync:
         }
         return await self._client.request_page(
             method="get",
-            path="directory_groups",
+            path=("directory_groups",),
             model=DirectoryGroup,
             params=params,
             request_options=request_options,
@@ -509,7 +508,7 @@ class AsyncDirectorySync:
         """
         return await self._client.request(
             method="get",
-            path=f"directory_groups/{quote(str(id), safe='')}",
+            path=("directory_groups", str(id)),
             model=DirectoryGroup,
             request_options=request_options,
         )
@@ -563,7 +562,7 @@ class AsyncDirectorySync:
         }
         return await self._client.request_page(
             method="get",
-            path="directory_users",
+            path=("directory_users",),
             model=DirectoryUserWithGroups,
             params=params,
             request_options=request_options,
@@ -595,7 +594,7 @@ class AsyncDirectorySync:
         """
         return await self._client.request(
             method="get",
-            path=f"directory_users/{quote(str(id), safe='')}",
+            path=("directory_users", str(id)),
             model=DirectoryUserWithGroups,
             request_options=request_options,
         )

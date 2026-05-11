@@ -33,7 +33,9 @@ def create_public_client(
     from ._client import WorkOSClient
 
     return WorkOSClient(
+        api_key=None,
         client_id=client_id,
         base_url=base_url,
         request_timeout=request_timeout,
+        is_public=True,
     )

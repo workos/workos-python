@@ -58,7 +58,7 @@ class Widgets:
         }
         return self._client.request(
             method="post",
-            path="widgets/token",
+            path=("widgets", "token"),
             body=body,
             model=WidgetSessionTokenResponse,
             request_options=request_options,
@@ -111,7 +111,7 @@ class AsyncWidgets:
         }
         return await self._client.request(
             method="post",
-            path="widgets/token",
+            path=("widgets", "token"),
             body=body,
             model=WidgetSessionTokenResponse,
             request_options=request_options,

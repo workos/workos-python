@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, Optional
-from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -65,7 +64,7 @@ class Pipes:
         }
         return self._client.request(
             method="post",
-            path=f"data-integrations/{quote(str(slug), safe='')}/authorize",
+            path=("data-integrations", str(slug), "authorize"),
             body=body,
             model=DataIntegrationAuthorizeUrlResponse,
             request_options=request_options,
@@ -109,7 +108,7 @@ class Pipes:
         }
         return self._client.request(
             method="post",
-            path=f"data-integrations/{quote(str(slug), safe='')}/token",
+            path=("data-integrations", str(slug), "token"),
             body=body,
             model=DataIntegrationAccessTokenResponse,
             request_options=request_options,
@@ -151,7 +150,13 @@ class Pipes:
         }
         return self._client.request(
             method="get",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/connected_accounts/{quote(str(slug), safe='')}",
+            path=(
+                "user_management",
+                "users",
+                str(user_id),
+                "connected_accounts",
+                str(slug),
+            ),
             params=params,
             model=ConnectedAccount,
             request_options=request_options,
@@ -190,7 +195,13 @@ class Pipes:
         }
         self._client.request(
             method="delete",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/connected_accounts/{quote(str(slug), safe='')}",
+            path=(
+                "user_management",
+                "users",
+                str(user_id),
+                "connected_accounts",
+                str(slug),
+            ),
             params=params,
             request_options=request_options,
         )
@@ -229,7 +240,7 @@ class Pipes:
         }
         return self._client.request(
             method="get",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/data_providers",
+            path=("user_management", "users", str(user_id), "data_providers"),
             params=params,
             model=DataIntegrationsListResponse,
             request_options=request_options,
@@ -284,7 +295,7 @@ class AsyncPipes:
         }
         return await self._client.request(
             method="post",
-            path=f"data-integrations/{quote(str(slug), safe='')}/authorize",
+            path=("data-integrations", str(slug), "authorize"),
             body=body,
             model=DataIntegrationAuthorizeUrlResponse,
             request_options=request_options,
@@ -328,7 +339,7 @@ class AsyncPipes:
         }
         return await self._client.request(
             method="post",
-            path=f"data-integrations/{quote(str(slug), safe='')}/token",
+            path=("data-integrations", str(slug), "token"),
             body=body,
             model=DataIntegrationAccessTokenResponse,
             request_options=request_options,
@@ -370,7 +381,13 @@ class AsyncPipes:
         }
         return await self._client.request(
             method="get",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/connected_accounts/{quote(str(slug), safe='')}",
+            path=(
+                "user_management",
+                "users",
+                str(user_id),
+                "connected_accounts",
+                str(slug),
+            ),
             params=params,
             model=ConnectedAccount,
             request_options=request_options,
@@ -409,7 +426,13 @@ class AsyncPipes:
         }
         await self._client.request(
             method="delete",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/connected_accounts/{quote(str(slug), safe='')}",
+            path=(
+                "user_management",
+                "users",
+                str(user_id),
+                "connected_accounts",
+                str(slug),
+            ),
             params=params,
             request_options=request_options,
         )
@@ -448,7 +471,7 @@ class AsyncPipes:
         }
         return await self._client.request(
             method="get",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/data_providers",
+            path=("user_management", "users", str(user_id), "data_providers"),
             params=params,
             model=DataIntegrationsListResponse,
             request_options=request_options,

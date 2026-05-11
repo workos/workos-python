@@ -63,6 +63,17 @@ class TestActions:
                 tolerance=30,
             )
 
+    def test_verify_header_future_timestamp(self):
+        future_ts = int((time.time() + 60) * 1000)
+        sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, SECRET, future_ts)
+        with pytest.raises(ValueError, match="tolerance zone"):
+            self.actions.verify_header(
+                payload=SAMPLE_ACTION_PAYLOAD,
+                sig_header=sig,
+                secret=SECRET,
+                tolerance=30,
+            )
+
     def test_verify_header_custom_tolerance(self):
         old_ts = int((time.time() - 10) * 1000)
         sig = _make_sig_header(SAMPLE_ACTION_PAYLOAD, SECRET, old_ts)

@@ -9,7 +9,8 @@ import uuid
 import random
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
-from typing import Any, Dict, Optional, Type, cast, overload
+from typing import Any, Dict, Optional, Sequence, Type, cast, overload
+from urllib.parse import quote
 
 import httpx
 
@@ -53,8 +54,15 @@ class _BaseWorkOSClient:
         request_timeout: Optional[int] = None,
         jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
+        is_public: bool = False,
     ) -> None:
-        self._api_key = api_key or os.environ.get("WORKOS_API_KEY")
+        self._is_public = is_public
+        # Public clients (PKCE / browser / mobile / CLI) must never attach
+        # an API key, even if WORKOS_API_KEY is present in the environment.
+        if is_public:
+            self._api_key: Optional[str] = None
+        else:
+            self._api_key = api_key or os.environ.get("WORKOS_API_KEY")
         self.client_id = client_id or os.environ.get("WORKOS_CLIENT_ID")
         if not self._api_key and not self.client_id:
             raise ValueError(
@@ -80,12 +88,14 @@ class _BaseWorkOSClient:
         """The base URL for API requests."""
         return self._base_url
 
-    def build_url(self, path: str, params: Optional[Dict[str, Any]] = None) -> str:
+    def build_url(
+        self, path: Sequence[str], params: Optional[Dict[str, Any]] = None
+    ) -> str:
         """Build a full URL with query parameters for redirect/authorization endpoints."""
         from urllib.parse import urlencode
 
         base = self._base_url.rstrip("/")
-        url = f"{base}/{path}"
+        url = f"{base}/{self._encode_path(path)}"
         if params:
             url = f"{url}?{urlencode(params)}"
         return url
@@ -127,6 +137,27 @@ class _BaseWorkOSClient:
             if base_url:
                 return str(base_url).rstrip("/")
         return self._base_url.rstrip("/")
+
+    @staticmethod
+    def _encode_path(path: Sequence[str]) -> str:
+        """Percent-encode each path segment and join with ``/``.
+
+        Callers pass each path component as a separate element (e.g.
+        ``("organizations", organization_id)``). Each element is URL-encoded
+        with ``safe=""`` so a caller-supplied id containing ``/``, ``?``,
+        ``#``, ``%``, or ``..`` cannot escape its intended segment — this is
+        the structural protection against forged cross-resource API requests
+        under the application's API key.
+
+        A bare string would be silently iterable as a sequence of single
+        characters; we reject it explicitly so a forgotten tuple wrapper at a
+        call site fails loudly instead of producing a per-character URL.
+        """
+        if isinstance(path, str):
+            raise TypeError(
+                "path must be a sequence of segments (e.g. a tuple), not a str"
+            )
+        return "/".join(quote(str(seg), safe="") for seg in path)
 
     def _resolve_timeout(self, request_options: Optional[RequestOptions]) -> float:
         timeout = self._request_timeout
@@ -332,6 +363,7 @@ class WorkOSClient(_BaseWorkOSClient):
         request_timeout: Optional[int] = None,
         jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
+        is_public: bool = False,
     ) -> None:
         """Initialize the WorkOS client.
 
@@ -342,6 +374,10 @@ class WorkOSClient(_BaseWorkOSClient):
             request_timeout: HTTP request timeout in seconds. Falls back to WORKOS_REQUEST_TIMEOUT or 60.
             jwt_leeway: JWT clock skew leeway in seconds.
             max_retries: Maximum number of retries for failed requests. Defaults to 3.
+            is_public: When True, mark this client as public (PKCE / browser
+                / mobile / CLI). The API key is forced to None and the
+                ``WORKOS_API_KEY`` environment variable is ignored. Use
+                ``create_public_client`` instead of setting this directly.
 
         Raises:
             ValueError: If neither api_key nor client_id is provided, directly or via environment variables.
@@ -353,6 +389,7 @@ class WorkOSClient(_BaseWorkOSClient):
             request_timeout=request_timeout,
             jwt_leeway=jwt_leeway,
             max_retries=max_retries,
+            is_public=is_public,
         )
         self._client = httpx.Client(
             timeout=self._request_timeout, follow_redirects=True
@@ -372,7 +409,7 @@ class WorkOSClient(_BaseWorkOSClient):
     def request(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         model: Type[D],
         params: Optional[Dict[str, Any]] = ...,
@@ -385,7 +422,7 @@ class WorkOSClient(_BaseWorkOSClient):
     def request(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         model: None = ...,
         params: Optional[Dict[str, Any]] = ...,
@@ -397,7 +434,7 @@ class WorkOSClient(_BaseWorkOSClient):
     def request(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         params: Optional[Dict[str, Any]] = None,
         body: Optional[Dict[str, Any]] = None,
@@ -406,7 +443,7 @@ class WorkOSClient(_BaseWorkOSClient):
         request_options: Optional[RequestOptions] = None,
     ) -> Any:
         """Make an HTTP request with retry logic."""
-        url = f"{self._resolve_base_url(request_options)}/{path}"
+        url = f"{self._resolve_base_url(request_options)}/{self._encode_path(path)}"
         headers = self._build_headers(method, idempotency_key, request_options)
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
@@ -453,7 +490,7 @@ class WorkOSClient(_BaseWorkOSClient):
     def request_raw(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         params: Optional[Dict[str, Any]] = None,
         body: Optional[Dict[str, Any]] = None,
@@ -478,7 +515,7 @@ class WorkOSClient(_BaseWorkOSClient):
     def request_list(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         params: Optional[Dict[str, Any]] = None,
         body: Optional[Dict[str, Any]] = None,
@@ -500,14 +537,14 @@ class WorkOSClient(_BaseWorkOSClient):
         )
         if not isinstance(result, list):
             raise WorkOSError(
-                f"Expected array response from {method.upper()} /{path}, got {type(result).__name__}"
+                f"Expected array response from {method.upper()} /{'/'.join(path)}, got {type(result).__name__}"
             )
         return result
 
     def request_page(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         model: Type[D],
         params: Optional[Dict[str, Any]] = None,
@@ -557,6 +594,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         request_timeout: Optional[int] = None,
         jwt_leeway: float = 0.0,
         max_retries: int = MAX_RETRIES,
+        is_public: bool = False,
     ) -> None:
         """Initialize the async WorkOS client.
 
@@ -578,6 +616,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
             request_timeout=request_timeout,
             jwt_leeway=jwt_leeway,
             max_retries=max_retries,
+            is_public=is_public,
         )
         self._client = httpx.AsyncClient(
             timeout=self._request_timeout, follow_redirects=True
@@ -597,7 +636,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
     async def request(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         model: Type[D],
         params: Optional[Dict[str, Any]] = ...,
@@ -610,7 +649,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
     async def request(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         model: None = ...,
         params: Optional[Dict[str, Any]] = ...,
@@ -622,7 +661,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
     async def request(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         params: Optional[Dict[str, Any]] = None,
         body: Optional[Dict[str, Any]] = None,
@@ -631,7 +670,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         request_options: Optional[RequestOptions] = None,
     ) -> Any:
         """Make an async HTTP request with retry logic."""
-        url = f"{self._resolve_base_url(request_options)}/{path}"
+        url = f"{self._resolve_base_url(request_options)}/{self._encode_path(path)}"
         headers = self._build_headers(method, idempotency_key, request_options)
         timeout = self._resolve_timeout(request_options)
         max_retries = self._resolve_max_retries(request_options)
@@ -678,7 +717,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
     async def request_raw(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         params: Optional[Dict[str, Any]] = None,
         body: Optional[Dict[str, Any]] = None,
@@ -703,7 +742,7 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
     async def request_list(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         params: Optional[Dict[str, Any]] = None,
         body: Optional[Dict[str, Any]] = None,
@@ -725,14 +764,14 @@ class AsyncWorkOSClient(_BaseWorkOSClient):
         )
         if not isinstance(result, list):
             raise WorkOSError(
-                f"Expected array response from {method.upper()} /{path}, got {type(result).__name__}"
+                f"Expected array response from {method.upper()} /{'/'.join(path)}, got {type(result).__name__}"
             )
         return result
 
     async def request_page(
         self,
         method: str,
-        path: str,
+        path: Sequence[str],
         *,
         model: Type[D],
         params: Optional[Dict[str, Any]] = None,

@@ -24,6 +24,20 @@ import jwt
 from cryptography.fernet import Fernet
 from jwt import PyJWKClient
 
+from ._errors import (
+    AuthenticationError,
+    AuthenticationMethodNotAllowedError,
+    EmailVerificationRequiredError,
+    MfaChallengeError,
+    MfaEnrollmentError,
+    OrganizationAuthMethodsRequiredError,
+    OrganizationSelectionRequiredError,
+    RadarChallengeError,
+    SsoRequiredError,
+    WorkOSConnectionError,
+    WorkOSTimeoutError,
+)
+
 if TYPE_CHECKING:
     from ._client import AsyncWorkOSClient, WorkOSClient
 
@@ -37,6 +51,51 @@ class AuthenticateWithSessionCookieFailureReason(Enum):
     INVALID_JWT = "invalid_jwt"
     INVALID_SESSION_COOKIE = "invalid_session_cookie"
     NO_SESSION_COOKIE_PROVIDED = "no_session_cookie_provided"
+    MFA_CHALLENGE_REQUIRED = "mfa_challenge_required"
+    MFA_ENROLLMENT_REQUIRED = "mfa_enrollment_required"
+    SSO_REQUIRED = "sso_required"
+    EMAIL_VERIFICATION_REQUIRED = "email_verification_required"
+    ORGANIZATION_SELECTION_REQUIRED = "organization_selection_required"
+    ORGANIZATION_AUTH_METHODS_REQUIRED = "organization_auth_methods_required"
+    AUTHENTICATION_METHOD_NOT_ALLOWED = "authentication_method_not_allowed"
+    RADAR_CHALLENGE_REQUIRED = "radar_challenge_required"
+    REFRESH_DENIED = "refresh_denied"
+    REFRESH_NETWORK_ERROR = "refresh_network_error"
+
+
+def _map_refresh_exception_to_reason(
+    exc: Exception,
+) -> Union[AuthenticateWithSessionCookieFailureReason, str]:
+    """Map an exception raised by a refresh request to a structured reason.
+
+    Falls back to ``str(exc)`` for unknown errors so callers retain the
+    pre-existing string form for diagnostics.
+    """
+    if isinstance(exc, MfaChallengeError):
+        return AuthenticateWithSessionCookieFailureReason.MFA_CHALLENGE_REQUIRED
+    if isinstance(exc, MfaEnrollmentError):
+        return AuthenticateWithSessionCookieFailureReason.MFA_ENROLLMENT_REQUIRED
+    if isinstance(exc, SsoRequiredError):
+        return AuthenticateWithSessionCookieFailureReason.SSO_REQUIRED
+    if isinstance(exc, EmailVerificationRequiredError):
+        return AuthenticateWithSessionCookieFailureReason.EMAIL_VERIFICATION_REQUIRED
+    if isinstance(exc, OrganizationSelectionRequiredError):
+        return (
+            AuthenticateWithSessionCookieFailureReason.ORGANIZATION_SELECTION_REQUIRED
+        )
+    if isinstance(exc, OrganizationAuthMethodsRequiredError):
+        return AuthenticateWithSessionCookieFailureReason.ORGANIZATION_AUTH_METHODS_REQUIRED
+    if isinstance(exc, AuthenticationMethodNotAllowedError):
+        return (
+            AuthenticateWithSessionCookieFailureReason.AUTHENTICATION_METHOD_NOT_ALLOWED
+        )
+    if isinstance(exc, RadarChallengeError):
+        return AuthenticateWithSessionCookieFailureReason.RADAR_CHALLENGE_REQUIRED
+    if isinstance(exc, AuthenticationError):
+        return AuthenticateWithSessionCookieFailureReason.REFRESH_DENIED
+    if isinstance(exc, (WorkOSConnectionError, WorkOSTimeoutError)):
+        return AuthenticateWithSessionCookieFailureReason.REFRESH_NETWORK_ERROR
+    return str(exc)
 
 
 @dataclass(slots=True)
@@ -295,7 +354,7 @@ class Session:
 
             auth_response = self._client.request_raw(
                 method="post",
-                path="user_management/authenticate",
+                path=("user_management", "authenticate"),
                 body=body,
             )
 
@@ -328,7 +387,7 @@ class Session:
             )
         except Exception as e:
             return RefreshWithSessionCookieErrorResponse(
-                authenticated=False, reason=str(e)
+                authenticated=False, reason=_map_refresh_exception_to_reason(e)
             )
 
     def get_logout_url(self, return_to: Optional[str] = None) -> str:
@@ -474,7 +533,7 @@ class AsyncSession:
 
             auth_response = await self._client.request_raw(
                 method="post",
-                path="user_management/authenticate",
+                path=("user_management", "authenticate"),
                 body=body,
             )
 
@@ -507,7 +566,7 @@ class AsyncSession:
             )
         except Exception as e:
             return RefreshWithSessionCookieErrorResponse(
-                authenticated=False, reason=str(e)
+                authenticated=False, reason=_map_refresh_exception_to_reason(e)
             )
 
     async def get_logout_url(self, return_to: Optional[str] = None) -> str:

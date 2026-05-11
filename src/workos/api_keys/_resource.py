@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
-from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -67,7 +66,7 @@ class ApiKeys:
         }
         return self._client.request_page(
             method="get",
-            path=f"organizations/{quote(str(organization_id), safe='')}/api_keys",
+            path=("organizations", str(organization_id), "api_keys"),
             model=OrganizationApiKey,
             params=params,
             request_options=request_options,
@@ -111,7 +110,7 @@ class ApiKeys:
         }
         return self._client.request(
             method="post",
-            path=f"organizations/{quote(str(organization_id), safe='')}/api_keys",
+            path=("organizations", str(organization_id), "api_keys"),
             body=body,
             model=OrganizationApiKeyWithValue,
             request_options=request_options,
@@ -145,7 +144,7 @@ class ApiKeys:
         }
         return self._client.request(
             method="post",
-            path="api_keys/validations",
+            path=("api_keys", "validations"),
             body=body,
             model=ApiKeyValidationResponse,
             request_options=request_options,
@@ -173,7 +172,7 @@ class ApiKeys:
         """
         self._client.request(
             method="delete",
-            path=f"api_keys/{quote(str(id), safe='')}",
+            path=("api_keys", str(id)),
             request_options=request_options,
         )
 
@@ -227,7 +226,7 @@ class AsyncApiKeys:
         }
         return await self._client.request_page(
             method="get",
-            path=f"organizations/{quote(str(organization_id), safe='')}/api_keys",
+            path=("organizations", str(organization_id), "api_keys"),
             model=OrganizationApiKey,
             params=params,
             request_options=request_options,
@@ -271,7 +270,7 @@ class AsyncApiKeys:
         }
         return await self._client.request(
             method="post",
-            path=f"organizations/{quote(str(organization_id), safe='')}/api_keys",
+            path=("organizations", str(organization_id), "api_keys"),
             body=body,
             model=OrganizationApiKeyWithValue,
             request_options=request_options,
@@ -305,7 +304,7 @@ class AsyncApiKeys:
         }
         return await self._client.request(
             method="post",
-            path="api_keys/validations",
+            path=("api_keys", "validations"),
             body=body,
             model=ApiKeyValidationResponse,
             request_options=request_options,
@@ -333,6 +332,6 @@ class AsyncApiKeys:
         """
         await self._client.request(
             method="delete",
-            path=f"api_keys/{quote(str(id), safe='')}",
+            path=("api_keys", str(id)),
             request_options=request_options,
         )

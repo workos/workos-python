@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union, cast
-from urllib.parse import quote
 
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
@@ -128,7 +127,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"sso/jwks/{quote(str(client_id), safe='')}",
+            path=("sso", "jwks", str(client_id)),
             model=JwksResponse,
             request_options=request_options,
         )
@@ -172,7 +171,7 @@ class UserManagement:
         _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return self._client.request(
             method="post",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=_body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -210,7 +209,7 @@ class UserManagement:
 
         return self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -249,7 +248,7 @@ class UserManagement:
 
         return self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -285,7 +284,7 @@ class UserManagement:
 
         return self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -323,7 +322,7 @@ class UserManagement:
 
         return self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -358,7 +357,7 @@ class UserManagement:
 
         return self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -395,7 +394,7 @@ class UserManagement:
 
         return self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -430,7 +429,7 @@ class UserManagement:
 
         return self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -461,7 +460,7 @@ class UserManagement:
 
         return self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -544,7 +543,7 @@ class UserManagement:
         params["response_type"] = "code"
         if self._client.client_id is not None:
             params["client_id"] = self._client.client_id
-        return self._client.build_url("user_management/authorize", params)
+        return self._client.build_url(("user_management", "authorize"), params)
 
     def create_device(
         self,
@@ -575,7 +574,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path="user_management/authorize/device",
+            path=("user_management", "authorize", "device"),
             body=body,
             model=DeviceAuthorizationResponse,
             request_options=request_options,
@@ -614,7 +613,7 @@ class UserManagement:
             }.items()
             if v is not None
         }
-        return self._client.build_url("user_management/sessions/logout", params)
+        return self._client.build_url(("user_management", "sessions", "logout"), params)
 
     def revoke_session(
         self,
@@ -648,7 +647,7 @@ class UserManagement:
         }
         self._client.request(
             method="post",
-            path="user_management/sessions/revoke",
+            path=("user_management", "sessions", "revoke"),
             body=body,
             request_options=request_options,
         )
@@ -682,7 +681,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path="user_management/cors_origins",
+            path=("user_management", "cors_origins"),
             body=body,
             model=CORSOriginResponse,
             request_options=request_options,
@@ -713,7 +712,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/email_verification/{quote(str(id), safe='')}",
+            path=("user_management", "email_verification", str(id)),
             model=EmailVerification,
             request_options=request_options,
         )
@@ -748,7 +747,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path="user_management/password_reset",
+            path=("user_management", "password_reset"),
             body=body,
             model=PasswordReset,
             request_options=request_options,
@@ -788,7 +787,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path="user_management/password_reset/confirm",
+            path=("user_management", "password_reset", "confirm"),
             body=body,
             model=ResetPasswordResponse,
             request_options=request_options,
@@ -819,7 +818,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/password_reset/{quote(str(id), safe='')}",
+            path=("user_management", "password_reset", str(id)),
             model=PasswordReset,
             request_options=request_options,
         )
@@ -874,7 +873,7 @@ class UserManagement:
         }
         return self._client.request_page(
             method="get",
-            path="user_management/users",
+            path=("user_management", "users"),
             model=User,
             params=params,
             request_options=request_options,
@@ -937,7 +936,7 @@ class UserManagement:
                 body["password_hash_type"] = enum_value(password.password_hash_type)
         return self._client.request(
             method="post",
-            path="user_management/users",
+            path=("user_management", "users"),
             body=body,
             model=User,
             request_options=request_options,
@@ -968,7 +967,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/users/external_id/{quote(str(external_id), safe='')}",
+            path=("user_management", "users", "external_id", str(external_id)),
             model=User,
             request_options=request_options,
         )
@@ -998,7 +997,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/users/{quote(str(id), safe='')}",
+            path=("user_management", "users", str(id)),
             model=User,
             request_options=request_options,
         )
@@ -1064,7 +1063,7 @@ class UserManagement:
                 body["password_hash_type"] = enum_value(password.password_hash_type)
         return self._client.request(
             method="put",
-            path=f"user_management/users/{quote(str(id), safe='')}",
+            path=("user_management", "users", str(id)),
             body=body,
             model=User,
             request_options=request_options,
@@ -1092,7 +1091,7 @@ class UserManagement:
         """
         self._client.request(
             method="delete",
-            path=f"user_management/users/{quote(str(id), safe='')}",
+            path=("user_management", "users", str(id)),
             request_options=request_options,
         )
 
@@ -1129,7 +1128,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/users/{quote(str(id), safe='')}/email_change/confirm",
+            path=("user_management", "users", str(id), "email_change", "confirm"),
             body=body,
             model=EmailChangeConfirmation,
             request_options=request_options,
@@ -1167,7 +1166,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/users/{quote(str(id), safe='')}/email_change/send",
+            path=("user_management", "users", str(id), "email_change", "send"),
             body=body,
             model=EmailChange,
             request_options=request_options,
@@ -1205,7 +1204,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/users/{quote(str(id), safe='')}/email_verification/confirm",
+            path=("user_management", "users", str(id), "email_verification", "confirm"),
             body=body,
             model=VerifyEmailResponse,
             request_options=request_options,
@@ -1237,7 +1236,7 @@ class UserManagement:
         """
         return self._client.request(
             method="post",
-            path=f"user_management/users/{quote(str(id), safe='')}/email_verification/send",
+            path=("user_management", "users", str(id), "email_verification", "send"),
             model=SendVerificationEmailResponse,
             request_options=request_options,
         )
@@ -1267,7 +1266,7 @@ class UserManagement:
         """
         raw = self._client.request_list(
             method="get",
-            path=f"user_management/users/{quote(str(id), safe='')}/identities",
+            path=("user_management", "users", str(id), "identities"),
             request_options=request_options,
         )
         return [
@@ -1318,7 +1317,7 @@ class UserManagement:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/users/{quote(str(id), safe='')}/sessions",
+            path=("user_management", "users", str(id), "sessions"),
             model=UserSessionsListItem,
             params=params,
             request_options=request_options,
@@ -1371,7 +1370,7 @@ class UserManagement:
         }
         return self._client.request_page(
             method="get",
-            path="user_management/invitations",
+            path=("user_management", "invitations"),
             model=UserInvite,
             params=params,
             request_options=request_options,
@@ -1426,7 +1425,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path="user_management/invitations",
+            path=("user_management", "invitations"),
             body=body,
             model=UserInvite,
             request_options=request_options,
@@ -1457,7 +1456,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/invitations/by_token/{quote(str(token), safe='')}",
+            path=("user_management", "invitations", "by_token", str(token)),
             model=UserInvite,
             request_options=request_options,
         )
@@ -1487,7 +1486,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/invitations/{quote(str(id), safe='')}",
+            path=("user_management", "invitations", str(id)),
             model=UserInvite,
             request_options=request_options,
         )
@@ -1518,7 +1517,7 @@ class UserManagement:
         """
         return self._client.request(
             method="post",
-            path=f"user_management/invitations/{quote(str(id), safe='')}/accept",
+            path=("user_management", "invitations", str(id), "accept"),
             model=Invitation,
             request_options=request_options,
         )
@@ -1559,7 +1558,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/invitations/{quote(str(id), safe='')}/resend",
+            path=("user_management", "invitations", str(id), "resend"),
             body=body,
             model=UserInvite,
             request_options=request_options,
@@ -1590,7 +1589,7 @@ class UserManagement:
         """
         return self._client.request(
             method="post",
-            path=f"user_management/invitations/{quote(str(id), safe='')}/revoke",
+            path=("user_management", "invitations", str(id), "revoke"),
             model=Invitation,
             request_options=request_options,
         )
@@ -1615,7 +1614,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path="user_management/jwt_template",
+            path=("user_management", "jwt_template"),
             model=JWTTemplateResponse,
             request_options=request_options,
         )
@@ -1648,7 +1647,7 @@ class UserManagement:
         }
         return self._client.request(
             method="put",
-            path="user_management/jwt_template",
+            path=("user_management", "jwt_template"),
             body=body,
             model=JWTTemplateResponse,
             request_options=request_options,
@@ -1690,7 +1689,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path="user_management/magic_auth",
+            path=("user_management", "magic_auth"),
             body=body,
             model=MagicAuth,
             request_options=request_options,
@@ -1721,7 +1720,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/magic_auth/{quote(str(id), safe='')}",
+            path=("user_management", "magic_auth", str(id)),
             model=MagicAuth,
             request_options=request_options,
         )
@@ -1782,7 +1781,7 @@ class UserManagement:
         }
         return self._client.request_page(
             method="get",
-            path="user_management/organization_memberships",
+            path=("user_management", "organization_memberships"),
             model=UserOrganizationMembership,
             params=params,
             request_options=request_options,
@@ -1830,7 +1829,7 @@ class UserManagement:
                 body["role_slugs"] = role.role_slugs
         return self._client.request(
             method="post",
-            path="user_management/organization_memberships",
+            path=("user_management", "organization_memberships"),
             body=body,
             model=OrganizationMembership,
             request_options=request_options,
@@ -1861,7 +1860,7 @@ class UserManagement:
         """
         return self._client.request(
             method="get",
-            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
+            path=("user_management", "organization_memberships", str(id)),
             model=UserOrganizationMembership,
             request_options=request_options,
         )
@@ -1900,7 +1899,7 @@ class UserManagement:
                 body["role_slugs"] = role.role_slugs
         return self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
+            path=("user_management", "organization_memberships", str(id)),
             body=body,
             model=UserOrganizationMembership,
             request_options=request_options,
@@ -1928,7 +1927,7 @@ class UserManagement:
         """
         self._client.request(
             method="delete",
-            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
+            path=("user_management", "organization_memberships", str(id)),
             request_options=request_options,
         )
 
@@ -1964,7 +1963,7 @@ class UserManagement:
         """
         return self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{quote(str(id), safe='')}/deactivate",
+            path=("user_management", "organization_memberships", str(id), "deactivate"),
             model=OrganizationMembership,
             request_options=request_options,
         )
@@ -2001,7 +2000,7 @@ class UserManagement:
         """
         return self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{quote(str(id), safe='')}/reactivate",
+            path=("user_management", "organization_memberships", str(id), "reactivate"),
             model=UserOrganizationMembership,
             request_options=request_options,
         )
@@ -2035,7 +2034,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path="user_management/redirect_uris",
+            path=("user_management", "redirect_uris"),
             body=body,
             model=RedirectUri,
             request_options=request_options,
@@ -2085,7 +2084,7 @@ class UserManagement:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/authorized_applications",
+            path=("user_management", "users", str(user_id), "authorized_applications"),
             model=AuthorizedConnectApplicationListData,
             params=params,
             request_options=request_options,
@@ -2115,7 +2114,13 @@ class UserManagement:
         """
         self._client.request(
             method="delete",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/authorized_applications/{quote(str(application_id), safe='')}",
+            path=(
+                "user_management",
+                "users",
+                str(user_id),
+                "authorized_applications",
+                str(application_id),
+            ),
             request_options=request_options,
         )
 
@@ -2165,7 +2170,7 @@ class UserManagement:
         }
         return self._client.request_page(
             method="get",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/api_keys",
+            path=("user_management", "users", str(user_id), "api_keys"),
             model=UserApiKey,
             params=params,
             request_options=request_options,
@@ -2213,7 +2218,7 @@ class UserManagement:
         }
         return self._client.request(
             method="post",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/api_keys",
+            path=("user_management", "users", str(user_id), "api_keys"),
             body=body,
             model=UserApiKeyWithValue,
             request_options=request_options,
@@ -2395,7 +2400,7 @@ class UserManagement:
             AuthenticateResponse,
             self._client.request(
                 method="POST",
-                path="user_management/authenticate",
+                path=("user_management", "authenticate"),
                 body=body,
                 model=AuthenticateResponse,
                 request_options=request_options,
@@ -2436,7 +2441,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"sso/jwks/{quote(str(client_id), safe='')}",
+            path=("sso", "jwks", str(client_id)),
             model=JwksResponse,
             request_options=request_options,
         )
@@ -2480,7 +2485,7 @@ class AsyncUserManagement:
         _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
         return await self._client.request(
             method="post",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=_body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -2518,7 +2523,7 @@ class AsyncUserManagement:
 
         return await self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -2557,7 +2562,7 @@ class AsyncUserManagement:
 
         return await self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -2593,7 +2598,7 @@ class AsyncUserManagement:
 
         return await self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -2631,7 +2636,7 @@ class AsyncUserManagement:
 
         return await self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -2666,7 +2671,7 @@ class AsyncUserManagement:
 
         return await self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -2703,7 +2708,7 @@ class AsyncUserManagement:
 
         return await self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -2738,7 +2743,7 @@ class AsyncUserManagement:
 
         return await self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -2769,7 +2774,7 @@ class AsyncUserManagement:
 
         return await self._client.request(
             method="POST",
-            path="user_management/authenticate",
+            path=("user_management", "authenticate"),
             body=body,
             model=AuthenticateResponse,
             request_options=request_options,
@@ -2852,7 +2857,7 @@ class AsyncUserManagement:
         params["response_type"] = "code"
         if self._client.client_id is not None:
             params["client_id"] = self._client.client_id
-        return self._client.build_url("user_management/authorize", params)
+        return self._client.build_url(("user_management", "authorize"), params)
 
     async def create_device(
         self,
@@ -2883,7 +2888,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path="user_management/authorize/device",
+            path=("user_management", "authorize", "device"),
             body=body,
             model=DeviceAuthorizationResponse,
             request_options=request_options,
@@ -2922,7 +2927,7 @@ class AsyncUserManagement:
             }.items()
             if v is not None
         }
-        return self._client.build_url("user_management/sessions/logout", params)
+        return self._client.build_url(("user_management", "sessions", "logout"), params)
 
     async def revoke_session(
         self,
@@ -2956,7 +2961,7 @@ class AsyncUserManagement:
         }
         await self._client.request(
             method="post",
-            path="user_management/sessions/revoke",
+            path=("user_management", "sessions", "revoke"),
             body=body,
             request_options=request_options,
         )
@@ -2990,7 +2995,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path="user_management/cors_origins",
+            path=("user_management", "cors_origins"),
             body=body,
             model=CORSOriginResponse,
             request_options=request_options,
@@ -3021,7 +3026,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/email_verification/{quote(str(id), safe='')}",
+            path=("user_management", "email_verification", str(id)),
             model=EmailVerification,
             request_options=request_options,
         )
@@ -3056,7 +3061,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path="user_management/password_reset",
+            path=("user_management", "password_reset"),
             body=body,
             model=PasswordReset,
             request_options=request_options,
@@ -3096,7 +3101,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path="user_management/password_reset/confirm",
+            path=("user_management", "password_reset", "confirm"),
             body=body,
             model=ResetPasswordResponse,
             request_options=request_options,
@@ -3127,7 +3132,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/password_reset/{quote(str(id), safe='')}",
+            path=("user_management", "password_reset", str(id)),
             model=PasswordReset,
             request_options=request_options,
         )
@@ -3182,7 +3187,7 @@ class AsyncUserManagement:
         }
         return await self._client.request_page(
             method="get",
-            path="user_management/users",
+            path=("user_management", "users"),
             model=User,
             params=params,
             request_options=request_options,
@@ -3245,7 +3250,7 @@ class AsyncUserManagement:
                 body["password_hash_type"] = enum_value(password.password_hash_type)
         return await self._client.request(
             method="post",
-            path="user_management/users",
+            path=("user_management", "users"),
             body=body,
             model=User,
             request_options=request_options,
@@ -3276,7 +3281,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/users/external_id/{quote(str(external_id), safe='')}",
+            path=("user_management", "users", "external_id", str(external_id)),
             model=User,
             request_options=request_options,
         )
@@ -3306,7 +3311,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/users/{quote(str(id), safe='')}",
+            path=("user_management", "users", str(id)),
             model=User,
             request_options=request_options,
         )
@@ -3372,7 +3377,7 @@ class AsyncUserManagement:
                 body["password_hash_type"] = enum_value(password.password_hash_type)
         return await self._client.request(
             method="put",
-            path=f"user_management/users/{quote(str(id), safe='')}",
+            path=("user_management", "users", str(id)),
             body=body,
             model=User,
             request_options=request_options,
@@ -3400,7 +3405,7 @@ class AsyncUserManagement:
         """
         await self._client.request(
             method="delete",
-            path=f"user_management/users/{quote(str(id), safe='')}",
+            path=("user_management", "users", str(id)),
             request_options=request_options,
         )
 
@@ -3437,7 +3442,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{quote(str(id), safe='')}/email_change/confirm",
+            path=("user_management", "users", str(id), "email_change", "confirm"),
             body=body,
             model=EmailChangeConfirmation,
             request_options=request_options,
@@ -3475,7 +3480,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{quote(str(id), safe='')}/email_change/send",
+            path=("user_management", "users", str(id), "email_change", "send"),
             body=body,
             model=EmailChange,
             request_options=request_options,
@@ -3513,7 +3518,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{quote(str(id), safe='')}/email_verification/confirm",
+            path=("user_management", "users", str(id), "email_verification", "confirm"),
             body=body,
             model=VerifyEmailResponse,
             request_options=request_options,
@@ -3545,7 +3550,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{quote(str(id), safe='')}/email_verification/send",
+            path=("user_management", "users", str(id), "email_verification", "send"),
             model=SendVerificationEmailResponse,
             request_options=request_options,
         )
@@ -3575,7 +3580,7 @@ class AsyncUserManagement:
         """
         raw = await self._client.request_list(
             method="get",
-            path=f"user_management/users/{quote(str(id), safe='')}/identities",
+            path=("user_management", "users", str(id), "identities"),
             request_options=request_options,
         )
         return [
@@ -3626,7 +3631,7 @@ class AsyncUserManagement:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/users/{quote(str(id), safe='')}/sessions",
+            path=("user_management", "users", str(id), "sessions"),
             model=UserSessionsListItem,
             params=params,
             request_options=request_options,
@@ -3679,7 +3684,7 @@ class AsyncUserManagement:
         }
         return await self._client.request_page(
             method="get",
-            path="user_management/invitations",
+            path=("user_management", "invitations"),
             model=UserInvite,
             params=params,
             request_options=request_options,
@@ -3734,7 +3739,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path="user_management/invitations",
+            path=("user_management", "invitations"),
             body=body,
             model=UserInvite,
             request_options=request_options,
@@ -3765,7 +3770,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/invitations/by_token/{quote(str(token), safe='')}",
+            path=("user_management", "invitations", "by_token", str(token)),
             model=UserInvite,
             request_options=request_options,
         )
@@ -3795,7 +3800,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/invitations/{quote(str(id), safe='')}",
+            path=("user_management", "invitations", str(id)),
             model=UserInvite,
             request_options=request_options,
         )
@@ -3826,7 +3831,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="post",
-            path=f"user_management/invitations/{quote(str(id), safe='')}/accept",
+            path=("user_management", "invitations", str(id), "accept"),
             model=Invitation,
             request_options=request_options,
         )
@@ -3867,7 +3872,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/invitations/{quote(str(id), safe='')}/resend",
+            path=("user_management", "invitations", str(id), "resend"),
             body=body,
             model=UserInvite,
             request_options=request_options,
@@ -3898,7 +3903,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="post",
-            path=f"user_management/invitations/{quote(str(id), safe='')}/revoke",
+            path=("user_management", "invitations", str(id), "revoke"),
             model=Invitation,
             request_options=request_options,
         )
@@ -3923,7 +3928,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path="user_management/jwt_template",
+            path=("user_management", "jwt_template"),
             model=JWTTemplateResponse,
             request_options=request_options,
         )
@@ -3956,7 +3961,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="put",
-            path="user_management/jwt_template",
+            path=("user_management", "jwt_template"),
             body=body,
             model=JWTTemplateResponse,
             request_options=request_options,
@@ -3998,7 +4003,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path="user_management/magic_auth",
+            path=("user_management", "magic_auth"),
             body=body,
             model=MagicAuth,
             request_options=request_options,
@@ -4029,7 +4034,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/magic_auth/{quote(str(id), safe='')}",
+            path=("user_management", "magic_auth", str(id)),
             model=MagicAuth,
             request_options=request_options,
         )
@@ -4090,7 +4095,7 @@ class AsyncUserManagement:
         }
         return await self._client.request_page(
             method="get",
-            path="user_management/organization_memberships",
+            path=("user_management", "organization_memberships"),
             model=UserOrganizationMembership,
             params=params,
             request_options=request_options,
@@ -4138,7 +4143,7 @@ class AsyncUserManagement:
                 body["role_slugs"] = role.role_slugs
         return await self._client.request(
             method="post",
-            path="user_management/organization_memberships",
+            path=("user_management", "organization_memberships"),
             body=body,
             model=OrganizationMembership,
             request_options=request_options,
@@ -4169,7 +4174,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="get",
-            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
+            path=("user_management", "organization_memberships", str(id)),
             model=UserOrganizationMembership,
             request_options=request_options,
         )
@@ -4208,7 +4213,7 @@ class AsyncUserManagement:
                 body["role_slugs"] = role.role_slugs
         return await self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
+            path=("user_management", "organization_memberships", str(id)),
             body=body,
             model=UserOrganizationMembership,
             request_options=request_options,
@@ -4236,7 +4241,7 @@ class AsyncUserManagement:
         """
         await self._client.request(
             method="delete",
-            path=f"user_management/organization_memberships/{quote(str(id), safe='')}",
+            path=("user_management", "organization_memberships", str(id)),
             request_options=request_options,
         )
 
@@ -4272,7 +4277,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{quote(str(id), safe='')}/deactivate",
+            path=("user_management", "organization_memberships", str(id), "deactivate"),
             model=OrganizationMembership,
             request_options=request_options,
         )
@@ -4309,7 +4314,7 @@ class AsyncUserManagement:
         """
         return await self._client.request(
             method="put",
-            path=f"user_management/organization_memberships/{quote(str(id), safe='')}/reactivate",
+            path=("user_management", "organization_memberships", str(id), "reactivate"),
             model=UserOrganizationMembership,
             request_options=request_options,
         )
@@ -4343,7 +4348,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path="user_management/redirect_uris",
+            path=("user_management", "redirect_uris"),
             body=body,
             model=RedirectUri,
             request_options=request_options,
@@ -4393,7 +4398,7 @@ class AsyncUserManagement:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/authorized_applications",
+            path=("user_management", "users", str(user_id), "authorized_applications"),
             model=AuthorizedConnectApplicationListData,
             params=params,
             request_options=request_options,
@@ -4423,7 +4428,13 @@ class AsyncUserManagement:
         """
         await self._client.request(
             method="delete",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/authorized_applications/{quote(str(application_id), safe='')}",
+            path=(
+                "user_management",
+                "users",
+                str(user_id),
+                "authorized_applications",
+                str(application_id),
+            ),
             request_options=request_options,
         )
 
@@ -4473,7 +4484,7 @@ class AsyncUserManagement:
         }
         return await self._client.request_page(
             method="get",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/api_keys",
+            path=("user_management", "users", str(user_id), "api_keys"),
             model=UserApiKey,
             params=params,
             request_options=request_options,
@@ -4521,7 +4532,7 @@ class AsyncUserManagement:
         }
         return await self._client.request(
             method="post",
-            path=f"user_management/users/{quote(str(user_id), safe='')}/api_keys",
+            path=("user_management", "users", str(user_id), "api_keys"),
             body=body,
             model=UserApiKeyWithValue,
             request_options=request_options,
@@ -4703,7 +4714,7 @@ class AsyncUserManagement:
             AuthenticateResponse,
             await self._client.request(
                 method="POST",
-                path="user_management/authenticate",
+                path=("user_management", "authenticate"),
                 body=body,
                 model=AuthenticateResponse,
                 request_options=request_options,

@@ -78,12 +78,12 @@ def verify_header(
 
     issued_timestamp = issued_timestamp[2:]
     signature_hash = signature_hash[3:]
-    max_seconds_since_issued = tolerance or DEFAULT_TOLERANCE
+    max_seconds_since_issued = tolerance if tolerance is not None else DEFAULT_TOLERANCE
     current_time = time.time()
     timestamp_in_seconds = int(issued_timestamp) / 1000
     seconds_since_issued = current_time - timestamp_in_seconds
 
-    if seconds_since_issued > max_seconds_since_issued:
+    if abs(seconds_since_issued) > max_seconds_since_issued:
         raise ValueError("Timestamp outside the tolerance zone")
 
     unhashed_string = "{0}.{1}".format(issued_timestamp, event_body.decode("utf-8"))

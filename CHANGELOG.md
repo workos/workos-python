@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.2](https://github.com/workos/workos-python/compare/v7.0.1...v7.0.2) (2026-05-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cryptography to v48 ([#659](https://github.com/workos/workos-python/issues/659)) ([1ccc411](https://github.com/workos/workos-python/commit/1ccc4119ab6aa862b8af740b17667fb5a8a88928))
+
 ## [7.0.1](https://github.com/workos/workos-python/compare/v7.0.0...v7.0.1) (2026-05-11)
 
 

@@ -16,7 +16,7 @@ jobs:
       contents: write
       pull-requests: write
     outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
+      pr: ${{ steps.release.outputs.pr }}
     steps:
       - name: Generate token
         id: generate-token
@@ -25,36 +25,208 @@ jobs:
           app-id: ${{ vars.SDK_BOT_APP_ID }}
           private-key: ${{ secrets.SDK_BOT_PRIVATE_KEY }}
 
+      # skip-github-release means release-please opens/updates release
+      # PRs and updates CHANGELOG.md as usual, but does NOT tag or create
+      # the GitHub Release on merge. Those are owned by publish-release
+      # below so we can set the Release body from the rich CHANGELOG.md
+      # section instead of release-please's terse default rendering.
       - name: Run release-please
         id: release
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
           token: ${{ steps.generate-token.outputs.token }}
+          skip-github-release: true
 
       - name: Checkout release PR branch
-        if: steps.release.outputs.prs_created == 'true'
+        if: steps.release.outputs.pr
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ fromJSON(steps.release.outputs.prs)[0].headBranchName }}
+          ref: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Install uv
-        if: steps.release.outputs.prs_created == 'true'
+        if: steps.release.outputs.pr
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
 
       - name: Update lockfile
-        if: steps.release.outputs.prs_created == 'true'
+        if: steps.release.outputs.pr
         run: |
           uv lock
-          git config user.name "workos-bot[bot]"
-          git config user.email "workos-bot[bot]@users.noreply.github.com"
+          git config user.name "workos-sdk-automation[bot]"
+          git config user.email "255426317+workos-sdk-automation[bot]@users.noreply.github.com"
           git add uv.lock
           git diff --staged --quiet || git commit -m "chore: update uv.lock"
           git push
 
+      # Inline pending changelog fragments under the version heading
+      # release-please just wrote in CHANGELOG.md. For PRs that have a
+      # fragment (the autogen flow always writes one), drop the line
+      # release-please rendered and use the fragment instead. For PRs
+      # without a fragment (typical for human-authored PRs), keep what
+      # release-please wrote. Fragments are deleted in the same commit.
+      # Idempotent: if no fragments exist, skip silently.
+      - name: Inline rich changelog fragments
+        if: steps.release.outputs.pr
+        env:
+          PR_JSON: ${{ steps.release.outputs.pr }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          fragments=(.changelog-pending/*.md)
+          if [ ${#fragments[@]} -eq 0 ]; then
+            echo "No .changelog-pending fragments; leaving release-please CHANGELOG.md as-is."
+            exit 0
+          fi
+
+          VERSION=$(echo "$PR_JSON" | jq -r '.title' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          export VERSION
+
+          python3 - <<'PY'
+          import os, re, pathlib, glob
+
+          version = os.environ["VERSION"]
+
+          # Load fragments + extract the PR number each one covers from
+          # its top-line "* [#NN](url) ...".
+          fragments = []
+          covered = set()
+          for path in sorted(glob.glob(".changelog-pending/*.md")):
+              body = pathlib.Path(path).read_text().rstrip()
+              m = re.search(r'\[#(\d+)\]', body)
+              if m:
+                  covered.add(m.group(1))
+              fragments.append(body)
+
+          changelog = pathlib.Path("CHANGELOG.md")
+          text = changelog.read_text()
+          section_re = re.compile(
+              r'(^## \[' + re.escape(version) + r'\][^\n]*\n)(.*?)(?=^## |\Z)',
+              re.MULTILINE | re.DOTALL,
+          )
+          match = section_re.search(text)
+          if not match:
+              raise SystemExit(f"Could not find '## [{version}]' heading in CHANGELOG.md")
+          heading, body = match.group(1), match.group(2)
+
+          # Drop any release-please line that references a PR we have a
+          # fragment for.
+          kept = []
+          for line in body.split("\n"):
+              if any(pr in covered for pr in re.findall(r'\[#(\d+)\]', line)):
+                  continue
+              kept.append(line)
+          filtered = "\n".join(kept)
+
+          # Collapse "### Heading\n(blank lines)\n" with nothing under
+          # it. Run repeatedly until stable in case of stacked empties.
+          empty_section = re.compile(
+              r'^### [^\n]*\n(?:\s*\n)*(?=^### |\Z)',
+              re.MULTILINE,
+          )
+          while True:
+              new = empty_section.sub('', filtered)
+              if new == filtered:
+                  break
+              filtered = new
+          filtered = filtered.strip()
+
+          parts = []
+          if filtered:
+              parts.append(filtered)
+          parts.extend(fragments)
+          new_body = "\n\n".join(parts)
+
+          new_text = text[:match.start()] + heading + "\n" + new_body + "\n\n" + text[match.end():]
+          changelog.write_text(new_text)
+          PY
+
+          git config user.name "workos-sdk-automation[bot]"
+          git config user.email "255426317+workos-sdk-automation[bot]@users.noreply.github.com"
+          git rm .changelog-pending/*.md
+          git add CHANGELOG.md
+          git commit -m "chore: inline release notes from .changelog-pending"
+          git push
+
+  # Detect when a release-please release PR has merged, then tag and
+  # create the GitHub Release whose body is extracted from CHANGELOG.md
+  # (now rich, after the inline step above). Runs on every push to main;
+  # the detect step gates everything else.
+  publish-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      is-release: ${{ steps.detect.outputs.is-release }}
+      version: ${{ steps.detect.outputs.version }}
+    steps:
+      - name: Generate token
+        id: generate-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # 3.1.1
+        with:
+          app-id: ${{ vars.SDK_BOT_APP_ID }}
+          private-key: ${{ secrets.SDK_BOT_PRIVATE_KEY }}
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Detect release PR merge
+        id: detect
+        run: |
+          set -euo pipefail
+          SUBJECT=$(git log -1 --format=%s)
+          # release-please's default release PR title:
+          #   chore(main): release X.Y.Z
+          if [[ "$SUBJECT" =~ ^chore\(.*\):[[:space:]]release[[:space:]]([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+            echo "is-release=true"  >> "$GITHUB_OUTPUT"
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "Detected release PR merge for v$VERSION"
+          else
+            echo "Not a release PR merge: $SUBJECT"
+            echo "is-release=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Extract release notes from CHANGELOG.md
+        if: steps.detect.outputs.is-release == 'true'
+        env:
+          VERSION: ${{ steps.detect.outputs.version }}
+        run: |
+          set -euo pipefail
+          awk -v v="$VERSION" '
+            $0 ~ ("^## \\[" v "\\]") { found=1; next }
+            found && /^## \[/ { exit }
+            found
+          ' CHANGELOG.md > /tmp/release-notes.md
+          if [ ! -s /tmp/release-notes.md ]; then
+            echo "::error::CHANGELOG.md has no body for v$VERSION"
+            exit 1
+          fi
+
+      - name: Tag and create GitHub Release
+        if: steps.detect.outputs.is-release == 'true'
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          VERSION: ${{ steps.detect.outputs.version }}
+        run: |
+          set -euo pipefail
+          TAG="v$VERSION"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; skipping."
+            exit 0
+          fi
+          git config user.name "workos-sdk-automation[bot]"
+          git config user.email "255426317+workos-sdk-automation[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes-file /tmp/release-notes.md
+
   publish:
-    needs: release-please
-    if: needs.release-please.outputs.release_created == 'true'
+    needs: publish-release
+    if: needs.publish-release.outputs.is-release == 'true'
     runs-on: ubuntu-latest
     permissions:
       id-token: write

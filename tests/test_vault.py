@@ -9,10 +9,10 @@ from tests.generated_helpers import load_fixture
 from workos.vault.models import (
     CreateDataKeyResponse,
     DecryptResponse,
-    Object,
     ObjectMetadata,
     ObjectSummary,
     ObjectWithoutValue,
+    VaultObject,
     VersionListResponse,
     VaultOrder,
 )
@@ -132,10 +132,10 @@ class TestVault:
 
     def test_get_name(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("object.json"),
+            json=load_fixture("vault_object.json"),
         )
         result = workos.vault.get_name("test_name")
-        assert isinstance(result, Object)
+        assert isinstance(result, VaultObject)
         assert result.id == "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
         assert result.name == "my-secret"
         request = httpx_mock.get_request()
@@ -144,10 +144,10 @@ class TestVault:
 
     def test_get_kv(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("object.json"),
+            json=load_fixture("vault_object.json"),
         )
         result = workos.vault.get_kv("test_id")
-        assert isinstance(result, Object)
+        assert isinstance(result, VaultObject)
         assert result.id == "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
         assert result.name == "my-secret"
         request = httpx_mock.get_request()
@@ -371,9 +371,9 @@ class TestAsyncVault:
 
     @pytest.mark.asyncio
     async def test_get_name(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("object.json"))
+        httpx_mock.add_response(json=load_fixture("vault_object.json"))
         result = await async_workos.vault.get_name("test_name")
-        assert isinstance(result, Object)
+        assert isinstance(result, VaultObject)
         assert result.id == "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
         assert result.name == "my-secret"
         request = httpx_mock.get_request()
@@ -382,9 +382,9 @@ class TestAsyncVault:
 
     @pytest.mark.asyncio
     async def test_get_kv(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("object.json"))
+        httpx_mock.add_response(json=load_fixture("vault_object.json"))
         result = await async_workos.vault.get_kv("test_id")
-        assert isinstance(result, Object)
+        assert isinstance(result, VaultObject)
         assert result.id == "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
         assert result.name == "my-secret"
         request = httpx_mock.get_request()

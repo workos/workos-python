@@ -398,11 +398,11 @@ from workos.vault.models import (
     DecryptResponse,
     DeleteObjectResponse,
     ListMetadata,
-    Object,
     ObjectMetadata,
     ObjectSummary,
     ObjectVersion,
     ObjectWithoutValue,
+    VaultObject,
     VersionListResponse,
 )
 from workos.webhooks.models import WebhookEndpoint
@@ -552,7 +552,7 @@ class TestModelRoundTrip:
     def test_audit_log_event_minimal_payload(self):
         data = {
             "action": "user.signed_in",
-            "occurred_at": "2026-02-02T16:35:39.317Z",
+            "occurred_at": "2026-02-02T16:35:39.000Z",
             "actor": {
                 "id": "user_TF4C5938",
                 "type": "user",
@@ -583,7 +583,7 @@ class TestModelRoundTrip:
     def test_audit_log_event_omits_absent_optional_non_nullable_fields(self):
         data = {
             "action": "user.signed_in",
-            "occurred_at": "2026-02-02T16:35:39.317Z",
+            "occurred_at": "2026-02-02T16:35:39.000Z",
             "actor": {
                 "id": "user_TF4C5938",
                 "type": "user",
@@ -834,15 +834,15 @@ class TestModelRoundTrip:
         assert serialized["after"] is None
         assert serialized["before"] is None
 
-    def test_object_round_trip(self):
-        data = load_fixture("object.json")
-        instance = Object.from_dict(data)
+    def test_vault_object_round_trip(self):
+        data = load_fixture("vault_object.json")
+        instance = VaultObject.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = Object.from_dict(serialized)
+        restored = VaultObject.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_object_minimal_payload(self):
+    def test_vault_object_minimal_payload(self):
         data = {
             "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
             "metadata": {
@@ -850,7 +850,7 @@ class TestModelRoundTrip:
                 "environment_id": "environment_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
                 "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
                 "key_id": "bf65e326-43a0-4b20-88c4-07ff3de5434c",
-                "updated_at": "2024-06-15T10:30:00Z",
+                "updated_at": "2024-06-15T10:30:00.000Z",
                 "updated_by": {
                     "id": "key_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
                     "name": "My API Key",
@@ -860,7 +860,7 @@ class TestModelRoundTrip:
             "name": "my-secret",
             "value": "s3cr3t-v4lu3",
         }
-        instance = Object.from_dict(data)
+        instance = VaultObject.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["id"] == data["id"]
         assert serialized["metadata"] == data["metadata"]
@@ -881,7 +881,7 @@ class TestModelRoundTrip:
             "environment_id": "environment_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
             "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
             "key_id": "bf65e326-43a0-4b20-88c4-07ff3de5434c",
-            "updated_at": "2024-06-15T10:30:00Z",
+            "updated_at": "2024-06-15T10:30:00.000Z",
             "updated_by": {
                 "id": "key_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
                 "name": "My API Key",
@@ -902,7 +902,7 @@ class TestModelRoundTrip:
             "environment_id": "environment_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
             "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
             "key_id": "bf65e326-43a0-4b20-88c4-07ff3de5434c",
-            "updated_at": "2024-06-15T10:30:00Z",
+            "updated_at": "2024-06-15T10:30:00.000Z",
             "updated_by": {
                 "id": "key_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
                 "name": "My API Key",
@@ -948,7 +948,7 @@ class TestModelRoundTrip:
 
     def test_object_version_minimal_payload(self):
         data = {
-            "created_at": "2024-06-15T10:30:00Z",
+            "created_at": "2024-06-15T10:30:00.000Z",
             "current_version": True,
             "etag": "d41d8cd98f00b204e9800998ecf8427e",
             "id": "c3d4e5f6-7890-abcd-ef12-34567890abcd",
@@ -978,7 +978,7 @@ class TestModelRoundTrip:
                 "environment_id": "environment_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
                 "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
                 "key_id": "bf65e326-43a0-4b20-88c4-07ff3de5434c",
-                "updated_at": "2024-06-15T10:30:00Z",
+                "updated_at": "2024-06-15T10:30:00.000Z",
                 "updated_by": {
                     "id": "key_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
                     "name": "My API Key",
@@ -1005,7 +1005,7 @@ class TestModelRoundTrip:
         data = {
             "data": [
                 {
-                    "created_at": "2024-06-15T10:30:00Z",
+                    "created_at": "2024-06-15T10:30:00.000Z",
                     "current_version": True,
                     "etag": "d41d8cd98f00b204e9800998ecf8427e",
                     "id": "c3d4e5f6-7890-abcd-ef12-34567890abcd",
@@ -1963,7 +1963,7 @@ class TestModelRoundTrip:
             "email": "marcelina.davis@example.com",
             "email_verified": True,
             "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+            "last_sign_in_at": "2025-06-25T19:07:33.000Z",
             "locale": "en-US",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -13212,7 +13212,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -13242,7 +13242,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -13276,7 +13276,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -13306,7 +13306,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -13340,7 +13340,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -13370,7 +13370,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -15237,7 +15237,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -15279,7 +15279,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -15317,7 +15317,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -15499,7 +15499,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -15529,7 +15529,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -15589,7 +15589,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -15620,7 +15620,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -15657,7 +15657,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -15683,7 +15683,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -15711,7 +15711,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -16602,7 +16602,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -16642,7 +16642,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -16681,7 +16681,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -17284,7 +17284,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -17324,7 +17324,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -17362,7 +17362,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -17392,7 +17392,7 @@ class TestModelRoundTrip:
                 "email_verified": True,
                 "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
                 "metadata": {"timezone": "America/New_York"},
-                "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+                "last_sign_in_at": "2025-06-25T19:07:33.000Z",
                 "locale": "en-US",
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -17451,7 +17451,7 @@ class TestModelRoundTrip:
             "email": "new.email@example.com",
             "email_verified": True,
             "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
-            "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+            "last_sign_in_at": "2025-06-25T19:07:33.000Z",
             "locale": "en-US",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",

@@ -19,7 +19,7 @@ from .models import (
     UserObject,
 )
 from workos.common.models.connect_application import ConnectApplication
-from workos.common.models.connect_application_variant import ConnectApplicationVariant
+from workos.common.models.connect_application import ConnectApplicationVariant
 from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -147,7 +147,7 @@ class Connect:
         *,
         body: Union[CreateOAuthApplication, CreateM2MApplication, Dict[str, Any]],
         request_options: Optional[RequestOptions] = None,
-    ) -> ConnectApplication:
+    ) -> ConnectApplicationVariant:
         """Create a Connect Application
 
         Create a new Connect Application. Supports both OAuth and Machine-to-Machine (M2M) application types.
@@ -157,7 +157,7 @@ class Connect:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectApplication
+            ConnectApplicationVariant
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -167,12 +167,15 @@ class Connect:
             ServerError: If the server returns a 5xx error.
         """
         _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
-        return self._client.request(
-            method="post",
-            path=("connect", "applications"),
-            body=_body,
-            model=ConnectApplication,
-            request_options=request_options,
+        return cast(
+            ConnectApplicationVariant,
+            self._client.request(
+                method="post",
+                path=("connect", "applications"),
+                body=_body,
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; request only calls from_dict
+                request_options=request_options,
+            ),
         )
 
     def create_oauth_application(
@@ -186,7 +189,7 @@ class Connect:
         uses_pkce: Optional[bool] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> ConnectApplication:
+    ) -> ConnectApplicationVariant:
         """Create oauth application."""
         body: Dict[str, Any] = {
             "application_type": "oauth",
@@ -204,12 +207,15 @@ class Connect:
         if organization_id is not None:
             body["organization_id"] = organization_id
 
-        return self._client.request(
-            method="POST",
-            path=("connect", "applications"),
-            body=body,
-            model=ConnectApplication,
-            request_options=request_options,
+        return cast(
+            ConnectApplicationVariant,
+            self._client.request(
+                method="POST",
+                path=("connect", "applications"),
+                body=body,
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; request only calls from_dict
+                request_options=request_options,
+            ),
         )
 
     def create_m2m_application(
@@ -220,7 +226,7 @@ class Connect:
         description: Optional[str] = None,
         scopes: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> ConnectApplication:
+    ) -> ConnectApplicationVariant:
         """Create m2m application."""
         body: Dict[str, Any] = {
             "application_type": "m2m",
@@ -232,12 +238,15 @@ class Connect:
         if scopes is not None:
             body["scopes"] = scopes
 
-        return self._client.request(
-            method="POST",
-            path=("connect", "applications"),
-            body=body,
-            model=ConnectApplication,
-            request_options=request_options,
+        return cast(
+            ConnectApplicationVariant,
+            self._client.request(
+                method="POST",
+                path=("connect", "applications"),
+                body=body,
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; request only calls from_dict
+                request_options=request_options,
+            ),
         )
 
     def get_application(
@@ -245,7 +254,7 @@ class Connect:
         id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> ConnectApplication:
+    ) -> ConnectApplicationVariant:
         """Get a Connect Application
 
         Retrieve details for a specific Connect Application by ID or client ID.
@@ -255,7 +264,7 @@ class Connect:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectApplication
+            ConnectApplicationVariant
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -263,11 +272,14 @@ class Connect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        return self._client.request(
-            method="get",
-            path=("connect", "applications", str(id)),
-            model=ConnectApplication,
-            request_options=request_options,
+        return cast(
+            ConnectApplicationVariant,
+            self._client.request(
+                method="get",
+                path=("connect", "applications", str(id)),
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; request only calls from_dict
+                request_options=request_options,
+            ),
         )
 
     def update_application(
@@ -279,7 +291,7 @@ class Connect:
         scopes: Optional[List[str]] = None,
         redirect_uris: Optional[List[RedirectUriInput]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> ConnectApplication:
+    ) -> ConnectApplicationVariant:
         """Update a Connect Application
 
         Update an existing Connect Application. For OAuth applications, you can update redirect URIs. For all applications, you can update the name, description, and scopes.
@@ -293,7 +305,7 @@ class Connect:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectApplication
+            ConnectApplicationVariant
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -314,12 +326,15 @@ class Connect:
             }.items()
             if v is not None
         }
-        return self._client.request(
-            method="put",
-            path=("connect", "applications", str(id)),
-            body=body,
-            model=ConnectApplication,
-            request_options=request_options,
+        return cast(
+            ConnectApplicationVariant,
+            self._client.request(
+                method="put",
+                path=("connect", "applications", str(id)),
+                body=body,
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; request only calls from_dict
+                request_options=request_options,
+            ),
         )
 
     def delete_application(
@@ -564,7 +579,7 @@ class AsyncConnect:
         *,
         body: Union[CreateOAuthApplication, CreateM2MApplication, Dict[str, Any]],
         request_options: Optional[RequestOptions] = None,
-    ) -> ConnectApplication:
+    ) -> ConnectApplicationVariant:
         """Create a Connect Application
 
         Create a new Connect Application. Supports both OAuth and Machine-to-Machine (M2M) application types.
@@ -574,7 +589,7 @@ class AsyncConnect:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectApplication
+            ConnectApplicationVariant
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -584,12 +599,15 @@ class AsyncConnect:
             ServerError: If the server returns a 5xx error.
         """
         _body: Dict[str, Any] = body if isinstance(body, dict) else body.to_dict()
-        return await self._client.request(
-            method="post",
-            path=("connect", "applications"),
-            body=_body,
-            model=ConnectApplication,
-            request_options=request_options,
+        return cast(
+            ConnectApplicationVariant,
+            await self._client.request(
+                method="post",
+                path=("connect", "applications"),
+                body=_body,
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; request only calls from_dict
+                request_options=request_options,
+            ),
         )
 
     async def create_oauth_application(
@@ -603,7 +621,7 @@ class AsyncConnect:
         uses_pkce: Optional[bool] = None,
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> ConnectApplication:
+    ) -> ConnectApplicationVariant:
         """Create oauth application."""
         body: Dict[str, Any] = {
             "application_type": "oauth",
@@ -621,12 +639,15 @@ class AsyncConnect:
         if organization_id is not None:
             body["organization_id"] = organization_id
 
-        return await self._client.request(
-            method="POST",
-            path=("connect", "applications"),
-            body=body,
-            model=ConnectApplication,
-            request_options=request_options,
+        return cast(
+            ConnectApplicationVariant,
+            await self._client.request(
+                method="POST",
+                path=("connect", "applications"),
+                body=body,
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; request only calls from_dict
+                request_options=request_options,
+            ),
         )
 
     async def create_m2m_application(
@@ -637,7 +658,7 @@ class AsyncConnect:
         description: Optional[str] = None,
         scopes: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> ConnectApplication:
+    ) -> ConnectApplicationVariant:
         """Create m2m application."""
         body: Dict[str, Any] = {
             "application_type": "m2m",
@@ -649,12 +670,15 @@ class AsyncConnect:
         if scopes is not None:
             body["scopes"] = scopes
 
-        return await self._client.request(
-            method="POST",
-            path=("connect", "applications"),
-            body=body,
-            model=ConnectApplication,
-            request_options=request_options,
+        return cast(
+            ConnectApplicationVariant,
+            await self._client.request(
+                method="POST",
+                path=("connect", "applications"),
+                body=body,
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; request only calls from_dict
+                request_options=request_options,
+            ),
         )
 
     async def get_application(
@@ -662,7 +686,7 @@ class AsyncConnect:
         id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> ConnectApplication:
+    ) -> ConnectApplicationVariant:
         """Get a Connect Application
 
         Retrieve details for a specific Connect Application by ID or client ID.
@@ -672,7 +696,7 @@ class AsyncConnect:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectApplication
+            ConnectApplicationVariant
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -680,11 +704,14 @@ class AsyncConnect:
             RateLimitExceededError: If rate limited (429).
             ServerError: If the server returns a 5xx error.
         """
-        return await self._client.request(
-            method="get",
-            path=("connect", "applications", str(id)),
-            model=ConnectApplication,
-            request_options=request_options,
+        return cast(
+            ConnectApplicationVariant,
+            await self._client.request(
+                method="get",
+                path=("connect", "applications", str(id)),
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; request only calls from_dict
+                request_options=request_options,
+            ),
         )
 
     async def update_application(
@@ -696,7 +723,7 @@ class AsyncConnect:
         scopes: Optional[List[str]] = None,
         redirect_uris: Optional[List[RedirectUriInput]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> ConnectApplication:
+    ) -> ConnectApplicationVariant:
         """Update a Connect Application
 
         Update an existing Connect Application. For OAuth applications, you can update redirect URIs. For all applications, you can update the name, description, and scopes.
@@ -710,7 +737,7 @@ class AsyncConnect:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            ConnectApplication
+            ConnectApplicationVariant
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -731,12 +758,15 @@ class AsyncConnect:
             }.items()
             if v is not None
         }
-        return await self._client.request(
-            method="put",
-            path=("connect", "applications", str(id)),
-            body=body,
-            model=ConnectApplication,
-            request_options=request_options,
+        return cast(
+            ConnectApplicationVariant,
+            await self._client.request(
+                method="put",
+                path=("connect", "applications", str(id)),
+                body=body,
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; request only calls from_dict
+                request_options=request_options,
+            ),
         )
 
     async def delete_application(

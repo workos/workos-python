@@ -11,7 +11,7 @@ from .object_metadata import ObjectMetadata
 
 
 @dataclass(slots=True)
-class Object:
+class VaultObject:
     """An encrypted object with its decrypted value and metadata."""
 
     id: str
@@ -23,7 +23,7 @@ class Object:
     """Decrypted plaintext value."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Object":
+    def from_dict(cls, data: Dict[str, Any]) -> "VaultObject":
         """Deserialize from a dictionary."""
         try:
             return cls(
@@ -35,7 +35,7 @@ class Object:
                 value=data["value"],
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("Object", e)
+            _raise_deserialize_error("VaultObject", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

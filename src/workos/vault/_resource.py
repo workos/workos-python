@@ -11,10 +11,10 @@ from .._types import RequestOptions, enum_value
 from .models import (
     CreateDataKeyResponse,
     DecryptResponse,
-    Object,
     ObjectMetadata,
     ObjectSummary,
     ObjectWithoutValue,
+    VaultObject,
     VersionListResponse,
 )
 from .models import VaultOrder
@@ -234,7 +234,7 @@ class Vault:
         name: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> Object:
+    ) -> VaultObject:
         """Read an object by name
 
         Fetch and decrypt an object by its unique name.
@@ -244,7 +244,7 @@ class Vault:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            Object
+            VaultObject
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -256,7 +256,7 @@ class Vault:
         return self._client.request(
             method="get",
             path=("vault", "v1", "kv", "name", str(name)),
-            model=Object,
+            model=VaultObject,
             request_options=request_options,
         )
 
@@ -265,7 +265,7 @@ class Vault:
         id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> Object:
+    ) -> VaultObject:
         """Read an object by ID
 
         Fetch and decrypt an object by its unique identifier.
@@ -275,7 +275,7 @@ class Vault:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            Object
+            VaultObject
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -287,7 +287,7 @@ class Vault:
         return self._client.request(
             method="get",
             path=("vault", "v1", "kv", str(id)),
-            model=Object,
+            model=VaultObject,
             request_options=request_options,
         )
 
@@ -648,7 +648,7 @@ class AsyncVault:
         name: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> Object:
+    ) -> VaultObject:
         """Read an object by name
 
         Fetch and decrypt an object by its unique name.
@@ -658,7 +658,7 @@ class AsyncVault:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            Object
+            VaultObject
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -670,7 +670,7 @@ class AsyncVault:
         return await self._client.request(
             method="get",
             path=("vault", "v1", "kv", "name", str(name)),
-            model=Object,
+            model=VaultObject,
             request_options=request_options,
         )
 
@@ -679,7 +679,7 @@ class AsyncVault:
         id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> Object:
+    ) -> VaultObject:
         """Read an object by ID
 
         Fetch and decrypt an object by its unique identifier.
@@ -689,7 +689,7 @@ class AsyncVault:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            Object
+            VaultObject
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -701,7 +701,7 @@ class AsyncVault:
         return await self._client.request(
             method="get",
             path=("vault", "v1", "kv", str(id)),
-            model=Object,
+            model=VaultObject,
             request_options=request_options,
         )
 

@@ -2,34 +2,82 @@
 
 ## [8.0.0](https://github.com/workos/workos-python/compare/v7.0.1...v8.0.0) (2026-05-26)
 
-
-### ⚠ BREAKING CHANGES
-
-* **organization_membership:** Add new OrganizationMembershipService with membership and group operations ([#662](https://github.com/workos/workos-python/issues/662))
-* **vault:** Add new Vault service with encryption and object storage APIs ([#662](https://github.com/workos/workos-python/issues/662))
-* **radar:** Remove device_fingerprint and bot_score parameters from assess request ([#662](https://github.com/workos/workos-python/issues/662))
-* **authorization:** Remove search parameter and add resource/role filtering ([#662](https://github.com/workos/workos-python/issues/662))
-* **api_keys:** Add expires_at field to API key models ([#662](https://github.com/workos/workos-python/issues/662))
-* **audit_logs:** Rename audit log models and update service references ([#662](https://github.com/workos/workos-python/issues/662))
-* **webhooks:** Rename WebhookEndpointJson to WebhookEndpoint ([#662](https://github.com/workos/workos-python/issues/662))
-* **user_management:** Remove organization membership methods, move to new service ([#662](https://github.com/workos/workos-python/issues/662))
-
-### Features
-
-* **api_keys:** Add expires_at field to API key models ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
-* **audit_logs:** Rename audit log models and update service references ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
-* **authorization:** Remove search parameter and add resource/role filtering ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
-* **common:** Add new models for pipes events and enhancements ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
-* **organization_membership:** Add new OrganizationMembershipService with membership and group operations ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
-* **radar:** Remove device_fingerprint and bot_score parameters from assess request ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
-* **user_management:** Remove organization membership methods, move to new service ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
-* **vault:** Add new Vault service with encryption and object storage APIs ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
-* **webhooks:** Rename WebhookEndpointJson to WebhookEndpoint ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
-
-
 ### Bug Fixes
 
 * **deps:** update dependency cryptography to v48 ([#659](https://github.com/workos/workos-python/issues/659)) ([1ccc411](https://github.com/workos/workos-python/commit/1ccc4119ab6aa862b8af740b17667fb5a8a88928))
+
+* [#662](https://github.com/workos/workos-python/pull/662) feat(generated)!: regenerate from spec (10 changes)
+
+  **⚠️ Breaking**
+  * **user_management:** Remove organization membership methods, move to new service
+    * Removed `list_organization_memberships`, `create_organization_membership`, `get_organization_membership`, `update_organization_membership`, `delete_organization_membership`, `deactivate_organization_membership`, and `reactivate_organization_membership` methods from UserManagement.
+    * Removed `RoleSingle` and `RoleMultiple` dataclasses from UserManagement.
+    * Organization membership management is now handled by the new `OrganizationMembershipService`.
+    * Client accessor renamed from `client.user_management_organization_membership_groups` to `client.organization_membership`.
+  * **organization_membership:** Add new OrganizationMembershipService with membership and group operations
+    * Created new `OrganizationMembershipService` with `list_organization_memberships`, `create_organization_membership`, `get_organization_membership`, `update_organization_membership`, `delete_organization_membership`, `deactivate_organization_membership`, `reactivate_organization_membership`, and `list_organization_membership_groups` methods.
+    * Added `RoleSingle` and `RoleMultiple` dataclasses to support role assignment.
+    * Added `AsyncOrganizationMembershipService` for async operations.
+  * **vault:** Replace hand-maintained Vault module with generated Vault service
+    * The old `workos.vault` module (`vault.py`) has been replaced by a generated `vault/_resource.py` service. Method renames:
+      * `read_object` → `get_kv`
+      * `read_object_by_name` → `get_name`
+      * `get_object_metadata` → removed (no direct equivalent)
+      * `list_objects` → `list_kv`
+      * `list_object_versions` → `list_kv_versions`
+      * `create_object` → `create_kv`
+      * `update_object` → `update_kv`
+      * `delete_object` → `delete_kv`
+      * `create_data_key(key_context=...)` → `create_data_key(context=...)`
+      * `decrypt_data_key` → `create_decrypt`
+    * Removed types: `DataKey`, `DataKeyPair`, `ObjectDigest`, `ObjectUpdateBy`. Replaced by new generated models (`CreateDataKeyResponse`, `DecryptResponse`, `ObjectMetadata`, `ObjectSummary`, `ObjectWithoutValue`, `VaultObject`, etc.).
+    * Added new methods: `create_rekey`, `list_kv_metadata`.
+    * Added `AsyncVault` for async operations.
+    * Client-side `encrypt`/`decrypt` (AES-GCM) methods are preserved with the same signatures.
+  * **connect:** `ConnectApplication` is now a discriminated union
+    * `ConnectApplication` was a single dataclass; it is now a discriminated union dispatcher based on `application_type`.
+    * All Connect methods (`list_applications`, `create_application`, `get_application`, `update_application`) now return `ConnectApplicationVariant` (a union of `ConnectApplicationM2M`, `ConnectApplicationOAuth`, or `ConnectApplicationUnknown`).
+    * Code using `isinstance(x, ConnectApplication)` or accessing type-specific fields without checking the variant will need updating.
+  * **radar:** Remove device_fingerprint and bot_score parameters from assess request
+    * Removed `device_fingerprint` and `bot_score` optional parameters from `Radar.create_attempt` and `AsyncRadar.create_attempt` methods.
+    * Removed these fields from `RadarStandaloneAssessRequest` model.
+  * **radar:** Rename radar list/action enums and remove enum values
+    * Renamed `RadarAction` to `RadarListAction` and `RadarType` to `RadarListType` (affects `add_list_entry` and `remove_list_entry` method signatures).
+    * `RadarStandaloneResponseBlocklistType` is now a lazy re-export alias of `RadarListType`.
+    * Removed `credential_stuffing` and `ip_sign_up_rate_limit` values from `RadarStandaloneResponseControl` enum.
+    * Removed `login`, `signup`, `sign_up`, and `sign_in` values from `RadarStandaloneAssessRequestAction` enum; only `sign-up` and `sign-in` remain.
+  * **authorization:** Remove search parameter and add resource/role filtering
+    * Removed `search` parameter from `Authorization.list_resources` and `AsyncAuthorization.list_resources`.
+    * Added `resource_id`, `resource_external_id`, `resource_type_slug` parameters to `list_role_assignments` method.
+    * Added `role_slug` parameter to `list_role_assignments_for_resource_by_external_id` and `list_role_assignments_for_resource` methods.
+  * **api_keys:** Add expires_at field to API key models
+    * Added `expires_at` optional field to `CreateOrganizationApiKey` model.
+    * Added `expires_at` optional field to `CreateUserApiKey` model.
+    * Added `expires_at` to organizational and user API key models (OrganizationApiKey, OrganizationApiKeyWithValue, UserApiKey, UserApiKeyWithValue).
+    * Added `expires_at` parameter to `create_organization_api_key` and `create_user_api_key` methods.
+  * **audit_logs:** Rename audit log models and update service references
+    * Renamed `AuditLogActionJson` to `AuditLogAction`.
+    * Renamed `AuditLogExportJson` to `AuditLogExport`.
+    * Renamed `AuditLogSchemaJson` to `AuditLogSchema`.
+    * Renamed `AuditLogSchemaJsonActor` to `AuditLogSchemaActorInput` and `AuditLogSchemaJsonTarget` to `AuditLogSchemaTargetInput`.
+    * Added new `AuditLogSchemaInput` model (used for schema creation payloads).
+    * Renamed `AuditLogsRetentionJson` to `AuditLogsRetention`.
+    * Updated all service methods to use new model names.
+  * **webhooks:** Rename WebhookEndpointJson to WebhookEndpoint
+    * Renamed `WebhookEndpointJson` model to `WebhookEndpoint`.
+    * Updated all service methods to use the new model name.
+    * Updated webhook endpoint status references.
+
+  **Features**
+  * **common:** Add new models for pipes events and enhancements
+    * Added `Actor` model representing the user or API key that performed an action.
+    * Added `Error` model for error response bodies.
+    * Added `PipeConnectedAccount` model with state enumeration.
+    * Added pipe event models: `PipesConnectedAccountConnected`, `PipesConnectedAccountDisconnected`, `PipesConnectedAccountReauthorizationNeeded`.
+    * Added webhook event enum values for pipes connected account events.
+    * Renamed `AuditLogExportJsonState` to `AuditLogExportState`.
+    * Renamed `WebhookEndpointJsonStatus` to `WebhookEndpointStatus`.
+    * Updated `UserManagementAuthenticationScreenHint` to use `RadarStandaloneAssessRequestAction` type alias.
 
 ## [7.0.1](https://github.com/workos/workos-python/compare/v7.0.0...v7.0.1) (2026-05-11)
 

@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import cast
 from typing import Any, Dict, List, Literal, Optional, Union
 from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from .api_key_created_data_owner import ApiKeyCreatedDataOwner
 from .user_api_key_created_data_owner import UserApiKeyCreatedDataOwner
@@ -33,6 +35,8 @@ class ApiKeyCreatedData:
     """The timestamp when the API key was created."""
     updated_at: str
     """The timestamp when the API key was last updated."""
+    expires_at: Optional[datetime] = None
+    """Timestamp when the API Key expires. Null means the key does not expire."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ApiKeyCreatedData":
@@ -61,6 +65,9 @@ class ApiKeyCreatedData:
                 permissions=data["permissions"],
                 created_at=data["created_at"],
                 updated_at=data["updated_at"],
+                expires_at=_parse_datetime(_v_expires_at)
+                if (_v_expires_at := data.get("expires_at")) is not None
+                else None,
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("ApiKeyCreatedData", e)
@@ -80,4 +87,8 @@ class ApiKeyCreatedData:
         result["permissions"] = self.permissions
         result["created_at"] = self.created_at
         result["updated_at"] = self.updated_at
+        if self.expires_at is not None:
+            result["expires_at"] = _format_datetime(self.expires_at)
+        else:
+            result["expires_at"] = None
         return result

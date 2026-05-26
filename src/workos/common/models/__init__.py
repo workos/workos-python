@@ -12,6 +12,7 @@ from .action_user_registration_denied import (
 from .action_user_registration_denied_data import (
     ActionUserRegistrationDeniedData as ActionUserRegistrationDeniedData,
 )
+from .actor import Actor as Actor
 from .add_role_permission import AddRolePermission as AddRolePermission
 from .api_key_created import ApiKeyCreated as ApiKeyCreated
 from .api_key_created_data import ApiKeyCreatedData as ApiKeyCreatedData
@@ -28,9 +29,7 @@ from .audit_log_configuration_log_stream_type import (
 from .audit_log_configuration_state import (
     AuditLogConfigurationState as AuditLogConfigurationState,
 )
-from .audit_log_export_json_state import (
-    AuditLogExportJsonState as AuditLogExportJsonState,
-)
+from .audit_log_export_state import AuditLogExportState as AuditLogExportState
 from .authenticate_response_authentication_method import (
     AuthenticateResponseAuthenticationMethod as AuthenticateResponseAuthenticationMethod,
 )
@@ -310,6 +309,7 @@ from .email_verification_created import (
 from .email_verification_created_data import (
     EmailVerificationCreatedData as EmailVerificationCreatedData,
 )
+from .error import Error as Error
 from .event_context import EventContext as EventContext
 from .event_context_actor import EventContextActor as EventContextActor
 from .event_context_google_analytics_session import (
@@ -526,6 +526,16 @@ from .permission_deleted import PermissionDeleted as PermissionDeleted
 from .permission_deleted_data import PermissionDeletedData as PermissionDeletedData
 from .permission_updated import PermissionUpdated as PermissionUpdated
 from .permission_updated_data import PermissionUpdatedData as PermissionUpdatedData
+from .pipe_connected_account import PipeConnectedAccount as PipeConnectedAccount
+from .pipes_connected_account_connected import (
+    PipesConnectedAccountConnected as PipesConnectedAccountConnected,
+)
+from .pipes_connected_account_disconnected import (
+    PipesConnectedAccountDisconnected as PipesConnectedAccountDisconnected,
+)
+from .pipes_connected_account_reauthorization_needed import (
+    PipesConnectedAccountReauthorizationNeeded as PipesConnectedAccountReauthorizationNeeded,
+)
 from .profile_connection_type import ProfileConnectionType as ProfileConnectionType
 from .radar_standalone_assess_request_action import (
     RadarStandaloneAssessRequestAction as RadarStandaloneAssessRequestAction,
@@ -633,9 +643,7 @@ from .waitlist_user import WaitlistUser as WaitlistUser
 from .waitlist_user_approved import WaitlistUserApproved as WaitlistUserApproved
 from .waitlist_user_created import WaitlistUserCreated as WaitlistUserCreated
 from .waitlist_user_denied import WaitlistUserDenied as WaitlistUserDenied
-from .webhook_endpoint_json_status import (
-    WebhookEndpointJsonStatus as WebhookEndpointJsonStatus,
-)
+from .webhook_endpoint_status import WebhookEndpointStatus as WebhookEndpointStatus
 from .widget_session_token_scopes import (
     WidgetSessionTokenScopes as WidgetSessionTokenScopes,
 )

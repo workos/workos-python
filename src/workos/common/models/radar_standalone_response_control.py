@@ -14,9 +14,7 @@ class RadarStandaloneResponseControl(str, Enum):
 
     BOT_DETECTION = "bot_detection"
     BRUTE_FORCE_ATTACK = "brute_force_attack"
-    CREDENTIAL_STUFFING = "credential_stuffing"
     DOMAIN_SIGN_UP_RATE_LIMIT = "domain_sign_up_rate_limit"
-    IP_SIGN_UP_RATE_LIMIT = "ip_sign_up_rate_limit"
     IMPOSSIBLE_TRAVEL = "impossible_travel"
     REPEAT_SIGN_UP = "repeat_sign_up"
     STALE_ACCOUNT = "stale_account"
@@ -36,9 +34,7 @@ class RadarStandaloneResponseControl(str, Enum):
 RadarStandaloneResponseControlLiteral: TypeAlias = Literal[
     "bot_detection",
     "brute_force_attack",
-    "credential_stuffing",
     "domain_sign_up_rate_limit",
-    "ip_sign_up_rate_limit",
     "impossible_travel",
     "repeat_sign_up",
     "stale_account",

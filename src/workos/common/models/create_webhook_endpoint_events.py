@@ -88,6 +88,11 @@ class CreateWebhookEndpointEvents(str, Enum):
     PERMISSION_CREATED = "permission.created"
     PERMISSION_DELETED = "permission.deleted"
     PERMISSION_UPDATED = "permission.updated"
+    PIPES_CONNECTED_ACCOUNT_CONNECTED = "pipes.connected_account.connected"
+    PIPES_CONNECTED_ACCOUNT_DISCONNECTED = "pipes.connected_account.disconnected"
+    PIPES_CONNECTED_ACCOUNT_REAUTHORIZATION_NEEDED = (
+        "pipes.connected_account.reauthorization_needed"
+    )
     SESSION_CREATED = "session.created"
     SESSION_REVOKED = "session.revoked"
     WAITLIST_USER_APPROVED = "waitlist_user.approved"
@@ -177,6 +182,9 @@ CreateWebhookEndpointEventsLiteral: TypeAlias = Literal[
     "permission.created",
     "permission.deleted",
     "permission.updated",
+    "pipes.connected_account.connected",
+    "pipes.connected_account.disconnected",
+    "pipes.connected_account.reauthorization_needed",
     "session.created",
     "session.revoked",
     "waitlist_user.approved",

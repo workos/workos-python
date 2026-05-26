@@ -4,6 +4,7 @@ from .models import ActionAuthenticationDenied as ActionAuthenticationDenied
 from .models import ActionAuthenticationDeniedData as ActionAuthenticationDeniedData
 from .models import ActionUserRegistrationDenied as ActionUserRegistrationDenied
 from .models import ActionUserRegistrationDeniedData as ActionUserRegistrationDeniedData
+from .models import Actor as Actor
 from .models import AddRolePermission as AddRolePermission
 from .models import ApiKeyCreated as ApiKeyCreated
 from .models import ApiKeyCreatedData as ApiKeyCreatedData
@@ -18,7 +19,7 @@ from .models import (
     AuditLogConfigurationLogStreamType as AuditLogConfigurationLogStreamType,
 )
 from .models import AuditLogConfigurationState as AuditLogConfigurationState
-from .models import AuditLogExportJsonState as AuditLogExportJsonState
+from .models import AuditLogExportState as AuditLogExportState
 from .models import (
     AuthenticateResponseAuthenticationMethod as AuthenticateResponseAuthenticationMethod,
 )
@@ -190,6 +191,7 @@ from .models import DsyncUserUpdatedData as DsyncUserUpdatedData
 from .models import DsyncUserUpdatedDataEmail as DsyncUserUpdatedDataEmail
 from .models import EmailVerificationCreated as EmailVerificationCreated
 from .models import EmailVerificationCreatedData as EmailVerificationCreatedData
+from .models import Error as Error
 from .models import EventContext as EventContext
 from .models import EventContextActor as EventContextActor
 from .models import (
@@ -340,6 +342,14 @@ from .models import PermissionDeleted as PermissionDeleted
 from .models import PermissionDeletedData as PermissionDeletedData
 from .models import PermissionUpdated as PermissionUpdated
 from .models import PermissionUpdatedData as PermissionUpdatedData
+from .models import PipeConnectedAccount as PipeConnectedAccount
+from .models import PipesConnectedAccountConnected as PipesConnectedAccountConnected
+from .models import (
+    PipesConnectedAccountDisconnected as PipesConnectedAccountDisconnected,
+)
+from .models import (
+    PipesConnectedAccountReauthorizationNeeded as PipesConnectedAccountReauthorizationNeeded,
+)
 from .models import ProfileConnectionType as ProfileConnectionType
 from .models import (
     RadarStandaloneAssessRequestAction as RadarStandaloneAssessRequestAction,
@@ -419,5 +429,5 @@ from .models import WaitlistUser as WaitlistUser
 from .models import WaitlistUserApproved as WaitlistUserApproved
 from .models import WaitlistUserCreated as WaitlistUserCreated
 from .models import WaitlistUserDenied as WaitlistUserDenied
-from .models import WebhookEndpointJsonStatus as WebhookEndpointJsonStatus
+from .models import WebhookEndpointStatus as WebhookEndpointStatus
 from .models import WidgetSessionTokenScopes as WidgetSessionTokenScopes

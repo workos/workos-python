@@ -8,17 +8,6 @@ if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-
-# @oagen-ignore-start — client-side AES-GCM imports (hand-maintained)
-import base64
-import os
-from dataclasses import dataclass
-from typing import Tuple
-
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
-# @oagen-ignore-end
-
 from .models import (
     CreateDataKeyResponse,
     DecryptResponse,
@@ -31,6 +20,15 @@ from .models import (
 from .models import VaultOrder
 from .._pagination import AsyncPage, SyncPage
 
+# @oagen-ignore-start — client-side AES-GCM imports (hand-maintained)
+import base64
+import os
+from dataclasses import dataclass
+from typing import Tuple
+
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+# @oagen-ignore-end
 
 # @oagen-ignore-start — client-side AES-GCM helpers (hand-maintained)
 
@@ -118,8 +116,6 @@ def _decode_encrypted_payload(encrypted_data_b64: str) -> DecodedKeys:
 
 
 # @oagen-ignore-end
-
-
 class Vault:
     """Vault API resources."""
 

@@ -34,7 +34,7 @@ class TestRadar:
             user_agent="test_user_agent",
             email="test_email",
             auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-            action=RadarStandaloneAssessRequestAction("login"),
+            action=RadarStandaloneAssessRequestAction("sign-up"),
         )
         assert isinstance(result, RadarStandaloneResponse)
         assert result.verdict == "block"
@@ -47,7 +47,7 @@ class TestRadar:
         assert body["user_agent"] == "test_user_agent"
         assert body["email"] == "test_email"
         assert body["auth_method"] == RadarStandaloneAssessRequestAuthMethod("Password")
-        assert body["action"] == RadarStandaloneAssessRequestAction("login")
+        assert body["action"] == RadarStandaloneAssessRequestAction("sign-up")
 
     def test_update_attempt(self, workos, httpx_mock):
         httpx_mock.add_response(json={})
@@ -88,7 +88,7 @@ class TestRadar:
             user_agent="test_user_agent",
             email="test_email",
             auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-            action=RadarStandaloneAssessRequestAction("login"),
+            action=RadarStandaloneAssessRequestAction("sign-up"),
             request_options={"extra_headers": {"X-Custom": "value"}},
         )
         request = httpx_mock.get_request()
@@ -105,7 +105,7 @@ class TestRadar:
                 user_agent="test_user_agent",
                 email="test_email",
                 auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                action=RadarStandaloneAssessRequestAction("login"),
+                action=RadarStandaloneAssessRequestAction("sign-up"),
             )
 
     def test_create_attempt_not_found(self, httpx_mock):
@@ -120,7 +120,7 @@ class TestRadar:
                     user_agent="test_user_agent",
                     email="test_email",
                     auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
+                    action=RadarStandaloneAssessRequestAction("sign-up"),
                 )
         finally:
             workos.close()
@@ -141,7 +141,7 @@ class TestRadar:
                     user_agent="test_user_agent",
                     email="test_email",
                     auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
+                    action=RadarStandaloneAssessRequestAction("sign-up"),
                 )
         finally:
             workos.close()
@@ -158,7 +158,7 @@ class TestRadar:
                     user_agent="test_user_agent",
                     email="test_email",
                     auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
+                    action=RadarStandaloneAssessRequestAction("sign-up"),
                 )
         finally:
             workos.close()
@@ -175,7 +175,7 @@ class TestRadar:
                     user_agent="test_user_agent",
                     email="test_email",
                     auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
+                    action=RadarStandaloneAssessRequestAction("sign-up"),
                 )
         finally:
             workos.close()
@@ -192,7 +192,7 @@ class TestRadar:
                     user_agent="test_user_agent",
                     email="test_email",
                     auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
+                    action=RadarStandaloneAssessRequestAction("sign-up"),
                 )
         finally:
             workos.close()
@@ -207,7 +207,7 @@ class TestAsyncRadar:
             user_agent="test_user_agent",
             email="test_email",
             auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-            action=RadarStandaloneAssessRequestAction("login"),
+            action=RadarStandaloneAssessRequestAction("sign-up"),
         )
         assert isinstance(result, RadarStandaloneResponse)
         assert result.verdict == "block"
@@ -257,7 +257,7 @@ class TestAsyncRadar:
             user_agent="test_user_agent",
             email="test_email",
             auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-            action=RadarStandaloneAssessRequestAction("login"),
+            action=RadarStandaloneAssessRequestAction("sign-up"),
             request_options={"extra_headers": {"X-Custom": "value"}},
         )
         request = httpx_mock.get_request()
@@ -272,7 +272,7 @@ class TestAsyncRadar:
                 user_agent="test_user_agent",
                 email="test_email",
                 auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                action=RadarStandaloneAssessRequestAction("login"),
+                action=RadarStandaloneAssessRequestAction("sign-up"),
             )
 
     @pytest.mark.asyncio
@@ -288,7 +288,7 @@ class TestAsyncRadar:
                     user_agent="test_user_agent",
                     email="test_email",
                     auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
+                    action=RadarStandaloneAssessRequestAction("sign-up"),
                 )
         finally:
             await workos.close()
@@ -310,7 +310,7 @@ class TestAsyncRadar:
                     user_agent="test_user_agent",
                     email="test_email",
                     auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
+                    action=RadarStandaloneAssessRequestAction("sign-up"),
                 )
         finally:
             await workos.close()
@@ -328,7 +328,7 @@ class TestAsyncRadar:
                     user_agent="test_user_agent",
                     email="test_email",
                     auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
+                    action=RadarStandaloneAssessRequestAction("sign-up"),
                 )
         finally:
             await workos.close()
@@ -346,7 +346,7 @@ class TestAsyncRadar:
                     user_agent="test_user_agent",
                     email="test_email",
                     auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
+                    action=RadarStandaloneAssessRequestAction("sign-up"),
                 )
         finally:
             await workos.close()
@@ -364,7 +364,7 @@ class TestAsyncRadar:
                     user_agent="test_user_agent",
                     email="test_email",
                     auth_method=RadarStandaloneAssessRequestAuthMethod("Password"),
-                    action=RadarStandaloneAssessRequestAction("login"),
+                    action=RadarStandaloneAssessRequestAction("sign-up"),
                 )
         finally:
             await workos.close()

@@ -19,7 +19,6 @@ from workos.user_management.models import (
     JWTTemplateResponse,
     JwksResponse,
     MagicAuth,
-    OrganizationMembership,
     PasswordReset,
     RedirectUri,
     ResetPasswordResponse,
@@ -28,7 +27,6 @@ from workos.user_management.models import (
     UserApiKeyWithValue,
     UserIdentitiesGetItem,
     UserInvite,
-    UserOrganizationMembership,
     VerifyEmailResponse,
 )
 from workos._pagination import AsyncPage, SyncPage
@@ -40,7 +38,7 @@ from workos._errors import (
     ServerError,
     UnprocessableEntityError,
 )
-from workos.user_management._resource import PasswordPlaintext, RoleSingle
+from workos.user_management._resource import PasswordPlaintext
 
 
 class TestUserManagement:
@@ -528,130 +526,6 @@ class TestUserManagement:
         request = httpx_mock.get_request()
         assert request.method == "GET"
         assert request.url.path.endswith("/user_management/magic_auth/test_id")
-
-    def test_list_organization_memberships(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("list_user_organization_membership.json"),
-        )
-        page = workos.user_management.list_organization_memberships()
-        assert isinstance(page, SyncPage)
-        assert len(page.data) == 1
-        assert isinstance(page.data[0], UserOrganizationMembership)
-
-    def test_list_organization_memberships_empty_page(self, workos, httpx_mock):
-        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = workos.user_management.list_organization_memberships()
-        assert isinstance(page, SyncPage)
-        assert page.data == []
-
-    def test_list_organization_memberships_encodes_query_params(
-        self, workos, httpx_mock
-    ):
-        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        workos.user_management.list_organization_memberships(
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=PaginationOrder("value_order"),
-            organization_id="value organization_id/test",
-            statuses=["val1", "val2"],
-            user_id="value user_id/test",
-        )
-        request = httpx_mock.get_request()
-        assert request.url.params["limit"] == "10"
-        assert request.url.params["before"] == "cursor before"
-        assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "value_order"
-        assert request.url.params["organization_id"] == "value organization_id/test"
-        assert request.url.params["statuses"] == "val1,val2"
-        assert request.url.params["user_id"] == "value user_id/test"
-
-    def test_create_organization_membership(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("organization_membership.json"),
-        )
-        result = workos.user_management.create_organization_membership(
-            user_id="test_user_id",
-            organization_id="test_organization_id",
-            role=RoleSingle(role_slug="test_value"),
-        )
-        assert isinstance(result, OrganizationMembership)
-        assert result.object == "organization_membership"
-        assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
-        request = httpx_mock.get_request()
-        assert request.method == "POST"
-        assert request.url.path.endswith("/user_management/organization_memberships")
-        body = json.loads(request.content)
-        assert body["user_id"] == "test_user_id"
-        assert body["organization_id"] == "test_organization_id"
-
-    def test_get_organization_membership(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("user_organization_membership.json"),
-        )
-        result = workos.user_management.get_organization_membership("test_id")
-        assert isinstance(result, UserOrganizationMembership)
-        assert result.object == "organization_membership"
-        assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
-        request = httpx_mock.get_request()
-        assert request.method == "GET"
-        assert request.url.path.endswith(
-            "/user_management/organization_memberships/test_id"
-        )
-
-    def test_update_organization_membership(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("user_organization_membership.json"),
-        )
-        result = workos.user_management.update_organization_membership(
-            "test_id", role=RoleSingle(role_slug="test_value")
-        )
-        assert isinstance(result, UserOrganizationMembership)
-        assert result.object == "organization_membership"
-        assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
-        request = httpx_mock.get_request()
-        assert request.method == "PUT"
-        assert request.url.path.endswith(
-            "/user_management/organization_memberships/test_id"
-        )
-
-    def test_delete_organization_membership(self, workos, httpx_mock):
-        httpx_mock.add_response(status_code=204)
-        result = workos.user_management.delete_organization_membership("test_id")
-        assert result is None
-        request = httpx_mock.get_request()
-        assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/user_management/organization_memberships/test_id"
-        )
-
-    def test_deactivate_organization_membership(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("organization_membership.json"),
-        )
-        result = workos.user_management.deactivate_organization_membership("test_id")
-        assert isinstance(result, OrganizationMembership)
-        assert result.object == "organization_membership"
-        assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
-        request = httpx_mock.get_request()
-        assert request.method == "PUT"
-        assert request.url.path.endswith(
-            "/user_management/organization_memberships/test_id/deactivate"
-        )
-
-    def test_reactivate_organization_membership(self, workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("user_organization_membership.json"),
-        )
-        result = workos.user_management.reactivate_organization_membership("test_id")
-        assert isinstance(result, UserOrganizationMembership)
-        assert result.object == "organization_membership"
-        assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
-        request = httpx_mock.get_request()
-        assert request.method == "PUT"
-        assert request.url.path.endswith(
-            "/user_management/organization_memberships/test_id/reactivate"
-        )
 
     def test_create_redirect_uri(self, workos, httpx_mock):
         httpx_mock.add_response(
@@ -1390,136 +1264,6 @@ class TestAsyncUserManagement:
         request = httpx_mock.get_request()
         assert request.method == "GET"
         assert request.url.path.endswith("/user_management/magic_auth/test_id")
-
-    @pytest.mark.asyncio
-    async def test_list_organization_memberships(self, async_workos, httpx_mock):
-        httpx_mock.add_response(
-            json=load_fixture("list_user_organization_membership.json")
-        )
-        page = await async_workos.user_management.list_organization_memberships()
-        assert isinstance(page, AsyncPage)
-        assert len(page.data) == 1
-        assert isinstance(page.data[0], UserOrganizationMembership)
-
-    @pytest.mark.asyncio
-    async def test_list_organization_memberships_empty_page(
-        self, async_workos, httpx_mock
-    ):
-        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        page = await async_workos.user_management.list_organization_memberships()
-        assert isinstance(page, AsyncPage)
-        assert page.data == []
-
-    @pytest.mark.asyncio
-    async def test_list_organization_memberships_encodes_query_params(
-        self, async_workos, httpx_mock
-    ):
-        httpx_mock.add_response(json={"data": [], "list_metadata": {}})
-        await async_workos.user_management.list_organization_memberships(
-            limit=10,
-            before="cursor before",
-            after="cursor/after",
-            order=PaginationOrder("value_order"),
-            organization_id="value organization_id/test",
-            statuses=["val1", "val2"],
-            user_id="value user_id/test",
-        )
-        request = httpx_mock.get_request()
-        assert request.url.params["limit"] == "10"
-        assert request.url.params["before"] == "cursor before"
-        assert request.url.params["after"] == "cursor/after"
-        assert request.url.params["order"] == "value_order"
-        assert request.url.params["organization_id"] == "value organization_id/test"
-        assert request.url.params["statuses"] == "val1,val2"
-        assert request.url.params["user_id"] == "value user_id/test"
-
-    @pytest.mark.asyncio
-    async def test_create_organization_membership(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("organization_membership.json"))
-        result = await async_workos.user_management.create_organization_membership(
-            user_id="test_user_id",
-            organization_id="test_organization_id",
-            role=RoleSingle(role_slug="test_value"),
-        )
-        assert isinstance(result, OrganizationMembership)
-        assert result.object == "organization_membership"
-        assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
-        request = httpx_mock.get_request()
-        assert request.method == "POST"
-        assert request.url.path.endswith("/user_management/organization_memberships")
-
-    @pytest.mark.asyncio
-    async def test_get_organization_membership(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("user_organization_membership.json"))
-        result = await async_workos.user_management.get_organization_membership(
-            "test_id"
-        )
-        assert isinstance(result, UserOrganizationMembership)
-        assert result.object == "organization_membership"
-        assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
-        request = httpx_mock.get_request()
-        assert request.method == "GET"
-        assert request.url.path.endswith(
-            "/user_management/organization_memberships/test_id"
-        )
-
-    @pytest.mark.asyncio
-    async def test_update_organization_membership(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("user_organization_membership.json"))
-        result = await async_workos.user_management.update_organization_membership(
-            "test_id", role=RoleSingle(role_slug="test_value")
-        )
-        assert isinstance(result, UserOrganizationMembership)
-        assert result.object == "organization_membership"
-        assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
-        request = httpx_mock.get_request()
-        assert request.method == "PUT"
-        assert request.url.path.endswith(
-            "/user_management/organization_memberships/test_id"
-        )
-
-    @pytest.mark.asyncio
-    async def test_delete_organization_membership(self, async_workos, httpx_mock):
-        httpx_mock.add_response(status_code=204)
-        result = await async_workos.user_management.delete_organization_membership(
-            "test_id"
-        )
-        assert result is None
-        request = httpx_mock.get_request()
-        assert request.method == "DELETE"
-        assert request.url.path.endswith(
-            "/user_management/organization_memberships/test_id"
-        )
-
-    @pytest.mark.asyncio
-    async def test_deactivate_organization_membership(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("organization_membership.json"))
-        result = await async_workos.user_management.deactivate_organization_membership(
-            "test_id"
-        )
-        assert isinstance(result, OrganizationMembership)
-        assert result.object == "organization_membership"
-        assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
-        request = httpx_mock.get_request()
-        assert request.method == "PUT"
-        assert request.url.path.endswith(
-            "/user_management/organization_memberships/test_id/deactivate"
-        )
-
-    @pytest.mark.asyncio
-    async def test_reactivate_organization_membership(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("user_organization_membership.json"))
-        result = await async_workos.user_management.reactivate_organization_membership(
-            "test_id"
-        )
-        assert isinstance(result, UserOrganizationMembership)
-        assert result.object == "organization_membership"
-        assert result.id == "om_01HXYZ123456789ABCDEFGHIJ"
-        request = httpx_mock.get_request()
-        assert request.method == "PUT"
-        assert request.url.path.endswith(
-            "/user_management/organization_memberships/test_id/reactivate"
-        )
 
     @pytest.mark.asyncio
     async def test_create_redirect_uri(self, async_workos, httpx_mock):

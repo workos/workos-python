@@ -22,13 +22,13 @@ from workos.api_keys.models import (
     OrganizationApiKeyWithValueOwner,
 )
 from workos.audit_logs.models import (
-    AuditLogActionJson,
+    AuditLogAction,
     AuditLogEvent,
     AuditLogEventActor,
     AuditLogEventContext,
     AuditLogEventCreateResponse,
     AuditLogEventTarget,
-    AuditLogExportJson,
+    AuditLogExport,
     AuditLogSchemaActor,
     AuditLogSchemaJson,
     AuditLogSchemaJsonActor,
@@ -145,6 +145,7 @@ from workos.common.models import (
     DsyncUserUpdatedDataEmail,
     EmailVerificationCreated,
     EmailVerificationCreatedData,
+    Error,
     EventContext,
     EventContextActor,
     EventContextGoogleAnalyticsSession,
@@ -238,6 +239,10 @@ from workos.common.models import (
     PermissionDeletedData,
     PermissionUpdated,
     PermissionUpdatedData,
+    PipeConnectedAccount,
+    PipesConnectedAccountConnected,
+    PipesConnectedAccountDisconnected,
+    PipesConnectedAccountReauthorizationNeeded,
     RoleCreated,
     RoleCreatedData,
     RoleDeleted,
@@ -318,10 +323,14 @@ from workos.organization_domains.models import (
     OrganizationDomain,
     OrganizationDomainStandAlone,
 )
+from workos.organization_membership.models import (
+    OrganizationMembership,
+    UserOrganizationMembership,
+)
 from workos.organizations.models import (
     AuditLogConfiguration,
     AuditLogConfigurationLogStream,
-    AuditLogsRetentionJson,
+    AuditLogsRetention,
     Organization,
     OrganizationDomainData,
 )
@@ -364,7 +373,6 @@ from workos.user_management.models import (
     JwksResponse,
     JwksResponseKeys,
     MagicAuth,
-    OrganizationMembership,
     PasswordReset,
     RedirectUri,
     ResetPasswordResponse,
@@ -376,12 +384,22 @@ from workos.user_management.models import (
     UserApiKeyWithValueOwner,
     UserIdentitiesGetItem,
     UserInvite,
-    UserOrganizationMembership,
     UserSessionsImpersonator,
     UserSessionsListItem,
     VerifyEmailResponse,
 )
-from workos.webhooks.models import WebhookEndpointJson
+from workos.vault.models import (
+    Actor,
+    CreateDataKeyResponse,
+    DecryptResponse,
+    DeleteObjectResponse,
+    Object,
+    ObjectMetadata,
+    ObjectSummary,
+    ObjectVersion,
+    ObjectWithoutValue,
+)
+from workos.webhooks.models import WebhookEndpoint
 from workos.widgets.models import WidgetSessionTokenResponse
 
 
@@ -704,6 +722,249 @@ class TestModelRoundTrip:
         assert "sso" not in serialized
         assert "domain_verification" not in serialized
 
+    def test_actor_round_trip(self):
+        data = load_fixture("actor.json")
+        instance = Actor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = Actor.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_actor_minimal_payload(self):
+        data = {"id": "key_01K8ZYT4AWJ6XP0E0S8CTBHE3P", "name": "My API Key"}
+        instance = Actor.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+
+    def test_create_data_key_response_round_trip(self):
+        data = load_fixture("create_data_key_response.json")
+        instance = CreateDataKeyResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = CreateDataKeyResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_create_data_key_response_minimal_payload(self):
+        data = {
+            "context": {"organization_id": "org_01K8ZYT4AWJ6XP0E0S8CTBHE3P"},
+            "data_key": "DR9idtey9MpMrA1VRFrz30HB1yNgL2PoHZyjAkFeWgg=",
+            "encrypted_keys": "V09TLkVLTS52MQBiZjUxY2NlYy03OGI0LTUyMDAtYjM4My0zNTczMGU3MWVmNjEBATEBJGJmNjVlMzI2LTQzYTAtNGIyMC04OGM0LTA3ZmYzZGU1NDM0YwF0YmY2NWUzMjYtNDNhMC00YjIwLTg4YzQtMDdmZjNkZTU0MzRj",
+            "id": "bf51ccec-78b4-5200-b383-35730e71ef61",
+        }
+        instance = CreateDataKeyResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["context"] == data["context"]
+        assert serialized["data_key"] == data["data_key"]
+        assert serialized["encrypted_keys"] == data["encrypted_keys"]
+        assert serialized["id"] == data["id"]
+
+    def test_decrypt_response_round_trip(self):
+        data = load_fixture("decrypt_response.json")
+        instance = DecryptResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DecryptResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_decrypt_response_minimal_payload(self):
+        data = {
+            "data_key": "DR9idtey9MpMrA1VRFrz30HB1yNgL2PoHZyjAkFeWgg=",
+            "id": "bf51ccec-78b4-5200-b383-35730e71ef61",
+        }
+        instance = DecryptResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["data_key"] == data["data_key"]
+        assert serialized["id"] == data["id"]
+
+    def test_delete_object_response_round_trip(self):
+        data = load_fixture("delete_object_response.json")
+        instance = DeleteObjectResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = DeleteObjectResponse.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_delete_object_response_minimal_payload(self):
+        data = {"name": "my-secret", "success": True}
+        instance = DeleteObjectResponse.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["name"] == data["name"]
+        assert serialized["success"] == data["success"]
+
+    def test_error_round_trip(self):
+        data = load_fixture("error.json")
+        instance = Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = Error.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_error_minimal_payload(self):
+        data = {"error": "Invalid request parameters."}
+        instance = Error.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["error"] == data["error"]
+
+    def test_object_round_trip(self):
+        data = load_fixture("object.json")
+        instance = Object.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = Object.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_object_minimal_payload(self):
+        data = {
+            "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "metadata": {
+                "context": {"organization_id": "org_01K8ZYT4AWJ6XP0E0S8CTBHE3P"},
+                "environment_id": "environment_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
+                "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                "key_id": "bf65e326-43a0-4b20-88c4-07ff3de5434c",
+                "updated_at": "2024-06-15T10:30:00Z",
+                "updated_by": {
+                    "id": "key_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
+                    "name": "My API Key",
+                },
+                "version_id": "c3d4e5f6-7890-abcd-ef12-34567890abcd",
+            },
+            "name": "my-secret",
+            "value": "s3cr3t-v4lu3",
+        }
+        instance = Object.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["metadata"] == data["metadata"]
+        assert serialized["name"] == data["name"]
+        assert serialized["value"] == data["value"]
+
+    def test_object_metadata_round_trip(self):
+        data = load_fixture("object_metadata.json")
+        instance = ObjectMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ObjectMetadata.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_object_metadata_minimal_payload(self):
+        data = {
+            "context": {"organization_id": "org_01K8ZYT4AWJ6XP0E0S8CTBHE3P"},
+            "environment_id": "environment_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
+            "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "key_id": "bf65e326-43a0-4b20-88c4-07ff3de5434c",
+            "updated_at": "2024-06-15T10:30:00Z",
+            "updated_by": {
+                "id": "key_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
+                "name": "My API Key",
+            },
+        }
+        instance = ObjectMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["context"] == data["context"]
+        assert serialized["environment_id"] == data["environment_id"]
+        assert serialized["id"] == data["id"]
+        assert serialized["key_id"] == data["key_id"]
+        assert serialized["updated_at"] == data["updated_at"]
+        assert serialized["updated_by"] == data["updated_by"]
+
+    def test_object_metadata_preserves_nullable_fields(self):
+        data = {
+            "context": {"organization_id": "org_01K8ZYT4AWJ6XP0E0S8CTBHE3P"},
+            "environment_id": "environment_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
+            "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "key_id": "bf65e326-43a0-4b20-88c4-07ff3de5434c",
+            "updated_at": "2024-06-15T10:30:00Z",
+            "updated_by": {
+                "id": "key_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
+                "name": "My API Key",
+            },
+            "version_id": None,
+        }
+        instance = ObjectMetadata.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["version_id"] is None
+
+    def test_object_summary_round_trip(self):
+        data = load_fixture("object_summary.json")
+        instance = ObjectSummary.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ObjectSummary.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_object_summary_minimal_payload(self):
+        data = {"id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890", "name": "my-secret"}
+        instance = ObjectSummary.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["name"] == data["name"]
+
+    def test_object_summary_preserves_nullable_fields(self):
+        data = {
+            "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "name": "my-secret",
+            "updated_at": None,
+        }
+        instance = ObjectSummary.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["updated_at"] is None
+
+    def test_object_version_round_trip(self):
+        data = load_fixture("object_version.json")
+        instance = ObjectVersion.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ObjectVersion.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_object_version_minimal_payload(self):
+        data = {
+            "created_at": "2024-06-15T10:30:00Z",
+            "current_version": True,
+            "etag": "d41d8cd98f00b204e9800998ecf8427e",
+            "id": "c3d4e5f6-7890-abcd-ef12-34567890abcd",
+            "size": 256,
+        }
+        instance = ObjectVersion.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["current_version"] == data["current_version"]
+        assert serialized["etag"] == data["etag"]
+        assert serialized["id"] == data["id"]
+        assert serialized["size"] == data["size"]
+
+    def test_object_without_value_round_trip(self):
+        data = load_fixture("object_without_value.json")
+        instance = ObjectWithoutValue.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = ObjectWithoutValue.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_object_without_value_minimal_payload(self):
+        data = {
+            "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "metadata": {
+                "context": {"organization_id": "org_01K8ZYT4AWJ6XP0E0S8CTBHE3P"},
+                "environment_id": "environment_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
+                "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                "key_id": "bf65e326-43a0-4b20-88c4-07ff3de5434c",
+                "updated_at": "2024-06-15T10:30:00Z",
+                "updated_by": {
+                    "id": "key_01K8ZYT4AWJ6XP0E0S8CTBHE3P",
+                    "name": "My API Key",
+                },
+                "version_id": "c3d4e5f6-7890-abcd-ef12-34567890abcd",
+            },
+            "name": "my-secret",
+        }
+        instance = ObjectWithoutValue.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["metadata"] == data["metadata"]
+        assert serialized["name"] == data["name"]
+
     def test_external_auth_complete_response_round_trip(self):
         data = load_fixture("external_auth_complete_response.json")
         instance = ExternalAuthCompleteResponse.from_dict(data)
@@ -736,6 +997,7 @@ class TestModelRoundTrip:
             "name": "Production API Key",
             "obfuscated_value": "sk_...3456",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -748,6 +1010,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["obfuscated_value"] == data["obfuscated_value"]
         assert serialized["last_used_at"] == data["last_used_at"]
+        assert serialized["expires_at"] == data["expires_at"]
         assert serialized["permissions"] == data["permissions"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -760,6 +1023,7 @@ class TestModelRoundTrip:
             "name": "Production API Key",
             "obfuscated_value": "sk_...3456",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -767,6 +1031,7 @@ class TestModelRoundTrip:
         instance = ApiKey.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
+        assert serialized["expires_at"] is None
 
     def test_api_key_validation_response_round_trip(self):
         data = load_fixture("api_key_validation_response.json")
@@ -907,15 +1172,15 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["success"] == data["success"]
 
-    def test_audit_log_export_json_round_trip(self):
-        data = load_fixture("audit_log_export_json.json")
-        instance = AuditLogExportJson.from_dict(data)
+    def test_audit_log_export_round_trip(self):
+        data = load_fixture("audit_log_export.json")
+        instance = AuditLogExport.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = AuditLogExportJson.from_dict(serialized)
+        restored = AuditLogExport.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_audit_log_export_json_minimal_payload(self):
+    def test_audit_log_export_minimal_payload(self):
         data = {
             "object": "audit_log_export",
             "id": "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V",
@@ -923,7 +1188,7 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
-        instance = AuditLogExportJson.from_dict(data)
+        instance = AuditLogExport.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
         assert serialized["id"] == data["id"]
@@ -931,7 +1196,7 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_audit_log_export_json_preserves_nullable_fields(self):
+    def test_audit_log_export_preserves_nullable_fields(self):
         data = {
             "object": "audit_log_export",
             "id": "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V",
@@ -940,41 +1205,41 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
-        instance = AuditLogExportJson.from_dict(data)
+        instance = AuditLogExport.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["url"] is None
 
-    def test_audit_log_export_json_round_trips_unknown_enum_values(self):
+    def test_audit_log_export_round_trips_unknown_enum_values(self):
         data = {
             "object": "audit_log_export",
             "id": "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V",
-            "state": "unexpected_audit_log_export_json_state",
+            "state": "unexpected_audit_log_export_state",
             "url": "https://exports.audit-logs.com/audit-log-exports/export.csv",
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
-        instance = AuditLogExportJson.from_dict(data)
+        instance = AuditLogExport.from_dict(data)
         assert instance.to_dict() == data
 
-    def test_audit_logs_retention_json_round_trip(self):
-        data = load_fixture("audit_logs_retention_json.json")
-        instance = AuditLogsRetentionJson.from_dict(data)
+    def test_audit_logs_retention_round_trip(self):
+        data = load_fixture("audit_logs_retention.json")
+        instance = AuditLogsRetention.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = AuditLogsRetentionJson.from_dict(serialized)
+        restored = AuditLogsRetention.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_audit_logs_retention_json_minimal_payload(self):
+    def test_audit_logs_retention_minimal_payload(self):
         data = {"retention_period_in_days": None}
-        instance = AuditLogsRetentionJson.from_dict(data)
+        instance = AuditLogsRetention.from_dict(data)
         serialized = instance.to_dict()
         assert (
             serialized["retention_period_in_days"] == data["retention_period_in_days"]
         )
 
-    def test_audit_logs_retention_json_preserves_nullable_fields(self):
+    def test_audit_logs_retention_preserves_nullable_fields(self):
         data = {"retention_period_in_days": None}
-        instance = AuditLogsRetentionJson.from_dict(data)
+        instance = AuditLogsRetention.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["retention_period_in_days"] is None
 
@@ -1028,15 +1293,15 @@ class TestModelRoundTrip:
         assert "actor" not in serialized
         assert "metadata" not in serialized
 
-    def test_audit_log_action_json_round_trip(self):
-        data = load_fixture("audit_log_action_json.json")
-        instance = AuditLogActionJson.from_dict(data)
+    def test_audit_log_action_round_trip(self):
+        data = load_fixture("audit_log_action.json")
+        instance = AuditLogAction.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = AuditLogActionJson.from_dict(serialized)
+        restored = AuditLogAction.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_audit_log_action_json_minimal_payload(self):
+    def test_audit_log_action_minimal_payload(self):
         data = {
             "object": "audit_log_action",
             "name": "user.viewed_invoice",
@@ -1067,7 +1332,7 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
-        instance = AuditLogActionJson.from_dict(data)
+        instance = AuditLogAction.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
         assert serialized["name"] == data["name"]
@@ -2244,6 +2509,74 @@ class TestModelRoundTrip:
         instance = DirectoryUser.from_dict(data)
         assert instance.to_dict() == data
 
+    def test_pipe_connected_account_round_trip(self):
+        data = load_fixture("pipe_connected_account.json")
+        instance = PipeConnectedAccount.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipeConnectedAccount.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipe_connected_account_minimal_payload(self):
+        data = {
+            "object": "connected_account",
+            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "provider_slug": "github",
+            "user_id": None,
+            "organization_id": None,
+            "scopes": ["repo", "user:email"],
+            "state": "connected",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipeConnectedAccount.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["object"] == data["object"]
+        assert serialized["id"] == data["id"]
+        assert serialized["data_integration_id"] == data["data_integration_id"]
+        assert serialized["provider_slug"] == data["provider_slug"]
+        assert serialized["user_id"] == data["user_id"]
+        assert serialized["organization_id"] == data["organization_id"]
+        assert serialized["scopes"] == data["scopes"]
+        assert serialized["state"] == data["state"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["updated_at"] == data["updated_at"]
+
+    def test_pipe_connected_account_preserves_nullable_fields(self):
+        data = {
+            "object": "connected_account",
+            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "provider_slug": "github",
+            "user_id": None,
+            "organization_id": None,
+            "scopes": ["repo", "user:email"],
+            "state": "connected",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipeConnectedAccount.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["user_id"] is None
+        assert serialized["organization_id"] is None
+
+    def test_pipe_connected_account_round_trips_unknown_enum_values(self):
+        data = {
+            "object": "connected_account",
+            "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+            "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+            "provider_slug": "github",
+            "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+            "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+            "scopes": ["repo", "user:email"],
+            "state": "unexpected_pipe_connected_account_state",
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "updated_at": "2026-01-15T12:00:00.000Z",
+        }
+        instance = PipeConnectedAccount.from_dict(data)
+        assert instance.to_dict() == data
+
     def test_waitlist_user_round_trip(self):
         data = load_fixture("waitlist_user.json")
         instance = WaitlistUser.from_dict(data)
@@ -2532,6 +2865,7 @@ class TestModelRoundTrip:
                 "name": "My API Key",
                 "obfuscated_value": "sk_test_...1234",
                 "last_used_at": "2026-01-15T12:00:00.000Z",
+                "expires_at": None,
                 "permissions": ["users:read", "users:write"],
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -2561,6 +2895,7 @@ class TestModelRoundTrip:
                 "name": "My API Key",
                 "obfuscated_value": "sk_test_...1234",
                 "last_used_at": "2026-01-15T12:00:00.000Z",
+                "expires_at": None,
                 "permissions": ["users:read", "users:write"],
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -2612,6 +2947,7 @@ class TestModelRoundTrip:
             "name": "My API Key",
             "obfuscated_value": "sk_test_...1234",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["users:read", "users:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -2619,6 +2955,7 @@ class TestModelRoundTrip:
         instance = ApiKeyCreatedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
+        assert serialized["expires_at"] is None
 
     def test_api_key_created_data_owner_round_trip(self):
         data = load_fixture("api_key_created_data_owner.json")
@@ -2677,6 +3014,7 @@ class TestModelRoundTrip:
                 "name": "My API Key",
                 "obfuscated_value": "sk_test_...1234",
                 "last_used_at": "2026-01-15T12:00:00.000Z",
+                "expires_at": None,
                 "permissions": ["users:read", "users:write"],
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -2706,6 +3044,7 @@ class TestModelRoundTrip:
                 "name": "My API Key",
                 "obfuscated_value": "sk_test_...1234",
                 "last_used_at": "2026-01-15T12:00:00.000Z",
+                "expires_at": None,
                 "permissions": ["users:read", "users:write"],
                 "created_at": "2026-01-15T12:00:00.000Z",
                 "updated_at": "2026-01-15T12:00:00.000Z",
@@ -2757,6 +3096,7 @@ class TestModelRoundTrip:
             "name": "My API Key",
             "obfuscated_value": "sk_test_...1234",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["users:read", "users:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -2764,6 +3104,7 @@ class TestModelRoundTrip:
         instance = ApiKeyRevokedData.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
+        assert serialized["expires_at"] is None
 
     def test_api_key_revoked_data_owner_round_trip(self):
         data = load_fixture("api_key_revoked_data_owner.json")
@@ -11885,6 +12226,186 @@ class TestModelRoundTrip:
         serialized = instance.to_dict()
         assert serialized["description"] is None
 
+    def test_pipes_connected_account_connected_round_trip(self):
+        data = load_fixture("pipes_connected_account_connected.json")
+        instance = PipesConnectedAccountConnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipesConnectedAccountConnected.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipes_connected_account_connected_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.connected_account.connected",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PipesConnectedAccountConnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_pipes_connected_account_connected_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.connected_account.connected",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PipesConnectedAccountConnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_pipes_connected_account_disconnected_round_trip(self):
+        data = load_fixture("pipes_connected_account_disconnected.json")
+        instance = PipesConnectedAccountDisconnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipesConnectedAccountDisconnected.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipes_connected_account_disconnected_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.connected_account.disconnected",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PipesConnectedAccountDisconnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_pipes_connected_account_disconnected_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.connected_account.disconnected",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PipesConnectedAccountDisconnected.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
+    def test_pipes_connected_account_reauthorization_needed_round_trip(self):
+        data = load_fixture("pipes_connected_account_reauthorization_needed.json")
+        instance = PipesConnectedAccountReauthorizationNeeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized == data
+        restored = PipesConnectedAccountReauthorizationNeeded.from_dict(serialized)
+        assert restored.to_dict() == serialized
+
+    def test_pipes_connected_account_reauthorization_needed_minimal_payload(self):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.connected_account.reauthorization_needed",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PipesConnectedAccountReauthorizationNeeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert serialized["id"] == data["id"]
+        assert serialized["event"] == data["event"]
+        assert serialized["data"] == data["data"]
+        assert serialized["created_at"] == data["created_at"]
+        assert serialized["object"] == data["object"]
+
+    def test_pipes_connected_account_reauthorization_needed_omits_absent_optional_non_nullable_fields(
+        self,
+    ):
+        data = {
+            "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
+            "event": "pipes.connected_account.reauthorization_needed",
+            "data": {
+                "object": "connected_account",
+                "id": "data_installation_01EHZNVPK3SFK441A1RGBFSHRT",
+                "data_integration_id": "data_integration_01EHZNVPK3SFK441A1RGBFSHRT",
+                "provider_slug": "github",
+                "user_id": "user_01EHZNVPK3SFK441A1RGBFSHRT",
+                "organization_id": "org_01EHWNCE74X7JSDV0X3SZ3KJNY",
+                "scopes": ["repo", "user:email"],
+                "state": "connected",
+                "created_at": "2026-01-15T12:00:00.000Z",
+                "updated_at": "2026-01-15T12:00:00.000Z",
+            },
+            "created_at": "2026-01-15T12:00:00.000Z",
+            "object": "event",
+        }
+        instance = PipesConnectedAccountReauthorizationNeeded.from_dict(data)
+        serialized = instance.to_dict()
+        assert "context" not in serialized
+
     def test_role_created_round_trip(self):
         data = load_fixture("role_created.json")
         instance = RoleCreated.from_dict(data)
@@ -13885,6 +14406,7 @@ class TestModelRoundTrip:
             "name": "Production API Key",
             "obfuscated_value": "sk_...3456",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -13897,6 +14419,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["obfuscated_value"] == data["obfuscated_value"]
         assert serialized["last_used_at"] == data["last_used_at"]
+        assert serialized["expires_at"] == data["expires_at"]
         assert serialized["permissions"] == data["permissions"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -13909,6 +14432,7 @@ class TestModelRoundTrip:
             "name": "Production API Key",
             "obfuscated_value": "sk_...3456",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -13916,6 +14440,7 @@ class TestModelRoundTrip:
         instance = OrganizationApiKey.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
+        assert serialized["expires_at"] is None
 
     def test_organization_api_key_with_value_round_trip(self):
         data = load_fixture("organization_api_key_with_value.json")
@@ -13933,6 +14458,7 @@ class TestModelRoundTrip:
             "name": "Production API Key",
             "obfuscated_value": "sk_...3456",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -13946,6 +14472,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["obfuscated_value"] == data["obfuscated_value"]
         assert serialized["last_used_at"] == data["last_used_at"]
+        assert serialized["expires_at"] == data["expires_at"]
         assert serialized["permissions"] == data["permissions"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -13959,6 +14486,7 @@ class TestModelRoundTrip:
             "name": "Production API Key",
             "obfuscated_value": "sk_...3456",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -13967,6 +14495,7 @@ class TestModelRoundTrip:
         instance = OrganizationApiKeyWithValue.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
+        assert serialized["expires_at"] is None
 
     def test_organization_round_trip(self):
         data = load_fixture("organization.json")
@@ -14678,6 +15207,7 @@ class TestModelRoundTrip:
             "name": "Production API Key",
             "obfuscated_value": "sk_...3456",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -14690,6 +15220,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["obfuscated_value"] == data["obfuscated_value"]
         assert serialized["last_used_at"] == data["last_used_at"]
+        assert serialized["expires_at"] == data["expires_at"]
         assert serialized["permissions"] == data["permissions"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -14706,6 +15237,7 @@ class TestModelRoundTrip:
             "name": "Production API Key",
             "obfuscated_value": "sk_...3456",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -14713,6 +15245,7 @@ class TestModelRoundTrip:
         instance = UserApiKey.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
+        assert serialized["expires_at"] is None
 
     def test_user_api_key_with_value_round_trip(self):
         data = load_fixture("user_api_key_with_value.json")
@@ -14734,6 +15267,7 @@ class TestModelRoundTrip:
             "name": "Production API Key",
             "obfuscated_value": "sk_...3456",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -14747,6 +15281,7 @@ class TestModelRoundTrip:
         assert serialized["name"] == data["name"]
         assert serialized["obfuscated_value"] == data["obfuscated_value"]
         assert serialized["last_used_at"] == data["last_used_at"]
+        assert serialized["expires_at"] == data["expires_at"]
         assert serialized["permissions"] == data["permissions"]
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
@@ -14764,6 +15299,7 @@ class TestModelRoundTrip:
             "name": "Production API Key",
             "obfuscated_value": "sk_...3456",
             "last_used_at": None,
+            "expires_at": None,
             "permissions": ["posts:read", "posts:write"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
@@ -14772,6 +15308,7 @@ class TestModelRoundTrip:
         instance = UserApiKeyWithValue.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["last_used_at"] is None
+        assert serialized["expires_at"] is None
 
     def test_email_verification_round_trip(self):
         data = load_fixture("email_verification.json")
@@ -15096,15 +15633,15 @@ class TestModelRoundTrip:
         assert "verification_uri_complete" not in serialized
         assert "interval" not in serialized
 
-    def test_webhook_endpoint_json_round_trip(self):
-        data = load_fixture("webhook_endpoint_json.json")
-        instance = WebhookEndpointJson.from_dict(data)
+    def test_webhook_endpoint_round_trip(self):
+        data = load_fixture("webhook_endpoint.json")
+        instance = WebhookEndpoint.from_dict(data)
         serialized = instance.to_dict()
         assert serialized == data
-        restored = WebhookEndpointJson.from_dict(serialized)
+        restored = WebhookEndpoint.from_dict(serialized)
         assert restored.to_dict() == serialized
 
-    def test_webhook_endpoint_json_minimal_payload(self):
+    def test_webhook_endpoint_minimal_payload(self):
         data = {
             "object": "webhook_endpoint",
             "id": "we_0123456789",
@@ -15115,7 +15652,7 @@ class TestModelRoundTrip:
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
-        instance = WebhookEndpointJson.from_dict(data)
+        instance = WebhookEndpoint.from_dict(data)
         serialized = instance.to_dict()
         assert serialized["object"] == data["object"]
         assert serialized["id"] == data["id"]
@@ -15126,18 +15663,18 @@ class TestModelRoundTrip:
         assert serialized["created_at"] == data["created_at"]
         assert serialized["updated_at"] == data["updated_at"]
 
-    def test_webhook_endpoint_json_round_trips_unknown_enum_values(self):
+    def test_webhook_endpoint_round_trips_unknown_enum_values(self):
         data = {
             "object": "webhook_endpoint",
             "id": "we_0123456789",
             "endpoint_url": "https://example.com/webhooks",
             "secret": "whsec_0FWAiVGkEfGBqqsJH4aNAGBJ4",
-            "status": "unexpected_webhook_endpoint_json_status",
+            "status": "unexpected_webhook_endpoint_status",
             "events": ["user.created", "dsync.user.created"],
             "created_at": "2026-01-15T12:00:00.000Z",
             "updated_at": "2026-01-15T12:00:00.000Z",
         }
-        instance = WebhookEndpointJson.from_dict(data)
+        instance = WebhookEndpoint.from_dict(data)
         assert instance.to_dict() == data
 
     def test_widget_session_token_response_round_trip(self):
@@ -15184,7 +15721,7 @@ class TestModelRoundTrip:
             "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
             "organization_id": None,
             "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "connection_type": "GoogleOAuth",
+            "connection_type": "OktaSAML",
             "idp_id": "103456789012345678901",
             "email": "todd@example.com",
             "first_name": None,
@@ -15212,7 +15749,7 @@ class TestModelRoundTrip:
             "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
             "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
             "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "connection_type": "GoogleOAuth",
+            "connection_type": "OktaSAML",
             "idp_id": "103456789012345678901",
             "email": "todd@example.com",
             "first_name": "Todd",
@@ -15233,7 +15770,7 @@ class TestModelRoundTrip:
             "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
             "organization_id": None,
             "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-            "connection_type": "GoogleOAuth",
+            "connection_type": "OktaSAML",
             "idp_id": "103456789012345678901",
             "email": "todd@example.com",
             "first_name": None,
@@ -15293,7 +15830,7 @@ class TestModelRoundTrip:
                 "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
                 "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
                 "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "connection_type": "GoogleOAuth",
+                "connection_type": "OktaSAML",
                 "idp_id": "103456789012345678901",
                 "email": "todd@example.com",
                 "first_name": "Todd",
@@ -15323,7 +15860,7 @@ class TestModelRoundTrip:
                 "id": "prof_01DMC79VCBZ0NY2099737PSVF1",
                 "organization_id": "org_01EHQMYV6MBK39QC5PZXHY59C3",
                 "connection_id": "conn_01E4ZCR3C56J083X43JQXF3JK5",
-                "connection_type": "GoogleOAuth",
+                "connection_type": "OktaSAML",
                 "idp_id": "103456789012345678901",
                 "email": "todd@example.com",
                 "first_name": "Todd",

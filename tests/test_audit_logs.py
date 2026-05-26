@@ -7,14 +7,14 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.audit_logs.models import (
-    AuditLogActionJson,
+    AuditLogAction,
     AuditLogEvent,
     AuditLogEventCreateResponse,
-    AuditLogExportJson,
+    AuditLogExport,
     AuditLogSchemaJson,
 )
 from workos.common.models import PaginationOrder
-from workos.organizations.models import AuditLogsRetentionJson
+from workos.organizations.models import AuditLogsRetention
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
@@ -29,10 +29,10 @@ from workos._errors import (
 class TestAuditLogs:
     def test_get_organization_audit_logs_retention(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("audit_logs_retention_json.json"),
+            json=load_fixture("audit_logs_retention.json"),
         )
         result = workos.audit_logs.get_organization_audit_logs_retention("test_id")
-        assert isinstance(result, AuditLogsRetentionJson)
+        assert isinstance(result, AuditLogsRetention)
         assert result.retention_period_in_days == 30
         request = httpx_mock.get_request()
         assert request.method == "GET"
@@ -40,12 +40,12 @@ class TestAuditLogs:
 
     def test_update_organization_audit_logs_retention(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("audit_logs_retention_json.json"),
+            json=load_fixture("audit_logs_retention.json"),
         )
         result = workos.audit_logs.update_organization_audit_logs_retention(
             "test_id", retention_period_in_days=1
         )
-        assert isinstance(result, AuditLogsRetentionJson)
+        assert isinstance(result, AuditLogsRetention)
         assert result.retention_period_in_days == 30
         request = httpx_mock.get_request()
         assert request.method == "PUT"
@@ -55,12 +55,12 @@ class TestAuditLogs:
 
     def test_list_actions(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("list_audit_log_action_json.json"),
+            json=load_fixture("list_audit_log_action.json"),
         )
         page = workos.audit_logs.list_actions()
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], AuditLogActionJson)
+        assert isinstance(page.data[0], AuditLogAction)
 
     def test_list_actions_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -145,14 +145,14 @@ class TestAuditLogs:
 
     def test_create_export(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("audit_log_export_json.json"),
+            json=load_fixture("audit_log_export.json"),
         )
         result = workos.audit_logs.create_export(
             organization_id="test_organization_id",
             range_start="test_range_start",
             range_end="test_range_end",
         )
-        assert isinstance(result, AuditLogExportJson)
+        assert isinstance(result, AuditLogExport)
         assert result.object == "audit_log_export"
         assert result.id == "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V"
         request = httpx_mock.get_request()
@@ -165,10 +165,10 @@ class TestAuditLogs:
 
     def test_get_export(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("audit_log_export_json.json"),
+            json=load_fixture("audit_log_export.json"),
         )
         result = workos.audit_logs.get_export("test_auditLogExportId")
-        assert isinstance(result, AuditLogExportJson)
+        assert isinstance(result, AuditLogExport)
         assert result.object == "audit_log_export"
         assert result.id == "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V"
         request = httpx_mock.get_request()
@@ -178,7 +178,7 @@ class TestAuditLogs:
     def test_get_organization_audit_logs_retention_with_request_options(
         self, workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
+        httpx_mock.add_response(json=load_fixture("audit_logs_retention.json"))
         workos.audit_logs.get_organization_audit_logs_retention(
             "test_id", request_options={"extra_headers": {"X-Custom": "value"}}
         )
@@ -260,11 +260,11 @@ class TestAsyncAuditLogs:
     async def test_get_organization_audit_logs_retention(
         self, async_workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
+        httpx_mock.add_response(json=load_fixture("audit_logs_retention.json"))
         result = await async_workos.audit_logs.get_organization_audit_logs_retention(
             "test_id"
         )
-        assert isinstance(result, AuditLogsRetentionJson)
+        assert isinstance(result, AuditLogsRetention)
         assert result.retention_period_in_days == 30
         request = httpx_mock.get_request()
         assert request.method == "GET"
@@ -274,11 +274,11 @@ class TestAsyncAuditLogs:
     async def test_update_organization_audit_logs_retention(
         self, async_workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
+        httpx_mock.add_response(json=load_fixture("audit_logs_retention.json"))
         result = await async_workos.audit_logs.update_organization_audit_logs_retention(
             "test_id", retention_period_in_days=1
         )
-        assert isinstance(result, AuditLogsRetentionJson)
+        assert isinstance(result, AuditLogsRetention)
         assert result.retention_period_in_days == 30
         request = httpx_mock.get_request()
         assert request.method == "PUT"
@@ -286,11 +286,11 @@ class TestAsyncAuditLogs:
 
     @pytest.mark.asyncio
     async def test_list_actions(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("list_audit_log_action_json.json"))
+        httpx_mock.add_response(json=load_fixture("list_audit_log_action.json"))
         page = await async_workos.audit_logs.list_actions()
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], AuditLogActionJson)
+        assert isinstance(page.data[0], AuditLogAction)
 
     @pytest.mark.asyncio
     async def test_list_actions_empty_page(self, async_workos, httpx_mock):
@@ -377,13 +377,13 @@ class TestAsyncAuditLogs:
 
     @pytest.mark.asyncio
     async def test_create_export(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("audit_log_export_json.json"))
+        httpx_mock.add_response(json=load_fixture("audit_log_export.json"))
         result = await async_workos.audit_logs.create_export(
             organization_id="test_organization_id",
             range_start="test_range_start",
             range_end="test_range_end",
         )
-        assert isinstance(result, AuditLogExportJson)
+        assert isinstance(result, AuditLogExport)
         assert result.object == "audit_log_export"
         assert result.id == "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V"
         request = httpx_mock.get_request()
@@ -392,9 +392,9 @@ class TestAsyncAuditLogs:
 
     @pytest.mark.asyncio
     async def test_get_export(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("audit_log_export_json.json"))
+        httpx_mock.add_response(json=load_fixture("audit_log_export.json"))
         result = await async_workos.audit_logs.get_export("test_auditLogExportId")
-        assert isinstance(result, AuditLogExportJson)
+        assert isinstance(result, AuditLogExport)
         assert result.object == "audit_log_export"
         assert result.id == "audit_log_export_01GBZK5MP7TD1YCFQHFR22180V"
         request = httpx_mock.get_request()
@@ -405,7 +405,7 @@ class TestAsyncAuditLogs:
     async def test_get_organization_audit_logs_retention_with_request_options(
         self, async_workos, httpx_mock
     ):
-        httpx_mock.add_response(json=load_fixture("audit_logs_retention_json.json"))
+        httpx_mock.add_response(json=load_fixture("audit_logs_retention.json"))
         await async_workos.audit_logs.get_organization_audit_logs_retention(
             "test_id", request_options={"extra_headers": {"X-Custom": "value"}}
         )

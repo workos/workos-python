@@ -7,7 +7,7 @@ from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
 from workos.common.models import PaginationOrder
-from workos.webhooks.models import WebhookEndpointJson
+from workos.webhooks.models import WebhookEndpoint
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
@@ -22,12 +22,12 @@ from workos._errors import (
 class TestWebhooks:
     def test_list_webhook_endpoints(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("list_webhook_endpoint_json.json"),
+            json=load_fixture("list_webhook_endpoint.json"),
         )
         page = workos.webhooks.list_webhook_endpoints()
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], WebhookEndpointJson)
+        assert isinstance(page.data[0], WebhookEndpoint)
 
     def test_list_webhook_endpoints_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -51,12 +51,12 @@ class TestWebhooks:
 
     def test_create_webhook_endpoint(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("webhook_endpoint_json.json"),
+            json=load_fixture("webhook_endpoint.json"),
         )
         result = workos.webhooks.create_webhook_endpoint(
             endpoint_url="test_endpoint_url", events=[]
         )
-        assert isinstance(result, WebhookEndpointJson)
+        assert isinstance(result, WebhookEndpoint)
         assert result.object == "webhook_endpoint"
         assert result.id == "we_0123456789"
         request = httpx_mock.get_request()
@@ -68,10 +68,10 @@ class TestWebhooks:
 
     def test_update_webhook_endpoint(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("webhook_endpoint_json.json"),
+            json=load_fixture("webhook_endpoint.json"),
         )
         result = workos.webhooks.update_webhook_endpoint("test_id")
-        assert isinstance(result, WebhookEndpointJson)
+        assert isinstance(result, WebhookEndpoint)
         assert result.object == "webhook_endpoint"
         assert result.id == "we_0123456789"
         request = httpx_mock.get_request()
@@ -165,11 +165,11 @@ class TestWebhooks:
 class TestAsyncWebhooks:
     @pytest.mark.asyncio
     async def test_list_webhook_endpoints(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("list_webhook_endpoint_json.json"))
+        httpx_mock.add_response(json=load_fixture("list_webhook_endpoint.json"))
         page = await async_workos.webhooks.list_webhook_endpoints()
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], WebhookEndpointJson)
+        assert isinstance(page.data[0], WebhookEndpoint)
 
     @pytest.mark.asyncio
     async def test_list_webhook_endpoints_empty_page(self, async_workos, httpx_mock):
@@ -197,11 +197,11 @@ class TestAsyncWebhooks:
 
     @pytest.mark.asyncio
     async def test_create_webhook_endpoint(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("webhook_endpoint_json.json"))
+        httpx_mock.add_response(json=load_fixture("webhook_endpoint.json"))
         result = await async_workos.webhooks.create_webhook_endpoint(
             endpoint_url="test_endpoint_url", events=[]
         )
-        assert isinstance(result, WebhookEndpointJson)
+        assert isinstance(result, WebhookEndpoint)
         assert result.object == "webhook_endpoint"
         assert result.id == "we_0123456789"
         request = httpx_mock.get_request()
@@ -210,9 +210,9 @@ class TestAsyncWebhooks:
 
     @pytest.mark.asyncio
     async def test_update_webhook_endpoint(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("webhook_endpoint_json.json"))
+        httpx_mock.add_response(json=load_fixture("webhook_endpoint.json"))
         result = await async_workos.webhooks.update_webhook_endpoint("test_id")
-        assert isinstance(result, WebhookEndpointJson)
+        assert isinstance(result, WebhookEndpoint)
         assert result.object == "webhook_endpoint"
         assert result.id == "we_0123456789"
         request = httpx_mock.get_request()

@@ -5,7 +5,5 @@ from ._resource import (
     AsyncUserManagement as AsyncUserManagement,
     PasswordPlaintext as PasswordPlaintext,
     PasswordHashed as PasswordHashed,
-    RoleSingle as RoleSingle,
-    RoleMultiple as RoleMultiple,
 )
 from .models import *

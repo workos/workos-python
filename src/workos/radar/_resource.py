@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 from .._types import RequestOptions, enum_value
 from .models import RadarListEntryAlreadyPresentResponse, RadarStandaloneResponse
-from .models import RadarAction, RadarType
+from .models import RadarListAction, RadarListType
 from workos.common.models.radar_standalone_assess_request_action import (
     RadarStandaloneAssessRequestAction,
 )
@@ -112,8 +112,8 @@ class Radar:
 
     def add_list_entry(
         self,
-        type: Union[RadarType, str],
-        action: Union[RadarAction, str],
+        type: Union[RadarListType, str],
+        action: Union[RadarListAction, str],
         *,
         entry: str,
         request_options: Optional[RequestOptions] = None,
@@ -150,8 +150,8 @@ class Radar:
 
     def remove_list_entry(
         self,
-        type: Union[RadarType, str],
-        action: Union[RadarAction, str],
+        type: Union[RadarListType, str],
+        action: Union[RadarListAction, str],
         *,
         entry: str,
         request_options: Optional[RequestOptions] = None,
@@ -278,8 +278,8 @@ class AsyncRadar:
 
     async def add_list_entry(
         self,
-        type: Union[RadarType, str],
-        action: Union[RadarAction, str],
+        type: Union[RadarListType, str],
+        action: Union[RadarListAction, str],
         *,
         entry: str,
         request_options: Optional[RequestOptions] = None,
@@ -316,8 +316,8 @@ class AsyncRadar:
 
     async def remove_list_entry(
         self,
-        type: Union[RadarType, str],
-        action: Union[RadarAction, str],
+        type: Union[RadarListType, str],
+        action: Union[RadarListAction, str],
         *,
         entry: str,
         request_options: Optional[RequestOptions] = None,

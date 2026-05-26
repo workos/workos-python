@@ -1,4 +1,5 @@
 {
+  "object": "event",
   "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
   "event": "organization_membership.deleted",
   "data": {
@@ -42,6 +43,5 @@
     "previous_attributes": {
       "key": {}
     }
-  },
-  "object": "event"
+  }
 }

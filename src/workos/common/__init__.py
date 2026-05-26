@@ -116,6 +116,13 @@ from .models import (
 from .models import AuthenticationSSOTimedOutDataSSO as AuthenticationSSOTimedOutDataSSO
 from .models import AuthorizationPermission as AuthorizationPermission
 from .models import ConnectApplication as ConnectApplication
+from .models import ConnectApplicationM2M as ConnectApplicationM2M
+from .models import ConnectApplicationOAuth as ConnectApplicationOAuth
+from .models import (
+    ConnectApplicationOAuthRedirectUris as ConnectApplicationOAuthRedirectUris,
+)
+from .models import ConnectApplicationUnknown as ConnectApplicationUnknown
+from .models import ConnectApplicationVariant as ConnectApplicationVariant
 from .models import ConnectedAccountState as ConnectedAccountState
 from .models import ConnectionActivated as ConnectionActivated
 from .models import ConnectionActivatedData as ConnectionActivatedData
@@ -191,7 +198,7 @@ from .models import DsyncUserUpdatedData as DsyncUserUpdatedData
 from .models import DsyncUserUpdatedDataEmail as DsyncUserUpdatedDataEmail
 from .models import EmailVerificationCreated as EmailVerificationCreated
 from .models import EmailVerificationCreatedData as EmailVerificationCreatedData
-from .models import Error as Error
+from .models import ErrorResponse as ErrorResponse
 from .models import EventContext as EventContext
 from .models import EventContextActor as EventContextActor
 from .models import (

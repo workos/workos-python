@@ -6,6 +6,12 @@ from .application_credentials_list_item import (
 from workos.common.models.connect_application import (
     ConnectApplication as ConnectApplication,
 )
+from workos.common.models.connect_application import (
+    ConnectApplicationUnknown as ConnectApplicationUnknown,
+)
+from workos.common.models.connect_application import (
+    ConnectApplicationVariant as ConnectApplicationVariant,
+)
 from .create_application_secret import (
     CreateApplicationSecret as CreateApplicationSecret,
 )

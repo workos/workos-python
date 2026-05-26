@@ -447,6 +447,12 @@ class AsyncWebhooks:
             request_options=request_options,
         )
 
+
+# @oagen-ignore-start
+if TYPE_CHECKING:
+    from workos.events.models import EventSchemaVariant
+    # @oagen-ignore-end
+
     # @oagen-ignore-start
     DEFAULT_TOLERANCE = 180
 
@@ -538,9 +544,3 @@ class AsyncWebhooks:
             )
 
     # @oagen-ignore-end
-
-
-# @oagen-ignore-start
-if TYPE_CHECKING:
-    from workos.events.models import EventSchemaVariant
-# @oagen-ignore-end

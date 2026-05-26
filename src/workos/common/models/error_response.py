@@ -8,21 +8,21 @@ from workos._types import _raise_deserialize_error
 
 
 @dataclass(slots=True)
-class Error:
+class ErrorResponse:
     """Error response body."""
 
     error: str
     """A human-readable description of the error."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Error":
+    def from_dict(cls, data: Dict[str, Any]) -> "ErrorResponse":
         """Deserialize from a dictionary."""
         try:
             return cls(
                 error=data["error"],
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("Error", e)
+            _raise_deserialize_error("ErrorResponse", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

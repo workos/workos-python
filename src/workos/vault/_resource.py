@@ -15,6 +15,7 @@ from .models import (
     ObjectMetadata,
     ObjectSummary,
     ObjectWithoutValue,
+    VersionListResponse,
 )
 from .models import VaultOrder
 from .._pagination import AsyncPage, SyncPage

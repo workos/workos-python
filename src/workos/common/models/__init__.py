@@ -202,6 +202,15 @@ from .authentication_sso_timed_out_data_sso import (
 )
 from .authorization_permission import AuthorizationPermission as AuthorizationPermission
 from .connect_application import ConnectApplication as ConnectApplication
+from .connect_application_m2m import ConnectApplicationM2M as ConnectApplicationM2M
+from .connect_application_oauth import (
+    ConnectApplicationOAuth as ConnectApplicationOAuth,
+)
+from .connect_application_oauth_redirect_uris import (
+    ConnectApplicationOAuthRedirectUris as ConnectApplicationOAuthRedirectUris,
+)
+from .connect_application import ConnectApplicationUnknown as ConnectApplicationUnknown
+from .connect_application import ConnectApplicationVariant as ConnectApplicationVariant
 from .connected_account_state import ConnectedAccountState as ConnectedAccountState
 from .connection_activated import ConnectionActivated as ConnectionActivated
 from .connection_activated_data import (
@@ -309,7 +318,7 @@ from .email_verification_created import (
 from .email_verification_created_data import (
     EmailVerificationCreatedData as EmailVerificationCreatedData,
 )
-from .error import Error as Error
+from .error_response import ErrorResponse as ErrorResponse
 from .event_context import EventContext as EventContext
 from .event_context_actor import EventContextActor as EventContextActor
 from .event_context_google_analytics_session import (

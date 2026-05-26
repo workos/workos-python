@@ -11,7 +11,7 @@ from workos.audit_logs.models import (
     AuditLogEvent,
     AuditLogEventCreateResponse,
     AuditLogExport,
-    AuditLogSchemaJson,
+    AuditLogSchema,
 )
 from workos.common.models import PaginationOrder
 from workos.organizations.models import AuditLogsRetention
@@ -84,12 +84,12 @@ class TestAuditLogs:
 
     def test_list_action_schemas(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("list_audit_log_schema_json.json"),
+            json=load_fixture("list_audit_log_schema.json"),
         )
         page = workos.audit_logs.list_action_schemas("test_actionName")
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], AuditLogSchemaJson)
+        assert isinstance(page.data[0], AuditLogSchema)
 
     def test_list_action_schemas_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -114,10 +114,10 @@ class TestAuditLogs:
 
     def test_create_schema(self, workos, httpx_mock):
         httpx_mock.add_response(
-            json=load_fixture("audit_log_schema_json.json"),
+            json=load_fixture("audit_log_schema.json"),
         )
         result = workos.audit_logs.create_schema("test_actionName", targets=[])
-        assert isinstance(result, AuditLogSchemaJson)
+        assert isinstance(result, AuditLogSchema)
         assert result.object == "audit_log_schema"
         assert result.version == 1
         request = httpx_mock.get_request()
@@ -316,11 +316,11 @@ class TestAsyncAuditLogs:
 
     @pytest.mark.asyncio
     async def test_list_action_schemas(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("list_audit_log_schema_json.json"))
+        httpx_mock.add_response(json=load_fixture("list_audit_log_schema.json"))
         page = await async_workos.audit_logs.list_action_schemas("test_actionName")
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], AuditLogSchemaJson)
+        assert isinstance(page.data[0], AuditLogSchema)
 
     @pytest.mark.asyncio
     async def test_list_action_schemas_empty_page(self, async_workos, httpx_mock):
@@ -349,11 +349,11 @@ class TestAsyncAuditLogs:
 
     @pytest.mark.asyncio
     async def test_create_schema(self, async_workos, httpx_mock):
-        httpx_mock.add_response(json=load_fixture("audit_log_schema_json.json"))
+        httpx_mock.add_response(json=load_fixture("audit_log_schema.json"))
         result = await async_workos.audit_logs.create_schema(
             "test_actionName", targets=[]
         )
-        assert isinstance(result, AuditLogSchemaJson)
+        assert isinstance(result, AuditLogSchema)
         assert result.object == "audit_log_schema"
         assert result.version == 1
         request = httpx_mock.get_request()

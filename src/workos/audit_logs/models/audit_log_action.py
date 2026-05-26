@@ -9,7 +9,7 @@ from typing import Any, Dict, Literal
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .audit_log_schema_json import AuditLogSchemaJson
+from .audit_log_schema import AuditLogSchema
 
 
 @dataclass(slots=True)
@@ -20,7 +20,7 @@ class AuditLogAction:
     """Distinguishes the Audit Log Action object."""
     name: str
     """Identifier of what action was taken."""
-    schema: "AuditLogSchemaJson"
+    schema: "AuditLogSchema"
     """The schema associated with the action."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -34,9 +34,7 @@ class AuditLogAction:
             return cls(
                 object=data.get("object", "audit_log_action"),
                 name=data["name"],
-                schema=AuditLogSchemaJson.from_dict(
-                    cast(Dict[str, Any], data["schema"])
-                ),
+                schema=AuditLogSchema.from_dict(cast(Dict[str, Any], data["schema"])),
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
             )

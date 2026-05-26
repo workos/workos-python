@@ -7,6 +7,7 @@ from .create_object_request import CreateObjectRequest as CreateObjectRequest
 from .decrypt_request import DecryptRequest as DecryptRequest
 from .decrypt_response import DecryptResponse as DecryptResponse
 from .delete_object_response import DeleteObjectResponse as DeleteObjectResponse
+from .list_metadata import ListMetadata as ListMetadata
 from .object import Object as Object
 from .object_metadata import ObjectMetadata as ObjectMetadata
 from .object_summary import ObjectSummary as ObjectSummary
@@ -15,3 +16,4 @@ from .object_without_value import ObjectWithoutValue as ObjectWithoutValue
 from .rekey_request import RekeyRequest as RekeyRequest
 from .update_object_request import UpdateObjectRequest as UpdateObjectRequest
 from .vault_order import VaultOrder as VaultOrder
+from .version_list_response import VersionListResponse as VersionListResponse

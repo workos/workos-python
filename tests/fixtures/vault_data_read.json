@@ -1,4 +1,5 @@
 {
+  "object": "event",
   "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
   "event": "vault.data.read",
   "data": {
@@ -28,6 +29,5 @@
     "previous_attributes": {
       "key": {}
     }
-  },
-  "object": "event"
+  }
 }

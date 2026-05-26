@@ -3,4 +3,4 @@
 from typing import TypeAlias
 from .audit_log_schema_actor import AuditLogSchemaActor
 
-AuditLogSchemaJsonActor: TypeAlias = AuditLogSchemaActor
+AuditLogSchemaActorInput: TypeAlias = AuditLogSchemaActor

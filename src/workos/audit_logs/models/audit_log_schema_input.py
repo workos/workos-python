@@ -7,37 +7,37 @@ from typing import cast
 from typing import Any, Dict, List, Optional
 from workos._types import _raise_deserialize_error
 
-from .audit_log_schema_actor import AuditLogSchemaActor
-from .audit_log_schema_target import AuditLogSchemaTarget
+from .audit_log_schema_actor_input import AuditLogSchemaActorInput
+from .audit_log_schema_target_input import AuditLogSchemaTargetInput
 
 
 @dataclass(slots=True)
-class AuditLogSchemaDto:
-    """Audit Log Schema Dto model."""
+class AuditLogSchemaInput:
+    """Audit Log Schema Input model."""
 
-    targets: List["AuditLogSchemaTarget"]
+    targets: List["AuditLogSchemaTargetInput"]
     """The list of targets for the schema."""
-    actor: Optional["AuditLogSchemaActor"] = None
+    actor: Optional["AuditLogSchemaActorInput"] = None
     """The metadata schema for the actor."""
     metadata: Optional[Dict[str, Any]] = None
     """Optional JSON schema for event metadata."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogSchemaDto":
+    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogSchemaInput":
         """Deserialize from a dictionary."""
         try:
             return cls(
                 targets=[
-                    AuditLogSchemaTarget.from_dict(cast(Dict[str, Any], item))
+                    AuditLogSchemaTargetInput.from_dict(cast(Dict[str, Any], item))
                     for item in cast(list[Any], data["targets"])
                 ],
-                actor=AuditLogSchemaActor.from_dict(cast(Dict[str, Any], _v_actor))
+                actor=AuditLogSchemaActorInput.from_dict(cast(Dict[str, Any], _v_actor))
                 if (_v_actor := data.get("actor")) is not None
                 else None,
                 metadata=data.get("metadata"),
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("AuditLogSchemaDto", e)
+            _raise_deserialize_error("AuditLogSchemaInput", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

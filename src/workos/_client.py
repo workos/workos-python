@@ -35,7 +35,6 @@ from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
 from .passwordless import AsyncPasswordless, Passwordless
-from .vault import AsyncVault, Vault
 from .actions import Actions, AsyncActions
 from .pkce import PKCE
 
@@ -154,11 +153,6 @@ class WorkOSClient(_SyncBase):
     def passwordless(self) -> Passwordless:
         """Passwordless authentication sessions."""
         return Passwordless(self)
-
-    @functools.cached_property
-    def vault(self) -> Vault:
-        """Vault encryption, key management, and secret storage."""
-        return Vault(self)
 
     @functools.cached_property
     def actions(self) -> Actions:
@@ -281,17 +275,15 @@ class AsyncWorkOSClient(_AsyncBase):
         """Alias for multi_factor_auth."""
         return self.multi_factor_auth
 
+    # @oagen-ignore-start — non-spec service imports (hand-maintained)
+    # @oagen-ignore-end
+
     # @oagen-ignore-start — non-spec service accessors (hand-maintained)
 
     @functools.cached_property
     def passwordless(self) -> AsyncPasswordless:
         """Passwordless authentication sessions."""
         return AsyncPasswordless(self)
-
-    @functools.cached_property
-    def vault(self) -> AsyncVault:
-        """Vault encryption, key management, and secret storage."""
-        return AsyncVault(self)
 
     @functools.cached_property
     def actions(self) -> AsyncActions:
@@ -304,7 +296,3 @@ class AsyncWorkOSClient(_AsyncBase):
         return PKCE()
 
     # @oagen-ignore-end
-
-
-# @oagen-ignore-start — non-spec service imports (hand-maintained)
-# @oagen-ignore-end

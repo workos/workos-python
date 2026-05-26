@@ -3,7 +3,7 @@
     {
       "object": "event",
       "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
-      "event": "dsync.user.created",
+      "event": "action.authentication.denied",
       "data": {
         "id": "directory_user_01E1JG7J09H96KYP8HM9B0G5SJ",
         "directory_id": "directory_01ECAZ4NV9QMV47GW873HDCX74",

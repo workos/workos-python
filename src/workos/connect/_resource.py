@@ -19,6 +19,7 @@ from .models import (
     UserObject,
 )
 from workos.common.models.connect_application import ConnectApplication
+from workos.common.models.connect_application_variant import ConnectApplicationVariant
 from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -97,7 +98,7 @@ class Connect:
         order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[ConnectApplication]:
+    ) -> SyncPage[ConnectApplicationVariant]:
         """List Connect Applications
 
         List all Connect Applications in the current environment with optional filtering.
@@ -111,7 +112,7 @@ class Connect:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            SyncPage[ConnectApplication]
+            SyncPage[ConnectApplicationVariant]
 
         Raises:
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -130,12 +131,15 @@ class Connect:
             }.items()
             if v is not None
         }
-        return self._client.request_page(
-            method="get",
-            path=("connect", "applications"),
-            model=ConnectApplication,
-            params=params,
-            request_options=request_options,
+        return cast(
+            SyncPage[ConnectApplicationVariant],
+            self._client.request_page(
+                method="get",
+                path=("connect", "applications"),
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; pagination only calls from_dict
+                params=params,
+                request_options=request_options,
+            ),
         )
 
     def create_application(
@@ -511,7 +515,7 @@ class AsyncConnect:
         order: Optional[Union[PaginationOrder, str]] = "desc",
         organization_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[ConnectApplication]:
+    ) -> AsyncPage[ConnectApplicationVariant]:
         """List Connect Applications
 
         List all Connect Applications in the current environment with optional filtering.
@@ -525,7 +529,7 @@ class AsyncConnect:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AsyncPage[ConnectApplication]
+            AsyncPage[ConnectApplicationVariant]
 
         Raises:
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -544,12 +548,15 @@ class AsyncConnect:
             }.items()
             if v is not None
         }
-        return await self._client.request_page(
-            method="get",
-            path=("connect", "applications"),
-            model=ConnectApplication,
-            params=params,
-            request_options=request_options,
+        return cast(
+            AsyncPage[ConnectApplicationVariant],
+            await self._client.request_page(
+                method="get",
+                path=("connect", "applications"),
+                model=ConnectApplication,  # type: ignore[arg-type]  # dispatcher; pagination only calls from_dict
+                params=params,
+                request_options=request_options,
+            ),
         )
 
     async def create_application(

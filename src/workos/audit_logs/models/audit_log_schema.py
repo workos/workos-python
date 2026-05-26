@@ -9,46 +9,46 @@ from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 from workos._types import _format_datetime, _parse_datetime
 
-from .audit_log_schema_json_actor import AuditLogSchemaJsonActor
-from .audit_log_schema_json_target import AuditLogSchemaJsonTarget
+from .audit_log_schema_actor import AuditLogSchemaActor
+from .audit_log_schema_target import AuditLogSchemaTarget
 
 
 @dataclass(slots=True)
-class AuditLogSchemaJson:
-    """Audit Log Schema Json model."""
+class AuditLogSchema:
+    """Audit Log Schema model."""
 
     object: Literal["audit_log_schema"]
     """Distinguishes the Audit Log Schema object."""
     version: int
     """The version of the schema."""
-    targets: List["AuditLogSchemaJsonTarget"]
+    targets: List["AuditLogSchemaTarget"]
     """The list of targets for the schema."""
     created_at: datetime
     """The timestamp when the Audit Log Schema was created."""
-    actor: Optional["AuditLogSchemaJsonActor"] = None
+    actor: Optional["AuditLogSchemaActor"] = None
     """The metadata schema for the actor."""
     metadata: Optional[Dict[str, Any]] = None
     """Additional data associated with the event or entity."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogSchemaJson":
+    def from_dict(cls, data: Dict[str, Any]) -> "AuditLogSchema":
         """Deserialize from a dictionary."""
         try:
             return cls(
                 object=data.get("object", "audit_log_schema"),
                 version=data["version"],
                 targets=[
-                    AuditLogSchemaJsonTarget.from_dict(cast(Dict[str, Any], item))
+                    AuditLogSchemaTarget.from_dict(cast(Dict[str, Any], item))
                     for item in cast(list[Any], data["targets"])
                 ],
                 created_at=_parse_datetime(data["created_at"]),
-                actor=AuditLogSchemaJsonActor.from_dict(cast(Dict[str, Any], _v_actor))
+                actor=AuditLogSchemaActor.from_dict(cast(Dict[str, Any], _v_actor))
                 if (_v_actor := data.get("actor")) is not None
                 else None,
                 metadata=data.get("metadata"),
             )
         except (KeyError, ValueError) as e:
-            _raise_deserialize_error("AuditLogSchemaJson", e)
+            _raise_deserialize_error("AuditLogSchema", e)
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""

@@ -1,4 +1,5 @@
 {
+  "object": "event",
   "id": "event_01EHZNVPK3SFK441A1RGBFSHRT",
   "event": "organization_role.updated",
   "data": {
@@ -35,6 +36,5 @@
     "previous_attributes": {
       "key": {}
     }
-  },
-  "object": "event"
+  }
 }

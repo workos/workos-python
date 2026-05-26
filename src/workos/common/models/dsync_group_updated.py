@@ -17,6 +17,8 @@ from .event_context import EventContext
 class DsyncGroupUpdated:
     """Dsync Group Updated model."""
 
+    object: Literal["event"]
+    """Distinguishes the Event object."""
     id: str
     """Unique identifier for the event."""
     event: Literal["dsync.group.updated"]
@@ -24,8 +26,6 @@ class DsyncGroupUpdated:
     """The event payload."""
     created_at: datetime
     """An ISO 8601 timestamp."""
-    object: Literal["event"]
-    """Distinguishes the Event object."""
     context: Optional["EventContext"] = None
 
     @classmethod
@@ -33,13 +33,13 @@ class DsyncGroupUpdated:
         """Deserialize from a dictionary."""
         try:
             return cls(
+                object=data.get("object", "event"),
                 id=data["id"],
                 event=data.get("event", "dsync.group.updated"),
                 data=DsyncGroupUpdatedData.from_dict(
                     cast(Dict[str, Any], data["data"])
                 ),
                 created_at=_parse_datetime(data["created_at"]),
-                object=data.get("object", "event"),
                 context=EventContext.from_dict(cast(Dict[str, Any], _v_context))
                 if (_v_context := data.get("context")) is not None
                 else None,
@@ -50,11 +50,11 @@ class DsyncGroupUpdated:
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
+        result["object"] = self.object
         result["id"] = self.id
         result["event"] = self.event
         result["data"] = self.data.to_dict()
         result["created_at"] = _format_datetime(self.created_at)
-        result["object"] = self.object
         if self.context is not None:
             result["context"] = self.context.to_dict()
         return result

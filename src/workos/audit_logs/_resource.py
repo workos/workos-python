@@ -13,9 +13,9 @@ from .models import (
     AuditLogEvent,
     AuditLogEventCreateResponse,
     AuditLogExport,
-    AuditLogSchemaActor,
-    AuditLogSchemaJson,
-    AuditLogSchemaTarget,
+    AuditLogSchema,
+    AuditLogSchemaActorInput,
+    AuditLogSchemaTargetInput,
 )
 from workos.organizations.models.audit_logs_retention import AuditLogsRetention
 from workos.common.models.pagination_order import PaginationOrder
@@ -152,7 +152,7 @@ class AuditLogs:
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[AuditLogSchemaJson]:
+    ) -> SyncPage[AuditLogSchema]:
         """List Schemas
 
         Get a list of all schemas for the Audit Logs action identified by `:name`.
@@ -166,7 +166,7 @@ class AuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            SyncPage[AuditLogSchemaJson]
+            SyncPage[AuditLogSchema]
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -188,7 +188,7 @@ class AuditLogs:
         return self._client.request_page(
             method="get",
             path=("audit_logs", "actions", str(action_name), "schemas"),
-            model=AuditLogSchemaJson,
+            model=AuditLogSchema,
             params=params,
             request_options=request_options,
         )
@@ -197,11 +197,11 @@ class AuditLogs:
         self,
         action_name: str,
         *,
-        targets: List[AuditLogSchemaTarget],
-        actor: Optional[AuditLogSchemaActor] = None,
+        targets: List[AuditLogSchemaTargetInput],
+        actor: Optional[AuditLogSchemaActorInput] = None,
         metadata: Optional[Dict[str, Any]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogSchemaJson:
+    ) -> AuditLogSchema:
         """Create Schema
 
         Creates a new Audit Log schema used to validate the payload of incoming Audit Log Events. If the `action` does not exist, it will also be created.
@@ -214,7 +214,7 @@ class AuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AuditLogSchemaJson
+            AuditLogSchema
 
         Raises:
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -235,7 +235,7 @@ class AuditLogs:
             method="post",
             path=("audit_logs", "actions", str(action_name), "schemas"),
             body=body,
-            model=AuditLogSchemaJson,
+            model=AuditLogSchema,
             request_options=request_options,
         )
 
@@ -507,7 +507,7 @@ class AsyncAuditLogs:
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[AuditLogSchemaJson]:
+    ) -> AsyncPage[AuditLogSchema]:
         """List Schemas
 
         Get a list of all schemas for the Audit Logs action identified by `:name`.
@@ -521,7 +521,7 @@ class AsyncAuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AsyncPage[AuditLogSchemaJson]
+            AsyncPage[AuditLogSchema]
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -543,7 +543,7 @@ class AsyncAuditLogs:
         return await self._client.request_page(
             method="get",
             path=("audit_logs", "actions", str(action_name), "schemas"),
-            model=AuditLogSchemaJson,
+            model=AuditLogSchema,
             params=params,
             request_options=request_options,
         )
@@ -552,11 +552,11 @@ class AsyncAuditLogs:
         self,
         action_name: str,
         *,
-        targets: List[AuditLogSchemaTarget],
-        actor: Optional[AuditLogSchemaActor] = None,
+        targets: List[AuditLogSchemaTargetInput],
+        actor: Optional[AuditLogSchemaActorInput] = None,
         metadata: Optional[Dict[str, Any]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogSchemaJson:
+    ) -> AuditLogSchema:
         """Create Schema
 
         Creates a new Audit Log schema used to validate the payload of incoming Audit Log Events. If the `action` does not exist, it will also be created.
@@ -569,7 +569,7 @@ class AsyncAuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AuditLogSchemaJson
+            AuditLogSchema
 
         Raises:
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -590,7 +590,7 @@ class AsyncAuditLogs:
             method="post",
             path=("audit_logs", "actions", str(action_name), "schemas"),
             body=body,
-            model=AuditLogSchemaJson,
+            model=AuditLogSchema,
             request_options=request_options,
         )
 

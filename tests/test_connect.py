@@ -6,7 +6,11 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.common.models import ConnectApplication, PaginationOrder
+from workos.common.models import (
+    ConnectApplication,
+    ConnectApplicationOAuth,
+    PaginationOrder,
+)
 from workos.connect.models import (
     ApplicationCredentialsListItem,
     ExternalAuthCompleteResponse,
@@ -52,7 +56,7 @@ class TestConnect:
         page = workos.connect.list_applications()
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], ConnectApplication)
+        assert isinstance(page.data[0], ConnectApplicationOAuth)
 
     def test_list_applications_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -296,7 +300,7 @@ class TestAsyncConnect:
         page = await async_workos.connect.list_applications()
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], ConnectApplication)
+        assert isinstance(page.data[0], ConnectApplicationOAuth)
 
     @pytest.mark.asyncio
     async def test_list_applications_empty_page(self, async_workos, httpx_mock):

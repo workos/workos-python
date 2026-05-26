@@ -7,8 +7,11 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-from .._types import RequestOptions, enum_value
-from .models import WebhookEndpoint
+import hashlib
+import hmac
+import json
+import time
+
 from workos.common.models.create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents,
 )
@@ -19,11 +22,15 @@ from workos.common.models.update_webhook_endpoint_events import (
 from workos.common.models.update_webhook_endpoint_status import (
     UpdateWebhookEndpointStatus,
 )
+
 from .._pagination import AsyncPage, SyncPage
-import hashlib
-import hmac
-import json
-import time
+from .._types import RequestOptions, enum_value
+from .models import WebhookEndpoint
+
+# @oagen-ignore-start
+if TYPE_CHECKING:
+    from workos.events.models import EventSchemaVariant
+    # @oagen-ignore-end
 
 
 class Webhooks:
@@ -446,12 +453,6 @@ class AsyncWebhooks:
             path=("webhook_endpoints", str(id)),
             request_options=request_options,
         )
-
-
-# @oagen-ignore-start
-if TYPE_CHECKING:
-    from workos.events.models import EventSchemaVariant
-    # @oagen-ignore-end
 
     # @oagen-ignore-start
     DEFAULT_TOLERANCE = 180

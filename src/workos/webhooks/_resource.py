@@ -7,11 +7,8 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
-import hashlib
-import hmac
-import json
-import time
-
+from .._types import RequestOptions, enum_value
+from .models import WebhookEndpoint
 from workos.common.models.create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents,
 )
@@ -22,10 +19,11 @@ from workos.common.models.update_webhook_endpoint_events import (
 from workos.common.models.update_webhook_endpoint_status import (
     UpdateWebhookEndpointStatus,
 )
-
 from .._pagination import AsyncPage, SyncPage
-from .._types import RequestOptions, enum_value
-from .models import WebhookEndpoint
+import hashlib
+import hmac
+import json
+import time
 
 # @oagen-ignore-start
 if TYPE_CHECKING:

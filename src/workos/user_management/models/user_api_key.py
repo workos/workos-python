@@ -28,6 +28,8 @@ class UserApiKey:
     """An obfuscated representation of the API Key value."""
     last_used_at: Optional[datetime]
     """Timestamp of when the API Key was last used."""
+    expires_at: Optional[datetime]
+    """Timestamp when the API Key expires. Null means the key does not expire."""
     permissions: List[str]
     """The permission slugs assigned to the API Key."""
     created_at: datetime
@@ -48,6 +50,9 @@ class UserApiKey:
                 last_used_at=_parse_datetime(_v_last_used_at)
                 if (_v_last_used_at := data["last_used_at"]) is not None
                 else None,
+                expires_at=_parse_datetime(_v_expires_at)
+                if (_v_expires_at := data["expires_at"]) is not None
+                else None,
                 permissions=data["permissions"],
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
@@ -67,6 +72,10 @@ class UserApiKey:
             result["last_used_at"] = _format_datetime(self.last_used_at)
         else:
             result["last_used_at"] = None
+        if self.expires_at is not None:
+            result["expires_at"] = _format_datetime(self.expires_at)
+        else:
+            result["expires_at"] = None
         result["permissions"] = self.permissions
         result["created_at"] = _format_datetime(self.created_at)
         result["updated_at"] = _format_datetime(self.updated_at)

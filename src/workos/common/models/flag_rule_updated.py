@@ -17,6 +17,8 @@ from .flag_rule_updated_data import FlagRuleUpdatedData
 class FlagRuleUpdated:
     """Flag Rule Updated model."""
 
+    object: Literal["event"]
+    """Distinguishes the Event object."""
     id: str
     """Unique identifier for the event."""
     event: Literal["flag.rule_updated"]
@@ -26,14 +28,13 @@ class FlagRuleUpdated:
     """An ISO 8601 timestamp."""
     context: "FlagRuleUpdatedContext"
     """Additional context about the event."""
-    object: Literal["event"]
-    """Distinguishes the Event object."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "FlagRuleUpdated":
         """Deserialize from a dictionary."""
         try:
             return cls(
+                object=data.get("object", "event"),
                 id=data["id"],
                 event=data.get("event", "flag.rule_updated"),
                 data=FlagRuleUpdatedData.from_dict(cast(Dict[str, Any], data["data"])),
@@ -41,7 +42,6 @@ class FlagRuleUpdated:
                 context=FlagRuleUpdatedContext.from_dict(
                     cast(Dict[str, Any], data["context"])
                 ),
-                object=data.get("object", "event"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("FlagRuleUpdated", e)
@@ -49,10 +49,10 @@ class FlagRuleUpdated:
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
+        result["object"] = self.object
         result["id"] = self.id
         result["event"] = self.event
         result["data"] = self.data.to_dict()
         result["created_at"] = _format_datetime(self.created_at)
         result["context"] = self.context.to_dict()
-        result["object"] = self.object
         return result

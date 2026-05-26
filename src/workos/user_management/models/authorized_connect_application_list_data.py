@@ -7,7 +7,10 @@ from typing import cast
 from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
 
-from workos.common.models.connect_application import ConnectApplication
+from workos.common.models.connect_application import (
+    ConnectApplication,
+    ConnectApplicationVariant,
+)
 
 
 @dataclass(slots=True)
@@ -20,7 +23,7 @@ class AuthorizedConnectApplicationListData:
     """The unique ID of the authorized connect application."""
     granted_scopes: List[str]
     """The scopes granted by the user to the application."""
-    application: "ConnectApplication"
+    application: "ConnectApplicationVariant"
     oauth_resource: Optional[str] = None
     """The OAuth resource associated with the authorized connect application, if one was requested."""
 

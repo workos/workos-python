@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import cast
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 from workos._types import _raise_deserialize_error
+from workos._types import _format_datetime, _parse_datetime
 
 from .audit_log_schema_actor import AuditLogSchemaActor
 from .audit_log_schema_target import AuditLogSchemaTarget
@@ -15,22 +17,31 @@ from .audit_log_schema_target import AuditLogSchemaTarget
 class AuditLogSchema:
     """Audit Log Schema model."""
 
+    object: Literal["audit_log_schema"]
+    """Distinguishes the Audit Log Schema object."""
+    version: int
+    """The version of the schema."""
     targets: List["AuditLogSchemaTarget"]
     """The list of targets for the schema."""
+    created_at: datetime
+    """The timestamp when the Audit Log Schema was created."""
     actor: Optional["AuditLogSchemaActor"] = None
     """The metadata schema for the actor."""
     metadata: Optional[Dict[str, Any]] = None
-    """Optional JSON schema for event metadata."""
+    """Additional data associated with the event or entity."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AuditLogSchema":
         """Deserialize from a dictionary."""
         try:
             return cls(
+                object=data.get("object", "audit_log_schema"),
+                version=data["version"],
                 targets=[
                     AuditLogSchemaTarget.from_dict(cast(Dict[str, Any], item))
                     for item in cast(list[Any], data["targets"])
                 ],
+                created_at=_parse_datetime(data["created_at"]),
                 actor=AuditLogSchemaActor.from_dict(cast(Dict[str, Any], _v_actor))
                 if (_v_actor := data.get("actor")) is not None
                 else None,
@@ -42,7 +53,10 @@ class AuditLogSchema:
     def to_dict(self) -> Dict[str, Any]:
         """Serialize to a dictionary."""
         result: Dict[str, Any] = {}
+        result["object"] = self.object
+        result["version"] = self.version
         result["targets"] = [item.to_dict() for item in self.targets]
+        result["created_at"] = _format_datetime(self.created_at)
         if self.actor is not None:
             result["actor"] = self.actor.to_dict()
         if self.metadata is not None:

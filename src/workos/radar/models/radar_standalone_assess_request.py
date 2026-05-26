@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from workos._types import _raise_deserialize_error
 from workos.common.models.radar_standalone_assess_request_action import (
     RadarStandaloneAssessRequestAction,
@@ -28,10 +28,6 @@ class RadarStandaloneAssessRequest:
     """The authentication method being used."""
     action: "RadarStandaloneAssessRequestAction"
     """The action being performed."""
-    device_fingerprint: Optional[str] = None
-    """An optional device fingerprint for the request."""
-    bot_score: Optional[str] = None
-    """An optional bot detection score for the request."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "RadarStandaloneAssessRequest":
@@ -43,8 +39,6 @@ class RadarStandaloneAssessRequest:
                 email=data["email"],
                 auth_method=RadarStandaloneAssessRequestAuthMethod(data["auth_method"]),
                 action=RadarStandaloneAssessRequestAction(data["action"]),
-                device_fingerprint=data.get("device_fingerprint"),
-                bot_score=data.get("bot_score"),
             )
         except (KeyError, ValueError) as e:
             _raise_deserialize_error("RadarStandaloneAssessRequest", e)
@@ -63,8 +57,4 @@ class RadarStandaloneAssessRequest:
         result["action"] = (
             self.action.value if isinstance(self.action, Enum) else self.action
         )
-        if self.device_fingerprint is not None:
-            result["device_fingerprint"] = self.device_fingerprint
-        if self.bot_score is not None:
-            result["bot_score"] = self.bot_score
         return result

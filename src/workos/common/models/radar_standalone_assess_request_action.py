@@ -12,14 +12,8 @@ from typing import Literal, TypeAlias
 class RadarStandaloneAssessRequestAction(str, Enum):
     """Known values for RadarStandaloneAssessRequestAction."""
 
-    LOGIN = "login"
-    SIGNUP = "signup"
     SIGN_UP = "sign-up"
     SIGN_IN = "sign-in"
-    SIGN_UP_2 = "sign_up"
-    SIGN_IN_2 = "sign_in"
-    SIGN_IN_3 = "sign in"
-    SIGN_UP_3 = "sign up"
 
     @classmethod
     def _missing_(cls, value: object) -> Optional["RadarStandaloneAssessRequestAction"]:
@@ -31,6 +25,4 @@ class RadarStandaloneAssessRequestAction(str, Enum):
         return unknown
 
 
-RadarStandaloneAssessRequestActionLiteral: TypeAlias = Literal[
-    "login", "signup", "sign-up", "sign-in", "sign_up", "sign_in", "sign in", "sign up"
-]
+RadarStandaloneAssessRequestActionLiteral: TypeAlias = Literal["sign-up", "sign-in"]

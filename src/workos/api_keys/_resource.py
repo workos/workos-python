@@ -78,6 +78,7 @@ class ApiKeys:
         *,
         name: str,
         permissions: Optional[List[str]] = None,
+        expires_at: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> OrganizationApiKeyWithValue:
         """Create an API key for an organization
@@ -88,6 +89,7 @@ class ApiKeys:
             organization_id: Unique identifier of the Organization.
             name: The name for the API key.
             permissions: The permission slugs to assign to the API key.
+            expires_at: The timestamp when the API key should expire. Must be a future timestamp. If omitted, the key does not expire.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -105,6 +107,7 @@ class ApiKeys:
             for k, v in {
                 "name": name,
                 "permissions": permissions,
+                "expires_at": expires_at,
             }.items()
             if v is not None
         }
@@ -238,6 +241,7 @@ class AsyncApiKeys:
         *,
         name: str,
         permissions: Optional[List[str]] = None,
+        expires_at: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> OrganizationApiKeyWithValue:
         """Create an API key for an organization
@@ -248,6 +252,7 @@ class AsyncApiKeys:
             organization_id: Unique identifier of the Organization.
             name: The name for the API key.
             permissions: The permission slugs to assign to the API key.
+            expires_at: The timestamp when the API key should expire. Must be a future timestamp. If omitted, the key does not expire.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -265,6 +270,7 @@ class AsyncApiKeys:
             for k, v in {
                 "name": name,
                 "permissions": permissions,
+                "expires_at": expires_at,
             }.items()
             if v is not None
         }

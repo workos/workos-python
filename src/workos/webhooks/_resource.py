@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
-from .models import WebhookEndpointJson
+from .models import WebhookEndpoint
 from workos.common.models.create_webhook_endpoint_events import (
     CreateWebhookEndpointEvents,
 )
@@ -25,6 +25,11 @@ import hmac
 import json
 import time
 
+# @oagen-ignore-start
+if TYPE_CHECKING:
+    from workos.events.models import EventSchemaVariant
+    # @oagen-ignore-end
+
 
 class Webhooks:
     """Webhooks API resources."""
@@ -40,7 +45,7 @@ class Webhooks:
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[WebhookEndpointJson]:
+    ) -> SyncPage[WebhookEndpoint]:
         """List Webhook Endpoints
 
         Get a list of all of your existing webhook endpoints.
@@ -53,7 +58,7 @@ class Webhooks:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            SyncPage[WebhookEndpointJson]
+            SyncPage[WebhookEndpoint]
 
         Raises:
             AuthenticationError: If the API key is invalid (401).
@@ -73,7 +78,7 @@ class Webhooks:
         return self._client.request_page(
             method="get",
             path=("webhook_endpoints",),
-            model=WebhookEndpointJson,
+            model=WebhookEndpoint,
             params=params,
             request_options=request_options,
         )
@@ -84,7 +89,7 @@ class Webhooks:
         endpoint_url: str,
         events: List[Union[CreateWebhookEndpointEvents, str]],
         request_options: Optional[RequestOptions] = None,
-    ) -> WebhookEndpointJson:
+    ) -> WebhookEndpoint:
         """Create a Webhook Endpoint
 
         Create a new webhook endpoint to receive event notifications.
@@ -95,7 +100,7 @@ class Webhooks:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            WebhookEndpointJson
+            WebhookEndpoint
 
         Raises:
             ConflictError: If a conflict occurs (409).
@@ -112,7 +117,7 @@ class Webhooks:
             method="post",
             path=("webhook_endpoints",),
             body=body,
-            model=WebhookEndpointJson,
+            model=WebhookEndpoint,
             request_options=request_options,
         )
 
@@ -124,7 +129,7 @@ class Webhooks:
         status: Optional[Union[UpdateWebhookEndpointStatus, str]] = None,
         events: Optional[List[Union[UpdateWebhookEndpointEvents, str]]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> WebhookEndpointJson:
+    ) -> WebhookEndpoint:
         """Update a Webhook Endpoint
 
         Update the properties of an existing webhook endpoint.
@@ -137,7 +142,7 @@ class Webhooks:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            WebhookEndpointJson
+            WebhookEndpoint
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -160,7 +165,7 @@ class Webhooks:
             method="patch",
             path=("webhook_endpoints", str(id)),
             body=body,
-            model=WebhookEndpointJson,
+            model=WebhookEndpoint,
             request_options=request_options,
         )
 
@@ -297,7 +302,7 @@ class AsyncWebhooks:
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[WebhookEndpointJson]:
+    ) -> AsyncPage[WebhookEndpoint]:
         """List Webhook Endpoints
 
         Get a list of all of your existing webhook endpoints.
@@ -310,7 +315,7 @@ class AsyncWebhooks:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AsyncPage[WebhookEndpointJson]
+            AsyncPage[WebhookEndpoint]
 
         Raises:
             AuthenticationError: If the API key is invalid (401).
@@ -330,7 +335,7 @@ class AsyncWebhooks:
         return await self._client.request_page(
             method="get",
             path=("webhook_endpoints",),
-            model=WebhookEndpointJson,
+            model=WebhookEndpoint,
             params=params,
             request_options=request_options,
         )
@@ -341,7 +346,7 @@ class AsyncWebhooks:
         endpoint_url: str,
         events: List[Union[CreateWebhookEndpointEvents, str]],
         request_options: Optional[RequestOptions] = None,
-    ) -> WebhookEndpointJson:
+    ) -> WebhookEndpoint:
         """Create a Webhook Endpoint
 
         Create a new webhook endpoint to receive event notifications.
@@ -352,7 +357,7 @@ class AsyncWebhooks:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            WebhookEndpointJson
+            WebhookEndpoint
 
         Raises:
             ConflictError: If a conflict occurs (409).
@@ -369,7 +374,7 @@ class AsyncWebhooks:
             method="post",
             path=("webhook_endpoints",),
             body=body,
-            model=WebhookEndpointJson,
+            model=WebhookEndpoint,
             request_options=request_options,
         )
 
@@ -381,7 +386,7 @@ class AsyncWebhooks:
         status: Optional[Union[UpdateWebhookEndpointStatus, str]] = None,
         events: Optional[List[Union[UpdateWebhookEndpointEvents, str]]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> WebhookEndpointJson:
+    ) -> WebhookEndpoint:
         """Update a Webhook Endpoint
 
         Update the properties of an existing webhook endpoint.
@@ -394,7 +399,7 @@ class AsyncWebhooks:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            WebhookEndpointJson
+            WebhookEndpoint
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -417,7 +422,7 @@ class AsyncWebhooks:
             method="patch",
             path=("webhook_endpoints", str(id)),
             body=body,
-            model=WebhookEndpointJson,
+            model=WebhookEndpoint,
             request_options=request_options,
         )
 
@@ -538,9 +543,3 @@ class AsyncWebhooks:
             )
 
     # @oagen-ignore-end
-
-
-# @oagen-ignore-start
-if TYPE_CHECKING:
-    from workos.events.models import EventSchemaVariant
-# @oagen-ignore-end

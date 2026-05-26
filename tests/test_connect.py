@@ -6,7 +6,7 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.common.models import ConnectApplication, PaginationOrder
+from workos.common.models import ConnectApplicationOAuth, PaginationOrder
 from workos.connect.models import (
     ApplicationCredentialsListItem,
     ExternalAuthCompleteResponse,
@@ -52,7 +52,7 @@ class TestConnect:
         page = workos.connect.list_applications()
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], ConnectApplication)
+        assert isinstance(page.data[0], ConnectApplicationOAuth)
 
     def test_list_applications_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -83,7 +83,7 @@ class TestConnect:
         result = workos.connect.create_application(
             body=load_fixture("create_oauth_application.json")
         )
-        assert isinstance(result, ConnectApplication)
+        assert isinstance(result, ConnectApplicationOAuth)
         assert result.object == "connect_application"
         assert result.id == "conn_app_01HXYZ123456789ABCDEFGHIJ"
         request = httpx_mock.get_request()
@@ -95,7 +95,7 @@ class TestConnect:
             json=load_fixture("connect_application.json"),
         )
         result = workos.connect.get_application("test_id")
-        assert isinstance(result, ConnectApplication)
+        assert isinstance(result, ConnectApplicationOAuth)
         assert result.object == "connect_application"
         assert result.id == "conn_app_01HXYZ123456789ABCDEFGHIJ"
         request = httpx_mock.get_request()
@@ -107,7 +107,7 @@ class TestConnect:
             json=load_fixture("connect_application.json"),
         )
         result = workos.connect.update_application("test_id")
-        assert isinstance(result, ConnectApplication)
+        assert isinstance(result, ConnectApplicationOAuth)
         assert result.object == "connect_application"
         assert result.id == "conn_app_01HXYZ123456789ABCDEFGHIJ"
         request = httpx_mock.get_request()
@@ -156,7 +156,7 @@ class TestConnect:
         result = workos.connect.create_oauth_application(
             name="test_name", is_first_party=True
         )
-        assert isinstance(result, ConnectApplication)
+        assert isinstance(result, ConnectApplicationOAuth)
         request = httpx_mock.get_request()
         assert request.method == "POST"
         body = json.loads(request.content)
@@ -167,7 +167,7 @@ class TestConnect:
         result = workos.connect.create_m2m_application(
             name="test_name", organization_id="test_organization_id"
         )
-        assert isinstance(result, ConnectApplication)
+        assert isinstance(result, ConnectApplicationOAuth)
         request = httpx_mock.get_request()
         assert request.method == "POST"
         body = json.loads(request.content)
@@ -296,7 +296,7 @@ class TestAsyncConnect:
         page = await async_workos.connect.list_applications()
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], ConnectApplication)
+        assert isinstance(page.data[0], ConnectApplicationOAuth)
 
     @pytest.mark.asyncio
     async def test_list_applications_empty_page(self, async_workos, httpx_mock):
@@ -330,7 +330,7 @@ class TestAsyncConnect:
         result = await async_workos.connect.create_application(
             body=load_fixture("create_oauth_application.json")
         )
-        assert isinstance(result, ConnectApplication)
+        assert isinstance(result, ConnectApplicationOAuth)
         assert result.object == "connect_application"
         assert result.id == "conn_app_01HXYZ123456789ABCDEFGHIJ"
         request = httpx_mock.get_request()
@@ -341,7 +341,7 @@ class TestAsyncConnect:
     async def test_get_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
         result = await async_workos.connect.get_application("test_id")
-        assert isinstance(result, ConnectApplication)
+        assert isinstance(result, ConnectApplicationOAuth)
         assert result.object == "connect_application"
         assert result.id == "conn_app_01HXYZ123456789ABCDEFGHIJ"
         request = httpx_mock.get_request()
@@ -352,7 +352,7 @@ class TestAsyncConnect:
     async def test_update_application(self, async_workos, httpx_mock):
         httpx_mock.add_response(json=load_fixture("connect_application.json"))
         result = await async_workos.connect.update_application("test_id")
-        assert isinstance(result, ConnectApplication)
+        assert isinstance(result, ConnectApplicationOAuth)
         assert result.object == "connect_application"
         assert result.id == "conn_app_01HXYZ123456789ABCDEFGHIJ"
         request = httpx_mock.get_request()
@@ -406,7 +406,7 @@ class TestAsyncConnect:
         result = await async_workos.connect.create_oauth_application(
             name="test_name", is_first_party=True
         )
-        assert isinstance(result, ConnectApplication)
+        assert isinstance(result, ConnectApplicationOAuth)
         request = httpx_mock.get_request()
         assert request.method == "POST"
         body = json.loads(request.content)
@@ -418,7 +418,7 @@ class TestAsyncConnect:
         result = await async_workos.connect.create_m2m_application(
             name="test_name", organization_id="test_organization_id"
         )
-        assert isinstance(result, ConnectApplication)
+        assert isinstance(result, ConnectApplicationOAuth)
         request = httpx_mock.get_request()
         assert request.method == "POST"
         body = json.loads(request.content)

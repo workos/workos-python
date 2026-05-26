@@ -5,7 +5,7 @@ import pytest
 from workos import WorkOSClient, AsyncWorkOSClient
 from tests.generated_helpers import load_fixture
 
-from workos.common.models import DsyncUserCreated, PaginationOrder
+from workos.common.models import ActionAuthenticationDenied, PaginationOrder
 from workos._pagination import AsyncPage, SyncPage
 from workos._errors import (
     AuthenticationError,
@@ -25,7 +25,7 @@ class TestEvents:
         page = workos.events.list_events()
         assert isinstance(page, SyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], DsyncUserCreated)
+        assert isinstance(page.data[0], ActionAuthenticationDenied)
 
     def test_list_events_empty_page(self, workos, httpx_mock):
         httpx_mock.add_response(json={"data": [], "list_metadata": {}})
@@ -138,7 +138,7 @@ class TestAsyncEvents:
         page = await async_workos.events.list_events()
         assert isinstance(page, AsyncPage)
         assert len(page.data) == 1
-        assert isinstance(page.data[0], DsyncUserCreated)
+        assert isinstance(page.data[0], ActionAuthenticationDenied)
 
     @pytest.mark.asyncio
     async def test_list_events_empty_page(self, async_workos, httpx_mock):

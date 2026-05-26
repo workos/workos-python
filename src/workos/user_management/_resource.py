@@ -21,7 +21,6 @@ from .models import (
     JWTTemplateResponse,
     JwksResponse,
     MagicAuth,
-    OrganizationMembership,
     PasswordReset,
     PasswordSessionAuthenticateRequest,
     RedirectUri,
@@ -37,7 +36,6 @@ from .models import (
     UserApiKeyWithValue,
     UserIdentitiesGetItem,
     UserInvite,
-    UserOrganizationMembership,
     VerifyEmailResponse,
 )
 from workos.common.models.user import User
@@ -45,7 +43,6 @@ from workos.common.models.user_sessions_list_item import UserSessionsListItem
 from .models import (
     UserManagementAuthenticationProvider,
     UserManagementAuthenticationScreenHint,
-    UserManagementOrganizationMembershipStatuses,
 )
 from workos.common.models.create_user_invite_options_locale import (
     CreateUserInviteOptionsLocale,
@@ -80,20 +77,6 @@ class PasswordHashed:
 
     password_hash: str
     password_hash_type: Union[CreateUserPasswordHashType, str]
-
-
-@dataclass
-class RoleSingle:
-    """Identify role single."""
-
-    role_slug: str
-
-
-@dataclass
-class RoleMultiple:
-    """Identify role multiple."""
-
-    role_slugs: List[str]
 
 
 class UserManagement:
@@ -1725,286 +1708,6 @@ class UserManagement:
             request_options=request_options,
         )
 
-    def list_organization_memberships(
-        self,
-        *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        statuses: Optional[
-            List[Union[UserManagementOrganizationMembershipStatuses, str]]
-        ] = None,
-        user_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[UserOrganizationMembership]:
-        """List organization memberships
-
-        Get a list of all organization memberships matching the criteria specified. At least one of `user_id` or `organization_id` must be provided. By default only active memberships are returned. Use the `statuses` parameter to filter by other statuses.
-
-        Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
-            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
-            statuses: Filter by the status of the organization membership. Array including any of `active`, `inactive`, or `pending`.
-            user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            SyncPage[UserOrganizationMembership]
-
-        Raises:
-            BadRequestError: If the request is malformed (400).
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-                "statuses": ",".join(str(v) for v in statuses)
-                if statuses is not None
-                else None,
-                "user_id": user_id,
-            }.items()
-            if v is not None
-        }
-        return self._client.request_page(
-            method="get",
-            path=("user_management", "organization_memberships"),
-            model=UserOrganizationMembership,
-            params=params,
-            request_options=request_options,
-        )
-
-    def create_organization_membership(
-        self,
-        *,
-        user_id: str,
-        organization_id: str,
-        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> OrganizationMembership:
-        """Create an organization membership
-
-        Creates a new `active` organization membership for the given organization and user.
-
-        Calling this API with an organization and user that match an `inactive` organization membership will activate the membership with the specified role(s).
-
-        Args:
-            user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
-            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
-            role: Identifies the role. One of: RoleSingle, RoleMultiple.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            OrganizationMembership
-
-        Raises:
-            BadRequestError: If the request is malformed (400).
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        body: Dict[str, Any] = {
-            "user_id": user_id,
-            "organization_id": organization_id,
-        }
-        if role is not None:
-            if isinstance(role, RoleSingle):
-                body["role_slug"] = role.role_slug
-            elif isinstance(role, RoleMultiple):
-                body["role_slugs"] = role.role_slugs
-        return self._client.request(
-            method="post",
-            path=("user_management", "organization_memberships"),
-            body=body,
-            model=OrganizationMembership,
-            request_options=request_options,
-        )
-
-    def get_organization_membership(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> UserOrganizationMembership:
-        """Get an organization membership
-
-        Get the details of an existing organization membership.
-
-        Args:
-            id: The unique ID of the organization membership.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            UserOrganizationMembership
-
-        Raises:
-            NotFoundError: If the resource is not found (404).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        return self._client.request(
-            method="get",
-            path=("user_management", "organization_memberships", str(id)),
-            model=UserOrganizationMembership,
-            request_options=request_options,
-        )
-
-    def update_organization_membership(
-        self,
-        id: str,
-        *,
-        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> UserOrganizationMembership:
-        """Update an organization membership
-
-        Update the details of an existing organization membership.
-
-        Args:
-            id: The unique ID of the organization membership.
-            role: Identifies the role. One of: RoleSingle, RoleMultiple.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            UserOrganizationMembership
-
-        Raises:
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        body: Dict[str, Any] = {}
-        if role is not None:
-            if isinstance(role, RoleSingle):
-                body["role_slug"] = role.role_slug
-            elif isinstance(role, RoleMultiple):
-                body["role_slugs"] = role.role_slugs
-        return self._client.request(
-            method="put",
-            path=("user_management", "organization_memberships", str(id)),
-            body=body,
-            model=UserOrganizationMembership,
-            request_options=request_options,
-        )
-
-    def delete_organization_membership(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> None:
-        """Delete an organization membership
-
-        Permanently deletes an existing organization membership. It cannot be undone.
-
-        Args:
-            id: The unique ID of the organization membership.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Raises:
-            NotFoundError: If the resource is not found (404).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        self._client.request(
-            method="delete",
-            path=("user_management", "organization_memberships", str(id)),
-            request_options=request_options,
-        )
-
-    def deactivate_organization_membership(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> OrganizationMembership:
-        """Deactivate an organization membership
-
-        Deactivates an `active` organization membership. Emits an [organization_membership.updated](https://workos.com/docs/events/organization-membership) event upon successful deactivation.
-
-        - Deactivating an `inactive` membership is a no-op and does not emit an event.
-        - Deactivating a `pending` membership returns an error. This membership should be [deleted](https://workos.com/docs/reference/authkit/organization-membership/delete) instead.
-
-        See the [membership management documentation](https://workos.com/docs/authkit/users-organizations/organizations/membership-management) for additional details.
-
-        Args:
-            id: The unique ID of the organization membership.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            OrganizationMembership
-
-        Raises:
-            BadRequestError: If the request is malformed (400).
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        return self._client.request(
-            method="put",
-            path=("user_management", "organization_memberships", str(id), "deactivate"),
-            model=OrganizationMembership,
-            request_options=request_options,
-        )
-
-    def reactivate_organization_membership(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> UserOrganizationMembership:
-        """Reactivate an organization membership
-
-        Reactivates an `inactive` organization membership, retaining the pre-existing role(s). Emits an [organization_membership.updated](https://workos.com/docs/events/organization-membership) event upon successful reactivation.
-
-        - Reactivating an `active` membership is a no-op and does not emit an event.
-        - Reactivating a `pending` membership returns an error. The user needs to [accept the invitation](https://workos.com/docs/authkit/invitations) instead.
-
-        See the [membership management documentation](https://workos.com/docs/authkit/users-organizations/organizations/membership-management) for additional details.
-
-        Args:
-            id: The unique ID of the organization membership.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            UserOrganizationMembership
-
-        Raises:
-            BadRequestError: If the request is malformed (400).
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        return self._client.request(
-            method="put",
-            path=("user_management", "organization_memberships", str(id), "reactivate"),
-            model=UserOrganizationMembership,
-            request_options=request_options,
-        )
-
     def create_redirect_uri(
         self,
         *,
@@ -2183,6 +1886,7 @@ class UserManagement:
         name: str,
         organization_id: str,
         permissions: Optional[List[str]] = None,
+        expires_at: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserApiKeyWithValue:
         """Create an API key for a user
@@ -2194,6 +1898,7 @@ class UserManagement:
             name: A descriptive name for the API key.
             organization_id: The ID of the organization the user API key is associated with. The user must have an active membership in this organization.
             permissions: The permission slugs to assign to the API key. Each permission must be enabled for user API keys.
+            expires_at: The timestamp when the API key should expire. Must be a future timestamp. If omitted, the key does not expire.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2213,6 +1918,7 @@ class UserManagement:
                 "name": name,
                 "organization_id": organization_id,
                 "permissions": permissions,
+                "expires_at": expires_at,
             }.items()
             if v is not None
         }
@@ -4039,286 +3745,6 @@ class AsyncUserManagement:
             request_options=request_options,
         )
 
-    async def list_organization_memberships(
-        self,
-        *,
-        limit: Optional[int] = None,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-        order: Optional[Union[PaginationOrder, str]] = "desc",
-        organization_id: Optional[str] = None,
-        statuses: Optional[
-            List[Union[UserManagementOrganizationMembershipStatuses, str]]
-        ] = None,
-        user_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[UserOrganizationMembership]:
-        """List organization memberships
-
-        Get a list of all organization memberships matching the criteria specified. At least one of `user_id` or `organization_id` must be provided. By default only active memberships are returned. Use the `statuses` parameter to filter by other statuses.
-
-        Args:
-            limit: Upper limit on the number of objects to return, between `1` and `100`. Defaults to `10`.
-            before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
-            after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
-            order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
-            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
-            statuses: Filter by the status of the organization membership. Array including any of `active`, `inactive`, or `pending`.
-            user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            AsyncPage[UserOrganizationMembership]
-
-        Raises:
-            BadRequestError: If the request is malformed (400).
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        params = {
-            k: v
-            for k, v in {
-                "limit": limit,
-                "before": before,
-                "after": after,
-                "order": enum_value(order) if order is not None else None,
-                "organization_id": organization_id,
-                "statuses": ",".join(str(v) for v in statuses)
-                if statuses is not None
-                else None,
-                "user_id": user_id,
-            }.items()
-            if v is not None
-        }
-        return await self._client.request_page(
-            method="get",
-            path=("user_management", "organization_memberships"),
-            model=UserOrganizationMembership,
-            params=params,
-            request_options=request_options,
-        )
-
-    async def create_organization_membership(
-        self,
-        *,
-        user_id: str,
-        organization_id: str,
-        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> OrganizationMembership:
-        """Create an organization membership
-
-        Creates a new `active` organization membership for the given organization and user.
-
-        Calling this API with an organization and user that match an `inactive` organization membership will activate the membership with the specified role(s).
-
-        Args:
-            user_id: The ID of the [user](https://workos.com/docs/reference/authkit/user).
-            organization_id: The ID of the [organization](https://workos.com/docs/reference/organization) which the user belongs to.
-            role: Identifies the role. One of: RoleSingle, RoleMultiple.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            OrganizationMembership
-
-        Raises:
-            BadRequestError: If the request is malformed (400).
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        body: Dict[str, Any] = {
-            "user_id": user_id,
-            "organization_id": organization_id,
-        }
-        if role is not None:
-            if isinstance(role, RoleSingle):
-                body["role_slug"] = role.role_slug
-            elif isinstance(role, RoleMultiple):
-                body["role_slugs"] = role.role_slugs
-        return await self._client.request(
-            method="post",
-            path=("user_management", "organization_memberships"),
-            body=body,
-            model=OrganizationMembership,
-            request_options=request_options,
-        )
-
-    async def get_organization_membership(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> UserOrganizationMembership:
-        """Get an organization membership
-
-        Get the details of an existing organization membership.
-
-        Args:
-            id: The unique ID of the organization membership.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            UserOrganizationMembership
-
-        Raises:
-            NotFoundError: If the resource is not found (404).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        return await self._client.request(
-            method="get",
-            path=("user_management", "organization_memberships", str(id)),
-            model=UserOrganizationMembership,
-            request_options=request_options,
-        )
-
-    async def update_organization_membership(
-        self,
-        id: str,
-        *,
-        role: Optional[Union[RoleSingle, RoleMultiple]] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> UserOrganizationMembership:
-        """Update an organization membership
-
-        Update the details of an existing organization membership.
-
-        Args:
-            id: The unique ID of the organization membership.
-            role: Identifies the role. One of: RoleSingle, RoleMultiple.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            UserOrganizationMembership
-
-        Raises:
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        body: Dict[str, Any] = {}
-        if role is not None:
-            if isinstance(role, RoleSingle):
-                body["role_slug"] = role.role_slug
-            elif isinstance(role, RoleMultiple):
-                body["role_slugs"] = role.role_slugs
-        return await self._client.request(
-            method="put",
-            path=("user_management", "organization_memberships", str(id)),
-            body=body,
-            model=UserOrganizationMembership,
-            request_options=request_options,
-        )
-
-    async def delete_organization_membership(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> None:
-        """Delete an organization membership
-
-        Permanently deletes an existing organization membership. It cannot be undone.
-
-        Args:
-            id: The unique ID of the organization membership.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Raises:
-            NotFoundError: If the resource is not found (404).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        await self._client.request(
-            method="delete",
-            path=("user_management", "organization_memberships", str(id)),
-            request_options=request_options,
-        )
-
-    async def deactivate_organization_membership(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> OrganizationMembership:
-        """Deactivate an organization membership
-
-        Deactivates an `active` organization membership. Emits an [organization_membership.updated](https://workos.com/docs/events/organization-membership) event upon successful deactivation.
-
-        - Deactivating an `inactive` membership is a no-op and does not emit an event.
-        - Deactivating a `pending` membership returns an error. This membership should be [deleted](https://workos.com/docs/reference/authkit/organization-membership/delete) instead.
-
-        See the [membership management documentation](https://workos.com/docs/authkit/users-organizations/organizations/membership-management) for additional details.
-
-        Args:
-            id: The unique ID of the organization membership.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            OrganizationMembership
-
-        Raises:
-            BadRequestError: If the request is malformed (400).
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        return await self._client.request(
-            method="put",
-            path=("user_management", "organization_memberships", str(id), "deactivate"),
-            model=OrganizationMembership,
-            request_options=request_options,
-        )
-
-    async def reactivate_organization_membership(
-        self,
-        id: str,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> UserOrganizationMembership:
-        """Reactivate an organization membership
-
-        Reactivates an `inactive` organization membership, retaining the pre-existing role(s). Emits an [organization_membership.updated](https://workos.com/docs/events/organization-membership) event upon successful reactivation.
-
-        - Reactivating an `active` membership is a no-op and does not emit an event.
-        - Reactivating a `pending` membership returns an error. The user needs to [accept the invitation](https://workos.com/docs/authkit/invitations) instead.
-
-        See the [membership management documentation](https://workos.com/docs/authkit/users-organizations/organizations/membership-management) for additional details.
-
-        Args:
-            id: The unique ID of the organization membership.
-            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
-
-        Returns:
-            UserOrganizationMembership
-
-        Raises:
-            BadRequestError: If the request is malformed (400).
-            NotFoundError: If the resource is not found (404).
-            UnprocessableEntityError: If the request data is unprocessable (422).
-            AuthenticationError: If the API key is invalid (401).
-            RateLimitExceededError: If rate limited (429).
-            ServerError: If the server returns a 5xx error.
-        """
-        return await self._client.request(
-            method="put",
-            path=("user_management", "organization_memberships", str(id), "reactivate"),
-            model=UserOrganizationMembership,
-            request_options=request_options,
-        )
-
     async def create_redirect_uri(
         self,
         *,
@@ -4497,6 +3923,7 @@ class AsyncUserManagement:
         name: str,
         organization_id: str,
         permissions: Optional[List[str]] = None,
+        expires_at: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> UserApiKeyWithValue:
         """Create an API key for a user
@@ -4508,6 +3935,7 @@ class AsyncUserManagement:
             name: A descriptive name for the API key.
             organization_id: The ID of the organization the user API key is associated with. The user must have an active membership in this organization.
             permissions: The permission slugs to assign to the API key. Each permission must be enabled for user API keys.
+            expires_at: The timestamp when the API key should expire. Must be a future timestamp. If omitted, the key does not expire.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -4527,6 +3955,7 @@ class AsyncUserManagement:
                 "name": name,
                 "organization_id": organization_id,
                 "permissions": permissions,
+                "expires_at": expires_at,
             }.items()
             if v is not None
         }

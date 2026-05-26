@@ -2,4 +2,4 @@
 
 from .create_webhook_endpoint import CreateWebhookEndpoint as CreateWebhookEndpoint
 from .update_webhook_endpoint import UpdateWebhookEndpoint as UpdateWebhookEndpoint
-from .webhook_endpoint_json import WebhookEndpointJson as WebhookEndpointJson
+from .webhook_endpoint import WebhookEndpoint as WebhookEndpoint

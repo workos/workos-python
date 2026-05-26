@@ -4,7 +4,7 @@ from .audit_log_configuration import AuditLogConfiguration as AuditLogConfigurat
 from .audit_log_configuration_log_stream import (
     AuditLogConfigurationLogStream as AuditLogConfigurationLogStream,
 )
-from .audit_logs_retention_json import AuditLogsRetentionJson as AuditLogsRetentionJson
+from .audit_logs_retention import AuditLogsRetention as AuditLogsRetention
 from .organization import Organization as Organization
 from .organization_domain_data import OrganizationDomainData as OrganizationDomainData
 from .organization_input import OrganizationInput as OrganizationInput

@@ -331,6 +331,9 @@ class Authorization:
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
+        resource_id: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserRoleAssignment]:
         """List role assignments
@@ -343,6 +346,9 @@ class Authorization:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            resource_id: Filter assignments by the ID of the resource.
+            resource_external_id: Filter assignments by the external ID of the resource.
+            resource_type_slug: Filter assignments by the slug of the resource type.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -362,6 +368,9 @@ class Authorization:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "resource_id": resource_id,
+                "resource_external_id": resource_external_id,
+                "resource_type_slug": resource_type_slug,
             }.items()
             if v is not None
         }
@@ -1103,6 +1112,7 @@ class Authorization:
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
+        role_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserRoleAssignment]:
         """List role assignments for a resource by external ID
@@ -1117,6 +1127,7 @@ class Authorization:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            role_slug: Filter assignments by the slug of the role.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1136,6 +1147,7 @@ class Authorization:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "role_slug": role_slug,
             }.items()
             if v is not None
         }
@@ -1165,7 +1177,6 @@ class Authorization:
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
         resource_external_id: Optional[str] = None,
-        search: Optional[str] = None,
         parent: Optional[Union[ParentById, ParentByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[AuthorizationResource]:
@@ -1181,7 +1192,6 @@ class Authorization:
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
             resource_external_id: Filter resources by external ID.
-            search: Search resources by name.
             parent: Identifies the parent. One of: ParentById, ParentByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -1205,7 +1215,6 @@ class Authorization:
                 "organization_id": organization_id,
                 "resource_type_slug": resource_type_slug,
                 "resource_external_id": resource_external_id,
-                "search": search,
             }.items()
             if v is not None
         }
@@ -1496,6 +1505,7 @@ class Authorization:
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
+        role_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> SyncPage[UserRoleAssignment]:
         """List role assignments for a resource
@@ -1508,6 +1518,7 @@ class Authorization:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            role_slug: Filter assignments by the slug of the role.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -1527,6 +1538,7 @@ class Authorization:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "role_slug": role_slug,
             }.items()
             if v is not None
         }
@@ -2229,6 +2241,9 @@ class AsyncAuthorization:
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
+        resource_id: Optional[str] = None,
+        resource_external_id: Optional[str] = None,
+        resource_type_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserRoleAssignment]:
         """List role assignments
@@ -2241,6 +2256,9 @@ class AsyncAuthorization:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            resource_id: Filter assignments by the ID of the resource.
+            resource_external_id: Filter assignments by the external ID of the resource.
+            resource_type_slug: Filter assignments by the slug of the resource type.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -2260,6 +2278,9 @@ class AsyncAuthorization:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "resource_id": resource_id,
+                "resource_external_id": resource_external_id,
+                "resource_type_slug": resource_type_slug,
             }.items()
             if v is not None
         }
@@ -3001,6 +3022,7 @@ class AsyncAuthorization:
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
+        role_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserRoleAssignment]:
         """List role assignments for a resource by external ID
@@ -3015,6 +3037,7 @@ class AsyncAuthorization:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            role_slug: Filter assignments by the slug of the role.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3034,6 +3057,7 @@ class AsyncAuthorization:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "role_slug": role_slug,
             }.items()
             if v is not None
         }
@@ -3063,7 +3087,6 @@ class AsyncAuthorization:
         organization_id: Optional[str] = None,
         resource_type_slug: Optional[str] = None,
         resource_external_id: Optional[str] = None,
-        search: Optional[str] = None,
         parent: Optional[Union[ParentById, ParentByExternalId]] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[AuthorizationResource]:
@@ -3079,7 +3102,6 @@ class AsyncAuthorization:
             organization_id: Filter resources by organization ID.
             resource_type_slug: Filter resources by resource type slug.
             resource_external_id: Filter resources by external ID.
-            search: Search resources by name.
             parent: Identifies the parent. One of: ParentById, ParentByExternalId.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
@@ -3103,7 +3125,6 @@ class AsyncAuthorization:
                 "organization_id": organization_id,
                 "resource_type_slug": resource_type_slug,
                 "resource_external_id": resource_external_id,
-                "search": search,
             }.items()
             if v is not None
         }
@@ -3394,6 +3415,7 @@ class AsyncAuthorization:
         before: Optional[str] = None,
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
+        role_slug: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> AsyncPage[UserRoleAssignment]:
         """List role assignments for a resource
@@ -3406,6 +3428,7 @@ class AsyncAuthorization:
             before: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `before="obj_123"` to fetch a new batch of objects before `"obj_123"`.
             after: An object ID that defines your place in the list. When the ID is not present, you are at the end of the list. For example, if you make a list request and receive 100 objects, ending with `"obj_123"`, your subsequent call can include `after="obj_123"` to fetch a new batch of objects after `"obj_123"`.
             order: Order the results by the creation time. Supported values are `"asc"` (ascending), `"desc"` (descending), and `"normal"` (descending with reversed cursor semantics where `before` fetches older records and `after` fetches newer records). Defaults to descending. Defaults to `desc`.
+            role_slug: Filter assignments by the slug of the role.
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
@@ -3425,6 +3448,7 @@ class AsyncAuthorization:
                 "before": before,
                 "after": after,
                 "order": enum_value(order) if order is not None else None,
+                "role_slug": role_slug,
             }.items()
             if v is not None
         }

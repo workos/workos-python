@@ -9,6 +9,7 @@
   "name": "Production API Key",
   "obfuscated_value": "sk_...3456",
   "last_used_at": null,
+  "expires_at": "2030-01-01T00:00:00.000Z",
   "permissions": [
     "posts:read",
     "posts:write"

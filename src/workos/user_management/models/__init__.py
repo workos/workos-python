@@ -29,9 +29,6 @@ from .create_user_api_key import CreateUserApiKey as CreateUserApiKey
 from .create_user_invite_options import (
     CreateUserInviteOptions as CreateUserInviteOptions,
 )
-from .create_user_organization_membership import (
-    CreateUserOrganizationMembership as CreateUserOrganizationMembership,
-)
 from .device_authorization_response import (
     DeviceAuthorizationResponse as DeviceAuthorizationResponse,
 )
@@ -48,7 +45,6 @@ from .jwks_response import JwksResponse as JwksResponse
 from .jwks_response_keys import JwksResponseKeys as JwksResponseKeys
 from .jwt_template_response import JWTTemplateResponse as JWTTemplateResponse
 from .magic_auth import MagicAuth as MagicAuth
-from .organization_membership import OrganizationMembership as OrganizationMembership
 from .password_reset import PasswordReset as PasswordReset
 from .password_session_authenticate_request import (
     PasswordSessionAuthenticateRequest as PasswordSessionAuthenticateRequest,
@@ -71,9 +67,6 @@ from .sso_device_authorization_request import (
 )
 from .update_jwt_template import UpdateJWTTemplate as UpdateJWTTemplate
 from .update_user import UpdateUser as UpdateUser
-from .update_user_organization_membership import (
-    UpdateUserOrganizationMembership as UpdateUserOrganizationMembership,
-)
 from .device_code_session_authenticate_request import (
     DeviceCodeSessionAuthenticateRequest as DeviceCodeSessionAuthenticateRequest,
 )
@@ -103,12 +96,6 @@ from .user_management_authentication_provider import (
 )
 from .user_management_authentication_screen_hint import (
     UserManagementAuthenticationScreenHint as UserManagementAuthenticationScreenHint,
-)
-from .user_management_organization_membership_statuses import (
-    UserManagementOrganizationMembershipStatuses as UserManagementOrganizationMembershipStatuses,
-)
-from .user_organization_membership import (
-    UserOrganizationMembership as UserOrganizationMembership,
 )
 from workos.common.models.user_sessions_impersonator import (
     UserSessionsImpersonator as UserSessionsImpersonator,

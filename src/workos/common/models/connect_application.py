@@ -3,72 +3,59 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, ClassVar, Dict, Union, cast
 from workos._types import _raise_deserialize_error
-from workos._types import _format_datetime, _parse_datetime
+
+from .connect_application_m2m import ConnectApplicationM2M
+from .connect_application_oauth import ConnectApplicationOAuth
 
 
 @dataclass(slots=True)
-class ConnectApplication:
-    """Connect Application model."""
+class ConnectApplicationUnknown:
+    """Unknown variant of ConnectApplication not yet recognized by this SDK version."""
 
-    object: Literal["connect_application"]
-    """Distinguishes the connect application object."""
-    id: str
-    """The unique ID of the connect application."""
-    client_id: str
-    """The client ID of the connect application."""
-    description: Optional[str]
-    """A description of the connect application."""
-    name: str
-    """The name of the connect application."""
-    scopes: List[str]
-    """The scopes available for this application."""
-    created_at: datetime
-    """An ISO 8601 timestamp."""
-    updated_at: datetime
-    """An ISO 8601 timestamp."""
-    application_type: Optional[Literal["m2m"]] = None
-    """The type of the application."""
-    organization_id: Optional[str] = None
-    """The ID of the organization the application belongs to."""
+    raw_data: Dict[str, Any]
+    """The raw payload, preserved so callers can still inspect the data."""
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ConnectApplication":
-        """Deserialize from a dictionary."""
-        try:
-            return cls(
-                object=data.get("object", "connect_application"),
-                id=data["id"],
-                client_id=data["client_id"],
-                description=data["description"],
-                name=data["name"],
-                scopes=data["scopes"],
-                created_at=_parse_datetime(data["created_at"]),
-                updated_at=_parse_datetime(data["updated_at"]),
-                application_type=data.get("application_type"),
-                organization_id=data.get("organization_id"),
-            )
-        except (KeyError, ValueError) as e:
-            _raise_deserialize_error("ConnectApplication", e)
+    def from_dict(cls, data: Dict[str, Any]) -> "ConnectApplicationUnknown":
+        """Wrap raw data in an unknown variant."""
+        return cls(raw_data=data)
 
     def to_dict(self) -> Dict[str, Any]:
-        """Serialize to a dictionary."""
-        result: Dict[str, Any] = {}
-        result["object"] = self.object
-        result["id"] = self.id
-        result["client_id"] = self.client_id
-        if self.description is not None:
-            result["description"] = self.description
-        else:
-            result["description"] = None
-        result["name"] = self.name
-        result["scopes"] = self.scopes
-        result["created_at"] = _format_datetime(self.created_at)
-        result["updated_at"] = _format_datetime(self.updated_at)
-        if self.application_type is not None:
-            result["application_type"] = self.application_type
-        if self.organization_id is not None:
-            result["organization_id"] = self.organization_id
-        return result
+        """Return the original raw data."""
+        return dict(self.raw_data)
+
+
+ConnectApplicationVariant = Union[
+    ConnectApplicationM2M,
+    ConnectApplicationOAuth,
+    ConnectApplicationUnknown,
+]
+
+
+class ConnectApplication:
+    """Discriminated union dispatcher (discriminated by 'application_type')."""
+
+    _DISPATCH: ClassVar[Dict[str, type]] = {
+        "m2m": ConnectApplicationM2M,
+        "oauth": ConnectApplicationOAuth,
+    }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "ConnectApplicationVariant":
+        """Deserialize from a dictionary, dispatching to the correct variant."""
+        if "application_type" not in data:
+            _raise_deserialize_error(
+                "ConnectApplication",
+                ValueError("Missing required field 'application_type'"),
+            )
+        disc_value = data["application_type"]
+        if disc_value is None:
+            _raise_deserialize_error(
+                "ConnectApplication", ValueError("application_type must not be None")
+            )
+        dispatch_cls = cls._DISPATCH.get(disc_value)
+        if dispatch_cls is not None:
+            return cast("ConnectApplicationVariant", dispatch_cls.from_dict(data))
+        return ConnectApplicationUnknown.from_dict(data)

@@ -9,10 +9,10 @@ from workos._types import _raise_deserialize_error
 
 @dataclass(slots=True)
 class AuditLogSchemaActor:
-    """Audit Log Schema Actor model."""
+    """The metadata schema for the actor."""
 
     metadata: Dict[str, Any]
-    """JSON schema for actor metadata."""
+    """The JSON Schema definition for actor metadata."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "AuditLogSchemaActor":

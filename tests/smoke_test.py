@@ -143,13 +143,11 @@ def test_core_types_importable() -> None:
     from workos.user_management.models import (
         AuthenticateResponse,
         Invitation,
-        OrganizationMembership,
         User,
     )
 
     assert AuthenticateResponse is not None
     assert Invitation is not None
-    assert OrganizationMembership is not None
     assert User is not None
 
     from workos.events.models import EventSchema

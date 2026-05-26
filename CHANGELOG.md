@@ -1,5 +1,36 @@
 # Changelog
 
+## [8.0.0](https://github.com/workos/workos-python/compare/v7.0.1...v8.0.0) (2026-05-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* **organization_membership:** Add new OrganizationMembershipService with membership and group operations ([#662](https://github.com/workos/workos-python/issues/662))
+* **vault:** Add new Vault service with encryption and object storage APIs ([#662](https://github.com/workos/workos-python/issues/662))
+* **radar:** Remove device_fingerprint and bot_score parameters from assess request ([#662](https://github.com/workos/workos-python/issues/662))
+* **authorization:** Remove search parameter and add resource/role filtering ([#662](https://github.com/workos/workos-python/issues/662))
+* **api_keys:** Add expires_at field to API key models ([#662](https://github.com/workos/workos-python/issues/662))
+* **audit_logs:** Rename audit log models and update service references ([#662](https://github.com/workos/workos-python/issues/662))
+* **webhooks:** Rename WebhookEndpointJson to WebhookEndpoint ([#662](https://github.com/workos/workos-python/issues/662))
+* **user_management:** Remove organization membership methods, move to new service ([#662](https://github.com/workos/workos-python/issues/662))
+
+### Features
+
+* **api_keys:** Add expires_at field to API key models ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
+* **audit_logs:** Rename audit log models and update service references ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
+* **authorization:** Remove search parameter and add resource/role filtering ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
+* **common:** Add new models for pipes events and enhancements ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
+* **organization_membership:** Add new OrganizationMembershipService with membership and group operations ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
+* **radar:** Remove device_fingerprint and bot_score parameters from assess request ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
+* **user_management:** Remove organization membership methods, move to new service ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
+* **vault:** Add new Vault service with encryption and object storage APIs ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
+* **webhooks:** Rename WebhookEndpointJson to WebhookEndpoint ([#662](https://github.com/workos/workos-python/issues/662)) ([ab992b5](https://github.com/workos/workos-python/commit/ab992b5a069a129f3ba3ffe0845ccc4b310ef098))
+
+
+### Bug Fixes
+
+* **deps:** update dependency cryptography to v48 ([#659](https://github.com/workos/workos-python/issues/659)) ([1ccc411](https://github.com/workos/workos-python/commit/1ccc4119ab6aa862b8af740b17667fb5a8a88928))
+
 ## [7.0.1](https://github.com/workos/workos-python/compare/v7.0.0...v7.0.1) (2026-05-11)
 
 

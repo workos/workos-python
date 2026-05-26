@@ -26,10 +26,11 @@ from .groups._resource import Groups, AsyncGroups
 from .admin_portal._resource import AdminPortal, AsyncAdminPortal
 from .radar._resource import Radar, AsyncRadar
 from .user_management._resource import UserManagement, AsyncUserManagement
-from .user_management_organization_membership_groups._resource import (
-    UserManagementOrganizationMembershipGroups,
-    AsyncUserManagementOrganizationMembershipGroups,
+from .organization_membership._resource import (
+    OrganizationMembershipService,
+    AsyncOrganizationMembershipService,
 )
+from .vault._resource import Vault, AsyncVault
 from .webhooks._resource import Webhooks, AsyncWebhooks
 from .widgets._resource import Widgets, AsyncWidgets
 from .audit_logs._resource import AuditLogs, AsyncAuditLogs
@@ -118,11 +119,14 @@ class WorkOSClient(_SyncBase):
         return UserManagement(self)
 
     @functools.cached_property
-    def user_management_organization_membership_groups(
-        self,
-    ) -> UserManagementOrganizationMembershipGroups:
-        """User Management Organization Membership Groups API resources."""
-        return UserManagementOrganizationMembershipGroups(self)
+    def organization_membership(self) -> OrganizationMembershipService:
+        """Organization Membership Service API resources."""
+        return OrganizationMembershipService(self)
+
+    @functools.cached_property
+    def vault(self) -> Vault:
+        """Vault API resources."""
+        return Vault(self)
 
     @functools.cached_property
     def webhooks(self) -> Webhooks:
@@ -248,11 +252,14 @@ class AsyncWorkOSClient(_AsyncBase):
         return AsyncUserManagement(self)
 
     @functools.cached_property
-    def user_management_organization_membership_groups(
-        self,
-    ) -> AsyncUserManagementOrganizationMembershipGroups:
-        """User Management Organization Membership Groups API resources."""
-        return AsyncUserManagementOrganizationMembershipGroups(self)
+    def organization_membership(self) -> AsyncOrganizationMembershipService:
+        """Organization Membership Service API resources."""
+        return AsyncOrganizationMembershipService(self)
+
+    @functools.cached_property
+    def vault(self) -> AsyncVault:
+        """Vault API resources."""
+        return AsyncVault(self)
 
     @functools.cached_property
     def webhooks(self) -> AsyncWebhooks:

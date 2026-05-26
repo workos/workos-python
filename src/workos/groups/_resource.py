@@ -308,6 +308,7 @@ class Groups:
             Group
 
         Raises:
+            BadRequestError: If the request is malformed (400).
             AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             UnprocessableEntityError: If the request data is unprocessable (422).
@@ -663,6 +664,7 @@ class AsyncGroups:
             Group
 
         Raises:
+            BadRequestError: If the request is malformed (400).
             AuthorizationError: If the request is forbidden (403).
             NotFoundError: If the resource is not found (404).
             UnprocessableEntityError: If the request data is unprocessable (422).

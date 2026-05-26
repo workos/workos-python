@@ -111,6 +111,15 @@ from workos.common.models.password_reset_succeeded import PasswordResetSucceeded
 from workos.common.models.permission_created import PermissionCreated
 from workos.common.models.permission_deleted import PermissionDeleted
 from workos.common.models.permission_updated import PermissionUpdated
+from workos.common.models.pipes_connected_account_connected import (
+    PipesConnectedAccountConnected,
+)
+from workos.common.models.pipes_connected_account_disconnected import (
+    PipesConnectedAccountDisconnected,
+)
+from workos.common.models.pipes_connected_account_reauthorization_needed import (
+    PipesConnectedAccountReauthorizationNeeded,
+)
 from workos.common.models.role_created import RoleCreated
 from workos.common.models.role_deleted import RoleDeleted
 from workos.common.models.role_updated import RoleUpdated
@@ -226,6 +235,9 @@ EventSchemaVariant = Union[
     PermissionCreated,
     PermissionDeleted,
     PermissionUpdated,
+    PipesConnectedAccountConnected,
+    PipesConnectedAccountDisconnected,
+    PipesConnectedAccountReauthorizationNeeded,
     RoleCreated,
     RoleDeleted,
     RoleUpdated,
@@ -327,6 +339,9 @@ class EventSchema:
         "permission.created": PermissionCreated,
         "permission.deleted": PermissionDeleted,
         "permission.updated": PermissionUpdated,
+        "pipes.connected_account.connected": PipesConnectedAccountConnected,
+        "pipes.connected_account.disconnected": PipesConnectedAccountDisconnected,
+        "pipes.connected_account.reauthorization_needed": PipesConnectedAccountReauthorizationNeeded,
         "role.created": RoleCreated,
         "role.deleted": RoleDeleted,
         "role.updated": RoleUpdated,

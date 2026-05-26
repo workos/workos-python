@@ -19,7 +19,7 @@ class ApplicationCredentialsListItem:
     """The unique ID of the client secret."""
     secret_hint: str
     """A hint showing the last few characters of the secret value."""
-    last_used_at: Optional[str]
+    last_used_at: Optional[datetime]
     """The timestamp when the client secret was last used, or null if never used."""
     created_at: datetime
     """An ISO 8601 timestamp."""
@@ -34,7 +34,9 @@ class ApplicationCredentialsListItem:
                 object=data.get("object", "connect_application_secret"),
                 id=data["id"],
                 secret_hint=data["secret_hint"],
-                last_used_at=data["last_used_at"],
+                last_used_at=_parse_datetime(_v_last_used_at)
+                if (_v_last_used_at := data["last_used_at"]) is not None
+                else None,
                 created_at=_parse_datetime(data["created_at"]),
                 updated_at=_parse_datetime(data["updated_at"]),
             )
@@ -48,7 +50,7 @@ class ApplicationCredentialsListItem:
         result["id"] = self.id
         result["secret_hint"] = self.secret_hint
         if self.last_used_at is not None:
-            result["last_used_at"] = self.last_used_at
+            result["last_used_at"] = _format_datetime(self.last_used_at)
         else:
             result["last_used_at"] = None
         result["created_at"] = _format_datetime(self.created_at)

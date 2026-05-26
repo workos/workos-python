@@ -9,15 +9,15 @@ if TYPE_CHECKING:
 
 from .._types import RequestOptions, enum_value
 from .models import (
-    AuditLogActionJson,
+    AuditLogAction,
     AuditLogEvent,
     AuditLogEventCreateResponse,
-    AuditLogExportJson,
+    AuditLogExport,
     AuditLogSchemaActor,
     AuditLogSchemaJson,
     AuditLogSchemaTarget,
 )
-from workos.organizations.models.audit_logs_retention_json import AuditLogsRetentionJson
+from workos.organizations.models.audit_logs_retention import AuditLogsRetention
 from workos.common.models.pagination_order import PaginationOrder
 from .._pagination import AsyncPage, SyncPage
 
@@ -33,7 +33,7 @@ class AuditLogs:
         id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogsRetentionJson:
+    ) -> AuditLogsRetention:
         """Get Retention
 
         Get the configured event retention period for the given Organization.
@@ -43,7 +43,7 @@ class AuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AuditLogsRetentionJson
+            AuditLogsRetention
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -54,7 +54,7 @@ class AuditLogs:
         return self._client.request(
             method="get",
             path=("organizations", str(id), "audit_logs_retention"),
-            model=AuditLogsRetentionJson,
+            model=AuditLogsRetention,
             request_options=request_options,
         )
 
@@ -64,7 +64,7 @@ class AuditLogs:
         *,
         retention_period_in_days: int,
         request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogsRetentionJson:
+    ) -> AuditLogsRetention:
         """Set Retention
 
         Set the event retention period for the given Organization.
@@ -75,7 +75,7 @@ class AuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AuditLogsRetentionJson
+            AuditLogsRetention
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -91,7 +91,7 @@ class AuditLogs:
             method="put",
             path=("organizations", str(id), "audit_logs_retention"),
             body=body,
-            model=AuditLogsRetentionJson,
+            model=AuditLogsRetention,
             request_options=request_options,
         )
 
@@ -103,7 +103,7 @@ class AuditLogs:
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[AuditLogActionJson]:
+    ) -> SyncPage[AuditLogAction]:
         """List Actions
 
         Get a list of all Audit Log actions in the current environment.
@@ -116,7 +116,7 @@ class AuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            SyncPage[AuditLogActionJson]
+            SyncPage[AuditLogAction]
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -138,7 +138,7 @@ class AuditLogs:
         return self._client.request_page(
             method="get",
             path=("audit_logs", "actions"),
-            model=AuditLogActionJson,
+            model=AuditLogAction,
             params=params,
             request_options=request_options,
         )
@@ -299,7 +299,7 @@ class AuditLogs:
         actor_ids: Optional[List[str]] = None,
         targets: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogExportJson:
+    ) -> AuditLogExport:
         """Create Export
 
         Create an Audit Log Export. Exports are scoped to a single organization within a specified date range.
@@ -316,7 +316,7 @@ class AuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AuditLogExportJson
+            AuditLogExport
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -342,7 +342,7 @@ class AuditLogs:
             method="post",
             path=("audit_logs", "exports"),
             body=body,
-            model=AuditLogExportJson,
+            model=AuditLogExport,
             request_options=request_options,
         )
 
@@ -351,7 +351,7 @@ class AuditLogs:
         audit_log_export_id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogExportJson:
+    ) -> AuditLogExport:
         """Get Export
 
         Get an Audit Log Export. The URL will expire after 10 minutes. If the export is needed again at a later time, refetching the export will regenerate the URL.
@@ -361,7 +361,7 @@ class AuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AuditLogExportJson
+            AuditLogExport
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -372,7 +372,7 @@ class AuditLogs:
         return self._client.request(
             method="get",
             path=("audit_logs", "exports", str(audit_log_export_id)),
-            model=AuditLogExportJson,
+            model=AuditLogExport,
             request_options=request_options,
         )
 
@@ -388,7 +388,7 @@ class AsyncAuditLogs:
         id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogsRetentionJson:
+    ) -> AuditLogsRetention:
         """Get Retention
 
         Get the configured event retention period for the given Organization.
@@ -398,7 +398,7 @@ class AsyncAuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AuditLogsRetentionJson
+            AuditLogsRetention
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -409,7 +409,7 @@ class AsyncAuditLogs:
         return await self._client.request(
             method="get",
             path=("organizations", str(id), "audit_logs_retention"),
-            model=AuditLogsRetentionJson,
+            model=AuditLogsRetention,
             request_options=request_options,
         )
 
@@ -419,7 +419,7 @@ class AsyncAuditLogs:
         *,
         retention_period_in_days: int,
         request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogsRetentionJson:
+    ) -> AuditLogsRetention:
         """Set Retention
 
         Set the event retention period for the given Organization.
@@ -430,7 +430,7 @@ class AsyncAuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AuditLogsRetentionJson
+            AuditLogsRetention
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -446,7 +446,7 @@ class AsyncAuditLogs:
             method="put",
             path=("organizations", str(id), "audit_logs_retention"),
             body=body,
-            model=AuditLogsRetentionJson,
+            model=AuditLogsRetention,
             request_options=request_options,
         )
 
@@ -458,7 +458,7 @@ class AsyncAuditLogs:
         after: Optional[str] = None,
         order: Optional[Union[PaginationOrder, str]] = "desc",
         request_options: Optional[RequestOptions] = None,
-    ) -> AsyncPage[AuditLogActionJson]:
+    ) -> AsyncPage[AuditLogAction]:
         """List Actions
 
         Get a list of all Audit Log actions in the current environment.
@@ -471,7 +471,7 @@ class AsyncAuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AsyncPage[AuditLogActionJson]
+            AsyncPage[AuditLogAction]
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -493,7 +493,7 @@ class AsyncAuditLogs:
         return await self._client.request_page(
             method="get",
             path=("audit_logs", "actions"),
-            model=AuditLogActionJson,
+            model=AuditLogAction,
             params=params,
             request_options=request_options,
         )
@@ -654,7 +654,7 @@ class AsyncAuditLogs:
         actor_ids: Optional[List[str]] = None,
         targets: Optional[List[str]] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogExportJson:
+    ) -> AuditLogExport:
         """Create Export
 
         Create an Audit Log Export. Exports are scoped to a single organization within a specified date range.
@@ -671,7 +671,7 @@ class AsyncAuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AuditLogExportJson
+            AuditLogExport
 
         Raises:
             BadRequestError: If the request is malformed (400).
@@ -697,7 +697,7 @@ class AsyncAuditLogs:
             method="post",
             path=("audit_logs", "exports"),
             body=body,
-            model=AuditLogExportJson,
+            model=AuditLogExport,
             request_options=request_options,
         )
 
@@ -706,7 +706,7 @@ class AsyncAuditLogs:
         audit_log_export_id: str,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> AuditLogExportJson:
+    ) -> AuditLogExport:
         """Get Export
 
         Get an Audit Log Export. The URL will expire after 10 minutes. If the export is needed again at a later time, refetching the export will regenerate the URL.
@@ -716,7 +716,7 @@ class AsyncAuditLogs:
             request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
 
         Returns:
-            AuditLogExportJson
+            AuditLogExport
 
         Raises:
             NotFoundError: If the resource is not found (404).
@@ -727,6 +727,6 @@ class AsyncAuditLogs:
         return await self._client.request(
             method="get",
             path=("audit_logs", "exports", str(audit_log_export_id)),
-            model=AuditLogExportJson,
+            model=AuditLogExport,
             request_options=request_options,
         )

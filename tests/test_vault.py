@@ -279,6 +279,37 @@ class TestVault:
         finally:
             workos.close()
 
+    # @oagen-ignore-start — client-side encrypt/decrypt tests (hand-maintained)
+
+    def test_encrypt_decrypt_round_trip(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_data_key.json"))
+        httpx_mock.add_response(json=load_fixture("vault_decrypt_key.json"))
+
+        encrypted = workos.vault.encrypt(
+            data="hello world", key_context={"tenant": "acme"}
+        )
+        assert isinstance(encrypted, str)
+        assert encrypted != "hello world"
+
+        decrypted = workos.vault.decrypt(encrypted_data=encrypted)
+        assert decrypted == "hello world"
+
+    def test_encrypt_decrypt_with_associated_data(self, workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_data_key.json"))
+        httpx_mock.add_response(json=load_fixture("vault_decrypt_key.json"))
+
+        encrypted = workos.vault.encrypt(
+            data="hello world",
+            key_context={"tenant": "acme"},
+            associated_data="context-info",
+        )
+        decrypted = workos.vault.decrypt(
+            encrypted_data=encrypted, associated_data="context-info"
+        )
+        assert decrypted == "hello world"
+
+    # @oagen-ignore-end
+
 
 class TestAsyncVault:
     @pytest.mark.asyncio
@@ -518,3 +549,36 @@ class TestAsyncVault:
                 await workos.vault.create_data_key(context={})
         finally:
             await workos.close()
+
+    # @oagen-ignore-start — client-side encrypt/decrypt tests (hand-maintained)
+
+    @pytest.mark.asyncio
+    async def test_encrypt_decrypt_round_trip(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_data_key.json"))
+        httpx_mock.add_response(json=load_fixture("vault_decrypt_key.json"))
+
+        encrypted = await async_workos.vault.encrypt(
+            data="hello world", key_context={"tenant": "acme"}
+        )
+        assert isinstance(encrypted, str)
+        assert encrypted != "hello world"
+
+        decrypted = await async_workos.vault.decrypt(encrypted_data=encrypted)
+        assert decrypted == "hello world"
+
+    @pytest.mark.asyncio
+    async def test_encrypt_decrypt_with_associated_data(self, async_workos, httpx_mock):
+        httpx_mock.add_response(json=load_fixture("vault_data_key.json"))
+        httpx_mock.add_response(json=load_fixture("vault_decrypt_key.json"))
+
+        encrypted = await async_workos.vault.encrypt(
+            data="hello world",
+            key_context={"tenant": "acme"},
+            associated_data="context-info",
+        )
+        decrypted = await async_workos.vault.decrypt(
+            encrypted_data=encrypted, associated_data="context-info"
+        )
+        assert decrypted == "hello world"
+
+    # @oagen-ignore-end

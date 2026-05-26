@@ -8,6 +8,17 @@ if TYPE_CHECKING:
     from .._client import AsyncWorkOSClient, WorkOSClient
 
 from .._types import RequestOptions, enum_value
+
+# @oagen-ignore-start — client-side AES-GCM imports (hand-maintained)
+import base64
+import os
+from dataclasses import dataclass
+from typing import Tuple
+
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+# @oagen-ignore-end
+
 from .models import (
     CreateDataKeyResponse,
     DecryptResponse,
@@ -19,6 +30,94 @@ from .models import (
 )
 from .models import VaultOrder
 from .._pagination import AsyncPage, SyncPage
+
+
+# @oagen-ignore-start — client-side AES-GCM helpers (hand-maintained)
+
+
+@dataclass(slots=True)
+class DecodedKeys:
+    iv: bytes
+    tag: bytes
+    keys: str
+    ciphertext: bytes
+
+
+def _aes_gcm_encrypt(
+    plaintext: bytes, key: bytes, iv: bytes, aad: Optional[bytes]
+) -> Dict[str, bytes]:
+    encryptor = Cipher(
+        algorithms.AES(key), modes.GCM(iv), backend=default_backend()
+    ).encryptor()
+    if aad:
+        encryptor.authenticate_additional_data(aad)
+    ciphertext = encryptor.update(plaintext) + encryptor.finalize()
+    return {"ciphertext": ciphertext, "iv": iv, "tag": encryptor.tag}
+
+
+def _aes_gcm_decrypt(
+    ciphertext: bytes,
+    key: bytes,
+    iv: bytes,
+    tag: bytes,
+    aad: Optional[bytes] = None,
+) -> bytes:
+    decryptor = Cipher(
+        algorithms.AES(key), modes.GCM(iv, tag), backend=default_backend()
+    ).decryptor()
+    if aad:
+        decryptor.authenticate_additional_data(aad)
+    return decryptor.update(ciphertext) + decryptor.finalize()
+
+
+def _encode_u32_leb128(value: int) -> bytes:
+    if value < 0 or value > 0xFFFFFFFF:
+        raise ValueError("Value must be a 32-bit unsigned integer")
+    encoded = bytearray()
+    while True:
+        byte = value & 0x7F
+        value >>= 7
+        if value != 0:
+            byte |= 0x80
+        encoded.append(byte)
+        if value == 0:
+            break
+    return bytes(encoded)
+
+
+def _decode_u32_leb128(buf: bytes) -> Tuple[int, int]:
+    res = 0
+    bit = 0
+    for i, b in enumerate(buf):
+        if i >= 4 and (b & 0x80) != 0:
+            raise ValueError("LEB128 integer overflow (was more than 4 bytes)")
+        res |= (b & 0x7F) << (7 * bit)
+        if (b & 0x80) == 0:
+            if res > 0xFFFFFFFF:
+                raise ValueError("LEB128 integer overflow (exceeds 32 bits)")
+            return res, i + 1
+        bit += 1
+    raise ValueError("LEB128 integer not found")
+
+
+def _decode_encrypted_payload(encrypted_data_b64: str) -> DecodedKeys:
+    try:
+        payload = base64.b64decode(encrypted_data_b64)
+    except Exception as e:
+        raise ValueError("Base64 decoding failed") from e
+
+    iv = payload[0:12]
+    tag = payload[12:28]
+    key_len, leb_len = _decode_u32_leb128(payload[28:])
+    keys_index = 28 + leb_len
+    keys_end = keys_index + key_len
+    keys_slice = payload[keys_index:keys_end]
+    keys = base64.b64encode(keys_slice).decode("utf-8")
+    ciphertext = payload[keys_end:]
+    return DecodedKeys(iv=iv, tag=tag, keys=keys, ciphertext=ciphertext)
+
+
+# @oagen-ignore-end
 
 
 class Vault:
@@ -434,6 +533,56 @@ class Vault:
             request_options=request_options,
         )
 
+    # @oagen-ignore-start — client-side AES-GCM encrypt/decrypt (hand-maintained)
+
+    def encrypt(
+        self,
+        *,
+        data: str,
+        key_context: Dict[str, str],
+        associated_data: Optional[str] = None,
+    ) -> str:
+        """Encrypt data locally using AES-GCM with a data key derived from the context."""
+        key_pair = self.create_data_key(context=key_context)
+
+        key = base64.b64decode(key_pair.data_key)
+        key_blob = base64.b64decode(key_pair.encrypted_keys)
+        prefix_len_buffer = _encode_u32_leb128(len(key_blob))
+        aad_buffer = associated_data.encode("utf-8") if associated_data else None
+        iv = os.urandom(12)
+
+        result = _aes_gcm_encrypt(data.encode("utf-8"), key, iv, aad_buffer)
+
+        combined = (
+            result["iv"]
+            + result["tag"]
+            + prefix_len_buffer
+            + key_blob
+            + result["ciphertext"]
+        )
+        return base64.b64encode(combined).decode("utf-8")
+
+    def decrypt(
+        self, *, encrypted_data: str, associated_data: Optional[str] = None
+    ) -> str:
+        """Decrypt data that was previously encrypted using the encrypt method."""
+        decoded = _decode_encrypted_payload(encrypted_data)
+        data_key = self.create_decrypt(keys=decoded.keys)
+
+        key = base64.b64decode(data_key.data_key)
+        aad_buffer = associated_data.encode("utf-8") if associated_data else None
+
+        decrypted_bytes = _aes_gcm_decrypt(
+            ciphertext=decoded.ciphertext,
+            key=key,
+            iv=decoded.iv,
+            tag=decoded.tag,
+            aad=aad_buffer,
+        )
+        return decrypted_bytes.decode("utf-8")
+
+    # @oagen-ignore-end
+
 
 class AsyncVault:
     """Vault API resources (async)."""
@@ -847,3 +996,52 @@ class AsyncVault:
             model=VersionListResponse,
             request_options=request_options,
         )
+
+    # @oagen-ignore-start — client-side AES-GCM encrypt/decrypt (hand-maintained)
+
+    async def encrypt(
+        self,
+        *,
+        data: str,
+        key_context: Dict[str, str],
+        associated_data: Optional[str] = None,
+    ) -> str:
+        """Encrypt data locally using AES-GCM with a data key derived from the context."""
+        key_pair = await self.create_data_key(context=key_context)
+
+        key = base64.b64decode(key_pair.data_key)
+        key_blob = base64.b64decode(key_pair.encrypted_keys)
+        prefix_len_buffer = _encode_u32_leb128(len(key_blob))
+        aad_buffer = associated_data.encode("utf-8") if associated_data else None
+        iv = os.urandom(12)
+
+        result = _aes_gcm_encrypt(data.encode("utf-8"), key, iv, aad_buffer)
+        combined = (
+            result["iv"]
+            + result["tag"]
+            + prefix_len_buffer
+            + key_blob
+            + result["ciphertext"]
+        )
+        return base64.b64encode(combined).decode("utf-8")
+
+    async def decrypt(
+        self, *, encrypted_data: str, associated_data: Optional[str] = None
+    ) -> str:
+        """Decrypt data that was previously encrypted using the encrypt method."""
+        decoded = _decode_encrypted_payload(encrypted_data)
+        data_key = await self.create_decrypt(keys=decoded.keys)
+
+        key = base64.b64decode(data_key.data_key)
+        aad_buffer = associated_data.encode("utf-8") if associated_data else None
+
+        decrypted_bytes = _aes_gcm_decrypt(
+            ciphertext=decoded.ciphertext,
+            key=key,
+            iv=decoded.iv,
+            tag=decoded.tag,
+            aad=aad_buffer,
+        )
+        return decrypted_bytes.decode("utf-8")
+
+    # @oagen-ignore-end

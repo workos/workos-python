@@ -155,6 +155,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     outputs:
       is-release: ${{ steps.detect.outputs.is-release }}
       version: ${{ steps.detect.outputs.version }}
@@ -182,6 +183,9 @@ jobs:
             VERSION="${BASH_REMATCH[1]}"
             echo "is-release=true"  >> "$GITHUB_OUTPUT"
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            if [[ "$SUBJECT" =~ \#([0-9]+) ]]; then
+              echo "pr-number=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+            fi
             echo "Detected release PR merge for v$VERSION"
           else
             echo "Not a release PR merge: $SUBJECT"
@@ -223,6 +227,17 @@ jobs:
           gh release create "$TAG" \
             --title "$TAG" \
             --notes-file /tmp/release-notes.md
+
+      - name: Mark release PR as tagged
+        if: steps.detect.outputs.is-release == 'true' && steps.detect.outputs['pr-number']
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          PR_NUMBER: ${{ steps.detect.outputs['pr-number'] }}
+        run: |
+          set -euo pipefail
+          gh pr edit "$PR_NUMBER" \
+            --remove-label "autorelease: pending" \
+            --add-label "autorelease: tagged"
 
   publish:
     needs: publish-release

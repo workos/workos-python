@@ -12,6 +12,7 @@ from workos.common.models.action_user_registration_denied import (
 )
 from workos.common.models.api_key_created import ApiKeyCreated
 from workos.common.models.api_key_revoked import ApiKeyRevoked
+from workos.common.models.api_key_updated import ApiKeyUpdated
 from workos.common.models.authentication_email_verification_failed import (
     AuthenticationEmailVerificationFailed,
 )
@@ -59,13 +60,14 @@ from workos.common.models.connection_saml_certificate_renewed import (
     ConnectionSAMLCertificateRenewed,
 )
 from workos.common.models.dsync_activated import DsyncActivated
-from workos.common.models.dsync_deactivated import DsyncDeactivated
 from workos.common.models.dsync_deleted import DsyncDeleted
 from workos.common.models.dsync_group_created import DsyncGroupCreated
 from workos.common.models.dsync_group_deleted import DsyncGroupDeleted
 from workos.common.models.dsync_group_updated import DsyncGroupUpdated
 from workos.common.models.dsync_group_user_added import DsyncGroupUserAdded
 from workos.common.models.dsync_group_user_removed import DsyncGroupUserRemoved
+from workos.common.models.dsync_token_created import DsyncTokenCreated
+from workos.common.models.dsync_token_revoked import DsyncTokenRevoked
 from workos.common.models.dsync_user_created import DsyncUserCreated
 from workos.common.models.dsync_user_deleted import DsyncUserDeleted
 from workos.common.models.dsync_user_updated import DsyncUserUpdated
@@ -168,6 +170,7 @@ EventSchemaVariant = Union[
     ActionUserRegistrationDenied,
     ApiKeyCreated,
     ApiKeyRevoked,
+    ApiKeyUpdated,
     AuthenticationEmailVerificationFailed,
     AuthenticationEmailVerificationSucceeded,
     AuthenticationMagicAuthFailed,
@@ -191,13 +194,14 @@ EventSchemaVariant = Union[
     ConnectionSAMLCertificateRenewalRequired,
     ConnectionSAMLCertificateRenewed,
     DsyncActivated,
-    DsyncDeactivated,
     DsyncDeleted,
     DsyncGroupCreated,
     DsyncGroupDeleted,
     DsyncGroupUpdated,
     DsyncGroupUserAdded,
     DsyncGroupUserRemoved,
+    DsyncTokenCreated,
+    DsyncTokenRevoked,
     DsyncUserCreated,
     DsyncUserDeleted,
     DsyncUserUpdated,
@@ -272,6 +276,7 @@ class EventSchema:
         "action.user_registration.denied": ActionUserRegistrationDenied,
         "api_key.created": ApiKeyCreated,
         "api_key.revoked": ApiKeyRevoked,
+        "api_key.updated": ApiKeyUpdated,
         "authentication.email_verification_failed": AuthenticationEmailVerificationFailed,
         "authentication.email_verification_succeeded": AuthenticationEmailVerificationSucceeded,
         "authentication.magic_auth_failed": AuthenticationMagicAuthFailed,
@@ -295,13 +300,14 @@ class EventSchema:
         "connection.saml_certificate_renewal_required": ConnectionSAMLCertificateRenewalRequired,
         "connection.saml_certificate_renewed": ConnectionSAMLCertificateRenewed,
         "dsync.activated": DsyncActivated,
-        "dsync.deactivated": DsyncDeactivated,
         "dsync.deleted": DsyncDeleted,
         "dsync.group.created": DsyncGroupCreated,
         "dsync.group.deleted": DsyncGroupDeleted,
         "dsync.group.updated": DsyncGroupUpdated,
         "dsync.group.user_added": DsyncGroupUserAdded,
         "dsync.group.user_removed": DsyncGroupUserRemoved,
+        "dsync.token.created": DsyncTokenCreated,
+        "dsync.token.revoked": DsyncTokenRevoked,
         "dsync.user.created": DsyncUserCreated,
         "dsync.user.deleted": DsyncUserDeleted,
         "dsync.user.updated": DsyncUserUpdated,

@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 from .._types import RequestOptions, enum_value
 from .models import (
+    ApiKey,
     ApiKeyValidationResponse,
     OrganizationApiKey,
     OrganizationApiKeyWithValue,
@@ -179,6 +180,48 @@ class ApiKeys:
             request_options=request_options,
         )
 
+    def create_api_key_expire(
+        self,
+        id: str,
+        *,
+        expires_at: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> ApiKey:
+        """Expire an API key
+
+        Expire an API key immediately, schedule a future expiration, or clear a scheduled future expiration.
+
+        Args:
+            id: The unique ID of the API key.
+            expires_at: When the API key should expire. If omitted or in the past, the key expires immediately. Use null to clear a scheduled future expiration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ApiKey
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "expires_at": expires_at,
+            }.items()
+            if v is not None
+        }
+        return self._client.request(
+            method="post",
+            path=("api_keys", str(id), "expire"),
+            body=body,
+            model=ApiKey,
+            request_options=request_options,
+        )
+
 
 class AsyncApiKeys:
     """Api Keys API resources (async)."""
@@ -339,5 +382,47 @@ class AsyncApiKeys:
         await self._client.request(
             method="delete",
             path=("api_keys", str(id)),
+            request_options=request_options,
+        )
+
+    async def create_api_key_expire(
+        self,
+        id: str,
+        *,
+        expires_at: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> ApiKey:
+        """Expire an API key
+
+        Expire an API key immediately, schedule a future expiration, or clear a scheduled future expiration.
+
+        Args:
+            id: The unique ID of the API key.
+            expires_at: When the API key should expire. If omitted or in the past, the key expires immediately. Use null to clear a scheduled future expiration.
+            request_options: Per-request options. Supports extra_headers, timeout, max_retries, and base_url override.
+
+        Returns:
+            ApiKey
+
+        Raises:
+            NotFoundError: If the resource is not found (404).
+            ConflictError: If a conflict occurs (409).
+            UnprocessableEntityError: If the request data is unprocessable (422).
+            AuthenticationError: If the API key is invalid (401).
+            RateLimitExceededError: If rate limited (429).
+            ServerError: If the server returns a 5xx error.
+        """
+        body: Dict[str, Any] = {
+            k: v
+            for k, v in {
+                "expires_at": expires_at,
+            }.items()
+            if v is not None
+        }
+        return await self._client.request(
+            method="post",
+            path=("api_keys", str(id), "expire"),
+            body=body,
+            model=ApiKey,
             request_options=request_options,
         )

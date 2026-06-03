@@ -8,6 +8,7 @@ from .api_key_validation_response import (
 from .create_organization_api_key import (
     CreateOrganizationApiKey as CreateOrganizationApiKey,
 )
+from .expire_api_key import ExpireApiKey as ExpireApiKey
 from .organization_api_key import OrganizationApiKey as OrganizationApiKey
 from .organization_api_key_owner import (
     OrganizationApiKeyOwner as OrganizationApiKeyOwner,
